@@ -115,11 +115,7 @@ export class PaymentApiService extends DomainApiService {
 
   getReconciliationDataTemplates(projectId: Signal<number | string>) {
     return this.generateQueryOptions<Dto<GetImportTemplateResponseDto>[]>({
-      path: [
-        ...BASE_ENDPOINT(projectId),
-        'fsp-reconciliation',
-        'import-template',
-      ],
+      path: [...BASE_ENDPOINT(projectId), 'excel-reconciliation', 'template'],
     });
   }
 
@@ -140,7 +136,7 @@ export class PaymentApiService extends DomainApiService {
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
         paymentId,
-        'fsp-reconciliation',
+        'excel-reconciliation',
       ]).join('/'),
       body: formData,
       isUpload: true,

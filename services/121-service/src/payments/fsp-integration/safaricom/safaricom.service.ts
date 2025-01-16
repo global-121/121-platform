@@ -4,19 +4,11 @@ import { Redis } from 'ioredis';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
-import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
-import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
-import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
+import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
 export class SafaricomService
@@ -67,41 +59,5 @@ export class SafaricomService
       { originatorConversationId },
       { mpesaConversationId: transferResult.mpesaConversationId },
     );
-  }
-
-  public async processTransferCallback(
-    safaricomTransferCallback: SafaricomTransferCallbackDto,
-  ): Promise<void> {
-    const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {
-      originatorConversationId:
-        safaricomTransferCallback.Result.OriginatorConversationID,
-      mpesaConversationId: safaricomTransferCallback.Result.ConversationID,
-      mpesaTransactionId: safaricomTransferCallback.Result.TransactionID,
-      resultCode: safaricomTransferCallback.Result.ResultCode,
-      resultDescription: safaricomTransferCallback.Result.ResultDesc,
-    };
-
-    const job = await this.queuesService.safaricomTransferCallbackQueue.add(
-      JobNames.default,
-      safaricomTransferCallbackJob,
-    );
-
-    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-  }
-
-  public async processTimeoutCallback(
-    safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
-  ): Promise<void> {
-    const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
-      originatorConversationId:
-        safaricomTimeoutCallback.OriginatorConversationID,
-    };
-
-    const job = await this.queuesService.safaricomTimeoutCallbackQueue.add(
-      JobNames.default,
-      safaricomTimeoutCallbackJob,
-    );
-
-    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
   }
 }

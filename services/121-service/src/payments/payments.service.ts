@@ -17,12 +17,9 @@ import {
 } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
@@ -50,7 +47,6 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -1040,45 +1036,6 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
-  public async getImportInstructionsTemplate(
-    programId: number,
-  ): Promise<GetImportTemplateResponseDto[]> {
-    const programWithExcelFspConfigs = await this.programRepository.findOne({
-      where: {
-        id: Equal(programId),
-        programFinancialServiceProviderConfigurations: {
-          financialServiceProviderName: Equal(FinancialServiceProviders.excel),
-        },
-      },
-      relations: ['programFinancialServiceProviderConfigurations'],
-      order: {
-        programFinancialServiceProviderConfigurations: {
-          name: 'ASC',
-        },
-      },
-    });
-
-    if (!programWithExcelFspConfigs) {
-      throw new HttpException(
-        'No program with `Excel` FSP found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
-      const matchColumn = await this.excelService.getImportMatchColumn(
-        fspConfig.id,
-      );
-      templates.push({
-        name: fspConfig.name,
-        template: [matchColumn, 'status'],
-      });
-    }
-
-    return templates;
-  }
-
   public async getFspInstructions(
     programId: number,
     payment: number,
@@ -1208,111 +1165,5 @@ export class PaymentsService {
     throw new Error(
       `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
     );
-  }
-
-  public async importFspReconciliationData(
-    file: Express.Multer.File,
-    programId: number,
-    payment: number,
-    userId: number,
-  ): Promise<{
-    importResult: ReconciliationFeedbackDto[];
-    aggregateImportResult: {
-      countPaymentFailed: number;
-      countPaymentSuccess: number;
-      countNotFound: number;
-    };
-  }> {
-    const program = await this.programRepository.findOneOrFail({
-      where: {
-        id: Equal(programId),
-      },
-      relations: ['programFinancialServiceProviderConfigurations'],
-    });
-    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
-      [];
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.excel
-      ) {
-        fspConfigsExcel.push(fspConfig);
-      }
-    }
-    if (!fspConfigsExcel.length) {
-      throw new HttpException(
-        'Other reconciliation FSPs than `Excel` are currently not supported.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const importResults = await this.excelService.processReconciliationData({
-      file,
-      payment,
-      programId,
-      fspConfigs: fspConfigsExcel,
-    });
-
-    for (const fspConfig of fspConfigsExcel) {
-      const transactions = importResults
-        .filter(
-          (r) =>
-            r.programFinancialServiceProviderConfigurationId === fspConfig.id,
-        )
-        .map((r) => r.transaction)
-        .filter((t): t is PaTransactionResultDto => t !== undefined);
-
-      await this.transactionsService.storeReconciliationTransactionsBulk(
-        transactions,
-        {
-          programId,
-          paymentNr: payment,
-          userId,
-          programFinancialServiceProviderConfigurationId: fspConfig.id,
-        },
-      );
-    }
-
-    const feedback: ReconciliationFeedbackDto[] = importResults.map(
-      (r) => r.feedback,
-    );
-    const aggregateImportResult = this.countFeedbackResults(feedback);
-
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.importFspReconciliation,
-    );
-
-    return {
-      importResult: feedback,
-      aggregateImportResult,
-    };
-  }
-
-  private countFeedbackResults(feedback: ReconciliationFeedbackDto[]): {
-    countPaymentSuccess: number;
-    countPaymentFailed: number;
-    countNotFound: number;
-  } {
-    let countPaymentSuccess = 0;
-    let countPaymentFailed = 0;
-    let countNotFound = 0;
-
-    for (const result of feedback) {
-      if (!result.referenceId) {
-        countNotFound += 1;
-        continue;
-      }
-      if (result.importStatus === ImportStatus.paymentSuccess) {
-        countPaymentSuccess += 1;
-      } else if (result.importStatus === ImportStatus.paymentFailed) {
-        countPaymentFailed += 1;
-      } else if (result.importStatus === ImportStatus.notFound) {
-        countNotFound += 1;
-      }
-    }
-
-    return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 }

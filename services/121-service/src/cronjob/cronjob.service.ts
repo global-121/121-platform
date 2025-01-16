@@ -39,9 +39,9 @@ export class CronjobService {
   public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    await this.httpService.put(url, {}, headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -49,12 +49,12 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronCacheUnusedVouchers(): Promise<void> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cache-unused-vouchers`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    await this.httpService.patch(url, {}, headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {

@@ -11,14 +11,9 @@ import {
   Post,
   Query,
   Req,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
-  ApiBody,
-  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -31,10 +26,8 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
-import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -46,7 +39,6 @@ import {
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -248,60 +240,6 @@ export class PaymentsController {
     const userId = RequestHelper.getUserId(req);
 
     return await this.paymentsService.getFspInstructions(
-      programId,
-      payment,
-      userId,
-    );
-  }
-
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.PaymentFspInstructionREAD],
-  })
-  @ApiOperation({
-    summary: 'Get a CSV template for importing reconciliation instructions',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Get payments template instructions to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/payments/fsp-reconciliation/import-template')
-  public async getImportFspReconciliationTemplate(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<GetImportTemplateResponseDto[]> {
-    return await this.paymentsService.getImportInstructionsTemplate(
-      Number(programId),
-    );
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentCREATE] })
-  @ApiOperation({
-    summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'payment', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description:
-      'Uploaded payment reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Post('programs/:programId/payments/:payment/fsp-reconciliation')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody(FILE_UPLOAD_API_FORMAT)
-  @UseInterceptors(FileInterceptor('file'))
-  public async importFspReconciliationData(
-    @UploadedFile() file: Express.Multer.File,
-    @Param('programId', ParseIntPipe)
-    programId: number,
-    @Param('payment', ParseIntPipe)
-    payment: number,
-    @Req() req,
-  ): Promise<ImportReconciliationResponseDto> {
-    const userId = RequestHelper.getUserId(req);
-    return await this.paymentsService.importFspReconciliationData(
-      file,
       programId,
       payment,
       userId,

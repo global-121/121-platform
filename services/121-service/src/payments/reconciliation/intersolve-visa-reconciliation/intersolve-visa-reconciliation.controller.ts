@@ -3,13 +3,15 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaReconciliationService } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')
 @Controller()
-export class IntersolveVisaController {
-  public constructor(private intersolveVisaService: IntersolveVisaService) {}
+export class IntersolveVisaReconciliationController {
+  public constructor(
+    private intersolveVisaReconciliationService: IntersolveVisaReconciliationService,
+  ) {}
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
@@ -26,7 +28,7 @@ export class IntersolveVisaController {
     console.info(
       'CronjobService - Started: retrieveAndUpdateAllWalletsAndCards',
     );
-    await this.intersolveVisaService.retrieveAndUpdateAllWalletsAndCards();
+    await this.intersolveVisaReconciliationService.retrieveAndUpdateAllWalletsAndCards();
     console.info(
       'CronjobService - Complete: retrieveAndUpdateAllWalletsAndCards',
     );

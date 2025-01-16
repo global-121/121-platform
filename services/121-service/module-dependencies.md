@@ -122,5 +122,19 @@ graph LR
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
   FinancialServiceProviderCallbackJobProcessorsModule-->RedisModule
-  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomModule
+  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomReconciliationModule
+  SafaricomReconciliationModule-->SafaricomModule
+  SafaricomReconciliationModule-->RedisModule
+  SafaricomReconciliationModule-->TransactionsModule
+  SafaricomReconciliationModule-->QueuesRegistryModule
+  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
+  ExcelReconcilicationModule-->ActionsModule
+  ExcelReconcilicationModule-->TransactionsModule
+  ExcelReconcilicationModule-->ExcelModule
+  ExcelReconcilicationModule-->RegistrationsModule
+  IntersolveVisaReconciliationModule-->IntersolveVisaModule
+  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
+  IntersolveVoucherReconciliationModule-->ProgramModule
+  IntersolveVoucherReconciliationModule-->ProgramFinancialServiceProviderConfigurationsModule
 ```

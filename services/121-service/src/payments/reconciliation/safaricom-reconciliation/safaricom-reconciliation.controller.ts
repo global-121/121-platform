@@ -10,14 +10,17 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
-import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback.dto';
-import { SafaricomTransferCallbackDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback.dto';
-import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-timeout-callback.dto';
+import { SafaricomTransferCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback.dto';
+import { SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
 
 @ApiTags('financial-service-providers/safaricom')
 @Controller('financial-service-providers/safaricom')
-export class SafaricomController {
-  public constructor(private safaricomService: SafaricomService) {}
+@Controller()
+export class SafaricomReconciliationController {
+  public constructor(
+    private safaricomReconciliationService: SafaricomReconciliationService,
+  ) {}
 
   @SkipThrottle()
   @ApiOperation({
@@ -32,7 +35,7 @@ export class SafaricomController {
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
   ): Promise<void> {
-    await this.safaricomService.processTransferCallback(
+    await this.safaricomReconciliationService.processTransferCallback(
       safaricomTransferCallback,
     );
   }
@@ -75,7 +78,7 @@ export class SafaricomController {
       });
     }
 
-    await this.safaricomService.processTimeoutCallback(
+    await this.safaricomReconciliationService.processTimeoutCallback(
       safaricomTimeoutCallback,
     );
   }
