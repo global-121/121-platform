@@ -11,7 +11,7 @@ interface ExchangeRateApiResponse {
 }
 
 @Injectable()
-export class ExchangeRateApiService {
+export class ExchangeRatesApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async retrieveExchangeRate(

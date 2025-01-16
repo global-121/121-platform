@@ -2,8 +2,8 @@
 
 ```mermaid
 graph LR
-  CronjobModule-->ExchangeRateModule
-  ExchangeRateModule-->UserModule
+  CronjobModule-->ExchangeRatesModule
+  ExchangeRatesModule-->UserModule
   UserModule-->EmailsModule
   MessageTemplateModule-->UserModule
   MessageTemplateModule-->ProgramAttributesModule

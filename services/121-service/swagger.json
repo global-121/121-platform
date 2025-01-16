@@ -11,6 +11,11 @@
   },
   {
     "method": "get",
+    "path": "/api/exchange-rates",
+    "params": []
+  },
+  {
+    "method": "get",
     "path": "/api/roles",
     "params": []
   },
