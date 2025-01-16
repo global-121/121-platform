@@ -63,6 +63,19 @@ test('Content-Security-Policy set for loading as iframe in Twilio Flex', () => {
   }
 });
 
+test('Configuration set to control pop-ups for SSO when the Portal is in an iframe on Twilio Flex', () => {
+  const openerPolicy = response.headers.get('Cross-Origin-Opener-Policy');
+
+  if (
+    process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
+    process.env.USE_SSO_AZURE_ENTRA === 'true'
+  ) {
+    match(openerPolicy, /same-origin-allow-popups/);
+  } else {
+    match(openerPolicy, /same-origin/);
+  }
+});
+
 test('Content-Security-Policy set to load PowerBI dashboard(s) in iframe', () => {
   const frameSrcCondition = /frame-src[^;]* https:\/\/app\.powerbi\.com/;
 
