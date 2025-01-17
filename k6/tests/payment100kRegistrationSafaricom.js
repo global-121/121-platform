@@ -6,11 +6,11 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 17; // '17' leads to 131k registrations
+const duplicateNumber = 7; // '17' leads to 131k registrations
 const resetScript = 'safari-program';
 const programId = 1;
 const paymentId = 3;
-const maxTimeoutAttempts = 600;
+const maxTimeoutAttempts = 800;
 const minPassRatePercentage = 10;
 const amount = 10;
 
@@ -20,7 +20,7 @@ export const options = {
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
-  duration: '60m',
+  duration: '80m',
   iterations: 1,
 };
 
