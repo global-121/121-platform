@@ -100,8 +100,7 @@ if (
     '✅ Allow control of pop-ups for SSO when the Portal is in an iframe on Twilio Flex',
   );
 
-  swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] =
-    'same-origin-allow-popups';
+  swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] = 'unsafe-none';
 }
 
 // Feature: PowerBI Dashboard(s)
