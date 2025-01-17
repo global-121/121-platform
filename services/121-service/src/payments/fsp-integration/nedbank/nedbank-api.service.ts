@@ -221,10 +221,10 @@ export class NedbankApiService {
     if (this.httpsAgent) {
       return this.httpsAgent;
     }
-    if (
-      !process.env.NEDBANK_CERTIFICATE_PATH ||
-      !process.env.NEDBANK_CERTIFICATE_PASSWORD
-    ) {
+    // There is not check on NEDBANK_CERTIFICATE_PASSWORD because it is not required
+    // Locally we use .pfx file which is password protected
+    // On azure we use pf12 file which is not password protected
+    if (!process.env.NEDBANK_CERTIFICATE_PATH) {
       return;
     }
     return this.httpService.createHttpsAgentWithCertificate(
