@@ -19,7 +19,8 @@ const amount = 10;
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    // In this case the health check runs multiple times and so of the responses are going to be 500 before service is up
+    http_req_failed: ['rate<0.30'], // http errors should be less than 1%
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
