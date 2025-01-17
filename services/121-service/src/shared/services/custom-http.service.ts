@@ -160,10 +160,12 @@ export class CustomHttpService {
         .request<T>(params) //
         .pipe(
           map((response) => {
+            console.log('🚀 ~ CustomHttpService ~ map ~ response:', response);
             this.logMessageRequest({ headers, url, payload }, response);
             return response;
           }),
           catchError((err) => {
+            console.log('🚀 ~ CustomHttpService ~ catchError ~ err:', err);
             const errorResponse = err.response || this.setNoResponseError(err);
             this.logErrorRequest({ headers, url, payload }, errorResponse);
             return of(errorResponse);
