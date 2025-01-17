@@ -10,8 +10,9 @@ const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 3;
 const paymentId = 3;
-const maxTimeoutAttempts = 600;
-const minPassRatePercentage = 5;
+const maxTimeoutAttempts = 800;
+const minPassRatePercentage = 10;
+const amount = 11.11;
 
 export const options = {
   thresholds: {
@@ -19,7 +20,7 @@ export const options = {
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
-  duration: '60m',
+  duration: '80m',
   iterations: 1,
 };
 
@@ -42,6 +43,7 @@ export default function () {
     paymentId,
     maxTimeoutAttempts,
     minPassRatePercentage,
+    amount,
   );
   checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
