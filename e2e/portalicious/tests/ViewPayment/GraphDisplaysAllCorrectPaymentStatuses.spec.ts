@@ -59,6 +59,8 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
+  await page.waitForTimeout(5000);
+
   await test.step('Validate payemnt in progress in Payment overview', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.waitForPaymentToComplete();
