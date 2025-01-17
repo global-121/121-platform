@@ -139,9 +139,11 @@ export class NedbankApiService {
         httpsAgent: this.httpsAgent,
       });
     } catch (error) {
+      console.log('🚀 ~ NedbankApiService ~ error:', error);
       console.error(`Failed to make Nedbank ${method} call`, error);
       throw new NedbankError(`Error: ${error.message}`);
     }
+    console.log('🚀 ~ NedbankApiService ~ response.data):', response);
     console.log('🚀 ~ NedbankApiService ~ response.data):', response.data);
     console.log('🚀 ~ NedbankApiService ~ response.status):', response.status);
     if (this.isNedbankErrorResponse(response.data)) {
