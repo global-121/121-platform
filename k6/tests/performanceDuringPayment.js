@@ -13,12 +13,12 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
-const duplicateNumber = 15;
+const duplicateNumber = 5;
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 600;
 const minPassRatePercentage = 50;
-const amount = 10;
+const amount = 11.11;
 
 export const options = {
   thresholds: {
@@ -77,6 +77,7 @@ export default function () {
     paymentId,
     duplicateNumber,
     minPassRatePercentage,
+    amount,
   );
   checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
@@ -90,7 +91,7 @@ export default function () {
 
   // get export list
   const exportList = metricsPage.getExportList(3);
-  check(exportList, {
+  checkAndFail(exportList, {
     'Export list loaded succesfully status was 200': (r) => r.status == 200,
   });
 
