@@ -13,7 +13,7 @@ export class ExchangeRatesMockController {
 
   @ApiOperation({ summary: 'Exchange rates' })
   @Get()
-  public async getCurrencies(): Promise<ExchangeRateApiResponse[]> {
+  public async getCurrencies(): Promise<ExchangeRateApiResponse> {
     return this.exchangeRatesMockService.getCurrencies();
   }
 }
