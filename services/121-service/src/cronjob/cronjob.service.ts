@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
@@ -14,8 +13,6 @@ function shouldBeEnabled(envVariable: string | undefined): boolean {
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
-
-  constructor(private exchangeRatesService: ExchangeRatesService) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !shouldBeEnabled(
@@ -88,10 +85,9 @@ export class CronjobService {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
   public async getDailyExchangeRates(): Promise<void> {
-    console.info('CronjobService - Started: getDailyExchangeRates');
-
-    await this.exchangeRatesService.getAndStoreProgramsExchangeRates();
-
-    console.info('CronjobService - Complete: getDailyExchangeRates');
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
+    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    await this.httpService.put(url, {}, headers);
   }
 }

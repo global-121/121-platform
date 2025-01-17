@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { ExchangeRatesMockModule } from '@mock-service/src/exchange-rates/exchange-rates-mock.module';
 import { IntersolveVisaMockModule } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.module';
 import { SafaricomMockModule } from '@mock-service/src/fsp-integration/safaricom/safaricom.mock.module';
 import { InstanceModule } from '@mock-service/src/instance.module';
@@ -13,6 +14,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     SafaricomMockModule,
     ResetModule,
     IntersolveVisaMockModule,
+    ExchangeRatesMockModule,
   ],
   controllers: [],
   providers: [],

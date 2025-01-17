@@ -23,7 +23,9 @@ export class ExchangeRatesApiService {
     const yesterday = now.toISOString().split('T')[0];
 
     try {
-      const exchangeRateUrl = `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
+      const exchangeRateUrl = !process.env.MOCK_DAILY_EXCHANGE_RATES
+        ? `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`
+        : `${process.env.MOCK_SERVICE_URL}api/exchange-rates`;
       const response: ExchangeRateApiResponse =
         await this.httpService.get(exchangeRateUrl);
 
