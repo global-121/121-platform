@@ -169,7 +169,7 @@ export class NedbankApiService {
         value: Math.floor(Math.random() * 10000).toString(), // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
       },
       { name: 'x-fapi-financial-id', value: 'OB/2017/001' }, // Should always be this value https://apim.nedbank.co.za/static/docs/cashout-create-order
-      { name: 'x-fapi-customer-ip-address', value: '' },
+      { name: 'x-fapi-customer-ip-address', value: '0.0.0.0' }, // Should be a valid ip address, it does not seem to matter which one. For now we use a 0.0.0.0 to save us the trouble of setting an env for every server
       { name: 'x-fapi-interaction-id', value: uuid() }, // Should be a UUID https://apim.nedbank.co.za/static/docs/cashout-create-order
       { name: 'Content-Type', value: 'application/json' },
     ];
