@@ -142,6 +142,8 @@ export class NedbankApiService {
       console.error(`Failed to make Nedbank ${method} call`, error);
       throw new NedbankError(`Error: ${error.message}`);
     }
+    console.log('🚀 ~ NedbankApiService ~ response.data):', response.data);
+    console.log('🚀 ~ NedbankApiService ~ response.status):', response.status);
     if (this.isNedbankErrorResponse(response.data)) {
       const errorMessage = this.formatError(response.data);
       throw new NedbankError(errorMessage);
@@ -165,7 +167,7 @@ export class NedbankApiService {
         value: Math.floor(Math.random() * 10000).toString(), // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
       },
       { name: 'x-fapi-financial-id', value: 'OB/2017/001' }, // Should always be this value https://apim.nedbank.co.za/static/docs/cashout-create-order
-      { name: 'x-fapi-customer-ip-address', value: process.env.PUBLIC_IP! },
+      { name: 'x-fapi-customer-ip-address', value: '' },
       { name: 'x-fapi-interaction-id', value: uuid() }, // Should be a UUID https://apim.nedbank.co.za/static/docs/cashout-create-order
       { name: 'Content-Type', value: 'application/json' },
     ];
