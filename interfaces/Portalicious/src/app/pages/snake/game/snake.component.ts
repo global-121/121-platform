@@ -5,7 +5,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  model,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -51,11 +50,11 @@ export class SnakeComponent implements AfterViewInit {
     }
   }
 
-  @ViewChild('board', { static: false }) board: ElementRef<HTMLDivElement>;
+  @ViewChild('board') board: ElementRef<HTMLDivElement>;
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   public isGameStarted = signal(false);
-  public isGameOver = model(false);
+  public isGameOver = signal(false);
   public score = signal(0);
 
   private lastRenderTime = 0;
