@@ -1378,6 +1378,24 @@
       <trans-unit id="page-title-project-registration-details" datatype="html">
         <source>Registration details</source>
       </trans-unit>
+      <trans-unit id="1579692722565712588" datatype="html">
+        <source>Okay</source>
+      </trans-unit>
+      <trans-unit id="2077783620698115246" datatype="html">
+        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+      </trans-unit>
+      <trans-unit id="2438590582556677910" datatype="html">
+        <source>Start!</source>
+      </trans-unit>
+      <trans-unit id="2981043932069425956" datatype="html">
+        <source>Let&apos;s start!</source>
+      </trans-unit>
+      <trans-unit id="5595826100350402634" datatype="html">
+        <source>Use the arrow keys or W A S D to play the game</source>
+      </trans-unit>
+      <trans-unit id="7924647147478852112" datatype="html">
+        <source>Game over!</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
