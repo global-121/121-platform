@@ -146,6 +146,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly contextMenu = viewChild<Menu>('contextMenu');
   readonly extraOptionsMenu = viewChild<Menu>('extraOptionsMenu');
 
+  selectedColumnsStateKey = computed(() => {
+    const key = this.localStorageKey();
+    return key ? `${key}-selected-columns` : 'selected-columns';
+  });
+
   /**
    * DISPLAY
    */
@@ -484,10 +489,31 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    */
   visibleColumns = model<QueryTableColumn<TData>[]>([]);
 
-  resetColumnVisibility() {
-    this.visibleColumns.set(
-      this.columns().filter((column) => !column.defaultHidden),
+  resetColumnVisibility(removeFromLocalStorage = false) {
+    if (removeFromLocalStorage) {
+      localStorage.removeItem(this.selectedColumnsStateKey());
+    }
+
+    const storedSelectedColumns = localStorage.getItem(
+      this.selectedColumnsStateKey(),
     );
+    if (storedSelectedColumns) {
+      const interpretedColumns = JSON.parse(
+        storedSelectedColumns,
+      ) as QueryTableColumn<TData>[];
+      console.log(
+        '🚀 ~ QueryTableComponent<TData ~ resetColumnVisibility ~ interpretedColumns:',
+        interpretedColumns,
+      );
+      const matchedColumns = interpretedColumns
+        .map((column) => this.columns().find((c) => c.field === column.field))
+        .filter(Boolean) as QueryTableColumn<TData>[];
+      this.visibleColumns.set(matchedColumns);
+    } else {
+      this.visibleColumns.set(
+        this.columns().filter((column) => !column.defaultHidden),
+      );
+    }
   }
 
   columnVisibilityEffect = effect(() => {
