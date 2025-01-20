@@ -1835,6 +1835,34 @@
         <source>Registration details</source>
         <target>Registratie details</target>
       </trans-unit>
+      <trans-unit id="7924647147478852112" datatype="html">
+        <source>Game over!</source>
+        <target state="new">Game over!</target>
+      </trans-unit>
+      <trans-unit id="2077783620698115246" datatype="html">
+        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+        <target state="new">Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="1579692722565712588" datatype="html">
+        <source>Okay</source>
+        <target state="new">Okay</target>
+      </trans-unit>
+      <trans-unit id="2981043932069425956" datatype="html">
+        <source>Let&apos;s start!</source>
+        <target state="new">Let&apos;s start!</target>
+      </trans-unit>
+      <trans-unit id="5595826100350402634" datatype="html">
+        <source>Use the arrow keys or W A S D to play the game</source>
+        <target state="new">Use the arrow keys or W A S D to play the game</target>
+      </trans-unit>
+      <trans-unit id="2438590582556677910" datatype="html">
+        <source>Start!</source>
+        <target state="new">Start!</target>
+      </trans-unit>
+      <trans-unit id="8220517666190714329" datatype="html">
+        <source>Did you know?</source>
+        <target state="new">Did you know?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
