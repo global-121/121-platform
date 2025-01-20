@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [Demo] Interface: Portalicious'
+name: 'Deploy [demo] Interface: Portalicious'
 
 env:
   workingDirectory: interfaces/Portalicious
