@@ -148,7 +148,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   selectedColumnsStateKey = computed(() => {
     const key = this.localStorageKey();
-    return key ? `${key}-selected-columns` : 'selected-columns';
+    return key ? `${key}-selected-columns` : undefined;
   });
 
   /**
@@ -501,13 +501,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       const interpretedColumns = JSON.parse(
         storedSelectedColumns,
       ) as QueryTableColumn<TData>[];
-      console.log(
-        '🚀 ~ QueryTableComponent<TData ~ resetColumnVisibility ~ interpretedColumns:',
-        interpretedColumns,
-      );
       const matchedColumns = interpretedColumns
-        .map((column) => this.columns().find((c) => c.field === column.field))
-        .filter(Boolean) as QueryTableColumn<TData>[];
+        .filter((column) => !!this.columns().find((c) => c.field === column.field))  as QueryTableColumn<TData>[];
       this.visibleColumns.set(matchedColumns);
     } else {
       this.visibleColumns.set(
