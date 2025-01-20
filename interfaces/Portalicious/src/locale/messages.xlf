@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -153,7 +153,7 @@
         <source>Registration not found. Please check the URL and try again.</source>
       </trans-unit>
       <trans-unit id="table-clear-filters" datatype="html">
-        <source>Clear all filters</source>
+        <source>Clear filters</source>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
@@ -824,16 +824,16 @@
         <source>Export</source>
       </trans-unit>
       <trans-unit id="export-changes" datatype="html">
-        <source>Export status &amp; data changes</source>
+        <source>Status &amp; data changes</source>
       </trans-unit>
       <trans-unit id="export-duplicate" datatype="html">
-        <source>Export duplicate registrations</source>
+        <source>Duplicate registrations</source>
       </trans-unit>
       <trans-unit id="export-selected" datatype="html">
-        <source>Export selected registrations</source>
+        <source>Selected registrations</source>
       </trans-unit>
       <trans-unit id="export-verification" datatype="html">
-        <source>Export account number verification</source>
+        <source>Account number verification</source>
       </trans-unit>
       <trans-unit id="3604386807230411192" datatype="html">
         <source>Start Date</source>
@@ -866,13 +866,13 @@
         <source>This will download an Excel file with all unused voucher(s).</source>
       </trans-unit>
       <trans-unit id="export-payments-debit-card-usage" datatype="html">
-        <source>Export debit card usage</source>
+        <source>Debit card usage</source>
       </trans-unit>
       <trans-unit id="export-payments-last" datatype="html">
         <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
-        <source>Export unused vouchers</source>
+        <source>Unused vouchers</source>
       </trans-unit>
       <trans-unit id="1692337501325731003" datatype="html">
         <source>There is currently no data to export</source>
@@ -1411,9 +1411,6 @@
       <trans-unit id="1369610904910546430" datatype="html">
         <source>Who we share information with</source>
       </trans-unit>
-      <trans-unit id="171496627094206309" datatype="html">
-        <source>Logged in as: <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
-      </trans-unit>
       <trans-unit id="1867309401161150879" datatype="html">
         <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
       </trans-unit>
@@ -1479,6 +1476,27 @@
       </trans-unit>
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
+      </trans-unit>
+      <trans-unit id="3797627476744587316" datatype="html">
+        <source>Logged in as:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="2569607511969570423" datatype="html">
+        <source>Export selected registrations</source>
+      </trans-unit>
+      <trans-unit id="4667279955724574149" datatype="html">
+        <source>Export status &amp; data changes</source>
+      </trans-unit>
+      <trans-unit id="6371019092558402602" datatype="html">
+        <source>Export duplicate registrations</source>
+      </trans-unit>
+      <trans-unit id="8735075176632769564" datatype="html">
+        <source>Export account number verification</source>
+      </trans-unit>
+      <trans-unit id="2932497983463949366" datatype="html">
+        <source>Export unused vouchers</source>
+      </trans-unit>
+      <trans-unit id="7197861278093051814" datatype="html">
+        <source>Export debit card usage</source>
       </trans-unit>
     </body>
   </file>

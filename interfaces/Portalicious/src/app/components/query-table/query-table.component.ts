@@ -1,4 +1,9 @@
-import { DatePipe, NgComponentOutlet, NgTemplateOutlet } from '@angular/common';
+import {
+  DatePipe,
+  NgClass,
+  NgComponentOutlet,
+  NgTemplateOutlet,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -112,6 +117,7 @@ export type QueryTableSelectionEvent<TData> = { selectAll: true } | TData[];
     QueryTableGlobalSearchComponent,
     QueryTableColumnManagementComponent,
     NgTemplateOutlet,
+    NgClass,
   ],
   providers: [ToastService],
   templateUrl: './query-table.component.html',
@@ -299,6 +305,19 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return undefined;
     }
     return column.fieldForFilter ?? column.field;
+  }
+
+  getIsColumnFiltered(column: QueryTableColumn<TData>): boolean {
+    const field = this.getColumnFilterField(column);
+    if (!field) {
+      return false;
+    }
+    const tableFilter = this.tableFilters()[field];
+    const tableFilterMetadata = Array.isArray(tableFilter)
+      ? tableFilter[0]
+      : tableFilter;
+
+    return !!tableFilterMetadata?.value;
   }
 
   getColumnMatchMode(column: QueryTableColumn<TData>) {

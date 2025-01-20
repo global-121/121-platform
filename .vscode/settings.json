@@ -6,6 +6,15 @@
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
   },
+  "tailwindCSS.rootFontSize": 14,
+  "tailwindCSS.showPixelEquivalents": true,
+  "tailwindCSS.classAttributes": [
+    "class",
+    "styleClass",
+    "icon",
+    "ngClass",
+    "class:list"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   // The following setting is necessary to avoid false negatives in the VSCode Angular Language

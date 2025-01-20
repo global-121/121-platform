@@ -53,6 +53,7 @@ export class ProjectPaymentChartComponent {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
+    borderRadius: 4,
     layout: {
       padding: {
         right: 50,

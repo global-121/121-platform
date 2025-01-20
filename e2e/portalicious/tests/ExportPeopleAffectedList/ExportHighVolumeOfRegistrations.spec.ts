@@ -51,9 +51,7 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
 
   await test.step('Export list and validate XLSX file downloaded', async () => {
     await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption(
-      'Export selected registrations',
-    );
+    await registrations.clickAndSelectExportOption('Selected registrations');
     await registrations.exportAndAssertSelectedRegistrations(
       0,
       {

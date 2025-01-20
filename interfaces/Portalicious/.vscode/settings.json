@@ -8,7 +8,7 @@
   "eslint.format.enable": true,
   "css.customData": [".vscode/tailwind.json"],
   "tailwindCSS.rootFontSize": 14,
-  "tailwindCSS.showPixelEquivalents": false,
+  "tailwindCSS.showPixelEquivalents": true,
   "tailwindCSS.classAttributes": [
     "class",
     "styleClass",

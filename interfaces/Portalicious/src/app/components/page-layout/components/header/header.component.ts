@@ -55,7 +55,7 @@ export class HeaderComponent {
   userMenuOptions = computed<MenuItem[]>(() => [
     {
       label: $localize`:Menu-item:Change password`,
-      icon: 'pi pi-cog',
+      icon: 'pi pi-key',
       routerLink: `/${AppRoutes.changePassword}`,
       visible: !!this.authService.ChangePasswordComponent,
     },

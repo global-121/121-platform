@@ -20,7 +20,11 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { registrationLink } from '~/domains/registration/registration.helper';
+import {
+  REGISTRATION_STATUS_ICON,
+  REGISTRATION_STATUS_VERB,
+  registrationLink,
+} from '~/domains/registration/registration.helper';
 import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { ExportRegistrationsComponent } from '~/pages/project-registrations/components/export-registrations/export-registrations.component';
 import { ImportRegistrationsComponent } from '~/pages/project-registrations/components/import-registrations/import-registrations.component';
@@ -64,6 +68,8 @@ export class ProjectRegistrationsPageComponent {
     viewChild.required<ChangeStatusDialogComponent>('changeStatusDialog');
 
   RegistrationStatusEnum = RegistrationStatusEnum;
+  REGISTRATION_STATUS_ICON = REGISTRATION_STATUS_ICON;
+  REGISTRATION_STATUS_VERB = REGISTRATION_STATUS_VERB;
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
@@ -164,6 +170,27 @@ export class ProjectRegistrationsPageComponent {
     }),
   );
 
+  private createContextMenuItemForRegistrationStatus(
+    status:
+      | RegistrationStatusEnum.declined
+      | RegistrationStatusEnum.deleted
+      | RegistrationStatusEnum.included
+      | RegistrationStatusEnum.paused
+      | RegistrationStatusEnum.validated,
+  ) {
+    return {
+      label: REGISTRATION_STATUS_VERB[status],
+      icon: REGISTRATION_STATUS_ICON[status],
+      visible: this.canChangeStatus()(status),
+      command: () => {
+        this.changeStatus({
+          status,
+          triggeredFromContextMenu: true,
+        });
+      },
+    };
+  }
+
   contextMenuItems = computed<MenuItem[]>(() => {
     return [
       {
@@ -188,50 +215,6 @@ export class ProjectRegistrationsPageComponent {
         },
       },
       {
-        label: $localize`Validate`,
-        icon: 'pi pi-check-circle',
-        visible: this.canChangeStatus()(RegistrationStatusEnum.validated),
-        command: () => {
-          this.changeStatus({
-            status: RegistrationStatusEnum.validated,
-            triggeredFromContextMenu: true,
-          });
-        },
-      },
-      {
-        label: $localize`Include`,
-        icon: 'pi pi-check',
-        visible: this.canChangeStatus()(RegistrationStatusEnum.included),
-        command: () => {
-          this.changeStatus({
-            status: RegistrationStatusEnum.included,
-            triggeredFromContextMenu: true,
-          });
-        },
-      },
-      {
-        label: $localize`Decline`,
-        icon: 'pi pi-times',
-        visible: this.canChangeStatus()(RegistrationStatusEnum.declined),
-        command: () => {
-          this.changeStatus({
-            status: RegistrationStatusEnum.declined,
-            triggeredFromContextMenu: true,
-          });
-        },
-      },
-      {
-        label: $localize`Pause`,
-        icon: 'pi pi-pause',
-        visible: this.canChangeStatus()(RegistrationStatusEnum.paused),
-        command: () => {
-          this.changeStatus({
-            status: RegistrationStatusEnum.paused,
-            triggeredFromContextMenu: true,
-          });
-        },
-      },
-      {
         label: $localize`Message`,
         icon: 'pi pi-envelope',
         visible: this.canSendMessage(),
@@ -242,16 +225,23 @@ export class ProjectRegistrationsPageComponent {
         },
       },
       {
-        label: $localize`Delete`,
-        icon: 'pi pi-trash',
-        visible: this.canChangeStatus()(RegistrationStatusEnum.deleted),
-        command: () => {
-          this.changeStatus({
-            status: RegistrationStatusEnum.deleted,
-            triggeredFromContextMenu: true,
-          });
-        },
+        separator: true,
       },
+      this.createContextMenuItemForRegistrationStatus(
+        RegistrationStatusEnum.validated,
+      ),
+      this.createContextMenuItemForRegistrationStatus(
+        RegistrationStatusEnum.included,
+      ),
+      this.createContextMenuItemForRegistrationStatus(
+        RegistrationStatusEnum.declined,
+      ),
+      this.createContextMenuItemForRegistrationStatus(
+        RegistrationStatusEnum.paused,
+      ),
+      this.createContextMenuItemForRegistrationStatus(
+        RegistrationStatusEnum.deleted,
+      ),
     ];
   });
 }

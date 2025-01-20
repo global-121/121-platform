@@ -85,12 +85,27 @@ body {
       @apply txt-system-bold-m;
     }
 
-    &.p-button-sm {
-      @apply txt-system-s;
+    &.p-button-sm .p-button-label {
+      @apply txt-system-bold-s;
     }
 
     &.p-button-link {
       @apply p-0;
+    }
+
+    &.p-button-outlined {
+      &:not(:hover):not(:focus):not(:focus-within) {
+        @apply bg-white;
+      }
+    }
+  }
+
+  .p-buttongroup {
+    p-button:not(:first-child) .p-button-rounded {
+      @apply pl-4;
+    }
+    p-button:not(:last-child) .p-button-rounded {
+      @apply pr-4;
     }
   }
 
@@ -107,7 +122,7 @@ body {
 
     .p-drawer-header {
       @apply pl-3;
-      height: $toolbar-height - 2;
+      height: calc($toolbar-height - 2px);
 
       .p-drawer-icon {
         margin-inline-start: 0;
@@ -134,23 +149,21 @@ body {
   }
 
   .p-datatable {
-    // Apply these styles ONLY when the table is INSIDE a Card
-    .p-card & {
-      .p-datatable-header {
-        @apply px-0 pb-4 pt-0;
-      }
+    .p-datatable-header {
+      @apply px-0 pb-4 pt-0;
+    }
 
-      .p-paginator {
-        @apply border-b-0 pb-0 pt-4;
+    .p-paginator {
+      @apply border-b-0 pb-0 pt-4;
 
-        .p-paginator-current {
-          @apply me-auto ms-0 ps-0 txt-system-s;
-        }
+      .p-paginator-current {
+        @apply me-auto ms-0 ps-0 txt-system-s;
       }
     }
 
     .p-datatable-thead > tr > th {
       @apply bg-grey-50 text-black;
+      padding: 0.625rem 1rem;
     }
 
     .p-datatable-sortable-column {
@@ -160,7 +173,7 @@ body {
 
         &:hover,
         &:focus-within {
-          @apply bg-purple-100 text-purple-700;
+          @apply bg-purple-100 text-purple-900;
         }
       }
 
@@ -176,7 +189,7 @@ body {
     // .p-datatable-column-filter-button.p-column-filter-menu-button-active,
     // .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
     // .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
-    //   @apply bg-purple-100 text-purple-700;
+    //   @apply bg-purple-100 text-purple-900;
     // }
   }
 
@@ -204,11 +217,15 @@ body {
     .p-password-input {
       @apply font-mono; // Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.)
     }
+
+    .p-password-toggle-mask-icon .p-icon {
+      @apply text-black;
+    }
   }
 
   .p-multiselect {
     // Prevent contents being cut off, always wrap and align checkboxes to the top
-    .p-multiselect-item {
+    .p-multiselect-option {
       @apply items-start text-wrap;
     }
   }
@@ -226,10 +243,8 @@ body {
 
   .p-contextmenu,
   .p-menu {
-    @apply w-auto;
-
-    .p-menuitem-text {
-      @apply whitespace-nowrap;
+    .p-menu-item-label {
+      @apply txt-body-m;
     }
   }
 

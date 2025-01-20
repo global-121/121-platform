@@ -30,9 +30,12 @@
         <p-buttonGroup>
           @if (canChangeStatus()(RegistrationStatusEnum.validated)) {
             <p-button
-              label="Validate"
-              i18n-label
-              icon="pi pi-check-circle"
+              [label]="
+                REGISTRATION_STATUS_VERB[RegistrationStatusEnum.validated]
+              "
+              [icon]="
+                REGISTRATION_STATUS_ICON[RegistrationStatusEnum.validated]
+              "
               rounded
               outlined
               (click)="
@@ -42,9 +45,10 @@
           }
           @if (canChangeStatus()(RegistrationStatusEnum.included)) {
             <p-button
-              label="Include"
-              i18n-label
-              icon="pi pi-check"
+              [label]="
+                REGISTRATION_STATUS_VERB[RegistrationStatusEnum.included]
+              "
+              [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.included]"
               rounded
               outlined
               (click)="
@@ -54,9 +58,10 @@
           }
           @if (canChangeStatus()(RegistrationStatusEnum.declined)) {
             <p-button
-              label="Decline"
-              i18n-label
-              icon="pi pi-times"
+              [label]="
+                REGISTRATION_STATUS_VERB[RegistrationStatusEnum.declined]
+              "
+              [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.declined]"
               rounded
               outlined
               (click)="
@@ -66,9 +71,8 @@
           }
           @if (canChangeStatus()(RegistrationStatusEnum.paused)) {
             <p-button
-              label="Pause"
-              i18n-label
-              icon="pi pi-pause"
+              [label]="REGISTRATION_STATUS_VERB[RegistrationStatusEnum.paused]"
+              [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.paused]"
               rounded
               outlined
               (click)="changeStatus({ status: RegistrationStatusEnum.paused })"
@@ -86,9 +90,8 @@
           }
           @if (canChangeStatus()(RegistrationStatusEnum.deleted)) {
             <p-button
-              label="Delete"
-              i18n-label
-              icon="pi pi-trash"
+              [label]="REGISTRATION_STATUS_VERB[RegistrationStatusEnum.deleted]"
+              [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.deleted]"
               rounded
               outlined
               (click)="changeStatus({ status: RegistrationStatusEnum.deleted })"

@@ -50,9 +50,7 @@ test('[29318] Export duplicate people affected list', async ({ page }) => {
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
     await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption(
-      'Export duplicate registrations',
-    );
+    await registrations.clickAndSelectExportOption('Duplicate registrations');
     await registrations.exportAndAssertDuplicates(0, {
       id,
       status,

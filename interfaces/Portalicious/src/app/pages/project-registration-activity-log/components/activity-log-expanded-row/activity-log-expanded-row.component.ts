@@ -191,13 +191,30 @@ export class ActivityLogExpandedRowComponent
     }
   });
 
+  private getMessageBody(messageBody?: string, mediaUrl?: string): string {
+    const message = messageBody ?? '';
+
+    if (!mediaUrl) {
+      return message;
+    }
+
+    if (!message) {
+      return `(image)`;
+    }
+
+    return `(image)\n\n${message}`;
+  }
+
   message = computed<string | undefined>(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.Note:
         return item.attributes.text;
       case ActivityTypeEnum.Message:
-        return item.attributes.body;
+        return this.getMessageBody(
+          item.attributes.body,
+          item.attributes.mediaUrl,
+        );
       default:
         return undefined;
     }
