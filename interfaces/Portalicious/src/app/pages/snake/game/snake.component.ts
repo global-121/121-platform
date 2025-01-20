@@ -56,6 +56,7 @@ export class SnakeComponent implements AfterViewInit {
   public isGameStarted = signal(false);
   public isGameOver = signal(false);
   public score = signal(0);
+  public random121Fact: string;
 
   private lastRenderTime = 0;
   private inputDirection: Vector;
@@ -106,6 +107,24 @@ export class SnakeComponent implements AfterViewInit {
     this.drawSnake();
     this.drawFood();
     this.changeDetectorRef.detectChanges();
+    this.showRandom121Fact();
+  }
+
+  private showRandom121Fact() {
+    const random121Facts = [
+      'The number 121 is the sum of the first 11 prime numberss',
+      '121 is the 11th number in the Fibonacci sequence',
+      '121 is the 15th number in the Pell sequence',
+      '121 is a centered octagonal number',
+      '121 is easy',
+      '121 is safe',
+      '121 is fast',
+      'Did you know that you can share your registration table filter by copying the URL?',
+      'Have you ever typed "Hentry Dunant" in the search bar?',
+      'By recording all data entries and changes, 121 enhances accountability and security, making auditing easier through a privacy-by-design system.',
+    ];
+    this.random121Fact =
+      random121Facts[Math.floor(Math.random() * random121Facts.length)];
   }
 
   private checkGameOver() {
@@ -125,6 +144,7 @@ export class SnakeComponent implements AfterViewInit {
     if (this.isSnakeIntersecting({ position: this.foodPosition })) {
       this.expandSnake();
       this.foodPosition = this.getRandomPositionOnGrid();
+      this.showRandom121Fact();
     }
   }
 
