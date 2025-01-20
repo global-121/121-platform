@@ -70,7 +70,7 @@ test('Configuration set to control pop-ups for SSO when the Portal is in an ifra
     process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
     process.env.USE_SSO_AZURE_ENTRA === 'true'
   ) {
-    match(openerPolicy, /unsafe-none/);
+    match(openerPolicy, /same-origin-allow-popups/);
   } else {
     match(openerPolicy, /same-origin/);
   }
