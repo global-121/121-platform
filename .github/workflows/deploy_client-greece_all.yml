@@ -4,6 +4,7 @@ name: 'Deploy [Greece] All'
 
 permissions:
   actions: read
+  deployments: write
 
 on:
   workflow_call:
