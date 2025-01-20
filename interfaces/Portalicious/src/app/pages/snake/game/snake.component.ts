@@ -120,7 +120,7 @@ export class SnakeComponent implements AfterViewInit {
       '121 is safe',
       '121 is fast',
       'Did you know that you can share your registration table filter by copying the URL?',
-      'Have you ever typed "Hentry Dunant" in the search bar?',
+      'Have you ever typed "Henry Dunant" in the search bar?',
       'By recording all data entries and changes, 121 enhances accountability and security, making auditing easier through a privacy-by-design system.',
     ];
     this.random121Fact =
