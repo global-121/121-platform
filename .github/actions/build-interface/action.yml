@@ -90,6 +90,12 @@ runs:
         mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
         cat ./staticwebapp.config.json
 
+    - name: Add environment-specific icon in well-known location
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        cp ${{ inputs.envIconPath }} www/favicon.ico
+
     - name: Add VERSION to deployment
       id: version
       shell: bash

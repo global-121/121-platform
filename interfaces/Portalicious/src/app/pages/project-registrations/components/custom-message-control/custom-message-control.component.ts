@@ -86,7 +86,7 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
     return [
       {
-        label: $localize`:@@loading:Loading...`,
+        label: $localize`:@@generic-loading:Loading...`,
       },
     ];
   });
