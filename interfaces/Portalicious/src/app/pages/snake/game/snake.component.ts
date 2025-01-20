@@ -123,8 +123,9 @@ export class SnakeComponent implements AfterViewInit {
       'Have you ever typed "Henry Dunant" in the search bar?',
       'By recording all data entries and changes, 121 enhances accountability and security, making auditing easier through a privacy-by-design system.',
     ];
-    this.random121Fact =
-      random121Facts[Math.floor(Math.random() * random121Facts.length)];
+    this.random121Fact.set(
+      random121Facts[Math.floor(Math.random() * random121Facts.length)],
+    );
   }
 
   private checkGameOver() {
