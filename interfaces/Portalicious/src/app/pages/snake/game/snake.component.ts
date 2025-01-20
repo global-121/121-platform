@@ -56,7 +56,7 @@ export class SnakeComponent implements AfterViewInit {
   public isGameStarted = signal(false);
   public isGameOver = signal(false);
   public score = signal(0);
-  public random121Fact: string;
+  public random121Fact = signal('');
 
   private lastRenderTime = 0;
   private inputDirection: Vector;
