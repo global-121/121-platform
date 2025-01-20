@@ -1396,6 +1396,9 @@
       <trans-unit id="7924647147478852112" datatype="html">
         <source>Game over!</source>
       </trans-unit>
+      <trans-unit id="8220517666190714329" datatype="html">
+        <source>Did you know?</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

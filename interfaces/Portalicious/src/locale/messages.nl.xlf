@@ -1859,6 +1859,10 @@
         <source>Start!</source>
         <target state="new">Start!</target>
       </trans-unit>
+      <trans-unit id="8220517666190714329" datatype="html">
+        <source>Did you know?</source>
+        <target state="new">Did you know?</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
