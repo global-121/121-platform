@@ -489,26 +489,44 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    */
   visibleColumns = model<QueryTableColumn<TData>[]>([]);
 
-  resetColumnVisibility(removeFromLocalStorage = false) {
-    if (removeFromLocalStorage) {
-      localStorage.removeItem(this.selectedColumnsStateKey());
+  private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
+    const storedColumns = localStorage.getItem(stateKey);
+    if (!storedColumns) return null;
+
+    return JSON.parse(storedColumns) as QueryTableColumn<TData>[];
+  }
+
+  private getMatchingColumns(
+    storedColumns: QueryTableColumn<TData>[],
+  ): QueryTableColumn<TData>[] {
+    return storedColumns
+      .map((column) => this.columns().find((c) => c.field === column.field))
+      .filter(Boolean) as QueryTableColumn<TData>[];
+  }
+
+  private getDefaultColumns(): QueryTableColumn<TData>[] {
+    return this.columns().filter((column) => !column.defaultHidden);
+  }
+
+  resetColumnVisibility(revertToDefault = false): void {
+    const stateKey = this.selectedColumnsStateKey();
+    if (!stateKey) {
+      this.visibleColumns.set(this.getDefaultColumns());
+      return;
     }
 
-    const storedSelectedColumns = localStorage.getItem(
-      this.selectedColumnsStateKey(),
-    );
-    if (storedSelectedColumns) {
-      const interpretedColumns = JSON.parse(
-        storedSelectedColumns,
-      ) as QueryTableColumn<TData>[];
-      const matchedColumns = interpretedColumns
-        .filter((column) => !!this.columns().find((c) => c.field === column.field))  as QueryTableColumn<TData>[];
-      this.visibleColumns.set(matchedColumns);
-    } else {
-      this.visibleColumns.set(
-        this.columns().filter((column) => !column.defaultHidden),
-      );
+    if (revertToDefault) {
+      localStorage.removeItem(stateKey);
+      this.visibleColumns.set(this.getDefaultColumns());
+      return;
     }
+
+    const storedColumns = this.getStoredColumns(stateKey);
+    this.visibleColumns.set(
+      storedColumns
+        ? this.getMatchingColumns(storedColumns)
+        : this.getDefaultColumns(),
+    );
   }
 
   columnVisibilityEffect = effect(() => {
