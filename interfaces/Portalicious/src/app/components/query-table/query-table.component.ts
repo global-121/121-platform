@@ -501,14 +501,14 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   ): QueryTableColumn<TData>[] {
     return storedColumns
       .map((column) => this.columns().find((c) => c.field === column.field))
-      .filter(Boolean) as QueryTableColumn<TData>[];
+      .filter((column) => column !== undefined);
   }
 
   private getDefaultColumns(): QueryTableColumn<TData>[] {
     return this.columns().filter((column) => !column.defaultHidden);
   }
 
-  resetColumnVisibility(revertToDefault = false): void {
+  updateColumnVisibility(revertToDefault = false): void {
     const stateKey = this.selectedColumnsStateKey();
     if (!stateKey) {
       this.visibleColumns.set(this.getDefaultColumns());
@@ -534,7 +534,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       (!this.enableColumnManagement() || this.visibleColumns().length === 0) &&
       this.columns().length > 0
     ) {
-      this.resetColumnVisibility();
+      this.updateColumnVisibility();
     }
   });
 }

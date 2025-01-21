@@ -60,7 +60,7 @@
         <app-query-table-column-management
           [columns]="columns()"
           [(visibleColumns)]="visibleColumns"
-          (resetColumnVisibility)="resetColumnVisibility(true)"
+          (resetColumnVisibility)="updateColumnVisibility(true)"
           [selectedColumnsStateKey]="selectedColumnsStateKey()"
         />
       }
