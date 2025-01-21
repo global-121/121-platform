@@ -87,7 +87,7 @@ export class RegistrationsTableColumnService {
             },
             {
               field: 'status',
-              header: $localize`:@@registration-status:Status`,
+              header: $localize`:@@registration-status:Registration Status`,
               type: QueryTableColumnType.MULTISELECT,
               options: Object.values(RegistrationStatusEnum)
                 .filter((status) => status !== RegistrationStatusEnum.deleted)

@@ -72,7 +72,7 @@ export class RegistrationPageLayoutComponent {
 
     const listData: DataListItem[] = [
       {
-        label: $localize`:@@registration-status:Status`,
+        label: $localize`:@@registration-status:Registration Status`,
         chipLabel,
         chipVariant,
       },
