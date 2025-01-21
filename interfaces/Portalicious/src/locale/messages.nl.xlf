@@ -1292,8 +1292,8 @@
         <target>Connectie</target>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
-        <source>Status</source>
-        <target>Status</target>
+        <source>Registration Status</source>
+        <target state="new">Status</target>
       </trans-unit>
       <trans-unit id="registration-status-completed" datatype="html">
         <source>Completed</source>

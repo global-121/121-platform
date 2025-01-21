@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -126,7 +126,7 @@
         <source>Registered:</source>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
-        <source>Status</source>
+        <source>Registration Status</source>
       </trans-unit>
       <trans-unit id="registration-phone-number" datatype="html">
         <source>Phone number</source>
@@ -1398,9 +1398,6 @@
       </trans-unit>
       <trans-unit id="8220517666190714329" datatype="html">
         <source>Did you know?</source>
-      <trans-unit id="payment-count" datatype="html">
-        <source>Number of payments</source>
-      </trans-unit>
       </trans-unit>
       <trans-unit id="last-message-status" datatype="html">
         <source>Last message status</source>
@@ -1410,6 +1407,9 @@
       </trans-unit>
       <trans-unit id="payment-count-remaining" datatype="html">
         <source>Remaining payments</source>
+      </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
       </trans-unit>
     </body>
   </file>
