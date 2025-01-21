@@ -46,6 +46,7 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  AppRoutes = AppRoutes;
   private authService = inject(AuthService);
   projectId = input<string>();
 

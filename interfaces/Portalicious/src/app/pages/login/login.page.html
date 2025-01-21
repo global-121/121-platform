@@ -25,17 +25,11 @@
         <app-form-error [error]="authError" />
         <p class="mt-2">
           <a
-            href="https://manual.121.global/privacy-policy/"
-            target="_blank"
-            title="Opens in a new window"
-            i18n-title="@@generic-opens-in-new-window"
+            i18n
+            [attr.rel]="'privacy-policy'"
+            [routerLink]="['/', AppRoutes.privacy]"
+            >Read our Privacy notice</a
           >
-            <span i18n>Read our Privacy Policy</span>
-            <i
-              class="pi pi-external-link ml-1 text-xs"
-              aria-hidden="true"
-            ></i
-          ></a>
         </p>
       </div>
       <div class="mb-4">

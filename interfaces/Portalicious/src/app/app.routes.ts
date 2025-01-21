@@ -12,6 +12,7 @@ export enum AppRoutes {
   authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
+  privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
   projectPayments = 'payments',
@@ -32,6 +33,14 @@ export const routes: Routes = [
     title: $localize`:@@page-title-login:Log in`,
     loadComponent: () =>
       import('~/pages/login/login.page').then((x) => x.LoginPageComponent),
+  },
+  {
+    path: AppRoutes.privacy,
+    title: $localize`:@@page-title-privacy:Privacy`,
+    loadComponent: () =>
+      import('~/pages/privacy/privacy.page').then(
+        (x) => x.PrivacyPageComponent,
+      ),
   },
   {
     path: AppRoutes.authCallback,
