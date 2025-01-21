@@ -84,6 +84,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
     const { chipLabel, chipVariant } = getChipDataByVisaCardStatus(
       this.currentCard()?.status,
     );
+    const balance = this.walletWithCards.data()?.balance;
+    const spentThisMonth = this.walletWithCards.data()?.spentThisMonth;
     const listData: DataListItem[] = [
       {
         label: $localize`:@@debit-card-number:Card number`,
@@ -96,12 +98,12 @@ export class ProjectRegistrationDebitCardsPageComponent {
       },
       {
         label: $localize`:@@debit-card-balance:Current balance`,
-        value: this.walletWithCards.data()?.balance,
+        value: balance ? balance / 100 : '-',
         type: 'currency',
       },
       {
         label: $localize`:@@debit-card-spent-this-month:Spent this month (max. EUR 150)`,
-        value: this.walletWithCards.data()?.spentThisMonth,
+        value: spentThisMonth ? spentThisMonth / 100 : '-',
         type: 'currency',
       },
       {
