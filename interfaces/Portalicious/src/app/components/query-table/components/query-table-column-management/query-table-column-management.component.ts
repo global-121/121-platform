@@ -37,6 +37,7 @@ export class QueryTableColumnManagementComponent<
 > {
   columns = input.required<QueryTableColumn<TData>[]>();
   visibleColumns = model.required<QueryTableColumn<TData>[]>();
+  selectedColumnsStateKey = input<string>();
   readonly resetColumnVisibility = output();
 
   formVisible = model<boolean>(false);
@@ -60,6 +61,10 @@ export class QueryTableColumnManagementComponent<
     mutationFn: () =>
       Promise.resolve(this.formGroup.getRawValue().selectedColumns),
     onSuccess: (selectedColumns) => {
+      const stateKey = this.selectedColumnsStateKey();
+      if (stateKey) {
+        localStorage.setItem(stateKey, JSON.stringify(selectedColumns));
+      }
       this.visibleColumns.set(selectedColumns);
       this.formVisible.set(false);
     },

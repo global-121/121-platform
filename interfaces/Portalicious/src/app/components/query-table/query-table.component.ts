@@ -146,6 +146,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly contextMenu = viewChild<Menu>('contextMenu');
   readonly extraOptionsMenu = viewChild<Menu>('extraOptionsMenu');
 
+  selectedColumnsStateKey = computed(() => {
+    const key = this.localStorageKey();
+    return key ? `${key}-selected-columns` : undefined;
+  });
+
   /**
    * DISPLAY
    */
@@ -484,9 +489,43 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    */
   visibleColumns = model<QueryTableColumn<TData>[]>([]);
 
-  resetColumnVisibility() {
+  private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
+    const storedColumns = localStorage.getItem(stateKey);
+    if (!storedColumns) return null;
+
+    return JSON.parse(storedColumns) as QueryTableColumn<TData>[];
+  }
+
+  private getMatchingColumns(
+    storedColumns: QueryTableColumn<TData>[],
+  ): QueryTableColumn<TData>[] {
+    return storedColumns
+      .map((column) => this.columns().find((c) => c.field === column.field))
+      .filter((column) => column !== undefined);
+  }
+
+  private defaultColumns = computed<QueryTableColumn<TData>[]>(() => {
+    return this.columns().filter((column) => !column.defaultHidden);
+  });
+
+  updateColumnVisibility(revertToDefault = false): void {
+    const stateKey = this.selectedColumnsStateKey();
+    if (!stateKey) {
+      this.visibleColumns.set(this.defaultColumns());
+      return;
+    }
+
+    if (revertToDefault) {
+      localStorage.removeItem(stateKey);
+      this.visibleColumns.set(this.defaultColumns());
+      return;
+    }
+
+    const storedColumns = this.getStoredColumns(stateKey);
     this.visibleColumns.set(
-      this.columns().filter((column) => !column.defaultHidden),
+      storedColumns
+        ? this.getMatchingColumns(storedColumns)
+        : this.defaultColumns(),
     );
   }
 
@@ -495,7 +534,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       (!this.enableColumnManagement() || this.visibleColumns().length === 0) &&
       this.columns().length > 0
     ) {
-      this.resetColumnVisibility();
+      this.updateColumnVisibility();
     }
   });
 }
