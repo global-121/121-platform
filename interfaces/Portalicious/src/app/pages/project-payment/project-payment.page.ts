@@ -51,6 +51,7 @@ import { SinglePaymentExportComponent } from '~/pages/project-payment/components
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { getOriginUrl } from '~/utils/url-helper';
 
 export interface TransactionsTableCellContext {
   projectId: Signal<string>;
@@ -276,7 +277,7 @@ export class ProjectPaymentPageComponent {
               }),
             ),
           );
-          window.open(url, '_blank');
+          window.open(getOriginUrl() + url, '_blank');
         },
       },
       {

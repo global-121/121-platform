@@ -266,7 +266,7 @@ class RegistrationsPage extends BasePage {
     await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click();
 
-    if (action !== 'Message') {
+    if (action !== 'Message' && action !== 'Open in new tab') {
       await this.page.getByRole('button', { name: 'Approve' }).click();
     }
   }

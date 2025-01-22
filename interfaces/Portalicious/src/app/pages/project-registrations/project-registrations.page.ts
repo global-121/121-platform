@@ -27,6 +27,7 @@ import { ImportRegistrationsComponent } from '~/pages/project-registrations/comp
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
+import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
   selector: 'app-project-registrations',
@@ -183,7 +184,7 @@ export class ProjectRegistrationsPageComponent {
               }),
             ),
           );
-          window.open(url, '_blank');
+          window.open(getOriginUrl() + url, '_blank');
         },
       },
       {
