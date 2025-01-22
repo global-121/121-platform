@@ -1,4 +1,4 @@
-## TLS Certificate Handling Azure app Service
+## Certificate Handling in Azure App Service
 
 To enable loading certificate files via environment variables in the Azure App Service, follow these steps:
 
