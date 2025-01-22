@@ -1,8 +1,10 @@
+# See: https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
+
 changelog:
   exclude:
     labels:
-      - dependencies # dependabot
-      - ignore-for-release # manually excluded
+      - dependencies # Dependabot
+      - ignore-for-release # Manually excluded
   categories:
     - title: New Features 🎉
       labels:
