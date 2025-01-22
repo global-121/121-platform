@@ -154,7 +154,7 @@
         "timestamp": "La última importación se ha realizado el: {{dateTime}}"
       },
       "export-fsp-intructions": {
-        "btn-text": "Instrucciones de pago de exportación",
+        "btn-text": "Exportar instrucciones de pago para a el PSF",
         "confirm-message": "Esto descargará un archivo con instrucciones de pago para el Proveedor de Servicios Financieros.",
         "sub-message": {
           "reconciliation": "Esta exportación solo incluirá a las personas afectadas para las que se esté esperando el estado actual <strong>de</strong> la transacción."
@@ -197,7 +197,7 @@
           }
         },
         "payment": {
-          "btn-text": "Informe de exportación",
+          "btn-text": "Exportar informe de pago",
           "confirm-message": "Esto descargará un archivo Excel con todas las personas afectadas incluidas en este pago."
         },
         "select-btn-text": "Exportar",
