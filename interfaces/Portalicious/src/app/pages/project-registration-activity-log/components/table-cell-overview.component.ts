@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -29,6 +31,7 @@ import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
+import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-table-cell-overview',
@@ -71,6 +74,7 @@ export class TableCellOverviewComponent
 {
   value = input.required<Activity>();
   context = input.required<ActivityLogTableCellContext>();
+  locale = inject<Locale>(LOCALE_ID);
 
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
@@ -114,7 +118,7 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.StatusChange:
         return REGISTRATION_STATUS_LABELS[item.attributes.newValue];
       case ActivityTypeEnum.Transaction:
-        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
+        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} ${new DatePipe(this.locale).transform(new Date(item.attributes.paymentDate), 'short') ?? ''}`;
     }
   });
 
