@@ -19,7 +19,7 @@ To enable loading certificate files via environment variables in the Azure App S
      - To find the correct on navigate to **App Service** > **Development Tools** > **SSH**
      - Go to directory: `cd /var/ssl/private`
      - Log files and file size `ls -lh`
-     - Look at the date and a distinct files size to select the right one
+     - Look at the date and a distinct file size to select the right one
    - The location of the certificate needs to be set in the environment variable:
 
      ```plaintext
