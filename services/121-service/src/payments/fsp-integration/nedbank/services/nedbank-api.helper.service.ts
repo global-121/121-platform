@@ -29,7 +29,7 @@ export class NedbankApiHelperService {
   }): Promise<AxiosResponse<T>> {
     if (!this.httpsAgent) {
       throw new NedbankError(
-        'Nedbank certificate has not been read. It could be that NEDBANK_CERTIFICATE_PATH or NEDBANK_CERTIFICATE_PASSWORD are not set or that certificate has not been uploaded to the server. Please contact 121 support',
+        'Nedbank certificate has not been read. It could be that NEDBANK_CERTIFICATE_PATH or NEDBANK_CERTIFICATE_PASSWORD are not set or that the certificate has not been uploaded to the server. Please contact 121 support',
       );
     }
     const headers = this.createHeaders();
