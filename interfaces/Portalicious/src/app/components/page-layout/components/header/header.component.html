@@ -18,26 +18,29 @@
     <app-logo [projectId]="projectId()" />
   </ng-template>
   <ng-template pTemplate="end">
-    <div class="flex items-center lg:px-20">
-      <app-button-menu
-        label="Account"
-        i18n-label="Top-right user-menu@@header-user-menu"
-        [icon]="'pi pi-user'"
-        [menuItems]="userMenuOptions()"
-        class="[&_.p-button-label]:duration-0 [&_button:focus]:bg-white [&_button:not(:hover,:focus)]:text-white"
-        [plain]="true"
-        [text]="true"
-        [size]="'small'"
-      >
-        <p
-          menu-start
-          class="mb-2 border-b border-b-grey-300 px-3 py-2"
+    @if (!!userName()) {
+      <div class="flex items-center lg:px-20">
+        <app-button-menu
+          label="Account"
+          i18n-label="Top-right user-menu@@header-user-menu"
+          [icon]="'pi pi-user'"
+          [menuItems]="userMenuOptions()"
+          class="[&_.p-button-label]:duration-0 [&_button:focus]:bg-white [&_button:not(:hover,:focus)]:text-white"
+          [plain]="true"
+          [text]="true"
+          [size]="'small'"
         >
-          <ng-container i18n>Logged in as:</ng-container><br />
-          <strong>{{ userName() }}</strong>
-        </p>
-      </app-button-menu>
-    </div>
+          <p
+            menu-start
+            class="mb-2 border-b border-b-grey-300 px-3 py-2"
+          >
+            <ng-container i18n>
+              Logged in as: <strong>{{ userName() }}</strong>
+            </ng-container>
+          </p>
+        </app-button-menu>
+      </div>
+    }
   </ng-template>
 </p-toolbar>
 <p-drawer
@@ -72,7 +75,11 @@
         @for (sidebarLink of sidebarLinks(); track $index) {
           <a
             [routerLink]="sidebarLink.routerLink"
-            [routerLinkActive]="['font-bold', 'pointer-events-none']"
+            [routerLinkActive]="[
+              'font-bold',
+              'pointer-events-none',
+              'focus:text-black',
+            ]"
             [ariaCurrentWhenActive]="'page'"
             class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
           >
@@ -81,7 +88,8 @@
         }
         <a
           href="https://manual.121.global/"
-          class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          [attr.rel]="'help'"
+          class="inline-flex w-full items-center border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"
@@ -93,7 +101,7 @@
         </a>
         <a
           href="mailto:support@121.global"
-          class="inline-flex w-full items-center rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          class="inline-flex w-full items-center border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"

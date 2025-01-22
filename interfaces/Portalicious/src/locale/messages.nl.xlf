@@ -650,8 +650,8 @@
         <source>&lt;UNNAMED TEMPLATE&gt;</source>
         <target>&lt;UNNAMED TEMPLATE&gt;</target>
       </trans-unit>
-      <trans-unit id="7218347871480825149" datatype="html">
-        <source>Read our Privacy Policy</source>
+      <trans-unit id="6954699489555837710" datatype="html">
+        <source>Read our Privacy notice</source>
         <target>Lees ons privacybeleid</target>
       </trans-unit>
       <trans-unit id="7379726829888309084" datatype="html">
@@ -857,10 +857,6 @@
       <trans-unit id="9126928390466272085" datatype="html">
         <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
         <target>De status van <x equiv-text="data.applicableCount" id="PH"/> registratie(s) wordt gewijzigd naar &quot; <x equiv-text="this.statusLabel()" id="PH_1"/> &quot; succesvol. Het kan tot een minuut duren voordat de statuswijziging is verwerkt.</target>
-      </trans-unit>
-      <trans-unit id="9219884121371524201" datatype="html">
-        <source>Logged in as:</source>
-        <target>Ingelogd als:</target>
       </trans-unit>
       <trans-unit id="activity-log-item-type-data-change" datatype="html">
         <source>Data change</source>
@@ -1878,6 +1874,98 @@
       <trans-unit id="last-message-status" datatype="html">
         <source>Last message status</source>
         <target state="new">Last message status</target>
+      </trans-unit>
+      <trans-unit id="page-title-privacy" datatype="html">
+        <source>Privacy</source>
+        <target state="new">Privacy</target>
+      </trans-unit>
+      <trans-unit id="171496627094206309" datatype="html">
+        <source>Logged in as: <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+        <target>Ingelogd als: <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
+      </trans-unit>
+      <trans-unit id="privacy-notice-last-updated" datatype="html">
+        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
+        <target>Laatst gewijzigd: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></target>
+      </trans-unit>
+      <trans-unit id="5061826209151408276" datatype="html">
+        <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
+        <target state="new">This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</target>
+      </trans-unit>
+      <trans-unit id="706820993579364519" datatype="html">
+        <source>Where we get personal information from</source>
+        <target state="new">Where we get personal information from</target>
+      </trans-unit>
+      <trans-unit id="4175321634261799700" datatype="html">
+        <source>Information you or your employer has provided us.</source>
+        <target state="new">Information you or your employer has provided us.</target>
+      </trans-unit>
+      <trans-unit id="2114848494510177632" datatype="html">
+        <source>Your e-mail address and/or your (full) name.</source>
+        <target state="new">Your e-mail address and/or your (full) name.</target>
+      </trans-unit>
+      <trans-unit id="5270320047142620174" datatype="html">
+        <source>Information automatically collected about you</source>
+        <target state="new">Information automatically collected about you</target>
+      </trans-unit>
+      <trans-unit id="7316654266676902247" datatype="html">
+        <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
+        <target state="new">Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</target>
+      </trans-unit>
+      <trans-unit id="3805310091097915389" datatype="html">
+        <source>How long we keep information</source>
+        <target state="new">How long we keep information</target>
+      </trans-unit>
+      <trans-unit id="2099469692592361098" datatype="html">
+        <source>Personal information: e-mail and name.</source>
+        <target state="new">Personal information: e-mail and name.</target>
+      </trans-unit>
+      <trans-unit id="3619477798940026244" datatype="html">
+        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
+        <target state="new">We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</target>
+      </trans-unit>
+      <trans-unit id="337088933774172577" datatype="html">
+        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
+        <target state="new">We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</target>
+      </trans-unit>
+      <trans-unit id="7509825160805284263" datatype="html">
+        <source>Personal information: IP-address.</source>
+        <target state="new">Personal information: IP-address.</target>
+      </trans-unit>
+      <trans-unit id="3934118952625564148" datatype="html">
+        <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
+        <target state="new">We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</target>
+      </trans-unit>
+      <trans-unit id="4097796198739407763" datatype="html">
+        <source>This identifier is stored for max. 90 days in our logs-storage.</source>
+        <target state="new">This identifier is stored for max. 90 days in our logs-storage.</target>
+      </trans-unit>
+      <trans-unit id="1369610904910546430" datatype="html">
+        <source>Who we share information with</source>
+        <target state="new">Who we share information with</target>
+      </trans-unit>
+      <trans-unit id="1867309401161150879" datatype="html">
+        <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
+        <target state="new">The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</target>
+      </trans-unit>
+      <trans-unit id="7194723645188865835" datatype="html">
+        <source>We do not share any personal information with other third-parties.</source>
+        <target state="new">We do not share any personal information with other third-parties.</target>
+      </trans-unit>
+      <trans-unit id="4516124744118816397" datatype="html">
+        <source>Cookies</source>
+        <target>Cookies</target>
+      </trans-unit>
+      <trans-unit id="2512429297957946940" datatype="html">
+        <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
+        <target state="new">We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</target>
+      </trans-unit>
+      <trans-unit id="2378622458638065888" datatype="html">
+        <source>How to contact us</source>
+        <target state="new">How to contact us</target>
+      </trans-unit>
+      <trans-unit id="8385553553362590495" datatype="html">
+        <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
+        <target state="new">If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
       </trans-unit>
     </body>
   </file>

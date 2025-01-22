@@ -5,10 +5,11 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ToolbarModule } from 'primeng/toolbar';
 
+import { AppRoutes } from '~/app.routes';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { LanguageSwitcherComponent } from '~/components/language-switcher/language-switcher.component';
 import { LogoComponent } from '~/components/logo/logo.component';
@@ -25,12 +26,14 @@ import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
     LanguageSwitcherComponent,
     NgComponentOutlet,
     FormErrorComponent,
+    RouterLink,
   ],
   templateUrl: './login.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
+  AppRoutes = AppRoutes;
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);

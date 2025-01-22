@@ -1,0 +1,100 @@
+<!--
+  NOTE: Make sure to update the LastUpdated-date whenever the text of the privacy notice is (significantly) changed.
+-->
+@let lastUpdated = '2025-01-21';
+@let privacyOfficerEmail = 'privacy@redcross.nl';
+
+<app-page-layout
+  pageTitle="Privacy"
+  i18n-pageTitle="@@page-title-privacy"
+  class="[&_h2]:mb-2 [&_h2]:mt-6"
+>
+  <p i18n="@@privacy-notice-last-updated">
+    Last updated:
+    <time [attr.datetime]="lastUpdated | date: 'YYYYMMdd'">{{
+      lastUpdated | date: 'shortDate'
+    }}</time>
+  </p>
+
+  <br />
+
+  <p i18n>
+    This privacy notice tells you what to expect us to do with your personal
+    information when you use the 121 Platform.
+  </p>
+
+  <h2 i18n>Where we get personal information from</h2>
+
+  <ul class="mx-0 list-outside list-disc ps-4">
+    <li>
+      <strong i18n>Information you or your employer has provided us.</strong>
+      <p i18n>Your e-mail address and/or your (full) name.</p>
+    </li>
+    <li>
+      <strong i18n>Information automatically collected about you</strong>
+      <p i18n>
+        Your IP-address and some information about the device and web-browser
+        you use to access the 121 Platform.
+      </p>
+    </li>
+  </ul>
+
+  <h2 i18n>How long we keep information</h2>
+
+  <ul class="mx-0 list-outside list-disc ps-4">
+    <li>
+      <strong i18n>Personal information: e-mail and name.</strong>
+      <p i18n>
+        We retain your e-mail address and name for as long as you are a user
+        associated with a project/program on the 121 Platform.
+      </p>
+      <p i18n>
+        We retain your e-mail address for as long as a project/program is stored
+        on the 121 Platform.
+      </p>
+    </li>
+    <li>
+      <strong i18n>Personal information: IP-address.</strong>
+      <p i18n>
+        We don't store your IP-address. We only use it to generate an anonymous
+        identifier not linked to any personal information.
+      </p>
+      <p i18n>
+        This identifier is stored for max. 90 days in our logs-storage.
+      </p>
+    </li>
+  </ul>
+
+  <h2 i18n>Who we share information with</h2>
+
+  <p i18n>
+    The data of the 121 Platform is hosted in a Microsoft Azure-environment of
+    The Netherlands Red Cross.
+  </p>
+  <p i18n>We do not share any personal information with other third-parties.</p>
+
+  <h2 i18n>Cookies</h2>
+
+  <p i18n>
+    We only use necessary cookies to be able to let users log in to the 121
+    Platform. These cookies are not used to track any (returning) use of the 121
+    Platform over time.
+  </p>
+
+  <h2 i18n>How to contact us</h2>
+
+  <p i18n>
+    If you have any questions regarding your privacy and the 121 Platform, feel
+    free to contact us at:
+    <a [href]="'mailto:' + privacyOfficerEmail">{{ privacyOfficerEmail }}</a>
+  </p>
+
+  <br />
+
+  <p i18n="@@privacy-notice-last-updated">
+    Last updated:
+    <time [attr.datetime]="lastUpdated | date: 'YYYYMMdd'">{{
+      lastUpdated | date: 'shortDate'
+    }}</time>
+  </p>
+</app-page-layout>
