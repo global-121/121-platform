@@ -16,7 +16,7 @@ To enable loading certificate files via environment variables in the Azure App S
 
    - Find the right certificate path:
      - Azure converts .pfx files to .p12 files
-     - To find the correct on navivate to **App Service** > **Development Tools** > **SSH**
+     - To find the correct on navigate to **App Service** > **Development Tools** > **SSH**
      - Go to directory: `cd /var/ssl/private`
      - Log files and file size `ls -lh`
      - Look at the date and a distinct files size to select the right one
