@@ -31,10 +31,24 @@ Follow these steps to successfully integrate your Dockerized application with th
    - Identify the specific API endpoints provided by Commercial Bank Ethiopia that need to be accessed through the VPN.
    - Update your application's API calls to use the VPN server's address and port.
 
-6. **TLS Certificate Handling**
-   - To enable loading Certificate files via ENV-variables in the Azure App-Service Configuration needs to have set `WEBSITE_LOAD_CERTIFICATES=*`.
-   - In the Azure Potal, in the instance's App-Service/Settings/Certificates the public key certificate (.cer) can be uploaded (and named). This will result in a "thumbprint", which will be used as the filename for the Certificate.
-   - The location of the certificate needs to be set in the ENV-variable: `COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH=/var/ssl/certs/<thumbprint>.der`.
+6. **Enable Certificate loading**
+
+   - Set the `WEBSITE_LOAD_CERTIFICATES=*` environment variable in the Azure App Service configuration.
+
+7. **Upload Certificate**
+
+   - In the Azure Portal, navigate to the instance's **App Service** > **Settings** > **Certificates**.
+   - Press 'Public key certificates (.cer)'
+   - Upload the public key certificate (`.cer` file) and name it.
+   - This will generate a "thumbprint" which will be used as the filename for the certificate.
+
+8. **Configure Certificate-path**
+
+   - The location of the certificate needs to be set in the environment variable:
+
+   ```dotenv
+     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH=/var/ssl/certs/<thumbprint>.der
+   ```
 
 ## Conclusion
 
