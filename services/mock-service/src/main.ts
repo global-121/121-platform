@@ -7,6 +7,7 @@ import {
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+import { Response } from 'express';
 
 import { ApplicationModule } from '@mock-service/src/app.module';
 import {
@@ -37,6 +38,7 @@ async function bootstrap(): Promise<void> {
   const expressInstance = app.getHttpAdapter().getInstance();
 
   expressInstance.disable('x-powered-by');
+  expressInstance.set('strict routing', true); // Required to prevent Petstore-Inception-bug
 
   app.setGlobalPrefix('api');
 
@@ -45,7 +47,8 @@ async function bootstrap(): Promise<void> {
     .setVersion(APP_VERSION)
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document, {
+  // To prevent Petstore-Inception-bug the trailing slash is required!
+  SwaggerModule.setup('/docs/', app, document, {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
@@ -54,7 +57,7 @@ async function bootstrap(): Promise<void> {
       deepLinking: true,
       defaultModelExpandDepth: 10,
       defaultModelsExpandDepth: 1,
-      displayOperationId: true,
+      displayOperationId: DEVELOPMENT,
       displayRequestDuration: true,
       filter: true,
       operationsSorter: 'alpha',
@@ -65,6 +68,10 @@ async function bootstrap(): Promise<void> {
       tryItOutEnabled: DEVELOPMENT,
     },
   });
+  // Use root as easy-default entrypoint
+  expressInstance.use(/^\/$/, (_req: unknown, res: Response) =>
+    res.redirect('/docs/'),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
