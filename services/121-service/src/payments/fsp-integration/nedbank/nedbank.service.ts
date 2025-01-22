@@ -34,6 +34,7 @@ export class NedbankService
     transferAmount,
     phoneNumber,
     orderCreateReference,
+    paymentReference,
   }: NedbankCreateVoucherParams): Promise<NedbankVoucherStatus> {
     const isAmountMultipleOf10 = transferAmount % 10 === 0;
     if (!isAmountMultipleOf10) {
@@ -44,6 +45,7 @@ export class NedbankService
       transferAmount,
       phoneNumber,
       orderCreateReference,
+      paymentReference,
     });
   }
 

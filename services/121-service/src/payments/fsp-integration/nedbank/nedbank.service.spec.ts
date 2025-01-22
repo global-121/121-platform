@@ -9,10 +9,7 @@ import { NedbankApiService } from '@121-service/src/payments/fsp-integration/ned
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
 const orderCreateReference = `mock-uuid`;
-
-jest.mock('./nedbank-api.service');
-jest.mock('./repositories/nedbank-voucher.scoped.repository');
-jest.mock('@121-service/src/utils/uuid.helpers');
+const paymentReference = `pj1-pay1-00270000000`;
 
 describe('NedbankService', () => {
   let service: NedbankService;
@@ -57,6 +54,7 @@ describe('NedbankService', () => {
         transferAmount: amount,
         phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
+        paymentReference,
       });
 
       expect(result).toEqual(NedbankVoucherStatus.PENDING);
@@ -65,6 +63,7 @@ describe('NedbankService', () => {
         transferAmount: amount,
         phoneNumber: registrationNedbank.phoneNumber,
         orderCreateReference,
+        paymentReference,
       });
     });
 
@@ -75,6 +74,7 @@ describe('NedbankService', () => {
           transferAmount: amount, // Not a multiple of 10
           phoneNumber: registrationNedbank.phoneNumber,
           orderCreateReference,
+          paymentReference,
         }),
       ).rejects.toThrow(NedbankError);
 
@@ -83,6 +83,7 @@ describe('NedbankService', () => {
           transferAmount: amount, // Not a multiple of 10
           phoneNumber: registrationNedbank.phoneNumber,
           orderCreateReference,
+          paymentReference,
         }),
       ).rejects.toThrow('Amount must be a multiple of 10');
 

@@ -74,6 +74,27 @@ export class NedbankMockService {
     const { Data } = createOrderPayload;
     const { Initiation } = Data;
 
+    // This error of max 30 chars is currently not in the integration tests
+    // because it should never happen as paymentReference set using a combination of fields that should never exceed 30 characters
+    // However this if statement is here to catch any potential future changes that might cause this error
+    // So than the happy path test will fail
+    if (
+      Data.Initiation.CreditorAccount.Name.length > 30 ||
+      Data.Initiation.DebtorAccount.Name.length > 30
+    ) {
+      return {
+        Message: 'BUSINESS ERROR',
+        Code: 'NB.APIM.Field.Invalid',
+        Id: '1d3e3076-9e1c-4933-aa7f-69290941ec70',
+        Errors: [
+          {
+            ErrorCode: 'NB.APIM.Field.Invalid',
+            Message: 'Request Validation Error - Name is too long',
+          },
+        ],
+      };
+    }
+
     // Scenario  Incorrect DebtorAccount Identification
     if (
       !Initiation.DebtorAccount.Identification ||

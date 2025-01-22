@@ -285,6 +285,10 @@ export class TransactionJobProcessorsService {
     );
     const oldRegistration = structuredClone(registration);
 
+    // This is a unique identifier for each transaction, which will be shown on the bank statement which the user receives by Nedbank out of the 121-platform
+    // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
+    // Payment reference cannot be longer than 30 characters
+    const paymentReference = `pj${transactionJob.programId}-pay${transactionJob.paymentNumber}-${transactionJob.phoneNumber}`;
     let orderCreateReference: string;
     let transactionId: number;
 
@@ -346,6 +350,7 @@ export class TransactionJobProcessorsService {
       }
 
       await this.nedbankVoucherScopedRepository.storeVoucher({
+        paymentReference,
         orderCreateReference,
         transactionId,
       });
@@ -360,6 +365,7 @@ export class TransactionJobProcessorsService {
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber,
         orderCreateReference,
+        paymentReference,
       });
     } catch (error) {
       if (error instanceof NedbankError) {

@@ -18,15 +18,18 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
   }
 
   public async storeVoucher({
+    paymentReference,
     orderCreateReference,
     transactionId,
     voucherStatus,
   }: {
+    paymentReference: string;
     orderCreateReference: string;
     transactionId: number;
     voucherStatus?: NedbankVoucherStatus;
   }): Promise<void> {
     const nedbankVoucherEntity = this.create({
+      paymentReference,
       orderCreateReference,
       status: voucherStatus,
       transactionId,

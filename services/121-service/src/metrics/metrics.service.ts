@@ -917,6 +917,11 @@ export class MetricsService {
               attribute: 'orderCreateReference',
               alias: 'nedbankOrderCreateReference',
             },
+            {
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              attribute: 'paymentReference',
+              alias: 'nedbankPaymentReference',
+            },
           ],
         ];
       }

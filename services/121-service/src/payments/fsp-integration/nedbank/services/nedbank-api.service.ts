@@ -22,15 +22,18 @@ export class NedbankApiService {
     transferAmount,
     phoneNumber,
     orderCreateReference,
+    paymentReference,
   }: {
     transferAmount: number;
     phoneNumber: string;
     orderCreateReference: string;
+    paymentReference: string;
   }): Promise<NedbankVoucherStatus> {
     const payload = this.createOrderPayload({
       transferAmount,
       phoneNumber,
       orderCreateReference,
+      paymentReference,
     });
 
     const createOrderResponse = await this.makeCreateOrderCall(payload);
@@ -41,10 +44,12 @@ export class NedbankApiService {
     transferAmount,
     phoneNumber,
     orderCreateReference,
+    paymentReference,
   }: {
     transferAmount: number;
     phoneNumber: string;
     orderCreateReference: string;
+    paymentReference: string;
   }): NedbankCreateOrderRequestBodyDto {
     const currentDate = new Date();
     const expirationDateIsoString = new Date(
@@ -62,12 +67,12 @@ export class NedbankApiService {
           DebtorAccount: {
             SchemeName: 'account', // should always be 'account'
             Identification: process.env.NEDBANK_ACCOUNT_NUMBER!, // ##TODO should we check somewhere if the .env is set?
-            Name: 'MyRefOnceOffQATrx', // ##TODO Not sure what to set here. Quote from the API word document from didirik: 'This is what shows on the SARCS statement. We can set this value for (manual) reconciliation purposes.'
+            Name: paymentReference, // ##TODO Not sure what to set here. Quote from the API word document from didirik: 'This is what shows on the SARCS statement. We can set this value for (manual) reconciliation purposes.'
           },
           CreditorAccount: {
             SchemeName: 'recipient',
             Identification: phoneNumber,
-            Name: 'MyRefOnceOffQATrx', // Name cannot be left empty so set it to a default value found on nedbank api documentation
+            Name: paymentReference, // Name cannot be left empty so set it to a default value found on nedbank api documentation
           },
         },
         ExpirationDateTime: expirationDateIsoString,
