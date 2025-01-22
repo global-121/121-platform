@@ -33,6 +33,7 @@ import {
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentMetricDetails } from '~/domains/metric/metric.model';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import {
@@ -107,8 +108,16 @@ export class ProjectPaymentPageComponent {
   );
   payment = injectQuery(() => ({
     ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
-    // Refetch the data every second if a payment is in progress
-    refetchInterval: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
+    // Refetch the data every second if a payment count !== transactions count
+    refetchInterval: this.refetchPayment() ? 1000 : undefined,
+    success: (data: PaymentAggregate) => {
+      if (
+        data.success.count + data.failed.count + data.waiting.count ===
+        this.transactions.data()?.length
+      ) {
+        this.refetchPayment.set(false);
+      }
+    },
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   transactions = injectQuery(
@@ -117,6 +126,8 @@ export class ProjectPaymentPageComponent {
       payment: this.paymentId,
     }),
   );
+
+  refetchPayment = signal(true);
 
   allPaymentsLink = computed(() => [
     '/',

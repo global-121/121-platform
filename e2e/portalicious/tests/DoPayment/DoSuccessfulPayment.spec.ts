@@ -66,9 +66,7 @@ test('[31970] Do successful payment', async ({ page }) => {
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers:
-        defaultMaxTransferValue -
-        registrationsOCW[4].paymentAmountMultiplier * defaultTransferValue,
+      successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
     });
     // DO NOT MAKE IT A RULE!!!
