@@ -1,4 +1,3 @@
-// TODO: Why is this called Dto and not interface? (also for safaricom and visa?)
 export interface NedbankTransactionJobDto {
   readonly programId: number;
   readonly programFinancialServiceProviderConfigurationId: number;

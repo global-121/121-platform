@@ -57,7 +57,7 @@ export class NedbankApiHelperService {
     if (this.httpsAgent) {
       return this.httpsAgent;
     }
-    // We only check here if the NEDBANK_CERTIFICATE_PATH is set and if the NEDBANK_CERTIFICATE_PASSWORD is set
+    // We only check here if the NEDBANK_CERTIFICATE_PATH is set and not if the NEDBANK_CERTIFICATE_PASSWORD is set
     // Locally we use .pfx file which is password protected
     // On azure we use .pf12 file which is not password protected
     if (!process.env.NEDBANK_CERTIFICATE_PATH) {

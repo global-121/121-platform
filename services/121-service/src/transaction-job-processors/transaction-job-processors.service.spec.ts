@@ -106,10 +106,7 @@ describe('TransactionJobProcessorsService', () => {
       .mockResolvedValue({ id: mockedTransactionId } as any);
 
     jest
-      .spyOn(
-        transactionScopedRepository,
-        'getFailedTransactionsCountForPaymentAndRegistration',
-      )
+      .spyOn(transactionScopedRepository, 'getFailedTransactionsCount')
       .mockResolvedValueOnce(0);
   });
 
@@ -188,7 +185,7 @@ describe('TransactionJobProcessorsService', () => {
         referenceId: mockedNedbankTransactionJob.referenceId,
       });
       expect(
-        transactionScopedRepository.getFailedTransactionsCountForPaymentAndRegistration,
+        transactionScopedRepository.getFailedTransactionsCount,
       ).toHaveBeenCalledWith({
         registrationId: mockedRegistration.id,
         payment: mockedNedbankTransactionJob.paymentNumber,

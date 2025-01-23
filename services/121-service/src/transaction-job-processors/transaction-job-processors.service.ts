@@ -324,12 +324,10 @@ export class TransactionJobProcessorsService {
 
       // Get count of failed transactions to create orderCreateReference
       const failedTransactionsCount =
-        await this.transactionScopedRepository.getFailedTransactionsCountForPaymentAndRegistration(
-          {
-            registrationId: registration.id,
-            payment: transactionJob.paymentNumber,
-          },
-        );
+        await this.transactionScopedRepository.getFailedTransactionsCount({
+          registrationId: registration.id,
+          payment: transactionJob.paymentNumber,
+        });
       // orderCreateReference is generated using: (referenceId + paymentNr + current failed transactions)
       // Using this count to generate the OrderReferenceId ensures that:
       // a. On payment retry, a new reference is generated (needed because a new reference is required by nedbank if a failed order was created).

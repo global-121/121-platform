@@ -108,7 +108,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     return transactionQuery;
   }
 
-  public async getFailedTransactionsCountForPaymentAndRegistration({
+  public async getFailedTransactionsCount({
     registrationId,
     payment,
   }: {
