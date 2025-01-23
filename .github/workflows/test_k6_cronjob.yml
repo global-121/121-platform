@@ -49,10 +49,6 @@ jobs:
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
-      - name: Print job status
-        if: always()
-        run: echo ${{ job.status }}
-
       - name: Microsoft Teams Notification
         if: always()
         uses: tlolkema/simple-teams-message@main
