@@ -103,6 +103,7 @@ export class ProjectRegistrationActivityLogPageComponent {
     },
     {
       header: $localize`Overview`,
+      field: 'COMPUTED_FIELD',
       component: TableCellOverviewComponent,
     },
     {

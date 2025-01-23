@@ -32,6 +32,16 @@ export const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   lastMessageStatus: $localize`:@@last-message-status:Last message status`,
 };
 
+export const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
+  'registrationProgramId',
+  'name',
+  'status',
+  'phoneNumber',
+  'paymentCount',
+  'maxPayments',
+  'registrationCreated',
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,10 +54,10 @@ export class RegistrationsTableColumnService {
   );
   private translatableStringService = inject(TranslatableStringService);
 
-  getColumns(projectId: Signal<string>) {
+  getColumns(projectId: Signal<number | string>) {
     return () => {
       return queryOptions({
-        queryKey: ['filterableAttributes', projectId],
+        queryKey: ['filterableAttributes', projectId, projectId()],
         queryFn: async () => {
           const project = await this.queryClient.fetchQuery(
             this.projectApiService.getProject(projectId)(),
@@ -61,7 +71,7 @@ export class RegistrationsTableColumnService {
           );
 
           // Hardcoded columns first
-          const columns: QueryTableColumn<Registration>[] = [
+          let columns: QueryTableColumn<Registration>[] = [
             {
               field: 'registrationProgramId',
               header: $localize`Reg. #`,
@@ -162,7 +172,26 @@ export class RegistrationsTableColumnService {
               }
             }
           }
-
+          columns = columns
+            .map((column) => ({
+              ...column,
+              defaultHidden: !DEFAULT_VISIBLE_FIELDS_SORTED.includes(
+                column.field,
+              ),
+            }))
+            .sort((a, b) => {
+              const aIndex = DEFAULT_VISIBLE_FIELDS_SORTED.indexOf(a.field);
+              const bIndex = DEFAULT_VISIBLE_FIELDS_SORTED.indexOf(b.field);
+              if (aIndex === -1 && bIndex === -1) {
+                return 0;
+              } else if (aIndex === -1) {
+                return 1;
+              } else if (bIndex === -1) {
+                return -1;
+              } else {
+                return aIndex - bIndex;
+              }
+            });
           return columns;
         },
       });
