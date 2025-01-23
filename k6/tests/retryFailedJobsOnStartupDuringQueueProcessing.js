@@ -29,7 +29,17 @@ export const options = {
   iterations: 1,
 };
 
+const failedRequests = new Counter('failed_requests');
 const failedChecks = new Counter('failed_checks');
+
+function trackFailedRequest(response) {
+  if (response.error_code) {
+    console.error(
+      `HTTP request failed with error code: ${response.error_code}`,
+    );
+    failedRequests.add(1); // Increment failed requests
+  }
+}
 
 function checkAndFail(response, checks) {
   const result = check(response, checks);
@@ -41,6 +51,7 @@ function checkAndFail(response, checks) {
 
 function isServiceUp() {
   const response = http.get('http://localhost:3000/api/health/health');
+  trackFailedRequest(response);
   return response.status === 200;
 }
 
