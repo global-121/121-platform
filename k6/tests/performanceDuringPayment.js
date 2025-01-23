@@ -1,4 +1,5 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
+import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import metricstsModel from '../models/metrics.js';
@@ -22,22 +23,33 @@ const amount = 11.11;
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
   duration: '60m',
   iterations: 1,
 };
 
+const failedChecks = new Counter('failed_checks');
+
+function checkAndFail(response, checks) {
+  const result = check(response, checks);
+  if (!result) {
+    failedChecks.add(1);
+    fail('One or more checks failed');
+  }
+}
+
 export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
-  check(reset, {
+  checkAndFail(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  check(login, {
+  checkAndFail(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -49,7 +61,7 @@ export default function () {
 
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
-  check(doPayment, {
+  checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -67,7 +79,7 @@ export default function () {
     minPassRatePercentage,
     amount,
   );
-  check(monitorPayment, {
+  checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
@@ -79,13 +91,13 @@ export default function () {
 
   // get export list
   const exportList = metricsPage.getExportList(3);
-  check(exportList, {
+  checkAndFail(exportList, {
     'Export list loaded succesfully status was 200': (r) => r.status == 200,
   });
 
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
-  check(message, {
+  checkAndFail(message, {
     'Message sent succesfully status was 202': (r) => r.status == 202,
   });
 
