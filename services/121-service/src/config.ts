@@ -31,6 +31,7 @@ export const APP_FAVICON = favIconUrl;
 export const SWAGGER_CUSTOM_CSS = `
   .swagger-ui .topbar { background: ${headerStyle}; }
   .swagger-ui .topbar .link { visibility: hidden; }
+  .swagger-ui .scheme-container { display: none; }
 `;
 export const SWAGGER_CUSTOM_JS = `
 const loc = window.location;

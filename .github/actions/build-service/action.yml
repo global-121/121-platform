@@ -73,7 +73,7 @@ runs:
         rm -r -f test/
         rm -r -f ./*.md
 
-    - name: Creating ZIP package
+    - name: Create ZIP package
       shell: bash
       working-directory: ${{ inputs.servicePath }}
       run: zip --quiet --display-globaldots --recurse-paths artifact.zip .
