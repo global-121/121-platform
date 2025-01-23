@@ -1,5 +1,4 @@
-import { check, fail, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { check, sleep } from 'k6';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import loginModel from '../models/login.js';
@@ -26,26 +25,16 @@ export const options = {
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 export default function () {
   // reset db
   const reset = resetPage.resetDB(resetScript);
-  checkAndFail(reset, {
+  check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  checkAndFail(login, {
+  check(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -61,7 +50,7 @@ export default function () {
       programsPage.createProgramRegistrationAttribute(programId, attributeName);
     registrationVisa[attributeName] = 'bla';
 
-    checkAndFail(programRegistrationAttributes, {
+    check(programRegistrationAttributes, {
       'Program registration attributes added successfully status was 201': (
         r,
       ) => {
@@ -78,20 +67,20 @@ export default function () {
     programId,
     registrationVisa,
   );
-  checkAndFail(registrationImport, {
+  check(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
 
   // Duplicate registration
   const duplicateRegistration =
     resetPage.duplicateRegistrations(duplicateNumber);
-  checkAndFail(duplicateRegistration, {
+  check(duplicateRegistration, {
     'Duplication successful status was 201': (r) => r.status == 201,
   });
 
   // get program by id and validte load time is less than 200ms
   const program = programsPage.getProgramById(2);
-  checkAndFail(program, {
+  check(program, {
     'Programme loaded succesfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {

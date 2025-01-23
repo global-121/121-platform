@@ -1,5 +1,4 @@
-import { check, fail, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { check, sleep } from 'k6';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import LoginModel from '../models/login.js';
@@ -32,27 +31,17 @@ export const options = {
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 export default function () {
   // REFACTOR: this test requires the same setup as getProgramWithManyAttributes.js. Move setup code to shared place.
   // reset db
   const reset = resetPage.resetDB(resetScript);
-  checkAndFail(reset, {
+  check(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  checkAndFail(login, {
+  check(login, {
     'Login successful status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -69,7 +58,7 @@ export default function () {
       programsPage.createProgramRegistrationAttribute(programId, attributeName);
     registrationVisa[attributeName] = 'bla';
 
-    checkAndFail(programRegistrationAttributes, {
+    check(programRegistrationAttributes, {
       'Program registration attributes added successfully status was 201': (
         r,
       ) => {
@@ -86,20 +75,20 @@ export default function () {
     programId,
     registrationVisa,
   );
-  checkAndFail(registrationImport, {
+  check(registrationImport, {
     'Import of registration successful status was 201': (r) => r.status == 201,
   });
 
   // Duplicate registrations between 20k - 50k
   const duplicateRegistration =
     resetPage.duplicateRegistrations(duplicateNumber);
-  checkAndFail(duplicateRegistration, {
+  check(duplicateRegistration, {
     'Duplication successful status was 201': (r) => r.status == 201,
   });
 
   // get program by id and validate load time is less than 200ms
   const program = programsPage.getProgramById(programId);
-  checkAndFail(program, {
+  check(program, {
     'Programme loaded successfully status was 200': (r) => r.status == 200,
     'Programme load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -114,7 +103,7 @@ export default function () {
     programId,
     'included',
   );
-  checkAndFail(responseIncluded, {
+  check(responseIncluded, {
     'Status successfully changed to included: 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -125,7 +114,7 @@ export default function () {
 
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
-  checkAndFail(doPayment, {
+  check(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -142,7 +131,7 @@ export default function () {
     duplicateNumber,
     minPassRatePercentage,
   );
-  checkAndFail(monitorPayment, {
+  check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
