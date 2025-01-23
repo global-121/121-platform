@@ -71,7 +71,7 @@ export class NedbankApiService {
           },
           CreditorAccount: {
             SchemeName: 'recipient',
-            Identification: phoneNumber,
+            Identification: `00${phoneNumber}`, // We use twilio to validate/lookup phonenumbers. Twilio return phonenumber with a '+' and country code, +27 for South Africam which we store without the + in out database. Nedbank requires the number to start with 00 + country code so 0027
             Name: paymentReference, // Name cannot be left empty so set it to a default value found on nedbank api documentation
           },
         },

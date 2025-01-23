@@ -78,11 +78,11 @@ export class NedbankApiHelperService {
       },
       {
         name: 'x-idempotency-key', // We use OrderCreateReference as 'idempotency' key and therefore set this thing with a random value
-        value: Math.floor(Math.random() * 10000).toString(),
+        value: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(),
       },
       {
         name: 'x-jws-signature',
-        value: Math.floor(Math.random() * 10000).toString(), // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
+        value: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(), // Should be a random integer https://apim.nedbank.co.za/static/docs/cashout-create-order
       },
       { name: 'x-fapi-financial-id', value: 'OB/2017/001' }, // Should always be this value https://apim.nedbank.co.za/static/docs/cashout-create-order
       { name: 'x-fapi-customer-ip-address', value: '0.0.0.0' }, // Should be a valid ip address, it does not seem to matter which one. For now we use a 0.0.0.0 to save us the trouble of setting an env for every server

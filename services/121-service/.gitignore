@@ -21,7 +21,7 @@ swagger-spec.json
 # database certificate
 cert/DigiCertGlobalRootCA.crt.pem
 # nedbank integration certificate
-cert/APIMTPP_redcross_sandbox.pfx
+cert/*.pfx
 
 # Compodoc documentation
 documentation
