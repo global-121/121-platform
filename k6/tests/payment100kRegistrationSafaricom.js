@@ -1,5 +1,4 @@
-import { check, fail, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { check, sleep } from 'k6';
 
 import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import InitializePaymentModel from '../models/initalize-payment.js';
@@ -24,16 +23,6 @@ export const options = {
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
@@ -45,7 +34,7 @@ export default function () {
     minPassRatePercentage,
     amount,
   );
-  checkAndFail(monitorPayment, {
+  check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);

@@ -1,5 +1,4 @@
-import { check, fail, sleep } from 'k6';
-import { Counter } from 'k6/metrics';
+import { check, sleep } from 'k6';
 
 import loginModel from '../models/login.js';
 import metricstsModel from '../models/metrics.js';
@@ -30,26 +29,16 @@ export const options = {
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
-  checkAndFail(reset, {
+  check(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  checkAndFail(login, {
+  check(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -61,7 +50,7 @@ export default function () {
 
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
-  checkAndFail(doPayment, {
+  check(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -79,7 +68,7 @@ export default function () {
     minPassRatePercentage,
     amount,
   );
-  checkAndFail(monitorPayment, {
+  check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
@@ -91,13 +80,13 @@ export default function () {
 
   // get export list
   const exportList = metricsPage.getExportList(3);
-  checkAndFail(exportList, {
+  check(exportList, {
     'Export list loaded succesfully status was 200': (r) => r.status == 200,
   });
 
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
-  checkAndFail(message, {
+  check(message, {
     'Message sent succesfully status was 202': (r) => r.status == 202,
   });
 

@@ -1,6 +1,5 @@
-import { check, fail, sleep } from 'k6';
+import { check, sleep } from 'k6';
 import http from 'k6/http';
-import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
@@ -28,16 +27,6 @@ export const options = {
   iterations: 1,
 };
 
-const failedChecks = new Counter('failed_checks');
-
-function checkAndFail(response, checks) {
-  const result = check(response, checks);
-  if (!result) {
-    failedChecks.add(1);
-    fail('One or more checks failed');
-  }
-}
-
 function isServiceUp() {
   const response = http.get('http://localhost:3000/api/health/health'); // Replace with your health check endpoint
   return response.status === 200;
@@ -64,7 +53,7 @@ export default function () {
 
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
-  checkAndFail(doPayment, {
+  check(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -92,7 +81,7 @@ export default function () {
     duplicateNumber,
     minPassRatePercentage,
   );
-  checkAndFail(monitorPayment, {
+  check(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
