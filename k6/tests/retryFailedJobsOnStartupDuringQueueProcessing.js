@@ -10,7 +10,7 @@ const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 7; // This leads to 128 registrations
+const duplicateNumber = 7;
 const programId = 3;
 const paymentId = 3;
 const maxTimeoutAttempts = 400;
@@ -19,11 +19,10 @@ const amount = 10;
 
 export const options = {
   thresholds: {
-    // In this case the health check runs multiple times and so of the responses are going to be 500 before service is up
-    http_req_failed: [
-      { threshold: 'rate<0.01', abortOnFail: true, delayAbortEval: '10s' },
-    ], // Fail if HTTP failure rate exceeds 1%
-    failed_checks: ['count<1'], // fail the test if any check fails
+    // HTTP failures should be less than 1%
+    http_req_failed: [{ threshold: 'rate<0.01', abortOnFail: true }],
+    // Custom threshold for failed checks
+    failed_checks: [{ threshold: 'count<1', abortOnFail: true }],
   },
   vus: 1,
   duration: '60m',
@@ -41,7 +40,7 @@ function checkAndFail(response, checks) {
 }
 
 function isServiceUp() {
-  const response = http.get('http://localhost:3000/api/health/health'); // Replace with your health check endpoint
+  const response = http.get('http://localhost:3000/api/health/health');
   return response.status === 200;
 }
 
@@ -49,13 +48,12 @@ export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
   checkAndFail(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
+    'Reset successful, status is 202': (r) => r.status === 202,
   });
-
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful, status is 201': (r) => r.status === 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -67,11 +65,11 @@ export default function () {
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
-    'Payment successfully done status 202': (r) => {
-      if (r.status != 202) {
-        console.log(r.body);
+    'Payment successfully done, status is 202': (r) => {
+      if (r.status !== 202) {
+        console.log(`Payment response body: ${r.body}`);
       }
-      return r.status == 202;
+      return r.status === 202;
     },
   });
 
@@ -79,10 +77,10 @@ export default function () {
 
   resetPage.kill121Service();
 
-  // Wait for the service to restart and become available
+  // Wait for the service to become available again
   let serviceUp = false;
   while (!serviceUp) {
-    sleep(1); // Wait for 1 second before pinging again
+    sleep(1); // Wait 1 second before checking again
     serviceUp = isServiceUp();
   }
 
@@ -95,12 +93,12 @@ export default function () {
     minPassRatePercentage,
   );
   checkAndFail(monitorPayment, {
-    'Payment progressed successfully status 200': (r) => {
-      if (r.status != 200) {
+    'Payment progress successful, status is 200': (r) => {
+      if (r.status !== 200) {
         const responseBody = JSON.parse(r.body);
-        console.log(responseBody.error || r.status);
+        console.log(`Error: ${responseBody.error || r.status}`);
       }
-      return r.status == 200;
+      return r.status === 200;
     },
   });
 }
