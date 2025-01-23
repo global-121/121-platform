@@ -1,4 +1,4 @@
-## Certificate Handling in Azure App Service
+# Certificate Handling in Azure App Service
 
 To enable loading certificate files via environment variables in the Azure App Service, follow these steps:
 
@@ -15,7 +15,7 @@ To enable loading certificate files via environment variables in the Azure App S
 
 3. **Set the Certificate-path**:
 
-   - The location of the certificate needs to be set in the environment variable:  
+   - The location of the certificate needs to be set in the environment variable:
 
      ```dotenv
      NEDBANK_CERTIFICATE_PATH=/var/ssl/private/<thumbprint>.p12
