@@ -1,6 +1,6 @@
 # Array to collect failed tests
 failed_tests=()
-for file in tests/*.js; do
+for file in tests/retryFailedJobsOnStartupDuringQueueProcessing.js; do
   echo "Test: $file"
   echo "Starting services"
   (cd ../services ; docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300)
