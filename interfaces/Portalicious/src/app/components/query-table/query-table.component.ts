@@ -64,7 +64,7 @@ export enum QueryTableColumnType {
 // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
 export type QueryTableColumn<TData, TField = keyof TData & string> = {
   header: string;
-  field?: TField;
+  field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field is computed and should not be used for filtering or sorting
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
   disableSorting?: boolean;
@@ -191,7 +191,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return column.getCellText(item);
     }
 
-    if (!column.field) {
+    if (column.field === 'COMPUTED_FIELD') {
       return;
     }
 
@@ -295,7 +295,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   getColumnFilterField(column: QueryTableColumn<TData>) {
-    if (column.disableFiltering) {
+    if (column.disableFiltering || column.field === 'COMPUTED_FIELD') {
       return undefined;
     }
     return column.fieldForFilter ?? column.field;
@@ -319,7 +319,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {
-    if (column.disableSorting) {
+    if (column.disableSorting || column.field === 'COMPUTED_FIELD') {
       return undefined;
     }
     return column.fieldForSort ?? column.field;
