@@ -10,14 +10,20 @@ for file in --throw tests/retryFailedJobsOnStartupDuringQueueProcessing.js; do
   # Log the contents of summary.json for debugging
   echo "Contents of summary.json:"
   cat summary.json
-  # Check if there are any failed checks
-  if [ $(jq '[.metrics | .checks.fails, .http_req_failed.thresholds[].ok | select(. == false)] | any' summary.json) == "true" ]; then
+
+  # Check for failed checks or threshold breaches
+  failed_checks=$(jq '.metrics.checks.fails // 0' summary.json)
+  failed_thresholds=$(jq '[.metrics[]?.thresholds[]? | select(.ok == false)] | length' summary.json)
+
+  if [ "$failed_checks" -gt 0 ] || [ "$failed_thresholds" -gt 0 ]; then
       echo "Test failed: $file"
       failed_tests+=("$file")
   fi
+
   echo "Stopping services"
   (cd ../services ; docker compose -f docker-compose.yml down)
 done
+
 # Check if there were any failed tests
 if [ ${#failed_tests[@]} -ne 0 ]; then
   echo "The following tests failed:"
