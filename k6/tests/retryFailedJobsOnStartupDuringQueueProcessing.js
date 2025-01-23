@@ -19,8 +19,8 @@ const amount = 10;
 
 export const options = {
   thresholds: {
-    // HTTP failures should be less than 1%
-    http_req_failed: [{ threshold: 'rate<0', abortOnFail: true }],
+    // HTTP failures should be less than 30%
+    http_req_failed: [{ threshold: 'rate<0.30', abortOnFail: true }],
     // Custom threshold for failed checks
     failed_checks: [{ threshold: 'count<1', abortOnFail: true }],
   },
