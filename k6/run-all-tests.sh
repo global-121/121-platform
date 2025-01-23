@@ -11,7 +11,7 @@ for file in --throw tests/retryFailedJobsOnStartupDuringQueueProcessing.js; do
   echo "Contents of summary.json:"
   cat summary.json
   # Check if there are any failed checks
-  if [ $(jq '.metrics.checks.fails' summary.json) -gt 0 ]; then
+  if [ $(jq '[.metrics | .checks.fails, .http_req_failed.thresholds[].ok | select(. == false)] | any' summary.json) == "true" ]; then
       echo "Test failed: $file"
       failed_tests+=("$file")
   fi
