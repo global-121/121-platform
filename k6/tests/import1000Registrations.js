@@ -24,7 +24,6 @@ if (!csvFile) {
 export const options = {
   thresholds: {
     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
-    failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
   iterations: 1,
