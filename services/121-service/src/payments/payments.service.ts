@@ -116,9 +116,6 @@ export class PaymentsService {
         this.commercialBankEthiopiaService,
       ],
       [FinancialServiceProviders.excel]: [this.excelService],
-      [FinancialServiceProviders.deprecatedJumbo]: [
-        {} as FinancialServiceProviderIntegrationInterface,
-      ],
     };
   }
 
@@ -333,7 +330,7 @@ export class PaymentsService {
     programFinancialServiceProviderConfigurationName: string,
   ): Promise<string[]> {
     const config =
-      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+      await this.programFinancialServiceProviderConfigurationRepository.findOne(
         {
           where: {
             name: Equal(programFinancialServiceProviderConfigurationName),
@@ -342,6 +339,14 @@ export class PaymentsService {
           relations: ['properties'],
         },
       );
+
+    const errorMessages: string[] = [];
+    if (!config) {
+      errorMessages.push(
+        `Missing Program FSP configuration with name ${programFinancialServiceProviderConfigurationName}`,
+      );
+      return errorMessages;
+    }
 
     const requiredConfigurations =
       getFinancialServiceProviderConfigurationRequiredProperties(
@@ -352,7 +357,6 @@ export class PaymentsService {
       return [];
     }
 
-    const errorMessages: string[] = [];
     for (const requiredConfiguration of requiredConfigurations) {
       const foundConfig = config.properties.find(
         (c) => c.name === requiredConfiguration,

@@ -77,13 +77,13 @@ export class RegistrationEntity extends Base121Entity {
   public inclusionScore: number | null;
 
   @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity, {
-    onDelete: 'NO ACTION', // Do not delete on deleting programFspConfig, instead see catch in programFinancialServiceProviderConfigurationService.delete()
+    onDelete: 'SET NULL',
   })
   @JoinColumn({
     name: 'programFinancialServiceProviderConfigurationId',
   })
   public programFinancialServiceProviderConfiguration: ProgramFinancialServiceProviderConfigurationEntity;
-  @Column({ type: 'integer', nullable: false })
+  @Column({ type: 'integer', nullable: true })
   public programFinancialServiceProviderConfigurationId: number;
 
   @Column({ nullable: false, default: 1 })
