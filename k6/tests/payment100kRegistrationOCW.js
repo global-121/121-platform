@@ -49,8 +49,6 @@ export default function () {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
-        console.log('responseBody: ', responseBody);
-        console.log('status: ', r.status);
         console.log(responseBody.error || r.status);
       }
       console.log('status: ', r.status);
