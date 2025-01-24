@@ -441,7 +441,7 @@ export class IntersolveVisaService
     };
   }
 
-  public async retrieveAndUpdateParentWallet(
+  private async retrieveAndUpdateParentWallet(
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
     // Get balance on the parent wallet
@@ -470,7 +470,7 @@ export class IntersolveVisaService
     return intersolveVisaParentWallet;
   }
 
-  public async retrieveAndUpdateChildWallet(
+  private async retrieveAndUpdateChildWallet(
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<IntersolveVisaChildWalletEntity> {
     // Get child wallet information
@@ -716,6 +716,27 @@ export class IntersolveVisaService
     await this.intersolveVisaApiService.setTokenBlocked(tokenCode, pause);
     wallet.isTokenBlocked = pause;
     return await this.intersolveVisaChildWalletScopedRepository.save(wallet);
+  }
+
+  /**
+   * Retrieves and updates all wallets and cards for all customers. Used by cronjob.
+   */
+  public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
+    const customers =
+      await this.intersolveVisaCustomerScopedRepository.findWithWallets();
+    for (const customer of customers) {
+      for (const childWallet of customer.intersolveVisaParentWallet
+        .intersolveVisaChildWallets) {
+        if (
+          childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
+        ) {
+          await this.retrieveAndUpdateChildWallet(childWallet);
+        }
+      }
+      await this.retrieveAndUpdateParentWallet(
+        customer.intersolveVisaParentWallet,
+      );
+    }
   }
 
   /**

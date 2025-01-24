@@ -25,12 +25,8 @@ export class IntersolveVisaReconciliationController {
   })
   @Patch('programs/:programId/financial-service-providers/intersolve-visa/')
   public async retrieveAndUpdateAllCards(): Promise<void> {
-    console.info(
-      'CronjobService - Started: retrieveAndUpdateAllWalletsAndCards',
-    );
+    console.info('Job started: retrieveAndUpdateAllWalletsAndCards');
     await this.intersolveVisaReconciliationService.retrieveAndUpdateAllWalletsAndCards();
-    console.info(
-      'CronjobService - Complete: retrieveAndUpdateAllWalletsAndCards',
-    );
+    console.info('Job completed: retrieveAndUpdateAllWalletsAndCards');
   }
 }

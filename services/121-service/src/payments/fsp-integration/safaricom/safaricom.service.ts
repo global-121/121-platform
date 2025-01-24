@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
-import { Redis } from 'ioredis';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
-import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
-import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 
 @Injectable()
 export class SafaricomService
@@ -17,9 +13,6 @@ export class SafaricomService
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    private readonly queuesService: QueuesRegistryService,
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
   ) {}
 
   /**

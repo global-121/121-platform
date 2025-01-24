@@ -718,16 +718,6 @@
     "params": ["programId", "registrationId"]
   },
   {
-    "method": "post",
-    "path": "/api/financial-service-providers/safaricom/transfer-callback",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/safaricom/timeout-callback",
-    "params": []
-  },
-  {
     "method": "put",
     "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
     "params": []
@@ -755,6 +745,16 @@
   {
     "method": "patch",
     "path": "/api/financial-service-providers/intersolve-voucher/vouchers",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/transfer-callback",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/timeout-callback",
     "params": []
   }
 ]

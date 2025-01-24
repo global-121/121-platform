@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
+import { TimeoutCallbackJobProcessorSafaricom } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor';
+import { TransferCallbackJobProcessorSafaricom } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-transfer-callback-job.processor';
 import { SafaricomReconciliationController } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.controller';
 import { SafaricomReconciliationService as SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
@@ -15,7 +17,11 @@ import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-
     TransactionsModule,
     QueuesRegistryModule,
   ],
-  providers: [SafaricomReconciliationService],
+  providers: [
+    SafaricomReconciliationService,
+    TransferCallbackJobProcessorSafaricom,
+    TimeoutCallbackJobProcessorSafaricom,
+  ],
   controllers: [SafaricomReconciliationController],
   exports: [SafaricomReconciliationService],
 })
