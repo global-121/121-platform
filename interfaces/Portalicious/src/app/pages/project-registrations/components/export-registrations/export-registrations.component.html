@@ -9,7 +9,7 @@
 <app-confirmation-dialog
   #exportSelectedDialog
   header="Export selected registrations"
-  i18n-header="@@export-selected"
+  i18n-header
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
@@ -29,7 +29,7 @@
 <app-confirmation-dialog
   #exportDuplicatesDialog
   header="Export duplicate registrations"
-  i18n-header="@@export-duplicate"
+  i18n-header
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
@@ -58,7 +58,7 @@
 <app-confirmation-dialog
   #exportDataChangesDialog
   header="Export status & data changes"
-  i18n-header="@@export-changes"
+  i18n-header
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
@@ -107,7 +107,7 @@
 <app-confirmation-dialog
   #exportAccountVerificationDialog
   header="Export account number verification"
-  i18n-header="@@export-verification"
+  i18n-header
   headerIcon="pi pi-upload"
   [mutation]="exportCBEVerificationReportMutation"
   [mutationData]="undefined"

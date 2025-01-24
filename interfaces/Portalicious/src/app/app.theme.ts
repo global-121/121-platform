@@ -55,21 +55,27 @@ const AppTheme = definePreset(Aura, {
           hoverColor: colors.purple.DEFAULT,
         },
         text: {
+          color: colors.black.DEFAULT,
           hoverColor: colors.purple.DEFAULT,
         },
         highlight: {
           background: colors.purple[100],
           focusBackground: colors.purple[100],
           color: colors.purple.DEFAULT,
-          focusColor: colors.purple.DEFAULT,
+          focusColor: colors.black.DEFAULT,
         },
         formField: {
-          hoverBorderColor: colors.purple.DEFAULT,
+          color: colors.black.DEFAULT,
+          focusBorderColor: colors.purple[500],
+          hoverBorderColor: colors.purple[500],
           invalidBorderColor: colors.red[500],
           invalidPlaceholder: colors.red[500],
         },
         navigation: {
           item: {
+            focusColor: colors.black.DEFAULT,
+            iconColor: colors.black.DEFAULT,
+            iconFocusColor: colors.black.DEFAULT,
             focusBackground: colors.purple[100],
             activeBackground: colors.purple[100],
           },
@@ -79,18 +85,126 @@ const AppTheme = definePreset(Aura, {
     focusRing: {
       color: colors.purple.DEFAULT,
     },
+    borderRadius: {
+      // used by cards
+      xl: '1.125rem',
+    },
   },
   components: {
     button: {
-      text: {
-        primary: {
-          color: colors.black.DEFAULT,
+      gap: '0.625rem',
+      paddingX: '1.25rem',
+      paddingY: '0.6rem',
+      sm: {
+        paddingX: '1rem',
+        paddingY: '0.25rem',
+      },
+      colorScheme: {
+        light: {
+          primary: {
+            hover: {
+              background: colors.purple[600],
+            },
+            active: {
+              background: colors.purple[900],
+            },
+          },
+          outlined: {
+            primary: {
+              hover: {
+                background: colors.purple[100],
+              },
+              active: {
+                background: colors.white,
+                color: colors.purple[900],
+              },
+            },
+            contrast: {
+              border: {
+                color: colors.grey[500],
+              },
+              hover: {
+                background: colors.grey[100],
+              },
+              active: {
+                background: colors.white,
+              },
+            },
+          },
+          text: {
+            primary: {
+              color: colors.black.DEFAULT,
+            },
+            secondary: {
+              color: colors.black.DEFAULT,
+            },
+          },
+        },
+      },
+    },
+    card: {
+      shadow: tailwindConfig.theme.extend.boxShadow.cards,
+    },
+    datatable: {
+      body: {
+        cell: {
+          padding: '0.625rem 1rem',
+        },
+      },
+      colorScheme: {
+        light: {
+          row: {
+            hover: {
+              color: colors.black.DEFAULT,
+            },
+          },
         },
       },
     },
     message: {
       colorScheme: {
         light: severityVariants,
+      },
+    },
+    radiobutton: {
+      colorScheme: {
+        light: {
+          icon: {
+            checked: {
+              color: colors.purple.DEFAULT,
+              hover: {
+                color: colors.purple.DEFAULT,
+              },
+            },
+          },
+          checked: {
+            background: colors.white,
+            hover: {
+              background: colors.white,
+            },
+          },
+        },
+      },
+    },
+    scrollpanel: {
+      colorScheme: {
+        light: {
+          bar: {
+            background: colors.grey[700],
+          },
+        },
+      },
+      bar: {
+        size: '0.5rem',
+      },
+    },
+    tabs: {
+      tab: {
+        color: colors.black.DEFAULT,
+        hover: {
+          color: colors.grey[700],
+          borderColor: colors.grey[700],
+        },
       },
     },
     toast: {

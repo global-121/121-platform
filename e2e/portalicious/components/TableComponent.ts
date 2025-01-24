@@ -25,7 +25,7 @@ class TableComponent {
     this.globalSearchOpenerButton = this.page.getByTitle('Filter by keyword');
     this.globalSearchInput = this.page.getByPlaceholder('Filter by keyword');
     this.clearAllFiltersButton = this.page.getByRole('button', {
-      name: 'Clear all filters',
+      name: 'Clear filters',
     });
     this.applyFiltersButton = this.page.getByLabel('Apply');
     this.textboxField = this.page.getByRole('textbox');

@@ -115,7 +115,7 @@ export class ExportRegistrationsComponent {
 
   exportOptions = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@export-selected:Export selected registrations`,
+      label: $localize`:@@export-selected:Selected registrations`,
       command: () => {
         const actionData = this.getActionData()();
         if (!actionData) {
@@ -126,13 +126,13 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-duplicate:Export duplicate registrations`,
+      label: $localize`:@@export-duplicate:Duplicate registrations`,
       command: () => {
         this.exportDuplicatesDialog().askForConfirmation();
       },
     },
     {
-      label: $localize`:@@export-changes:Export status & data changes`,
+      label: $localize`:@@export-changes:Status & data changes`,
       command: () => {
         this.fromDateExport.set(undefined);
         this.toDateExport.set(undefined);
@@ -140,7 +140,7 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-verification:Export account number verification`,
+      label: $localize`:@@export-verification:Account number verification`,
       visible:
         this.isCBEProject() &&
         this.authService.hasPermission({

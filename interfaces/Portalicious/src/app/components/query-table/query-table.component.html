@@ -39,11 +39,11 @@
       <span class="ms-auto"></span>
       @if (isFiltered()) {
         <p-button
-          label="Clear all filters"
+          label="Clear filters"
           i18n-label="@@table-clear-filters"
           [outlined]="true"
           rounded
-          severity="secondary"
+          severity="contrast"
           icon="pi pi-filter-slash"
           (click)="clearAllFilters()"
           class="me-2"
@@ -93,12 +93,10 @@
         @let columnSortField = getColumnSortField(column);
         @let columnFilterField = getColumnFilterField(column);
         @let columnMatchMode = getColumnMatchMode(column);
+        @let isColumnFiltered = getIsColumnFiltered(column);
 
-        <th
-          [pSortableColumn]="columnSortField"
-          style="min-width: 14rem"
-        >
-          <div class="flex items-center">
+        <th [pSortableColumn]="columnSortField">
+          <div class="flex items-center text-nowrap">
             <ng-container>{{ column.header }}</ng-container>
 
             @if (columnSortField) {
@@ -109,15 +107,21 @@
             }
 
             @if (columnFilterField) {
-              @if (column.type === 'multiselect') {
-                <p-columnFilter
-                  [field]="columnFilterField"
-                  [matchMode]="columnMatchMode"
-                  display="menu"
-                  [showMatchModes]="false"
-                  [showOperator]="false"
-                  [showAddButton]="false"
-                >
+              <p-columnFilter
+                #columnFilter
+                [type]="getColumnType(column)"
+                [field]="columnFilterField"
+                [matchMode]="columnMatchMode"
+                display="menu"
+                [showMatchModes]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                [ngClass]="{
+                  '[&_.p-button]:bg-purple-100 [&_.p-button]:text-purple':
+                    isColumnFiltered,
+                }"
+              >
+                @if (column.type === 'multiselect') {
                   <ng-template
                     pTemplate="filter"
                     let-value
@@ -134,16 +138,14 @@
                     >
                     </p-multiSelect>
                   </ng-template>
-                </p-columnFilter>
-              } @else {
-                <p-columnFilter
-                  [type]="getColumnType(column)"
-                  [field]="columnFilterField"
-                  display="menu"
-                  [matchMode]="columnMatchMode"
-                  [showMatchModes]="false"
-                  [showOperator]="false"
-                  [showAddButton]="false"
+                }
+              </p-columnFilter>
+              @if (isColumnFiltered) {
+                <p-button
+                  icon="pi pi-filter-slash"
+                  text
+                  rounded
+                  (click)="columnFilter.clearFilter(); $event.stopPropagation()"
                 />
               }
             }
@@ -161,7 +163,12 @@
     let-item
     let-expanded="expanded"
   >
-    <tr [pContextMenuRow]="item">
+    <tr
+      [pContextMenuRow]="item"
+      [ngClass]="{
+        'bg-purple-50': expanded,
+      }"
+    >
       @if (enableSelection()) {
         <td style="width: 0">
           @if (selectAll()) {
@@ -212,7 +219,7 @@
               } @else if (cellText) {
                 <app-colored-chip
                   [label]="cellText"
-                  [variant]="'grey'"
+                  [variant]="'contrast'"
                 />
               }
             } @else {
@@ -275,7 +282,10 @@
     }
   </ng-template>
   <ng-template pTemplate="emptymessage">
-    <tr data-testid="query-table-empty">
+    <tr
+      data-testid="query-table-empty"
+      class="hover:bg-white"
+    >
       <td [attr.colspan]="totalColumnCount()">
         <div class="w-full py-6 text-center">
           @if (isFiltered()) {
@@ -296,7 +306,7 @@
             </p>
 
             <p-button
-              label="Clear all filters"
+              label="Clear filters"
               i18n-label="@@table-clear-filters"
               link
               (click)="clearAllFilters()"

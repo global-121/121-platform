@@ -1027,31 +1027,31 @@
         <target>Export</target>
       </trans-unit>
       <trans-unit id="export-changes" datatype="html">
-        <source>Export status &amp; data changes</source>
-        <target>Status- en datawijzigingen exporteren</target>
+        <source>Status &amp; data changes</source>
+        <target>Status- en datawijzigingen</target>
       </trans-unit>
       <trans-unit id="export-duplicate" datatype="html">
-        <source>Export duplicate registrations</source>
-        <target>Duplicaten exporteren</target>
+        <source>Duplicate registrations</source>
+        <target>Duplicaten</target>
       </trans-unit>
       <trans-unit id="export-payments-debit-card-usage" datatype="html">
-        <source>Export debit card usage</source>
-        <target>Visakaartgebruik exporteren</target>
+        <source>Debit card usage</source>
+        <target>Visakaartgebruik</target>
       </trans-unit>
       <trans-unit id="export-payments-last" datatype="html">
         <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
         <target>Exporteer meest recente <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> betaling(en)</target>
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
-        <source>Export unused vouchers</source>
-        <target>Ongebruikte vouchers exporteren</target>
+        <source>Unused vouchers</source>
+        <target>Ongebruikte vouchers</target>
       </trans-unit>
       <trans-unit id="export-selected" datatype="html">
-        <source>Export selected registrations</source>
-        <target>Geselecteerde registraties exporteren</target>
+        <source>Selected registrations</source>
+        <target>Geselecteerde registraties</target>
       </trans-unit>
       <trans-unit id="export-verification" datatype="html">
-        <source>Export account number verification</source>
+        <source>Account number verification</source>
         <target>Verifieer rekeningnummers</target>
       </trans-unit>
       <trans-unit id="generic-approve" datatype="html">
@@ -1336,7 +1336,7 @@
         <target>U staat op het punt om <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>een bericht te sturen<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> naar <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registratie(s).</target>
       </trans-unit>
       <trans-unit id="table-clear-filters" datatype="html">
-        <source>Clear all filters</source>
+        <source>Clear filters</source>
         <target>Alle filters wissen</target>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
@@ -1879,10 +1879,6 @@
         <source>Privacy</source>
         <target state="new">Privacy</target>
       </trans-unit>
-      <trans-unit id="171496627094206309" datatype="html">
-        <source>Logged in as: <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
-        <target>Ingelogd als: <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/><x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
-      </trans-unit>
       <trans-unit id="privacy-notice-last-updated" datatype="html">
         <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
         <target>Laatst gewijzigd: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></target>
@@ -1970,6 +1966,34 @@
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
         <target state="new">Reference ID</target>
+      </trans-unit>
+      <trans-unit id="3797627476744587316" datatype="html">
+        <source>Logged in as:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></source>
+        <target>Ingelogd als:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="2569607511969570423" datatype="html">
+        <source>Export selected registrations</source>
+        <target>Geselecteerde registraties exporteren</target>
+      </trans-unit>
+      <trans-unit id="6371019092558402602" datatype="html">
+        <source>Export duplicate registrations</source>
+        <target>Duplicaten exporteren</target>
+      </trans-unit>
+      <trans-unit id="4667279955724574149" datatype="html">
+        <source>Export status &amp; data changes</source>
+        <target>Status- en datawijzigingen exporteren</target>
+      </trans-unit>
+      <trans-unit id="8735075176632769564" datatype="html">
+        <source>Export account number verification</source>
+        <target>Verifieer rekeningnummers exporteren</target>
+      </trans-unit>
+      <trans-unit id="2932497983463949366" datatype="html">
+        <source>Export unused vouchers</source>
+        <target>Ongebruikte vouchers exporteren</target>
+      </trans-unit>
+      <trans-unit id="7197861278093051814" datatype="html">
+        <source>Export debit card usage</source>
+        <target>Visakaartgebruik exporteren</target>
       </trans-unit>
     </body>
   </file>

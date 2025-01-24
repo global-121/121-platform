@@ -39,7 +39,7 @@ export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.validated]: 'pi pi-check-circle',
     [RegistrationStatusEnum.included]: 'pi pi-check',
     [RegistrationStatusEnum.paused]: 'pi pi-pause',
-    [RegistrationStatusEnum.declined]: 'pi pi-times',
+    [RegistrationStatusEnum.declined]: 'pi pi-ban',
     [RegistrationStatusEnum.deleted]: 'pi pi-trash',
   };
 

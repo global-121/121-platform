@@ -1,11 +1,13 @@
-<!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-<label
-  class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
->
-  <strong class="mb-2 block">
-    {{ label() | translatableString }}
-  </strong>
-  <ng-content></ng-content>
-  <app-form-error [error]="errorMessage()" />
-</label>
-<ng-content select="[slot='details']"></ng-content>
+<div class="mb-2">
+  <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+  <label
+    class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
+  >
+    <strong class="mb-2 block">
+      {{ label() | translatableString }}
+    </strong>
+    <ng-content></ng-content>
+    <app-form-error [error]="errorMessage()" />
+  </label>
+  <ng-content select="[slot='details']"></ng-content>
+</div>

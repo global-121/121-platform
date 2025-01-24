@@ -20,7 +20,7 @@
           icon="pi pi-times"
           (click)="filterChange.emit(undefined)"
           text
-          severity="secondary"
+          severity="contrast"
           class="absolute end-0 top-1/2 -translate-y-1/2"
           styleClass="bg-transparent hover:text-purple-700 focus:text-purple-700"
         />
@@ -31,7 +31,8 @@
       icon="pi pi-search"
       (click)="globalFilterVisible.set(true)"
       text
-      severity="secondary"
+      severity="contrast"
+      size="large"
       title="Filter by keyword"
       i18n-title="@@table-quick-search"
       aria-label="Filter by keyword"

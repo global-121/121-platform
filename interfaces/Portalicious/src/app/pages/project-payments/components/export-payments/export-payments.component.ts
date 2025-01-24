@@ -133,7 +133,7 @@ export class ExportPaymentsComponent {
       },
     },
     {
-      label: $localize`:@@export-payments-unused-vouchers:Export unused vouchers`,
+      label: $localize`:@@export-payments-unused-vouchers:Unused vouchers`,
       visible:
         projectHasVoucherSupport(this.project.data()) &&
         this.authService.hasPermission({
@@ -145,7 +145,7 @@ export class ExportPaymentsComponent {
       },
     },
     {
-      label: $localize`:@@export-payments-debit-card-usage:Export debit card usage`,
+      label: $localize`:@@export-payments-debit-card-usage:Debit card usage`,
       visible:
         this.maxLastPaymentsNumber() > 0 &&
         projectHasPhysicalCardSupport(this.project.data()) &&
