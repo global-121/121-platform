@@ -191,6 +191,11 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
           isRequired: true,
         },
       ],
-      configurationProperties: [],
+      configurationProperties: [
+        {
+          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          isRequired: true,
+        },
+      ],
     },
   ];

@@ -285,16 +285,28 @@ export class TransactionJobProcessorsService {
     );
     const oldRegistration = structuredClone(registration);
 
+    // 2. Set the payment reference
     // This is a unique identifier for each transaction, which will be shown on the bank statement which the user receives by Nedbank out of the 121-platform
     // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
     // Payment reference cannot be longer than 30 characters
-    const paymentReference = `pj${transactionJob.programId}-pay${transactionJob.paymentNumber}-${transactionJob.phoneNumber}`;
-    let orderCreateReference: string;
-    let transactionId: number;
+    const paymentReferencePrefix =
+      (await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
+        {
+          programFinancialServiceProviderConfigurationId:
+            transactionJob.programFinancialServiceProviderConfigurationId,
+          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+        },
+      )) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
+    const paymentReference = `${paymentReferencePrefix.slice(
+      0,
+      18,
+    )}-${transactionJob.phoneNumber}`;
 
-    // 2. Check if there is an existing voucher/orderCreateReference without status if not create orderCreateReference, the nedbank voucher and the related transaction
+    // 3. Check if there is an existing voucher/orderCreateReference without status if not create orderCreateReference, the nedbank voucher and the related transaction
     // This should almost never happen, only when we have a server crash or when we got a timeout from the nedbank API when creating the order
     // but if it does, we should use the same orderCreateReference to avoid creating a new voucher
+    let orderCreateReference: string;
+    let transactionId: number;
     const voucherWithoutStatus =
       await this.nedbankVoucherScopedRepository.getVoucherWithoutStatus({
         paymentId: transactionJob.paymentNumber,

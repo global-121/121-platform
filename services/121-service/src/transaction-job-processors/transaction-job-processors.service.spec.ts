@@ -10,6 +10,7 @@ import { SafaricomService } from '@121-service/src/payments/fsp-integration/safa
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -62,6 +63,7 @@ describe('TransactionJobProcessorsService', () => {
   let latestTransactionRepository: LatestTransactionRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
+  let programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -87,6 +89,10 @@ describe('TransactionJobProcessorsService', () => {
     nedbankVoucherScopedRepository =
       unitRef.get<NedbankVoucherScopedRepository>(
         NedbankVoucherScopedRepository,
+      );
+    programFinancialServiceProviderConfigurationRepository =
+      unitRef.get<ProgramFinancialServiceProviderConfigurationRepository>(
+        ProgramFinancialServiceProviderConfigurationRepository,
       );
 
     jest
@@ -168,6 +174,13 @@ describe('TransactionJobProcessorsService', () => {
 
     it('should process Nedbank transaction job successfully', async () => {
       jest
+        .spyOn(
+          programFinancialServiceProviderConfigurationRepository,
+          'getPropertyValueByName',
+        )
+        .mockResolvedValue('ref#1');
+
+      jest
         .spyOn(nedbankService, 'createVoucher')
         .mockResolvedValueOnce(mockedCreateOrderReturn);
 
@@ -214,7 +227,13 @@ describe('TransactionJobProcessorsService', () => {
       );
     });
 
-    it('should handle NedbankError when creating order', async () => {
+    it('should create a transaction with status error and a voucher with status failed when a Nedbank error occurs', async () => {
+      jest
+        .spyOn(
+          programFinancialServiceProviderConfigurationRepository,
+          'getPropertyValueByName',
+        )
+        .mockResolvedValue('ref#1');
       const errorMessage = 'Nedbank error occurred';
       const nedbankError = new NedbankError(errorMessage);
       jest
@@ -244,21 +263,31 @@ describe('TransactionJobProcessorsService', () => {
       );
     });
 
-    it('should create different payment reference for different payments, programs and phonenumbers in Nedbank Transaction Job', async () => {
-      const variousNedbankPartialJobs = [
-        { programId: 1, paymentNumber: 1, phoneNumber: '12364532423' },
-        { programId: 5, paymentNumber: 2, phoneNumber: '876543' },
-        { programId: 3, paymentNumber: 1, phoneNumber: '456' },
-      ];
-      for (const jobVariant of variousNedbankPartialJobs) {
-        const job = { ...mockedNedbankTransactionJob, ...jobVariant };
-        await transactionJobProcessorsService.processNedbankTransactionJob(job);
-        expect(nedbankService.createVoucher).toHaveBeenCalledWith(
-          expect.objectContaining({
-            paymentReference: `pj${job.programId}-pay${job.paymentNumber}-${job.phoneNumber}`,
-          }),
-        );
-      }
+    it('should never create a payment reference longer than 30 characters', async () => {
+      const longPaymentReference = '1234567890123456789012345678901234567890';
+      jest
+        .spyOn(
+          programFinancialServiceProviderConfigurationRepository,
+          'getPropertyValueByName',
+        )
+        .mockResolvedValue(longPaymentReference);
+
+      await transactionJobProcessorsService.processNedbankTransactionJob(
+        mockedNedbankTransactionJob,
+      );
+      expect(nedbankService.createVoucher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentReference: expect.stringMatching(new RegExp(`^.{1,30}$`)), // Check if the length is not longer than 30 characters
+        }),
+      );
+
+      expect(nedbankService.createVoucher).toHaveBeenCalledWith(
+        expect.objectContaining({
+          paymentReference: expect.stringContaining(
+            mockedNedbankTransactionJob.phoneNumber,
+          ), // Check if it contains the phone number
+        }),
+      );
     });
   });
 });

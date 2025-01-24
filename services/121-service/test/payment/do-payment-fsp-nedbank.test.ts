@@ -141,9 +141,7 @@ describe('Do payment to PA(s)', () => {
           NedbankVoucherStatus.REDEEMED,
         );
         expect(exportPayment.nedbankOrderCreateReference).toBeDefined();
-        expect(exportPayment.nedbankPaymentReference).toBe(
-          `pj${programId}-pay${payment}-${registrationNedbank.phoneNumber}`,
-        );
+        expect(exportPayment.nedbankPaymentReference).toMatchSnapshot();
       });
 
       it('should fail pay-out when debitor account number is missing', async () => {

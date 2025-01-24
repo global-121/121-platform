@@ -59,7 +59,13 @@
   "allowEmptyPhoneNumber": true,
   "programFinancialServiceProviderConfigurations": [
     {
-      "financialServiceProvider": "Nedbank"
+      "financialServiceProvider": "Nedbank",
+      "properties": [
+        {
+          "name": "paymentReferencePrefix",
+          "value": "ref#1"
+        }
+      ]
     }
   ]
 }

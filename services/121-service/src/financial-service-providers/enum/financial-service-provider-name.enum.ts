@@ -17,4 +17,5 @@ export enum FinancialServiceProviderConfigurationProperties {
   brandCode = 'brandCode',
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
+  paymentReferencePrefix = 'paymentReferencePrefix',
 }
