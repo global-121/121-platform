@@ -85,6 +85,11 @@ export class RegistrationsTableColumnService {
               type: QueryTableColumnType.NUMERIC,
             },
             {
+              field: 'referenceId',
+              header: $localize`Reference ID`,
+              type: QueryTableColumnType.TEXT,
+            },
+            {
               field: 'name',
               header: $localize`:@@registration-full-name:Name`,
               getCellRouterLink: (registration) =>
