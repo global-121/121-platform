@@ -201,7 +201,6 @@ class PaymentsPage extends BasePage {
         .replace(/\s+/g, ' ')
         .trim();
 
-      await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
       expect(graphText).toContain(
         `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
       );
