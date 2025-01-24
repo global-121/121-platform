@@ -6,6 +6,7 @@ export enum FinancialServiceProviders {
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
   deprecatedJumbo = 'Intersolve-jumbo-physical',
+  nedbank = 'Nedbank',
 }
 
 export enum FinancialServiceProviderConfigurationProperties {
@@ -16,4 +17,5 @@ export enum FinancialServiceProviderConfigurationProperties {
   brandCode = 'brandCode',
   coverLetterCode = 'coverLetterCode',
   fundingTokenCode = 'fundingTokenCode',
+  paymentReferencePrefix = 'paymentReferencePrefix',
 }

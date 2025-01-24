@@ -25,6 +25,18 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
+      name: TransactionJobQueueNames.nedbank,
+      processors: [
+        {
+          path: 'src/transaction-job-processors/processors/transaction-job-nedbank.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 5, // Max number of jobs processed -> 5 is a conservative limit, we can increase this later if needed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    BullModule.registerQueue({
       name: TransactionJobQueueNames.safaricom,
       processors: [
         {

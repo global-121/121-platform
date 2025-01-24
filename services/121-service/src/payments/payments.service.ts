@@ -29,6 +29,7 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import {
@@ -64,6 +65,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
@@ -91,6 +93,7 @@ export class PaymentsService {
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
+    private readonly nedbankService: NedbankService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly dataSource: DataSource,
@@ -119,6 +122,7 @@ export class PaymentsService {
       [FinancialServiceProviders.deprecatedJumbo]: [
         {} as FinancialServiceProviderIntegrationInterface,
       ],
+      [FinancialServiceProviders.nedbank]: [this.nedbankService],
     };
   }
 
@@ -683,6 +687,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviders.nedbank) {
+          return await this.createAndAddNedbankTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -732,7 +753,6 @@ export class PaymentsService {
       (q) => q.name,
     );
     const dataFieldNames = [
-      FinancialServiceProviderAttributes.fullName,
       FinancialServiceProviderAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
@@ -858,6 +878,69 @@ export class PaymentsService {
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
       safaricomTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Nedbank transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Nedbank. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddNedbankTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const nedbankAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+      FinancialServiceProviders.nedbank,
+    ).attributes;
+    const nedbankAttributeNames = nedbankAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      nedbankAttributeNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const nedbankTransferJobs: NedbankTransactionJobDto[] =
+      registrationViews.map((registrationView): NedbankTransactionJobDto => {
+        return {
+          programId,
+          paymentNumber,
+          referenceId: registrationView.referenceId,
+          programFinancialServiceProviderConfigurationId:
+            registrationView.programFinancialServiceProviderConfigurationId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+          phoneNumber:
+            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
+        };
+      });
+    await this.transactionQueuesService.addNedbankTransactionJobs(
+      nedbankTransferJobs,
     );
   }
 

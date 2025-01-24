@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -106,5 +106,21 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       );
     }
     return transactionQuery;
+  }
+
+  public async getFailedTransactionsCount({
+    registrationId,
+    payment,
+  }: {
+    registrationId: number;
+    payment: number;
+  }) {
+    return await this.count({
+      where: {
+        registrationId: Equal(registrationId),
+        payment: Equal(payment),
+        status: Equal(TransactionStatusEnum.error),
+      },
+    });
   }
 }

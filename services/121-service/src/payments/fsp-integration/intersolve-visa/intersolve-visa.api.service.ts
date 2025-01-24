@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
-import { v4 as uuid, v5 as uuidv5 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import { CreateCustomerRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-request-intersolve-api.dto';
 import { CreateCustomerResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-response-intersolve-api.dto';
@@ -28,18 +28,7 @@ import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integratio
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
-
-const INTERSOLVE_VISA_UUID_NAMESPACE =
-  process.env.INTERSOLVE_VISA_UUID_NAMESPACE || uuid();
-
-/**
- * Generate a UUID v5 based on a seed.
- * @param seed The seed to generate the UUID.
- * @returns The generated UUID.
- */
-function generateUUIDFromSeed(seed: string): string {
-  return uuidv5(seed, INTERSOLVE_VISA_UUID_NAMESPACE);
-}
+import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`

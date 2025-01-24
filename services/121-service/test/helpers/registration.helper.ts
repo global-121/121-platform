@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -376,7 +377,7 @@ export async function seedPaidRegistrations(
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
 
-  await doPayment(programId, 1, 25, [], accessToken, {
+  await doPayment(programId, 1, 20, [], accessToken, {
     'filter.status': '$in:included',
   });
 
@@ -387,6 +388,7 @@ export async function seedPaidRegistrations(
     registrationReferenceIds,
     accessToken,
     30_000,
+    [TransactionStatusEnum.success, TransactionStatusEnum.waiting],
   );
 }
 

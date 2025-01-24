@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NedbankService retrieveVoucherInfo should return a voucher status and specific error message on an error with code NBApimResourceNotFound 1`] = `"Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transfer."`;

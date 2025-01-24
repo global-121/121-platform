@@ -24,6 +24,7 @@ import { OrganizationModule } from '@121-service/src/organization/organization.m
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
+import { NedbankReconciliationModule } from '@121-service/src/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
@@ -45,6 +46,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     MessageModule,
     MetricsModule,
     MessageIncomingModule,
+    NedbankReconciliationModule,
     NoteModule,
     EmailsModule,
     ScheduleModule.forRoot(),
