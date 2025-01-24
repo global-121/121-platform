@@ -7,10 +7,12 @@ import { seedIncludedRegistrations } from '@121-service/test/helpers/registratio
 import {
   getAccessToken,
   resetDB,
+  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
-  registrationsOCW,
+  registrationOCW1,
+  registrationOCW6Fail,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
@@ -19,7 +21,12 @@ import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
+  await seedIncludedRegistrations(
+    [registrationOCW1, registrationOCW6Fail],
+    programIdOCW,
+    accessToken,
+  );
+  await resetDuplicateRegistrations(4);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -30,14 +37,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31970] Do successful payment', async ({ page }) => {
+test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
-  const numberOfPas = registrationsOCW.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -51,34 +53,19 @@ test('[31970] Do successful payment', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payment card', async () => {
+  await test.step('Validate payemnt in progress in Payment overview', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
-    await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
-    // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
-    await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
-      paymentAmount: defaultMaxTransferValue,
-      registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
-    });
-    // DO NOT MAKE IT A RULE!!!
-    // Only in this case we need to reload the page to get the updated data of the successful payments.
-    // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-    await page.reload();
-    await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
-      paymentAmount: defaultMaxTransferValue,
-      registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
+    await paymentsPage.validateGraphStatus({
+      pending: 0,
+      successful: 16,
+      failed: 16,
     });
   });
 });

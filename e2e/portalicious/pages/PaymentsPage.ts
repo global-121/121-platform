@@ -182,6 +182,32 @@ class PaymentsPage extends BasePage {
     await this.exportDropdown.click();
     await this.page.getByRole('menuitem', { name: option }).click();
   }
+
+  async validateGraphStatus({
+    pending,
+    successful,
+    failed,
+  }: {
+    pending: number;
+    successful: number;
+    failed: number;
+  }) {
+    await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
+    const graph = await this.page.locator('canvas').getAttribute('aria-label');
+
+    if (graph) {
+      const graphText = graph
+        .replace('Payment status chart.', '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      expect(graphText).toContain(
+        `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
+      );
+    } else {
+      throw new Error('Graph attribute is null');
+    }
+  }
 }
 
 export default PaymentsPage;
