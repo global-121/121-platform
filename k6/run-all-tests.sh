@@ -1,7 +1,5 @@
-
 # Array to collect failed tests
 failed_tests=()
-
 for file in tests/*.js; do
   echo "Test: $file"
   echo "Starting services"
@@ -12,7 +10,6 @@ for file in tests/*.js; do
   # Log the contents of summary.json for debugging
   echo "Contents of summary.json:"
   cat summary.json
-
   # Check if there are any failed checks
   if [ $(jq '.metrics.checks.fails' summary.json) -gt 0 ]; then
       echo "Test failed: $file"
@@ -21,7 +18,6 @@ for file in tests/*.js; do
   echo "Stopping services"
   (cd ../services ; docker compose -f docker-compose.yml down)
 done
-
 # Check if there were any failed tests
 if [ ${#failed_tests[@]} -ne 0 ]; then
   echo "The following tests failed:"

@@ -1,5 +1,6 @@
-import { check, sleep } from 'k6';
+import { check, fail, sleep } from 'k6';
 import http from 'k6/http';
+import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
@@ -17,10 +18,25 @@ const minPassRatePercentage = 100;
 const amount = 10;
 
 export const options = {
+  thresholds: {
+    // In this case the health check runs multiple times and so of the responses are going to be 500 before service is up
+    http_req_failed: ['rate<0.30'], // http errors should be less than 30%
+    failed_checks: ['count<1'], // fail the test if any check fails
+  },
   vus: 1,
-  duration: '40m',
+  duration: '60m',
   iterations: 1,
 };
+
+const failedChecks = new Counter('failed_checks');
+
+function checkAndFail(response, checks) {
+  const result = check(response, checks);
+  if (!result) {
+    failedChecks.add(1);
+    fail('One or more checks failed');
+  }
+}
 
 function isServiceUp() {
   const response = http.get('http://localhost:3000/api/health/health'); // Replace with your health check endpoint
@@ -30,13 +46,13 @@ function isServiceUp() {
 export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
-  check(reset, {
+  checkAndFail(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
-  check(login, {
+  checkAndFail(login, {
     'Login succesfull status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
@@ -48,7 +64,7 @@ export default function () {
 
   // Do the payment
   const doPayment = paymentsPage.createPayment(programId, amount);
-  check(doPayment, {
+  checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
         console.log(r.body);
@@ -76,7 +92,7 @@ export default function () {
     duplicateNumber,
     minPassRatePercentage,
   );
-  check(monitorPayment, {
+  checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
       if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
