@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdateResult } from 'typeorm';
 
+import { NedbankErrorCode } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-error-code.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -89,10 +90,38 @@ describe('NedbankService', () => {
 
       expect(apiService.createOrder).not.toHaveBeenCalled();
     });
+
+    it('should throw an error if phone number does not start with 27', async () => {
+      const amount = 200;
+      const invalidPhoneNumber = '12345678901'; // Invalid phone number
+
+      await expect(
+        service.createVoucher({
+          transferAmount: amount,
+          phoneNumber: invalidPhoneNumber,
+          orderCreateReference,
+          paymentReference,
+        }),
+      ).rejects.toThrow('Phone number must start with 27');
+    });
+
+    it('should throw an error if phone number length is not 11', async () => {
+      const amount = 200;
+      const invalidPhoneNumber = '2712345678'; // Invalid phone number length
+
+      await expect(
+        service.createVoucher({
+          transferAmount: amount,
+          phoneNumber: invalidPhoneNumber,
+          orderCreateReference,
+          paymentReference,
+        }),
+      ).rejects.toThrow('Phone number must be 11 numbers long (including 27)');
+    });
   });
 
-  describe('retrieveAndUpdateVoucherStatus', () => {
-    it('should retrieve and update voucher status successfully', async () => {
+  describe('retrieveVoucherInfo', () => {
+    it('should retrieve voucher info successfully', async () => {
       jest
         .spyOn(apiService, 'getOrderByOrderCreateReference')
         .mockResolvedValue(NedbankVoucherStatus.REDEEMABLE);
@@ -100,16 +129,50 @@ describe('NedbankService', () => {
         .spyOn(voucherRepository, 'update')
         .mockResolvedValue({} as UpdateResult);
 
-      const result =
-        await service.retrieveAndUpdateVoucherStatus(orderCreateReference);
+      const result = await service.retrieveVoucherInfo(orderCreateReference);
 
-      expect(result).toBe(NedbankVoucherStatus.REDEEMABLE);
+      expect(result).toMatchObject({
+        status: NedbankVoucherStatus.REDEEMABLE,
+        errorMessage: undefined,
+      });
       expect(apiService.getOrderByOrderCreateReference).toHaveBeenCalledWith(
         orderCreateReference,
       );
-      expect(voucherRepository.update).toHaveBeenCalledWith(
-        { orderCreateReference },
-        { status: NedbankVoucherStatus.REDEEMABLE },
+    });
+
+    it('should return a voucher status and specific error message on an error with code NBApimResourceNotFound', async () => {
+      const error = new NedbankError('Resource not found');
+      error.code = NedbankErrorCode.NBApimResourceNotFound;
+
+      jest
+        .spyOn(apiService, 'getOrderByOrderCreateReference')
+        .mockRejectedValue(error);
+
+      const result = await service.retrieveVoucherInfo(orderCreateReference);
+
+      expect(result.status).toBe(NedbankVoucherStatus.FAILED);
+      expect(result.errorMessage).toMatchSnapshot();
+      expect(apiService.getOrderByOrderCreateReference).toHaveBeenCalledWith(
+        orderCreateReference,
+      );
+    });
+
+    it('should return the error message and a voucher status on a Nedbank error', async () => {
+      const error = new NedbankError('General error');
+      error.code = 'SomeOtherErrorCode';
+
+      jest
+        .spyOn(apiService, 'getOrderByOrderCreateReference')
+        .mockRejectedValue(error);
+
+      const result = await service.retrieveVoucherInfo(orderCreateReference);
+
+      expect(result).toMatchObject({
+        status: NedbankVoucherStatus.FAILED,
+        errorMessage: 'General error',
+      });
+      expect(apiService.getOrderByOrderCreateReference).toHaveBeenCalledWith(
+        orderCreateReference,
       );
     });
   });

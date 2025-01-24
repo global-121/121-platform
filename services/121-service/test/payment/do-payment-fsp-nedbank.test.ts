@@ -37,6 +37,7 @@ enum NedbankMockNumber {
 enum NebankGetOrderMockReference {
   orderNotFound = 'mock-order-not-found',
   mock = 'mock',
+  phoneNumberIncorrect = 'mock-phone-number-incorrect',
 }
 
 describe('Do payment to PA(s)', () => {
@@ -238,6 +239,56 @@ describe('Do payment to PA(s)', () => {
         expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
       });
 
+      it('should set transaction status to error in reconciliation process if phonenumber is incorrect', async () => {
+        // Arrange
+        const registrationFailPhoneNumber = {
+          ...registrationNedbank,
+          referenceId: NebankGetOrderMockReference.phoneNumberIncorrect,
+        };
+        const paymentReferenceIds = [registrationFailPhoneNumber.referenceId];
+        await seedIncludedRegistrations(
+          [registrationFailPhoneNumber],
+          programId,
+          accessToken,
+        );
+
+        // Act
+        await doPayment(
+          programId,
+          payment,
+          amount,
+          paymentReferenceIds,
+          accessToken,
+        );
+
+        await waitForPaymentTransactionsToComplete(
+          programId,
+          paymentReferenceIds,
+          accessToken,
+          30_000,
+          [
+            TransactionStatusEnum.success,
+            TransactionStatusEnum.error,
+            TransactionStatusEnum.waiting,
+          ],
+        );
+
+        await runCronjobUpdateNedbankVoucherStatus();
+
+        const getTransactionsBody = (
+          await getTransactions(
+            programId,
+            payment,
+            registrationFailPhoneNumber.referenceId,
+            accessToken,
+          )
+        ).body;
+
+        // Assert
+        expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
+        expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+      });
+
       // This test is needed because if the Nedbank create order api is called with the same reference it will return the same response the second time
       // So we need to make sure that the order reference is different on a retry payment if the first create order failed
       it('should create a new order reference on a retry payment', async () => {
@@ -350,7 +401,7 @@ describe('Do payment to PA(s)', () => {
     });
 
     describe('when the create order API call times out', () => {
-      it('should update the transaction status to succes in the nedbank cronjob if the voucher is redeemed', async () => {
+      it('should update the transaction status to succes in reconciliation process if the voucher is redeemed', async () => {
         // Arrange
         const registrationFailTimeout = {
           ...registrationNedbank,

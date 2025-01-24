@@ -29,7 +29,7 @@ export class NedbankReconciliationController {
         return;
       })
       .catch((error) => {
-        throw new Error(`Failed: Nedbank Reconciliation - ${error}`);
+        console.error(`Failed: Nedbank Reconciliation - ${error}`);
       });
   }
 }

@@ -18,12 +18,33 @@ enum NedbankMockNumber {
 
 enum NebankGetOrderMockReference {
   orderNotFound = 'mock-order-not-found',
+  phoneNumberIncorrect = 'mock-phone-number-incorrect',
   mock = 'mock',
 }
-
 @Injectable()
 export class NedbankMockService {
   public async getOrder(orderCreateReference: string): Promise<object> {
+    if (
+      orderCreateReference.includes(
+        NebankGetOrderMockReference.phoneNumberIncorrect,
+      )
+    ) {
+      return {
+        Message: 'BUSINESS ERROR',
+        Code: 'NB.APIM.Field.Invalid',
+        Id: 'c63aa83f-d183-486f-9e01-9d163180dbdd',
+        Errors: [
+          {
+            ErrorCode: 'NB.APIM.Field.Invalid',
+            Message:
+              'Recipient.destination recipient mobile number provided is incorrect.',
+            Path: '',
+            Url: '',
+          },
+        ],
+      };
+    }
+
     if (orderCreateReference.includes(NebankGetOrderMockReference.mock)) {
       if (
         orderCreateReference.includes(NebankGetOrderMockReference.orderNotFound)

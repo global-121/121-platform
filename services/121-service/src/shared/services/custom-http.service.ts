@@ -7,7 +7,6 @@ import * as https from 'https';
 import { isPlainObject } from 'lodash';
 import { catchError, lastValueFrom, map, of } from 'rxjs';
 
-import { DEBUG } from '@121-service/src/config';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { maskValueKeepStart } from '@121-service/src/utils/mask-value.helper';
 
@@ -228,9 +227,6 @@ export class CustomHttpService {
     request: Partial<Request>,
     error: Partial<Response>,
   ): void {
-    if (DEBUG) {
-      console.log(error.data);
-    }
     if (this.defaultClient) {
       try {
         const requestPayload = this.stringify(

@@ -17,7 +17,7 @@ export class NedbankReconciliationService {
 
   public async doNedbankReconciliation(): Promise<void> {
     const vouchers = await this.nedbankVoucherScopedRepository.find({
-      select: ['id', 'orderCreateReference', 'transactionId'],
+      select: ['orderCreateReference', 'transactionId'],
       where: [
         { status: IsNull() },
         {
@@ -33,45 +33,47 @@ export class NedbankReconciliationService {
     });
 
     for (const voucher of vouchers) {
-      const voucherStatus =
-        await this.nedbankService.retrieveAndUpdateVoucherStatus(
-          voucher.orderCreateReference,
-        );
-
-      switch (voucherStatus) {
-        case NedbankVoucherStatus.REDEEMED:
-          await this.transactionScopedRepository.update(
-            { id: voucher.transactionId },
-            { status: TransactionStatusEnum.success },
-          );
-          break;
-
-        case NedbankVoucherStatus.REFUNDED:
-          await this.transactionScopedRepository.update(
-            { id: voucher.transactionId },
-            {
-              status: TransactionStatusEnum.error,
-              errorMessage:
-                'Voucher has been refunded by Nedbank. If you retry this transfer, the person will receive a new voucher.',
-            },
-          );
-          break;
-
-        case NedbankVoucherStatus.FAILED:
-          await this.transactionScopedRepository.update(
-            { id: voucher.transactionId },
-            {
-              status: TransactionStatusEnum.error,
-              errorMessage:
-                'Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transfer.',
-            },
-          );
-          break;
-
-        default:
-          // Do nothing if another voucher status is returned
-          break;
-      }
+      await this.reconciliateVoucherAndTransaction(voucher);
     }
+  }
+
+  private async reconciliateVoucherAndTransaction({
+    orderCreateReference,
+    transactionId,
+  }: {
+    orderCreateReference: string;
+    transactionId: number;
+  }): Promise<void> {
+    const voucherInfo =
+      await this.nedbankService.retrieveVoucherInfo(orderCreateReference);
+    const voucherStatus = voucherInfo.status;
+
+    await this.nedbankVoucherScopedRepository.update(
+      { orderCreateReference },
+      { status: voucherStatus },
+    );
+
+    let newTransactionStatus: TransactionStatusEnum | undefined;
+    switch (voucherStatus) {
+      case NedbankVoucherStatus.REDEEMED:
+        newTransactionStatus = TransactionStatusEnum.success;
+        break;
+
+      case NedbankVoucherStatus.REFUNDED:
+        newTransactionStatus = TransactionStatusEnum.error;
+        break;
+
+      case NedbankVoucherStatus.FAILED:
+        newTransactionStatus = TransactionStatusEnum.error;
+        break;
+
+      default:
+        // Do nothing if another voucher status is returned
+        return;
+    }
+    await this.transactionScopedRepository.update(
+      { id: transactionId },
+      { status: newTransactionStatus, errorMessage: voucherInfo.errorMessage },
+    );
   }
 }
