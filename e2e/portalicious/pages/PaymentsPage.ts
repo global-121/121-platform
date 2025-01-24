@@ -192,6 +192,7 @@ class PaymentsPage extends BasePage {
     successful: number;
     failed: number;
   }) {
+    await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
     const graph = await this.page.locator('canvas').getAttribute('aria-label');
 
     if (graph) {
@@ -200,7 +201,6 @@ class PaymentsPage extends BasePage {
         .replace(/\s+/g, ' ')
         .trim();
 
-      await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
       expect(graphText).toContain(
         `Pending: ${pending}, Successful: ${successful}, Failed: ${failed}`,
       );
