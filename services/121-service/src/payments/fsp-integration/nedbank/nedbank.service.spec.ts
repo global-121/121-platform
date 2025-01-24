@@ -103,6 +103,8 @@ describe('NedbankService', () => {
           paymentReference,
         }),
       ).rejects.toThrow('Phone number must start with 27');
+
+      expect(apiService.createOrder).not.toHaveBeenCalled();
     });
 
     it('should throw an error if phone number length is not 11', async () => {
@@ -117,6 +119,8 @@ describe('NedbankService', () => {
           paymentReference,
         }),
       ).rejects.toThrow('Phone number must be 11 numbers long (including 27)');
+
+      expect(apiService.createOrder).not.toHaveBeenCalled();
     });
   });
 
