@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-GB" target-language="nl" datatype="plaintext" original="ng2.template">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="ng2.template" datatype="plaintext" xml:space="preserve" source-language="en-GB" target-language="nl">
+    <header>
+      <tool tool-id="lokalise.com" tool-name="Lokalise"></tool>
+    </header>
     <body>
+      <trans-unit id="13613170635045985" datatype="html">
+        <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
+        <target>Bestand hierheen slepen<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>of</target>
+      </trans-unit>
+      <trans-unit id="17234570072885140" datatype="html">
+        <source>Registrations</source>
+        <target>Registraties</target>
+      </trans-unit>
       <trans-unit id="19569847887954644" datatype="html">
         <source>Included registrations</source>
         <target>Actieve registraties</target>
@@ -10,6 +21,10 @@
         <source>Custom message</source>
         <target>Custom bericht</target>
       </trans-unit>
+      <trans-unit id="37959892232763790" datatype="html">
+        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
+        <target>Welkom bij <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></target>
+      </trans-unit>
       <trans-unit id="126074860850048964" datatype="html">
         <source>End date</source>
         <target>Einddatum</target>
@@ -17,6 +32,10 @@
       <trans-unit id="138735154290622738" datatype="html">
         <source>yourname@example.org</source>
         <target>uwnaam@voorbeeld.org</target>
+      </trans-unit>
+      <trans-unit id="153799456510623899" datatype="html">
+        <source>Portuguese</source>
+        <target>Portugees</target>
       </trans-unit>
       <trans-unit id="165273856698591793" datatype="html">
         <source>Contact Us:</source>
@@ -30,6 +49,10 @@
         <source>You&apos;re about to download an Excel file with all of the registrations included in the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
         <target>U staat op het punt een Excel-bestand te downloaden met alle registraties die zijn opgenomen in de meest recente <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> betaling(en).</target>
       </trans-unit>
+      <trans-unit id="337088933774172577" datatype="html">
+        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
+        <target>Wij bewaren uw e-mailadres zolang een project/programma op het 121 Platform aanwezig is.</target>
+      </trans-unit>
       <trans-unit id="349264413670639690" datatype="html">
         <source>Choose message</source>
         <target>Kies template</target>
@@ -42,6 +65,10 @@
         <source>View voucher</source>
         <target>Bekijk voucher</target>
       </trans-unit>
+      <trans-unit id="414383194277792669" datatype="html">
+        <source>There are no records to display.</source>
+        <target>Er zijn geen gegevens om weer te geven.</target>
+      </trans-unit>
       <trans-unit id="428968768517674095" datatype="html">
         <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
         <target>Wilt u verder gaan met <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registratie(s)?</target>
@@ -50,6 +77,14 @@
         <source>Location</source>
         <target>Locatie</target>
       </trans-unit>
+      <trans-unit id="495282157937447440" datatype="html">
+        <source>Make sure to upload the correct file as this will override the current file.</source>
+        <target>Zorg ervoor dat u het juiste bestand uploadt, omdat dit het huidige bestand overschrijft.</target>
+      </trans-unit>
+      <trans-unit id="504281469996866803" datatype="html">
+        <source>Retry failed transfers</source>
+        <target>Probeer mislukte transfers opnieuw</target>
+      </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
         <target>Er zijn <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registratie(s) die deze actie niet ondersteunen</target>
@@ -57,6 +92,14 @@
       <trans-unit id="565163819313820565" datatype="html">
         <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
         <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te hervatten.</target>
+      </trans-unit>
+      <trans-unit id="581189508098722225" datatype="html">
+        <source>Reconciliation data imported successfully.</source>
+        <target>Reconciliatiegegevens zijn geïmporteerd.</target>
+      </trans-unit>
+      <trans-unit id="614288202138197410" datatype="html">
+        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
+        <target>Exporteer de FSP-instructies van de betalingspagina. Dit is alleen mogelijk als de betaling niet meer wordt uitgevoerd.</target>
       </trans-unit>
       <trans-unit id="635399988713647542" datatype="html">
         <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
@@ -68,11 +111,15 @@
       </trans-unit>
       <trans-unit id="668066055906448779" datatype="html">
         <source>Cash disbursed</source>
-        <target>Uitgekeerd geld</target>
+        <target>Geld uitgekeerd</target>
       </trans-unit>
       <trans-unit id="684272908201420787" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
         <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Completed&quot;.</target>
+      </trans-unit>
+      <trans-unit id="706820993579364519" datatype="html">
+        <source>Where we get personal information from</source>
+        <target>Waar wij persoonlijke informatie vandaan halen</target>
       </trans-unit>
       <trans-unit id="721179600254881872" datatype="html">
         <source>Exporting</source>
@@ -106,6 +153,10 @@
         <source>API Version:</source>
         <target>API Versie:</target>
       </trans-unit>
+      <trans-unit id="908038299240128268" datatype="html">
+        <source>Transfer status</source>
+        <target>Transfer status</target>
+      </trans-unit>
       <trans-unit id="926636196686296455" datatype="html">
         <source>Base transfer value</source>
         <target>Standaard overdrachtswaarde</target>
@@ -117,6 +168,10 @@
       <trans-unit id="976904059902830801" datatype="html">
         <source>Change reason</source>
         <target>Reden wijziging</target>
+      </trans-unit>
+      <trans-unit id="1021287001460137349" datatype="html">
+        <source>Exporting FSP Instructions</source>
+        <target>FSP-instructies exporteren</target>
       </trans-unit>
       <trans-unit id="1023894478419315290" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
@@ -133,6 +188,10 @@
       <trans-unit id="1070128073768279969" datatype="html">
         <source>Select a message from the template messages or write a custom message.</source>
         <target>Selecteer een bericht uit de templates of schrijf een custom bericht.</target>
+      </trans-unit>
+      <trans-unit id="1071721880474488785" datatype="html">
+        <source>Import</source>
+        <target>Importeren</target>
       </trans-unit>
       <trans-unit id="1105070151875122157" datatype="html">
         <source>No Payments found</source>
@@ -166,6 +225,10 @@
         <source>Email Support</source>
         <target>E-mail Support</target>
       </trans-unit>
+      <trans-unit id="1369610904910546430" datatype="html">
+        <source>Who we share information with</source>
+        <target>Met wie we informatie delen</target>
+      </trans-unit>
       <trans-unit id="1431416938026210429" datatype="html">
         <source>Password</source>
         <target>Wachtwoord</target>
@@ -174,9 +237,21 @@
         <source>New status</source>
         <target>Nieuwe status</target>
       </trans-unit>
+      <trans-unit id="1485624035618673724" datatype="html">
+        <source>Import reconciliation data</source>
+        <target>Importeer reconciliatiegegevens</target>
+      </trans-unit>
       <trans-unit id="1543931596742881836" datatype="html">
         <source>There has been no export yet.</source>
         <target>Er is nog geen export geweest.</target>
+      </trans-unit>
+      <trans-unit id="1545261806462361427" datatype="html">
+        <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
+        <target>Waarde komt niet overeen met het vereiste patroon: <x equiv-text="attribute.pattern" id="PH"/></target>
+      </trans-unit>
+      <trans-unit id="1579692722565712588" datatype="html">
+        <source>Okay</source>
+        <target>Oké</target>
       </trans-unit>
       <trans-unit id="1670560559011171681" datatype="html">
         <source>I understand this action can not be undone.</source>
@@ -190,9 +265,17 @@
         <source>Reset user password</source>
         <target>Reset user password</target>
       </trans-unit>
+      <trans-unit id="1703221125772306676" datatype="html">
+        <source>Filipino</source>
+        <target>Filipijns</target>
+      </trans-unit>
       <trans-unit id="1755386264837692034" datatype="html">
         <source>User updated</source>
         <target>Gebruiker bijgewerkt</target>
+      </trans-unit>
+      <trans-unit id="1767359435550986288" datatype="html">
+        <source>The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.</source>
+        <target>Het totale betalingsbedrag wordt berekend door de som te maken van de transferwaarden van elke inbegrepen registratie die aan de betaling wordt toegevoegd.</target>
       </trans-unit>
       <trans-unit id="1782658553741372004" datatype="html">
         <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
@@ -202,6 +285,10 @@
       <trans-unit id="1846542227840529109" datatype="html">
         <source>Current Password</source>
         <target>Huidig wachtwoord</target>
+      </trans-unit>
+      <trans-unit id="1867309401161150879" datatype="html">
+        <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
+        <target>De data van het 121 Platform wordt gehost in een Microsoft Azure-omgeving van het Nederlandse Rode Kruis.</target>
       </trans-unit>
       <trans-unit id="1873935802798572654" datatype="html">
         <source>Tip: Press Command / Ctrl + Enter to submit.</source>
@@ -219,6 +306,10 @@
         <source>Card successfully updated</source>
         <target>Kaart succesvol geupdate</target>
       </trans-unit>
+      <trans-unit id="1953762348939012822" datatype="html">
+        <source>Revert to default</source>
+        <target>Terug naar standaardinstelling</target>
+      </trans-unit>
       <trans-unit id="2012659005494284050" datatype="html">
         <source>Forgot your password?</source>
         <target>Wachtwoord vergeten?</target>
@@ -227,17 +318,41 @@
         <source>Project successfully created.</source>
         <target>Project succesvol aangemaakt.</target>
       </trans-unit>
+      <trans-unit id="2077280297780026969" datatype="html">
+        <source>Review payment summary and follow the next steps:</source>
+        <target>Bekijk het betalingsoverzicht en volg de volgende stappen:</target>
+      </trans-unit>
+      <trans-unit id="2077783620698115246" datatype="html">
+        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+        <target>Jouw score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="2099469692592361098" datatype="html">
+        <source>Personal information: e-mail and name.</source>
+        <target>Persoonlijke gegevens: e-mailadres en naam.</target>
+      </trans-unit>
       <trans-unit id="2099886964241384522" datatype="html">
         <source>Copy email</source>
         <target>Kopieer e-mailadres</target>
+      </trans-unit>
+      <trans-unit id="2114848494510177632" datatype="html">
+        <source>Your e-mail address and/or your (full) name.</source>
+        <target>Uw e-mailadres en/of uw (volledige) naam.</target>
       </trans-unit>
       <trans-unit id="2161871078253886554" datatype="html">
         <source>Unknown user</source>
         <target>Onbekende gebruiker</target>
       </trans-unit>
+      <trans-unit id="2200382670798092138" datatype="html">
+        <source>Add to payment</source>
+        <target>Toevoegen aan betaling</target>
+      </trans-unit>
       <trans-unit id="2221378397919016725" datatype="html">
         <source>characters.</source>
         <target>tekens.</target>
+      </trans-unit>
+      <trans-unit id="2224540478181897692" datatype="html">
+        <source>All Payments</source>
+        <target>Alle betalingen</target>
       </trans-unit>
       <trans-unit id="2233560223291461480" datatype="html">
         <source>Manual</source>
@@ -247,6 +362,10 @@
         <source>No results found</source>
         <target>Geen resultaten gevonden</target>
       </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+        <target>Bedrag succesvol overgemaakt.</target>
+      </trans-unit>
       <trans-unit id="2301617863328425684" datatype="html">
         <source>The following message will be sent to each registration in their language.</source>
         <target>Het volgende bericht wordt naar elke selecteerde registratie in hun voorkeurstaal verzonden.</target>
@@ -254,6 +373,10 @@
       <trans-unit id="2309376472788575612" datatype="html">
         <source>Registrations with the status “new”.</source>
         <target>Registraties met de status “nieuw”.</target>
+      </trans-unit>
+      <trans-unit id="2317261224640464417" datatype="html">
+        <source>Write a reason for the update</source>
+        <target>Geef een reden voor de update</target>
       </trans-unit>
       <trans-unit id="2336550011721758066" datatype="html">
         <source>Log in</source>
@@ -271,17 +394,41 @@
         <source>Choose user</source>
         <target>Kies gebruiker</target>
       </trans-unit>
+      <trans-unit id="2378622458638065888" datatype="html">
+        <source>How to contact us</source>
+        <target>Hoe kunt u contact met ons opnemen?</target>
+      </trans-unit>
       <trans-unit id="2413028101045997188" datatype="html">
         <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
         <target>U staat op het punt om het wachtwoord van <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/> <x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/> <x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/> resetten. Deze gebruiker ontvangt een e-mail met het nieuwe wachtwoord op zijn geregistreerde e-mailadres. Ga alleen verder als de gebruiker deze actie heeft aangevraagd.</target>
+      </trans-unit>
+      <trans-unit id="2438590582556677910" datatype="html">
+        <source>Start!</source>
+        <target>Start!</target>
       </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
         <target>Dit kan enkele minuten duren. Het bestand wordt automatisch gedownload. Het sluiten van deze melding zal de export niet annuleren.</target>
       </trans-unit>
+      <trans-unit id="2512429297957946940" datatype="html">
+        <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
+        <target>Wij gebruiken alleen noodzakelijke cookies om gebruikers te kunnen laten inloggen op het 121 Platform. Deze cookies worden niet gebruikt om (terugkerend) gebruik van het 121 Platform in de tijd te volgen.</target>
+      </trans-unit>
+      <trans-unit id="2569607511969570423" datatype="html">
+        <source>Export selected registrations</source>
+        <target>Geselecteerde registraties exporteren</target>
+      </trans-unit>
       <trans-unit id="2614607010577950577" datatype="html">
         <source>Overview</source>
         <target>Overzicht</target>
+      </trans-unit>
+      <trans-unit id="2648122632166597138" datatype="html">
+        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+        <target>Importeer het bestand dat door de FSP is gedeeld om de status te zien van de registraties die bij deze betaling zijn inbegrepen. Download het template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>hier<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
+      </trans-unit>
+      <trans-unit id="2669678082320549438" datatype="html">
+        <source>Reference ID</source>
+        <target>Referentie ID</target>
       </trans-unit>
       <trans-unit id="2756397788360043544" datatype="html">
         <source>Remaining budget</source>
@@ -291,9 +438,17 @@
         <source>Enter your password</source>
         <target>Voer uw wachtwoord in</target>
       </trans-unit>
+      <trans-unit id="2772534939673815092" datatype="html">
+        <source>Please allow pop-up windows in your browser settings to login</source>
+        <target>Sta pop-upvensters in uw browserinstellingen toe om in te loggen</target>
+      </trans-unit>
       <trans-unit id="2779521124294512411" datatype="html">
         <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
         <target>Custom berichten worden <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>niet automatisch vertaald<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> naar de voorkeurstaal van de registratie.</target>
+      </trans-unit>
+      <trans-unit id="2795059376397351120" datatype="html">
+        <source>Registration Status</source>
+        <target>Registratiestatus</target>
       </trans-unit>
       <trans-unit id="2801963853605151683" datatype="html">
         <source>No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
@@ -302,6 +457,22 @@
       <trans-unit id="2832894421278390919" datatype="html">
         <source>Invalid email or password. Double-check your credentials and try again.</source>
         <target>Ongeldig e-mailadres of wachtwoord. Controleer uw inloggegevens en probeer het opnieuw.</target>
+      </trans-unit>
+      <trans-unit id="2932497983463949366" datatype="html">
+        <source>Export unused vouchers</source>
+        <target>Ongebruikte vouchers exporteren</target>
+      </trans-unit>
+      <trans-unit id="2981043932069425956" datatype="html">
+        <source>Let&apos;s start!</source>
+        <target>Klaar voor de start!</target>
+      </trans-unit>
+      <trans-unit id="2982203751444563776" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <target>Er zijn nog geen registraties in dit project.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Voor informatie over het importeren van registraties in uw project kunt u terecht op de <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Handleiding <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
+      </trans-unit>
+      <trans-unit id="3003940161121195414" datatype="html">
+        <source>Update information</source>
+        <target>Informatie bijwerken</target>
       </trans-unit>
       <trans-unit id="3005732335203491098" datatype="html">
         <source>The confirm password must be equal to the new password.</source>
@@ -315,6 +486,10 @@
         <source>Old data</source>
         <target>Oude data</target>
       </trans-unit>
+      <trans-unit id="3071065188816255493" datatype="html">
+        <source>Dutch</source>
+        <target>Nederlands</target>
+      </trans-unit>
       <trans-unit id="3082094200535618477" datatype="html">
         <source>Message preview</source>
         <target>Voorbeeld van bericht</target>
@@ -326,6 +501,10 @@
       <trans-unit id="3132687678063886490" datatype="html">
         <source>Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></source>
         <target>Voucher - betaling <x equiv-text="this.paymentId()" id="PH"/> van <x equiv-text="this.totalTransfers()" id="PH_1"/></target>
+      </trans-unit>
+      <trans-unit id="3142649024295180156" datatype="html">
+        <source>Choose file</source>
+        <target>Kies bestand</target>
       </trans-unit>
       <trans-unit id="3193976279273491157" datatype="html">
         <source>Actions</source>
@@ -371,13 +550,25 @@
         <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
         <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;.</target>
       </trans-unit>
+      <trans-unit id="3545183022492788567" datatype="html">
+        <source>A payment is currently in progress. Please wait until it has finished.</source>
+        <target>Er wordt momenteel een betaling uitgevoerd. Wacht tot deze is voltooid.</target>
+      </trans-unit>
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
         <target>Houd er rekening mee dat als u meer dan 160 tekens gebruikt, de hulpvrager het bericht als meerdere sms-berichten kan ontvangen, als ze een feature-(niet-smart-)telefoon hebben.</target>
       </trans-unit>
+      <trans-unit id="3595291210637281374" datatype="html">
+        <source>Transfers data</source>
+        <target>Transfers data</target>
+      </trans-unit>
       <trans-unit id="3604386807230411192" datatype="html">
         <source>Start Date</source>
         <target>Startdatum</target>
+      </trans-unit>
+      <trans-unit id="3619477798940026244" datatype="html">
+        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
+        <target>Wij bewaren uw e-mailadres en naam zolang u als gebruiker verbonden bent aan een project/programma op het 121 Platform.</target>
       </trans-unit>
       <trans-unit id="3626484707935812949" datatype="html">
         <source>0 selected registrations support this action.</source>
@@ -391,35 +582,87 @@
         <source>Project description:</source>
         <target>Projectbeschrijving:</target>
       </trans-unit>
+      <trans-unit id="3797627476744587316" datatype="html">
+        <source>Logged in as:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></source>
+        <target>Ingelogd als: <x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> <x equiv-text="{{ userName() }}" id="INTERPOLATION"/></target>
+      </trans-unit>
       <trans-unit id="3797778920049399855" datatype="html">
         <source>Logout</source>
         <target>Uitloggen</target>
         <note priority="1" from="description">Menu-item</note>
       </trans-unit>
+      <trans-unit id="3805310091097915389" datatype="html">
+        <source>How long we keep information</source>
+        <target>Hoe lang we informatie bewaren</target>
+      </trans-unit>
       <trans-unit id="3865701940123165586" datatype="html">
         <source>Included reg.</source>
-        <target>Actieve registraties</target>
+        <target>Registraties</target>
       </trans-unit>
       <trans-unit id="3871260480214506166" datatype="html">
         <source>Showing [first] to [last] of [totalRecords] records</source>
         <target>Toont [first] tot [last] van [totalRecords] records</target>
         <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
       </trans-unit>
+      <trans-unit id="3890824728366334701" datatype="html">
+        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
+        <target>Hieronder vindt u een tabel met alle <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> Registraties. Selecteer de regristraties die je aan deze betaling wilt toevoegen.</target>
+      </trans-unit>
+      <trans-unit id="3894950702316166331" datatype="html">
+        <source>Loading...</source>
+        <target>Bezig met laden...</target>
+      </trans-unit>
       <trans-unit id="3900182075447065445" datatype="html">
         <source>*Please make sure registration data is available for all used personalized fields.</source>
         <target>*Zorg ervoor dat gegevens beschikbaar zijn voor alle gebruikte gepersonaliseerde velden.</target>
+      </trans-unit>
+      <trans-unit id="3934118952625564148" datatype="html">
+        <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
+        <target>We slaan je IP-adres niet op. We gebruiken het alleen om een anonieme identificatie te genereren die niet gekoppeld is aan persoonlijke informatie.</target>
+      </trans-unit>
+      <trans-unit id="3971565293367630153" datatype="html">
+        <source>Retry transfers</source>
+        <target>Transfers opnieuw proberen</target>
       </trans-unit>
       <trans-unit id="3979054462974448924" datatype="html">
         <source>The message must be at least 20 characters long.</source>
         <target>Het bericht moet minimaal 20 tekens lang zijn.</target>
       </trans-unit>
+      <trans-unit id="4009667361617596446" datatype="html">
+        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</source>
+        <target>We konden geen informatie vinden die aan het telefoonnummer van deze persoon is gekoppeld in de projecten waartoe u toegang hebt op het 121 Platform.</target>
+      </trans-unit>
       <trans-unit id="4026691210548476882" datatype="html">
         <source>Failed to load options</source>
         <target>Opties laden mislukt</target>
       </trans-unit>
+      <trans-unit id="4044492363974277530" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
+        <target>U staat op het punt een Excel-bestand te downloaden met alle registraties die bij deze betaling zijn inbegrepen.</target>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
+        <target>De betaling wordt uitgevoerd terwijl het aantal verzonden overschrijvingen, het totale bedrag en de registraties in de onderstaande tabel worden geupdate.</target>
+      </trans-unit>
+      <trans-unit id="4097796198739407763" datatype="html">
+        <source>This identifier is stored for max. 90 days in our logs-storage.</source>
+        <target>Deze identifier wordt maximaal 90 dagen bewaard in onze logs.</target>
+      </trans-unit>
       <trans-unit id="4145496584631696119" datatype="html">
         <source>Role</source>
         <target>Rol</target>
+      </trans-unit>
+      <trans-unit id="4175321634261799700" datatype="html">
+        <source>Information you or your employer has provided us.</source>
+        <target>Informatie die u of uw werkgever aan ons heeft verstrekt.</target>
+      </trans-unit>
+      <trans-unit id="4207014437413577720" datatype="html">
+        <source>Start payment</source>
+        <target>Betaling starten</target>
+      </trans-unit>
+      <trans-unit id="4213825410774196775" datatype="html">
+        <source>No results</source>
+        <target>Geen resultaten</target>
       </trans-unit>
       <trans-unit id="4249207548869932033" datatype="html">
         <source>Password reset successful</source>
@@ -433,9 +676,21 @@
         <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
         <target><x equiv-text="paymentCount.toString()" id="count"/> (van <x equiv-text="maxPayments.toString()" id="totalCount"/>)</target>
       </trans-unit>
+      <trans-unit id="4324437964498958057" datatype="html">
+        <source>Transfers sent</source>
+        <target>Verzonden transfers</target>
+      </trans-unit>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
+        <target>Klik op 'Betaling starten'. U wordt doorgestuurd naar de betaalpagina.</target>
+      </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
         <target>Notitie</target>
+      </trans-unit>
+      <trans-unit id="4404975094271849688" datatype="html">
+        <source>No changes detected.</source>
+        <target>Geen wijzigingen gedetecteerd.</target>
       </trans-unit>
       <trans-unit id="4452017686076766931" datatype="html">
         <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
@@ -445,6 +700,10 @@
         <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
         <target>De notitie is zichtbaar voor andere 121 gebruikers die persoonlijke profielen mogen bekijken.</target>
       </trans-unit>
+      <trans-unit id="4516124744118816397" datatype="html">
+        <source>Cookies</source>
+        <target>Cookies</target>
+      </trans-unit>
       <trans-unit id="4533999713544924009" datatype="html">
         <source>Remove user from team</source>
         <target>Gebruiker uit team verwijderen</target>
@@ -453,13 +712,49 @@
         <source>This action can not be applied to the registrations you have selected.</source>
         <target>Deze actie kan niet worden toegepast op de registraties die u hebt geselecteerd.</target>
       </trans-unit>
+      <trans-unit id="4555355588212916481" datatype="html">
+        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+        <target>Zorg ervoor dat het CSV-bestand overeenkomt met het template. Download de template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/> hier <x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
+      </trans-unit>
+      <trans-unit id="4585448172507601196" datatype="html">
+        <source>Registrations included</source>
+        <target>Registraties inbegrepen</target>
+      </trans-unit>
+      <trans-unit id="4667279955724574149" datatype="html">
+        <source>Export status &amp; data changes</source>
+        <target>Status- en datawijzigingen exporteren</target>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+        <target>Registraties importeren</target>
+      </trans-unit>
       <trans-unit id="4702579085370193789" datatype="html">
         <source>Card successfully replaced</source>
         <target>Kaart succesvol vervangen</target>
       </trans-unit>
+      <trans-unit id="4746344653872488527" datatype="html">
+        <source>Export payment list</source>
+        <target>Exporteer betalingslijst</target>
+      </trans-unit>
+      <trans-unit id="4747436386182159575" datatype="html">
+        <source>The status column in the file should contain one of the following values:</source>
+        <target>De 'status'-kolom moet een van de volgende waarden bevatten:</target>
+      </trans-unit>
+      <trans-unit id="4788150502649502085" datatype="html">
+        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+        <target>U staat op het punt om de details van <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/> bij te werken.</target>
+      </trans-unit>
+      <trans-unit id="4892553839051604445" datatype="html">
+        <source>Payment</source>
+        <target>Betaling</target>
+      </trans-unit>
       <trans-unit id="4902817035128594900" datatype="html">
         <source>Description</source>
         <target>Beschrijving</target>
+      </trans-unit>
+      <trans-unit id="4957123542385348986" datatype="html">
+        <source>Amount successfully sent</source>
+        <target>Bedrag succesvol verzonden</target>
       </trans-unit>
       <trans-unit id="5004550577313573215" datatype="html">
         <source>Total amount</source>
@@ -473,13 +768,45 @@
         <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
         <target>U staat op het punt een Excel-bestand te downloaden voor alle status- en datawijzigingen.</target>
       </trans-unit>
+      <trans-unit id="5061826209151408276" datatype="html">
+        <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
+        <target>In deze privacyverklaring leest u wat u van ons kunt verwachten met betrekking tot uw persoonsgegevens wanneer u gebruik maakt van het 121 Platform.</target>
+      </trans-unit>
+      <trans-unit id="5081696702832953928" datatype="html">
+        <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
+        <target>Sommige van de registraties die u hebt geselecteerd, komen niet in aanmerking voor deze betaling. Wijzig uw selectie en probeer het opnieuw.</target>
+      </trans-unit>
+      <trans-unit id="5156383097673576773" datatype="html">
+        <source>Fail reason</source>
+        <target>Reden voor mislukken</target>
+      </trans-unit>
+      <trans-unit id="5169543313827462176" datatype="html">
+        <source>Transfer value</source>
+        <target>Transfer bedrag</target>
+      </trans-unit>
       <trans-unit id="5172848657173998509" datatype="html">
-        <source>You are about to add a note to <x equiv-text="{{ registration.data()?.name }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
         <target>Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="5190825892106392539" datatype="html">
+        <source>Spanish</source>
+        <target>Spaans</target>
       </trans-unit>
       <trans-unit id="5209857233936409392" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
-        <target>De actie &quot;Pauzeren&quot; kan alleen worden toegepast op registraties met de status &apos;Actief&apos;.</target>
+        <target>De actie &quot; Pauzeren &quot; kan alleen worden toegepast op registraties met de status 'Actief'.</target>
+      </trans-unit>
+      <trans-unit id="5248644489024163464" datatype="html">
+        <source>Import file</source>
+        <target>Bestand importeren</target>
+      </trans-unit>
+      <trans-unit id="5255226222389200378" datatype="html">
+        <source>Unknown user account or authentication failed</source>
+        <target>Onbekend gebruikersaccount of verificatie mislukt</target>
+      </trans-unit>
+      <trans-unit id="5270320047142620174" datatype="html">
+        <source>Information automatically collected about you</source>
+        <target>Gegevens die automatisch over u worden verzameld</target>
       </trans-unit>
       <trans-unit id="5306473977542913614" datatype="html">
         <source>Activity</source>
@@ -509,6 +836,14 @@
         <source>Enter a valid scope. No spaces are allowed.</source>
         <target>Voer een geldige connectie in. Spaties zijn niet toegestaan.</target>
       </trans-unit>
+      <trans-unit id="5452570589103987928" datatype="html">
+        <source>Payment status chart.</source>
+        <target>Grafiek betalingsstatus</target>
+      </trans-unit>
+      <trans-unit id="5533720489917693962" datatype="html">
+        <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
+        <target>U staat op het punt een Excel-bestand te downloaden met de FSP-instructies voor deze betaling.</target>
+      </trans-unit>
       <trans-unit id="5581642292282365168" datatype="html">
         <source>Time and date</source>
         <target>Tijd en datum</target>
@@ -521,21 +856,53 @@
         <source>Scope</source>
         <target>Connectie</target>
       </trans-unit>
+      <trans-unit id="5595826100350402634" datatype="html">
+        <source>Use the arrow keys or W A S D to play the game</source>
+        <target>Gebruik de pijltjestoetsen of W A S D om het spel te spelen</target>
+      </trans-unit>
       <trans-unit id="5641945527911431559" datatype="html">
         <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
         <target>Fout: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="5677186522471416018" datatype="html">
+        <source>Upload the file to the Financial Service Provider’s portal.</source>
+        <target>Upload het bestand naar het portal van de FSP</target>
+      </trans-unit>
+      <trans-unit id="5682129577475133431" datatype="html">
+        <source>Import not possible</source>
+        <target>Importeren niet mogelijk</target>
+      </trans-unit>
+      <trans-unit id="5682359291233237791" datatype="html">
+        <source>Turkish</source>
+        <target>Turks</target>
       </trans-unit>
       <trans-unit id="5701571628417198513" datatype="html">
         <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
         <target>U staat op het punt een Excel-bestand te downloaden voor <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> geselecteerde registraties.</target>
       </trans-unit>
+      <trans-unit id="5842006292473012174" datatype="html">
+        <source>The system will create registrations with the status “registered”.</source>
+        <target>Het systeem maakt registraties aan met de status “geregistreerd”.</target>
+      </trans-unit>
       <trans-unit id="5847820864343475107" datatype="html">
         <source>There are no payments for this project yet.</source>
         <target>Er zijn nog geen betalingen uitgevoerd in dit project.</target>
       </trans-unit>
+      <trans-unit id="5866254605255506989" datatype="html">
+        <source>English</source>
+        <target>Engels</target>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+        <target>U staat op het punt om het debitcard, met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. Hierdoor wordt de huidige kaart geblokkeerd en wordt er een nieuwe kaart uitgegeven.</target>
+      </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
         <target>Gebruiker toevoegen</target>
+      </trans-unit>
+      <trans-unit id="5995232414192798763" datatype="html">
+        <source>Financial Service Provider(s)</source>
+        <target>FSP(s)</target>
       </trans-unit>
       <trans-unit id="5995811927641285296" datatype="html">
         <source>Last log in</source>
@@ -561,6 +928,10 @@
         <source>Firstname Lastname</source>
         <target>Voornaam Achternaam</target>
       </trans-unit>
+      <trans-unit id="6269202464699193298" datatype="html">
+        <source>Arabic</source>
+        <target>Arabisch</target>
+      </trans-unit>
       <trans-unit id="6289725856045829997" datatype="html">
         <source>Send a message to registration(s)</source>
         <target>Stuur een bericht naar registratie(s)</target>
@@ -576,15 +947,31 @@
       </trans-unit>
       <trans-unit id="6345542796169013745" datatype="html">
         <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
-        <target>Selecteer registraties waar &quot;Resterende betalingen&quot; groter is dan 0 (nul) en probeer het opnieuw.</target>
+        <target>Selecteer registraties waar "Resterende betalingen" groter is dan 0 (nul) en probeer het opnieuw.</target>
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
         <target>Dit betekent dat ze niet in de betalingen worden opgenomen.</target>
       </trans-unit>
+      <trans-unit id="6371019092558402602" datatype="html">
+        <source>Export duplicate registrations</source>
+        <target>Duplicaten exporteren</target>
+      </trans-unit>
+      <trans-unit id="6371588679924903737" datatype="html">
+        <source>Open in new tab</source>
+        <target>Openen in nieuw tabblad</target>
+      </trans-unit>
       <trans-unit id="6381578200008167206" datatype="html">
         <source>Include</source>
         <target>Activeren</target>
+      </trans-unit>
+      <trans-unit id="6404965869709788913" datatype="html">
+        <source>Personal information edited successfully.</source>
+        <target>Persoonlijke gegevens succesvol bewerkt.</target>
+      </trans-unit>
+      <trans-unit id="6430223777327451722" datatype="html">
+        <source>Total payment amount</source>
+        <target>Totaalbedrag te betalen</target>
       </trans-unit>
       <trans-unit id="6467871397050565968" datatype="html">
         <source>Choose option(s)</source>
@@ -610,6 +997,10 @@
         <source>Are you sure you want to send this message?</source>
         <target>Weet u zeker dat u dit bericht wilt verzenden?</target>
       </trans-unit>
+      <trans-unit id="6725574712013202474" datatype="html">
+        <source>Payment created.</source>
+        <target>Betaling aangemaakt.</target>
+      </trans-unit>
       <trans-unit id="6828231165009897209" datatype="html">
         <source>You must select this to proceed.</source>
         <target>U moet dit selecteren om door te gaan.</target>
@@ -624,7 +1015,11 @@
       </trans-unit>
       <trans-unit id="6909842392958829581" datatype="html">
         <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
-        <target state="new"><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registratie(s)</target>
+        <target><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registratie(s)</target>
+      </trans-unit>
+      <trans-unit id="6954699489555837710" datatype="html">
+        <source>Read our Privacy notice</source>
+        <target>Lees onze Privacyverklaring</target>
       </trans-unit>
       <trans-unit id="6987397690071959130" datatype="html">
         <source>Old card:</source>
@@ -634,6 +1029,10 @@
         <source>The new password must be at least 8 characters long.</source>
         <target>Het nieuwe wachtwoord moet minimaal 8 tekens lang zijn.</target>
       </trans-unit>
+      <trans-unit id="7005213248357637960" datatype="html">
+        <source>Edit information</source>
+        <target>Informatie bewerken</target>
+      </trans-unit>
       <trans-unit id="7022070615528435141" datatype="html">
         <source>Delete</source>
         <target>Verwijderen</target>
@@ -642,17 +1041,37 @@
         <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
         <target>U staat op het punt om VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te pauzeren.</target>
       </trans-unit>
+      <trans-unit id="7102075992666089988" datatype="html">
+        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
+        <target>Stap <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> van <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></target>
+      </trans-unit>
+      <trans-unit id="7113199794780283377" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
+        <target>Je staat op het punt om <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> betaling(en) opnieuw te proberen. De transfer-status verandert in In behandeling totdat de registratie deze heeft ontvangen.</target>
+      </trans-unit>
+      <trans-unit id="7123246815138482133" datatype="html">
+        <source>The import takes about 1 minute per 100 records</source>
+        <target>Importeren duurt ongeveer 1 minuut per 100 records</target>
+      </trans-unit>
       <trans-unit id="7148904805726439689" datatype="html">
         <source>Target registrations</source>
         <target>Doel registraties</target>
+      </trans-unit>
+      <trans-unit id="7194723645188865835" datatype="html">
+        <source>We do not share any personal information with other third-parties.</source>
+        <target>We delen geen persoonlijke informatie met derden.</target>
+      </trans-unit>
+      <trans-unit id="7197861278093051814" datatype="html">
+        <source>Export debit card usage</source>
+        <target>Visakaartgebruik exporteren</target>
       </trans-unit>
       <trans-unit id="7203225042973794131" datatype="html">
         <source>&lt;UNNAMED TEMPLATE&gt;</source>
         <target>&lt;UNNAMED TEMPLATE&gt;</target>
       </trans-unit>
-      <trans-unit id="6954699489555837710" datatype="html">
-        <source>Read our Privacy notice</source>
-        <target>Lees ons privacybeleid</target>
+      <trans-unit id="7316654266676902247" datatype="html">
+        <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
+        <target>Uw IP-adres en enige informatie over het apparaat en de webbrowser die u gebruikt om toegang te krijgen tot het 121 Platform.</target>
       </trans-unit>
       <trans-unit id="7379726829888309084" datatype="html">
         <source>End Date</source>
@@ -682,13 +1101,25 @@
         <source>They will not be included in payments.</source>
         <target>Deze worden niet in de betalingen opgenomen.</target>
       </trans-unit>
+      <trans-unit id="7509825160805284263" datatype="html">
+        <source>Personal information: IP-address.</source>
+        <target>Persoonlijke gegevens: IP-adres.</target>
+      </trans-unit>
       <trans-unit id="7582384076029482676" datatype="html">
         <source>Select registrations with other status and try again.</source>
         <target>Selecteer registraties met een andere status en probeer het opnieuw.</target>
       </trans-unit>
+      <trans-unit id="7585097972263982693" datatype="html">
+        <source>Old FSP</source>
+        <target>Oude FSP</target>
+      </trans-unit>
       <trans-unit id="7613791439001735010" datatype="html">
         <source>Template message</source>
         <target>Template</target>
+      </trans-unit>
+      <trans-unit id="7633754075223722162" datatype="html">
+        <source>French</source>
+        <target>Frans</target>
       </trans-unit>
       <trans-unit id="7675424950942601762" datatype="html">
         <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>
@@ -710,9 +1141,21 @@
         <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
         <target>( <x equiv-text="selectedItemsCount.toString()" id="PH"/> geselecteerd)</target>
       </trans-unit>
+      <trans-unit id="7893013905728176682" datatype="html">
+        <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
+        <target>Er is iets misgegaan met deze import. Los de onderstaande fouten op en probeer het opnieuw.</target>
+      </trans-unit>
+      <trans-unit id="7906932148820692681" datatype="html">
+        <source>Operation not possible.</source>
+        <target>Bewerking niet mogelijk.</target>
+      </trans-unit>
       <trans-unit id="7910076708497708162" datatype="html">
         <source>Last login</source>
         <target>Laatste login</target>
+      </trans-unit>
+      <trans-unit id="7924647147478852112" datatype="html">
+        <source>Game over!</source>
+        <target>Game over!</target>
       </trans-unit>
       <trans-unit id="7935811228673267610" datatype="html">
         <source>No Projects found</source>
@@ -736,15 +1179,35 @@
       </trans-unit>
       <trans-unit id="8066608938393600549" datatype="html">
         <source>Message</source>
-        <target>Bericht</target>
+        <target>Stuur bericht</target>
+      </trans-unit>
+      <trans-unit id="8074727237612649640" datatype="html">
+        <source>Review summary and click start payment.</source>
+        <target>Bekijk het overzicht en klik op betaling starten.</target>
+      </trans-unit>
+      <trans-unit id="8097251469414276924" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
+        <target><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registratie(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> gevonden met dit nummer.</target>
       </trans-unit>
       <trans-unit id="8102975218009674229" datatype="html">
         <source>Print voucher</source>
         <target>Print voucher</target>
       </trans-unit>
+      <trans-unit id="8103250468659936776" datatype="html">
+        <source>Please fill out all required fields.</source>
+        <target>Vul alle verplichte velden in.</target>
+      </trans-unit>
+      <trans-unit id="8108032945706896800" datatype="html">
+        <source>You do not have permission to view this page.</source>
+        <target>U heeft geen toestemming om deze pagina te bekijken.</target>
+      </trans-unit>
       <trans-unit id="8116175184239166510" datatype="html">
         <source>Decline</source>
         <target>Afwijzen</target>
+      </trans-unit>
+      <trans-unit id="8116905776887232271" datatype="html">
+        <source>Expected total amount</source>
+        <target>Verwacht totaalbedrag</target>
       </trans-unit>
       <trans-unit id="8117831125016931547" datatype="html">
         <source>User removed</source>
@@ -762,6 +1225,18 @@
         <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
         <target>* Als je dit veld leeg laat, heeft het teamlid toegang tot <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>alle registraties<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
       </trans-unit>
+      <trans-unit id="8209340100752123472" datatype="html">
+        <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
+        <target>Wanneer u een taak ontvangt, worden hier alle gegevens weergegeven die gekoppeld zijn aan het telefoonnummer van de persoon die te vinden zijn in actieve programma's op het 121-platform.</target>
+      </trans-unit>
+      <trans-unit id="8220517666190714329" datatype="html">
+        <source>Did you know?</source>
+        <target>Wist je dat?</target>
+      </trans-unit>
+      <trans-unit id="8221183084962199390" datatype="html">
+        <source>Payment not found. Please check the URL and try again.</source>
+        <target>Betaling niet gevonden. Controleer de URL en probeer het opnieuw.</target>
+      </trans-unit>
       <trans-unit id="8255959026836387530" datatype="html">
         <source>Email copied to clipboard</source>
         <target>E-mail gekopieerd naar klembord</target>
@@ -769,6 +1244,10 @@
       <trans-unit id="8301535046747035390" datatype="html">
         <source>Full name</source>
         <target>Volledige naam</target>
+      </trans-unit>
+      <trans-unit id="8312065814232621608" datatype="html">
+        <source>Indonesian</source>
+        <target>Indonesisch</target>
       </trans-unit>
       <trans-unit id="8315909063441814502" datatype="html">
         <source>Changing statuses</source>
@@ -778,6 +1257,10 @@
         <source>Complete</source>
         <target>Voltooid</target>
       </trans-unit>
+      <trans-unit id="8385553553362590495" datatype="html">
+        <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
+        <target>Als u vragen hebt over uw privacy en het 121 Platform, neem dan gerust contact met ons op via: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/> <x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/> <x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
+      </trans-unit>
       <trans-unit id="8390249546875631537" datatype="html">
         <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
         <target>Belangrijk: De kaartsaldi die beschikbaar zijn om te downloaden, zijn niet in realtime. Het rapport bevat de datum en tijd van de laatste externe update van elke visakaart.</target>
@@ -785,6 +1268,10 @@
       <trans-unit id="8411698505854313639" datatype="html">
         <source>Continue to preview</source>
         <target>Doorgaan naar preview</target>
+      </trans-unit>
+      <trans-unit id="8427406767154725875" datatype="html">
+        <source>New FSP</source>
+        <target>Nieuwe FSP</target>
       </trans-unit>
       <trans-unit id="8561412171255849133" datatype="html">
         <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
@@ -794,9 +1281,13 @@
         <source>Select registrations with another status and try again.</source>
         <target>Selecteer registraties met een andere status en probeer het opnieuw.</target>
       </trans-unit>
+      <trans-unit id="8602877633844729884" datatype="html">
+        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
+        <target>Wijzigingen die u hebt aangebracht, worden mogelijk niet opgeslagen. Weet u zeker dat u wilt doorgaan?</target>
+      </trans-unit>
       <trans-unit id="8668090925608056170" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
-        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0.</target>
+        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0.</target>
       </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
@@ -806,13 +1297,29 @@
         <source>Received</source>
         <target>Ontvangen</target>
       </trans-unit>
+      <trans-unit id="8705310124062464174" datatype="html">
+        <source>A payment is currently in progress. Please try again later</source>
+        <target>Er is momenteel een betaling in behandeling. Probeer het later opnieuw</target>
+      </trans-unit>
       <trans-unit id="8733206904097373941" datatype="html">
         <source>This will download an Excel file with all unused voucher(s).</source>
         <target>Hiermee downloadt u een Excel-bestand met alle ongebruikte voucher(s).</target>
       </trans-unit>
+      <trans-unit id="8735075176632769564" datatype="html">
+        <source>Export account number verification</source>
+        <target>Verifieer rekeningnummers</target>
+      </trans-unit>
+      <trans-unit id="8847988975348610068" datatype="html">
+        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
+        <target>Sla het geëxporteerde XLSX-bestand op in het door de FSP vereiste formaat.</target>
+      </trans-unit>
       <trans-unit id="8875170340911342447" datatype="html">
         <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
         <target>U staat op het punt om <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/> <x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/> <x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> ( <x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/> ) uit uw team te verwijderen. <x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Zij hebben dan geen toegang meer tot het project.</target>
+      </trans-unit>
+      <trans-unit id="8890553633144307762" datatype="html">
+        <source>Back</source>
+        <target>Terug</target>
       </trans-unit>
       <trans-unit id="8918915369134420822" datatype="html">
         <source>Message:</source>
@@ -834,17 +1341,25 @@
         <source>Select registrations with the status “Registered” and try again.</source>
         <target>Selecteer registraties met de status “Geregistreerd” en probeer het opnieuw.</target>
       </trans-unit>
+      <trans-unit id="8980999496899249966" datatype="html">
+        <source>Table columns:</source>
+        <target>Tabelkolommen:</target>
+      </trans-unit>
       <trans-unit id="9011868136618282915" datatype="html">
         <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
         <target>Er zijn geen registraties die voldoen aan de geselecteerde filters. Wis enkele of alle filters om door te gaan.</target>
       </trans-unit>
       <trans-unit id="9023742269421706395" datatype="html">
         <source>Failed transfers</source>
-        <target>Mislukte transfer</target>
+        <target>Mislukte transfers</target>
       </trans-unit>
       <trans-unit id="9042260521669277115" datatype="html">
         <source>Pause</source>
-        <target>Pause</target>
+        <target>Pauzeren</target>
+      </trans-unit>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
+        <target>Registraties geselecteerd:</target>
       </trans-unit>
       <trans-unit id="9063819144679824048" datatype="html">
         <source>People included</source>
@@ -898,9 +1413,29 @@
         <source>Add new user</source>
         <target>Nieuwe gebruiker toevoegen</target>
       </trans-unit>
-      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationLabel" datatype="html">
-        <source>FSP</source>
-        <target>FSP</target>
+      <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
+        <source>The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</source>
+        <target>Het maximale aantal betalingen voor deze persoon. U kunt de limiet verwijderen door de waarde te verwijderen en blanco op te slaan.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
+        <source>The transfer value will be multiplied by this number for this Person Affected</source>
+        <target>De transferwaarde wordt voor deze PA met dit getal vermenigvuldigd</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
+        <source>This is automatically calculated based on Max. payments and payments sucessfully sent</source>
+        <target>Dit wordt automatisch berekend op basis van Max. betalingen en succesvol verzonden betalingen</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>The required format is: ONLY numbers, including country-code.</source>
+        <target>Het vereiste formaat is: ALLEEN cijfers, inclusief landcode.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-scope" datatype="html">
+        <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
+        <target>Scheid de delen met een punt (bijvoorbeeld &apos; amsterdam.west &apos; ).</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-inclusionScore" datatype="html">
+        <source>Inclusion Score</source>
+        <target>Inclusie Score</target>
       </trans-unit>
       <trans-unit id="attribute-label-maxPayments" datatype="html">
         <source>Max. payments</source>
@@ -910,21 +1445,61 @@
         <source>Transfer value multiplier</source>
         <target>Overdrachtswaarde vermenigvuldiger</target>
       </trans-unit>
+      <trans-unit id="attribute-label-paymentCount" datatype="html">
+        <source>Payment Count</source>
+        <target>Aantal betalingen</target>
+      </trans-unit>
       <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
         <source>Remaining payments</source>
         <target>Resterende betalingen</target>
       </trans-unit>
+      <trans-unit id="attribute-label-phoneNumber" datatype="html">
+        <source>Phone Number</source>
+        <target>Telefoonnummer</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-preferredLanguage" datatype="html">
+        <source>Preferred Language</source>
+        <target>Voorkeurstaal</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationLabel" datatype="html">
+        <source>FSP</source>
+        <target>FSP</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
+        <source>FSP Configuration Name</source>
+        <target>FSP-configuratienaam</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-referenceId" datatype="html">
+        <source>Reference ID</source>
+        <target>Referentie ID</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Registration Created Date</source>
+        <target>Aanmaakdatum Registratie</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
+        <source>Registration ID</source>
+        <target>Registratie-ID</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-scope" datatype="html">
+        <source>Scope</source>
+        <target>Connectie</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-status" datatype="html">
+        <source>Status</source>
+        <target>Status</target>
+      </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;Voltooid&quot; behouden hun huidige status.</target>
+        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "Voltooid" behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-delete-warning" datatype="html">
         <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;voltooid&quot; behouden hun huidige status.</target>
+        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "voltooid" behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-include-warning" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
-        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
+        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-pause-warning" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
@@ -1027,32 +1602,40 @@
         <target>Export</target>
       </trans-unit>
       <trans-unit id="export-changes" datatype="html">
-        <source>Status &amp; data changes</source>
-        <target>Status- en datawijzigingen</target>
+        <source>Export status &amp; data changes</source>
+        <target>Status- en datawijzigingen exporteren</target>
       </trans-unit>
       <trans-unit id="export-duplicate" datatype="html">
-        <source>Duplicate registrations</source>
-        <target>Duplicaten</target>
+        <source>Export duplicate registrations</source>
+        <target>Duplicaten exporteren</target>
+      </trans-unit>
+      <trans-unit id="export-fsp-payment-list" datatype="html">
+        <source>Export FSP payment list</source>
+        <target>FSP-betalingslijst exporteren</target>
       </trans-unit>
       <trans-unit id="export-payments-debit-card-usage" datatype="html">
-        <source>Debit card usage</source>
-        <target>Visakaartgebruik</target>
+        <source>Export debit card usage</source>
+        <target>Visakaartgebruik exporteren</target>
       </trans-unit>
       <trans-unit id="export-payments-last" datatype="html">
         <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
         <target>Exporteer meest recente <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> betaling(en)</target>
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
-        <source>Unused vouchers</source>
-        <target>Ongebruikte vouchers</target>
+        <source>Export unused vouchers</source>
+        <target>Ongebruikte vouchers exporteren</target>
       </trans-unit>
       <trans-unit id="export-selected" datatype="html">
-        <source>Selected registrations</source>
-        <target>Geselecteerde registraties</target>
+        <source>Export selected registrations</source>
+        <target>Geselecteerde registraties exporteren</target>
       </trans-unit>
       <trans-unit id="export-verification" datatype="html">
-        <source>Account number verification</source>
+        <source>Export account number verification</source>
         <target>Verifieer rekeningnummers</target>
+      </trans-unit>
+      <trans-unit id="generic-apply" datatype="html">
+        <source>Apply</source>
+        <target>Toepassen</target>
       </trans-unit>
       <trans-unit id="generic-approve" datatype="html">
         <source>Approve</source>
@@ -1069,6 +1652,10 @@
       <trans-unit id="generic-cancel" datatype="html">
         <source>Cancel</source>
         <target>Annuleren</target>
+      </trans-unit>
+      <trans-unit id="generic-clear" datatype="html">
+        <source>Clear</source>
+        <target>Wissen</target>
       </trans-unit>
       <trans-unit id="generic-close" datatype="html">
         <source>Close</source>
@@ -1098,6 +1685,10 @@
         <source>Go back</source>
         <target>Terug</target>
       </trans-unit>
+      <trans-unit id="generic-loading" datatype="html">
+        <source>Loading...</source>
+        <target>Bezig met laden...</target>
+      </trans-unit>
       <trans-unit id="generic-message-will-be-sent" datatype="html">
         <source>A message will be sent to the registration about this update.</source>
         <target>Er wordt een bericht over deze update naar de registratie gestuurd.</target>
@@ -1122,6 +1713,10 @@
         <source>This field is required.</source>
         <target>Dit veld is vereist.</target>
       </trans-unit>
+      <trans-unit id="generic-save" datatype="html">
+        <source>Save</source>
+        <target>Opslaan</target>
+      </trans-unit>
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
         <target>Succes</target>
@@ -1143,9 +1738,17 @@
         <target>Account</target>
         <note priority="1" from="description">Top-right user-menu</note>
       </trans-unit>
-      <trans-unit id="generic-loading" datatype="html">
-        <source>Loading...</source>
-        <target>Bezig met laden...</target>
+      <trans-unit id="import-registrations-success" datatype="html">
+        <source><x equiv-text="importResult?.length" id="PH"/> registration(s) imported successfully.</source>
+        <target><x equiv-text="importResult?.length" id="PH"/> Registratie(s) succesvol geïmporteerd.</target>
+      </trans-unit>
+      <trans-unit id="last-message-status" datatype="html">
+        <source>Last message status</source>
+        <target>Status laatste bericht</target>
+      </trans-unit>
+      <trans-unit id="max-payments" datatype="html">
+        <source>Max payments</source>
+        <target>Max aantal betalingen</target>
       </trans-unit>
       <trans-unit id="message-content-type-custom" datatype="html">
         <source>Custom message</source>
@@ -1227,6 +1830,14 @@
         <source>Change password</source>
         <target>Change password</target>
       </trans-unit>
+      <trans-unit id="page-title-login" datatype="html">
+        <source>Log in</source>
+        <target>Log in</target>
+      </trans-unit>
+      <trans-unit id="page-title-privacy" datatype="html">
+        <source>Privacy</source>
+        <target>Privacy</target>
+      </trans-unit>
       <trans-unit id="page-title-project-monitoring" datatype="html">
         <source>Monitoring</source>
         <target>Monitoring</target>
@@ -1238,6 +1849,10 @@
       <trans-unit id="page-title-project-payments" datatype="html">
         <source>Payments</source>
         <target>Betalingen</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registration-details" datatype="html">
+        <source>Registration details</source>
+        <target>Registratie gegevens</target>
       </trans-unit>
       <trans-unit id="page-title-project-registrations" datatype="html">
         <source>Registrations</source>
@@ -1267,13 +1882,37 @@
         <source>Users</source>
         <target>Gebruikers</target>
       </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
+        <target>Aantal betalingen</target>
+      </trans-unit>
+      <trans-unit id="payment-count-remaining" datatype="html">
+        <source>Remaining payments</source>
+        <target>Resterende betalingen</target>
+      </trans-unit>
+      <trans-unit id="payment-report" datatype="html">
+        <source>Payment report</source>
+        <target>Betalingsrapport</target>
+      </trans-unit>
+      <trans-unit id="privacy-notice-last-updated" datatype="html">
+        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
+        <target>Laatst bijgewerkt: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></target>
+      </trans-unit>
+      <trans-unit id="query-table-manage-table" datatype="html">
+        <source>Manage table</source>
+        <target>Beheer tabel</target>
+      </trans-unit>
       <trans-unit id="registration-created" datatype="html">
         <source>Registration created</source>
         <target>Registratie gecreëerd</target>
       </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
-        <source>Name</source>
-        <target>Naam</target>
+        <source>Full Name</source>
+        <target>Volledige naam</target>
+      </trans-unit>
+      <trans-unit id="registration-full-name-edit-info" datatype="html">
+        <source>This field is dynamically generated based on the other name fields available below.</source>
+        <target>Dit veld wordt dynamisch gegenereerd op basis van de andere naamvelden die hieronder beschikbaar zijn.</target>
       </trans-unit>
       <trans-unit id="registration-payments" datatype="html">
         <source>Payments</source>
@@ -1288,8 +1927,8 @@
         <target>Connectie</target>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
-        <source>Registration Status</source>
-        <target state="new">Status</target>
+        <source>Status</source>
+        <target>Status</target>
       </trans-unit>
       <trans-unit id="registration-status-completed" datatype="html">
         <source>Completed</source>
@@ -1327,6 +1966,10 @@
         <source>Reset password</source>
         <target>Reset password</target>
       </trans-unit>
+      <trans-unit id="retry-failed-transfers" datatype="html">
+        <source>Retry failed transfers</source>
+        <target>Mislukte transfers opnieuw proberen</target>
+      </trans-unit>
       <trans-unit id="send-message" datatype="html">
         <source>Send message</source>
         <target>Bericht verzenden</target>
@@ -1336,664 +1979,24 @@
         <target>U staat op het punt om <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>een bericht te sturen<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> naar <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registratie(s).</target>
       </trans-unit>
       <trans-unit id="table-clear-filters" datatype="html">
-        <source>Clear filters</source>
+        <source>Clear all filters</source>
         <target>Alle filters wissen</target>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
         <target>Filteren op trefwoord</target>
       </trans-unit>
-      <trans-unit id="13613170635045985" datatype="html">
-        <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
-        <target state="new">Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</target>
+      <trans-unit id="transaction-status-error" datatype="html">
+        <source>Error</source>
+        <target>Fout</target>
       </trans-unit>
-      <trans-unit id="3142649024295180156" datatype="html">
-        <source>Choose file</source>
-        <target state="new">Choose file</target>
-      </trans-unit>
-      <trans-unit id="1071721880474488785" datatype="html">
-        <source>Import</source>
-        <target state="new">Import</target>
-      </trans-unit>
-      <trans-unit id="4680756702302858333" datatype="html">
-        <source>Import registrations</source>
-        <target state="new">Import registrations</target>
-      </trans-unit>
-      <trans-unit id="5842006292473012174" datatype="html">
-        <source>The system will create registrations with the status “registered”.</source>
-        <target state="new">The system will create registrations with the status “registered”.</target>
-      </trans-unit>
-      <trans-unit id="7123246815138482133" datatype="html">
-        <source>The import takes about 1 minute per 100 records</source>
-        <target state="new">The import takes about 1 minute per 100 records</target>
-      </trans-unit>
-      <trans-unit id="5248644489024163464" datatype="html">
-        <source>Import file</source>
-        <target state="new">Import file</target>
-      </trans-unit>
-      <trans-unit id="4555355588212916481" datatype="html">
-        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
-        <target state="new">Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
-      </trans-unit>
-      <trans-unit id="import-registrations-success" datatype="html">
-        <source>Registration(s) imported successfully.</source>
-        <target state="new">Registration(s) imported successfully.</target>
-      </trans-unit>
-      <trans-unit id="7893013905728176682" datatype="html">
-        <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
-        <target state="new">Something went wrong with this import. Please fix the errors reported below and try again.</target>
-      </trans-unit>
-      <trans-unit id="query-table-manage-table" datatype="html">
-        <source>Manage table</source>
-        <target state="new">Manage table</target>
-      </trans-unit>
-      <trans-unit id="generic-apply" datatype="html">
-        <source>Apply</source>
-        <target state="new">Apply</target>
-      </trans-unit>
-      <trans-unit id="1953762348939012822" datatype="html">
-        <source>Revert to default</source>
-        <target state="new">Revert to default</target>
-      </trans-unit>
-      <trans-unit id="8980999496899249966" datatype="html">
-        <source>Table columns:</source>
-        <target state="new">Table columns:</target>
-      </trans-unit>
-      <trans-unit id="generic-clear" datatype="html">
-        <source>Clear</source>
-        <target state="new">Clear</target>
-      </trans-unit>
-      <trans-unit id="2200382670798092138" datatype="html">
-        <source>Add to payment</source>
-        <target state="new">Add to payment</target>
-      </trans-unit>
-      <trans-unit id="2224540478181897692" datatype="html">
-        <source>All Payments</source>
-        <target state="new">All Payments</target>
-      </trans-unit>
-      <trans-unit id="4892553839051604445" datatype="html">
-        <source>Payment</source>
-        <target state="new">Payment</target>
-      </trans-unit>
-      <trans-unit id="8221183084962199390" datatype="html">
-        <source>Payment not found. Please check the URL and try again.</source>
-        <target state="new">Payment not found. Please check the URL and try again.</target>
-      </trans-unit>
-      <trans-unit id="5255226222389200378" datatype="html">
-        <source>Unknown user account or authentication failed</source>
-        <target state="new">Unknown user account or authentication failed</target>
-      </trans-unit>
-      <trans-unit id="8074727237612649640" datatype="html">
-        <source>Review summary and click start payment.</source>
-        <target state="new">Review summary and click start payment.</target>
-      </trans-unit>
-      <trans-unit id="8890553633144307762" datatype="html">
-        <source>Back</source>
-        <target state="new">Back</target>
-      </trans-unit>
-      <trans-unit id="7102075992666089988" datatype="html">
-        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
-        <target state="new">Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></target>
-      </trans-unit>
-      <trans-unit id="5081696702832953928" datatype="html">
-        <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
-        <target state="new">Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</target>
-      </trans-unit>
-      <trans-unit id="6725574712013202474" datatype="html">
-        <source>Payment created.</source>
-        <target state="new">Payment created.</target>
-      </trans-unit>
-      <trans-unit id="3545183022492788567" datatype="html">
-        <source>A payment is currently in progress. Please wait until it has finished.</source>
-        <target state="new">A payment is currently in progress. Please wait until it has finished.</target>
-      </trans-unit>
-      <trans-unit id="5995232414192798763" datatype="html">
-        <source>Financial Service Provider(s)</source>
-        <target state="new">Financial Service Provider(s)</target>
-      </trans-unit>
-      <trans-unit id="17234570072885140" datatype="html">
-        <source>Registrations</source>
-        <target state="new">Registrations</target>
-      </trans-unit>
-      <trans-unit id="6430223777327451722" datatype="html">
-        <source>Total payment amount</source>
-        <target state="new">Total payment amount</target>
-      </trans-unit>
-      <trans-unit id="1767359435550986288" datatype="html">
-        <source>The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.</source>
-        <target state="new">The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.</target>
-      </trans-unit>
-      <trans-unit id="4746344653872488527" datatype="html">
-        <source>Export payment list</source>
-        <target state="new">Export payment list</target>
-      </trans-unit>
-      <trans-unit id="4207014437413577720" datatype="html">
-        <source>Start payment</source>
-        <target state="new">Start payment</target>
-      </trans-unit>
-      <trans-unit id="2077280297780026969" datatype="html">
-        <source>Review payment summary and follow the next steps:</source>
-        <target state="new">Review payment summary and follow the next steps:</target>
-      </trans-unit>
-      <trans-unit id="4360422423466093126" datatype="html">
-        <source>Click start payment, this will direct you to the payment page.</source>
-        <target state="new">Click start payment, this will direct you to the payment page.</target>
-      </trans-unit>
-      <trans-unit id="8847988975348610068" datatype="html">
-        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
-        <target state="new">Save the exported XLSX-file in the format required by the Financial Service Provider.</target>
-      </trans-unit>
-      <trans-unit id="5677186522471416018" datatype="html">
-        <source>Upload the file to the Financial Service Provider’s portal.</source>
-        <target state="new">Upload the file to the Financial Service Provider’s portal.</target>
-      </trans-unit>
-      <trans-unit id="1021287001460137349" datatype="html">
-        <source>Exporting FSP Instructions</source>
-        <target state="new">Exporting FSP Instructions</target>
-      </trans-unit>
-      <trans-unit id="614288202138197410" datatype="html">
-        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
-        <target state="new">Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</target>
-      </trans-unit>
-      <trans-unit id="export-fsp-payment-list" datatype="html">
-        <source>Export FSP payment list</source>
-        <target state="new">Export FSP payment list</target>
+      <trans-unit id="transaction-status-success" datatype="html">
+        <source>Success</source>
+        <target>Succes</target>
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
         <source>Pending</source>
-        <target state="new">Pending</target>
-      </trans-unit>
-      <trans-unit id="transaction-status-error" datatype="html">
-        <source>Failed</source>
-        <target state="new">Failed</target>
-      </trans-unit>
-      <trans-unit id="transaction-status-success" datatype="html">
-        <source>Successful</source>
-        <target state="new">Successful</target>
-      </trans-unit>
-      <trans-unit id="504281469996866803" datatype="html">
-        <source>Retry failed transfers</source>
-        <target state="new">Retry failed transfers</target>
-      </trans-unit>
-      <trans-unit id="908038299240128268" datatype="html">
-        <source>Transfer status</source>
-        <target state="new">Transfer status</target>
-      </trans-unit>
-      <trans-unit id="5156383097673576773" datatype="html">
-        <source>Fail reason</source>
-        <target state="new">Fail reason</target>
-      </trans-unit>
-      <trans-unit id="5169543313827462176" datatype="html">
-        <source>Transfer value</source>
-        <target state="new">Transfer value</target>
-      </trans-unit>
-      <trans-unit id="3595291210637281374" datatype="html">
-        <source>Transfers data</source>
-        <target state="new">Transfers data</target>
-      </trans-unit>
-      <trans-unit id="9047634939215362248" datatype="html">
-        <source>Registrations selected:</source>
-        <target state="new">Registrations selected:</target>
-      </trans-unit>
-      <trans-unit id="3890824728366334701" datatype="html">
-        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
-        <target state="new">Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</target>
-      </trans-unit>
-      <trans-unit id="2772534939673815092" datatype="html">
-        <source>Please allow pop-up windows in your browser settings to login</source>
-        <target state="new">Please allow pop-up windows in your browser settings to login</target>
-      </trans-unit>
-      <trans-unit id="5889532119950831763" datatype="html">
-        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
-        <target>U staat op het punt om de VISA kaart met nummer <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/> te vervangen. De huidige kaart wordt geblokkeerd en wordt er een nieuwe kaart uitgegeven.</target>
-      </trans-unit>
-      <trans-unit id="8108032945706896800" datatype="html">
-        <source>You do not have permission to view this page.</source>
-        <target state="new">You do not have permission to view this page.</target>
-      </trans-unit>
-      <trans-unit id="4324437964498958057" datatype="html">
-        <source>Transfers sent</source>
-        <target state="new">Transfers sent</target>
-      </trans-unit>
-      <trans-unit id="4585448172507601196" datatype="html">
-        <source>Registrations included</source>
-        <target state="new">Registrations included</target>
-      </trans-unit>
-      <trans-unit id="retry-failed-transfers" datatype="html">
-        <source>Retry failed transfers</source>
-        <target state="new">Retry failed transfers</target>
-      </trans-unit>
-      <trans-unit id="3971565293367630153" datatype="html">
-        <source>Retry transfers</source>
-        <target state="new">Retry transfers</target>
-      </trans-unit>
-      <trans-unit id="7113199794780283377" datatype="html">
-        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
-        <target state="new">You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</target>
-      </trans-unit>
-      <trans-unit id="payment-report" datatype="html">
-        <source>Payment report</source>
-        <target state="new">Payment report</target>
-      </trans-unit>
-      <trans-unit id="5533720489917693962" datatype="html">
-        <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
-        <target state="new">You&apos;re about to download an Excel file with the FSP instructions for this payment.</target>
-      </trans-unit>
-      <trans-unit id="4044492363974277530" datatype="html">
-        <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
-        <target state="new">You&apos;re about to download an Excel file with all of the registrations included in this payment.</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-referenceId" datatype="html">
-        <source>Reference ID</source>
-        <target state="new">Reference ID</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-phoneNumber" datatype="html">
-        <source>Phone Number</source>
-        <target state="new">Phone Number</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-preferredLanguage" datatype="html">
-        <source>Preferred Language</source>
-        <target state="new">Preferred Language</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
-        <source>FSP</source>
-        <target state="new">FSP</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-paymentCount" datatype="html">
-        <source>Payment Count</source>
-        <target state="new">Payment Count</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-scope" datatype="html">
-        <source>Scope</source>
-        <target state="new">Scope</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-status" datatype="html">
-        <source>Status</source>
-        <target state="new">Status</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
-        <source>Registration ID</source>
-        <target state="new">Registration ID</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
-        <source>Registration Created Date</source>
-        <target state="new">Registration Created Date</target>
-      </trans-unit>
-      <trans-unit id="attribute-label-inclusionScore" datatype="html">
-        <source>Inclusion Score</source>
-        <target state="new">Inclusion Score</target>
-      </trans-unit>
-      <trans-unit id="6269202464699193298" datatype="html">
-        <source>Arabic</source>
-        <target state="new">Arabic</target>
-      </trans-unit>
-      <trans-unit id="5866254605255506989" datatype="html">
-        <source>English</source>
-        <target state="new">English</target>
-      </trans-unit>
-      <trans-unit id="5190825892106392539" datatype="html">
-        <source>Spanish</source>
-        <target state="new">Spanish</target>
-      </trans-unit>
-      <trans-unit id="7633754075223722162" datatype="html">
-        <source>French</source>
-        <target state="new">French</target>
-      </trans-unit>
-      <trans-unit id="8312065814232621608" datatype="html">
-        <source>Indonesian</source>
-        <target state="new">Indonesian</target>
-      </trans-unit>
-      <trans-unit id="3071065188816255493" datatype="html">
-        <source>Dutch</source>
-        <target state="new">Nederlands</target>
-      </trans-unit>
-      <trans-unit id="153799456510623899" datatype="html">
-        <source>Portuguese</source>
-        <target state="new">Portuguese</target>
-      </trans-unit>
-      <trans-unit id="1703221125772306676" datatype="html">
-        <source>Filipino</source>
-        <target state="new">Filipino</target>
-      </trans-unit>
-      <trans-unit id="5682359291233237791" datatype="html">
-        <source>Turkish</source>
-        <target state="new">Turkish</target>
-      </trans-unit>
-      <trans-unit id="8116905776887232271" datatype="html">
-        <source>Expected total amount</source>
-        <target state="new">Expected total amount</target>
-      </trans-unit>
-      <trans-unit id="4957123542385348986" datatype="html">
-        <source>Amount successfully sent</source>
-        <target state="new">Amount successfully sent</target>
-      </trans-unit>
-      <trans-unit id="1485624035618673724" datatype="html">
-        <source>Import reconciliation data</source>
-        <target state="new">Import reconciliation data</target>
-      </trans-unit>
-      <trans-unit id="2648122632166597138" datatype="html">
-        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
-        <target state="new">Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
-      </trans-unit>
-      <trans-unit id="495282157937447440" datatype="html">
-        <source>Make sure to upload the correct file as this will override the current file.</source>
-        <target state="new">Make sure to upload the correct file as this will override the current file.</target>
-      </trans-unit>
-      <trans-unit id="4747436386182159575" datatype="html">
-        <source>The status column in the file should contain one of the following values:</source>
-        <target state="new">The status column in the file should contain one of the following values:</target>
-      </trans-unit>
-      <trans-unit id="5682129577475133431" datatype="html">
-        <source>Import not possible</source>
-        <target state="new">Import not possible</target>
-      </trans-unit>
-      <trans-unit id="8705310124062464174" datatype="html">
-        <source>A payment is currently in progress. Please try again later</source>
-        <target state="new">A payment is currently in progress. Please try again later</target>
-      </trans-unit>
-      <trans-unit id="581189508098722225" datatype="html">
-        <source>Reconciliation data imported successfully.</source>
-        <target state="new">Reconciliation data imported successfully.</target>
-      </trans-unit>
-      <trans-unit id="2795059376397351120" datatype="html">
-        <source>Registration Status</source>
-        <target state="new">Registration Status</target>
-      </trans-unit>
-      <trans-unit id="4067653603451364018" datatype="html">
-        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
-        <target state="new">The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</target>
-      </trans-unit>
-      <trans-unit id="2276030451798485888" datatype="html">
-        <source>Amount of money successfully transferred.</source>
-        <target state="new">Amount of money successfully transferred.</target>
-      </trans-unit>
-      <trans-unit id="6371588679924903737" datatype="html">
-        <source>Open in new tab</source>
-        <target state="new">Open in new tab</target>
-      </trans-unit>
-      <trans-unit id="5452570589103987928" datatype="html">
-        <source>Payment status chart.</source>
-        <target state="new">Payment status chart.</target>
-      </trans-unit>
-      <trans-unit id="4213825410774196775" datatype="html">
-        <source>No results</source>
-        <target state="new">No results</target>
-      </trans-unit>
-      <trans-unit id="414383194277792669" datatype="html">
-        <source>There are no records to display.</source>
-        <target state="new">There are no records to display.</target>
-      </trans-unit>
-      <trans-unit id="37959892232763790" datatype="html">
-        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
-        <target state="new">Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></target>
-      </trans-unit>
-      <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://new.manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
-        <target state="new">There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://new.manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
-      </trans-unit>
-      <trans-unit id="7585097972263982693" datatype="html">
-        <source>Old FSP</source>
-        <target state="new">Old FSP</target>
-      </trans-unit>
-      <trans-unit id="8427406767154725875" datatype="html">
-        <source>New FSP</source>
-        <target state="new">New FSP</target>
-      </trans-unit>
-      <trans-unit id="registration-full-name-edit-info" datatype="html">
-        <source>This field is dynamically generated based on the other name fields available below:</source>
-        <target state="new">This field is dynamically generated based on the other name fields available below:</target>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
-        <source>The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</source>
-        <target state="new">The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</target>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
-        <source>The transfer value will be multiplied by this number for this Person Affected</source>
-        <target state="new">The transfer value will be multiplied by this number for this Person Affected</target>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
-        <source>The required format is: ONLY numbers, including country-code.</source>
-        <target state="new">The required format is: ONLY numbers, including country-code.</target>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-scope" datatype="html">
-        <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
-        <target state="new">Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</target>
-      </trans-unit>
-      <trans-unit id="generic-save" datatype="html">
-        <source>Save</source>
-        <target state="new">Save</target>
-      </trans-unit>
-      <trans-unit id="3003940161121195414" datatype="html">
-        <source>Update information</source>
-        <target state="new">Update information</target>
-      </trans-unit>
-      <trans-unit id="4788150502649502085" datatype="html">
-        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
-        <target state="new">You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</target>
-      </trans-unit>
-      <trans-unit id="2317261224640464417" datatype="html">
-        <source>Write a reason for the update</source>
-        <target state="new">Write a reason for the update</target>
-      </trans-unit>
-      <trans-unit id="6404965869709788913" datatype="html">
-        <source>Personal information edited successfully.</source>
-        <target state="new">Personal information edited successfully.</target>
-      </trans-unit>
-      <trans-unit id="8103250468659936776" datatype="html">
-        <source>Please fill out all required fields.</source>
-        <target state="new">Please fill out all required fields.</target>
-      </trans-unit>
-      <trans-unit id="7906932148820692681" datatype="html">
-        <source>Operation not possible.</source>
-        <target state="new">Operation not possible.</target>
-      </trans-unit>
-      <trans-unit id="4404975094271849688" datatype="html">
-        <source>No changes detected.</source>
-        <target state="new">No changes detected.</target>
-      </trans-unit>
-      <trans-unit id="7005213248357637960" datatype="html">
-        <source>Edit information</source>
-        <target state="new">Edit information</target>
-      </trans-unit>
-      <trans-unit id="1545261806462361427" datatype="html">
-        <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
-        <target state="new">Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></target>
-      </trans-unit>
-      <trans-unit id="8602877633844729884" datatype="html">
-        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
-        <target state="new">Changes that you made may not be saved. Are you sure you wish to proceed?</target>
-      </trans-unit>
-      <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
-        <source>This is automatically calculated based on Max. payments and payments sucessfully sent</source>
-        <target state="new">This is automatically calculated based on Max. payments and payments sucessfully sent</target>
-      </trans-unit>
-      <trans-unit id="3894950702316166331" datatype="html">
-        <source>Loading...</source>
-        <target state="new">Loading...</target>
-      </trans-unit>
-      <trans-unit id="4009667361617596446" datatype="html">
-        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</source>
-        <target state="new">We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</target>
-      </trans-unit>
-      <trans-unit id="8097251469414276924" datatype="html">
-        <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
-        <target state="new"><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</target>
-      </trans-unit>
-      <trans-unit id="8209340100752123472" datatype="html">
-        <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
-        <target state="new">When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</target>
-      </trans-unit>
-      <trans-unit id="page-title-login" datatype="html">
-        <source>Log in</source>
-        <target>Log in</target>
-      </trans-unit>
-      <trans-unit id="page-title-project-registration-details" datatype="html">
-        <source>Registration details</source>
-        <target>Registratie details</target>
-      </trans-unit>
-      <trans-unit id="7924647147478852112" datatype="html">
-        <source>Game over!</source>
-        <target state="new">Game over!</target>
-      </trans-unit>
-      <trans-unit id="2077783620698115246" datatype="html">
-        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
-        <target state="new">Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</target>
-      </trans-unit>
-      <trans-unit id="1579692722565712588" datatype="html">
-        <source>Okay</source>
-        <target state="new">Okay</target>
-      </trans-unit>
-      <trans-unit id="2981043932069425956" datatype="html">
-        <source>Let&apos;s start!</source>
-        <target state="new">Let&apos;s start!</target>
-      </trans-unit>
-      <trans-unit id="5595826100350402634" datatype="html">
-        <source>Use the arrow keys or W A S D to play the game</source>
-        <target state="new">Use the arrow keys or W A S D to play the game</target>
-      </trans-unit>
-      <trans-unit id="2438590582556677910" datatype="html">
-        <source>Start!</source>
-        <target state="new">Start!</target>
-      </trans-unit>
-      <trans-unit id="8220517666190714329" datatype="html">
-        <source>Did you know?</source>
-        <target state="new">Did you know?</target>
-      </trans-unit>
-      <trans-unit id="payment-count" datatype="html">
-        <source>Number of payments</source>
-        <target state="new">Number of payments</target>
-      </trans-unit>
-      <trans-unit id="payment-count-remaining" datatype="html">
-        <source>Remaining payments</source>
-        <target state="new">Remaining payments</target>
-      </trans-unit>
-      <trans-unit id="max-payments" datatype="html">
-        <source>Max payments</source>
-        <target state="new">Max payments</target>
-      </trans-unit>
-      <trans-unit id="last-message-status" datatype="html">
-        <source>Last message status</source>
-        <target state="new">Last message status</target>
-      </trans-unit>
-      <trans-unit id="page-title-privacy" datatype="html">
-        <source>Privacy</source>
-        <target state="new">Privacy</target>
-      </trans-unit>
-      <trans-unit id="privacy-notice-last-updated" datatype="html">
-        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
-        <target>Laatst gewijzigd: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></target>
-      </trans-unit>
-      <trans-unit id="5061826209151408276" datatype="html">
-        <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
-        <target state="new">This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</target>
-      </trans-unit>
-      <trans-unit id="706820993579364519" datatype="html">
-        <source>Where we get personal information from</source>
-        <target state="new">Where we get personal information from</target>
-      </trans-unit>
-      <trans-unit id="4175321634261799700" datatype="html">
-        <source>Information you or your employer has provided us.</source>
-        <target state="new">Information you or your employer has provided us.</target>
-      </trans-unit>
-      <trans-unit id="2114848494510177632" datatype="html">
-        <source>Your e-mail address and/or your (full) name.</source>
-        <target state="new">Your e-mail address and/or your (full) name.</target>
-      </trans-unit>
-      <trans-unit id="5270320047142620174" datatype="html">
-        <source>Information automatically collected about you</source>
-        <target state="new">Information automatically collected about you</target>
-      </trans-unit>
-      <trans-unit id="7316654266676902247" datatype="html">
-        <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
-        <target state="new">Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</target>
-      </trans-unit>
-      <trans-unit id="3805310091097915389" datatype="html">
-        <source>How long we keep information</source>
-        <target state="new">How long we keep information</target>
-      </trans-unit>
-      <trans-unit id="2099469692592361098" datatype="html">
-        <source>Personal information: e-mail and name.</source>
-        <target state="new">Personal information: e-mail and name.</target>
-      </trans-unit>
-      <trans-unit id="3619477798940026244" datatype="html">
-        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
-        <target state="new">We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</target>
-      </trans-unit>
-      <trans-unit id="337088933774172577" datatype="html">
-        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
-        <target state="new">We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</target>
-      </trans-unit>
-      <trans-unit id="7509825160805284263" datatype="html">
-        <source>Personal information: IP-address.</source>
-        <target state="new">Personal information: IP-address.</target>
-      </trans-unit>
-      <trans-unit id="3934118952625564148" datatype="html">
-        <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
-        <target state="new">We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</target>
-      </trans-unit>
-      <trans-unit id="4097796198739407763" datatype="html">
-        <source>This identifier is stored for max. 90 days in our logs-storage.</source>
-        <target state="new">This identifier is stored for max. 90 days in our logs-storage.</target>
-      </trans-unit>
-      <trans-unit id="1369610904910546430" datatype="html">
-        <source>Who we share information with</source>
-        <target state="new">Who we share information with</target>
-      </trans-unit>
-      <trans-unit id="1867309401161150879" datatype="html">
-        <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
-        <target state="new">The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</target>
-      </trans-unit>
-      <trans-unit id="7194723645188865835" datatype="html">
-        <source>We do not share any personal information with other third-parties.</source>
-        <target state="new">We do not share any personal information with other third-parties.</target>
-      </trans-unit>
-      <trans-unit id="4516124744118816397" datatype="html">
-        <source>Cookies</source>
-        <target>Cookies</target>
-      </trans-unit>
-      <trans-unit id="2512429297957946940" datatype="html">
-        <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
-        <target state="new">We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</target>
-      </trans-unit>
-      <trans-unit id="2378622458638065888" datatype="html">
-        <source>How to contact us</source>
-        <target state="new">How to contact us</target>
-      </trans-unit>
-      <trans-unit id="8385553553362590495" datatype="html">
-        <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
-        <target state="new">If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
-      </trans-unit>
-      <trans-unit id="2669678082320549438" datatype="html">
-        <source>Reference ID</source>
-        <target state="new">Reference ID</target>
-      </trans-unit>
-      <trans-unit id="3797627476744587316" datatype="html">
-        <source>Logged in as:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></source>
-        <target>Ingelogd als:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></target>
-      </trans-unit>
-      <trans-unit id="2569607511969570423" datatype="html">
-        <source>Export selected registrations</source>
-        <target>Geselecteerde registraties exporteren</target>
-      </trans-unit>
-      <trans-unit id="6371019092558402602" datatype="html">
-        <source>Export duplicate registrations</source>
-        <target>Duplicaten exporteren</target>
-      </trans-unit>
-      <trans-unit id="4667279955724574149" datatype="html">
-        <source>Export status &amp; data changes</source>
-        <target>Status- en datawijzigingen exporteren</target>
-      </trans-unit>
-      <trans-unit id="8735075176632769564" datatype="html">
-        <source>Export account number verification</source>
-        <target>Verifieer rekeningnummers exporteren</target>
-      </trans-unit>
-      <trans-unit id="2932497983463949366" datatype="html">
-        <source>Export unused vouchers</source>
-        <target>Ongebruikte vouchers exporteren</target>
-      </trans-unit>
-      <trans-unit id="7197861278093051814" datatype="html">
-        <source>Export debit card usage</source>
-        <target>Visakaartgebruik exporteren</target>
+        <target>In behandeling</target>
       </trans-unit>
     </body>
   </file>
