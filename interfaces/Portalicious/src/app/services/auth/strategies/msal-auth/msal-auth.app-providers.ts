@@ -75,6 +75,7 @@ function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 
 function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
+    loginFailedRoute: `/${AppRoutes.login}`,
     interactionType: isIframed()
       ? InteractionType.Popup
       : InteractionType.Redirect,
