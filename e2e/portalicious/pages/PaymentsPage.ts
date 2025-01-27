@@ -18,6 +18,7 @@ class PaymentsPage extends BasePage {
   readonly exportDropdown: Locator;
   readonly proceedButton: Locator;
   readonly viewPaymentTitle: Locator;
+  readonly paymentAmount: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -48,6 +49,7 @@ class PaymentsPage extends BasePage {
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: 'All Payments',
     });
+    this.paymentAmount = this.page.getByTestId('metric-tile-component');
   }
 
   async selectAllRegistrations() {
@@ -194,7 +196,6 @@ class PaymentsPage extends BasePage {
   }) {
     await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
     const graph = await this.page.locator('canvas').getAttribute('aria-label');
-
     if (graph) {
       const graphText = graph
         .replace('Payment status chart.', '')
@@ -207,6 +208,16 @@ class PaymentsPage extends BasePage {
     } else {
       throw new Error('Graph attribute is null');
     }
+  }
+
+  async validateTransferAmounts({ amount }: { amount: number }) {
+    await this.page.waitForTimeout(1000); // Wait for the graph to be updated after the loader is hidden
+
+    const paymentAmount = this.paymentAmount.getByText('€');
+    const paymentAmountText = await paymentAmount.textContent();
+    const normalizedPaymentAmountText = paymentAmountText?.replace(/,/g, '');
+
+    expect(normalizedPaymentAmountText).toContain(amount.toString());
   }
 }
 
