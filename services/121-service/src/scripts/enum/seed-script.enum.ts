@@ -1,4 +1,5 @@
 export enum SeedScript {
+  productionInitialState = 'production-initial-state',
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
   nlrcMultipleMock = 'nlrc-multiple-mock-data',

@@ -28,6 +28,9 @@ export class ScriptsService {
     const seedConfig = this.getSeedConfigByNameOrThrow(seedScript);
 
     await this.seedInit.run(isApiTests);
+    if (seedConfig.seedAdminOnly) {
+      return;
+    }
 
     if (seedConfig.includeMockData) {
       // For now equate boolean includeMockData to NLRC mock. Use separate script and return early.
