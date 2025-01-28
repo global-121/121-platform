@@ -260,7 +260,7 @@ export class RegistrationsInputValidator {
             if (row[att.name] === undefined) {
               return;
             }
-            if (row[att.name] == null) {
+            if (row[att.name] == null || row[att.name] === '') {
               validatedRegistrationInput.data[att.name] = null;
               return;
             }

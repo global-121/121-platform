@@ -87,12 +87,34 @@ const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
   },
 ];
 
+const program = {
+  id: 1,
+  name: 'Test Program',
+  languages: ['en'],
+  enableMaxPayments: true,
+  enableScope: true,
+  programFinancialServiceProviderConfigurations: [
+    {
+      financialServiceProviderName:
+        FinancialServiceProviders.intersolveVoucherWhatsapp,
+      name: 'Intersolve-voucher-whatsapp',
+    },
+    {
+      financialServiceProviderName: FinancialServiceProviders.excel,
+      name: 'Excel',
+    },
+  ],
+  programRegistrationAttributes: dynamicAttributes,
+};
+
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
+  let userService: UserService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     mockProgramRepository = {};
     mockRegistrationRepository = {};
 
@@ -113,7 +135,6 @@ describe('RegistrationsInputValidator', () => {
           provide: getRepositoryToken(RegistrationEntity),
           useValue: mockRegistrationRepository,
         },
-
         {
           provide: UserService,
           useValue: {
@@ -143,22 +164,9 @@ describe('RegistrationsInputValidator', () => {
       RegistrationsInputValidator,
     );
 
+    userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
-    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue({
-      id: 1,
-      name: 'Test Program',
-      languages: ['en'],
-      enableMaxPayments: true,
-      enableScope: true,
-      programFinancialServiceProviderConfigurations: [
-        {
-          financialServiceProviderName:
-            FinancialServiceProviders.intersolveVoucherWhatsapp,
-          name: 'Intersolve-voucher-whatsapp',
-        },
-      ],
-      programRegistrationAttributes: dynamicAttributes,
-    });
+    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
   });
 
   it('should validate and clean registrations input without errors', async () => {
@@ -347,5 +355,65 @@ describe('RegistrationsInputValidator', () => {
     });
 
     expect(result[0]).toHaveProperty('maxPayments');
+  });
+
+  // When columns are left empty in a csv they are read as empty string
+  // This can happen we creating registrations with a csv file
+  it('should be able to post all non required attributes as empty string', async () => {
+    jest.spyOn(userService, 'getUserScopeForProgram').mockResolvedValue('');
+    const programAllowsEmptyPhoneNumber = {
+      ...program,
+      allowEmptyPhoneNumber: true,
+    };
+    mockProgramRepository.findOneOrFail = jest
+      .fn()
+      .mockResolvedValue(programAllowsEmptyPhoneNumber);
+
+    const csvArray = [
+      {
+        preferredLanguage: 'en',
+        paymentAmountMultiplier: '1',
+        lastName: '',
+        phoneNumber: '',
+        whatsappPhoneNumber: '',
+        addressStreet: '',
+        addressHouseNumber: '',
+        addressHouseNumberAddition: '',
+        programFinancialServiceProviderConfigurationName:
+          FinancialServiceProviders.excel,
+        scope: '',
+        house: '',
+      },
+    ];
+
+    const result = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.create,
+      validationConfig: {
+        validatePhoneNumberLookup: true,
+        validateUniqueReferenceId: true,
+        validateExistingReferenceId: true,
+      },
+    });
+
+    const expected = {
+      data: {
+        addressStreet: null,
+        addressHouseNumber: null,
+        addressHouseNumberAddition: null,
+        whatsappPhoneNumber: null,
+        phoneNumber: null,
+        house: null,
+      },
+      paymentAmountMultiplier: 1,
+      scope: '',
+      preferredLanguage: 'en',
+      phoneNumber: null,
+      programFinancialServiceProviderConfigurationName: 'Excel',
+    };
+
+    expect(result[0]).toEqual(expected);
   });
 });
