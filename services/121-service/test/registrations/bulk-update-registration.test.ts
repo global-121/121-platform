@@ -1,6 +1,5 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { assertRegistrationBulkUpdate } from '@121-service/test/helpers/assert.helper';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   bulkUpdateRegistrationsCSV,
@@ -11,6 +10,22 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+
+function filterUnchangedProperties(
+  originalData: Record<string, unknown>,
+  patchData: Record<string, unknown>,
+): Record<string, any> {
+  const unchangedProperties: Record<string, unknown> = {};
+
+  for (const key of Object.keys(originalData)) {
+    // registration.name is a special case as it is a derived property so it cannot be patched
+    if (!(key in patchData) && key !== 'name') {
+      unchangedProperties[key] = originalData[key];
+    }
+  }
+
+  return unchangedProperties;
+}
 
 describe('Update attribute of multiple PAs via Bulk update', () => {
   const programIdOcw = 3;
@@ -34,7 +49,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
-      addressHouseNumberAddition: '',
+      addressHouseNumberAddition: null,
       preferredLanguage: 'ar',
       paymentAmountMultiplier: 2,
       whatsappPhoneNumber: '14155238880',
@@ -96,16 +111,25 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
 
     // Assert
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa1,
-      pa1AfterPatch,
+    // Explicit assertions for pa1 using patch data
+    expect(pa1AfterPatch).toMatchObject(registrationDataThatWillChangePa1);
+
+    // Explicit assertions for pa2 using patch data
+    expect(pa2AfterPatch).toMatchObject(registrationDataThatWillChangePa2);
+
+    // Ensure unchanged fields remain the same
+    const dataThatStaysTheSamePa1 = filterUnchangedProperties(
       pa1BeforePatch,
+      registrationDataThatWillChangePa1,
     );
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa2,
-      pa2AfterPatch,
+
+    const dataThatStaysTheSamePa2 = filterUnchangedProperties(
       pa2BeforePatch,
+      registrationDataThatWillChangePa2,
     );
+
+    expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
+    expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
   });
 
   it('Should bulk update chosen FSP and validate changed records', async () => {
@@ -173,16 +197,25 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
 
     // Assert
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa1,
-      pa1AfterPatch,
+    // Explicit assertions for pa1 using patch data
+    expect(pa1AfterPatch).toMatchObject(registrationDataThatWillChangePa1);
+
+    // Explicit assertions for pa2 using patch data
+    expect(pa2AfterPatch).toMatchObject(registrationDataThatWillChangePa2);
+
+    // Ensure unchanged fields remain the same
+    const dataThatStaysTheSamePa1 = filterUnchangedProperties(
       pa1BeforePatch,
+      registrationDataThatWillChangePa1,
     );
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa2,
-      pa2AfterPatch,
+
+    const dataThatStaysTheSamePa2 = filterUnchangedProperties(
       pa2BeforePatch,
+      registrationDataThatWillChangePa2,
     );
+
+    expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
+    expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
   });
 
   it('Should bulk update if phoneNumber column is empty and program is configured as allowing empty phone number', async () => {
@@ -190,7 +223,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
-      addressHouseNumberAddition: '',
+      addressHouseNumberAddition: null,
       preferredLanguage: 'ar',
       paymentAmountMultiplier: 2,
       phoneNumber: '14155238880',
@@ -255,15 +288,24 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
 
     // Assert
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa1,
-      pa1AfterPatch,
+    // Explicit assertions for pa1 using patch data
+    expect(pa1AfterPatch).toMatchObject(registrationDataThatWillChangePa1);
+
+    // Explicit assertions for pa2 using patch data
+    expect(pa2AfterPatch).toMatchObject(registrationDataThatWillChangePa2);
+
+    const dataThatStaysTheSamePa1 = filterUnchangedProperties(
       pa1BeforePatch,
+      registrationDataThatWillChangePa1,
     );
-    assertRegistrationBulkUpdate(
-      registrationDataThatWillChangePa2,
-      pa2AfterPatch,
+
+    const dataThatStaysTheSamePa2 = filterUnchangedProperties(
       pa2BeforePatch,
+      registrationDataThatWillChangePa2,
     );
+
+    // Ensure unchanged fields remain the same
+    expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
+    expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
   });
 });
