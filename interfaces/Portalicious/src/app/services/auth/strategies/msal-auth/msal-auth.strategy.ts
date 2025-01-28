@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MsalService } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import {
   AuthenticationResult,
+  EventMessage,
   PopupRequest,
   RedirectRequest,
 } from '@azure/msal-browser';
@@ -31,6 +32,7 @@ export class MsalAuthStrategy implements IAuthStrategy {
   public ChangePasswordComponent = null;
 
   private readonly msalService = inject(MsalService);
+  private readonly msalBroadcastService = inject(MsalBroadcastService);
   private readonly router = inject(Router);
   private readonly userApiService = inject(UserApiService);
   private queryClient = inject(QueryClient);
@@ -40,7 +42,14 @@ export class MsalAuthStrategy implements IAuthStrategy {
   }
 
   public initializeSubscriptions() {
-    return [this.msalService.handleRedirectObservable().subscribe()]; // Subscribing to handleRedirectObservable before any other functions both initializes the application and ensures redirects are handled
+    return [
+      this.msalService.handleRedirectObservable().subscribe(), // Subscribing to handleRedirectObservable before any other functions both initializes the application and ensures redirects are handled
+      this.msalBroadcastService.msalSubject$.subscribe(
+        (result: EventMessage) => {
+          console.log('🚀 ~ MsalAuthStrategy ~ .subscribe ~ result:', result);
+        },
+      ),
+    ];
   }
 
   public async login(credentials: { username: string }) {
