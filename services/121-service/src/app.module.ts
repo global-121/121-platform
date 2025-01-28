@@ -14,13 +14,17 @@ import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
-import { FinancialServiceProviderCallbackJobProcessorsModule } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
 import { NoteModule } from '@121-service/src/notes/notes.module';
 import { MessageModule } from '@121-service/src/notifications/message.module';
 import { MessageIncomingModule } from '@121-service/src/notifications/message-incoming/message-incoming.module';
 import { OrganizationModule } from '@121-service/src/organization/organization.module';
+import { CommercialBankEthiopiaReconciliationModule } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.module';
+import { ExcelReconcilicationModule } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.module';
+import { IntersolveVisaReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
+import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
+import { SafaricomReconciliationModule } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
@@ -74,7 +78,11 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     ActivitiesModule,
     TransactionQueuesModule,
     TransactionJobProcessorsModule,
-    FinancialServiceProviderCallbackJobProcessorsModule,
+    CommercialBankEthiopiaReconciliationModule,
+    ExcelReconcilicationModule,
+    IntersolveVisaReconciliationModule,
+    IntersolveVoucherReconciliationModule,
+    SafaricomReconciliationModule,
   ],
   controllers: [AppController],
   providers: [

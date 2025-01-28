@@ -4,22 +4,67 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Redis } from 'ioredis';
 
-import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-timeout-callback-job.dto';
-import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-transfer-callback-job.dto';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
+import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-timeout-callback.dto';
+import { SafaricomTimeoutCallbackJobDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-timeout-callback-job.dto';
+import { SafaricomTransferCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback.dto';
+import { SafaricomTransferCallbackJobDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback-job.dto';
+import {
+  getRedisSetName,
+  REDIS_CLIENT,
+} from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 @Injectable()
-export class FinancialServiceProviderCallbackJobProcessorsService {
+export class SafaricomReconciliationService {
   public constructor(
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly queuesService: QueuesRegistryService,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
   ) {}
+
+  public async processTransferCallback(
+    safaricomTransferCallback: SafaricomTransferCallbackDto,
+  ): Promise<void> {
+    const safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto = {
+      originatorConversationId:
+        safaricomTransferCallback.Result.OriginatorConversationID,
+      mpesaConversationId: safaricomTransferCallback.Result.ConversationID,
+      mpesaTransactionId: safaricomTransferCallback.Result.TransactionID,
+      resultCode: safaricomTransferCallback.Result.ResultCode,
+      resultDescription: safaricomTransferCallback.Result.ResultDesc,
+    };
+
+    const job = await this.queuesService.safaricomTransferCallbackQueue.add(
+      JobNames.default,
+      safaricomTransferCallbackJob,
+    );
+
+    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+  }
+
+  public async processTimeoutCallback(
+    safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
+  ): Promise<void> {
+    const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
+      originatorConversationId:
+        safaricomTimeoutCallback.OriginatorConversationID,
+    };
+
+    const job = await this.queuesService.safaricomTimeoutCallbackQueue.add(
+      JobNames.default,
+      safaricomTimeoutCallbackJob,
+    );
+
+    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+  }
 
   public async processSafaricomTransferCallbackJob(
     safaricomTransferCallbackJob: SafaricomTransferCallbackJobDto,

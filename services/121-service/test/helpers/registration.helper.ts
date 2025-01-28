@@ -481,7 +481,7 @@ export async function getImportFspReconciliationTemplate(
   const accessToken = await getAccessToken();
 
   return getServer()
-    .get(`/programs/${programId}/payments/fsp-reconciliation/import-template`)
+    .get(`/programs/${programId}/payments/excel-reconciliation/template`)
     .set('Cookie', [accessToken])
     .send();
 }

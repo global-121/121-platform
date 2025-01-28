@@ -6,7 +6,6 @@ import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-i
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
-import { IntersolveVisaController } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.controller';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
@@ -38,7 +37,6 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
     IntersolveVisaParentWalletScopedRepository,
     IntersolveVisaChildWalletScopedRepository,
   ],
-  controllers: [IntersolveVisaController],
-  exports: [IntersolveVisaService],
+  exports: [IntersolveVisaService, IntersolveVisaCustomerScopedRepository],
 })
 export class IntersolveVisaModule {}

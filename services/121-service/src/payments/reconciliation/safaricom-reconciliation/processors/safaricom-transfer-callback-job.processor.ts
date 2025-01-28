@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-import { FinancialServiceProviderCallbackJobProcessorsService } from '@121-service/src/financial-service-provider-callback-job-processors/financial-service-provider-callback-job-processors.service';
+import { SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -11,18 +11,18 @@ import {
 import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(SafaricomCallbackQueueNames.timeout)
-export class TimeoutCallbackJobProcessorSafaricom {
+@Processor(SafaricomCallbackQueueNames.transfer)
+export class TransferCallbackJobProcessorSafaricom {
   constructor(
-    private readonly financialServiceProviderCallbackJobProcessorsService: FinancialServiceProviderCallbackJobProcessorsService,
+    private readonly safaricomReconciliationService: SafaricomReconciliationService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
   @Process(JobNames.default)
-  async handleSafaricomTimeoutCallbackJob(job: Job): Promise<void> {
+  async handleSafaricomTransferCallbackJob(job: Job): Promise<void> {
     try {
-      await this.financialServiceProviderCallbackJobProcessorsService.processSafaricomTimeoutCallbackJob(
+      await this.safaricomReconciliationService.processSafaricomTransferCallbackJob(
         job.data,
       );
     } catch (error) {
