@@ -1,7 +1,10 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
 name: PR linter
 
 on:
   pull_request:
+    types: [opened, reopened, edited, labeled, unlabeled]
     branches: [main]
 
 jobs:
