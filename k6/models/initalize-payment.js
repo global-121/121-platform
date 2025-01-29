@@ -65,10 +65,10 @@ export default class InitializePaymentModel {
     resetPage.duplicateRegistrations(duplicateNumber);
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
-    // Run Nedbank cron job
-    programsPage.nedbankCronJob();
     // Create payment
     paymentsPage.createPayment(programId, amount);
+    // Run Nedbank cron job
+    programsPage.nedbankCronJob();
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
