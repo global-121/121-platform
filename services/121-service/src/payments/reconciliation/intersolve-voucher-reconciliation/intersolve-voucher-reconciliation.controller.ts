@@ -55,7 +55,7 @@ export class IntersolveVoucherReconciliationController {
     status: HttpStatus.CREATED,
     description: 'Cached unused vouchers',
   })
-  @Patch('/financial-service-providers/intersolve-voucher/vouchers')
+  @Patch('/financial-service-providers/intersolve-voucher/unused-vouchers')
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     console.info(
       'CronjobService - Started: cronRetrieveAndUpdatedUnusedIntersolveVouchers',
