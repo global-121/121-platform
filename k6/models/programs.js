@@ -5,7 +5,7 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class ProgramsModel {
-  constructor() {}
+  // constructor() {}
   sendBulkMessage(programId) {
     const url = `${baseUrl}api/programs/${programId}/registrations/message`;
     const payload = JSON.stringify({
@@ -124,5 +124,12 @@ export default class ProgramsModel {
       }
     }
     return statusCount;
+  }
+
+  nedbankCronJob() {
+    const url = `${baseUrl}api/financial-service-providers/nedbank`;
+    const res = http.patch(url);
+    console.log(res.status);
+    return res;
   }
 }
