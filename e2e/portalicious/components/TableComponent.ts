@@ -202,6 +202,17 @@ class TableComponent {
     textFromColumn = await this.getTextArrayFromColumn(columnIndex);
     expect(textFromColumn).toEqual(descendingExpected);
   }
+
+  async validateSelectionCount(expectedCount: number) {
+    if (expectedCount === 0) {
+      await expect(this.page.getByText('selected)')).not.toBeVisible();
+      return;
+    }
+
+    await expect(
+      this.page.getByText(`(${expectedCount} selected)`),
+    ).toBeVisible();
+  }
 }
 
 export default TableComponent;

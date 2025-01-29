@@ -162,6 +162,7 @@ class RegistrationsPage extends BasePage {
 
   async sendMessage() {
     await this.page.getByRole('button', { name: 'Send message' }).click();
+    await this.table.validateSelectionCount(0);
   }
 
   async getFirstRegistrationNameFromTable() {
@@ -260,6 +261,7 @@ class RegistrationsPage extends BasePage {
       const rowCheckbox = await this.table.getCell(i, 0);
       await rowCheckbox.click();
     }
+    await this.table.validateSelectionCount(selectionCount);
   }
 
   async performActionWithRightClick(action: string, row = 0) {
