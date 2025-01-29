@@ -37,8 +37,6 @@ let contentSecurityPolicy = new Map([
   ['frame-src', [`blob:`, `'self'`]],
   ['img-src', [`data:`, `'self'`]],
   ['object-src', [`'none'`]],
-  ['referrer', [`no-referrer`]],
-  ['reflected-xss', [`block`]],
   ['style-src', [`'self'`, `'unsafe-inline'`]],
 ]);
 

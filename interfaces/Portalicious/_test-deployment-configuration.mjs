@@ -29,6 +29,20 @@ test('Deployment-configuration contains a Content-Security-Policy', () => {
   );
 });
 
+test('Deployment-configuration contains the defaults of the Content-Security-Policy', () => {
+  const defaults = [
+    `default-src 'self'`,
+    `connect-src 'self'`,
+    `img-src data: 'self'`,
+    `object-src 'none'`,
+    `style-src 'self' 'unsafe-inline'`,
+  ];
+
+  defaults.forEach((defaultDirective) =>
+    match(csp, new RegExp(defaultDirective)),
+  );
+});
+
 test('Content-Security-Policy configuration for Azure Entra SSO', () => {
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/login\.microsoftonline\.com/;
