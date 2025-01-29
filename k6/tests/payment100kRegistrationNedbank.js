@@ -33,7 +33,9 @@ function checkAndFail(response, checks) {
     fail('One or more checks failed');
   }
 }
-
+// TODO:
+// 1. add parameter for payment number and update it in all the tests
+// 2. Ask ruben about the endpoint failing both in FE and BE
 export default function () {
   const monitorPayment = initializePayment.initializePaymentNedbank(
     resetScript,

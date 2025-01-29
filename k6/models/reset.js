@@ -4,7 +4,7 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class ResetModel {
-  // constructor() {}
+  constructor() {}
   resetDBMockRegistrations(powerNumberRegistrations, timeout = '180s') {
     const url = `${baseUrl}api/scripts/reset?isApiTests=true&script=nlrc-multiple-mock-data&mockPowerNumberRegistrations=${powerNumberRegistrations}&mockPv=true&mockOcw=true`;
     const payload = JSON.stringify({

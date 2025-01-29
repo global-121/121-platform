@@ -11,7 +11,7 @@ const registrationsPage = new RegistrationsModel();
 const programsPage = new ProgramsModel();
 
 export default class InitializePaymentModel {
-  // constructor() {}
+  constructor() {}
 
   initializePayment(
     resetScript,
