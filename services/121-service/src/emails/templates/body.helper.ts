@@ -1,10 +1,11 @@
+import { supportEmail } from '@121-service/src/emails/templates/config.enum';
+
 /**
  * Wrap the email content in a base-template.
  * @param content HTML-content of the email; Output within a white box, between header and footer
  */
 export const emailBody = (content: string): string => {
   const portalName = '121 Portal';
-  const supportEmail = 'support@121.global';
 
   const body = `
     <style>

@@ -1,4 +1,8 @@
 import { emailBody } from '@121-service/src/emails/templates/body.helper';
+import {
+  loginUrl,
+  supportEmail,
+} from '@121-service/src/emails/templates/config.enum';
 
 export const createSSOUserTemplate = (
   email: string,
@@ -8,9 +12,6 @@ export const createSSOUserTemplate = (
   body: string;
 } => {
   const subject = '121 Portal account created';
-
-  const loginUrl = process.env.REDIRECT_PORTAL_URL_HOST;
-  const supportEmail = 'support@121.global';
 
   const body = emailBody(`
     <p>Dear ${displayName},</p>
