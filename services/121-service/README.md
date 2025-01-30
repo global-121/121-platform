@@ -26,8 +26,8 @@ You can seed the database by using the `api/reset` endpoint from the Swagger UI.
 ## API
 
 - Access the Swagger UI via: <http://localhost:3000/docs/>
-- A JSON document will be generated at [`swagger.json`](./swagger.json). You can use it to get a 'diff' view in github of API changes between different version of the platform.
-- A graph will be generated when run in 'development' mode at [`module-dependencies.md`](./module-dependencies.md).
+- A JSON-document will be generated at [`swagger.json`](./swagger.json). You can use it to get a 'diff' view API changes between different version of the platform.
+- A graph will be generated when run in development-mode at [`module-dependencies.md`](./module-dependencies.md).
   It can be viewed with <https://mermaid.live/> or the VSCode-extension: [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid)
 
 ### Updating/adding Node.js dependencies
@@ -42,10 +42,10 @@ The only exception to this is TypeORM.
 
 To test changes in the TypeORM fork (before releasing them):
 
-1. Clone the forked repo https://github.com/global-121/typeorm/
+1. Clone the forked repo <https://github.com/global-121/typeorm/>
 2. Change the `"name"` in `"typeorm/package.json"` from `"@global121/typeorm"` to `"typeorm"`
    1. This is a temporary change that you should revert before pushing any code to the remote.
-   2. It is necessary because of how the typeorm fork is installed in the 121-service.
+   2. It is necessary because of how the TypeORM fork is installed in the 121-service.
 3. Make your desired changes to your local clone of the fork
 4. From the cloned fork folder, run `npm run compile`
 5. From your local 121-service folder, run `npm link FORK_PATH` where `FORK_PATH` is a full path to your cloned version of the fork
@@ -56,8 +56,8 @@ To test changes in the TypeORM fork (before releasing them):
 To update TypeORM:
 
 - Go to the forked repo and create a new version as described in the [README](https://github.com/global-121/typeorm/)
-- Change the version number of typeorm `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
-  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the typeorm package is also a dependency in other packages. This configuration "tricks" npm into treating our fork as if it were the original `typeorm` so that, anywhere in our codebase (including in the `node_modules`), `import ... from 'typeorm'` will use our fork instead of the original `typeorm`
+- Change the version number of TypeORM `"typeorm": "npm:@global121/typeorm@<version-number>",` in `services/121-service/package.json` according to the new release.
+  - We cannot use `"@global121/typeorm": "<version-number>",` in the `package.json` because the TypeORM package is also a dependency in other packages. This configuration "tricks" npm into treating our fork as if it were the original `typeorm` so that, anywhere in our codebase (including in the `node_modules`), `import ... from 'typeorm'` will use our fork instead of the original `typeorm`
 - Run `npm i` and commit both the changes to the `services/121-service/package.json` and the `services/121-service/package-lock.json`
 
 ---
@@ -97,7 +97,7 @@ To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Dock
 To start a debugger using Chrome, follow these steps:
 
 1. Add port mapping to the `docker-compose.development.yml` so that internal port 9229 is mapped to external port 9229. Note that all port settings from the main file are overridden.
-2. In the start:dev script in the package.json of the 121-service, add =0.0.0.0 to the -- inspect flag, so it becomes --inspect=0.0.0.0
+2. In the start:dev script in the `package.json` of the 121-service, add `--inspect=0.0.0.0`
 3. Start the services with npm run start:services.
 4. In the code of the 121 Service where you want to break, add a line with debugger;
 5. Check if the application indeed started on a debugger address 0.0.0.0 with `npm run logs:services 121-services`, and see something like: "`Debugger listening on ws://0.0.0.0:9229 02384d3e-4d1f-40ef-b8d5-be3da792fe71`"
