@@ -23,6 +23,7 @@ jobs:
     environment: 'client-slovakia'
     env:
       NG_ENV_NAME: ${{ vars.NG_ENV_NAME }}
+      NG_ENV_ICON: ${{ vars.NG_ENV_ICON }}
       NG_LOCALES: ${{ vars.NG_LOCALES }}
       NG_DEFAULT_LOCALE: ${{ vars.NG_DEFAULT_LOCALE }}
       NG_URL_121_SERVICE_API: ${{ vars.NG_URL_121_SERVICE_API }}
@@ -44,7 +45,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAACiTgsAAAAAAP///wAlHO4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERERERERERERERERERERETMzMzMzMzMzMzMzMzMzMzMzMwAzMzMzMzMwAAMzMzMzAAMzMAAAAAAAAyIwAAAAAAADMzAAAAAAAAMiMAAAAAAiIzMyIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIhERERERERERERERERERERH//wAA//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAD//wAA'
+          envIcon: ${{ env.NG_ENV_ICON }}
           envIconPath: 'src/assets/favicon.ico'
           envContentSecurityPolicy: ''
 
