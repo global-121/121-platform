@@ -6,7 +6,7 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 4; // '17' leads to 131k registrations
+const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'safari-program';
 const programId = 1;
 const paymentNr = 3;
