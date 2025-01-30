@@ -13,6 +13,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IntersolveVoucherJobDetails } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/job-details.dto';
 import { IntersolveVoucherReconciliationService } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-voucher')
@@ -20,6 +21,7 @@ import { IntersolveVoucherReconciliationService } from '@121-service/src/payment
 export class IntersolveVoucherReconciliationController {
   public constructor(
     private intersolveVoucherReconciliationService: IntersolveVoucherReconciliationService,
+    private azureLogService: AzureLogService,
   ) {}
 
   //TODO: mention this in WORKFLOWS?
@@ -69,9 +71,7 @@ export class IntersolveVoucherReconciliationController {
         return;
       })
       .catch((error) => {
-        throw new Error(
-          `CronjobService - Failed: cronRetrieveAndUpdatedUnusedIntersolveVouchers - ${error}`,
-        );
+        this.azureLogService.logError(error, true);
       });
   }
 }
