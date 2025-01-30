@@ -205,7 +205,7 @@ class TableComponent {
 
   async validateSelectionCount(expectedCount: number) {
     if (expectedCount === 0) {
-      await expect(this.page.getByText('selected)')).not.toBeVisible();
+      await expect(this.page.getByText('selected')).not.toBeVisible();
       return;
     }
 
