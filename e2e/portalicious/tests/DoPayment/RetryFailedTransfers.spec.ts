@@ -38,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('Retry failed transfers', async ({ page }) => {
+test('[32300] Retry failed transfers', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
