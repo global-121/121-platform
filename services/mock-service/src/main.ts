@@ -59,7 +59,7 @@ async function bootstrap(): Promise<void> {
       defaultModelsExpandDepth: 1,
       displayOperationId: DEVELOPMENT,
       displayRequestDuration: true,
-      filter: true,
+      filter: false,
       operationsSorter: 'alpha',
       queryConfigEnabled: DEVELOPMENT,
       showCommonExtensions: true,
