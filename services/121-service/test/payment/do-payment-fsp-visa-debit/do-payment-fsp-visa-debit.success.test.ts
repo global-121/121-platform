@@ -17,7 +17,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getMessageHistoryUntilX,
   importRegistrations,
   issueNewVisaCard,
@@ -50,12 +50,12 @@ describe('Do succesful payment with FSP Visa Debit', () => {
   it('should succesfully pay-out Visa Debit', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -95,12 +95,12 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'succeed';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -180,12 +180,12 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const referenceIds = registrations.map((r) => r.referenceId);
 
     await importRegistrations(programIdVisa, registrations, accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
       referenceIds,
-      RegistrationStatusEnum.included,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
     // Act
     // do 1st payment

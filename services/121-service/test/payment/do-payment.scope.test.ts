@@ -10,7 +10,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -47,19 +47,19 @@ describe('Registrations - [Scoped]', () => {
 
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
 
-    await awaitChangePaStatus(
-      OcwProgramId,
-      registrationsOCW.map((r) => r.referenceId),
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: OcwProgramId,
+      referenceIds: registrationsOCW.map((r) => r.referenceId),
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
-    await awaitChangePaStatus(
-      programIdPV,
-      registrationsPvFirst3ReferenceIds,
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdPV,
+      referenceIds: registrationsPvFirst3ReferenceIds,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
   });
 
   it('should payout all registrations within the scope of the requesting user', async () => {

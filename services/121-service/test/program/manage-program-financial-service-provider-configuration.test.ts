@@ -24,7 +24,7 @@ import {
   postProgramFinancialServiceProviderConfigurationProperties,
 } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   deleteRegistrations,
   seedPaidRegistrations,
   waitForStatusChangeToComplete,
@@ -227,17 +227,17 @@ describe('Manage financial service provider configurations', () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationOCW5.referenceId],
-      RegistrationStatusEnum.declined,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationOCW5.referenceId],
+      status: RegistrationStatusEnum.declined,
       accessToken,
-    );
-    await deleteRegistrations(
-      programIdVisa,
-      [registrationOCW5.referenceId],
+    });
+    await deleteRegistrations({
+      programId: programIdVisa,
+      referenceIds: [registrationOCW5.referenceId],
       accessToken,
-    );
+    });
     await waitForStatusChangeToComplete(
       programIdVisa,
       1,

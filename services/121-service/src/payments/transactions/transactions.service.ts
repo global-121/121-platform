@@ -273,7 +273,7 @@ export class TransactionsService {
           status: registrationsAfterUpdate.registrationStatus ?? undefined,
         },
         {
-          registrationAttributes: ['status'],
+          explicitRegistrationPropertyNames: ['status'],
         },
       );
     }

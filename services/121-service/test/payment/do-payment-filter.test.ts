@@ -13,7 +13,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -47,12 +47,12 @@ describe('Do payment with filter', () => {
       accessToken,
     );
 
-    await awaitChangePaStatus(
-      programIdVisa,
-      includedRefrenceIds,
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: includedRefrenceIds,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     // await waitFor(2_000);
   });
 

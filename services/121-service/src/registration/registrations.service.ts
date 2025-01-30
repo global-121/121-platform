@@ -181,7 +181,7 @@ export class RegistrationsService {
     await this.eventsService.log(
       registrationBeforeUpdate,
       registrationAfterUpdate,
-      { registrationAttributes: ['status'] },
+      { explicitRegistrationPropertyNames: ['status'] },
     );
     return registrationAfterUpdate;
   }
@@ -587,9 +587,7 @@ export class RegistrationsService {
       await this.eventsService.log(
         { ...oldViewRegistration },
         { ...newRegistration },
-        {
-          additionalLogAttributes: { reason },
-        },
+        { reason },
       );
       return newRegistration;
     }

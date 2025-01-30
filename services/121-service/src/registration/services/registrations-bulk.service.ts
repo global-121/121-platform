@@ -6,6 +6,7 @@ import { Equal, In, Not, Repository } from 'typeorm';
 import { EventsService } from '@121-service/src/events/events.service';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -16,7 +17,6 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { MessageSizeType as MessageSizeTypeDto } from '@121-service/src/registration/dto/message-size-type.dto';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -66,22 +66,31 @@ export class RegistrationsBulkService {
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
-  public async patchRegistrationsStatus(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    registrationStatus: RegistrationStatusEnum,
-    dryRun: boolean,
-    userId: number,
-    message?: string,
-    messageTemplateKey?: string,
-    messageContentType?: MessageContentType,
-  ): Promise<BulkActionResultDto> {
-    const includeSendingMessage = !!message || !!messageTemplateKey;
+  public async patchRegistrationsStatus({
+    paginateQuery,
+    programId,
+    registrationStatus,
+    dryRun,
+    userId,
+    messageContentDetails,
+    reason,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    registrationStatus: RegistrationStatusEnum;
+    dryRun: boolean;
+    userId: number;
+    messageContentDetails: MessageContentDetails;
+    reason?: string;
+  }): Promise<BulkActionResultDto> {
+    const includeSendingMessage =
+      !!messageContentDetails.message ||
+      !!messageContentDetails.messageTemplateKey;
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
         programId,
-        message,
-        messageTemplateKey,
+        messageContentDetails.message,
+        messageContentDetails.messageTemplateKey,
       );
     paginateQuery = this.setQueryPropertiesBulkAction({
       query: paginateQuery,
@@ -100,17 +109,16 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
     if (!dryRun) {
-      this.updateRegistrationStatusBatchFilter(
+      this.updateRegistrationStatusBatchFilter({
         paginateQuery,
         programId,
         registrationStatus,
         usedPlaceholders,
         allowedCurrentStatuses,
         userId,
-        message,
-        messageTemplateKey,
-        messageContentType,
-      ).catch((error) => {
+        messageContentDetails,
+        reason,
+      }).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -119,12 +127,19 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  public async deleteRegistrations(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    dryRun: boolean,
-    userId: number,
-  ): Promise<BulkActionResultDto> {
+  public async deleteRegistrations({
+    paginateQuery,
+    programId,
+    dryRun,
+    userId,
+    reason,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    dryRun: boolean;
+    userId: number;
+    reason: string;
+  }): Promise<BulkActionResultDto> {
     paginateQuery = this.setQueryPropertiesBulkAction({
       query: paginateQuery,
       includePaymentAttributes: false,
@@ -142,12 +157,13 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
-      this.deleteBatch(
+      this.deleteBatch({
         paginateQuery,
         programId,
         allowedCurrentStatuses,
         userId,
-      ).catch((error) => {
+        reason,
+      }).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -366,17 +382,25 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private async updateRegistrationStatusBatchFilter(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    registrationStatus: RegistrationStatusEnum,
-    usedPlaceholders: string[],
-    allowedCurrentStatuses: RegistrationStatusEnum[],
-    userId: number,
-    message?: string,
-    messageTemplateKey?: string,
-    messageContentType?: MessageContentType,
-  ): Promise<void> {
+  private async updateRegistrationStatusBatchFilter({
+    paginateQuery,
+    programId,
+    registrationStatus,
+    usedPlaceholders,
+    allowedCurrentStatuses,
+    userId,
+    messageContentDetails,
+    reason,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    registrationStatus: RegistrationStatusEnum;
+    usedPlaceholders: string[];
+    allowedCurrentStatuses: RegistrationStatusEnum[];
+    userId: number;
+    messageContentDetails: MessageContentDetails;
+    reason?: string;
+  }): Promise<void> {
     const chunkSize = 10000;
     paginateQuery.limit = chunkSize;
     const registrationForUpdateMeta =
@@ -403,30 +427,37 @@ export class RegistrationsBulkService {
             registrationStatus,
           ),
         );
-      await this.updateRegistrationStatusChunk(
-        registrationsForUpdate.data,
+      await this.updateRegistrationStatusChunk({
+        filteredRegistrations: registrationsForUpdate.data,
         userId,
         registrationStatus,
-        {
-          message,
-          messageTemplateKey,
-          messageContentType,
-          bulkSize: registrationsForUpdate.meta.totalItems,
-        },
+        messageContentDetails,
+        bulkSize: registrationsForUpdate.meta.totalItems,
         usedPlaceholders,
-      );
+        reason,
+      });
     }
   }
 
-  private async updateRegistrationStatusChunk(
+  private async updateRegistrationStatusChunk({
+    filteredRegistrations,
+    userId,
+    registrationStatus,
+    messageContentDetails,
+    bulkSize,
+    usedPlaceholders,
+    reason,
+  }: {
     filteredRegistrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
-    >['data'],
-    userId: number,
-    registrationStatus: RegistrationStatusEnum,
-    messageSizeType?: Partial<MessageSizeTypeDto>,
-    usedPlaceholders?: string[],
-  ): Promise<void> {
+    >['data'];
+    userId: number;
+    registrationStatus: RegistrationStatusEnum;
+    messageContentDetails?: MessageContentDetails;
+    bulkSize?: number;
+    usedPlaceholders?: string[];
+    reason?: string;
+  }): Promise<void> {
     const filteredRegistrationsIds = filteredRegistrations.map((r) => r.id);
 
     await this.registrationScopedRepository.updateUnscoped(
@@ -450,11 +481,12 @@ export class RegistrationsBulkService {
     await this.eventsService.log(
       filteredRegistrations,
       registrationsAfterUpdate,
-      { registrationAttributes: [statusKey] },
+      { explicitRegistrationPropertyNames: [statusKey], reason },
     );
     for (const registration of filteredRegistrations) {
       if (
-        (messageSizeType?.message || messageSizeType?.messageTemplateKey) &&
+        (messageContentDetails?.message ||
+          messageContentDetails?.messageTemplateKey) &&
         registration
       ) {
         const messageProcessType =
@@ -466,17 +498,17 @@ export class RegistrationsBulkService {
           }
         }
         try {
-          const { message, messageTemplateKey, messageContentType, bulkSize } =
-            messageSizeType;
+          const { message, messageTemplateKey, messageContentType } =
+            messageContentDetails;
           await this.queueMessageService.addMessageJob({
-            ...messageSizeType,
+            ...messageContentDetails,
+            bulksize: bulkSize,
             registration,
             message,
             messageTemplateKey,
             messageContentType: messageContentType ?? MessageContentType.custom,
             messageProcessType,
             customData: { placeholderData },
-            bulksize: bulkSize,
             userId,
           });
         } catch (error) {
@@ -490,12 +522,19 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async deleteBatch(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    allowedCurrentStatuses: RegistrationStatusEnum[],
-    userId: number,
-  ): Promise<void> {
+  private async deleteBatch({
+    paginateQuery,
+    programId,
+    allowedCurrentStatuses,
+    userId,
+    reason,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    allowedCurrentStatuses: RegistrationStatusEnum[];
+    userId: number;
+    reason: string;
+  }): Promise<void> {
     const chunkSize = 10000;
     paginateQuery.limit = chunkSize;
     const registrationForDeleteMeta =
@@ -511,7 +550,7 @@ export class RegistrationsBulkService {
       );
 
     for (let i = 0; i < registrationForDeleteMeta.meta.totalPages; i++) {
-      const registrationsForDelete =
+      const registrationPaginateObject =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
           programId,
@@ -523,21 +562,31 @@ export class RegistrationsBulkService {
           ),
         );
 
-      await this.deleteRegistrationsChunk(registrationsForDelete.data, userId);
+      await this.deleteRegistrationsChunk({
+        registrationsForDelete: registrationPaginateObject.data,
+        userId,
+        reason,
+      });
     }
   }
 
-  private async deleteRegistrationsChunk(
+  private async deleteRegistrationsChunk({
+    registrationsForDelete,
+    userId,
+    reason,
+  }: {
     registrationsForDelete: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
-    >['data'],
-    userId: number,
-  ): Promise<void> {
-    await this.updateRegistrationStatusChunk(
-      registrationsForDelete,
+    >['data'];
+    userId: number;
+    reason: string;
+  }): Promise<void> {
+    await this.updateRegistrationStatusChunk({
+      filteredRegistrations: registrationsForDelete,
       userId,
-      RegistrationStatusEnum.deleted,
-    );
+      registrationStatus: RegistrationStatusEnum.deleted,
+      reason,
+    });
     const registrationsIds = registrationsForDelete.map((r) => r.id);
 
     await this.noteScopedRepository.deleteUnscoped({

@@ -8,7 +8,7 @@ import {
 } from '@121-service/test/helpers/intersolve-voucher.helper';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -36,12 +36,12 @@ describe('Get Intersolve voucher balance', () => {
   it('should succesfully get balance', async () => {
     // Arrange
     await importRegistrations(programIdPV, [registrationPV5], accessToken);
-    await awaitChangePaStatus(
-      programIdPV,
-      [registrationPV5.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdPV,
+      referenceIds: [registrationPV5.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationPV5.referenceId];
     await doPayment(
       programIdPV,
