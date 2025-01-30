@@ -13,6 +13,7 @@ const loginPage = new loginModel();
 const duplicateNumber = 7; // This leads to 128 registrations
 const programId = 3;
 const paymentId = 3;
+const paymentNr = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
 const amount = 10;
@@ -63,7 +64,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount);
+  const doPayment = paymentsPage.createPayment(programId, amount, paymentNr);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {

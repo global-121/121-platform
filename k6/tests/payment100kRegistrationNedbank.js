@@ -6,13 +6,14 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 4; // '17' leads to 131k registrations
+const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nedbank-program';
 const programId = 1;
-const paymentId = 1;
+const paymentNr = 1;
 const maxTimeoutAttempts = 800;
+const status = 'waiting';
 const minPassRatePercentage = 10;
-const amount = 11.11;
+const amount = 20;
 
 export const options = {
   thresholds: {
@@ -33,23 +34,22 @@ function checkAndFail(response, checks) {
     fail('One or more checks failed');
   }
 }
-// TODO:
-// 1. add parameter for payment number and update it in all the tests
-// 2. Ask ruben about the endpoint failing both in FE and BE
+
 export default function () {
-  const monitorPayment = initializePayment.initializePaymentNedbank(
+  const monitorPayment = initializePayment.initializePayment(
     resetScript,
     programId,
     registrationNedbank,
     duplicateNumber,
-    paymentId,
     maxTimeoutAttempts,
+    status,
     minPassRatePercentage,
+    paymentNr,
     amount,
   );
   checkAndFail(monitorPayment, {
-    'Payment progressed successfully status 200': (r) => {
-      if (r.status != 200) {
+    'Payment progressed successfully status 202': (r) => {
+      if (r.status != 202) {
         const responseBody = JSON.parse(r.body);
         console.log(responseBody.error || r.status);
       }

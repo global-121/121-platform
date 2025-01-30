@@ -11,48 +11,15 @@ const registrationsPage = new RegistrationsModel();
 const programsPage = new ProgramsModel();
 
 export default class InitializePaymentModel {
-  constructor() {}
-
   initializePayment(
     resetScript,
     programId,
     registration,
     duplicateNumber,
-    paymentId,
     maxTimeoutAttempts,
+    status,
     minPassRatePercentage,
-    amount,
-  ) {
-    // reset db
-    resetPage.resetDB(resetScript);
-    // login
-    loginPage.login();
-    // Upload registration
-    registrationsPage.importRegistrations(programId, registration);
-    // Duplicate registration to be more then 100k
-    resetPage.duplicateRegistrations(duplicateNumber);
-    // Change status of all PAs to included and check response
-    programsPage.updateRegistrationStatusAndLog(programId, 'included');
-
-    paymentsPage.createPayment(programId, amount);
-    // Monitor that 10% of payments is successful and then stop the test
-    return paymentsPage.getPaymentResults(
-      programId,
-      maxTimeoutAttempts,
-      paymentId,
-      duplicateNumber,
-      minPassRatePercentage,
-    );
-  }
-
-  initializePaymentNedbank(
-    resetScript,
-    programId,
-    registration,
-    duplicateNumber,
-    paymentId,
-    maxTimeoutAttempts,
-    minPassRatePercentage,
+    paymentNr,
     amount,
   ) {
     // reset db
@@ -66,14 +33,13 @@ export default class InitializePaymentModel {
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
     // Create payment
-    paymentsPage.createPayment(programId, amount);
-    // Run Nedbank cron job
-    programsPage.nedbankCronJob();
+    paymentsPage.createPayment(programId, amount, paymentNr);
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
+      status,
       maxTimeoutAttempts,
-      paymentId,
+      paymentNr,
       duplicateNumber,
       minPassRatePercentage,
     );
