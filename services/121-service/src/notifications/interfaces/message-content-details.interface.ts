@@ -1,8 +1,7 @@
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 
-export class MessageSizeType {
+export interface MessageContentDetails {
   message?: string;
   messageTemplateKey?: string;
-  bulkSize: number;
-  messageContentType: MessageContentType;
+  messageContentType?: MessageContentType;
 }

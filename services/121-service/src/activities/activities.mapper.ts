@@ -92,7 +92,6 @@ export class ActivitiesMapper {
           break;
       }
     });
-
     return {
       dataChanges,
       statusUpdates,
@@ -194,6 +193,7 @@ export class ActivitiesMapper {
       attributes: {
         oldValue: event.attributes.oldValue as RegistrationStatusEnum,
         newValue: event.attributes.newValue as RegistrationStatusEnum,
+        reason: event.attributes.reason,
       },
     }));
   }

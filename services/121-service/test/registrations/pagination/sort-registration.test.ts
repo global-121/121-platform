@@ -1,7 +1,7 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -37,12 +37,12 @@ describe('Load PA table', () => {
         accessToken,
       );
 
-      await awaitChangePaStatus(
-        programIdOCW,
-        [registrationOCW1.referenceId],
-        RegistrationStatusEnum.included,
+      await awaitChangeRegistrationStatus({
+        programId: programIdOCW,
+        referenceIds: [registrationOCW1.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
     });
 
     it('should sort based on registration root data', async () => {

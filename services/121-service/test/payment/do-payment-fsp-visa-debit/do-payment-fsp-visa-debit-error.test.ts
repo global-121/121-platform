@@ -22,7 +22,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -50,12 +50,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-customer';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -96,12 +96,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-wallet';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -142,12 +142,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-link-customer-wallet';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -188,12 +188,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-debit-card';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -234,12 +234,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-get-wallet';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
@@ -296,12 +296,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out by visa debit if coverletterCode or fundingToken is not configured for the program', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     await deleteProgramFinancialServiceProviderConfigurationProperty({
@@ -344,12 +344,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act

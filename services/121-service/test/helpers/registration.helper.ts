@@ -46,12 +46,19 @@ export function bulkUpdateRegistrationsCSV(
     .field('reason', reason);
 }
 
-export function deleteRegistrations(
-  programId: number,
-  referenceIds: string[],
-  accessToken: string,
-  filter: Record<string, string> = {},
-): Promise<request.Response> {
+export function deleteRegistrations({
+  programId,
+  referenceIds,
+  accessToken,
+  reason = 'default reason',
+  filter = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  accessToken: string;
+  reason?: string;
+  filter?: Record<string, string>;
+}): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
@@ -68,7 +75,9 @@ export function deleteRegistrations(
     .delete(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .query(queryParams)
-    .send();
+    .send({
+      reason,
+    });
 }
 
 export function searchRegistrationByReferenceId(
@@ -146,14 +155,27 @@ export function getRegistrations({
     .send();
 }
 
-export async function awaitChangePaStatus(
-  programId: number,
-  referenceIds: string[],
-  status: RegistrationStatusEnum,
-  accessToken: string,
-  filter: Record<string, string> = {},
-  includeTemplatedMessage = false,
-): Promise<request.Response> {
+export async function changeRegistrationStatus({
+  programId,
+  referenceIds,
+  status,
+  accessToken,
+  options: {
+    filter = {},
+    includeTemplatedMessage = false,
+    reason = 'default reason',
+  } = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
@@ -174,7 +196,36 @@ export async function awaitChangePaStatus(
       status,
       message: null,
       messageTemplateKey: includeTemplatedMessage ? status : null,
+      reason,
     });
+
+  return result;
+}
+
+export async function awaitChangeRegistrationStatus({
+  programId,
+  referenceIds,
+  status,
+  accessToken,
+  options = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
+  const result = await changeRegistrationStatus({
+    programId,
+    referenceIds,
+    status,
+    accessToken,
+    options,
+  });
 
   await waitForStatusChangeToComplete(
     programId,
@@ -415,12 +466,12 @@ export async function seedIncludedRegistrations(
     );
   }
 
-  await awaitChangePaStatus(
+  await awaitChangeRegistrationStatus({
     programId,
-    registrations.map((r) => r.referenceId),
-    RegistrationStatusEnum.included,
+    referenceIds: registrations.map((r) => r.referenceId),
+    status: RegistrationStatusEnum.included,
     accessToken,
-  );
+  });
 }
 
 export async function getEvents(

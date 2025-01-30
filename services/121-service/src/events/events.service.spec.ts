@@ -168,12 +168,10 @@ describe('EventsService', () => {
 
   it('should log a data change', async () => {
     newViewRegistration.phoneNumber = '1234567890';
-    const additionalAttributeObject = { reason: 'exampleReason' };
+    const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, {
-      additionalLogAttributes: additionalAttributeObject,
-    });
+    await eventsService.log(oldViewRegistration, newViewRegistration, options);
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -185,7 +183,7 @@ describe('EventsService', () => {
           { key: 'oldValue', value: oldViewRegistration.phoneNumber },
           { key: 'newValue', value: newViewRegistration.phoneNumber },
           { key: 'fieldName', value: 'phoneNumber' },
-          { key: 'reason', value: additionalAttributeObject.reason },
+          { key: 'reason', value: options.reason },
         ],
         userId: 2,
       },
@@ -390,12 +388,10 @@ describe('EventsService', () => {
   it('should log a registration status change', async () => {
     newViewRegistration.phoneNumber = '1234567890';
     newViewRegistration.status = RegistrationStatusEnum.included;
-    const additionalAttributeObject = { reason: 'exampleReason' };
+    const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, {
-      additionalLogAttributes: additionalAttributeObject,
-    });
+    await eventsService.log(oldViewRegistration, newViewRegistration, options);
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -406,7 +402,7 @@ describe('EventsService', () => {
         attributes: [
           { key: 'oldValue', value: RegistrationStatusEnum.registered },
           { key: 'newValue', value: RegistrationStatusEnum.included },
-          { key: 'reason', value: additionalAttributeObject.reason },
+          { key: 'reason', value: options.reason },
         ],
         userId: 2,
       },
@@ -417,7 +413,7 @@ describe('EventsService', () => {
           { key: 'oldValue', value: oldViewRegistration.phoneNumber },
           { key: 'newValue', value: newViewRegistration.phoneNumber },
           { key: 'fieldName', value: 'phoneNumber' },
-          { key: 'reason', value: additionalAttributeObject.reason },
+          { key: 'reason', value: options.reason },
         ],
         userId: 2,
       },
@@ -429,13 +425,13 @@ describe('EventsService', () => {
 
   it('should log a registration status change with event log option', async () => {
     newViewRegistration.status = RegistrationStatusEnum.included;
-    const additionalAttributeObject = { reason: 'exampleReason' };
+    const options = {
+      reason: 'exampleReason',
+      explicitRegistrationPropertyNames: ['status'],
+    };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, {
-      registrationAttributes: ['status'],
-      additionalLogAttributes: additionalAttributeObject,
-    });
+    await eventsService.log(oldViewRegistration, newViewRegistration, options);
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -454,7 +450,7 @@ describe('EventsService', () => {
           },
           {
             key: 'reason',
-            value: additionalAttributeObject.reason,
+            value: options.reason,
           },
         ],
         userId: 2,

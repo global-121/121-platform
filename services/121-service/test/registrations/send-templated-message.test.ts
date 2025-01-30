@@ -9,7 +9,7 @@ import {
   waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getMessageHistory,
   importRegistrations,
   sendMessage,
@@ -56,14 +56,15 @@ describe('Sending templated message', () => {
       const statusChange = RegistrationStatusEnum.included;
 
       // Act
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationAh.referenceId],
-        statusChange,
+        referenceIds: [registrationAh.referenceId],
+        status: statusChange,
         accessToken,
-        undefined,
-        true, // check the checkbox for sending templated message about status change
-      );
+        options: {
+          includeTemplatedMessage: true, // check the checkbox for sending templated message about status change
+        },
+      });
 
       await waitForMessagesToComplete({
         programId,

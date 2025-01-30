@@ -13,7 +13,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -51,12 +51,12 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     it('should set registration to complete', async () => {
       // Arrange
       await importRegistrations(programId, [registrationAh], accessToken);
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationAh.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationAh.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act

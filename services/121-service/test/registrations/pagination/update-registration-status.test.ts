@@ -1,8 +1,11 @@
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
+  changeRegistrationStatus,
+  getEvents,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -42,14 +45,15 @@ describe('change the status of a set of registrations', () => {
     // Arrange
     // NOTE: because the helper-function changePaStatus already uses an filter on IN(..referenceIds) this also already tests the scenario where in the front-end manually multiple rows are selected (instead of 'select all')
     const newStatus = RegistrationStatusEnum.included; // registered to included IS possible
-
+    const reason = 'new status';
     // Act
-    const updateStatusResponse = await awaitChangePaStatus(
-      programIdOCW,
+    const updateStatusResponse = await awaitChangeRegistrationStatus({
+      programId: programIdOCW,
       referenceIds,
-      newStatus,
+      status: newStatus,
       accessToken,
-    );
+      options: { reason },
+    });
     await waitForStatusUpdateToComplete(
       programIdOCW,
       referenceIds,
@@ -61,7 +65,9 @@ describe('change the status of a set of registrations', () => {
       programId: programIdOCW,
       accessToken,
     });
-    const data = getRegistrationsResponse.body.data;
+    const registrations = getRegistrationsResponse.body.data;
+
+    const eventsReponse = await getEvents(programIdOCW);
 
     // Assert
     expect(updateStatusResponse.body.totalFilterCount).toBe(
@@ -70,8 +76,26 @@ describe('change the status of a set of registrations', () => {
     expect(updateStatusResponse.body.applicableCount).toBe(
       registrations.length,
     );
-    for (const registration of data) {
+    for (const registration of registrations) {
       expect(registration.status).toBe(newStatus);
+      // For each registration status change, there should be an event with a reason
+      const event = eventsReponse.body.find(
+        (event) =>
+          event.registrationId === registration.id &&
+          event.attributes.newValue === newStatus,
+      );
+
+      expect(event).toBeDefined();
+
+      const expectedEvent = {
+        type: EventEnum.registrationStatusChange,
+        attributes: {
+          oldValue: RegistrationStatusEnum.registered,
+          newValue: newStatus,
+          reason,
+        },
+      };
+      expect(event).toMatchObject(expectedEvent);
     }
   });
 
@@ -80,12 +104,12 @@ describe('change the status of a set of registrations', () => {
     const newStatus = RegistrationStatusEnum.paused; // registered to paused IS NOT possible
 
     // Act
-    const updateStatusResponse = await awaitChangePaStatus(
-      programIdOCW,
+    const updateStatusResponse = await awaitChangeRegistrationStatus({
+      programId: programIdOCW,
       referenceIds,
-      newStatus,
+      status: newStatus,
       accessToken,
-    );
+    });
     const getRegistrationsResponse = await getRegistrations({
       programId: programIdOCW,
       accessToken,
@@ -110,13 +134,13 @@ describe('change the status of a set of registrations', () => {
     filter[`filter.status`] = RegistrationStatusEnum.included; // but initial filter on included PAs leaves empty set as they are now registered
 
     // Act
-    const updateStatusResponse = await awaitChangePaStatus(
-      programIdOCW,
+    const updateStatusResponse = await awaitChangeRegistrationStatus({
+      programId: programIdOCW,
       referenceIds,
-      newStatus,
+      status: newStatus,
       accessToken,
-      filter,
-    );
+      options: { filter },
+    });
     const getRegistrationsResponse = await getRegistrations({
       programId: programIdOCW,
       accessToken,
@@ -129,5 +153,54 @@ describe('change the status of a set of registrations', () => {
     for (const registration of data) {
       expect(registration.status).toBe(oldStatus);
     }
+  });
+
+  describe('check if a reason is required', () => {
+    it('should require a reason to update a registration status for some statuses', async () => {
+      // Arrange
+      // Deleted status is not tested here, because it uses a different endpoint
+      // and is tested in a separate test file
+      const statusesThatRequireReason = [
+        RegistrationStatusEnum.declined,
+        RegistrationStatusEnum.paused,
+      ];
+
+      for (const status of statusesThatRequireReason) {
+        // Act
+        const updateStatusResponse = await changeRegistrationStatus({
+          programId: programIdOCW,
+          referenceIds,
+          status,
+          accessToken,
+          options: { reason: null },
+        });
+
+        // Assert
+        expect(updateStatusResponse.status).toBe(400);
+      }
+    });
+
+    it('should not require a reason to update a registration status for some statuses', async () => {
+      // Arrange
+      // Only statuses that can be changed in a bulk update are tested here
+      const statusesThatDoNotRequireReason = [
+        RegistrationStatusEnum.validated,
+        RegistrationStatusEnum.included,
+      ];
+
+      for (const status of statusesThatDoNotRequireReason) {
+        // Act
+        const updateStatusResponse = await changeRegistrationStatus({
+          programId: programIdOCW,
+          referenceIds,
+          status,
+          accessToken,
+          options: { reason: null },
+        });
+
+        // Assert
+        expect(updateStatusResponse.status).toBe(202);
+      }
+    });
   });
 });

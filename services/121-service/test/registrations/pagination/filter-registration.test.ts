@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getProgram } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -45,12 +45,12 @@ describe('Load PA table', () => {
 
       await importRegistrations(programIdOCW, registrations, accessToken);
 
-      await awaitChangePaStatus(
-        programIdOCW,
-        [registrationOCW2.referenceId],
-        RegistrationStatusEnum.included,
+      await awaitChangeRegistrationStatus({
+        programId: programIdOCW,
+        referenceIds: [registrationOCW2.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
     });
 
     it('should filter based on status', async () => {
