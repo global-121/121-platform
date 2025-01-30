@@ -1,4 +1,9 @@
 import { emailBody } from '@121-service/src/emails/templates/body.helper';
+import {
+  changePasswordUrl,
+  loginUrl,
+  supportEmail,
+} from '@121-service/src/emails/templates/config.enum';
 
 export const createNonSSOUserTemplate = (
   displayName: string,
@@ -9,10 +14,6 @@ export const createNonSSOUserTemplate = (
   body: string;
 } => {
   const subject = '121 Portal account created';
-
-  const loginUrl = process.env.REDIRECT_PORTAL_URL_HOST;
-  const changePasswordUrl = `${process.env.REDIRECT_PORTAL_URL_HOST}/user`;
-  const supportEmail = 'support@121.global';
 
   const body = emailBody(`
     <p>Dear ${displayName},</p>

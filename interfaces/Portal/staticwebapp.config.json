@@ -41,6 +41,11 @@
       "route": "/.well-known/change-password",
       "redirect": "/user",
       "statusCode": 302
+    },
+    {
+      "route": "/change-password",
+      "redirect": "/user",
+      "statusCode": 302
     }
   ],
   "trailingSlash": "auto",
