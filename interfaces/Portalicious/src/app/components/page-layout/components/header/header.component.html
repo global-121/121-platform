@@ -9,7 +9,7 @@
       plain
       rounded
       text
-      class="lg:mr-9 [&_button:focus]:bg-white [&_button:not(:hover,:focus)]:text-white"
+      class="lg:mr-9 [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent [&_button]:text-white"
       (click)="sidebarVisible.set(true)"
       [attr.aria-controls]="sidebarVisible() ? 'menu' : null"
       [attr.aria-expanded]="sidebarVisible()"

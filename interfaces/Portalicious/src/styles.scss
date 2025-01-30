@@ -98,6 +98,14 @@ body {
         @apply bg-white;
       }
     }
+
+    &.p-button-text {
+      @apply rounded-full;
+
+      &:hover {
+        @apply bg-grey-100 text-purple;
+      }
+    }
   }
 
   .p-buttongroup {
@@ -173,13 +181,13 @@ body {
 
         &:hover,
         &:focus-within {
-          @apply bg-purple-100 text-purple-900;
+          @apply bg-purple-100 text-purple;
         }
       }
 
       &.p-datatable-column-sorted {
         .p-sortable-column-icon {
-          @apply text-purple-700;
+          @apply text-purple;
         }
       }
     }
