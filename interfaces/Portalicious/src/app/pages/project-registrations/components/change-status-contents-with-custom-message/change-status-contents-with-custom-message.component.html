@@ -57,6 +57,6 @@
 } @else {
   <app-change-status-submit-buttons
     [isMutating]="isMutating()"
-    (cancelClick)="previewData.set(undefined)"
+    (cancelClick)="cancelClick()"
   />
 }
