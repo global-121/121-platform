@@ -31,9 +31,20 @@ const csp = response.headers.get('Content-Security-Policy');
 console.info('Content-Security-Policy in use:', csp);
 
 test('Response-Headers contain a Content-Security-Policy', () => {
-  ok(
-    response.headers.get('Content-Security-Policy'),
-    'Contain a Content-Security-Policy',
+  ok(csp, 'Contain a Content-Security-Policy');
+});
+
+test('Content-Security-Policy contains defaults', () => {
+  const defaults = [
+    `default-src 'self'`,
+    `connect-src 'self'`,
+    `img-src data: 'self'`,
+    `object-src 'none'`,
+    `style-src 'self' 'unsafe-inline'`,
+  ];
+
+  defaults.forEach((defaultDirective) =>
+    match(csp, new RegExp(defaultDirective)),
   );
 });
 
