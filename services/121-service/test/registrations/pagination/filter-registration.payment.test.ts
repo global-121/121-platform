@@ -62,13 +62,13 @@ describe('Load PA table', () => {
         accessToken,
       });
 
-      await doPayment(
-        programIdOCW,
-        payment1,
+      await doPayment({
+        programId: programIdOCW,
+        paymentNr: payment1,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
       await waitForPaymentTransactionsToComplete(
         programIdOCW,
         paymentReferenceIds,
@@ -81,13 +81,13 @@ describe('Load PA table', () => {
         ],
         payment1,
       );
-      await doPayment(
-        programIdOCW,
-        payment2,
+      await doPayment({
+        programId: programIdOCW,
+        paymentNr: payment2,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
       await waitForPaymentTransactionsToComplete(
         programIdOCW,
         paymentReferenceIds,
@@ -227,13 +227,13 @@ describe('Load PA table', () => {
 
     it('should filter based on not yet sent payments', async () => {
       // Arrange
-      await doPayment(
-        programIdOCW,
-        payment3,
+      await doPayment({
+        programId: programIdOCW,
+        paymentNr: payment3,
         amount,
-        [paymentReferenceIds[0]],
+        referenceIds: [paymentReferenceIds[0]],
         accessToken,
-      );
+      });
       await waitForPaymentTransactionsToComplete(
         programIdOCW,
         [paymentReferenceIds[0]],

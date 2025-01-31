@@ -167,4 +167,24 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
         },
       ],
     },
+    {
+      name: FinancialServiceProviders.nedbank,
+      integrationType: FinancialServiceProviderIntegrationType.api,
+      defaultLabel: {
+        en: 'Nedbank',
+      },
+      notifyOnTransaction: false,
+      attributes: [
+        {
+          name: FinancialServiceProviderAttributes.phoneNumber,
+          isRequired: true,
+        },
+      ],
+      configurationProperties: [
+        {
+          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          isRequired: true,
+        },
+      ],
+    },
   ];

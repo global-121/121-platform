@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NedbankService createVoucher should throw an error if amount is not a multiple of 10 1`] = `"Amount must be a multiple of 10"`;
+
+exports[`NedbankService createVoucher should throw an error if phone number does not start with South-Africa country code 27 1`] = `"Phone number must start with South-Africa country code: 27"`;
+
+exports[`NedbankService createVoucher should throw an error if phone number length is not 11 1`] = `"Phone number must be 11 numbers long (including 27 as country code)"`;
+
+exports[`NedbankService retrieveVoucherInfo should not return a voucher status and specific error code and message on a NBApimTooManyRequestsError api error 1`] = `"Too many requests"`;
+
+exports[`NedbankService retrieveVoucherInfo should return a voucher status and specific error code and message on a NBApimResourceNotFound api error 1`] = `"Resource not found"`;

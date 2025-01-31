@@ -71,14 +71,14 @@ describe('Registrations - [Scoped]', () => {
     // 7 registrations in total are included
     // 3 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope of the requesting user
-    const doPaymentResponse = await doPayment(
-      PvProgramId,
-      payment,
-      25,
-      [],
-      accessTokenScoped,
-      { 'filter.status': '$in:included' },
-    );
+    const doPaymentResponse = await doPayment({
+      programId: PvProgramId,
+      paymentNr: payment,
+      amount: 25,
+      referenceIds: [],
+      accessToken: accessTokenScoped,
+      filter: { 'filter.status': '$in:included' },
+    });
 
     // Assert
     await waitForPaymentTransactionsToComplete(

@@ -58,13 +58,13 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people', async () => {
     // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      [],
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: [],
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -93,14 +93,14 @@ describe('Do payment with filter', () => {
   // So in practice this query filter will very often be used
   it('should only pay included people with query filter included', async () => {
     // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      [],
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: [],
       accessToken,
-      { 'filter.status': '$in:included' },
-    );
+      filter: { 'filter.status': '$in:included' },
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -128,17 +128,17 @@ describe('Do payment with filter', () => {
 
   it('should only pay included people with query filter referenceId', async () => {
     // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      [],
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: [],
       accessToken,
-      {
+      filter: {
         'filter.status': '$in:included',
         'filter.referenceId': `$in:${registrationOCW1.referenceId}`,
       },
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -163,14 +163,16 @@ describe('Do payment with filter', () => {
   it('should only pay included people with a combi of filters', async () => {
     // Act
     const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      [],
-      accessToken,
       {
-        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3
-        'filter.fullName': `$ilike:s`, // selects registrationOCW1 and registrationOCW3
+        programId: programIdVisa,
+        paymentNr: paymentNrVisa,
+        amount: amountVisa,
+        referenceIds: [],
+        accessToken,
+        filter: {
+          'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3
+          'filter.fullName': `$ilike:s`,
+        },
       }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
@@ -198,14 +200,16 @@ describe('Do payment with filter', () => {
   it('should only pay included people with a combi of filter and search', async () => {
     // Act
     const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      [],
-      accessToken,
       {
-        'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
-        search: `str`, // select addressStreet of registrationOCW1, registrationOCW3, registrationOCW4
+        programId: programIdVisa,
+        paymentNr: paymentNrVisa,
+        amount: amountVisa,
+        referenceIds: [],
+        accessToken,
+        filter: {
+          'filter.addressPostalCode': `$ilike:5`, // selects registrationOCW2 and registrationOCW3 and registrationOCW4
+          search: `str`,
+        },
       }, // This combination should only be applicable to registrationOCW3, registrationOCW4 is filtered but not applicable because it is not included
     );
 
