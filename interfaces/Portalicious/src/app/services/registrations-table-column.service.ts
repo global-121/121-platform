@@ -183,6 +183,13 @@ export class RegistrationsTableColumnService {
               defaultHidden: !DEFAULT_VISIBLE_FIELDS_SORTED.includes(
                 column.field,
               ),
+              getCellText:
+                column.type === QueryTableColumnType.NUMERIC
+                  ? (registration: Registration) =>
+                      registration[column.field]
+                        ? (registration[column.field] as string)
+                        : '0' // default numeric values to 0
+                  : undefined,
             }))
             .sort((a, b) => {
               const aIndex = DEFAULT_VISIBLE_FIELDS_SORTED.indexOf(a.field);
