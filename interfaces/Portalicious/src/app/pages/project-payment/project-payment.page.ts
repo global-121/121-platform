@@ -263,6 +263,11 @@ export class ProjectPaymentPageComponent {
             value: config.name,
           })),
       },
+      {
+        field: 'timestamp',
+        header: $localize`Time and date`,
+        type: QueryTableColumnType.DATE,
+      },
     ];
 
     return projectPaymentColumns;
