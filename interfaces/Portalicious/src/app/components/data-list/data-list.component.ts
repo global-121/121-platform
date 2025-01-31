@@ -85,12 +85,12 @@ export class DataListComponent {
   optionItemValue(item: { type: 'options' } & DataListItem) {
     const value = Array.isArray(item.value) ? item.value : [item.value];
 
-    return value
-      .map((v) => {
-        const option = item.options?.find((o) => o.value === v);
+    const valueList = value.map((v) => {
+      const option = item.options?.find((o) => o.value === v);
 
-        return this.translatableStringService.translate(option?.label) ?? v;
-      })
-      .join(', ');
+      return this.translatableStringService.translate(option?.label) ?? v;
+    });
+
+    return this.translatableStringService.commaSeparatedList(valueList);
   }
 }
