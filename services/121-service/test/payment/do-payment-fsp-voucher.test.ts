@@ -58,13 +58,13 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       const getTransactionsBody = await getTransactionsIntersolveVoucher(
         programId,

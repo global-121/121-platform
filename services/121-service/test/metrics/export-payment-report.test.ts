@@ -41,7 +41,13 @@ describe('Metric export list', () => {
     // Arrange
     const fspSpecificFields = ['mpesaTransactionId'];
 
-    await doPayment(programId, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
     await waitForPaymentTransactionsToComplete(
       programId,
       [registrationSafaricom.referenceId],

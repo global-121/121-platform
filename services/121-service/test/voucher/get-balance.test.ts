@@ -43,13 +43,13 @@ describe('Get Intersolve voucher balance', () => {
       accessToken,
     });
     const paymentReferenceIds = [registrationPV5.referenceId];
-    await doPayment(
-      programIdPV,
-      payment,
+    await doPayment({
+      programId: programIdPV,
+      paymentNr: payment,
       amount,
-      paymentReferenceIds,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     // make sure to wait for the transaction to be completed
     const getTransactionsBody = await getTransactionsIntersolveVoucher(

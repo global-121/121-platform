@@ -20,3 +20,13 @@ To enable loading certificate files via environment variables in the Azure App S
      ```dotenv
      NEDBANK_CERTIFICATE_PATH=/var/ssl/private/<thumbprint>.p12
      ```
+
+4. **Error Handling**:
+
+   - When making a payment to Nedbank, if the certificate is not set up correctly, you will encounter transactions with the following error:
+
+     ```json
+     { "errno": -71, "code": "EPROTO", "syscall": "write" }
+     ```
+
+   - Ensure that the certificate is correctly uploaded and the path is correctly set in the environment variables to avoid this error.
