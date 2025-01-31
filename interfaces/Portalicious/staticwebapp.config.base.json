@@ -37,6 +37,11 @@
     }
   ],
   "trailingSlash": "auto",
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html"
+    }
+  },
   "globalHeaders": {
     "Content-Security-Policy": "",
     "Cross-Origin-Opener-Policy": "same-origin",
