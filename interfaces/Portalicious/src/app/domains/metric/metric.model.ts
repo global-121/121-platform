@@ -25,4 +25,5 @@ export interface PaymentMetricDetails {
   financialserviceprovider: FinancialServiceProviders;
   fullName: string;
   registrationStatus: RegistrationStatusEnum;
+  timestamp: string;
 }
