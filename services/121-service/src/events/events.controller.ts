@@ -27,7 +27,6 @@ import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-form
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -62,7 +61,7 @@ export class EventsController {
     required: false,
     enum: ExportFileFormat,
     description:
-      'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified. If "xlsx" is selected, the response will be a file download in which the data is slightly differently formatted for portal users in ',
+      'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified. If "xlsx" is selected, the response will be a file download in which the data is slightly differently formatted for portal users.',
   })
   @Get('programs/:programId/events')
   public async getEvents(
@@ -72,38 +71,27 @@ export class EventsController {
     @Req() req: ScopedUserRequest,
     @Res() res: Response,
   ): Promise<GetEventDto[] | void> {
-    // REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
+    // TODO: REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
     const filename = `registration-data-change-events`;
     const searchOptions = {
       queryParams,
     };
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
-      const userId = RequestHelper.getUserId(req);
-
-      const hasPermission = await this.userService.canActivate(
-        [PermissionEnum.RegistrationPersonalEXPORT],
-        programId,
-        userId,
-      );
-
-      if (!hasPermission) {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-      }
-
-      const result = await this.eventService.getEventsXlsxDto(
+      const result = await this.eventService.getEventsAsXlsx({
         programId,
         searchOptions,
-      );
+      });
       if (result.length === 0) {
         throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
       }
       return sendXlsxReponse(result, filename, res);
     }
-    const result = await this.eventService.getEventsJsonDto(
+
+    const result = await this.eventService.getEventsAsJson({
       programId,
       searchOptions,
-    );
+    });
     if (result.length === 0) {
       throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
     }
@@ -134,8 +122,11 @@ export class EventsController {
     @Param('registrationId', ParseIntPipe) registrationId: number,
     @Param('programId', ParseIntPipe) programId: number,
   ): Promise<GetEventDto[]> {
-    return await this.eventService.getEventsJsonDto(programId, {
-      registrationId,
+    return await this.eventService.getEventsAsJson({
+      programId,
+      searchOptions: {
+        registrationId,
+      },
     });
   }
 }

@@ -322,7 +322,7 @@ export class TransactionJobProcessorsService {
       if (
         oldRegistration.registrationStatus !== registration.registrationStatus
       ) {
-        await this.eventsService.log(
+        await this.eventsService.createFromRegistrationViews(
           {
             id: oldRegistration.id,
             status: oldRegistration.registrationStatus ?? undefined,

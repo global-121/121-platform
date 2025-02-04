@@ -263,7 +263,7 @@ export class TransactionsService {
       registration.registrationStatus = RegistrationStatusEnum.completed;
       const registrationsAfterUpdate =
         await this.registrationUtilsService.save(registration);
-      await this.eventsService.log(
+      await this.eventsService.createFromRegistrationViews(
         {
           id: registrationsBeforeUpdate.id,
           status: registrationsBeforeUpdate.registrationStatus ?? undefined,

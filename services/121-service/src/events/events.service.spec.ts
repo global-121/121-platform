@@ -130,7 +130,10 @@ describe('EventsService', () => {
 
   it('should return events in json dto format', async () => {
     // Act
-    const result = await eventsService.getEventsJsonDto(programId, {});
+    const result = await eventsService.getEventsAsJson({
+      programId,
+      searchOptions: {},
+    });
 
     const resultEvent = result[0];
     expect(resultEvent.id).toBe(mockFindEventResult[0].id);
@@ -153,7 +156,10 @@ describe('EventsService', () => {
 
   it('should return events in flat dto format (which is used for excel export)', async () => {
     // Act
-    const result = await eventsService.getEventsXlsxDto(programId, {});
+    const result = await eventsService.getEventsAsXlsx({
+      programId,
+      searchOptions: {},
+    });
 
     const resultEvent = result[0];
     expect(resultEvent.changedAt).toBe(mockFindEventResult[0].created);
@@ -171,7 +177,11 @@ describe('EventsService', () => {
     const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, options);
+    await eventsService.createFromRegistrationViews(
+      oldViewRegistration,
+      newViewRegistration,
+      options,
+    );
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -221,7 +231,10 @@ describe('EventsService', () => {
       FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration);
+    await eventsService.createFromRegistrationViews(
+      oldViewRegistration,
+      newViewRegistration,
+    );
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -391,7 +404,11 @@ describe('EventsService', () => {
     const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, options);
+    await eventsService.createFromRegistrationViews(
+      oldViewRegistration,
+      newViewRegistration,
+      options,
+    );
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);
@@ -431,7 +448,11 @@ describe('EventsService', () => {
     };
 
     // Act
-    await eventsService.log(oldViewRegistration, newViewRegistration, options);
+    await eventsService.createFromRegistrationViews(
+      oldViewRegistration,
+      newViewRegistration,
+      options,
+    );
 
     // Assert
     expect(eventRepository.save).toHaveBeenCalledTimes(1);

@@ -233,7 +233,7 @@ export class RegistrationsImportService {
     }
 
     // Save registration status change events they changed from null to registered
-    await this.eventsService.log(
+    await this.eventsService.createFromRegistrationViews(
       savedRegistrations.map((r) => ({
         id: r.id,
         status: undefined,

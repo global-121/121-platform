@@ -15,15 +15,26 @@ import { EventScopedRepository } from '@121-service/src/events/event.repository'
 import { EventLogOptions } from '@121-service/src/events/interfaces/event-log-options.interface';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 
+// TODO: REFACTOR: Turn this into an interface instead of a type, for simplicity, and think of a better name than "LogEntity".
 type LogEntity = Partial<RegistrationViewEntity> & {
+  // TODO: REFACTOR: Would the registrationId not always be in the RegistrationViewEntity? If not, can we make it so (enforce it)? If not, just call it registrationId to be more clear?
   id: number;
+  // TODO: REFACTOR: What does this status do? Would it not be in the RegistrationViewEntity? Or else, could it be part of eventLogOptions?
   status?: string;
 };
+
+// Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id and status are in.
+interface RegistrationViewWithIdAndStatus
+  extends Partial<RegistrationViewEntity> {
+  id: number;
+  status?: RegistrationStatusEnum; // ##TODO: Add | undefined? Or is that not needed because of the ? Since status is optional, omit entirely here?
+}
 
 @Injectable()
 export class EventsService {
@@ -34,18 +45,24 @@ export class EventsService {
     private readonly userService: UserService,
   ) {}
 
-  public async getEventsJsonDto(
-    programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): Promise<GetEventDto[]> {
+  public async getEventsAsJson({
+    programId,
+    searchOptions,
+  }: {
+    programId: number;
+    searchOptions: EventSearchOptionsDto;
+  }): Promise<GetEventDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
     return EventsMapper.mapEventsToJsonDtos(events);
   }
 
-  public async getEventsXlsxDto(
-    programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): Promise<GetEventXlsxDto[]> {
+  public async getEventsAsXlsx({
+    programId,
+    searchOptions,
+  }: {
+    programId: number;
+    searchOptions: EventSearchOptionsDto;
+  }): Promise<GetEventXlsxDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
     return EventsMapper.mapEventsToXlsxDtos(events);
   }
@@ -96,18 +113,22 @@ export class EventsService {
    * };
    * await log(oldRegistration, newRegistration, eventLogOptions);
    */
-  public async log(
-    oldRegistrationOrRegistrations: LogEntity | LogEntity[],
-    newRegistrationOrRegistrations: LogEntity | LogEntity[],
+  public async createFromRegistrationViews(
+    oldRegistrationViews:
+      | RegistrationViewWithIdAndStatus
+      | RegistrationViewWithIdAndStatus[],
+    newRegistrationViews:
+      | RegistrationViewWithIdAndStatus
+      | RegistrationViewWithIdAndStatus[],
     eventLogOptions?: EventLogOptions,
   ): Promise<void> {
     // Convert to array if not already
-    const oldEntities = Array.isArray(oldRegistrationOrRegistrations)
-      ? oldRegistrationOrRegistrations
-      : [oldRegistrationOrRegistrations];
-    const newEntities = Array.isArray(newRegistrationOrRegistrations)
-      ? newRegistrationOrRegistrations
-      : [newRegistrationOrRegistrations];
+    const oldEntities = Array.isArray(oldRegistrationViews)
+      ? oldRegistrationViews
+      : [oldRegistrationViews];
+    const newEntities = Array.isArray(newRegistrationViews)
+      ? newRegistrationViews
+      : [newRegistrationViews];
 
     this.validateEntities(oldEntities, newEntities, eventLogOptions);
     // Get userId from request if it exists otherwise this update was done using a queue
