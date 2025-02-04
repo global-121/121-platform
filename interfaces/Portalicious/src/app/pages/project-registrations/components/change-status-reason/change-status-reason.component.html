@@ -7,9 +7,11 @@
     <input
       pInputText
       [(ngModel)]="reason"
-      [class.invalid]="reasonValidationErrorMessage()"
       placeholder="Enter reason"
       i18n-placeholder
+      [ngClass]="{
+        'ng-invalid ng-dirty': !!reasonValidationErrorMessage(),
+      }"
     />
   </app-form-field-wrapper>
 </div>
