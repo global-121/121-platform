@@ -39,10 +39,13 @@ body {
     @apply font-semibold;
   }
 
-  p a,
-  p .p-button-link {
-    @apply text-blue-500;
-    @apply underline;
+  p a {
+    @apply text-blue-500 underline;
+
+    &:hover,
+    &:focus {
+      @apply no-underline;
+    }
   }
 }
 
@@ -90,7 +93,19 @@ body {
     }
 
     &.p-button-link {
-      @apply p-0;
+      @apply p-0 text-purple underline;
+
+      .p-button-label {
+        @apply font-normal;
+      }
+
+      &:hover {
+        @apply no-underline;
+
+        .p-button-label {
+          @apply no-underline;
+        }
+      }
     }
 
     &.p-button-outlined {

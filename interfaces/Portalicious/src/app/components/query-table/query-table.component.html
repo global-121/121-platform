@@ -287,19 +287,22 @@
       class="hover:bg-white"
     >
       <td [attr.colspan]="totalColumnCount()">
-        <div class="w-full py-6 text-center">
+        <div class="w-full py-6 text-start">
           @if (isFiltered()) {
-            <i class="pi pi-filter mb-5 inline text-xl"></i>
+            <div class="flex items-center">
+              <i class="pi pi-filter me-2 inline text-xl"></i>
+
+              <span
+                i18n
+                class="font-bold"
+              >
+                No results found
+              </span>
+            </div>
 
             <p
               i18n
-              class="mb-2 font-bold"
-            >
-              No results found
-            </p>
-            <p
-              i18n
-              class="mb-8"
+              class="my-4"
             >
               There are no records that match the selected filters, clear some
               or all filters to continue.
@@ -318,14 +321,23 @@
                 [ngTemplateOutlet]="emptyMessageTemplate"
               ></ng-container>
             } @else {
-              <i class="pi pi-exclamation-circle mb-3 inline text-xl"></i>
+              <div class="flex items-center">
+                <i class="pi pi-exclamation-circle inline text-xl"></i>
+
+                <span
+                  i18n
+                  class="font-bold"
+                >
+                  No results
+                </span>
+              </div>
+
               <p
                 i18n
-                class="mb-2 font-bold"
+                class="mt-4"
               >
-                No results
+                There are no records to display.
               </p>
-              <p i18n>There are no records to display.</p>
             }
           }
         </div>
