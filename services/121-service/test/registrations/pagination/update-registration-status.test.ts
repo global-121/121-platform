@@ -156,7 +156,7 @@ describe('change the status of a set of registrations', () => {
   });
 
   describe('check if a reason is required', () => {
-    it('should require a reason to update a registration status for some statuses', async () => {
+    it('should require a reason to update a registration status for some status declined and paused', async () => {
       // Arrange
       // Deleted status is not tested here, because it uses a different endpoint
       // and is tested in a separate test file
