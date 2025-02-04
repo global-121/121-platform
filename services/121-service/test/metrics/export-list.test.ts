@@ -13,6 +13,7 @@ import {
   awaitChangeRegistrationStatus,
   deleteRegistrations,
   importRegistrations,
+  waitForDeleteRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -56,6 +57,10 @@ describe('Metric export list', () => {
       programId: OcwProgramId,
       referenceIds: [registrationsOCW[0].referenceId],
       accessToken,
+    });
+    await waitForDeleteRegistrations({
+      programId: OcwProgramId,
+      referenceIds: [registrationsOCW[0].referenceId],
     });
     await awaitChangeRegistrationStatus({
       programId: OcwProgramId,
