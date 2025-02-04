@@ -35,6 +35,7 @@ import { ToastService } from '~/services/toast.service';
 export class SinglePaymentExportComponent {
   projectId = input.required<string>();
   paymentId = input.required<string>();
+  hasExportFileIntegration = input<boolean | undefined>(false);
 
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
@@ -96,7 +97,8 @@ export class SinglePaymentExportComponent {
   exportOptions = computed<MenuItem[]>(() => [
     {
       label: this.fspPaymentListLabel(),
-      visible: this.canExportPaymentInstructions(),
+      visible:
+        this.canExportPaymentInstructions() && this.hasExportFileIntegration(),
       command: () => {
         this.exportFspPaymentListDialog().askForConfirmation();
       },
