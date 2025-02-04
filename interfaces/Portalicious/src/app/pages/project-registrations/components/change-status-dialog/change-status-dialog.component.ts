@@ -256,4 +256,8 @@ export class ChangeStatusDialogComponent
     this.dialogVisible.set(false);
     this.changeStatusMutation.reset();
   }
+
+  clearReasonValidationError() {
+    this.reasonValidationErrorMessage.set(undefined);
+  }
 }

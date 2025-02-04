@@ -5,6 +5,7 @@ import {
   computed,
   input,
   model,
+  output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -36,8 +37,14 @@ export class ChangeStatusReasonComponent {
   reason = model.required<string | undefined>();
   reasonValidationErrorMessage = input<string | undefined>();
 
+  readonly reasonUpdated = output();
+
   statusVerbProgressive = computed<string>(() => {
     const status = this.status();
     return REGISTRATION_STATUS_VERB_PROGRESSIVE[status];
   });
+
+  onReasonInput() {
+    this.reasonUpdated.emit();
+  }
 }

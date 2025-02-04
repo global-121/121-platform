@@ -58,6 +58,7 @@
           [status]="registrationStatus"
           [(reason)]="reason"
           [reasonValidationErrorMessage]="reasonValidationErrorMessage()"
+          (reasonUpdated)="clearReasonValidationError()"
         ></app-change-status-reason>
       }
 
