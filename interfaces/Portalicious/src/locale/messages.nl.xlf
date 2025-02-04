@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
-  <file original="ng2.template" datatype="plaintext" xml:space="preserve" source-language="en-GB" target-language="nl">
-    <header>
-      <tool tool-id="lokalise.com" tool-name="Lokalise"></tool>
-    </header>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-GB" target-language="nl" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="13613170635045985" datatype="html">
         <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
@@ -467,8 +464,8 @@
         <target>Klaar voor de start!</target>
       </trans-unit>
       <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
-        <target>Er zijn nog geen registraties in dit project.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Voor informatie over het importeren van registraties in uw project kunt u terecht op de <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Handleiding <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://new.manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <target state="new">Er zijn nog geen registraties in dit project.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Voor informatie over het importeren van registraties in uw project kunt u terecht op de <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Handleiding <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
       </trans-unit>
       <trans-unit id="3003940161121195414" datatype="html">
         <source>Update information</source>
@@ -682,7 +679,7 @@
       </trans-unit>
       <trans-unit id="4360422423466093126" datatype="html">
         <source>Click start payment, this will direct you to the payment page.</source>
-        <target>Klik op 'Betaling starten'. U wordt doorgestuurd naar de betaalpagina.</target>
+        <target>Klik op &apos;Betaling starten&apos;. U wordt doorgestuurd naar de betaalpagina.</target>
       </trans-unit>
       <trans-unit id="4388879716045736175" datatype="html">
         <source>Note</source>
@@ -738,7 +735,7 @@
       </trans-unit>
       <trans-unit id="4747436386182159575" datatype="html">
         <source>The status column in the file should contain one of the following values:</source>
-        <target>De 'status'-kolom moet een van de volgende waarden bevatten:</target>
+        <target>De &apos;status&apos;-kolom moet een van de volgende waarden bevatten:</target>
       </trans-unit>
       <trans-unit id="4788150502649502085" datatype="html">
         <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
@@ -785,8 +782,8 @@
         <target>Transfer bedrag</target>
       </trans-unit>
       <trans-unit id="5172848657173998509" datatype="html">
-        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
-        <target>Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
+        <source>You are about to add a note to <x equiv-text="{{ registration.data()?.name }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <target state="new">Je staat op het punt een notitie toe te voegen aan het profiel van <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>.</target>
       </trans-unit>
       <trans-unit id="5190825892106392539" datatype="html">
         <source>Spanish</source>
@@ -794,7 +791,7 @@
       </trans-unit>
       <trans-unit id="5209857233936409392" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
-        <target>De actie &quot; Pauzeren &quot; kan alleen worden toegepast op registraties met de status 'Actief'.</target>
+        <target>De actie &quot; Pauzeren &quot; kan alleen worden toegepast op registraties met de status &apos;Actief&apos;.</target>
       </trans-unit>
       <trans-unit id="5248644489024163464" datatype="html">
         <source>Import file</source>
@@ -947,7 +944,7 @@
       </trans-unit>
       <trans-unit id="6345542796169013745" datatype="html">
         <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
-        <target>Selecteer registraties waar "Resterende betalingen" groter is dan 0 (nul) en probeer het opnieuw.</target>
+        <target>Selecteer registraties waar &quot;Resterende betalingen&quot; groter is dan 0 (nul) en probeer het opnieuw.</target>
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
@@ -1227,7 +1224,7 @@
       </trans-unit>
       <trans-unit id="8209340100752123472" datatype="html">
         <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
-        <target>Wanneer u een taak ontvangt, worden hier alle gegevens weergegeven die gekoppeld zijn aan het telefoonnummer van de persoon die te vinden zijn in actieve programma's op het 121-platform.</target>
+        <target>Wanneer u een taak ontvangt, worden hier alle gegevens weergegeven die gekoppeld zijn aan het telefoonnummer van de persoon die te vinden zijn in actieve programma&apos;s op het 121-platform.</target>
       </trans-unit>
       <trans-unit id="8220517666190714329" datatype="html">
         <source>Did you know?</source>
@@ -1287,7 +1284,7 @@
       </trans-unit>
       <trans-unit id="8668090925608056170" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
-        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0.</target>
+        <target>De actie &quot;Activeren&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0.</target>
       </trans-unit>
       <trans-unit id="8670091824036050972" datatype="html">
         <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
@@ -1466,8 +1463,8 @@
         <target>FSP</target>
       </trans-unit>
       <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
-        <source>FSP Configuration Name</source>
-        <target>FSP-configuratienaam</target>
+        <source>FSP</source>
+        <target state="new">FSP-configuratienaam</target>
       </trans-unit>
       <trans-unit id="attribute-label-referenceId" datatype="html">
         <source>Reference ID</source>
@@ -1491,15 +1488,15 @@
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "Voltooid" behouden hun huidige status.</target>
+        <target>De actie &quot;Afwijzen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;Voltooid&quot; behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-delete-warning" datatype="html">
         <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status "voltooid" behouden hun huidige status.</target>
+        <target>De actie &quot;Verwijderen&quot; kan niet worden toegepast op registraties met de status &quot;Voltooid&quot;. Registraties met de status &quot;voltooid&quot; behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-include-warning" datatype="html">
         <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
-        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal "Resterende betalingen" groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
+        <target>De actie &quot;Activeer&quot; kan alleen worden toegepast op registraties waarvan het aantal &quot;Resterende betalingen&quot; groter is dan 0. Registraties met 0 resterende betalingen behouden hun huidige status.</target>
       </trans-unit>
       <trans-unit id="change-status-pause-warning" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
@@ -1602,36 +1599,36 @@
         <target>Export</target>
       </trans-unit>
       <trans-unit id="export-changes" datatype="html">
-        <source>Export status &amp; data changes</source>
-        <target>Status- en datawijzigingen exporteren</target>
+        <source>Status &amp; data changes</source>
+        <target state="new">Status- en datawijzigingen exporteren</target>
       </trans-unit>
       <trans-unit id="export-duplicate" datatype="html">
-        <source>Export duplicate registrations</source>
-        <target>Duplicaten exporteren</target>
+        <source>Duplicate registrations</source>
+        <target state="new">Duplicaten exporteren</target>
       </trans-unit>
       <trans-unit id="export-fsp-payment-list" datatype="html">
         <source>Export FSP payment list</source>
         <target>FSP-betalingslijst exporteren</target>
       </trans-unit>
       <trans-unit id="export-payments-debit-card-usage" datatype="html">
-        <source>Export debit card usage</source>
-        <target>Visakaartgebruik exporteren</target>
+        <source>Debit card usage</source>
+        <target state="new">Visakaartgebruik exporteren</target>
       </trans-unit>
       <trans-unit id="export-payments-last" datatype="html">
         <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
         <target>Exporteer meest recente <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> betaling(en)</target>
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
-        <source>Export unused vouchers</source>
-        <target>Ongebruikte vouchers exporteren</target>
+        <source>Unused vouchers</source>
+        <target state="new">Ongebruikte vouchers exporteren</target>
       </trans-unit>
       <trans-unit id="export-selected" datatype="html">
-        <source>Export selected registrations</source>
-        <target>Geselecteerde registraties exporteren</target>
+        <source>Selected registrations</source>
+        <target state="new">Geselecteerde registraties exporteren</target>
       </trans-unit>
       <trans-unit id="export-verification" datatype="html">
-        <source>Export account number verification</source>
-        <target>Verifieer rekeningnummers</target>
+        <source>Account number verification</source>
+        <target state="new">Verifieer rekeningnummers</target>
       </trans-unit>
       <trans-unit id="generic-apply" datatype="html">
         <source>Apply</source>
@@ -1907,12 +1904,12 @@
         <target>Registratie gecreëerd</target>
       </trans-unit>
       <trans-unit id="registration-full-name" datatype="html">
-        <source>Full Name</source>
-        <target>Volledige naam</target>
+        <source>Name</source>
+        <target state="new">Volledige naam</target>
       </trans-unit>
       <trans-unit id="registration-full-name-edit-info" datatype="html">
-        <source>This field is dynamically generated based on the other name fields available below.</source>
-        <target>Dit veld wordt dynamisch gegenereerd op basis van de andere naamvelden die hieronder beschikbaar zijn.</target>
+        <source>This field is dynamically generated based on the other name fields available below:</source>
+        <target state="new">Dit veld wordt dynamisch gegenereerd op basis van de andere naamvelden die hieronder beschikbaar zijn.</target>
       </trans-unit>
       <trans-unit id="registration-payments" datatype="html">
         <source>Payments</source>
@@ -1927,8 +1924,8 @@
         <target>Connectie</target>
       </trans-unit>
       <trans-unit id="registration-status" datatype="html">
-        <source>Status</source>
-        <target>Status</target>
+        <source>Registration Status</source>
+        <target state="new">Status</target>
       </trans-unit>
       <trans-unit id="registration-status-completed" datatype="html">
         <source>Completed</source>
@@ -1979,24 +1976,60 @@
         <target>U staat op het punt om <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>een bericht te sturen<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> naar <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registratie(s).</target>
       </trans-unit>
       <trans-unit id="table-clear-filters" datatype="html">
-        <source>Clear all filters</source>
-        <target>Alle filters wissen</target>
+        <source>Clear filters</source>
+        <target state="new">Alle filters wissen</target>
       </trans-unit>
       <trans-unit id="table-quick-search" datatype="html">
         <source>Filter by keyword</source>
         <target>Filteren op trefwoord</target>
       </trans-unit>
       <trans-unit id="transaction-status-error" datatype="html">
-        <source>Error</source>
-        <target>Fout</target>
+        <source>Failed</source>
+        <target state="new">Fout</target>
       </trans-unit>
       <trans-unit id="transaction-status-success" datatype="html">
-        <source>Success</source>
-        <target>Succes</target>
+        <source>Successful</source>
+        <target state="new">Succes</target>
       </trans-unit>
       <trans-unit id="transaction-status-waiting" datatype="html">
         <source>Pending</source>
         <target>In behandeling</target>
+      </trans-unit>
+      <trans-unit id="2218572265318708454" datatype="html">
+        <source>Registering</source>
+        <target state="new">Registering</target>
+      </trans-unit>
+      <trans-unit id="6152894890425150706" datatype="html">
+        <source>Completing</source>
+        <target state="new">Completing</target>
+      </trans-unit>
+      <trans-unit id="4465385057621611056" datatype="html">
+        <source>Validating</source>
+        <target state="new">Validating</target>
+      </trans-unit>
+      <trans-unit id="1302184832753381211" datatype="html">
+        <source>Including</source>
+        <target state="new">Including</target>
+      </trans-unit>
+      <trans-unit id="28184998386226894" datatype="html">
+        <source>Pausing</source>
+        <target state="new">Pausing</target>
+      </trans-unit>
+      <trans-unit id="5667836214859665218" datatype="html">
+        <source>Declining</source>
+        <target state="new">Declining</target>
+      </trans-unit>
+      <trans-unit id="3141301060598402455" datatype="html">
+        <source>Deleting</source>
+        <target state="new">Deleting</target>
+      </trans-unit>
+      <trans-unit id="3684525214439355379" datatype="html">
+        <source>Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></source>
+        <target state="new">Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="6891284064706667841" datatype="html">
+        <source>Enter reason</source>
+        <target state="new">Enter reason</target>
       </trans-unit>
     </body>
   </file>

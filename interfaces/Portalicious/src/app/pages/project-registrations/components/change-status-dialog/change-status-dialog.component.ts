@@ -36,6 +36,7 @@ import { Registration } from '~/domains/registration/registration.model';
 import { ChangeStatusContentsWithCustomMessageComponent } from '~/pages/project-registrations/components/change-status-contents-with-custom-message/change-status-contents-with-custom-message.component';
 import { ChangeStatusContentsWithTemplatedMessageComponent } from '~/pages/project-registrations/components/change-status-contents-with-templated-message/change-status-contents-with-templated-message.component';
 import { ChangeStatusContentsWithoutMessageComponent } from '~/pages/project-registrations/components/change-status-contents-without-message/change-status-contents-without-message.component';
+import { ChangeStatusReasonComponent } from '~/pages/project-registrations/components/change-status-reason/change-status-reason.component';
 import {
   MessageInputData,
   MessagingService,
@@ -60,6 +61,7 @@ import { ToastService } from '~/services/toast.service';
     ChangeStatusContentsWithoutMessageComponent,
     ChangeStatusContentsWithTemplatedMessageComponent,
     ChangeStatusContentsWithCustomMessageComponent,
+    ChangeStatusReasonComponent,
     FormsModule,
     LowerCasePipe,
   ],
@@ -91,6 +93,9 @@ export class ChangeStatusDialogComponent
   enableSendMessage = model<boolean>(false);
   customMessage = model<string>();
   status = signal<RegistrationStatusEnum | undefined>(undefined);
+
+  reason = model<string | undefined>(undefined);
+  reasonValidationErrorMessage = signal<string | undefined>(undefined);
 
   icon = computed(() => {
     const status = this.status();
@@ -124,6 +129,19 @@ export class ChangeStatusDialogComponent
       RegistrationStatusEnum.declined,
     ];
     return statusesWithSendMessageEnabled.includes(status);
+  });
+
+  reasonIsRequired = computed(() => {
+    const status = this.status();
+    if (!status) {
+      return false;
+    }
+    const statusesForWhichReasonIsRequired = [
+      RegistrationStatusEnum.declined,
+      RegistrationStatusEnum.paused,
+      RegistrationStatusEnum.deleted,
+    ];
+    return statusesForWhichReasonIsRequired.includes(status);
   });
 
   triggerAction(
@@ -180,6 +198,7 @@ export class ChangeStatusDialogComponent
         projectId: this.projectId,
         paginateQuery: this.actionData()?.query,
         status,
+        reason: this.reason(),
         messageData,
         dryRun,
       });
@@ -224,6 +243,12 @@ export class ChangeStatusDialogComponent
   }));
 
   onFormSubmit(): void {
+    if (this.reasonIsRequired() && !this.reason()) {
+      this.reasonValidationErrorMessage.set(
+        $localize`:@@generic-required-field:This field is required.`,
+      );
+      return;
+    }
     this.changeStatusMutation.mutate({ dryRun: true });
   }
 
