@@ -180,7 +180,7 @@ describe('change the status of a set of registrations', () => {
       }
     });
 
-    it('should not require a reason to update a registration status for some statuses', async () => {
+    it('should not require a reason to update a registration status for some status validated and included', async () => {
       // Arrange
       // Only statuses that can be changed in a bulk update are tested here
       const statusesThatDoNotRequireReason = [
