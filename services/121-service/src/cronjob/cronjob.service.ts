@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -25,7 +26,16 @@ export class CronjobService {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cancel`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.post(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job cronCancelByRefposIntersolve. Status code: ${response.status}`,
+      );
+    }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
@@ -38,7 +48,16 @@ export class CronjobService {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.put(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.put(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job validateCommercialBankEthiopiaAccountEnquiries. Status code: ${response.status}`,
+      );
+    }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -51,7 +70,16 @@ export class CronjobService {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.patch(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.patch(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job cronRetrieveAndUpdatedUnusedIntersolveVouchers. Status code: ${response.status}`,
+      );
+    }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -65,7 +93,16 @@ export class CronjobService {
     const programIdVisa = 3;
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.patch(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.patch(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job cronRetrieveAndUpdateVisaData. Status code: ${response.status}`,
+      );
+    }
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON, {
@@ -78,7 +115,16 @@ export class CronjobService {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.post(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job cronSendWhatsappReminders. Status code: ${response.status}`,
+      );
+    }
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
@@ -100,6 +146,15 @@ export class CronjobService {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.put(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.put(
+      url,
+      {},
+      headers,
+    );
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(
+        `Failed to run Cron Job getDailyExchangeRates. Status code: ${response.status}`,
+      );
+    }
   }
 }

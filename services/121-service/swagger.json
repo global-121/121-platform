@@ -10,6 +10,11 @@
     "params": []
   },
   {
+    "method": "post",
+    "path": "/api/cronjob",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/exchange-rates",
     "params": []
