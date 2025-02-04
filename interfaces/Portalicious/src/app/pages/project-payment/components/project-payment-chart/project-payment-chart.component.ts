@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 
@@ -12,6 +13,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getTailwindConfig } from '~/utils/tailwind';
 
 const tailwindConfig = getTailwindConfig();
@@ -25,6 +27,8 @@ const tailwindConfig = getTailwindConfig();
 })
 export class ProjectPaymentChartComponent {
   paymentDetails = input.required<PaymentAggregate>();
+
+  readonly translatableStringService = inject(TranslatableStringService);
 
   chartData = computed(() => {
     const { waiting, success, failed } = this.paymentDetails();
@@ -96,11 +100,11 @@ export class ProjectPaymentChartComponent {
 
     return (
       $localize`Payment status chart. ` +
-      chartData.labels
-        .map((label, index) => {
+      this.translatableStringService.commaSeparatedList(
+        chartData.labels.map((label, index) => {
           return `${label}: ${String(metrics[index])}`;
-        })
-        .join(', ')
+        }),
+      )
     );
   });
 }

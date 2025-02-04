@@ -45,4 +45,20 @@ export class TranslatableStringService {
 
     return undefined;
   }
+
+  commaSeparatedList(
+    values: LocalizedString[] | string[],
+    style: Intl.ListFormatStyle = 'narrow',
+  ): string {
+    const list = values
+      .map(this.translate.bind(this))
+      .filter((value): value is string => !!value);
+
+    const formatter = new Intl.ListFormat(this.currentLocale, {
+      style,
+      type: 'conjunction',
+    });
+
+    return formatter.format(list);
+  }
 }

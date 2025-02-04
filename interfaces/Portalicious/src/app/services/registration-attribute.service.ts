@@ -269,13 +269,16 @@ export class RegistrationAttributeService {
               editInfo:
                 $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ` +
                 (project.fullnameNamingConvention
-                  ?.map((namingConvention) =>
-                    this.localizeAttribute({
-                      attributes: projectSpecificAttributes,
-                      attributeName: namingConvention,
-                    }),
-                  )
-                  .join(', ') ?? ''),
+                  ? this.translatableStringService.commaSeparatedList(
+                      project.fullnameNamingConvention.map((namingConvention) =>
+                        this.localizeAttribute({
+                          attributes: projectSpecificAttributes,
+                          attributeName: namingConvention,
+                        }),
+                      ),
+                      'long',
+                    )
+                  : ''),
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
             },
