@@ -16,12 +16,9 @@ export class CronjobController {
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)
   public async runAllCronjobs(): Promise<void> {
-    // ##TODO: See if we can call all the functions via inspection of the CronjobService
-    await this.cronjobService.cronCancelByRefposIntersolve();
-    await this.cronjobService.validateCommercialBankEthiopiaAccountEnquiries();
-    await this.cronjobService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
-    await this.cronjobService.cronRetrieveAndUpdateVisaData();
-    await this.cronjobService.cronSendWhatsappReminders();
-    await this.cronjobService.getDailyExchangeRates();
+    const methods = this.cronjobService.getAllMethods();
+    for (const method of methods) {
+      await this.cronjobService[method]();
+    }
   }
 }

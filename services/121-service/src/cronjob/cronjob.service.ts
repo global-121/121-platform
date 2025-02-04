@@ -10,6 +10,18 @@ function shouldBeEnabled(envVariable: string | undefined): boolean {
   return !!envVariable && envVariable.toLowerCase() === 'true';
 }
 
+// ##TODO: See if we can change this function to getCronFunctions and just get the public functions with the @Cron decorator
+function getAllMethods(instance: any): string[] {
+  const prototype = Object.getPrototypeOf(instance);
+  return Object.getOwnPropertyNames(prototype).filter((name) => {
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+    return (
+      descriptor &&
+      typeof descriptor.value === 'function' &&
+      name !== 'constructor'
+    );
+  });
+}
 @Injectable()
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
@@ -156,5 +168,9 @@ export class CronjobService {
         `Failed to run Cron Job getDailyExchangeRates. Status code: ${response.status}`,
       );
     }
+  }
+
+  public getAllMethods(): string[] {
+    return getAllMethods(this);
   }
 }
