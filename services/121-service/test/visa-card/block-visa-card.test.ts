@@ -11,7 +11,7 @@ import {
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   blockVisaCard,
   getMessageHistory,
   getVisaWalletsAndDetails,
@@ -36,12 +36,12 @@ describe('(Un)Block visa debit card', () => {
   it('should succesfully block a Visa Debit card', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programIdVisa,
@@ -92,12 +92,12 @@ describe('(Un)Block visa debit card', () => {
   it('should succesfully unblock a Visa Debit card', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
     await doPayment(
       programIdVisa,

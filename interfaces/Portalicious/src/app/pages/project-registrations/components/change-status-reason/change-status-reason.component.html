@@ -1,0 +1,18 @@
+<div class="my-4">
+  <app-form-field-wrapper
+    label="Add a reason for {{ statusVerbProgressive() | lowercase }}"
+    i18n-label
+    [errorMessage]="reasonValidationErrorMessage()"
+  >
+    <input
+      pInputText
+      [(ngModel)]="reason"
+      (ngModelChange)="reasonUpdated.emit()"
+      placeholder="Enter reason"
+      i18n-placeholder
+      [ngClass]="{
+        'ng-invalid ng-dirty': !!reasonValidationErrorMessage(),
+      }"
+    />
+  </app-form-field-wrapper>
+</div>

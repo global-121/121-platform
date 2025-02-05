@@ -7,7 +7,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -55,12 +55,12 @@ describe('Load PA table', () => {
       await importRegistrations(programIdOCW, registrations, accessToken);
       await importRegistrations(programIdPV, [registrationPV6], accessToken);
 
-      await awaitChangePaStatus(
-        programIdOCW,
-        paymentReferenceIds,
-        RegistrationStatusEnum.included,
+      await awaitChangeRegistrationStatus({
+        programId: programIdOCW,
+        referenceIds: paymentReferenceIds,
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
 
       await doPayment(
         programIdOCW,

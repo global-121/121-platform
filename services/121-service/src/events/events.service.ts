@@ -4,7 +4,6 @@ import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
 
-import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
 import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
 import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
@@ -13,6 +12,7 @@ import { EventAttributeEntity } from '@121-service/src/events/entities/event-att
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
+import { EventLogOptions } from '@121-service/src/events/interfaces/event-log-options.interface';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -60,10 +60,46 @@ export class EventsService {
     );
   }
 
+  /**
+   * Logs changes between old and new registration entities.
+   *
+   * @param {LogEntity | LogEntity[]} oldRegistrationOrRegistrations - The old registration entity or entities before the change.
+   * @param {LogEntity | LogEntity[]} newRegistrationOrRegistrations - The new registration entity or entities after the change.
+   * @param {EventLogOptions} [eventLogOptions] - Optional event log options to specify additional attributes and registration attributes to log.
+   * @returns {Promise<void>}
+   *
+   * @example
+   * // Single registration change
+   * const oldRegistration = { id: 1, name: 'Old Name' };
+   * const newRegistration = { id: 1, name: 'New Name' };
+   * await log(oldRegistration, newRegistration);
+   *
+   * @example
+   * // Multiple registrations change
+   * const oldRegistrations = [
+   *   { id: 1, name: 'Old Name 1' },
+   *   { id: 2, name: 'Old Name 2' },
+   * ];
+   * const newRegistrations = [
+   *   { id: 1, name: 'New Name 1' },
+   *   { id: 2, name: 'New Name 2' },
+   * ];
+   * await log(oldRegistrations, newRegistrations);
+   *
+   * @example
+   * // With event log options
+   * const oldRegistration = { id: 1, name: 'Old Name' };
+   * const newRegistration = { id: 1, name: 'New Name' };
+   * const eventLogOptions = {
+   *   explicitRegistrationPropertyNames: ['name'],
+   *   reason: 'Name change',
+   * };
+   * await log(oldRegistration, newRegistration, eventLogOptions);
+   */
   public async log(
     oldRegistrationOrRegistrations: LogEntity | LogEntity[],
     newRegistrationOrRegistrations: LogEntity | LogEntity[],
-    eventLogOptions?: EventLogOptionsDto,
+    eventLogOptions?: EventLogOptions,
   ): Promise<void> {
     // Convert to array if not already
     const oldEntities = Array.isArray(oldRegistrationOrRegistrations)
@@ -81,6 +117,7 @@ export class EventsService {
       ? this.request?.user?.['id']
       : this.jobRef?.data?.request?.userId;
 
+    // UserId can be null if the registration change was done by a system user, for example when the system puts a registration to status complete
     let userIdToStore: number | undefined = undefined;
     if (requestUserId) {
       const user = await this.userService.findById(requestUserId);
@@ -89,43 +126,36 @@ export class EventsService {
       }
     }
 
-    // TODO: userIdToStore can be null, which causes an exception
-    const allEventsForChange: EventEntity[] = this.createEventsForChanges(
+    const events = this.createEventsForChanges(
       oldEntities,
       newEntities,
       userIdToStore,
-      eventLogOptions?.registrationAttributes,
+      eventLogOptions?.explicitRegistrationPropertyNames,
     );
-    const events = this.addAdditionalAttributesToEvents(
-      allEventsForChange,
-      eventLogOptions?.additionalLogAttributes,
-    );
+
+    if (eventLogOptions?.reason) {
+      for (const event of events) {
+        const reasonAttribute = this.createEventAttributeForReason(
+          eventLogOptions?.reason,
+        );
+        event.attributes.push(reasonAttribute);
+      }
+    }
 
     await this.eventRepository.save(events, { chunk: 2000 });
   }
 
-  private addAdditionalAttributesToEvents(
-    events: EventEntity[],
-    additionalAttributeObject?: EventLogOptionsDto['additionalLogAttributes'],
-  ): EventEntity[] {
-    if (!additionalAttributeObject) {
-      return events;
-    }
-    for (const event of events) {
-      for (const [key, value] of Object.entries(additionalAttributeObject)) {
-        const attribute = new EventAttributeEntity();
-        attribute.key = key as EventAttributeKeyEnum;
-        attribute.value = value ?? null;
-        event.attributes.push(attribute);
-      }
-    }
-    return events;
+  private createEventAttributeForReason(reason: string): EventAttributeEntity {
+    const attribute = new EventAttributeEntity();
+    attribute.key = EventAttributeKeyEnum.reason;
+    attribute.value = reason;
+    return attribute;
   }
 
   private validateEntities(
     oldEntities: LogEntity[],
     newEntities: LogEntity[],
-    eventLogOptionsDto?: EventLogOptionsDto,
+    eventLogOptionsDto?: EventLogOptions,
   ): void {
     // check if oldEntities and newEntities are same length
     if (oldEntities.length !== newEntities.length) {
@@ -148,7 +178,7 @@ export class EventsService {
 
     // Check if one entity is RegistrationViewEntity and the other is not
     if (
-      !eventLogOptionsDto?.registrationAttributes &&
+      !eventLogOptionsDto?.explicitRegistrationPropertyNames &&
       isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
     ) {
       throw new Error(
@@ -156,11 +186,11 @@ export class EventsService {
       );
     }
 
-    // Check if both entities are not RegistrationViewEntity and registrationAttributes is not provided
+    // Check if both entities are not RegistrationViewEntity and explicitRegistrationAttributes is not provided
     if (
       !isFirstOldEntityRegistrationView &&
       !isFirstNewEntityRegistrationView &&
-      !eventLogOptionsDto?.registrationAttributes
+      !eventLogOptionsDto?.explicitRegistrationPropertyNames
     ) {
       throw new Error(
         'When using a partial RegistrationViewEntity, you need to provide the registrationAttributes in the eventLogOptionsDto.',

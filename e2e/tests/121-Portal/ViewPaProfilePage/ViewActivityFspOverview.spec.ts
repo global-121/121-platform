@@ -19,7 +19,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -64,12 +64,12 @@ test.beforeEach(async ({ page }) => {
 
   // Arrange
   await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-  await awaitChangePaStatus(
-    programIdVisa,
-    [registrationVisa.referenceId],
-    RegistrationStatusEnum.included,
+  await awaitChangeRegistrationStatus({
+    programId: programIdVisa,
+    referenceIds: [registrationVisa.referenceId],
+    status: RegistrationStatusEnum.included,
     accessToken,
-  );
+  });
   const paymentReferenceIds = [registrationVisa.referenceId];
 
   // Act

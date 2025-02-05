@@ -242,7 +242,7 @@ export class RegistrationsImportService {
         id: r.id,
         status: r.registrationStatus!,
       })),
-      { registrationAttributes: ['status'] },
+      { explicitRegistrationPropertyNames: ['status'] },
     );
 
     // Save registration data in bulk for performance

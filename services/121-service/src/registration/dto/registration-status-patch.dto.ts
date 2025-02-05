@@ -1,9 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { IsNotBothPresent } from '@121-service/src/registration/validators/is-not-both-present.class.validator';
+import { IsOptionalIf } from '@121-service/src/registration/validators/is-optional-if.class.validator';
 import { WrapperType } from '@121-service/src/wrapper.type';
+
+const registrationStatussesForWhichReasonIsRequired = [
+  RegistrationStatusEnum.declined,
+  RegistrationStatusEnum.deleted,
+  RegistrationStatusEnum.paused,
+];
 
 export class RegistrationStatusPatchDto {
   @ApiProperty({
@@ -25,4 +32,18 @@ export class RegistrationStatusPatchDto {
   @IsEnum(RegistrationStatusEnum)
   @IsOptional()
   public readonly messageTemplateKey?: string;
+
+  @ApiProperty({
+    description: `Reason is the same for all registration status changes in one API-call. Required for status changes to ${registrationStatussesForWhichReasonIsRequired.join(
+      ', ',
+    )}.`,
+    example: 'Reason for update',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptionalIf(
+    (obj) =>
+      !registrationStatussesForWhichReasonIsRequired.includes(obj.status),
+  )
+  public readonly reason?: string;
 }

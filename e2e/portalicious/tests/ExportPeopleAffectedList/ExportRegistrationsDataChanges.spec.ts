@@ -21,6 +21,7 @@ const changedBy = 'admin@example.org';
 const type = 'registrationStatusChange';
 const newValue = 'included';
 const oldValue = 'registered';
+const reason = 'default reason';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -55,6 +56,7 @@ test('[29337] Export all People Affected data changes', async ({ page }) => {
       type,
       newValue,
       oldValue,
+      reason,
     });
   });
 });

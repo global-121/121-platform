@@ -332,7 +332,7 @@ export class TransactionJobProcessorsService {
             status: registration.registrationStatus ?? undefined,
           },
           {
-            registrationAttributes: ['status'],
+            explicitRegistrationPropertyNames: ['status'],
           },
         );
       }

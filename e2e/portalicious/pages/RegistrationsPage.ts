@@ -36,6 +36,7 @@ const expectedColumnsStatusAndDataChangesExport = [
   'type',
   'newValue',
   'oldValue',
+  'reason',
 ];
 
 const expectedColumnsDuplicateRegistrationsExport = [
@@ -80,6 +81,7 @@ interface ExportStatusAndDataChangesData {
   type: string;
   newValue: string;
   oldValue: string;
+  reason: string;
 }
 
 interface ExportDuplicateRegistrationsData {
@@ -428,6 +430,7 @@ class RegistrationsPage extends BasePage {
       type,
       newValue,
       oldValue,
+      reason,
     }: ExportStatusAndDataChangesData,
     validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
@@ -437,6 +440,7 @@ class RegistrationsPage extends BasePage {
       type,
       newValue,
       oldValue,
+      reason,
     };
     await this.exportAndAssertData(
       expectedColumnsStatusAndDataChangesExport,

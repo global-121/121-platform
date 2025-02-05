@@ -7,5 +7,6 @@ export interface StatusChangeActivity extends BaseActivity {
   attributes: {
     oldValue: RegistrationStatusEnum;
     newValue: RegistrationStatusEnum;
+    reason: string | null; // Reason for the status change
   };
 }
