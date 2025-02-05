@@ -58,7 +58,7 @@
           [status]="registrationStatus"
           [(reason)]="reason"
           [reasonValidationErrorMessage]="reasonValidationErrorMessage()"
-          (reasonUpdated)="clearReasonValidationError()"
+          (reasonUpdated)="reasonValidationErrorMessage.set(undefined)"
         ></app-change-status-reason>
       }
 
