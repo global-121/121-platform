@@ -15,11 +15,12 @@
         [paymentId]="paymentId()"
         [projectId]="projectId()"
       />
-      <app-single-payment-export
-        [projectId]="projectId()"
-        [paymentId]="paymentId()"
-      />
     }
+    <app-single-payment-export
+      [projectId]="projectId()"
+      [paymentId]="paymentId()"
+      [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
+    />
   </div>
   <div
     class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
