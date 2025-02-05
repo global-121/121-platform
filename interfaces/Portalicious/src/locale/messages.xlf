@@ -1294,7 +1294,7 @@
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="414383194277792669" datatype="html">
+      <trans-unit id="11251344703259489" datatype="html">
         <source>There are no records to display.</source>
       </trans-unit>
       <trans-unit id="4213825410774196775" datatype="html">
