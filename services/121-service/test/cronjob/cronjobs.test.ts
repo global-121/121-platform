@@ -12,7 +12,7 @@ describe('Cron jobs', () => {
     accessToken = await getAccessToken();
   });
 
-  it('run all cron jobs', async () => {
+  it('should initiate all cronjobs succesfully', async () => {
     // Arrange
 
     // Act
