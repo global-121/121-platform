@@ -15,7 +15,6 @@ import { EventScopedRepository } from '@121-service/src/events/event.repository'
 import { createFromRegistrationViewsOptions } from '@121-service/src/events/interfaces/create-from-registration-views-options.interface';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
@@ -25,7 +24,6 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 interface RegistrationViewWithIdAndStatus
   extends Partial<RegistrationViewEntity> {
   id: number;
-  status?: RegistrationStatusEnum; // ##TODO: Add | undefined? Or is that not needed because of the ? Since status is optional, omit entirely here?
 }
 
 @Injectable()
