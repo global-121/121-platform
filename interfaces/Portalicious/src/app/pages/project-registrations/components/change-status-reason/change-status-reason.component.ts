@@ -43,8 +43,4 @@ export class ChangeStatusReasonComponent {
     const status = this.status();
     return REGISTRATION_STATUS_VERB_PROGRESSIVE[status];
   });
-
-  onReasonInput() {
-    this.reasonUpdated.emit();
-  }
 }
