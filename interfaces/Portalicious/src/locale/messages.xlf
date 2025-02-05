@@ -1169,7 +1169,7 @@
         <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
       </trans-unit>
       <trans-unit id="retry-failed-transfers" datatype="html">
-        <source>Retry failed transfers</source>
+        <source>Retry failed transfer(s)</source>
       </trans-unit>
       <trans-unit id="payment-report" datatype="html">
         <source>Payment report</source>
@@ -1530,6 +1530,9 @@
       </trans-unit>
       <trans-unit id="2976767115406008475" datatype="html">
         <source>Registration out of scope or not found - please check URL or contact your supervisor</source>
+      </trans-unit>
+      <trans-unit id="retry-transfer" datatype="html">
+        <source>Retry transfer</source>
       </trans-unit>
     </body>
   </file>

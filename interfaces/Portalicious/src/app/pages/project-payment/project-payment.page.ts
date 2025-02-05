@@ -352,11 +352,30 @@ export class ProjectPaymentPageComponent {
       });
       return;
     }
-
-    this.retryTransfersDialog().retryFailedTransfers({
-      table: this.table(),
+    const actionData = this.table().getActionData({
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuSelection(),
+      fieldForFilter: 'referenceId',
+      noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
+    });
+
+    if (!actionData) {
+      return;
+    }
+
+    const selection = actionData.selection;
+
+    if (!Array.isArray(selection) || selection.length === 0) {
+      this.toastService.showGenericError(); // Should never happen
+      return;
+    }
+
+    const referenceIds = selection.map(
+      (transaction) => transaction.referenceId,
+    );
+
+    this.retryTransfersDialog().retryFailedTransfers({
+      referenceIds,
     });
   }
 }
