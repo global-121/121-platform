@@ -172,7 +172,7 @@ describe('EventsService', () => {
     );
   });
 
-  it('should log a data change', async () => {
+  it('should create an event of a data change', async () => {
     newViewRegistration.phoneNumber = '1234567890';
     const options = { reason: 'exampleReason' };
 
@@ -204,7 +204,7 @@ describe('EventsService', () => {
     });
   });
 
-  it('should log an FSP change of intersolve visa to voucher whatsapp', async () => {
+  it('should create events for an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration[
       FinancialServiceProviderAttributes.whatsappPhoneNumber
@@ -382,7 +382,7 @@ describe('EventsService', () => {
         { chunk: 2000 },
       );
     }
-    // Assert that the intersolveVoucherWhatsapp change is not logged
+    // Assert that for the intersolveVoucherWhatsapp change no event is created
     expect(eventRepository.save).not.toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
@@ -398,7 +398,7 @@ describe('EventsService', () => {
     );
   });
 
-  it('should log a registration status change', async () => {
+  it('should create an event for a registration status change', async () => {
     newViewRegistration.phoneNumber = '1234567890';
     newViewRegistration.status = RegistrationStatusEnum.included;
     const options = { reason: 'exampleReason' };
@@ -440,7 +440,7 @@ describe('EventsService', () => {
     });
   });
 
-  it('should log a registration status change with event log option', async () => {
+  it('should create an event for a registration status change with a create event option', async () => {
     newViewRegistration.status = RegistrationStatusEnum.included;
     const options = {
       reason: 'exampleReason',
