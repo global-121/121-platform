@@ -20,10 +20,13 @@ export function projectHasPhysicalCardSupport(project?: Project) {
 }
 
 export function projectHasFspWithExportFileIntegration(project?: Project) {
-  return project?.programFinancialServiceProviderConfigurations.some(
-    (fsp) =>
-      getFinancialServiceProviderSettingByName(fsp.financialServiceProviderName)
-        ?.integrationType === FinancialServiceProviderIntegrationType.csv,
+  return (
+    project?.programFinancialServiceProviderConfigurations.some(
+      (fsp) =>
+        getFinancialServiceProviderSettingByName(
+          fsp.financialServiceProviderName,
+        )?.integrationType === FinancialServiceProviderIntegrationType.csv,
+    ) ?? false
   );
 }
 

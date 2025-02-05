@@ -35,7 +35,7 @@ import { ToastService } from '~/services/toast.service';
 export class SinglePaymentExportComponent {
   projectId = input.required<string>();
   paymentId = input.required<string>();
-  hasExportFileIntegration = input<boolean | undefined>(false);
+  hasExportFileIntegration = input<boolean>(false);
 
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
