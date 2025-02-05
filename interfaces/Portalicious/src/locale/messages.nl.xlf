@@ -1995,6 +1995,42 @@
         <source>Pending</source>
         <target>In behandeling</target>
       </trans-unit>
+      <trans-unit id="2218572265318708454" datatype="html">
+        <source>Registering</source>
+        <target state="new">Registering</target>
+      </trans-unit>
+      <trans-unit id="6152894890425150706" datatype="html">
+        <source>Completing</source>
+        <target state="new">Completing</target>
+      </trans-unit>
+      <trans-unit id="4465385057621611056" datatype="html">
+        <source>Validating</source>
+        <target state="new">Validating</target>
+      </trans-unit>
+      <trans-unit id="1302184832753381211" datatype="html">
+        <source>Including</source>
+        <target state="new">Including</target>
+      </trans-unit>
+      <trans-unit id="28184998386226894" datatype="html">
+        <source>Pausing</source>
+        <target state="new">Pausing</target>
+      </trans-unit>
+      <trans-unit id="5667836214859665218" datatype="html">
+        <source>Declining</source>
+        <target state="new">Declining</target>
+      </trans-unit>
+      <trans-unit id="3141301060598402455" datatype="html">
+        <source>Deleting</source>
+        <target state="new">Deleting</target>
+      </trans-unit>
+      <trans-unit id="3684525214439355379" datatype="html">
+        <source>Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></source>
+        <target state="new">Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="6891284064706667841" datatype="html">
+        <source>Enter reason</source>
+        <target state="new">Enter reason</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

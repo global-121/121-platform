@@ -146,17 +146,20 @@ export class RegistrationApiService extends DomainApiService {
     projectId,
     paginateQuery,
     status,
+    reason,
     messageData,
     dryRun = true,
   }: {
     projectId: Signal<number | string>;
     paginateQuery: PaginateQuery | undefined;
     status: RegistrationStatusEnum;
+    reason?: string | undefined;
     messageData?: SendMessageData | undefined;
     dryRun: boolean;
   }) {
     let body: RegistrationStatusPatchDto = {
       status,
+      reason,
     };
     if (messageData && 'customMessage' in messageData) {
       body = {

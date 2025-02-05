@@ -146,6 +146,10 @@ export class ActivityLogExpandedRowComponent
             chipVariant:
               REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.newValue],
           },
+          {
+            label: $localize`Change reason`,
+            value: item.attributes.reason,
+          },
         ];
       case ActivityTypeEnum.Transaction: {
         const list: DataListItem[] = [

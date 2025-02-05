@@ -98,7 +98,7 @@ export class ProgramsServiceApiService {
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      null,
+      { reason: '-' }, // In the portal, the reason is always set to '-'. Setting a different reason is only supported in the new interface
       params,
     );
   }
@@ -660,6 +660,7 @@ export class ProgramsServiceApiService {
         status: action,
         message,
         messageTemplateKey,
+        reason: '-', // In the portal, the reason is always set to '-'. Setting a different reason is only supported in the new interface
       },
       false,
       false,
