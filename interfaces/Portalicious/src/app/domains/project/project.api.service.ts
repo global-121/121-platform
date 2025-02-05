@@ -74,15 +74,12 @@ export class ProjectApiService extends DomainApiService {
       processResponse: (project) => {
         if (project.filterableAttributes) {
           project.filterableAttributes = project.filterableAttributes.map(
-            (group) => {
-              return {
-                ...group,
-                filters: group.filters.filter(
-                  (filter) =>
-                    !filterableAttributesToIgnore.includes(filter.name),
-                ),
-              };
-            },
+            (group) => ({
+              ...group,
+              filters: group.filters.filter(
+                (filter) => !filterableAttributesToIgnore.includes(filter.name),
+              ),
+            }),
           );
         }
 
@@ -132,8 +129,8 @@ export class ProjectApiService extends DomainApiService {
         includeTemplateDefaultAttributes,
         filterShowInPeopleAffectedTable,
       },
-      processResponse: (attributes) => {
-        return uniqBy(attributes, 'name').map((attribute) => {
+      processResponse: (attributes) =>
+        uniqBy(attributes, 'name').map((attribute) => {
           const translatedLabel = this.translatableStringService.translate(
             attribute.label,
           );
@@ -146,8 +143,7 @@ export class ProjectApiService extends DomainApiService {
                 : undefined) ??
               attribute.name,
           };
-        });
-      },
+        }),
     });
   }
 

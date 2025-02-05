@@ -11,10 +11,9 @@ import { LocalStorageUser } from '~/utils/local-storage';
   providedIn: 'root',
 })
 export class BasicAuthStrategy implements IAuthStrategy {
+  static readonly APP_PROVIDERS = [];
   private readonly userApiService = inject(UserApiService);
   private readonly router = inject(Router);
-
-  static readonly APP_PROVIDERS = [];
 
   public LoginComponent = BasicAuthLoginComponent;
   public ChangePasswordComponent = BasicAuthChangePasswordComponent;

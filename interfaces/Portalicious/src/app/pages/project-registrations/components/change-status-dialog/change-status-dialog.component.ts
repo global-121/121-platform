@@ -73,7 +73,7 @@ import { ToastService } from '~/services/toast.service';
 export class ChangeStatusDialogComponent
   implements IActionDataHandler<Registration>
 {
-  projectId = input.required<string>();
+  readonly projectId = input.required<string>();
   readonly actionComplete = output();
 
   RegistrationStatusEnum = RegistrationStatusEnum;
@@ -85,40 +85,40 @@ export class ChangeStatusDialogComponent
   readonly dryRunWarningDialog =
     viewChild.required<ConfirmationDialogComponent>('dryRunWarningDialog');
 
-  actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
-    undefined,
-  );
-  dialogVisible = model<boolean>(false);
-  dryRunFailureDialogVisible = model<boolean>(false);
-  enableSendMessage = model<boolean>(false);
-  customMessage = model<string>();
-  status = signal<RegistrationStatusEnum | undefined>(undefined);
+  readonly actionData = signal<
+    ActionDataWithPaginateQuery<Registration> | undefined
+  >(undefined);
+  readonly dialogVisible = model<boolean>(false);
+  readonly dryRunFailureDialogVisible = model<boolean>(false);
+  readonly enableSendMessage = model<boolean>(false);
+  readonly customMessage = model<string>();
+  readonly status = signal<RegistrationStatusEnum | undefined>(undefined);
 
-  reason = model<string | undefined>(undefined);
-  reasonValidationErrorMessage = signal<string | undefined>(undefined);
+  readonly reason = model<string | undefined>(undefined);
+  readonly reasonValidationErrorMessage = signal<string | undefined>(undefined);
 
-  icon = computed(() => {
+  readonly icon = computed(() => {
     const status = this.status();
     if (!status) {
       return '';
     }
     return REGISTRATION_STATUS_ICON[status];
   });
-  statusLabel = computed(() => {
+  readonly statusLabel = computed(() => {
     const status = this.status();
     if (!status) {
       return '';
     }
     return REGISTRATION_STATUS_LABELS[status];
   });
-  statusVerb = computed(() => {
+  readonly statusVerb = computed(() => {
     const status = this.status();
     if (!status) {
       return '';
     }
     return REGISTRATION_STATUS_VERB[status];
   });
-  canSendMessage = computed(() => {
+  readonly canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
       return false;
@@ -130,8 +130,7 @@ export class ChangeStatusDialogComponent
     ];
     return statusesWithSendMessageEnabled.includes(status);
   });
-
-  reasonIsRequired = computed(() => {
+  readonly reasonIsRequired = computed(() => {
     const status = this.status();
     if (!status) {
       return false;
@@ -144,31 +143,7 @@ export class ChangeStatusDialogComponent
     return statusesForWhichReasonIsRequired.includes(status);
   });
 
-  triggerAction(
-    actionData: ActionDataWithPaginateQuery<Registration>,
-    status: RegistrationStatusEnum,
-  ) {
-    this.actionData.set(actionData);
-    this.status.set(status);
-
-    this.dialogVisible.set(true);
-    this.enableSendMessage.set(false);
-  }
-
-  messageTemplateKey = injectQuery(() => ({
-    queryKey: ['change-status-template-key', this.status(), this.projectId()],
-    queryFn: () => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const status = this.status()!;
-      return this.messagingService.getTemplateTypeByRegistrationStatus({
-        status,
-        projectId: this.projectId,
-      });
-    },
-    enabled: !!this.status(),
-  }));
-
-  sendMessageInputData = computed<Partial<MessageInputData>>(() => {
+  readonly sendMessageInputData = computed<Partial<MessageInputData>>(() => {
     const foundTemplateKey = this.messageTemplateKey.data();
 
     if (foundTemplateKey) {
@@ -183,6 +158,19 @@ export class ChangeStatusDialogComponent
       customMessage: this.customMessage(),
     };
   });
+
+  messageTemplateKey = injectQuery(() => ({
+    queryKey: ['change-status-template-key', this.status(), this.projectId()],
+    queryFn: () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
+      const status = this.status()!;
+      return this.messagingService.getTemplateTypeByRegistrationStatus({
+        status,
+        projectId: this.projectId,
+      });
+    },
+    enabled: !!this.status(),
+  }));
 
   changeStatusMutation = injectMutation(() => ({
     mutationFn: ({ dryRun }: { dryRun: boolean }) => {
@@ -241,6 +229,17 @@ export class ChangeStatusDialogComponent
       });
     },
   }));
+
+  triggerAction(
+    actionData: ActionDataWithPaginateQuery<Registration>,
+    status: RegistrationStatusEnum,
+  ) {
+    this.actionData.set(actionData);
+    this.status.set(status);
+
+    this.dialogVisible.set(true);
+    this.enableSendMessage.set(false);
+  }
 
   onFormSubmit(): void {
     if (this.reasonIsRequired() && !this.reason()) {

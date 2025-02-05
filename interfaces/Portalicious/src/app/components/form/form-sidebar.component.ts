@@ -31,9 +31,9 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 export class FormSidebarComponent<
   T extends FormGroup,
 > extends FormComponent<T> {
-  visible = model<boolean>(false);
-  formTitle = input.required<string>();
-  modal = model<boolean>(true);
+  readonly visible = model<boolean>(false);
+  readonly formTitle = input.required<string>();
+  readonly modal = model<boolean>(true);
 
   triggerElement: HTMLElement | null = null;
 

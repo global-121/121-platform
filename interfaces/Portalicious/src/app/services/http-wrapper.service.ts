@@ -54,7 +54,7 @@ export class HttpWrapperService {
 
   private handleError(error: HttpErrorResponse) {
     if (
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
       error.status === HttpStatusCode.TooManyRequests &&
       !this.isRateLimitErrorShown
     ) {
@@ -70,7 +70,7 @@ export class HttpWrapperService {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
     if (error.status === HttpStatusCode.Unauthorized) {
       const user = getUserFromLocalStorage();
 
@@ -125,7 +125,7 @@ export class HttpWrapperService {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- HttpStatusCode is a number enum
     if (error.status === HttpStatusCode.InternalServerError) {
       return of(
         new Error(
@@ -167,13 +167,11 @@ export class HttpWrapperService {
                 response,
               );
             }),
-            catchError((error: HttpErrorResponse) => {
-              return this.handleError(error);
-            }),
+            catchError((error: HttpErrorResponse) => this.handleError(error)),
           ),
       );
       if (response instanceof Error || response instanceof HttpErrorResponse) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        // eslint-disable-next-line @typescript-eslint/only-throw-error -- we're ok with throwing HttpErrorResponse
         throw response;
       }
 

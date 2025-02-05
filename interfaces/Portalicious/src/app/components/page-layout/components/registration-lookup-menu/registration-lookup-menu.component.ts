@@ -36,7 +36,7 @@ export class RegistrationLookupMenuComponent {
     }),
   );
 
-  registrationMenuItems = computed<MenuItem[]>(() => {
+  readonly registrationMenuItems = computed<MenuItem[]>(() => {
     const menuItems: MenuItem[] = [];
 
     if (

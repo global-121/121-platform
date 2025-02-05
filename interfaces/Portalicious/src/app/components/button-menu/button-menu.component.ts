@@ -18,13 +18,13 @@ import { MenuModule } from 'primeng/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonMenuComponent {
-  label = input.required<string>();
-  menuItems = input.required<MenuItem[]>();
-  icon = input<string>();
-  outlined = input<boolean>(false);
-  plain = input<boolean>(false);
-  text = input<boolean>(false);
-  size = input<'large' | 'small'>();
+  readonly label = input.required<string>();
+  readonly menuItems = input.required<MenuItem[]>();
+  readonly icon = input<string>();
+  readonly outlined = input<boolean>(false);
+  readonly plain = input<boolean>(false);
+  readonly text = input<boolean>(false);
+  readonly size = input<'large' | 'small'>();
 
-  menuOpen = model(false);
+  readonly menuOpen = model(false);
 }

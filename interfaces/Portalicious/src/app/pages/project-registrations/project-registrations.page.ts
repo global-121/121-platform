@@ -73,6 +73,112 @@ export class ProjectRegistrationsPageComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
+  readonly canChangeStatus = computed(
+    () =>
+      (
+        status:
+          | RegistrationStatusEnum.declined
+          | RegistrationStatusEnum.deleted
+          | RegistrationStatusEnum.included
+          | RegistrationStatusEnum.paused
+          | RegistrationStatusEnum.validated,
+      ) => {
+        if (
+          status === RegistrationStatusEnum.validated &&
+          !this.project.data()?.validation
+        ) {
+          return false;
+        }
+
+        const statusToPermissionMap = {
+          [RegistrationStatusEnum.validated]:
+            PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+          [RegistrationStatusEnum.included]:
+            PermissionEnum.RegistrationStatusIncludedUPDATE,
+          [RegistrationStatusEnum.declined]:
+            PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+          [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
+          [RegistrationStatusEnum.paused]:
+            PermissionEnum.RegistrationStatusPausedUPDATE,
+        };
+        return this.authService.hasPermission({
+          projectId: this.projectId(),
+          requiredPermission: statusToPermissionMap[status],
+        });
+      },
+  );
+  readonly canSendMessage = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    }),
+  );
+  readonly canImport = computed(() =>
+    this.authService.hasAllPermissions({
+      projectId: this.projectId(),
+      requiredPermissions: [
+        PermissionEnum.RegistrationCREATE,
+        PermissionEnum.RegistrationImportTemplateREAD,
+      ],
+    }),
+  );
+  readonly canExport = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationPersonalEXPORT,
+    }),
+  );
+  readonly contextMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Open in new tab`,
+      icon: 'pi pi-user',
+      command: () => {
+        const registration =
+          this.registrationsTable().contextMenuRegistration();
+        if (!registration) {
+          this.toastService.showGenericError();
+          return;
+        }
+        const url = this.router.serializeUrl(
+          this.router.createUrlTree(
+            registrationLink({
+              projectId: this.projectId(),
+              registrationId: registration.id,
+            }),
+          ),
+        );
+        window.open(getOriginUrl() + url, '_blank');
+      },
+    },
+    {
+      label: $localize`Message`,
+      icon: 'pi pi-envelope',
+      visible: this.canSendMessage(),
+      command: () => {
+        this.sendMessage({
+          triggeredFromContextMenu: true,
+        });
+      },
+    },
+    {
+      separator: true,
+    },
+    this.createContextMenuItemForRegistrationStatus(
+      RegistrationStatusEnum.validated,
+    ),
+    this.createContextMenuItemForRegistrationStatus(
+      RegistrationStatusEnum.included,
+    ),
+    this.createContextMenuItemForRegistrationStatus(
+      RegistrationStatusEnum.declined,
+    ),
+    this.createContextMenuItemForRegistrationStatus(
+      RegistrationStatusEnum.paused,
+    ),
+    this.createContextMenuItemForRegistrationStatus(
+      RegistrationStatusEnum.deleted,
+    ),
+  ]);
   sendMessage({
     triggeredFromContextMenu = false,
   }: {
@@ -111,65 +217,6 @@ export class ProjectRegistrationsPageComponent {
     this.registrationsTable().resetSelection();
   }
 
-  canChangeStatus = computed(
-    () =>
-      (
-        status:
-          | RegistrationStatusEnum.declined
-          | RegistrationStatusEnum.deleted
-          | RegistrationStatusEnum.included
-          | RegistrationStatusEnum.paused
-          | RegistrationStatusEnum.validated,
-      ) => {
-        if (
-          status === RegistrationStatusEnum.validated &&
-          !this.project.data()?.validation
-        ) {
-          return false;
-        }
-
-        const statusToPermissionMap = {
-          [RegistrationStatusEnum.validated]:
-            PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-          [RegistrationStatusEnum.included]:
-            PermissionEnum.RegistrationStatusIncludedUPDATE,
-          [RegistrationStatusEnum.declined]:
-            PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
-          [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
-          [RegistrationStatusEnum.paused]:
-            PermissionEnum.RegistrationStatusPausedUPDATE,
-        };
-        return this.authService.hasPermission({
-          projectId: this.projectId(),
-          requiredPermission: statusToPermissionMap[status],
-        });
-      },
-  );
-
-  canSendMessage = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
-    }),
-  );
-
-  canImport = computed(() =>
-    this.authService.hasAllPermissions({
-      projectId: this.projectId(),
-      requiredPermissions: [
-        PermissionEnum.RegistrationCREATE,
-        PermissionEnum.RegistrationImportTemplateREAD,
-      ],
-    }),
-  );
-
-  canExport = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.RegistrationPersonalEXPORT,
-    }),
-  );
-
   private createContextMenuItemForRegistrationStatus(
     status:
       | RegistrationStatusEnum.declined
@@ -190,58 +237,4 @@ export class ProjectRegistrationsPageComponent {
       },
     };
   }
-
-  contextMenuItems = computed<MenuItem[]>(() => {
-    return [
-      {
-        label: $localize`Open in new tab`,
-        icon: 'pi pi-user',
-        command: () => {
-          const registration =
-            this.registrationsTable().contextMenuRegistration();
-          if (!registration) {
-            this.toastService.showGenericError();
-            return;
-          }
-          const url = this.router.serializeUrl(
-            this.router.createUrlTree(
-              registrationLink({
-                projectId: this.projectId(),
-                registrationId: registration.id,
-              }),
-            ),
-          );
-          window.open(getOriginUrl() + url, '_blank');
-        },
-      },
-      {
-        label: $localize`Message`,
-        icon: 'pi pi-envelope',
-        visible: this.canSendMessage(),
-        command: () => {
-          this.sendMessage({
-            triggeredFromContextMenu: true,
-          });
-        },
-      },
-      {
-        separator: true,
-      },
-      this.createContextMenuItemForRegistrationStatus(
-        RegistrationStatusEnum.validated,
-      ),
-      this.createContextMenuItemForRegistrationStatus(
-        RegistrationStatusEnum.included,
-      ),
-      this.createContextMenuItemForRegistrationStatus(
-        RegistrationStatusEnum.declined,
-      ),
-      this.createContextMenuItemForRegistrationStatus(
-        RegistrationStatusEnum.paused,
-      ),
-      this.createContextMenuItemForRegistrationStatus(
-        RegistrationStatusEnum.deleted,
-      ),
-    ];
-  });
 }

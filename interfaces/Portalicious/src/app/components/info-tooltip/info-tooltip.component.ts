@@ -10,5 +10,5 @@ import { TooltipModule } from 'primeng/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoTooltipComponent {
-  message = input.required<string>();
+  readonly message = input.required<string>();
 }

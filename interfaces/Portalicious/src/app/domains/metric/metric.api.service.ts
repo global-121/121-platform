@@ -58,9 +58,7 @@ export class MetricApiService extends DomainApiService {
         minPayment: payment,
         maxPayment: payment,
       },
-      processResponse: (response) => {
-        return response.data;
-      },
+      processResponse: (response) => response.data,
     });
   }
 

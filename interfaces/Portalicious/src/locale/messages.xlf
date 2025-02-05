@@ -1522,6 +1522,9 @@
       <trans-unit id="6891284064706667841" datatype="html">
         <source>Enter reason</source>
       </trans-unit>
+      <trans-unit id="2308951289162408736" datatype="html">
+        <source>(image)</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

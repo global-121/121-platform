@@ -19,9 +19,9 @@ export interface ChipData {
   chipVariant: ChipVariant;
 }
 
-export function getChipDataByRegistrationStatus(
+export const getChipDataByRegistrationStatus = (
   status?: null | RegistrationStatusEnum,
-): ChipData {
+): ChipData => {
   if (!status) {
     return {
       chipVariant: 'grey',
@@ -33,11 +33,11 @@ export function getChipDataByRegistrationStatus(
     chipLabel: REGISTRATION_STATUS_LABELS[status],
     chipVariant: REGISTRATION_STATUS_CHIP_VARIANTS[status],
   };
-}
+};
 
-export function getChipDataByTransactionStatusEnum(
+export const getChipDataByTransactionStatusEnum = (
   status?: null | TransactionStatusEnum,
-): ChipData {
+): ChipData => {
   if (!status) {
     return {
       chipVariant: 'grey',
@@ -61,9 +61,9 @@ export function getChipDataByTransactionStatusEnum(
         chipVariant: 'red',
       };
   }
-}
+};
 
-export function getChipDataByTwilioMessageStatus(status: string): ChipData {
+export const getChipDataByTwilioMessageStatus = (status: string): ChipData => {
   const messageStatus = convertTwilioMessageStatusToMessageStatus(status);
   const chipLabel = MESSAGE_STATUS_LABELS[messageStatus];
 
@@ -86,11 +86,11 @@ export function getChipDataByTwilioMessageStatus(status: string): ChipData {
         chipVariant: 'blue',
       };
   }
-}
+};
 
-export function getChipDataByVisaCardStatus(
+export const getChipDataByVisaCardStatus = (
   status?: null | VisaCard121Status,
-): ChipData {
+): ChipData => {
   if (!status) {
     return {
       chipVariant: 'grey',
@@ -129,4 +129,4 @@ export function getChipDataByVisaCardStatus(
         chipVariant: 'orange',
       };
   }
-}
+};

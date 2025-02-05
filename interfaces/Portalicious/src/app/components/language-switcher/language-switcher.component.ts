@@ -27,8 +27,8 @@ import {
 export class LanguageSwitcherComponent {
   private locale = inject<Locale>(LOCALE_ID);
   public languages = getAvailableLanguages();
-  public selectedLanguage = model(this.locale);
-  public selectedLanguageLabel = computed(() =>
+  public readonly selectedLanguage = model(this.locale);
+  public readonly selectedLanguageLabel = computed(() =>
     getLocaleLabel(this.selectedLanguage()),
   );
 

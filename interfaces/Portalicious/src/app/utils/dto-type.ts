@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- this utility file was copied from SO and I couldn't figure out how to refactor away the any */
 
 /**
  * This file contains a utility to convert a DTO type from a service controller method
@@ -58,4 +58,4 @@ export type Dto<T> =
       ? Dtoified<Exclude<T, null | undefined>> | undefined
       : Dtoified<T>;
 
-export type Serializable<T> = { serialize(): Dto<T> } & T;
+export type Serializable<T> = { serialize: () => Dto<T> } & T;

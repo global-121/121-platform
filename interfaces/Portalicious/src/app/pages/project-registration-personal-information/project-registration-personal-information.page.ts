@@ -60,20 +60,20 @@ export class ProjectRegistrationPersonalInformationPageComponent
     ),
   );
 
-  isEditing = signal(false);
-  editPersonalInformationComponent =
+  readonly isEditing = signal(false);
+  readonly editPersonalInformationComponent =
     viewChild.required<EditPersonalInformationComponent>(
       'editPersonalInformation',
     );
 
-  canUpdatePersonalInformation = computed(() =>
+  readonly canUpdatePersonalInformation = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.RegistrationAttributeUPDATE,
     }),
   );
 
-  dataList = computed<DataListItem[]>(() =>
+  readonly dataList = computed<DataListItem[]>(() =>
     (this.registrationAttributes.data() ?? []).map(
       ({ type, value, ...attribute }) => {
         switch (type) {

@@ -64,7 +64,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
     ),
   );
 
-  referenceId = computed(() => this.registration.data()?.referenceId);
+  readonly referenceId = computed(() => this.registration.data()?.referenceId);
 
   walletWithCards = injectQuery(
     this.registrationApiService.getWalletWithCardsByReferenceId(
@@ -73,14 +73,14 @@ export class ProjectRegistrationDebitCardsPageComponent {
     ),
   );
 
-  currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
+  readonly currentCard = computed(() => this.walletWithCards.data()?.cards[0]);
 
-  currentCardHasAction = computed(
+  readonly currentCardHasAction = computed(
     () => (action: 'pause' | 'reissue' | 'unpause') =>
       this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
 
-  walletWithCurrentCardListData = computed(() => {
+  readonly walletWithCurrentCardListData = computed(() => {
     const { chipLabel, chipVariant } = getChipDataByVisaCardStatus(
       this.currentCard()?.status,
     );
@@ -132,7 +132,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
     }));
   });
 
-  oldCards = computed(() => {
+  readonly oldCards = computed(() => {
     const allCards = this.walletWithCards.data()?.cards;
 
     if (!allCards) {

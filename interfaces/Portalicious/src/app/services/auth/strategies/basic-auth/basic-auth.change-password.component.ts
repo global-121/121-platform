@@ -68,20 +68,20 @@ export class BasicAuthChangePasswordComponent {
     {
       currentPassword: new FormControl('', {
         nonNullable: true,
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
       }),
       newPassword: new FormControl('', {
         nonNullable: true,
         validators: [
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
           Validators.required,
           Validators.minLength(8),
         ],
       }),
       confirmPassword: new FormControl('', {
         nonNullable: true,
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         validators: [Validators.required],
       }),
     },
@@ -91,11 +91,10 @@ export class BasicAuthChangePasswordComponent {
   formFieldErrors = generateFieldErrors<ChangePasswordFormGroup>(
     this.formGroup,
     {
-      currentPassword: (control) => {
-        return control.errors?.required
+      currentPassword: (control) =>
+        control.errors?.required
           ? $localize`:@@generic-required-field:This field is required.`
-          : undefined;
-      },
+          : undefined,
       newPassword: (control) => {
         if (control.errors?.required) {
           return $localize`:@@generic-required-field:This field is required.`;

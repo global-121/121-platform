@@ -38,7 +38,7 @@ export class RegistrationMenuComponent {
   );
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
-  navMenuItems = computed<MenuItem[]>(() => [
+  readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-registrations-activity-log:Activity log`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationActivityLog}`,

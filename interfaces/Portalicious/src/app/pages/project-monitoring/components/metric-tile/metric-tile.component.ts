@@ -24,14 +24,14 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetricTileComponent {
-  pending = input.required<boolean>();
+  readonly pending = input.required<boolean>();
 
-  metricLabel = input.required<string>();
-  metricValue = input<null | number | string>();
-  metricTooltip = input<string>();
+  readonly metricLabel = input.required<string>();
+  readonly metricValue = input<null | number | string>();
+  readonly metricTooltip = input<string>();
 
-  chipVariant = input<ChipVariant>();
-  chipLabel = input<string>();
-  chipIcon = input<string>();
-  chipTooltip = input<string>();
+  readonly chipVariant = input<ChipVariant>();
+  readonly chipLabel = input<string>();
+  readonly chipIcon = input<string>();
+  readonly chipTooltip = input<string>();
 }

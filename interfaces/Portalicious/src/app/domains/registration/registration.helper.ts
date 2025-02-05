@@ -108,18 +108,16 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.Transaction]: 'pi pi-money-bill',
 };
 
-export function registrationLink({
+export const registrationLink = ({
   projectId,
   registrationId,
 }: {
   projectId: number | string;
   registrationId: number | string;
-}) {
-  return [
-    '/',
-    AppRoutes.project,
-    projectId,
-    AppRoutes.projectRegistrations,
-    registrationId,
-  ];
-}
+}) => [
+  '/',
+  AppRoutes.project,
+  projectId,
+  AppRoutes.projectRegistrations,
+  registrationId,
+];

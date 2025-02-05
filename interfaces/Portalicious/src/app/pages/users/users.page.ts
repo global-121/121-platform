@@ -55,11 +55,11 @@ export class UsersPageComponent {
 
   users = injectQuery(this.userApiService.getAllUsers());
 
-  selectedUser = signal<undefined | User>(undefined);
-  formVisible = signal(false);
-  formMode = signal<'add' | 'edit'>('add');
+  readonly selectedUser = signal<undefined | User>(undefined);
+  readonly formVisible = signal(false);
+  readonly formMode = signal<'add' | 'edit'>('add');
 
-  columns = computed<QueryTableColumn<User>[]>(() => [
+  readonly columns = computed<QueryTableColumn<User>[]>(() => [
     {
       field: 'displayName',
       header: $localize`Name`,
@@ -75,14 +75,9 @@ export class UsersPageComponent {
     },
   ]);
 
-  canManageUsers = computed(
+  readonly canManageUsers = computed(
     () => this.authService.isAdmin || this.authService.isOrganizationAdmin,
   );
-
-  openForm(formMode: 'add' | 'edit') {
-    this.formMode.set(formMode);
-    this.formVisible.set(true);
-  }
 
   resetPasswordMutation = injectMutation<unknown, Error, { username?: string }>(
     () => ({
@@ -97,43 +92,44 @@ export class UsersPageComponent {
       },
     }),
   );
-
-  contextMenuItems = computed<MenuItem[]>(() => {
-    return [
-      {
-        label: $localize`:@@generic-edit:Edit`,
-        icon: 'pi pi-pencil',
-        command: () => {
-          const user = this.selectedUser();
-          if (!user) {
-            this.toastService.showGenericError();
-            return;
-          }
-          this.openForm('edit');
-        },
+  readonly contextMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`:@@generic-edit:Edit`,
+      icon: 'pi pi-pencil',
+      command: () => {
+        const user = this.selectedUser();
+        if (!user) {
+          this.toastService.showGenericError();
+          return;
+        }
+        this.openForm('edit');
       },
-      {
-        label: $localize`:@@reset-password-button:Reset password`,
-        icon: 'pi pi-refresh',
-        command: () => {
-          this.resetPasswordConfirmationDialog().askForConfirmation();
-        },
+    },
+    {
+      label: $localize`:@@reset-password-button:Reset password`,
+      icon: 'pi pi-refresh',
+      command: () => {
+        this.resetPasswordConfirmationDialog().askForConfirmation();
       },
-      {
-        label: $localize`Copy email`,
-        icon: 'pi pi-copy',
-        command: () => {
-          const user = this.selectedUser();
-          if (!user) {
-            this.toastService.showGenericError();
-            return;
-          }
-          void navigator.clipboard.writeText(user.username ?? '');
-          this.toastService.showToast({
-            detail: $localize`Email copied to clipboard`,
-          });
-        },
+    },
+    {
+      label: $localize`Copy email`,
+      icon: 'pi pi-copy',
+      command: () => {
+        const user = this.selectedUser();
+        if (!user) {
+          this.toastService.showGenericError();
+          return;
+        }
+        void navigator.clipboard.writeText(user.username ?? '');
+        this.toastService.showToast({
+          detail: $localize`Email copied to clipboard`,
+        });
       },
-    ];
-  });
+    },
+  ]);
+  openForm(formMode: 'add' | 'edit') {
+    this.formMode.set(formMode);
+    this.formVisible.set(true);
+  }
 }

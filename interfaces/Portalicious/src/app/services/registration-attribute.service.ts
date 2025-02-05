@@ -347,7 +347,7 @@ export class RegistrationAttributeService {
       },
       {
         validators: [
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
           ...(isRequired ? [Validators.required] : []),
           ...(attribute.pattern ? [Validators.pattern(attribute.pattern)] : []),
         ],

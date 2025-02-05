@@ -11,7 +11,7 @@ export type LocalStorageUser = Pick<
   | 'username'
 >;
 
-export function setUserInLocalStorage(user: User): void {
+export const setUserInLocalStorage = (user: User): void => {
   const userToStore: LocalStorageUser = {
     username: user.username,
     permissions: user.permissions,
@@ -25,9 +25,9 @@ export function setUserInLocalStorage(user: User): void {
     LOCAL_STORAGE_AUTH_USER_KEY,
     JSON.stringify(userToStore),
   );
-}
+};
 
-export function getUserFromLocalStorage(): LocalStorageUser | null {
+export const getUserFromLocalStorage = (): LocalStorageUser | null => {
   const rawUser = localStorage.getItem(LOCAL_STORAGE_AUTH_USER_KEY);
 
   if (!rawUser) {
@@ -44,12 +44,11 @@ export function getUserFromLocalStorage(): LocalStorageUser | null {
   }
 
   return user;
-}
+};
 
-export function setReturnUrlInLocalStorage(returnUrl: string): void {
+export const setReturnUrlInLocalStorage = (returnUrl: string): void => {
   localStorage.setItem(LOCAL_STORAGE_RETURN_URL, returnUrl);
-}
+};
 
-export function getReturnUrlFromLocalStorage(): null | string {
-  return localStorage.getItem(LOCAL_STORAGE_RETURN_URL);
-}
+export const getReturnUrlFromLocalStorage = (): null | string =>
+  localStorage.getItem(LOCAL_STORAGE_RETURN_URL);

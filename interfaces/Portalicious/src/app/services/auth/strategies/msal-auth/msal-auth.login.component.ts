@@ -48,12 +48,12 @@ export class MsalAuthLoginComponent {
   private authService = inject(AuthService);
   private arePopupsAutoBlocked = areAutomatedPopupsBlocked(); // Should not be called in a user-initiated event
 
-  returnUrl = input<string | undefined>(undefined);
+  readonly returnUrl = input<string | undefined>(undefined);
 
   formGroup = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.email],
     }),
   });

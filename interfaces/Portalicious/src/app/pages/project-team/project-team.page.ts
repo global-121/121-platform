@@ -61,9 +61,11 @@ export class ProjectTeamPageComponent {
       'removeUserConfirmationDialog',
     );
 
-  selectedUser = signal<ProjectUserWithRolesLabel | undefined>(undefined);
-  formVisible = signal(false);
-  formMode = signal<'add' | 'edit'>('add');
+  readonly selectedUser = signal<ProjectUserWithRolesLabel | undefined>(
+    undefined,
+  );
+  readonly formVisible = signal(false);
+  readonly formMode = signal<'add' | 'edit'>('add');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   projectUsers = injectQuery(
@@ -86,77 +88,78 @@ export class ProjectTeamPageComponent {
     }),
   );
 
-  columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(() => {
-    const scopeColumn: QueryTableColumn<ProjectUserWithRolesLabel> = {
-      field: 'scope',
-      header: $localize`Scope`,
-    };
+  readonly columns = computed<QueryTableColumn<ProjectUserWithRolesLabel>[]>(
+    () => {
+      const scopeColumn: QueryTableColumn<ProjectUserWithRolesLabel> = {
+        field: 'scope',
+        header: $localize`Scope`,
+      };
 
-    return [
-      {
-        field: 'username',
-        header: $localize`User name`,
-      },
-      {
-        field: 'allRolesLabel',
-        header: $localize`Roles`,
-      },
-      ...(this.enableScope() ? [scopeColumn] : []),
-      {
-        field: 'lastLogin',
-        header: $localize`Last log in`,
-        type: QueryTableColumnType.DATE,
-      },
-    ];
-  });
+      return [
+        {
+          field: 'username',
+          header: $localize`User name`,
+        },
+        {
+          field: 'allRolesLabel',
+          header: $localize`Roles`,
+        },
+        ...(this.enableScope() ? [scopeColumn] : []),
+        {
+          field: 'lastLogin',
+          header: $localize`Last log in`,
+          type: QueryTableColumnType.DATE,
+        },
+      ];
+    },
+  );
 
-  canManageAidworkers = computed(() =>
+  readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
     }),
   );
 
-  enableScope = computed(() => this.project.data()?.enableScope ?? false);
+  readonly enableScope = computed(
+    () => this.project.data()?.enableScope ?? false,
+  );
 
+  readonly contextMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Copy email`,
+      icon: 'pi pi-copy',
+      command: () => {
+        const user = this.selectedUser();
+        if (!user) {
+          this.toastService.showGenericError();
+          return;
+        }
+        void navigator.clipboard.writeText(user.username);
+        this.toastService.showToast({
+          detail: $localize`Email copied to clipboard`,
+        });
+      },
+    },
+    {
+      label: $localize`:@@generic-edit:Edit`,
+      icon: 'pi pi-pencil',
+      visible: this.canManageAidworkers(),
+      command: () => {
+        this.openForm('edit');
+      },
+    },
+    {
+      label: $localize`:@@remove-user-button:Remove user`,
+      icon: 'pi pi-times text-red-500',
+      visible: this.canManageAidworkers(),
+      command: () => {
+        this.removeUserConfirmationDialog().askForConfirmation();
+      },
+    },
+  ]);
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
     this.formVisible.set(true);
   }
-
-  contextMenuItems = computed<MenuItem[]>(() => {
-    return [
-      {
-        label: $localize`Copy email`,
-        icon: 'pi pi-copy',
-        command: () => {
-          const user = this.selectedUser();
-          if (!user) {
-            this.toastService.showGenericError();
-            return;
-          }
-          void navigator.clipboard.writeText(user.username);
-          this.toastService.showToast({
-            detail: $localize`Email copied to clipboard`,
-          });
-        },
-      },
-      {
-        label: $localize`:@@generic-edit:Edit`,
-        icon: 'pi pi-pencil',
-        visible: this.canManageAidworkers(),
-        command: () => {
-          this.openForm('edit');
-        },
-      },
-      {
-        label: $localize`:@@remove-user-button:Remove user`,
-        icon: 'pi pi-times text-red-500',
-        visible: this.canManageAidworkers(),
-        command: () => {
-          this.removeUserConfirmationDialog().askForConfirmation();
-        },
-      },
-    ];
-  });
 }

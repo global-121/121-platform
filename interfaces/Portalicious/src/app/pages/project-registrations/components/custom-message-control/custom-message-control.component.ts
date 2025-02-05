@@ -49,29 +49,13 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
 
   private messagingService = inject(MessagingService);
 
-  customMessageInternalModel = model<string>('');
-  customMessageDisabled = model<boolean>(false);
-
-  writeValue(value: string | undefined) {
-    this.customMessageInternalModel.set(value ?? '');
-  }
-
-  registerOnChange(fn: (value: string) => void) {
-    this.customMessageInternalModel.subscribe(fn);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  registerOnTouched() {}
-
-  setDisabledState(setDisabledState: boolean) {
-    this.customMessageDisabled.set(setDisabledState);
-  }
+  readonly customMessageInternalModel = model<string>('');
+  readonly customMessageDisabled = model<boolean>(false);
 
   placeholders = injectQuery(
     this.messagingService.getMessagePlaceholders(this.projectId),
   );
-
-  messagePlaceholders = computed<{ label: string }[]>(() => {
+  readonly messagePlaceholders = computed<{ label: string }[]>(() => {
     if (this.placeholders.isSuccess()) {
       return this.placeholders.data();
     }
@@ -90,11 +74,24 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
       },
     ];
   });
-
-  mentionConfig = computed(() => ({
+  readonly mentionConfig = computed(() => ({
     items: this.messagePlaceholders(),
     triggerChar: '@',
     labelKey: 'label',
     mentionSelect: (item: AttributeWithTranslatedLabel) => `{{${item.name}}} `,
   }));
+  writeValue(value: string | undefined) {
+    this.customMessageInternalModel.set(value ?? '');
+  }
+
+  registerOnChange(fn: (value: string) => void) {
+    this.customMessageInternalModel.subscribe(fn);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Required by ControlValueAccessor, needs to be implemented but can be empty
+  registerOnTouched() {}
+
+  setDisabledState(setDisabledState: boolean) {
+    this.customMessageDisabled.set(setDisabledState);
+  }
 }

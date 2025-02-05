@@ -45,16 +45,16 @@ export type ImportFileDialogFormGroup =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportFileDialogComponent {
-  mutation =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly mutation =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
     input.required<CreateMutationResult<any, Error, any, any>>();
-  accept = input.required<string>();
-  header = input.required<string>();
-  dialogVisible = model<boolean>(false);
+  readonly accept = input.required<string>();
+  readonly header = input.required<string>();
+  readonly dialogVisible = model<boolean>(false);
 
   formGroup = new FormGroup({
     file: new FormControl<File | null>(null, {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
   });
@@ -66,7 +66,7 @@ export class ImportFileDialogComponent {
     },
   );
 
-  detailedImportErrors = computed(() => {
+  readonly detailedImportErrors = computed(() => {
     const error = this.mutation().failureReason();
 
     if (error instanceof HttpErrorResponse) {

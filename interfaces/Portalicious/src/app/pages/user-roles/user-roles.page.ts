@@ -28,7 +28,7 @@ export class UserRolesPageComponent {
 
   roles = injectQuery(this.roleApiService.getRoles());
 
-  columns = computed<QueryTableColumn<Role>[]>(() => [
+  readonly columns = computed<QueryTableColumn<Role>[]>(() => [
     {
       field: 'label',
       header: $localize`Role`,

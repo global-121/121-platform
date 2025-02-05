@@ -38,7 +38,7 @@ export class LoginPageComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   authError: string | undefined;
-  returnUrl = computed(() => {
+  readonly returnUrl = computed(() => {
     const returnUrl: unknown = this.route.snapshot.queryParams.returnUrl;
     if (typeof returnUrl !== 'string') {
       return undefined;
@@ -46,6 +46,7 @@ export class LoginPageComponent {
     return returnUrl;
   });
 
+  LoginComponent = this.authService.LoginComponent;
   constructor() {
     const currentNavigation = this.router.getCurrentNavigation();
     const authError: unknown =
@@ -55,6 +56,4 @@ export class LoginPageComponent {
       this.authError = authError;
     }
   }
-
-  LoginComponent = this.authService.LoginComponent;
 }

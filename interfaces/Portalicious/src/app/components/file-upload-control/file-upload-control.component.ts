@@ -28,11 +28,21 @@ import { FileUploadModule } from 'primeng/fileupload';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileUploadControlComponent implements ControlValueAccessor {
-  accept = input.required<string>();
+  readonly accept = input.required<string>();
   readonly clearFiles = output();
 
-  fileInputInternalModel = model<File | null>(null);
-  fileInputDisabled = model<boolean>(false);
+  readonly fileInputInternalModel = model<File | null>(null);
+  readonly fileInputDisabled = model<boolean>(false);
+
+  readonly fileInputFiles = computed(() => {
+    const file = this.fileInputInternalModel();
+
+    if (!file) {
+      return [];
+    }
+
+    return [file];
+  });
 
   writeValue(value: File | null) {
     this.fileInputInternalModel.set(value);
@@ -42,20 +52,10 @@ export class FileUploadControlComponent implements ControlValueAccessor {
     this.fileInputInternalModel.subscribe(fn);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Required by ControlValueAccessor, needs to be implemented but can be empty
   registerOnTouched() {}
 
   setDisabledState(setDisabledState: boolean) {
     this.fileInputDisabled.set(setDisabledState);
   }
-
-  fileInputFiles = computed(() => {
-    const file = this.fileInputInternalModel();
-
-    if (!file) {
-      return [];
-    }
-
-    return [file];
-  });
 }

@@ -12,5 +12,5 @@ import { TabsModule } from 'primeng/tabs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsMenuComponent {
-  menuItems = input.required<MenuItem[]>();
+  readonly menuItems = input.required<MenuItem[]>();
 }

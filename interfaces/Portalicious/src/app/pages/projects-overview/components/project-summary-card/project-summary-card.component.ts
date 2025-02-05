@@ -39,7 +39,7 @@ export class ProjectSummaryCardComponent {
   private currencyPipe = inject(CurrencyPipe);
   private decimalPipe = inject(DecimalPipe);
 
-  public id = input.required<number>();
+  public readonly id = input.required<number>();
 
   public project = injectQuery(this.projectApiService.getProject(this.id));
   public metrics = injectQuery(() => ({
@@ -52,7 +52,7 @@ export class ProjectSummaryCardComponent {
   }));
   projectLink = (projectId: number) => ['/', AppRoutes.project, projectId];
 
-  public getLastPayment = computed(() => {
+  public readonly getLastPayment = computed(() => {
     const data = this.payments.data();
     if (!data) {
       return;
@@ -60,7 +60,7 @@ export class ProjectSummaryCardComponent {
     return data.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
   });
 
-  public summaryMetrics = computed(() => {
+  public readonly summaryMetrics = computed(() => {
     if (
       this.metrics.isPending() ||
       this.project.isPending() ||

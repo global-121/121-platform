@@ -17,11 +17,11 @@ import { CreateMutationResult } from '@tanstack/angular-query-experimental';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export abstract class FormComponent<T extends FormGroup> {
-  formGroup = input.required<T>();
-  mutation =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly formGroup = input.required<T>();
+  readonly mutation =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
     input.required<CreateMutationResult<any, Error, any, any>>();
-  submitButtonText = input<string>($localize`Submit`);
+  readonly submitButtonText = input<string>($localize`Submit`);
 
   onFormSubmit(): void {
     this.formGroup().markAllAsTouched();

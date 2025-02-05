@@ -39,11 +39,12 @@ export class PaymentSummaryCardComponent {
   private decimalPipe = inject(DecimalPipe);
   private projectApiService = inject(ProjectApiService);
 
-  projectId = input.required<string>();
-  paymentId = input.required<number>();
-  paymentDate = input.required<string>();
-  cardIndex = input.required<number>();
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<number>();
+  readonly paymentDate = input.required<string>();
+  readonly cardIndex = input.required<number>();
 
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
@@ -56,10 +57,13 @@ export class PaymentSummaryCardComponent {
         ? 1000
         : undefined,
   }));
+  paymentInProgress = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
 
-  isLatestPayment = computed(() => this.cardIndex() === 0);
+  readonly isLatestPayment = computed(() => this.cardIndex() === 0);
 
-  includedRegistrations = computed(() => {
+  readonly includedRegistrations = computed(() => {
     const successCount = this.metrics.data()?.success.count ?? 0;
     const waitingCount = this.metrics.data()?.waiting.count ?? 0;
     const failedCount = this.metrics.data()?.failed.count ?? 0;
@@ -67,7 +71,7 @@ export class PaymentSummaryCardComponent {
     return successCount + waitingCount + failedCount;
   });
 
-  expectedAmount = computed(() => {
+  readonly expectedAmount = computed(() => {
     const successAmount = this.metrics.data()?.success.amount ?? 0;
     const waitingAmount = this.metrics.data()?.waiting.amount ?? 0;
     const failedAmount = this.metrics.data()?.failed.amount ?? 0;
@@ -75,32 +79,26 @@ export class PaymentSummaryCardComponent {
     return successAmount + waitingAmount + failedAmount;
   });
 
-  showFailedAlert = computed(
+  readonly showFailedAlert = computed(
     () => (this.metrics.data()?.failed.count ?? 0) > 0,
   );
 
-  successAmount = computed(() => this.metrics.data()?.success.amount ?? 0);
-
-  paymentInProgress = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
+  readonly successAmount = computed(
+    () => this.metrics.data()?.success.amount ?? 0,
   );
 
-  paymentLink = computed(() =>
+  readonly paymentLink = computed(() =>
     paymentLink({ projectId: this.projectId(), paymentId: this.paymentId() }),
   );
 
-  public project = injectQuery(
-    this.projectApiService.getProject(this.projectId),
-  );
-
-  paymentTitle = computed(
+  readonly paymentTitle = computed(
     () =>
       $localize`:@@page-title-project-payment:Payment` +
       ' ' +
       (new DatePipe(this.locale).transform(this.paymentDate(), 'short') ?? ''),
   );
 
-  public summaryMetrics = computed(() => {
+  public readonly summaryMetrics = computed(() => {
     if (this.metrics.isPending() || !this.metrics.data()) {
       return [];
     }

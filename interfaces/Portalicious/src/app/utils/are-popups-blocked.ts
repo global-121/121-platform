@@ -9,7 +9,7 @@
  *
  * @returns {boolean} - Returns true if pop-ups are blocked, otherwise false.
  */
-export function areAutomatedPopupsBlocked(): boolean {
+export const areAutomatedPopupsBlocked = (): boolean => {
   const testPopup = window.open(
     'about:blank',
     '_blank',
@@ -28,4 +28,4 @@ export function areAutomatedPopupsBlocked(): boolean {
     console.info(`Automated popups are allowed by the users' browser.`);
     return false; // Popup is not blocked
   }
-}
+};

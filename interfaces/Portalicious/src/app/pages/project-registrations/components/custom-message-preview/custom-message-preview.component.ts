@@ -44,7 +44,7 @@ export class CustomMessagePreviewComponent {
       ),
   }));
 
-  messageText = computed(() =>
+  readonly messageText = computed(() =>
     this.messagePreview.isPending()
       ? $localize`:@@generic-loading:Loading...`
       : this.messagePreview.data(),

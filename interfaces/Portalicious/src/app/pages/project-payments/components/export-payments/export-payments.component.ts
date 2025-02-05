@@ -43,7 +43,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportPaymentsComponent {
-  projectId = input.required<string>();
+  readonly projectId = input.required<string>();
 
   private authService = inject(AuthService);
   private downloadService = inject(DownloadService);
@@ -68,7 +68,7 @@ export class ExportPaymentsComponent {
 
   ExportType = ExportType;
 
-  maxLastPaymentsNumber = computed(() => {
+  readonly maxLastPaymentsNumber = computed(() => {
     if (!this.payments.isSuccess()) {
       return 0;
     }
@@ -101,9 +101,10 @@ export class ExportPaymentsComponent {
     };
   };
 
-  lastPaymentsExportLabel = computed(() => {
-    return $localize`:@@export-payments-last:Export last ${this.maxLastPaymentsNumber()} payment(s)`;
-  });
+  readonly lastPaymentsExportLabel = computed(
+    () =>
+      $localize`:@@export-payments-last:Export last ${this.maxLastPaymentsNumber()} payment(s)`,
+  );
 
   exportPaymentsMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
@@ -115,7 +116,7 @@ export class ExportPaymentsComponent {
     },
   }));
 
-  exportOptions = computed<MenuItem[]>(() => [
+  readonly exportOptions = computed<MenuItem[]>(() => [
     {
       label: this.lastPaymentsExportLabel(),
       visible:
@@ -159,7 +160,7 @@ export class ExportPaymentsComponent {
     },
   ]);
 
-  hasExportOptions = computed(
+  readonly hasExportOptions = computed(
     () =>
       this.exportOptions().some((option) => option.visible) &&
       (this.payments.data() ?? []).length > 0,

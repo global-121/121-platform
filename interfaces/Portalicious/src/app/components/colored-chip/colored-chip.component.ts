@@ -26,12 +26,12 @@ export type ChipVariant =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoredChipComponent {
-  variant = input.required<ChipVariant>();
-  label = input.required<string>();
-  icon = input<string>();
-  tooltip = input<string>();
+  readonly variant = input.required<ChipVariant>();
+  readonly label = input.required<string>();
+  readonly icon = input<string>();
+  readonly tooltip = input<string>();
 
-  styleClass = computed(() => {
+  readonly styleClass = computed(() => {
     let baseClass = '';
 
     if (this.tooltip()) {

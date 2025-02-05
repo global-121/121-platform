@@ -54,51 +54,30 @@ type AddUserToTeamFormGroup =
   ],
 })
 export class AddProjectTeamUserFormComponent {
-  projectId = input.required<string>();
-  enableScope = input.required<boolean>();
-  formVisible = model.required<boolean>();
-  userToEdit = input<ProjectUserWithRolesLabel | undefined>();
+  readonly projectId = input.required<string>();
+  readonly enableScope = input.required<boolean>();
+  readonly formVisible = model.required<boolean>();
+  readonly userToEdit = input<ProjectUserWithRolesLabel | undefined>();
 
   private projectApiService = inject(ProjectApiService);
   private userApiService = inject(UserApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
 
-  constructor() {
-    effect(() => {
-      const user = this.userToEdit();
-      if (user) {
-        this.formGroup.patchValue({
-          userValue: user.id,
-          rolesValue: user.roles.map(({ role }) => role),
-          scopeValue: user.scope,
-        });
-        this.formGroup.controls.userValue.disable();
-      } else {
-        this.formGroup.patchValue({
-          userValue: -1,
-        });
-        this.formGroup.controls.userValue.enable();
-      }
-    });
-  }
-
-  isEditing = computed(() => !!this.userToEdit());
-
+  readonly isEditing = computed(() => !!this.userToEdit());
   roles = injectQuery(this.roleApiService.getRoles());
   allUsers = injectQuery(this.userApiService.getAllUsers());
   projectUsers = injectQuery(
     this.projectApiService.getProjectUsers(this.projectId),
   );
-
   formGroup = new FormGroup({
     userValue: new FormControl<number>(-1, {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.min(0)],
       nonNullable: true,
     }),
     rolesValue: new FormControl<string[]>([], {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.minLength(1)],
       nonNullable: true,
     }),
@@ -107,7 +86,6 @@ export class AddProjectTeamUserFormComponent {
       nonNullable: true,
     }),
   });
-
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
@@ -121,14 +99,12 @@ export class AddProjectTeamUserFormComponent {
       },
     },
   );
-
-  availableUsersIsLoading = computed(
+  readonly availableUsersIsLoading = computed(
     () =>
       this.allUsers.isPending() ||
       (!this.isEditing() && this.projectUsers.isPending()),
   );
-
-  availableUsers = computed(() => {
+  readonly availableUsers = computed(() => {
     const allUsers = this.allUsers.data();
     const projectUsers = this.projectUsers.data();
 
@@ -147,7 +123,6 @@ export class AddProjectTeamUserFormComponent {
         ),
     );
   });
-
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({
       userValue,
@@ -195,4 +170,22 @@ export class AddProjectTeamUserFormComponent {
       void this.projectApiService.invalidateCache(this.projectId);
     },
   }));
+  constructor() {
+    effect(() => {
+      const user = this.userToEdit();
+      if (user) {
+        this.formGroup.patchValue({
+          userValue: user.id,
+          rolesValue: user.roles.map(({ role }) => role),
+          scopeValue: user.scope,
+        });
+        this.formGroup.controls.userValue.disable();
+      } else {
+        this.formGroup.patchValue({
+          userValue: -1,
+        });
+        this.formGroup.controls.userValue.enable();
+      }
+    });
+  }
 }

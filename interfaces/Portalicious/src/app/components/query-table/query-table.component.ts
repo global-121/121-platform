@@ -1,3 +1,5 @@
+/* eslint-disable sort-class-members/sort-class-members -- Disabling this rule in this file because the class members are grouped logically */
+
 import {
   DatePipe,
   NgClass,
@@ -76,7 +78,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
   disableFiltering?: boolean;
   defaultHidden?: boolean;
   filterMatchMode?: FilterMatchMode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
 } & (
   | {
@@ -129,20 +131,21 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   paginateQueryService = inject(PaginateQueryService);
   toastService = inject(ToastService);
 
-  items = input.required<TData[]>();
-  isPending = input.required<boolean>();
-  columns = input.required<QueryTableColumn<TData>[]>();
-  localStorageKey = input<string>();
-  contextMenuItems = input<MenuItem[]>();
-  globalFilterFields = input<(keyof TData & string)[]>();
-  expandableRowTemplate = input<Type<TableCellComponent<TData, TContext>>>();
-  tableCellContext = input<TContext>();
-  serverSideFiltering = input<boolean>(false);
-  serverSideTotalRecords = input<number>();
-  initialSortField = input<keyof TData & string>();
-  initialSortOrder = input<-1 | 1>(1);
-  enableSelection = input<boolean>(false);
-  enableColumnManagement = input<boolean>(false);
+  readonly items = input.required<TData[]>();
+  readonly isPending = input.required<boolean>();
+  readonly columns = input.required<QueryTableColumn<TData>[]>();
+  readonly localStorageKey = input<string>();
+  readonly contextMenuItems = input<MenuItem[]>();
+  readonly globalFilterFields = input<(keyof TData & string)[]>();
+  readonly expandableRowTemplate =
+    input<Type<TableCellComponent<TData, TContext>>>();
+  readonly tableCellContext = input<TContext>();
+  readonly serverSideFiltering = input<boolean>(false);
+  readonly serverSideTotalRecords = input<number>();
+  readonly initialSortField = input<keyof TData & string>();
+  readonly initialSortOrder = input<-1 | 1>(1);
+  readonly enableSelection = input<boolean>(false);
+  readonly enableColumnManagement = input<boolean>(false);
   readonly updateContextMenuItem = output<TData>();
   readonly updatePaginateQuery = output<PaginateQuery>();
 
@@ -152,7 +155,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly contextMenu = viewChild<Menu>('contextMenu');
   readonly extraOptionsMenu = viewChild<Menu>('extraOptionsMenu');
 
-  selectedColumnsStateKey = computed(() => {
+  readonly selectedColumnsStateKey = computed(() => {
     const key = this.localStorageKey();
     return key ? `${key}-selected-columns` : undefined;
   });
@@ -160,8 +163,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * DISPLAY
    */
-  expandedRowKeys = signal({});
-  tableFilters = signal<
+  readonly expandedRowKeys = signal({});
+  readonly tableFilters = signal<
     Record<string, FilterMetadata | FilterMetadata[] | undefined>
   >({});
   // This is triggered whenever primeng saves the state of the table to local storage
@@ -181,7 +184,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     });
   }
 
-  totalColumnCount = computed(
+  readonly totalColumnCount = computed(
     () =>
       this.visibleColumns().length +
       (this.contextMenuItems() ? 1 : 0) +
@@ -247,7 +250,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  FILTERS
    */
-  globalFilterVisible = model<boolean>(false);
+  readonly globalFilterVisible = model<boolean>(false);
 
   clearAllFilters() {
     this.table().clear();
@@ -260,7 +263,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.selectAll.set(false);
   }
 
-  globalFilterValue = computed(() => {
+  readonly globalFilterValue = computed(() => {
     const tableFilters = this.tableFilters();
 
     const globalFilter = Array.isArray(tableFilters.global)
@@ -278,7 +281,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     return undefined;
   });
 
-  isFiltered = computed(() => {
+  readonly isFiltered = computed(() => {
     if (this.globalFilterValue()) {
       return true;
     }
@@ -358,7 +361,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.updatePaginateQuery.emit(paginateQuery);
   }
 
-  totalRecords = computed(() => {
+  readonly totalRecords = computed(() => {
     if (!this.serverSideFiltering()) {
       return this.items().length;
     }
@@ -376,9 +379,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
    * ROW SELECTION
    */
 
-  selectedItems = model<TData[]>([]);
-  selectAll = model<boolean>(false);
-  tableSelection = signal<QueryTableSelectionEvent<TData>>([]);
+  readonly selectedItems = model<TData[]>([]);
+  readonly selectAll = model<boolean>(false);
+  readonly tableSelection = signal<QueryTableSelectionEvent<TData>>([]);
 
   onSelectionChange(items: TData[]) {
     this.selectedItems.set(items);
@@ -398,7 +401,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     }
   }
 
-  selectedItemsCount = computed(() =>
+  readonly selectedItemsCount = computed(() =>
     this.selectAll()
       ? this.serverSideTotalRecords()
       : this.selectedItems().length,
@@ -474,7 +477,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.expandedRowKeys.set({});
   }
 
-  areAllRowsExpanded = computed(
+  readonly areAllRowsExpanded = computed(
     () =>
       this.items().length > 0 &&
       this.items().every((item) => this.expandedRowKeys()[item.id] === true),
@@ -483,7 +486,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    *  PAGINATION
    */
-  currentPageReportTemplate = computed(() => {
+  readonly currentPageReportTemplate = computed(() => {
     const baseTemplate =
       $localize`:The contents of the square brackets should not be touched/changed:Showing [first] to [last] of [totalRecords] records`
         // this is a workaround because the i18n compiler does not support curly braces in the template
@@ -506,7 +509,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   /**
    * COLUMN VISIBILITY
    */
-  visibleColumns = model<QueryTableColumn<TData>[]>([]);
+  readonly visibleColumns = model<QueryTableColumn<TData>[]>([]);
 
   private getStoredColumns(stateKey: string): null | QueryTableColumn<TData>[] {
     const storedColumns = localStorage.getItem(stateKey);
@@ -523,9 +526,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       .filter((column) => column !== undefined);
   }
 
-  private defaultColumns = computed<QueryTableColumn<TData>[]>(() => {
-    return this.columns().filter((column) => !column.defaultHidden);
-  });
+  private readonly defaultColumns = computed<QueryTableColumn<TData>[]>(() =>
+    this.columns().filter((column) => !column.defaultHidden),
+  );
 
   updateColumnVisibility(revertToDefault = false): void {
     const stateKey = this.selectedColumnsStateKey();

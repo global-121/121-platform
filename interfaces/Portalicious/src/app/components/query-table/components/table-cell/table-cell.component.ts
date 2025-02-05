@@ -15,6 +15,6 @@ export abstract class TableCellComponent<
   TDataType,
   TContextType = undefined,
 > extends Component {
-  value: InputSignal<TDataType>;
-  context: InputSignal<TContextType>;
+  readonly value: InputSignal<TDataType>;
+  readonly context: InputSignal<TContextType>;
 }

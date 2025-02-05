@@ -8,7 +8,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should throw an error when an invalid default locale is passed in', () => {
-    expect(function () {
+    expect(() => {
       getLocaleForInitialization({
         defaultLocale: 'nonsense',
         urlLocale: 'en-GB',
@@ -17,7 +17,7 @@ describe('getLocaleForInitialization', () => {
   });
 
   it('should throw an error when an invalid url locale is passed in', () => {
-    expect(function () {
+    expect(() => {
       getLocaleForInitialization({
         defaultLocale: 'en-GB',
         urlLocale: 'nonsense',

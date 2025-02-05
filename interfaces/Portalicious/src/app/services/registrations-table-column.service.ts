@@ -55,8 +55,8 @@ export class RegistrationsTableColumnService {
   private translatableStringService = inject(TranslatableStringService);
 
   getColumns(projectId: Signal<number | string>) {
-    return () => {
-      return queryOptions({
+    return () =>
+      queryOptions({
         queryKey: ['filterableAttributes', projectId, projectId()],
         queryFn: async () => {
           const project = await this.queryClient.fetchQuery(
@@ -207,7 +207,6 @@ export class RegistrationsTableColumnService {
           return columns;
         },
       });
-    };
   }
 
   private mapAttributeTypeToQueryTableColumnType(
