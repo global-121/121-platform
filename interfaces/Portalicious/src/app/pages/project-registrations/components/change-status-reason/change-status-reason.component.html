@@ -7,7 +7,7 @@
     <input
       pInputText
       [(ngModel)]="reason"
-      (ngModelChange)="onReasonInput()"
+      (ngModelChange)="reasonUpdated.emit()"
       placeholder="Enter reason"
       i18n-placeholder
       [ngClass]="{
