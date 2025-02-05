@@ -9,7 +9,7 @@
  * };
  * await log(oldRegistration, newRegistration, eventLogOptions);
  */
-export interface EventLogOptions {
+export interface createFromRegistrationViewsOptions {
   /**
    * An array of registration property names which will be logged if they have been changed.
    * The default is to check all registration properties.
