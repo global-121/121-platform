@@ -22,6 +22,7 @@ export class SeedInit implements InterfaceScript {
 
   public async run(isApiTests = false): Promise<void> {
     await this.clearCallbacksMockService();
+    await this.clearRedisData();
     if (isApiTests) {
       // Only truncate tables when running the API tests, since API Tests are run asynchronously, it may run into a situation where the migrations are still running and a table does not exist yet
       await this.truncateAll();
@@ -32,7 +33,6 @@ export class SeedInit implements InterfaceScript {
       // Some migration scripts contain data migrations (i.e. add data), so delete all data before seeding as well.
       await this.truncateAll();
     }
-    await this.clearRedisData();
     const permissions = await this.addPermissions();
     await this.createDefaultRoles(permissions);
     await this.createAdminUser();

@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -78,6 +79,44 @@ export function deleteRegistrations({
     .send({
       reason,
     });
+}
+
+export async function waitForDeleteRegistrations({
+  programId,
+  referenceIds,
+  maxWaitTimeMs = 8000,
+}: {
+  programId: number;
+  referenceIds: string[];
+  maxWaitTimeMs?: number;
+}) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    // Get payment transactions
+    let totalRegistrationSuccesfullyDeleted = 0;
+    for (const referenceId of referenceIds) {
+      const getEventResponse = await getEvents(
+        programId,
+        undefined,
+        undefined,
+        referenceId,
+      );
+      const deleteEvent = getEventResponse.body.find(
+        (event) =>
+          event.type === EventEnum.registrationStatusChange &&
+          event.attributes?.newValue === RegistrationStatusEnum.deleted,
+      );
+      if (deleteEvent) {
+        totalRegistrationSuccesfullyDeleted++;
+      }
+    }
+    if (totalRegistrationSuccesfullyDeleted === referenceIds.length) {
+      return;
+    }
+
+    await waitFor(200);
+  }
+  throw new Error('Registrations were not deleted in time');
 }
 
 export function searchRegistrationByReferenceId(

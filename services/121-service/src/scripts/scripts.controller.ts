@@ -90,17 +90,20 @@ export class ScriptsController {
       const booleanMockOcw = mockOcw
         ? JSON.parse(mockOcw as unknown as string)
         : true;
-      await this.scriptsService.loadSeedScenario(
-        SeedScript.nlrcMultipleMock,
+      await this.scriptsService.loadSeedScenario({
+        seedScript: SeedScript.nlrcMultipleMock,
         isApiTests,
-        mockPowerNumberRegistrations,
-        mockNumberPayments,
-        mockPowerNumberMessages,
-        booleanMockPv,
-        booleanMockOcw,
-      );
+        powerNrRegistrationsString: mockPowerNumberRegistrations,
+        nrPaymentsString: mockNumberPayments,
+        powerNrMessagesString: mockPowerNumberMessages,
+        mockPv: booleanMockPv,
+        mockOcw: booleanMockOcw,
+      });
     } else if (Object.values(SeedScript).includes(script)) {
-      await this.scriptsService.loadSeedScenario(script);
+      await this.scriptsService.loadSeedScenario({
+        seedScript: script,
+        isApiTests,
+      });
     }
 
     return res

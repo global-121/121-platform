@@ -16,15 +16,23 @@ export class ScriptsService {
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
   ) {}
 
-  public async loadSeedScenario(
-    seedScript: string,
-    isApiTests = false,
-    powerNrRegistrationsString?: string,
-    nrPaymentsString?: string,
-    powerNrMessagesString?: string,
+  public async loadSeedScenario({
+    seedScript,
+    isApiTests,
+    powerNrRegistrationsString,
+    nrPaymentsString,
+    powerNrMessagesString,
     mockPv = true,
     mockOcw = true,
-  ) {
+  }: {
+    seedScript: string;
+    isApiTests: boolean;
+    powerNrRegistrationsString?: string;
+    nrPaymentsString?: string;
+    powerNrMessagesString?: string;
+    mockPv?: boolean;
+    mockOcw?: boolean;
+  }) {
     const seedConfig = this.getSeedConfigByNameOrThrow(seedScript);
 
     await this.seedInit.run(isApiTests);
