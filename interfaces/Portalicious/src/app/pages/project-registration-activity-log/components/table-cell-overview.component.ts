@@ -6,14 +6,18 @@ import {
   inject,
   input,
   LOCALE_ID,
+  viewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
@@ -25,8 +29,10 @@ import { TableCellComponent } from '~/components/query-table/components/table-ce
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
+import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
+import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { Locale } from '~/utils/locale';
 
@@ -37,6 +43,8 @@ import { Locale } from '~/utils/locale';
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
     NgClass,
+    ButtonModule,
+    RetryTransfersDialogComponent,
   ],
   template: `
     <div class="flex w-full content-between items-center">
@@ -55,6 +63,16 @@ import { Locale } from '~/utils/locale';
             [label]="chipData()!.chipLabel"
             [variant]="chipData()!.chipVariant"
           />
+          @if (canRetryTransfer()) {
+            <p-button
+              class="ms-1"
+              label="Retry transfer"
+              i18n-label="@@retry-transfer"
+              rounded
+              size="small"
+              (click)="retryTransfer()"
+            />
+          }
         </div>
       }
 
@@ -65,6 +83,15 @@ import { Locale } from '~/utils/locale';
           [paymentId]="dialogData.paymentId"
           [totalTransfers]="dialogData.totalTransfers"
           [voucherReferenceId]="dialogData.voucherReferenceId"
+        />
+      }
+
+      @let payment = paymentId();
+      @if (payment && canRetryTransfer()) {
+        <app-retry-transfers-dialog
+          #retryTransfersDialog
+          [projectId]="context().projectId()"
+          [paymentId]="payment"
         />
       }
     </div>
@@ -79,7 +106,11 @@ export class TableCellOverviewComponent
   readonly context = input.required<ActivityLogTableCellContext>();
   locale = inject<Locale>(LOCALE_ID);
 
+  readonly retryTransfersDialog =
+    viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
+
   readonly registrationAttributeService = inject(RegistrationAttributeService);
+  readonly authService = inject(AuthService);
 
   readonly registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(this.context),
@@ -96,6 +127,14 @@ export class TableCellOverviewComponent
       return getChipDataByTwilioMessageStatus(attributes.status);
     }
 
+    return undefined;
+  });
+
+  readonly paymentId = computed(() => {
+    const item = this.value();
+    if (item.type === ActivityTypeEnum.Transaction) {
+      return item.attributes.payment.toString();
+    }
     return undefined;
   });
 
@@ -125,6 +164,27 @@ export class TableCellOverviewComponent
     }
   });
 
+  readonly canRetryTransfer = computed(() => {
+    const item = this.value();
+    if (
+      !this.authService.hasAllPermissions({
+        projectId: this.context().projectId(),
+        requiredPermissions: [
+          PermissionEnum.PaymentREAD,
+          PermissionEnum.PaymentCREATE,
+          PermissionEnum.PaymentTransactionREAD,
+        ],
+      })
+    ) {
+      return false;
+    }
+
+    if (item.type !== ActivityTypeEnum.Transaction) {
+      return false;
+    }
+    return item.attributes.status === TransactionStatusEnum.error;
+  });
+
   readonly voucherDialogData = computed(() => {
     const item = this.value();
     const referenceId = this.context().referenceId;
@@ -148,4 +208,22 @@ export class TableCellOverviewComponent
       voucherReferenceId: referenceId,
     };
   });
+
+  retryTransfer() {
+    // TODO: Not sure if this still needs to be checked
+    // if (this.paymentStatus.data()?.inProgress) {
+    //   this.toastService.showToast({
+    //     severity: 'warn',
+    //     detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
+    //   });
+    //   return;
+    // }
+    const referenceId = this.context().referenceId;
+    if (referenceId) {
+      const referenceIds = [referenceId];
+      this.retryTransfersDialog().retryFailedTransfers({
+        referenceIds,
+      });
+    }
+  }
 }
