@@ -20,9 +20,8 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 
-// Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id and status are in.
-interface RegistrationViewWithIdAndStatus
-  extends Partial<RegistrationViewEntity> {
+// Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id is in.
+interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
   id: number;
 }
 
@@ -70,8 +69,8 @@ export class EventsService {
   /**
    * Create events by looking the changed in property values between old and new registration view entities.
    *
-   * @param {RegistrationViewWithIdAndStatus | RegistrationViewWithIdAndStatus[]} oldRegistrationViews - The old registration view entity or entities before the change.
-   * @param {RegistrationViewWithIdAndStatus | RegistrationViewWithIdAndStatus[]} newRegistrationViews - The new registration view entity or entities after the change.
+   * @param {RegistrationViewWithId | RegistrationViewWithId[]} oldRegistrationViews - The old registration view entity or entities before the change.
+   * @param {RegistrationViewWithId | RegistrationViewWithId[]} newRegistrationViews - The new registration view entity or entities after the change.
    * @param {createFromRegistrationViewsOptions} [createEventOptions] - Optional event creation options to specify additional attributes and registration properties to log.
    * @returns {Promise<void>}
    *
@@ -104,12 +103,8 @@ export class EventsService {
    * await createFromRegistrationViews(oldRegistrationView, newRegistrationView, eventCreateOptions);
    */
   public async createFromRegistrationViews(
-    oldRegistrationViews:
-      | RegistrationViewWithIdAndStatus
-      | RegistrationViewWithIdAndStatus[],
-    newRegistrationViews:
-      | RegistrationViewWithIdAndStatus
-      | RegistrationViewWithIdAndStatus[],
+    oldRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
+    newRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
     createEventOptions?: createFromRegistrationViewsOptions,
   ): Promise<void> {
     // Convert to array if not already
@@ -164,8 +159,8 @@ export class EventsService {
   }
 
   private validateEntities(
-    oldEntities: RegistrationViewWithIdAndStatus[],
-    newEntities: RegistrationViewWithIdAndStatus[],
+    oldEntities: RegistrationViewWithId[],
+    newEntities: RegistrationViewWithId[],
     eventLogOptionsDto?: createFromRegistrationViewsOptions,
   ): void {
     // check if oldEntities and newEntities are same length
@@ -239,8 +234,8 @@ export class EventsService {
   }
 
   private createEventsForChanges(
-    oldEntities: RegistrationViewWithIdAndStatus[],
-    newEntities: RegistrationViewWithIdAndStatus[],
+    oldEntities: RegistrationViewWithId[],
+    newEntities: RegistrationViewWithId[],
     userId?: number,
     registrationAttributes?: string[],
   ): EventEntity[] {
@@ -258,8 +253,8 @@ export class EventsService {
   }
 
   private createEventsForEntityChanges(
-    oldEntity: RegistrationViewWithIdAndStatus,
-    newEntity: RegistrationViewWithIdAndStatus,
+    oldEntity: RegistrationViewWithId,
+    newEntity: RegistrationViewWithId,
     userId?: number,
     registeredAttributes?: string[],
   ): EventEntity[] {
@@ -344,22 +339,18 @@ export class EventsService {
   }
 
   private getRelevantRegistrationViewKeys(
-    oldEntity: RegistrationViewWithIdAndStatus,
-    newEntity: RegistrationViewWithIdAndStatus,
-  ): (keyof RegistrationViewWithIdAndStatus)[] {
-    const array1 = Object.keys(
-      newEntity,
-    ) as (keyof RegistrationViewWithIdAndStatus)[];
-    const array2 = Object.keys(
-      oldEntity,
-    ) as (keyof RegistrationViewWithIdAndStatus)[];
+    oldEntity: RegistrationViewWithId,
+    newEntity: RegistrationViewWithId,
+  ): (keyof RegistrationViewWithId)[] {
+    const array1 = Object.keys(newEntity) as (keyof RegistrationViewWithId)[];
+    const array2 = Object.keys(oldEntity) as (keyof RegistrationViewWithId)[];
 
     // Merge and remove duplicates by creating a Set and converting it back to an array
     const mergedArray = Array.from(new Set([...array1, ...array2]));
 
     // List of irrelevant keys
     // TODO: Explain why 'name' property is exception.
-    const irrelevantKeys: (keyof RegistrationViewWithIdAndStatus | 'name')[] = [
+    const irrelevantKeys: (keyof RegistrationViewWithId | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
