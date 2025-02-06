@@ -23,7 +23,7 @@ describe('Create program', () => {
     pattern: 'string',
     showInPeopleAffectedTable: true,
     editableInPortal: true,
-    export: [ExportType.allPeopleAffected, ExportType.included],
+    export: [ExportType.allRegistrations, ExportType.included],
     label: {
       en: 'Last Name',
     },

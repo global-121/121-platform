@@ -48,7 +48,7 @@ import { RegistrationDataScopedQueryService } from '@121-service/src/utils/regis
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
 const userPermissionMapByExportType = {
-  [ExportType.allPeopleAffected]: [PermissionEnum.RegistrationPersonalEXPORT],
+  [ExportType.allRegistrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.included]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.payment]: [PermissionEnum.RegistrationPaymentExport],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
@@ -113,7 +113,7 @@ export class MetricsService {
     }
 
     switch (type) {
-      case ExportType.allPeopleAffected: {
+      case ExportType.allRegistrations: {
         if (!paginationQuery) {
           throw new HttpException(
             `paginationQuery is required for export type ${type}`,
@@ -176,13 +176,13 @@ export class MetricsService {
   ): Promise<FileDto> {
     const data = await this.getRegistrationsList(
       programId,
-      ExportType.allPeopleAffected,
+      ExportType.allRegistrations,
       undefined,
       filter,
       search,
     );
     const response = {
-      fileName: ExportType.allPeopleAffected,
+      fileName: ExportType.allRegistrations,
       data,
     };
     return response;
@@ -380,7 +380,7 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .andWhere({ programId });
 
-    if (exportType !== ExportType.allPeopleAffected && !filter?.['status']) {
+    if (exportType !== ExportType.allRegistrations && !filter?.['status']) {
       queryBuilder = queryBuilder.andWhere(
         'registration."status" != :registrationStatus',
         {

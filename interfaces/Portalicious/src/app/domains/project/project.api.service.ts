@@ -124,12 +124,12 @@ export class ProjectApiService extends DomainApiService {
     projectId,
     includeProgramRegistrationAttributes = false,
     includeTemplateDefaultAttributes = false,
-    filterShowInPeopleAffectedTable = false,
+    filterShowInRegistrationsTable = false,
   }: {
     projectId: Signal<number | string>;
     includeProgramRegistrationAttributes?: boolean;
     includeTemplateDefaultAttributes?: boolean;
-    filterShowInPeopleAffectedTable?: boolean;
+    filterShowInRegistrationsTable?: boolean;
   }) {
     return this.generateQueryOptions<
       Attribute[],
@@ -139,7 +139,7 @@ export class ProjectApiService extends DomainApiService {
       params: {
         includeProgramRegistrationAttributes,
         includeTemplateDefaultAttributes,
-        filterShowInPeopleAffectedTable,
+        filterShowInRegistrationsTable,
       },
       processResponse: (attributes) =>
         unique(attributes, (attribute) => attribute.name).map((attribute) => {
