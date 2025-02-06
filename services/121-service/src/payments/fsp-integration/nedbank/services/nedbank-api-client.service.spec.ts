@@ -104,7 +104,7 @@ describe('NedbankApiClientService', () => {
 
       await expect(
         service.makeApiRequestOrThrow({
-          endpoint: 'https://example.com',
+          endpoint: 'https://example.org',
           method: 'GET',
         }),
       ).rejects.toThrow(NedbankApiError);
