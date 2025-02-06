@@ -5,13 +5,6 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { config } from 'dotenv';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
 
 // Set up specifics
 const sourcePath = './staticwebapp.config.base.json';

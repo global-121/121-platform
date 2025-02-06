@@ -4,16 +4,9 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
-import { config } from 'dotenv';
 import test from 'node:test';
 import { ok, match, doesNotMatch } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
 
 const swaConfig = JSON.parse(
   readFileSync('./staticwebapp.config.json', 'utf8'),

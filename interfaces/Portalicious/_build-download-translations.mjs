@@ -6,14 +6,6 @@ import { LokaliseDownload } from 'lokalise-file-exchange';
  * See the README.md-file for more information.
  */
 
-import { config } from 'dotenv';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
-
 /////////////////////////////////////////////////////////////////////////////
 
 if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
