@@ -16,7 +16,6 @@ import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {
   CreateProgramAssignmentDto,
-  DeleteProgramAssignmentDto,
   UpdateProgramAssignmentDto,
 } from '@121-service/src/user/dto/assign-aw-to-program.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
@@ -41,6 +40,7 @@ import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
 const tokenExpirationDays = 14;
 
@@ -419,11 +419,15 @@ export class UserService {
     return response;
   }
 
-  public async deleteAidworkerRolesOrAssignment(
-    programId: number,
-    userId: number,
-    assignAidworkerToProgram: DeleteProgramAssignmentDto,
-  ): Promise<AssignmentResponseDTO | void> {
+  public async deleteAidworkerRolesOrAssignment({
+    programId,
+    userId,
+    roleNamesToDelete,
+  }: {
+    programId: number;
+    userId: number;
+    roleNamesToDelete?: DefaultUserRole[] | string[];
+  }): Promise<AssignmentResponseDTO | void> {
     const user = await this.userRepository.findOne({
       where: { id: Equal(userId) },
       relations: [
@@ -445,11 +449,11 @@ export class UserService {
     }
 
     const rolesToDelete = await this.userRoleRepository.find({
-      where: { role: In(assignAidworkerToProgram.rolesToDelete || []) },
+      where: { role: In(roleNamesToDelete || []) },
     });
     if (
-      assignAidworkerToProgram.rolesToDelete &&
-      rolesToDelete.length !== assignAidworkerToProgram.rolesToDelete.length
+      roleNamesToDelete &&
+      rolesToDelete.length !== roleNamesToDelete.length
     ) {
       const errors = { Roles: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
