@@ -478,7 +478,7 @@ export class RegistrationsBulkService {
       });
 
     const statusKey: keyof RegistrationViewEntity = 'status';
-    await this.eventsService.log(
+    await this.eventsService.createFromRegistrationViews(
       filteredRegistrations,
       registrationsAfterUpdate,
       { explicitRegistrationPropertyNames: [statusKey], reason },
