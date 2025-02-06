@@ -14,6 +14,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
 
+const loggingLevel: 'error' | 'info' | 'warn' | undefined = 'error'; // Seperate variable for typing purposes
 const config = {
   credentials: {
     clientID: process.env.AZURE_ENTRA_CLIENT_ID,
@@ -28,7 +29,7 @@ const config = {
     // TODO: Probably should be set to true in production
     validateIssuer: false,
     passReqToCallback: true,
-    loggingLevel: 'error',
+    loggingLevel,
   },
 };
 const EXPOSED_SCOPES = ['User.read']; //provide a scope of your azure AD
