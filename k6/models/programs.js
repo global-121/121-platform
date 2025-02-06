@@ -129,7 +129,6 @@ export default class ProgramsModel {
   nedbankCronJob() {
     const url = `${baseUrl}api/financial-service-providers/nedbank`;
     const res = http.patch(url);
-    console.log(res.status);
     return res;
   }
 }
