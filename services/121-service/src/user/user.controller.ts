@@ -428,13 +428,13 @@ export class UserController {
     @Param('userId', ParseIntPipe)
     userId: number,
 
-    @Body() assignAidworkerToProgram: DeleteProgramAssignmentDto,
+    @Body() deleteProgramAssignment?: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
-    return await this.userService.deleteAidworkerRolesOrAssignment(
+    return await this.userService.deleteAidworkerRolesOrAssignment({
       programId,
       userId,
-      assignAidworkerToProgram,
-    );
+      roleNamesToDelete: deleteProgramAssignment?.rolesToDelete,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
