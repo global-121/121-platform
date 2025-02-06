@@ -31,11 +31,20 @@ const main = async () => {
   }
 
   switch (localeInitialization.locale) {
-    case Locale.nl:
-      await import('@angular/common/locales/global/nl');
+    case Locale.ar:
+      await import('@angular/common/locales/global/ar');
       break;
     case Locale.en:
       await import('@angular/common/locales/global/en-GB');
+      break;
+    case Locale.es:
+      await import('@angular/common/locales/global/es');
+      break;
+    case Locale.fr:
+      await import('@angular/common/locales/global/fr');
+      break;
+    case Locale.nl:
+      await import('@angular/common/locales/global/nl');
       break;
   }
 
