@@ -13,7 +13,7 @@
     "start:services": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml up --detach --build",
     "start:services:production": "cd services/ && docker compose --file=docker-compose.yml up --detach --build",
     "start:services:appmap": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml --file=docker-compose.development-appmap.yml up --detach --build",
-    "start:portal": "npm start --prefix interfaces/Portal/ -- --port=8888",
+    "start:portal": "npm start --prefix interfaces/Portal/ -- --port=8889",
     "start:portalicious": "npm start --prefix interfaces/Portalicious/ -- --port=8888",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:portal",
     "install:services": "cd services/ && docker compose --file=docker-compose.yml build",
