@@ -6,6 +6,7 @@
     "set-env-variables": "node ./_set-env-variables.mjs",
     "build:deployment-configuration": "node ./_build-deployment-configuration.mjs",
     "build:manual-logout": "node ./_build-manual-logout.mjs",
+    "build:download-translations": "node ./_build-download-translations.mjs",
     "build:root-404": "shx cp ./src/404.html ./www/404.html",
     "serve:static": "swa start ./www --port 8088",
     "prestart": "npm run set-env-variables -- env=development",
