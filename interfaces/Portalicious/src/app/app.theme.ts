@@ -143,7 +143,7 @@ const AppTheme = definePreset(Aura, {
       },
     },
     card: {
-      shadow: tailwindConfig.theme.extend.boxShadow.cards,
+      shadow: 'none',
     },
     datatable: {
       body: {

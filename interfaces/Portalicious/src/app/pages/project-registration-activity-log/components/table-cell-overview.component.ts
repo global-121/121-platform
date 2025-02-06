@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,10 +23,7 @@ import {
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
-import {
-  ACTIVITY_LOG_ITEM_TYPE_LABELS,
-  REGISTRATION_STATUS_LABELS,
-} from '~/domains/registration/registration.helper';
+import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
@@ -39,6 +36,7 @@ import { Locale } from '~/utils/locale';
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
+    NgClass,
   ],
   template: `
     <div class="flex w-full content-between items-center">
@@ -47,7 +45,12 @@ import { Locale } from '~/utils/locale';
       }
 
       @if (chipData()) {
-        <div class="me-auto ms-2">
+        <div
+          class="me-auto"
+          [ngClass]="{
+            'ms-2': !!overview(),
+          }"
+        >
           <app-colored-chip
             [label]="chipData()!.chipLabel"
             [variant]="chipData()!.chipVariant"
@@ -118,7 +121,7 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.StatusChange:
         return REGISTRATION_STATUS_LABELS[item.attributes.newValue];
       case ActivityTypeEnum.Transaction:
-        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} ${new DatePipe(this.locale).transform(new Date(item.attributes.paymentDate), 'short') ?? ''}`;
+        return;
     }
   });
 
