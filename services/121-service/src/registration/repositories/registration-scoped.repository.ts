@@ -186,7 +186,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         `registration."registrationStatus" as "registrationStatus"`,
         '"intersolveVisaChildWallets"."tokenCode" as "cardNumber"',
         '"intersolveVisaChildWallets".created as "issuedDate"',
-        '"intersolveVisaChildWallets"."lastUsedDate" as "lastUsedDate"',
+        '"intersolveVisaParentWallet"."lastUsedDate" as "lastUsedDate"',
         '"intersolveVisaParentWallet".balance as balance',
         '"intersolveVisaChildWallets"."lastExternalUpdate" as "lastExternalUpdate"',
         '"intersolveVisaParentWallet"."spentThisMonth" as "spentThisMonth"',
