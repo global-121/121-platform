@@ -62,4 +62,7 @@ jobs:
           MOCK_TWILIO: TRUE
           MOCK_INTERSOLVE: TRUE
           MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
+          MOCK_NEDBANK: TRUE
+          NEDBANK_CERTIFICATE_PATH: test
+
         run: 'npm run test:unit:all'
