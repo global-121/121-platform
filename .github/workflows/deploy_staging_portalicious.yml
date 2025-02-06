@@ -45,6 +45,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
+          buildType: 'portalicious'
           envIcon: ${{ env.NG_ENV_ICON }}
           envIconPath: 'src/assets/favicon.ico'
           envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.

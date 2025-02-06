@@ -8,6 +8,10 @@ inputs:
   interfacePath:
     description: Location of the interface's code. (relative to the repository-root)
     required: true
+  buildType:
+    description: Which build-command to use.
+    required: false
+    default: 'old-but-still-nice'
   envIcon:
     description: Base-64 encoded version/data-URL of the favicon.ico file.
     required: false
@@ -68,7 +72,27 @@ runs:
       run: |
         echo "${{ inputs.envIcon }}" | sed 's/data:image\/.*;base64,//' | base64 --decode > ${{ inputs.envIconPath }}
 
-    - name: Build
+    - name: Download latest translations
+      if: inputs.buildType == 'portalicious'
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      env:
+        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: true
+        LOKALISE_PROJECT_ID: ${{ env.LOKALISE_PROJECT_ID }}
+        LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
+      run: |
+        echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
+        npm run build:download-translations
+
+    - name: Build (Portalicious)
+      if: inputs.buildType == 'portalicious'
+      shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      run: |
+        npm run build:production:all-languages
+
+    - name: Build (deprecated Portal)
+      if: inputs.buildType == 'old-but-still-nice'
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: 'npm run build:prod'
