@@ -361,4 +361,5 @@ export const registrationNedbank = {
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.nedbank,
   maxPayments: 3,
+  fullName: 'nedbank pa',
 };

@@ -53,6 +53,9 @@ export class NedbankApiClientService {
     } catch (error) {
       throw new NedbankApiError(`Error: ${error.message}`);
     }
+    if (!response.data) {
+      throw new Error('No response received from nedbank');
+    }
     if (this.nedbankApiHelperService.isNedbankErrorResponse(response.data)) {
       const errorMessage =
         this.nedbankApiHelperService.createErrorMessageIfApplicable(

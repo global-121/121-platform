@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { NedbankCreateOrderMockPayload } from '@mock-service/src/fsp-integration/nedbank/nedbank.mock.controller';
 
@@ -168,16 +168,7 @@ export class NedbankMockService {
       // This is not an actual timeout since testing an actual timeout would make our automated test runs slower
       // This is just a way to simulate the result of a timout error which would be that the order status would never be updated
       // TODO: discuss if we can find a more elegant way to simulate a timeout error
-      if (
-        Data.Initiation.CreditorAccount.Identification.includes(
-          NedbankMockNumber.failTimoutSimulate,
-        )
-      ) {
-        throw new HttpException(
-          'Simulated timeout',
-          HttpStatus.REQUEST_TIMEOUT,
-        );
-      }
+      return;
     }
     if (Number(Data.Initiation.InstructedAmount.Amount.slice(0, -3)) > 5000) {
       return {
