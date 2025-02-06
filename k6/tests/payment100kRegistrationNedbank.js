@@ -51,7 +51,9 @@ export default function () {
     'Payment progressed successfully status 202': (r) => {
       if (r.status != 202) {
         const responseBody = JSON.parse(r.body);
+        console.log(responseBody.error || r.status);
       }
+      console.log('status: ', r.status);
       return r.status == 200;
     },
   });
