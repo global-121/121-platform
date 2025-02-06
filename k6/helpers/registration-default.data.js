@@ -43,8 +43,4 @@ export const registrationNedbank = {
   paymentAmountMultiplier: 1,
   maxPayments: 6,
   fullName: 'Franklin Floyd',
-  gender: 'male',
-  age: 31,
-  nationalId: '32121321',
-  nameAlternate: 'test',
 };
