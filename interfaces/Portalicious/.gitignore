@@ -42,3 +42,6 @@ Thumbs.db
 environment.development.ts
 environment.production.ts
 staticwebapp.config.json
+
+# Externally managed languages/translations
+src/locale/messages.*.xlf
