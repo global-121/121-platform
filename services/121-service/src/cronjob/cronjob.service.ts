@@ -32,7 +32,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
     ),
   })
-  public async cronCancelByRefposIntersolve(): Promise<void> {
+  public async cronCancelByRefposIntersolve(): Promise<number> {
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -43,11 +43,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job cronCancelByRefposIntersolve. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
@@ -55,7 +51,7 @@ export class CronjobService {
       process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
     ),
   })
-  public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
+  public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<number> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
@@ -65,11 +61,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job validateCommercialBankEthiopiaAccountEnquiries. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -77,7 +69,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<number> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
@@ -87,11 +79,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job cronRetrieveAndUpdatedUnusedIntersolveVouchers. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -99,7 +87,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
     ),
   })
-  public async cronRetrieveAndUpdateVisaData(): Promise<void> {
+  public async cronRetrieveAndUpdateVisaData(): Promise<number> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
@@ -110,11 +98,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job cronRetrieveAndUpdateVisaData. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON, {
@@ -122,7 +106,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
     ),
   })
-  public async cronSendWhatsappReminders(): Promise<void> {
+  public async cronSendWhatsappReminders(): Promise<number> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
@@ -132,11 +116,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job cronSendWhatsappReminders. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
@@ -154,7 +134,7 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
-  public async getDailyExchangeRates(): Promise<void> {
+  public async getDailyExchangeRates(): Promise<number> {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
@@ -163,11 +143,7 @@ export class CronjobService {
       {},
       headers,
     );
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(
-        `Failed to run Cron Job getDailyExchangeRates. Status code: ${response.status}`,
-      );
-    }
+    return response.status;
   }
 
   public getAllMethods(): string[] {
