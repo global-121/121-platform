@@ -212,6 +212,15 @@ const AppTheme = definePreset(Aura, {
         light: severityVariants,
       },
     },
+    tooltip: {
+      colorScheme: {
+        light: {
+          background: colors.white,
+          color: colors.black.DEFAULT,
+          shadow: tailwindConfig.theme.extend.boxShadow.tooltip,
+        },
+      },
+    },
     chip: {
       paddingY: '0.125rem',
     },
