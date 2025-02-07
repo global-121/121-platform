@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CronjobResponseDto {
+export class RunCronjobsResponseDto {
   @ApiProperty({ example: 'cronGetDailyExchangeRates' })
   public readonly methodName: string;
   @ApiProperty({ example: 'http://localhost:3000/api/exchange-rates' })

@@ -4,7 +4,7 @@ import { ApiExcludeEndpoint, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { DEBUG } from '@121-service/src/config';
 import { CronjobService } from '@121-service/src/cronjob/cronjob.service';
-import { CronjobResponseDto } from '@121-service/src/cronjob/dtos/cronjob-response.dto';
+import { RunCronjobsResponseDto } from '@121-service/src/cronjob/dtos/run-cronjobs-response.dto';
 
 @Controller('cronjob')
 export class CronjobController {
@@ -18,11 +18,11 @@ export class CronjobController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Cron Jobs run. See response for details.',
-    type: [CronjobResponseDto],
+    type: [RunCronjobsResponseDto],
   })
-  public async runAllCronjobs(): Promise<CronjobResponseDto[]> {
+  public async runAllCronjobs(): Promise<RunCronjobsResponseDto[]> {
     const methods = this.cronjobService.getAllMethods();
-    const responses: CronjobResponseDto[] = [];
+    const responses: RunCronjobsResponseDto[] = [];
     for (const method of methods) {
       const result = await this.cronjobService[method]();
       responses.push({
