@@ -59,7 +59,6 @@ export class IntersolveVoucherReconciliationController {
   })
   @Patch('/financial-service-providers/intersolve-voucher/unused-vouchers')
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
-    // ##TODO: What is the reason again we cannot log the console message in the CronjobService itself?
     console.info(
       'CronjobService - Started: cronRetrieveAndUpdatedUnusedIntersolveVouchers',
     );
