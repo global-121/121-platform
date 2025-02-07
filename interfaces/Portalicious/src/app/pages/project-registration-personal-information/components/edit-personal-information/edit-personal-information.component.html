@@ -22,6 +22,8 @@
 <form
   [formGroup]="formGroup"
   (ngSubmit)="onSubmit()"
+  (keydown.control.enter)="onSubmit()"
+  (keydown.meta.enter)="onSubmit()"
 >
   <ng-container [ngTemplateOutlet]="cancelAndSaveButtons"></ng-container>
   <div class="grid grid-cols-1 gap-x-5 md:grid-cols-2">

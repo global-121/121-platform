@@ -5,17 +5,25 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
+import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 
 @Component({
   selector: 'app-confirmation-dialog',
-  imports: [ConfirmDialogModule, ButtonModule, FormErrorComponent],
+  imports: [
+    ConfirmDialogModule,
+    ButtonModule,
+    FormErrorComponent,
+    FocusTrapModule,
+    FormsModule,
+  ],
   providers: [ConfirmationService],
   templateUrl: './confirmation-dialog.component.html',
   styles: ``,
