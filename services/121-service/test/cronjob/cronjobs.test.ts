@@ -22,7 +22,6 @@ describe('Cron jobs', () => {
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
-    // Loop over the array in the response body and check if the responseStatus is between 200 and 300. If not, throw an error.
     for (const cronjob of response.body) {
       if (cronjob.responseStatus < 200 || cronjob.responseStatus >= 300) {
         throw new Error(
@@ -30,11 +29,5 @@ describe('Cron jobs', () => {
         );
       }
     }
-
-    // if (response.status < 200 || response.status >= 300) {
-    //   throw new Error(
-    //     `Failed to run Cron Job cronCancelByRefposIntersolve. Status code: ${response.status}`,
-    //   );
-    // }
   });
 });
