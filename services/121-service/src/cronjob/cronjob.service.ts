@@ -10,18 +10,6 @@ function shouldBeEnabled(envVariable: string | undefined): boolean {
   return !!envVariable && envVariable.toLowerCase() === 'true';
 }
 
-// ##TODO: See if we can change this function to getCronFunctions and just get the public functions with the @Cron decorator
-function getAllMethods(instance: any): string[] {
-  const prototype = Object.getPrototypeOf(instance);
-  return Object.getOwnPropertyNames(prototype).filter((name) => {
-    const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
-    return (
-      descriptor &&
-      typeof descriptor.value === 'function' &&
-      name !== 'constructor'
-    );
-  });
-}
 @Injectable()
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
@@ -32,7 +20,10 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
     ),
   })
-  public async cronCancelByRefposIntersolve(): Promise<number> {
+  public async cronCancelByRefposIntersolve(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -43,7 +34,7 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
@@ -51,7 +42,10 @@ export class CronjobService {
       process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
     ),
   })
-  public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<number> {
+  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
@@ -61,7 +55,7 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -69,7 +63,10 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<number> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
@@ -79,7 +76,7 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -87,7 +84,10 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
     ),
   })
-  public async cronRetrieveAndUpdateVisaData(): Promise<number> {
+  public async cronRetrieveAndUpdateVisaData(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
@@ -98,7 +98,7 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON, {
@@ -106,7 +106,10 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
     ),
   })
-  public async cronSendWhatsappReminders(): Promise<number> {
+  public async cronSendWhatsappReminders(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
@@ -116,7 +119,7 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
@@ -134,7 +137,10 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
-  public async getDailyExchangeRates(): Promise<number> {
+  public async cronGetDailyExchangeRates(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
@@ -143,10 +149,18 @@ export class CronjobService {
       {},
       headers,
     );
-    return response.status;
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   public getAllMethods(): string[] {
-    return getAllMethods(this);
+    const prototype = Object.getPrototypeOf(this);
+    return Object.getOwnPropertyNames(prototype).filter((name) => {
+      const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+      return (
+        descriptor &&
+        typeof descriptor.value === 'function' &&
+        name !== 'constructor'
+      );
+    });
   }
 }

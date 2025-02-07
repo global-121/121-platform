@@ -10,7 +10,7 @@
     "params": []
   },
   {
-    "method": "post",
+    "method": "patch",
     "path": "/api/cronjob",
     "params": []
   },

@@ -1,24 +1,36 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import { Controller, HttpStatus } from '@nestjs/common';
+import { Patch } from '@nestjs/common';
+import { ApiExcludeEndpoint, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { DEBUG } from '@121-service/src/config';
 import { CronjobService } from '@121-service/src/cronjob/cronjob.service';
+import { CronjobResponseDto } from '@121-service/src/cronjob/dtos/cronjob-response.dto';
 
 @Controller('cronjob')
 export class CronjobController {
   constructor(private readonly cronjobService: CronjobService) {}
 
-  // ##TODO: Should we protect this endpoint with a secret?
   @ApiOperation({
-    summary: 'Runs all Cron Jobs. Only used for testing purposes.',
+    summary: 'Runs all Cron Jobs. Only used for testing.',
   })
   @ApiExcludeEndpoint(!DEBUG)
-  @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
-  public async runAllCronjobs(): Promise<void> {
+  @Patch()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Cron Jobs run. See response for details.',
+    type: [CronjobResponseDto],
+  })
+  public async runAllCronjobs(): Promise<CronjobResponseDto[]> {
     const methods = this.cronjobService.getAllMethods();
+    const responses: CronjobResponseDto[] = [];
     for (const method of methods) {
-      await this.cronjobService[method]();
+      const result = await this.cronjobService[method]();
+      responses.push({
+        methodName: method,
+        url: result.url,
+        responseStatus: result.responseStatus,
+      });
     }
+    return responses;
   }
 }
