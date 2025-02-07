@@ -31,5 +31,6 @@ export const FinancialServiceProviders = {
   intersolveVisa: 'Intersolve-visa',
   safaricom: 'Safaricom',
   commercialBankEthiopia: 'Commercial-bank-ethiopia',
+  nedbank: 'Nedbank',
   excel: 'Excel',
 };

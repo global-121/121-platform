@@ -33,3 +33,14 @@ export const registrationSafaricom = {
   nationalId: '32121321',
   nameAlternate: 'test',
 };
+
+export const registrationNedbank = {
+  referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.nedbank,
+  phoneNumber: '2708374149',
+  preferredLanguage: 'en',
+  paymentAmountMultiplier: 1,
+  maxPayments: 6,
+  fullName: 'Franklin Floyd',
+};

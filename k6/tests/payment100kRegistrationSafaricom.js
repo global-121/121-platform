@@ -6,11 +6,12 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 7; // '17' leads to 131k registrations
+const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'safari-program';
 const programId = 1;
-const paymentId = 3;
+const paymentNr = 3;
 const maxTimeoutAttempts = 800;
+const status = 'success';
 const minPassRatePercentage = 10;
 const amount = 10;
 
@@ -40,9 +41,10 @@ export default function () {
     programId,
     registrationSafaricom,
     duplicateNumber,
-    paymentId,
     maxTimeoutAttempts,
+    status,
     minPassRatePercentage,
+    paymentNr,
     amount,
   );
   checkAndFail(monitorPayment, {
