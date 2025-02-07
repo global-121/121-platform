@@ -78,7 +78,13 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment(programIdWesteros, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId: programIdWesteros,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdWesteros,
@@ -106,7 +112,13 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment(programIdCbe, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId: programIdCbe,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdCbe,

@@ -73,13 +73,13 @@ test.beforeEach(async ({ page }) => {
   const paymentReferenceIds = [registrationVisa.referenceId];
 
   // Act
-  await doPayment(
-    programIdVisa,
-    paymentNrVisa,
-    amountVisa,
-    paymentReferenceIds,
+  await doPayment({
+    programId: programIdVisa,
+    paymentNr: paymentNrVisa,
+    amount: amountVisa,
+    referenceIds: paymentReferenceIds,
     accessToken,
-  );
+  });
 
   await waitForPaymentTransactionsToComplete(
     programIdVisa,

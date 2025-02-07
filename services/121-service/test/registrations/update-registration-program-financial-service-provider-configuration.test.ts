@@ -217,13 +217,13 @@ describe('Update program financial servce provider configuration of PA', () => {
       reason,
       accessToken,
     );
-    await doPayment(
-      programIdPv,
-      payment,
-      15,
-      [registrationPvScoped.referenceId],
+    await doPayment({
+      programId: programIdPv,
+      paymentNr: payment,
+      amount: 15,
+      referenceIds: [registrationPvScoped.referenceId],
       accessToken,
-    );
+    });
     await waitForPaymentTransactionsToComplete(
       programIdPv,
       [registrationPvScoped.referenceId],

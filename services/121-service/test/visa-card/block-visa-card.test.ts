@@ -43,13 +43,13 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     });
     const paymentReferenceIds = [registrationVisa.referenceId];
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     // Act
     await waitFor(2_000);
@@ -99,13 +99,13 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     });
     const paymentReferenceIds = [registrationVisa.referenceId];
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     // Act
     await waitFor(2_000);

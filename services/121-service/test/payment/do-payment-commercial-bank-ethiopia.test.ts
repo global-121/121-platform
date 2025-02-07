@@ -44,13 +44,13 @@ describe('Do payment to 1 PA', () => {
       const paymentReferenceIds = [registrationCbe.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,

@@ -54,13 +54,13 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -113,13 +113,13 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,

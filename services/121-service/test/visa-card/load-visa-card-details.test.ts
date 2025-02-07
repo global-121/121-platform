@@ -59,13 +59,13 @@ describe('Load Visa debit cards and details', () => {
       status: RegistrationStatusEnum.included,
       accessToken,
     });
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
       referenceIds,
       accessToken,
-    );
+    });
 
     // Act
     await waitForPaymentTransactionsToComplete(

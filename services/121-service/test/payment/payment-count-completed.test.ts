@@ -60,13 +60,13 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       // Assert
       await waitForPaymentTransactionsToComplete(

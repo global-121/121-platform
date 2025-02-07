@@ -15,9 +15,10 @@ const paymentsPage = new PaymentsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';
-const duplicateNumber = 15;
+const duplicateNumber = 15; // should be 15
 const programId = 3;
 const paymentId = 3;
+const paymentNr = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
 const amount = 10;
@@ -124,7 +125,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount);
+  const doPayment = paymentsPage.createPayment(programId, amount, paymentNr);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
