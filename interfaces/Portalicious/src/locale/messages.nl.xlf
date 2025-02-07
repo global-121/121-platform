@@ -1090,10 +1090,6 @@
         <source>No payments yet</source>
         <target>Nog geen betalingen</target>
       </trans-unit>
-      <trans-unit id="7481183920179363714" datatype="html">
-        <source>Sent</source>
-        <target>Verstuurd</target>
-      </trans-unit>
       <trans-unit id="7483364924749111553" datatype="html">
         <source>They will not be included in payments.</source>
         <target>Deze worden niet in de betalingen opgenomen.</target>

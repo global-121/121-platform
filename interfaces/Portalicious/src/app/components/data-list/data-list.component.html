@@ -55,7 +55,17 @@
                 {{ optionItemValue(item) }}
               }
               @default {
-                {{ item.value | translatableString }}
+                @let routerLink = item.routerLink;
+
+                @if (routerLink) {
+                  <a
+                    [routerLink]="routerLink"
+                    class="text-black"
+                    >{{ item.value | translatableString }}</a
+                  >
+                } @else {
+                  {{ item.value | translatableString }}
+                }
               }
             }
           </span>

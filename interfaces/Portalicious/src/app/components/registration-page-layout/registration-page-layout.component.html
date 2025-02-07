@@ -5,31 +5,32 @@
   [pageTitle]="registrationTitle()"
   [isPending]="registration.isPending()"
 >
-  <div header-actions>
-    @if (canUpdatePersonalData() && !registration.isError()) {
-      <p-button
-        label="Add note"
-        i18n-label="@@add-note"
-        rounded
-        outlined
-        [loading]="registration.isPending()"
-        icon="pi pi-pen-to-square"
-        (click)="addNoteFormVisible.set(true)"
-        class="ms-auto"
-      />
-      @if (registration.isSuccess()) {
-        <app-add-note-form
-          [(formVisible)]="addNoteFormVisible"
-          [projectId]="projectId()"
-          [registrationId]="registrationId()"
-        />
-      }
-    }
-  </div>
-
   <p-card
     styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
   >
+    <div class="flex items-center space-x-4 border-b border-grey-300 pb-4">
+      <h1 class="me-auto">
+        {{ registrationTitle() }}
+      </h1>
+      @if (canUpdatePersonalData() && !registration.isError()) {
+        <p-button
+          label="Add note"
+          i18n-label="@@add-note"
+          rounded
+          outlined
+          [loading]="registration.isPending()"
+          icon="pi pi-pen-to-square"
+          (click)="addNoteFormVisible.set(true)"
+        />
+        @if (registration.isSuccess()) {
+          <app-add-note-form
+            [(formVisible)]="addNoteFormVisible"
+            [projectId]="projectId()"
+            [registrationId]="registrationId()"
+          />
+        }
+      }
+    </div>
     <app-data-list [data]="registrationData()" />
     <div class="mt-4 text-end">
       <span class="text-grey-700 txt-system-s">

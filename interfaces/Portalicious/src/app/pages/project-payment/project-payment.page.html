@@ -6,25 +6,48 @@
   [pageTitle]="paymentTitle()"
   [isPending]="payments.isPending()"
 >
-  <div
-    header-actions
-    class="space-x-2"
-  >
-    @if (hasFspWithExportFileIntegration()) {
-      <app-import-reconciliation-data
-        [paymentId]="paymentId()"
+  <p-card styleClass="mb-5">
+    <div class="flex items-center space-x-4">
+      <h1 class="me-auto">
+        {{ paymentTitle() }}
+      </h1>
+      @if (hasFspWithExportFileIntegration()) {
+        <app-import-reconciliation-data
+          [paymentId]="paymentId()"
+          [projectId]="projectId()"
+        />
+      }
+      <app-single-payment-export
         [projectId]="projectId()"
+        [paymentId]="paymentId()"
+        [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
       />
-    }
-    <app-single-payment-export
-      [projectId]="projectId()"
-      [paymentId]="paymentId()"
-      [hasExportFileIntegration]="hasFspWithExportFileIntegration()"
-    />
-  </div>
+    </div>
+  </p-card>
   <div
     class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
   >
+    @let paymentDetails = this.payment.data();
+
+    @if (!paymentDetails) {
+      <p-skeleton
+        class="grid-in-chart"
+        height="100%"
+      ></p-skeleton>
+    } @else {
+      <p-card class="grid-in-chart [&_.p-card-body]:h-full [&_.p-card]:h-full">
+        <p
+          i18n
+          class="mb-6 font-medium txt-h-2"
+        >
+          Transfers data
+        </p>
+        <app-project-payment-chart
+          [paymentDetails]="paymentDetails"
+        ></app-project-payment-chart>
+      </p-card>
+    }
+
     @if (
       paymentStatus.isPending() ||
       transactions.isPending() ||
@@ -66,27 +89,6 @@
       metricTooltip="The total payment amount is calculated by summing up the transfer values of each included registration added to the payment."
       i18n-metricTooltip
     />
-
-    @let paymentDetails = this.payment.data();
-
-    @if (!paymentDetails) {
-      <p-skeleton
-        class="grid-in-chart"
-        height="100%"
-      ></p-skeleton>
-    } @else {
-      <p-card class="grid-in-chart [&_.p-card-body]:h-full [&_.p-card]:h-full">
-        <p
-          i18n
-          class="mb-6 font-medium txt-h-2"
-        >
-          Transfers data
-        </p>
-        <app-project-payment-chart
-          [paymentDetails]="paymentDetails"
-        ></app-project-payment-chart>
-      </p-card>
-    }
 
     <p-card class="overflow-x-auto grid-in-table">
       <app-query-table

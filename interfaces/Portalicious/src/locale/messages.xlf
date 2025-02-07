@@ -463,9 +463,6 @@
       <trans-unit id="1467059276438662086" datatype="html">
         <source>New status</source>
       </trans-unit>
-      <trans-unit id="7481183920179363714" datatype="html">
-        <source>Sent</source>
-      </trans-unit>
       <trans-unit id="8691920320483720007" datatype="html">
         <source>Received</source>
       </trans-unit>

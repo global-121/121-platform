@@ -47,7 +47,7 @@ class PaymentsPage extends BasePage {
     this.exportDropdown = this.page.locator('app-single-payment-export');
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
     this.viewPaymentTitle = this.page.getByRole('heading', {
-      name: 'All Payments',
+      name: 'Payment',
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
   }

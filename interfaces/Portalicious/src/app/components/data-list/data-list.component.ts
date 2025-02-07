@@ -5,6 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -53,6 +54,7 @@ export type DataListItem = {
   | {
       type?: 'text';
       value?: LocalizedString | null | string;
+      routerLink?: RouterLink['routerLink'];
     }
 );
 
@@ -67,6 +69,7 @@ export type DataListItem = {
     ColoredChipComponent,
     TranslatableStringPipe,
     NgClass,
+    RouterLink,
   ],
   templateUrl: './data-list.component.html',
   styles: ``,

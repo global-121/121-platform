@@ -10,12 +10,12 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
-import { AppRoutes } from '~/app.routes';
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Locale } from '~/utils/locale';
 
@@ -85,13 +85,9 @@ export class PaymentSummaryCardComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  paymentLink = (projectId: number | string, paymentId: number | string) => [
-    '/',
-    AppRoutes.project,
-    projectId,
-    AppRoutes.projectPayments,
-    paymentId,
-  ];
+  paymentLink = computed(() =>
+    paymentLink({ projectId: this.projectId(), paymentId: this.paymentId() }),
+  );
 
   public project = injectQuery(
     this.projectApiService.getProject(this.projectId),

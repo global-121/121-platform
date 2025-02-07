@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -17,6 +19,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
+import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import {
   REGISTRATION_STATUS_CHIP_VARIANTS,
@@ -36,6 +39,7 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 export class ActivityLogExpandedRowComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
+  private locale = inject(LOCALE_ID);
   private readonly projectApiService = inject(ProjectApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
@@ -154,9 +158,17 @@ export class ActivityLogExpandedRowComponent
       case ActivityTypeEnum.Transaction: {
         const list: DataListItem[] = [
           {
-            label: $localize`Sent`,
-            value: item.attributes.paymentDate,
-            type: 'date',
+            label: $localize`Payment`,
+            value:
+              new DatePipe(this.locale).transform(
+                item.attributes.paymentDate,
+                'short',
+              ) ?? '',
+            type: 'text',
+            routerLink: paymentLink({
+              projectId: this.context().projectId(),
+              paymentId: item.attributes.payment,
+            }),
           },
           {
             label: $localize`Received`,
