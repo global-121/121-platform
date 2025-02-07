@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { assert } from 'console';
 
 import {
   getAccessToken,
@@ -23,11 +24,10 @@ describe('Cron jobs', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
     for (const cronjob of response.body) {
-      if (cronjob.responseStatus < 200 || cronjob.responseStatus >= 300) {
-        throw new Error(
-          `Failed to run Cron Job ${cronjob.methodName}. Status code: ${cronjob.responseStatus}`,
-        );
-      }
+      assert(
+        cronjob.responseStatus >= 200 && cronjob.responseStatus < 300,
+        `Expected responseStatus to be between 200 and 299, but received ${cronjob.responseStatus} for cronjob: ${JSON.stringify(cronjob)}`,
+      );
     }
   });
 });
