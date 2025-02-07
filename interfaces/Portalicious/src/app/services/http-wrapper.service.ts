@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { get } from 'lodash';
+import { get } from 'radashi';
 import { lastValueFrom, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -87,7 +87,7 @@ export class HttpWrapperService {
       }
     }
 
-    let errorMessage = get(error.error, 'message') as string | undefined;
+    let errorMessage = get(error.error, 'message');
 
     const errors: unknown = get(error, 'error.errors');
     if (errors) {

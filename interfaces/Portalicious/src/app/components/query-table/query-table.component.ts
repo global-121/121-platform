@@ -25,7 +25,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { get } from 'lodash';
 import {
   FilterMatchMode,
   FilterMetadata,
@@ -47,6 +46,7 @@ import {
   TableModule,
   TableSelectAllChangeEvent,
 } from 'primeng/table';
+import { get } from 'radashi';
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { ChipData } from '~/components/colored-chip/colored-chip.helper';
@@ -204,7 +204,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return;
     }
 
-    // We're using lodash.get here to support "leaves" such as "user.username"
+    // We're using radashi.get here to support "leaves" such as "user.username"
     const text = get(item, column.field);
 
     if (!text) {

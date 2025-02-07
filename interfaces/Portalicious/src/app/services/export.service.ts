@@ -6,7 +6,6 @@ import {
 import { inject, Injectable, Signal } from '@angular/core';
 
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import * as XLSX from 'xlsx';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
@@ -25,6 +24,13 @@ import { addDaysToDate, dateToIsoString } from '~/utils/date';
   providedIn: 'root',
 })
 export class ExportService {
+  static toExportFileName(excelFileName: string): string {
+    const date = new Date();
+    return `${excelFileName}-${date.getFullYear().toString()}-${(
+      date.getMonth() + 1
+    ).toString()}-${date.getDate().toString()}.xlsx`;
+  }
+
   private queryClient = inject(QueryClient);
 
   private paginateQueryService = inject(PaginateQueryService);
@@ -78,13 +84,6 @@ export class ExportService {
       ...paginateQueryParams,
       ...exportParams,
     };
-  }
-
-  private toExportFileName(excelFileName: string): string {
-    const date = new Date();
-    return `${excelFileName}-${date.getFullYear().toString()}-${(
-      date.getMonth() + 1
-    ).toString()}-${date.getDate().toString()}.xlsx`;
   }
 
   getExportCBEVerificationReportMutation(projectId: Signal<number | string>) {
@@ -151,7 +150,7 @@ export class ExportService {
           );
         }
 
-        const filename = this.toExportFileName(type);
+        const filename = ExportService.toExportFileName(type);
 
         return { exportResult, filename };
       } catch (error) {
@@ -163,17 +162,6 @@ export class ExportService {
         }
         throw error;
       }
-    };
-  }
-
-  downloadArrayToXlsx() {
-    return ({ data, fileName }: { data: unknown[]; fileName: string }) => {
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      const workbook: XLSX.WorkBook = {
-        Sheets: { data: worksheet },
-        SheetNames: ['data'],
-      };
-      XLSX.writeFile(workbook, this.toExportFileName(fileName));
     };
   }
 

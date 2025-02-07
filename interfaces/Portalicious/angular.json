@@ -26,6 +26,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "@savvywombat/tailwindcss-grid-areas",
+              "filesize",
+              "tailwindcss/plugin"
+            ],
             "localize": true,
             "i18nMissingTranslation": "error",
             "outputPath": "www",
@@ -56,8 +61,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3MB",
-                  "maximumError": "5MB"
+                  "maximumWarning": "1.6MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "allScript",
+                  "maximumWarning": "3.5MB",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
