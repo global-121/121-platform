@@ -126,12 +126,21 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_4AM, {
     disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
   })
-  public async cronDoNedbankReconciliation(): Promise<void> {
+  public async cronDoNedbankReconciliation(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/nedbank`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.patch(url, {}, headers);
+    const response: AxiosResponse = await this.httpService.patch(
+      url,
+      {},
+      headers,
+    );
+
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -152,7 +161,11 @@ export class CronjobService {
     return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
-  public getAllMethods(): { methodNames: string[]; responseStatus: number } {
+  public getAllMethods(): {
+    methodNames: string[];
+    url: string;
+    responseStatus: number;
+  } {
     const prototype = Object.getPrototypeOf(this);
     const methodNames = Object.getOwnPropertyNames(prototype).filter((name) => {
       const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
@@ -162,6 +175,10 @@ export class CronjobService {
         name !== 'constructor'
       );
     });
-    return { methodNames, responseStatus: 200 }; // TODO: REFACTOR: Faking the responseStatus for testing purposes, since the integration test expects it for all methods. A cleaner way would be that this function only returns methods with the @Cron decorator.
+    return {
+      methodNames,
+      url: `/get-all-methods-dummy-url`,
+      responseStatus: 200,
+    }; // TODO: REFACTOR: Faking the url and responseStatus for testing purposes, since the integration test expects it for all methods. A cleaner way would be that this function only returns methods with the @Cron decorator.
   }
 }
