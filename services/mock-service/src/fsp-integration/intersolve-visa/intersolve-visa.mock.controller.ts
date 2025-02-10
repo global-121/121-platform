@@ -46,7 +46,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Get card' })
-  @Get('/payment-instrument-payment/v1/tokens/:tokenCode/physical-card-status') // Did not add includeBalances here as query param as we always use it with true
+  @Get('/payment-instrument-payment/v1/tokens/:tokenCode/physical-card-status')
   public getCard(
     @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
