@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { assert } from 'console';
+import assert from 'assert';
 
 import {
   getAccessToken,
