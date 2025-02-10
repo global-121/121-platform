@@ -44,7 +44,7 @@ export class CookieJwtStrategy
         return token;
       },
       ignoreExpiration: false,
-      secretOrKey: process.env.SECRETS_121_SERVICE_SECRET as string,
+      secretOrKey: process.env.SECRETS_121_SERVICE_SECRET,
       passReqToCallback: true,
     });
   }
