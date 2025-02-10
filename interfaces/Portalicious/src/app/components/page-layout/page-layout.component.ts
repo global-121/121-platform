@@ -42,15 +42,15 @@ export class PageLayoutComponent {
   readonly route = inject(ActivatedRoute);
   readonly registrationLookupService = inject(RegistrationLookupService);
 
-  pageTitle = input<string>();
-  parentPageTitle = input<string>();
-  parentPageLink = input<RouterLink['routerLink']>();
+  readonly pageTitle = input<string>();
+  readonly parentPageTitle = input<string>();
+  readonly parentPageLink = input<RouterLink['routerLink']>();
 
-  projectId = input<string>();
+  readonly projectId = input<string>();
 
-  isPending = input<boolean>();
+  readonly isPending = input<boolean>();
 
-  pageLoadError = computed(() => {
+  readonly pageLoadError = computed(() => {
     const permissionDenied = this.route.snapshot.queryParams[
       PERMISSION_DENIED_QUERY_KEY
     ] as unknown;

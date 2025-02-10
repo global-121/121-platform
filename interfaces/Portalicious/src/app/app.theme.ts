@@ -26,7 +26,7 @@ const severityVariants = {
   error: severityVariant('red'),
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Aura is typed as any by primeng
 const AppTheme = definePreset(Aura, {
   // Temporary theming, to be replaced with a proper theme created by G&T
   semantic: {

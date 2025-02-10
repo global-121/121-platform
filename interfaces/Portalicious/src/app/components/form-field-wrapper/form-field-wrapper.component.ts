@@ -13,6 +13,6 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormFieldWrapperComponent {
-  label = input.required<LocalizedString | string>();
-  errorMessage = input<false | string>();
+  readonly label = input.required<LocalizedString | string>();
+  readonly errorMessage = input<false | string>();
 }

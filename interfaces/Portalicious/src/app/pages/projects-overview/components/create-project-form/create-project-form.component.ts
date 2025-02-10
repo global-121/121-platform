@@ -52,17 +52,17 @@ export class CreateProjectFormComponent {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  formVisible = model.required<boolean>();
+  readonly formVisible = model.required<boolean>();
 
   formGroup = new FormGroup({
     token: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
     assetId: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
   });

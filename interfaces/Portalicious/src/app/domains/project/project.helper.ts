@@ -7,41 +7,31 @@ import {
 } from '~/domains/payment/payment.helpers';
 import { Project } from '~/domains/project/project.model';
 
-export function projectHasVoucherSupport(project?: Project) {
-  return project?.programFinancialServiceProviderConfigurations.some((fsp) =>
+export const projectHasVoucherSupport = (project?: Project): boolean =>
+  project?.programFinancialServiceProviderConfigurations.some((fsp) =>
     FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.financialServiceProviderName),
-  );
-}
+  ) ?? false;
 
-export function projectHasPhysicalCardSupport(project?: Project) {
-  return project?.programFinancialServiceProviderConfigurations.some((fsp) =>
+export const projectHasPhysicalCardSupport = (project?: Project): boolean =>
+  project?.programFinancialServiceProviderConfigurations.some((fsp) =>
     FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.financialServiceProviderName),
-  );
-}
+  ) ?? false;
 
-export function projectHasFspWithExportFileIntegration(project?: Project) {
-  return (
-    project?.programFinancialServiceProviderConfigurations.some(
-      (fsp) =>
-        getFinancialServiceProviderSettingByName(
-          fsp.financialServiceProviderName,
-        )?.integrationType === FinancialServiceProviderIntegrationType.csv,
-    ) ?? false
-  );
-}
+export const projectHasFspWithExportFileIntegration = (
+  project?: Project,
+): boolean =>
+  project?.programFinancialServiceProviderConfigurations.some(
+    (fsp) =>
+      getFinancialServiceProviderSettingByName(fsp.financialServiceProviderName)
+        ?.integrationType === FinancialServiceProviderIntegrationType.csv,
+  ) ?? false;
 
-export function projectHasInclusionScore(project?: Project): boolean {
-  if (project?.programRegistrationAttributes) {
-    for (const attribute of project.programRegistrationAttributes) {
-      if (Object.keys(attribute.scoring).length > 0) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
+export const projectHasInclusionScore = (project?: Project): boolean =>
+  project?.programRegistrationAttributes.some(
+    (attribute) => Object.keys(attribute.scoring).length > 0,
+  ) ?? false;
 
-export function financialServiceProviderConfigurationNamesHaveIntegrationType({
+export const financialServiceProviderConfigurationNamesHaveIntegrationType = ({
   project,
   financialServiceProviderConfigurationNames,
   integrationType,
@@ -49,7 +39,7 @@ export function financialServiceProviderConfigurationNamesHaveIntegrationType({
   project: Project;
   financialServiceProviderConfigurationNames: string[];
   integrationType: FinancialServiceProviderIntegrationType;
-}) {
+}) => {
   const fspSettings = financialServiceProviderConfigurationNames.map(
     (financialServiceProviderConfigurationName) => {
       const config = project.programFinancialServiceProviderConfigurations.find(
@@ -68,7 +58,7 @@ export function financialServiceProviderConfigurationNamesHaveIntegrationType({
     },
   );
 
-  return fspSettings.some((fspSetting) => {
-    return fspSetting?.integrationType === integrationType;
-  });
-}
+  return fspSettings.some(
+    (fspSetting) => fspSetting?.integrationType === integrationType,
+  );
+};

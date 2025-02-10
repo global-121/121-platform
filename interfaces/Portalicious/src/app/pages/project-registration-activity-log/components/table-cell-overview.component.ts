@@ -75,8 +75,8 @@ import { Locale } from '~/utils/locale';
 export class TableCellOverviewComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
-  value = input.required<Activity>();
-  context = input.required<ActivityLogTableCellContext>();
+  readonly value = input.required<Activity>();
+  readonly context = input.required<ActivityLogTableCellContext>();
   locale = inject<Locale>(LOCALE_ID);
 
   readonly registrationAttributeService = inject(RegistrationAttributeService);
@@ -85,7 +85,7 @@ export class TableCellOverviewComponent
     this.registrationAttributeService.getRegistrationAttributes(this.context),
   );
 
-  chipData = computed<ChipData | undefined>(() => {
+  readonly chipData = computed<ChipData | undefined>(() => {
     const { type, attributes } = this.value();
 
     if (type === ActivityTypeEnum.Transaction) {
@@ -99,7 +99,7 @@ export class TableCellOverviewComponent
     return undefined;
   });
 
-  overview = computed(() => {
+  readonly overview = computed(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.DataChange:
@@ -125,7 +125,7 @@ export class TableCellOverviewComponent
     }
   });
 
-  voucherDialogData = computed(() => {
+  readonly voucherDialogData = computed(() => {
     const item = this.value();
     const referenceId = this.context().referenceId;
 

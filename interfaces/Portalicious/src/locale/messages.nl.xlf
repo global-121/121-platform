@@ -2027,6 +2027,10 @@
         <source>Enter reason</source>
         <target state="new">Enter reason</target>
       </trans-unit>
+      <trans-unit id="2308951289162408736" datatype="html">
+        <source>(image)</source>
+        <target state="new">(image)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

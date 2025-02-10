@@ -78,11 +78,13 @@ export class SendMessageDialogComponent
 
   private messageTypeFieldSubscription: Subscription;
 
-  actionData = signal<ActionDataWithPaginateQuery<Registration> | undefined>(
+  readonly actionData = signal<
+    ActionDataWithPaginateQuery<Registration> | undefined
+  >(undefined);
+  readonly dialogVisible = model<boolean>(false);
+  readonly previewData = signal<Partial<MessageInputData> | undefined>(
     undefined,
   );
-  dialogVisible = model<boolean>(false);
-  previewData = signal<Partial<MessageInputData> | undefined>(undefined);
 
   messageTemplates = injectQuery(
     this.notificationApiService.getMessageTemplates(this.projectId),
@@ -91,7 +93,7 @@ export class SendMessageDialogComponent
   formGroup = new FormGroup({
     messageType: new FormControl<'custom' | 'template'>('template', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
     messageTemplateKey: new FormControl<string | undefined>(undefined, {
@@ -115,39 +117,6 @@ export class SendMessageDialogComponent
       return;
     },
   });
-
-  constructor() {
-    const messageTypeField = this.formGroup.controls.messageType;
-    const messageTemplateKeyField = this.formGroup.controls.messageTemplateKey;
-    const customMessageField = this.formGroup.controls.customMessage;
-
-    this.messageTypeFieldSubscription = messageTypeField.valueChanges.subscribe(
-      (type) => {
-        if (type === 'template') {
-          // eslint-disable-next-line @typescript-eslint/unbound-method
-          messageTemplateKeyField.setValidators([Validators.required]);
-          customMessageField.clearValidators();
-        } else {
-          customMessageField.setValidators([
-            // eslint-disable-next-line @typescript-eslint/unbound-method
-            Validators.required,
-            Validators.minLength(20),
-          ]);
-          messageTemplateKeyField.clearValidators();
-        }
-
-        messageTemplateKeyField.updateValueAndValidity();
-        customMessageField.updateValueAndValidity();
-      },
-    );
-  }
-
-  triggerAction(actionData: ActionDataWithPaginateQuery<Registration>) {
-    this.actionData.set(actionData);
-    this.formGroup.reset();
-    this.previewData.set(undefined);
-    this.dialogVisible.set(true);
-  }
 
   sendMessageMutation = injectMutation(() => ({
     mutationFn: (
@@ -181,6 +150,38 @@ export class SendMessageDialogComponent
       this.actionComplete.emit();
     },
   }));
+  constructor() {
+    const messageTypeField = this.formGroup.controls.messageType;
+    const messageTemplateKeyField = this.formGroup.controls.messageTemplateKey;
+    const customMessageField = this.formGroup.controls.customMessage;
+
+    this.messageTypeFieldSubscription = messageTypeField.valueChanges.subscribe(
+      (type) => {
+        if (type === 'template') {
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          messageTemplateKeyField.setValidators([Validators.required]);
+          customMessageField.clearValidators();
+        } else {
+          customMessageField.setValidators([
+            // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+            Validators.required,
+            Validators.minLength(20),
+          ]);
+          messageTemplateKeyField.clearValidators();
+        }
+
+        messageTemplateKeyField.updateValueAndValidity();
+        customMessageField.updateValueAndValidity();
+      },
+    );
+  }
+
+  triggerAction(actionData: ActionDataWithPaginateQuery<Registration>) {
+    this.actionData.set(actionData);
+    this.formGroup.reset();
+    this.previewData.set(undefined);
+    this.dialogVisible.set(true);
+  }
 
   onProceedToPreview() {
     this.formGroup.markAllAsTouched();

@@ -76,8 +76,8 @@ export type DataListItem = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataListComponent {
-  data = input.required<DataListItem[]>();
-  hideBottomBorder = input<boolean>();
+  readonly data = input.required<DataListItem[]>();
+  readonly hideBottomBorder = input<boolean>();
 
   readonly translatableStringService = inject(TranslatableStringService);
 

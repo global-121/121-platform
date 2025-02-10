@@ -100,7 +100,9 @@ export class ProjectPaymentPageComponent {
   readonly retryTransfersDialog =
     viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
 
-  contextMenuSelection = signal<PaymentMetricDetails | undefined>(undefined);
+  readonly contextMenuSelection = signal<PaymentMetricDetails | undefined>(
+    undefined,
+  );
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
@@ -127,16 +129,16 @@ export class ProjectPaymentPageComponent {
     }),
   );
 
-  refetchPayment = signal(true);
+  readonly refetchPayment = signal(true);
 
-  allPaymentsLink = computed(() => [
+  readonly allPaymentsLink = computed(() => [
     '/',
     AppRoutes.project,
     this.projectId(),
     AppRoutes.projectPayments,
   ]);
 
-  paymentDate = computed(() => {
+  readonly paymentDate = computed(() => {
     if (!this.payments.isSuccess()) {
       return '';
     }
@@ -150,11 +152,11 @@ export class ProjectPaymentPageComponent {
     return new DatePipe(this.locale).transform(date, 'short') ?? '';
   });
 
-  paymentTitle = computed(() => {
-    return $localize`Payment` + ' ' + this.paymentDate();
-  });
+  readonly paymentTitle = computed(
+    () => $localize`Payment` + ' ' + this.paymentDate(),
+  );
 
-  totalPaymentAmount = computed(() => {
+  readonly totalPaymentAmount = computed(() => {
     if (!this.payment.isSuccess()) {
       return '-';
     }
@@ -174,7 +176,7 @@ export class ProjectPaymentPageComponent {
     );
   });
 
-  successfulPaymentsAmount = computed(() => {
+  readonly successfulPaymentsAmount = computed(() => {
     if (!this.payment.isSuccess()) {
       return '-';
     }
@@ -189,7 +191,7 @@ export class ProjectPaymentPageComponent {
     );
   });
 
-  columns = computed(() => {
+  readonly columns = computed(() => {
     if (!this.project.isSuccess()) {
       return [];
     }
@@ -273,7 +275,7 @@ export class ProjectPaymentPageComponent {
     return projectPaymentColumns;
   });
 
-  contextMenuItems = computed<MenuItem[]>(() => {
+  readonly contextMenuItems = computed<MenuItem[]>(() => {
     const transaction = this.contextMenuSelection();
 
     if (!transaction) {
@@ -309,12 +311,12 @@ export class ProjectPaymentPageComponent {
     ];
   });
 
-  localStorageKey = computed(
+  readonly localStorageKey = computed(
     () =>
       `project-payment-table-${this.projectId().toString()}-${this.paymentId().toString()}`,
   );
 
-  canRetryTransfers = computed(() => {
+  readonly canRetryTransfers = computed(() => {
     if (
       !this.authService.hasAllPermissions({
         projectId: this.projectId(),
@@ -337,6 +339,9 @@ export class ProjectPaymentPageComponent {
       .some((payment) => payment.status === TransactionStatusEnum.error);
   });
 
+  readonly hasFspWithExportFileIntegration = computed(() =>
+    projectHasFspWithExportFileIntegration(this.project.data()),
+  );
   retryFailedTransfers({
     triggeredFromContextMenu = false,
   }: {
@@ -356,8 +361,4 @@ export class ProjectPaymentPageComponent {
       contextMenuItem: this.contextMenuSelection(),
     });
   }
-
-  hasFspWithExportFileIntegration = computed(() =>
-    projectHasFspWithExportFileIntegration(this.project.data()),
-  );
 }

@@ -13,8 +13,8 @@ export const FOUND_RESOURCE_GUARD_QUERY_KEY = 'couldNotFindResource';
 
 export const foundResourceGuard: (
   resourceType: FoundResourceGuardType,
-) => CanActivateFn = (resourceType: FoundResourceGuardType) => {
-  return async function projectPermissionsCanActivateFn(
+) => CanActivateFn = (resourceType: FoundResourceGuardType) =>
+  async function projectPermissionsCanActivateFn(
     route: ActivatedRouteSnapshot,
   ) {
     const queryClient = inject(QueryClient);
@@ -67,4 +67,3 @@ export const foundResourceGuard: (
       },
     });
   };
-};

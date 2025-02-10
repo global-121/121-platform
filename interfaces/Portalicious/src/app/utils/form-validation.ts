@@ -1,24 +1,24 @@
 import { computed } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 
-export function genericFieldIsRequiredValidationMessage(
+export const genericFieldIsRequiredValidationMessage = (
   control: AbstractControl,
-) {
+) => {
   if (!control.invalid) {
     return;
   }
   return $localize`:@@generic-required-field:This field is required.`;
-}
+};
 
-export function generateFieldErrors<T extends FormGroup>(
+export const generateFieldErrors = <T extends FormGroup>(
   formGroup: T,
   validationFuncMapping: {
     [K in keyof T['controls']]: (
       control: T['controls'][K],
     ) => string | undefined;
   },
-) {
-  return computed(
+) =>
+  computed(
     () =>
       function (controlName: keyof T['controls'] & string) {
         const control = formGroup.controls[
@@ -30,4 +30,3 @@ export function generateFieldErrors<T extends FormGroup>(
         return validationFuncMapping[controlName](control);
       },
   );
-}

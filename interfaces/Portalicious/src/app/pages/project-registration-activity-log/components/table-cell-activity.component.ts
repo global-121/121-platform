@@ -29,9 +29,13 @@ import { Activity } from '~/domains/registration/registration.model';
 export class TableCellActivityComponent
   implements TableCellComponent<Activity>
 {
-  value = input.required<Activity>();
-  context = input<never>();
+  readonly value = input.required<Activity>();
+  readonly context = input<never>();
 
-  label = computed(() => ACTIVITY_LOG_ITEM_TYPE_LABELS[this.value().type]);
-  icon = computed(() => ACTIVITY_LOG_ITEM_TYPE_ICONS[this.value().type]);
+  readonly label = computed(
+    () => ACTIVITY_LOG_ITEM_TYPE_LABELS[this.value().type],
+  );
+  readonly icon = computed(
+    () => ACTIVITY_LOG_ITEM_TYPE_ICONS[this.value().type],
+  );
 }

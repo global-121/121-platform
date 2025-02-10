@@ -35,8 +35,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportReconciliationDataComponent {
-  projectId = input.required<string>();
-  paymentId = input.required<string>();
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<string>();
 
   private queryClient = inject(QueryClient);
   private authService = inject(AuthService);
@@ -45,13 +45,13 @@ export class ImportReconciliationDataComponent {
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
-  dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model<boolean>(false);
 
   paymentInProgress = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  canImportReconciliationData = computed(() =>
+  readonly canImportReconciliationData = computed(() =>
     this.authService.hasAllPermissions({
       projectId: this.projectId(),
       requiredPermissions: [
@@ -61,19 +61,6 @@ export class ImportReconciliationDataComponent {
       ],
     }),
   );
-
-  importReconciliationData() {
-    if (this.paymentInProgress.data()?.inProgress) {
-      this.toastService.showToast({
-        severity: 'warn',
-        summary: $localize`Import not possible`,
-        detail: $localize`A payment is currently in progress. Please try again later`,
-      });
-      return;
-    }
-
-    this.dialogVisible.set(true);
-  }
 
   downloadReconciliationTemplatesMutation = injectMutation(() => ({
     mutationFn: () =>
@@ -89,7 +76,6 @@ export class ImportReconciliationDataComponent {
       });
     },
   }));
-
   importReconciliationDataMutation = injectMutation(() => ({
     mutationFn: (
       formValues: ReturnType<ImportFileDialogFormGroup['getRawValue']>,
@@ -126,4 +112,16 @@ export class ImportReconciliationDataComponent {
       }
     },
   }));
+  importReconciliationData() {
+    if (this.paymentInProgress.data()?.inProgress) {
+      this.toastService.showToast({
+        severity: 'warn',
+        summary: $localize`Import not possible`,
+        detail: $localize`A payment is currently in progress. Please try again later`,
+      });
+      return;
+    }
+
+    this.dialogVisible.set(true);
+  }
 }

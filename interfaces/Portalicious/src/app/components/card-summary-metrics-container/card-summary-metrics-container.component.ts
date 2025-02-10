@@ -11,5 +11,5 @@ import { SummaryMetric } from '~/domains/metric/metric.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardSummaryMetricsContainerComponent {
-  public summaryMetrics = input.required<SummaryMetric[]>();
+  public readonly summaryMetrics = input.required<SummaryMetric[]>();
 }

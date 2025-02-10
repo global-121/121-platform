@@ -71,7 +71,7 @@ export class ProjectMonitoringPageComponent {
     enabled: () => !!this.latestPaymentNumber(),
   }));
 
-  remainingBudget = computed(() => {
+  readonly remainingBudget = computed(() => {
     const metricsData = this.metrics.data();
 
     if (!metricsData) {
@@ -89,7 +89,7 @@ export class ProjectMonitoringPageComponent {
     return metricsData.totalBudget - metricsData.spentMoney;
   });
 
-  latestPaymentNumber = computed(() => {
+  readonly latestPaymentNumber = computed(() => {
     if (!this.payments.isSuccess() || this.payments.data().length === 0) {
       return;
     }
@@ -97,11 +97,11 @@ export class ProjectMonitoringPageComponent {
     return this.payments.data()[this.payments.data().length - 1].payment;
   });
 
-  projectDescription = computed(() =>
+  readonly projectDescription = computed(() =>
     this.translatableStringService.translate(this.project.data()?.description),
   );
 
-  projectDescriptionData = computed(() => {
+  readonly projectDescriptionData = computed(() => {
     const projectData = this.project.data();
 
     const listData: DataListItem[] = [

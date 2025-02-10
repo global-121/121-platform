@@ -33,13 +33,13 @@ import { REGISTRATION_STATUS_VERB_PROGRESSIVE } from '~/domains/registration/reg
 export class ChangeStatusReasonComponent {
   RegistrationStatusEnum = RegistrationStatusEnum;
 
-  status = input.required<RegistrationStatusEnum>();
-  reason = model.required<string | undefined>();
-  reasonValidationErrorMessage = input<string | undefined>();
+  readonly status = input.required<RegistrationStatusEnum>();
+  readonly reason = model.required<string | undefined>();
+  readonly reasonValidationErrorMessage = input<string | undefined>();
 
   readonly reasonUpdated = output();
 
-  statusVerbProgressive = computed<string>(() => {
+  readonly statusVerbProgressive = computed<string>(() => {
     const status = this.status();
     return REGISTRATION_STATUS_VERB_PROGRESSIVE[status];
   });

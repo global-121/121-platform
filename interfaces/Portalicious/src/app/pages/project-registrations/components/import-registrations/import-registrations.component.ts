@@ -29,14 +29,14 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportRegistrationsComponent {
-  projectId = input.required<string>();
+  readonly projectId = input.required<string>();
 
   private queryClient = inject(QueryClient);
   private downloadService = inject(DownloadService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  dialogVisible = model<boolean>(false);
+  readonly dialogVisible = model<boolean>(false);
 
   downloadImportRegistrationsTemplateMutation = injectMutation(() => ({
     mutationFn: () =>

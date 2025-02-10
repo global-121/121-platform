@@ -26,11 +26,11 @@ const tailwindConfig = getTailwindConfig();
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentChartComponent {
-  paymentDetails = input.required<PaymentAggregate>();
+  readonly paymentDetails = input.required<PaymentAggregate>();
 
   readonly translatableStringService = inject(TranslatableStringService);
 
-  chartData = computed(() => {
+  readonly chartData = computed(() => {
     const { waiting, success, failed } = this.paymentDetails();
     const data = {
       labels: [
@@ -94,16 +94,16 @@ export class ProjectPaymentChartComponent {
     },
   };
 
-  chartAriaLabel = computed(() => {
+  readonly chartAriaLabel = computed(() => {
     const chartData = this.chartData();
     const metrics = chartData.datasets[0].data;
 
     return (
       $localize`Payment status chart. ` +
       this.translatableStringService.commaSeparatedList(
-        chartData.labels.map((label, index) => {
-          return `${label}: ${String(metrics[index])}`;
-        }),
+        chartData.labels.map(
+          (label, index) => `${label}: ${String(metrics[index])}`,
+        ),
       )
     );
   });

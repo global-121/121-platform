@@ -33,9 +33,9 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePaymentExportComponent {
-  projectId = input.required<string>();
-  paymentId = input.required<string>();
-  hasExportFileIntegration = input<boolean>(false);
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<string>();
+  readonly hasExportFileIntegration = input<boolean>(false);
 
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
@@ -51,10 +51,10 @@ export class SinglePaymentExportComponent {
 
   ExportType = ExportType;
 
-  fspPaymentListLabel = computed(() => {
-    return $localize`:@@export-fsp-payment-list:Export FSP payment list`;
-  });
-  exportFspPaymentListMutationData = computed(() => ({
+  readonly fspPaymentListLabel = computed(
+    () => $localize`:@@export-fsp-payment-list:Export FSP payment list`,
+  );
+  readonly exportFspPaymentListMutationData = computed(() => ({
     paymentId: this.paymentId().toString(),
   }));
   exportFspPaymentListMutation = injectMutation(() => ({
@@ -69,10 +69,10 @@ export class SinglePaymentExportComponent {
     },
   }));
 
-  paymentReportLabel = computed(() => {
-    return $localize`:@@payment-report:Payment report`;
-  });
-  paymentReportMutationData = computed(() => ({
+  readonly paymentReportLabel = computed(
+    () => $localize`:@@payment-report:Payment report`,
+  );
+  readonly paymentReportMutationData = computed(() => ({
     type: ExportType.payment,
     minPayment: Number(this.paymentId()),
     maxPayment: Number(this.paymentId()),
@@ -87,14 +87,14 @@ export class SinglePaymentExportComponent {
     },
   }));
 
-  canExportPaymentInstructions = computed(() => {
-    return this.authService.hasPermission({
+  readonly canExportPaymentInstructions = computed(() =>
+    this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
-    });
-  });
+    }),
+  );
 
-  exportOptions = computed<MenuItem[]>(() => [
+  readonly exportOptions = computed<MenuItem[]>(() => [
     {
       label: this.fspPaymentListLabel(),
       visible:

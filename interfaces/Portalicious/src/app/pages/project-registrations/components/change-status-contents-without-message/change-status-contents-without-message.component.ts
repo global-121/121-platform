@@ -33,8 +33,8 @@ import { generateFieldErrors } from '~/utils/form-validation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusContentsWithoutMessageComponent {
-  showAreYouSureCheckbox = input.required<boolean>();
-  isMutating = input<boolean>(false);
+  readonly showAreYouSureCheckbox = input.required<boolean>();
+  readonly isMutating = input<boolean>(false);
   readonly cancelChangeStatus = output();
   readonly confirmChangeStatus = output();
 
@@ -57,9 +57,9 @@ export class ChangeStatusContentsWithoutMessageComponent {
       const confirmActionField = this.formGroup.controls.confirmAction;
       confirmActionField.setValidators([
         this.showAreYouSureCheckbox()
-          ? // eslint-disable-next-line @typescript-eslint/unbound-method
+          ? // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
             Validators.requiredTrue
-          : // eslint-disable-next-line @typescript-eslint/unbound-method
+          : // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
             Validators.nullValidator,
       ]);
       confirmActionField.updateValueAndValidity();

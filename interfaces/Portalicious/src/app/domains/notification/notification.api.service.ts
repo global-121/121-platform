@@ -31,24 +31,21 @@ export class NotificationApiService extends DomainApiService {
         ...BASE_ENDPOINT(projectId as Signal<number | string>),
         'message-templates',
       ],
-      processResponse: (response) => {
-        return response
+      processResponse: (response) =>
+        response
           .filter(
             (template) =>
               template.isSendMessageTemplate &&
               template.language ===
                 getLanguageEnumFromLocale(this.locale).toString(),
           )
-          .map((template) => {
-            return {
-              ...template,
-              label:
-                this.translatableStringService.translate(template.label) ??
-                $localize`<UNNAMED TEMPLATE>`,
-            };
-          })
-          .sort((a, b) => a.label.localeCompare(b.label));
-      },
+          .map((template) => ({
+            ...template,
+            label:
+              this.translatableStringService.translate(template.label) ??
+              $localize`<UNNAMED TEMPLATE>`,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label)),
       enabled: () => !!projectId(),
     });
   }

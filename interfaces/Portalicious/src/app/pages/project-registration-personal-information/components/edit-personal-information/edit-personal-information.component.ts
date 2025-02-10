@@ -103,37 +103,12 @@ export class EditPersonalInformationComponent
     Record<string, FormControl<boolean | number | string | undefined>>
   >;
   formGroupChangesSubscription: Subscription;
-  changedRegistrationData = signal<
+  readonly changedRegistrationData = signal<
     Record<string, boolean | number | string | undefined>
   >({});
-  updateReason = model<string>();
+  readonly updateReason = model<string>();
 
-  ngOnInit() {
-    this.formGroup = this.registrationAttributeService.attributesToFormGroup({
-      attributes: this.attributeList(),
-      projectId: this.projectId(),
-    });
-
-    this.formGroupChangesSubscription = this.formGroup.valueChanges.subscribe(
-      (updatedValue) => {
-        this.changedRegistrationData.set(
-          pickBy(
-            updatedValue,
-            (newValue, attributeName) =>
-              // only include attributes that have changed
-              newValue !==
-              this.attributeList().find((a) => a.name === attributeName)?.value,
-          ),
-        );
-      },
-    );
-  }
-
-  ngOnDestroy() {
-    this.formGroupChangesSubscription.unsubscribe();
-  }
-
-  formFieldErrors = computed(() =>
+  readonly formFieldErrors = computed(() =>
     generateFieldErrors<EditPersonalInformationFormGroup>(
       this.formGroup,
       this.registrationAttributeService.attributesToFormFormFieldErrors({
@@ -141,7 +116,6 @@ export class EditPersonalInformationComponent
       }),
     ),
   );
-
   updateDisabledFields = effect(() => {
     if (!this.project.isSuccess()) {
       return;
@@ -157,18 +131,16 @@ export class EditPersonalInformationComponent
 
     if (!this.project.data().allowEmptyPhoneNumber) {
       try {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         this.formGroup.controls.phoneNumber.addValidators(Validators.required);
       } catch (e) {
         console.error(e);
       }
     }
   });
-
-  hasChanges = computed(
+  readonly hasChanges = computed(
     () => Object.keys(this.changedRegistrationData()).length > 0,
   );
-
   patchRegistrationMutation = injectMutation(() => ({
     mutationFn: ({
       referenceId,
@@ -216,6 +188,30 @@ export class EditPersonalInformationComponent
       this.registrationUpdated.emit();
     },
   }));
+  ngOnInit() {
+    this.formGroup = this.registrationAttributeService.attributesToFormGroup({
+      attributes: this.attributeList(),
+      projectId: this.projectId(),
+    });
+
+    this.formGroupChangesSubscription = this.formGroup.valueChanges.subscribe(
+      (updatedValue) => {
+        this.changedRegistrationData.set(
+          pickBy(
+            updatedValue,
+            (newValue, attributeName) =>
+              // only include attributes that have changed
+              newValue !==
+              this.attributeList().find((a) => a.name === attributeName)?.value,
+          ),
+        );
+      },
+    );
+  }
+
+  ngOnDestroy() {
+    this.formGroupChangesSubscription.unsubscribe();
+  }
 
   onSubmit() {
     this.formGroup.markAllAsTouched();

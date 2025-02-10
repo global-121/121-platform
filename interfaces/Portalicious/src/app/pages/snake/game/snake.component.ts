@@ -6,7 +6,7 @@ import {
   ElementRef,
   HostListener,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 
 import { ButtonModule } from 'primeng/button';
@@ -24,6 +24,21 @@ interface Vector {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SnakeComponent implements AfterViewInit {
+  readonly board = viewChild.required<ElementRef<HTMLDivElement>>('board');
+  public readonly isGameStarted = signal(false);
+  public readonly isGameOver = signal(false);
+  public readonly score = signal(0);
+  public readonly random121Fact = signal('');
+  private lastRenderTime = 0;
+  private inputDirection: Vector;
+  private lastInputDirection: Vector;
+  private snakeBody: Vector[];
+  private foodPosition: Vector;
+  private SNAKE_SPEED = 6;
+  private EXPANSION_RATE = 1;
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     switch (event.key) {
@@ -49,22 +64,6 @@ export class SnakeComponent implements AfterViewInit {
         break;
     }
   }
-
-  @ViewChild('board') board: ElementRef<HTMLDivElement>;
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
-
-  public isGameStarted = signal(false);
-  public isGameOver = signal(false);
-  public score = signal(0);
-  public random121Fact = signal('');
-
-  private lastRenderTime = 0;
-  private inputDirection: Vector;
-  private lastInputDirection: Vector;
-  private snakeBody: Vector[];
-  private foodPosition: Vector;
-  private SNAKE_SPEED = 6;
-  private EXPANSION_RATE = 1;
 
   ngAfterViewInit(): void {
     this.initialize();
@@ -154,7 +153,7 @@ export class SnakeComponent implements AfterViewInit {
     foodElement.style.gridRowStart = this.foodPosition.y.toString();
     foodElement.style.gridColumnStart = this.foodPosition.x.toString();
     foodElement.classList.add('bg-red-500', 'border-red-700', 'border-2');
-    this.board.nativeElement.appendChild(foodElement);
+    this.board().nativeElement.appendChild(foodElement);
   }
 
   private updateSnake() {
@@ -168,13 +167,13 @@ export class SnakeComponent implements AfterViewInit {
   }
 
   private drawSnake() {
-    this.board.nativeElement.innerHTML = '';
+    this.board().nativeElement.innerHTML = '';
     this.snakeBody.forEach((segment) => {
       const snakeElement = document.createElement('div');
       snakeElement.style.gridRowStart = segment.y.toString();
       snakeElement.style.gridColumnStart = segment.x.toString();
       snakeElement.classList.add('bg-grey-500', 'border-black', 'border');
-      this.board.nativeElement.appendChild(snakeElement);
+      this.board().nativeElement.appendChild(snakeElement);
     });
   }
 

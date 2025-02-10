@@ -71,7 +71,7 @@ const queryParamStep = 'create-payment-step';
   providers: [CurrencyPipe, ToastService],
 })
 export class CreatePaymentComponent {
-  projectId = input.required<string>();
+  readonly projectId = input.required<string>();
 
   currencyPipe = inject(CurrencyPipe);
   downloadService = inject(DownloadService);
@@ -92,8 +92,10 @@ export class CreatePaymentComponent {
   readonly registrationsTable =
     viewChild<RegistrationsTableComponent>('registrationsTable');
 
-  dialogVisible = model(false);
-  dryRunResult = signal<Dto<BulkActionResultPaymentDto> | undefined>(undefined);
+  readonly dialogVisible = model(false);
+  readonly dryRunResult = signal<Dto<BulkActionResultPaymentDto> | undefined>(
+    undefined,
+  );
 
   today = new Date();
   totalSteps = 2;
@@ -116,7 +118,7 @@ export class CreatePaymentComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  nextPaymentId = computed(() => {
+  readonly nextPaymentId = computed(() => {
     const payments = this.payments.data();
 
     if (!payments) {
@@ -126,7 +128,9 @@ export class CreatePaymentComponent {
     return getNextPaymentId(payments);
   });
 
-  paymentAmount = computed(() => this.project.data()?.fixedTransferValue ?? 0);
+  readonly paymentAmount = computed(
+    () => this.project.data()?.fixedTransferValue ?? 0,
+  );
 
   exportRegistrationsMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
@@ -206,6 +210,86 @@ export class CreatePaymentComponent {
     },
   }));
 
+  readonly currentStep = computed(() => {
+    if (!this.dialogVisible()) {
+      return 0;
+    }
+
+    if (this.dryRunResult()) {
+      return 2;
+    }
+
+    return 1;
+  });
+  readonly paymentHasIntegratedFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.api),
+  );
+  readonly paymentHasExcelFsp = computed(() =>
+    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.csv),
+  );
+  readonly paymentSummaryData = computed(() => {
+    const dryRunResult = this.dryRunResult();
+
+    if (!dryRunResult) {
+      return [];
+    }
+
+    const listData: DataListItem[] = [
+      {
+        label: $localize`Financial Service Provider(s)`,
+        type: 'options',
+        value: dryRunResult.programFinancialServiceProviderConfigurationNames,
+        options: (this.financialServiceProviderConfigurations.data() ?? []).map(
+          (fspConfig) => ({
+            label: fspConfig.label,
+            value: fspConfig.name,
+          }),
+        ),
+        loading: this.financialServiceProviderConfigurations.isPending(),
+        fullWidth: true,
+      },
+      {
+        label: $localize`Registrations`,
+        value: dryRunResult.applicableCount.toString(),
+      },
+      {
+        label: $localize`Total payment amount`,
+        value: this.currencyPipe.transform(
+          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
+          this.project.data()?.currency ?? 'EUR',
+          'symbol-narrow',
+          '1.2-2',
+        ),
+        tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+      },
+    ];
+
+    return listData;
+  });
+  readonly paymentSummaryMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Export payment list`,
+      icon: 'pi pi-upload',
+      command: () => {
+        this.exportRegistrationsMutation.mutate({
+          type: ExportType.allPeopleAffected,
+          paginateQuery: this.registrationsTable()?.getActionData()?.query,
+        });
+      },
+    },
+  ]);
+  readonly proceedLabel = computed(() =>
+    this.currentStep() === 1
+      ? $localize`Add to payment`
+      : $localize`Start payment`,
+  );
+  readonly cannotProceed = computed(
+    () =>
+      this.createPaymentMutation.isPending() ||
+      this.project.isPending() ||
+      this.paymentStatus.isPending(),
+  );
+
   openDialog() {
     if (this.paymentStatus.data()?.inProgress) {
       this.toastService.showToast({
@@ -220,18 +304,6 @@ export class CreatePaymentComponent {
     this.dialogVisible.set(true);
     this.createPaymentDialog().maximize();
   }
-
-  currentStep = computed(() => {
-    if (!this.dialogVisible()) {
-      return 0;
-    }
-
-    if (this.dryRunResult()) {
-      return 2;
-    }
-
-    return 1;
-  });
 
   goBack() {
     switch (this.currentStep()) {
@@ -276,83 +348,11 @@ export class CreatePaymentComponent {
     });
   }
 
-  paymentHasIntegratedFsp = computed(() =>
-    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.api),
-  );
-
-  paymentHasExcelFsp = computed(() =>
-    this.paymentHasIntegrationType(FinancialServiceProviderIntegrationType.csv),
-  );
-
-  paymentSummaryData = computed(() => {
-    const dryRunResult = this.dryRunResult();
-
-    if (!dryRunResult) {
-      return [];
-    }
-
-    const listData: DataListItem[] = [
-      {
-        label: $localize`Financial Service Provider(s)`,
-        type: 'options',
-        value: dryRunResult.programFinancialServiceProviderConfigurationNames,
-        options: (this.financialServiceProviderConfigurations.data() ?? []).map(
-          (fspConfig) => ({
-            label: fspConfig.label,
-            value: fspConfig.name,
-          }),
-        ),
-        loading: this.financialServiceProviderConfigurations.isPending(),
-        fullWidth: true,
-      },
-      {
-        label: $localize`Registrations`,
-        value: dryRunResult.applicableCount.toString(),
-      },
-      {
-        label: $localize`Total payment amount`,
-        value: this.currencyPipe.transform(
-          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
-          this.project.data()?.currency ?? 'EUR',
-          'symbol-narrow',
-          '1.2-2',
-        ),
-        tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
-      },
-    ];
-
-    return listData;
-  });
-
-  paymentSummaryMenuItems = computed<MenuItem[]>(() => [
-    {
-      label: $localize`Export payment list`,
-      icon: 'pi pi-upload',
-      command: () => {
-        this.exportRegistrationsMutation.mutate({
-          type: ExportType.allPeopleAffected,
-          paginateQuery: this.registrationsTable()?.getActionData()?.query,
-        });
-      },
-    },
-  ]);
-
-  proceedLabel = computed(() =>
-    this.currentStep() === 1
-      ? $localize`Add to payment`
-      : $localize`Start payment`,
-  );
-
-  cannotProceed = computed(
-    () =>
-      this.createPaymentMutation.isPending() ||
-      this.project.isPending() ||
-      this.paymentStatus.isPending(),
-  );
-
-  // the combination of the effect and the host listener allow us to make sure
-  // that the user does not navigate away from the page by using the browser "back" button
-  // during the payment creation process
+  /* the combination of the effect and the host listener allow us to make sure
+     that the user does not navigate away from the page by using the browser "back" button
+     during the payment creation process
+  */
+  // eslint-disable-next-line sort-class-members/sort-class-members -- disabling this eslint rule to keep the effect and the listener together in the code
   addCurrentStepToQueryParams = effect(() => {
     void this.router.navigate([], {
       relativeTo: this.route,

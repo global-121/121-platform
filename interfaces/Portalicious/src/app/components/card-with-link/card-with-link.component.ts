@@ -13,7 +13,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardWithLinkComponent {
-  href = input.required<RouterLink['routerLink']>();
-  title = input.required<string>();
-  loading = input<boolean>(false);
+  readonly href = input.required<RouterLink['routerLink']>();
+  readonly title = input.required<string>();
+  readonly loading = input<boolean>(false);
 }

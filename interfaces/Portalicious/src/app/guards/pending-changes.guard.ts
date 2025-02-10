@@ -6,9 +6,9 @@ export interface ComponentCanDeactivate {
 
 export const pendingChangesGuard: CanDeactivateFn<ComponentCanDeactivate> = (
   component: ComponentCanDeactivate,
-) => {
+) =>
   // if there are no pending changes, just allow deactivation; else confirm first
-  return component.canDeactivate()
+  component.canDeactivate()
     ? true
     : // NOTE: this warning message will only be shown when navigating elsewhere within your angular app;
       // when navigating away from your angular app, the browser will show a generic warning message
@@ -16,4 +16,3 @@ export const pendingChangesGuard: CanDeactivateFn<ComponentCanDeactivate> = (
       confirm(
         $localize`Changes that you made may not be saved. Are you sure you wish to proceed?`,
       );
-};

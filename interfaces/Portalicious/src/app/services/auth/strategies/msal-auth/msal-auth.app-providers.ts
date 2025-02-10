@@ -24,8 +24,8 @@ import { isIframed } from '~/utils/is-iframed';
 import { getOriginUrl } from '~/utils/url-helper';
 import { environment } from '~environment';
 
-function MSALInstanceFactory(): IPublicClientApplication {
-  return new PublicClientApplication({
+const MSALInstanceFactory = (): IPublicClientApplication =>
+  new PublicClientApplication({
     auth: {
       clientId: environment.azure_ad_client_id,
       authority: `${environment.azure_ad_url}/${environment.azure_ad_tenant_id}`,
@@ -48,9 +48,8 @@ function MSALInstanceFactory(): IPublicClientApplication {
       },
     },
   });
-}
 
-function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+const MSALInterceptorConfigFactory = (): MsalInterceptorConfiguration => {
   const protectedResourceMap = new Map([
     [
       'https://graph.microsoft.com/v1.0/me',
@@ -71,38 +70,34 @@ function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
       : InteractionType.Redirect,
     protectedResourceMap,
   };
-}
+};
 
-function MSALGuardConfigFactory(): MsalGuardConfiguration {
-  return {
-    loginFailedRoute: `/${AppRoutes.login}`,
-    interactionType: isIframed()
-      ? InteractionType.Popup
-      : InteractionType.Redirect,
-  };
-}
+const MSALGuardConfigFactory = (): MsalGuardConfiguration => ({
+  loginFailedRoute: `/${AppRoutes.login}`,
+  interactionType: isIframed()
+    ? InteractionType.Popup
+    : InteractionType.Redirect,
+});
 
-export function getMsalAuthAppProviders() {
-  return [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true,
-    },
-    {
-      provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory,
-    },
-    {
-      provide: MSAL_GUARD_CONFIG,
-      useFactory: MSALGuardConfigFactory,
-    },
-    {
-      provide: MSAL_INTERCEPTOR_CONFIG,
-      useFactory: MSALInterceptorConfigFactory,
-    },
-    MsalService,
-    MsalGuard,
-    MsalBroadcastService,
-  ];
-}
+export const getMsalAuthAppProviders = () => [
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: MsalInterceptor,
+    multi: true,
+  },
+  {
+    provide: MSAL_INSTANCE,
+    useFactory: MSALInstanceFactory,
+  },
+  {
+    provide: MSAL_GUARD_CONFIG,
+    useFactory: MSALGuardConfigFactory,
+  },
+  {
+    provide: MSAL_INTERCEPTOR_CONFIG,
+    useFactory: MSALInterceptorConfigFactory,
+  },
+  MsalService,
+  MsalGuard,
+  MsalBroadcastService,
+];

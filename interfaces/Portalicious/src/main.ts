@@ -12,7 +12,7 @@ import {
 } from '~/utils/locale';
 import { environment } from '~environment';
 
-async function main() {
+const main = async () => {
   registerChartDefaults();
 
   const localeInitialization = getLocaleForInitialization({
@@ -43,6 +43,6 @@ async function main() {
     AppComponent,
     getAppConfig(localeInitialization.locale),
   );
-}
+};
 
 void main();

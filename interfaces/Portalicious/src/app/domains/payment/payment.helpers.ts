@@ -12,13 +12,13 @@ export const FSPS_WITH_PHYSICAL_CARD_SUPPORT = [
   FinancialServiceProviders.intersolveVisa,
 ];
 
-export function getNextPaymentId(payments: Payment[]): number {
+export const getNextPaymentId = (payments: Payment[]): number => {
   if (payments.length === 0) {
     return 1;
   }
 
   return Math.max(...payments.map((payment) => payment.payment)) + 1;
-}
+};
 
 export const paymentLink = ({
   projectId,

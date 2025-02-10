@@ -10,10 +10,8 @@ export const PERMISSION_DENIED_QUERY_KEY = 'permissionDenied';
 
 export const projectPermissionsGuard: (
   permission: PermissionEnum,
-) => CanActivateFn = (permission: PermissionEnum) => {
-  return function projectPermissionsCanActivateFn(
-    route: ActivatedRouteSnapshot,
-  ) {
+) => CanActivateFn = (permission: PermissionEnum) =>
+  function projectPermissionsCanActivateFn(route: ActivatedRouteSnapshot) {
     const authService = inject(AuthService);
 
     const projectId = route.params.projectId as number;
@@ -30,4 +28,3 @@ export const projectPermissionsGuard: (
       },
     });
   };
-};

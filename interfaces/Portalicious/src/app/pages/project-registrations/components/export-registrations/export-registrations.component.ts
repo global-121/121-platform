@@ -51,8 +51,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportRegistrationsComponent {
-  projectId = input.required<string>();
-  getActionData =
+  readonly projectId = input.required<string>();
+  readonly getActionData =
     input.required<
       () => ActionDataWithPaginateQuery<Registration> | undefined
     >();
@@ -74,12 +74,12 @@ export class ExportRegistrationsComponent {
       'exportAccountVerificationDialog',
     );
 
-  exportSelectedActionData = signal<
+  readonly exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
 
-  fromDateExport = model<Date>();
-  toDateExport = model<Date>();
+  readonly fromDateExport = model<Date>();
+  readonly toDateExport = model<Date>();
 
   ExportType = ExportType;
 
@@ -113,7 +113,7 @@ export class ExportRegistrationsComponent {
     },
   }));
 
-  exportOptions = computed<MenuItem[]>(() => [
+  readonly exportOptions = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@export-selected:Selected registrations`,
       command: () => {
@@ -153,7 +153,7 @@ export class ExportRegistrationsComponent {
     },
   ]);
 
-  isCBEProject = computed(() =>
+  readonly isCBEProject = computed(() =>
     this.project
       .data()
       ?.programFinancialServiceProviderConfigurations.some(

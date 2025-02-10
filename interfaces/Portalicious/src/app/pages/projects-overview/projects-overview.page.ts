@@ -35,5 +35,5 @@ export class ProjectsOverviewPageComponent {
 
   public assignedProjects = this.authService.getAssignedProjectIds();
 
-  formVisible = signal(false);
+  readonly formVisible = signal(false);
 }

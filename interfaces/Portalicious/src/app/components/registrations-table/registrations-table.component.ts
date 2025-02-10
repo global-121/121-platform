@@ -30,11 +30,13 @@ import { RegistrationsTableColumnService } from '~/services/registrations-table-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationsTableComponent {
-  projectId = input.required<string>();
-  contextMenuItems = input<MenuItem[]>();
-  localStorageKey = input<string>();
-  overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>({});
-  showSelectionInHeader = input<boolean>(false);
+  readonly projectId = input.required<string>();
+  readonly contextMenuItems = input<MenuItem[]>();
+  readonly localStorageKey = input<string>();
+  readonly overrideFilters = input<Exclude<PaginateQuery['filter'], undefined>>(
+    {},
+  );
+  readonly showSelectionInHeader = input<boolean>(false);
 
   private projectApiService = inject(ProjectApiService);
   private registrationApiService = inject(RegistrationApiService);
@@ -48,10 +50,14 @@ export class RegistrationsTableComponent {
     viewChild.required<QueryTableComponent<Registration, never>>('table');
 
   protected RegistrationStatusEnum = RegistrationStatusEnum;
-  protected paginateQuery = signal<PaginateQuery | undefined>(undefined);
-  public contextMenuRegistration = signal<Registration | undefined>(undefined);
+  protected readonly paginateQuery = signal<PaginateQuery | undefined>(
+    undefined,
+  );
+  public readonly contextMenuRegistration = signal<Registration | undefined>(
+    undefined,
+  );
 
-  private registrationsPaginateQuery = computed<PaginateQuery>(() => {
+  private readonly registrationsPaginateQuery = computed<PaginateQuery>(() => {
     const paginateQuery = this.paginateQuery() ?? {};
     return {
       ...paginateQuery,
@@ -77,14 +83,14 @@ export class RegistrationsTableComponent {
     this.registrationsTableColumnService.getColumns(this.projectId),
   );
 
-  protected registrations = computed(
+  protected readonly registrations = computed(
     () => this.registrationsResponse.data()?.data ?? [],
   );
-  protected totalRegistrations = computed(
+  protected readonly totalRegistrations = computed(
     () => this.registrationsResponse.data()?.meta.totalItems ?? 0,
   );
 
-  protected columns = computed(() => {
+  protected readonly columns = computed(() => {
     if (!this.project.isSuccess() || !this.tableColumns.isSuccess()) {
       return [];
     }

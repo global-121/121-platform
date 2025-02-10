@@ -6,7 +6,7 @@ import { getTailwindConfig } from '~/utils/tailwind';
 const tailwindConfig = getTailwindConfig();
 const colors = tailwindConfig.theme.colors;
 
-export function registerChartDefaults() {
+export const registerChartDefaults = () => {
   Chart.defaults.font.family =
     tailwindConfig.theme.fontFamily.display.join(', ');
   Chart.defaults.font.weight = 500;
@@ -20,4 +20,4 @@ export function registerChartDefaults() {
   } else {
     Chart.defaults.plugins.datalabels.color = colors.black.DEFAULT;
   }
-}
+};

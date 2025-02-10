@@ -40,11 +40,11 @@ export class ProjectPaymentsPageComponent {
 
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
 
-  paymentsSorted = computed(() =>
+  readonly paymentsSorted = computed(() =>
     this.payments.data()?.sort((a, b) => b.payment - a.payment),
   );
 
-  canExport = computed(() =>
+  readonly canExport = computed(() =>
     this.authService.hasAllPermissions({
       projectId: this.projectId(),
       requiredPermissions: [
@@ -55,7 +55,7 @@ export class ProjectPaymentsPageComponent {
     }),
   );
 
-  canCreatePayment = computed(() =>
+  readonly canCreatePayment = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.PaymentCREATE,

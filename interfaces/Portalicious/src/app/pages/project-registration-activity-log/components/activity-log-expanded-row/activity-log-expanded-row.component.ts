@@ -45,8 +45,8 @@ export class ActivityLogExpandedRowComponent
     RegistrationAttributeService,
   );
 
-  value = input.required<Activity>();
-  context = input.required<ActivityLogTableCellContext>();
+  readonly value = input.required<Activity>();
+  readonly context = input.required<ActivityLogTableCellContext>();
 
   registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(this.context),
@@ -55,15 +55,18 @@ export class ActivityLogExpandedRowComponent
   intersolveVoucherBalance = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucherBalance({
       projectId: this.context().projectId,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       registrationReferenceId: this.context().referenceId!,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       paymentId: this.paymentId()!,
     })(),
-    enabled: () => this.isIntersolveVoucher() && !!this.context().referenceId,
+    enabled: () =>
+      this.isIntersolveVoucher() &&
+      !!this.context().referenceId &&
+      !!this.paymentId(),
   }));
 
-  isIntersolveVoucher = computed(() => {
+  readonly isIntersolveVoucher = computed(() => {
     const activity = this.value();
 
     return (
@@ -73,7 +76,7 @@ export class ActivityLogExpandedRowComponent
     );
   });
 
-  paymentId = computed(() => {
+  readonly paymentId = computed(() => {
     const activity = this.value();
     return activity.type === ActivityTypeEnum.Transaction
       ? activity.attributes.payment
@@ -83,15 +86,14 @@ export class ActivityLogExpandedRowComponent
   private localizeAttribute = (
     attributeName?: GenericRegistrationAttributes | string,
     attributeValue = '',
-  ) => {
-    return this.registrationAttributeService.localizeAttribute({
+  ) =>
+    this.registrationAttributeService.localizeAttribute({
       attributes: this.registrationAttributes.data(),
       attributeName,
       attributeOptionValue: attributeValue,
     });
-  };
 
-  dataList = computed<DataListItem[] | undefined>(() => {
+  readonly dataList = computed<DataListItem[] | undefined>(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.DataChange:
@@ -207,21 +209,7 @@ export class ActivityLogExpandedRowComponent
     }
   });
 
-  private getMessageBody(messageBody?: string, mediaUrl?: string): string {
-    const message = messageBody ?? '';
-
-    if (!mediaUrl) {
-      return message;
-    }
-
-    if (!message) {
-      return `(image)`;
-    }
-
-    return `(image)\n\n${message}`;
-  }
-
-  message = computed<string | undefined>(() => {
+  readonly message = computed<string | undefined>(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.Note:
@@ -235,4 +223,19 @@ export class ActivityLogExpandedRowComponent
         return undefined;
     }
   });
+
+  private getMessageBody(messageBody?: string, mediaUrl?: string): string {
+    const imageString = $localize`(image)`;
+    const message = messageBody ?? '';
+
+    if (!mediaUrl) {
+      return message;
+    }
+
+    if (!message) {
+      return imageString;
+    }
+
+    return `${imageString}\n\n${message}`;
+  }
 }
