@@ -211,7 +211,7 @@ export class IntersolveVisaApiService {
         errorPrefix: IntersolveVisa121ErrorText.getPhysicalCardError,
         method: 'GET',
         apiPath: 'payment-instrument-payment',
-        endpoint: `tokens/${tokenCode}/physical-card-data`,
+        endpoint: `tokens/${tokenCode}/physical-card-status`,
       });
 
     // If the response does not contain errors
