@@ -62,6 +62,7 @@ jobs:
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         run: |
           npm install
+          cp .env.example .env
           npm run build:download-translations
           npm run start:debug-production > portalicious-server-logs.txt 2>&1 &
 
