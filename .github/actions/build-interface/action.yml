@@ -89,7 +89,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        npm run build:production:all-languages
+        npm run build:production
 
     - name: Build (deprecated Portal)
       if: inputs.buildType == 'old-but-still-nice'

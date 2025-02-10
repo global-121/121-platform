@@ -87,6 +87,7 @@
                   "maximumError": "4kB"
                 }
               ],
+              "localize": ["ar", "en", "es", "fr", "nl"],
               "outputHashing": "all",
               "extractLicenses": true,
               "optimization": {
@@ -109,9 +110,6 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
-            },
-            "all-languages": {
-              "localize": ["ar", "en", "es", "fr", "nl"]
             },
             "ar": {
               "localize": ["ar"]
@@ -136,9 +134,6 @@
             },
             "development": {
               "buildTarget": "Portalicious:build:development"
-            },
-            "all-languages": {
-              "buildTarget": "Portalicious:build:production,all-languages"
             },
             "ar": {
               "buildTarget": "Portalicious:build:production,ar"

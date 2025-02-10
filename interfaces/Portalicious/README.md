@@ -66,7 +66,7 @@ After downloading, the translations will be available to use.
 
 ## Build
 
-Run `npm run build:prod` to build the project in production-mode. The output will be stored in the `www/` directory.
+Run `npm run build:production` to build the project in production-mode. The output will be stored in the `www/` directory.
 
 Run `npm run start:debug-production` to run a local server with the production build.
 
