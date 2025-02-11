@@ -4,7 +4,14 @@
     class="block [&_.p-datepicker]:w-full [&_input]:w-full [&_textarea]:w-full"
   >
     <strong class="mb-2 block">
+      @if (isRequired()) {
+        *
+      }
       {{ label() | translatableString }}
+      @let tooltip = labelTooltip();
+      @if (tooltip) {
+        <app-info-tooltip [message]="tooltip"></app-info-tooltip>
+      }
     </strong>
     <ng-content></ng-content>
     <app-form-error [error]="errorMessage()" />

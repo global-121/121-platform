@@ -302,4 +302,8 @@ body {
       @apply text-grey-700;
     }
   }
+
+  .p-tooltip-text {
+    @apply txt-body-s;
+  }
 }

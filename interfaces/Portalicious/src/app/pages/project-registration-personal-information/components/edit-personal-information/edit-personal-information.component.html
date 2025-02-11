@@ -1,5 +1,17 @@
-<ng-template #cancelAndSaveButtons>
-  <div class="space-x-4 text-end">
+<form
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+  (keydown.control.enter)="onSubmit()"
+  (keydown.meta.enter)="onSubmit()"
+  class="relative"
+>
+  <div class="sticky top-0 flex w-full items-center bg-white">
+    <i class="pi pi-pencil txt-xl me-4"></i>
+    <span
+      class="me-auto txt-h-1"
+      i18n
+      >Editing personal information</span
+    >
     <p-button
       label="Cancel"
       i18n-label="@@generic-cancel"
@@ -8,6 +20,7 @@
       outlined
       rounded
       severity="contrast"
+      class="me-4"
     />
     <p-button
       type="submit"
@@ -17,21 +30,14 @@
       rounded
     />
   </div>
-</ng-template>
-
-<form
-  [formGroup]="formGroup"
-  (ngSubmit)="onSubmit()"
-  (keydown.control.enter)="onSubmit()"
-  (keydown.meta.enter)="onSubmit()"
->
-  <ng-container [ngTemplateOutlet]="cancelAndSaveButtons"></ng-container>
   <div class="grid grid-cols-1 gap-x-5 md:grid-cols-2">
     @for (attribute of attributeList(); track $index) {
       <div class="space-x-1 py-4">
         <app-form-field-wrapper
           [label]="attribute.label"
+          [labelTooltip]="attribute.editInfo"
           [errorMessage]="formFieldErrors()()(attribute.name)"
+          [isRequired]="attribute.isRequired"
         >
           @let type = attribute.type;
 
@@ -70,16 +76,10 @@
               autocomplete="off"
             />
           }
-          <ng-container slot="details">
-            <p class="mt-1 text-grey-500 txt-system-s">
-              {{ attribute.editInfo }}
-            </p>
-          </ng-container>
         </app-form-field-wrapper>
       </div>
     }
   </div>
-  <ng-container [ngTemplateOutlet]="cancelAndSaveButtons"></ng-container>
 </form>
 <app-confirmation-dialog
   #editPersonalInformationDialog

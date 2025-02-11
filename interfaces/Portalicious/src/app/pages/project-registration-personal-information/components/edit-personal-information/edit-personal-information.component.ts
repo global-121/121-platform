@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -63,7 +62,6 @@ type EditPersonalInformationFormGroup =
     CheckboxModule,
     ConfirmationDialogComponent,
     FormsModule,
-    NgTemplateOutlet,
   ],
   templateUrl: './edit-personal-information.component.html',
   styles: ``,
