@@ -26,9 +26,7 @@ import { addDaysToDate, dateToIsoString } from '~/utils/date';
 export class ExportService {
   static toExportFileName(excelFileName: string): string {
     const date = new Date();
-    return `${excelFileName}-${date.getFullYear().toString()}-${(
-      date.getMonth() + 1
-    ).toString()}-${date.getDate().toString()}.xlsx`;
+    return `${excelFileName}-${date.toISOString().slice(0, 10)}.xlsx`;
   }
 
   private queryClient = inject(QueryClient);
