@@ -287,14 +287,13 @@ export class UserController {
     );
   }
 
-  // This endpoint searches users accross all programs, which is needed to add a user to a program
-  // We did not create an extra permission for this as it is always used in combination with adding new users to a program
-  // ProgramId is therefore not needed in the service
   @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
   @ApiTags('users')
   @ApiOperation({
     summary:
-      'Search for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.',
+      'Search, across all programs, for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.' +
+      'Is **NOT** limited to the provided `programId`;' +
+      "The `programId` used to check for the requesting user's permissions only.",
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })
   @ApiResponse({
