@@ -26,13 +26,13 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { pickBy } from 'lodash';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { pick } from 'radashi';
 import { Subscription } from 'rxjs';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
@@ -197,7 +197,7 @@ export class EditPersonalInformationComponent
     this.formGroupChangesSubscription = this.formGroup.valueChanges.subscribe(
       (updatedValue) => {
         this.changedRegistrationData.set(
-          pickBy(
+          pick(
             updatedValue,
             (newValue, attributeName) =>
               // only include attributes that have changed

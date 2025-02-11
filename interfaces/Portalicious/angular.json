@@ -15,9 +15,21 @@
       "i18n": {
         "sourceLocale": "en-GB",
         "locales": {
+          "ar": {
+            "translation": "src/locale/messages.ar.xlf",
+            "subPath": "ar"
+          },
+          "es": {
+            "translation": "src/locale/messages.es.xlf",
+            "subPath": "es"
+          },
+          "fr": {
+            "translation": "src/locale/messages.fr.xlf",
+            "subPath": "fr"
+          },
           "nl": {
             "translation": "src/locale/messages.nl.xlf",
-            "baseHref": "/nl/"
+            "subPath": "nl"
           }
         }
       },
@@ -26,8 +38,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "@savvywombat/tailwindcss-grid-areas",
+              "filesize",
+              "tailwindcss/plugin"
+            ],
             "localize": true,
-            "i18nMissingTranslation": "error",
+            "i18nMissingTranslation": "ignore",
             "outputPath": "www",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -56,8 +73,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3MB",
-                  "maximumError": "5MB"
+                  "maximumWarning": "1.6MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "allScript",
+                  "maximumWarning": "3.5MB",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -65,6 +87,7 @@
                   "maximumError": "4kB"
                 }
               ],
+              "localize": ["ar", "en", "es", "fr", "nl"],
               "outputHashing": "all",
               "extractLicenses": true,
               "optimization": {
@@ -88,6 +111,15 @@
                 }
               ]
             },
+            "ar": {
+              "localize": ["ar"]
+            },
+            "es": {
+              "localize": ["es"]
+            },
+            "fr": {
+              "localize": ["fr"]
+            },
             "nl": {
               "localize": ["nl"]
             }
@@ -103,8 +135,17 @@
             "development": {
               "buildTarget": "Portalicious:build:development"
             },
+            "ar": {
+              "buildTarget": "Portalicious:build:production,ar"
+            },
+            "es": {
+              "buildTarget": "Portalicious:build:production,es"
+            },
+            "fr": {
+              "buildTarget": "Portalicious:build:production,fr"
+            },
             "nl": {
-              "buildTarget": "Portalicious:build:development,nl"
+              "buildTarget": "Portalicious:build:production,nl"
             }
           },
           "defaultConfiguration": "development"
@@ -114,14 +155,17 @@
           "options": {
             "buildTarget": "Portalicious:build",
             "format": "xlf",
+            "includeContext": false,
+            "includeMeaningAndDescription": true,
+            "newTranslationTargetsBlank": "omit",
             "outputPath": "src/locale",
-            "sourceFile": "messages.xlf",
-            "targetFiles": ["messages.nl.xlf"],
-            "newTranslationTargetsBlank": false,
+            "prettyNestedTags": false,
+            "resetTranslationState": false,
             "sort": "stableAppendNew",
             "sortNestedTagAttributes": true,
-            "trim": true,
-            "includeContext": false
+            "sourceFile": "messages.xlf",
+            "targetFiles": [],
+            "trim": true
           }
         },
         "test": {

@@ -7,14 +7,20 @@ import { environment } from '~environment';
 const LOCAL_STORAGE_LOCALE_KEY = 'preferredLanguage';
 
 export enum Locale {
-  // this has to be en-GB otherwise angular locale stuff doesn't work
-  en = 'en-GB',
+  ar = 'ar',
+  en = 'en-GB', // this has to be en-GB otherwise angular locale stuff doesn't work
+  es = 'es',
+  fr = 'fr',
   nl = 'nl',
 }
 
 export const getLocaleLabel = (locale: Locale): string => {
+  // NOTE: These labels are never-to-be-translated, they need to appear in their own language for easier recognition by users.
   const localeLabels = {
+    [Locale.ar]: 'العربية',
     [Locale.en]: 'English',
+    [Locale.es]: 'Español',
+    [Locale.fr]: 'Français',
     [Locale.nl]: 'Nederlands',
   };
 

@@ -14,6 +14,8 @@ on:
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS:
         required: true
+      LOKALISE_API_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:
@@ -24,7 +26,7 @@ jobs:
     env:
       NG_ENV_NAME: ${{ vars.NG_ENV_NAME }}
       NG_ENV_ICON: ${{ vars.NG_ENV_ICON }}
-      NG_LOCALES: 'en-GB,nl'
+      NG_LOCALES: 'ar,en-GB,es,fr,nl'
       NG_DEFAULT_LOCALE: 'en-GB'
       NG_URL_121_SERVICE_API: ${{ vars.NG_URL_121_SERVICE_API }}
       USE_IN_TWILIO_FLEX_IFRAME: ${{ vars.USE_IN_TWILIO_FLEX_IFRAME }}
@@ -43,8 +45,12 @@ jobs:
       - name: Build Interface
         id: build
         uses: ./.github/actions/build-interface
+        env:
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:
           interfacePath: ${{ env.workingDirectory }}
+          buildType: 'portalicious'
           envIcon: ${{ env.NG_ENV_ICON }}
           envIconPath: 'src/assets/favicon.ico'
           envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.

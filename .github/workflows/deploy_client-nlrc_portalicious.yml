@@ -14,6 +14,8 @@ on:
     secrets:
       AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS:
         required: true
+      LOKALISE_API_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:
@@ -43,8 +45,12 @@ jobs:
       - name: Build Interface
         id: build
         uses: ./.github/actions/build-interface
+        env:
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:
           interfacePath: ${{ env.workingDirectory }}
+          buildType: 'portalicious'
           envIcon: ${{ env.NG_ENV_ICON }}
           envIconPath: 'src/assets/favicon.ico'
           envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.

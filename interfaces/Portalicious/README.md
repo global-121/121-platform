@@ -35,13 +35,38 @@ To support multiple languages, we use the default Angular i18n features, see: <h
 
 See all supported/enabled languages at: [`angular.json:.../i18n/locales`](angular.json#L17).
 
-During development, only 1 language can be used. See all available languages at: [`angular.json:.../architect/serve/configurations`](angular.json#L109).
+During development, only 1 language can be used.  
+See all available languages at: [`angular.json:.../architect/serve/configurations`](angular.json#L199).
 
 To use a different language, run: `npm run start -- --configuration=<language-code>`.
 
+### Translations for other languages
+
+Translations are managed via the [Lokalise TMS-service](https://lokalise.com).  
+To create a local build using the latest translations, the translation-files need to be downloaded from the Lokalise-API.
+
+For this, some credentials/variables need to be set in the `.env`-file:
+
+- `NG_LOCALES` Should contain the desired languages (comma-separated)
+- `NG_DOWNLOAD_TRANSLATIONS_AT_BUILD=true`
+- `LOKALISE_PROJECT_ID` - See in Bitwarden/GitHub-environments
+- `LOKALISE_API_TOKEN` - Create one in your Lokalise-account or use the shared Development-token from Bitwarden
+
+After setting these variables, run the following command to download the translations:  
+This is only required **_once_** (So not for _every_ build; As long as the translatable text hasn't changed).
+
+```bash
+npm run build:download-translations
+```
+
+After downloading, the translations will be available to use.
+
+- For local-development, run: `npm run start -- --configuration=<language-code>`
+- Or for a production build, run: `npm run start:debug-production`
+
 ## Build
 
-Run `npm run build:prod` to build the project in production-mode. The output will be stored in the `www/` directory.
+Run `npm run build:production` to build the project in production-mode. The output will be stored in the `www/` directory.
 
 Run `npm run start:debug-production` to run a local server with the production build.
 

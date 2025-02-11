@@ -11,13 +11,6 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'fs';
-import { config } from 'dotenv';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
 
 // Set up specifics
 const sourcePath = `./src/logout/`;
@@ -25,7 +18,9 @@ const targetPath = `./www/logout/`;
 
 // Create target
 if (!existsSync(targetPath)) {
-  mkdirSync(targetPath);
+  mkdirSync(targetPath, {
+    recursive: true,
+  });
 }
 
 // Set current API-URL from "NG_URL_121_SERVICE_API"

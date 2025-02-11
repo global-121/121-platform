@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
-import { uniqBy } from 'lodash';
+import { unique } from 'radashi';
 
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -130,7 +130,7 @@ export class ProjectApiService extends DomainApiService {
         filterShowInPeopleAffectedTable,
       },
       processResponse: (attributes) =>
-        uniqBy(attributes, 'name').map((attribute) => {
+        unique(attributes, (attribute) => attribute.name).map((attribute) => {
           const translatedLabel = this.translatableStringService.translate(
             attribute.label,
           );

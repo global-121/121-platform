@@ -64,7 +64,7 @@ export class SinglePaymentExportComponent {
     }),
     onSuccess: (filesToExport) => {
       filesToExport.forEach((fileToExport) => {
-        this.exportService.downloadArrayToXlsx()(fileToExport);
+        void this.downloadService.downloadArrayToXlsx(fileToExport);
       });
     },
   }));

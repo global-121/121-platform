@@ -106,7 +106,7 @@ export class ExportRegistrationsComponent {
       this.projectId,
     ),
     onSuccess: ({ data: data, fileName: fileName }) => {
-      this.exportService.downloadArrayToXlsx()({
+      void this.downloadService.downloadArrayToXlsx({
         data,
         fileName,
       });
