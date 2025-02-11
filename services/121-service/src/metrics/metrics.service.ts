@@ -53,7 +53,7 @@ const userPermissionMapByExportType = {
   [ExportType.payment]: [PermissionEnum.RegistrationPaymentExport],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
-  [ExportType.duplicates]: [PermissionEnum.RegistrationPaymentExport],
+  [ExportType.duplicates]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.intersolveVisaCardDetails]: [PermissionEnum.FspDebitCardEXPORT],
 };
 
