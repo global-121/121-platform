@@ -64,6 +64,7 @@ export class AddProjectTeamUserFormComponent {
   private toastService = inject(ToastService);
 
   readonly isEditing = computed(() => !!this.userToEdit());
+
   roles = injectQuery(this.roleApiService.getRoles());
   userSearchResults = injectQuery(
     this.projectApiService.getUserSearchResults(
@@ -75,6 +76,7 @@ export class AddProjectTeamUserFormComponent {
   projectUsers = injectQuery(
     this.projectApiService.getProjectUsers(this.projectId),
   );
+
   formGroup = new FormGroup({
     userValue: new FormControl<number>(-1, {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -91,6 +93,7 @@ export class AddProjectTeamUserFormComponent {
       nonNullable: true,
     }),
   });
+
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
@@ -104,11 +107,13 @@ export class AddProjectTeamUserFormComponent {
       },
     },
   );
+
   readonly availableUsersIsLoading = computed(
     () =>
       this.userSearchResults.isPending() ||
       (!this.isEditing() && this.projectUsers.isPending()),
   );
+
   readonly availableUsers = computed(() => {
     const userSearchResults = this.userSearchResults.data();
     const projectUsers = this.projectUsers.data();
@@ -128,6 +133,7 @@ export class AddProjectTeamUserFormComponent {
         ),
     );
   });
+
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({
       userValue,
@@ -175,6 +181,7 @@ export class AddProjectTeamUserFormComponent {
       void this.projectApiService.invalidateCache(this.projectId);
     },
   }));
+
   constructor() {
     effect(() => {
       const user = this.userToEdit();

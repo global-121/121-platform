@@ -49,7 +49,6 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectTeamPageComponent {
-  // this is injected by the router
   readonly projectId = input.required<string>();
 
   private projectApiService = inject(ProjectApiService);
@@ -158,6 +157,7 @@ export class ProjectTeamPageComponent {
       },
     },
   ]);
+
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
     this.formVisible.set(true);
