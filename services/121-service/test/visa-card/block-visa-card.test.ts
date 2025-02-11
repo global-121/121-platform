@@ -1,21 +1,16 @@
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
 import {
-  amountVisa,
-  paymentNrVisa,
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangeRegistrationStatus,
   blockVisaCard,
   getMessageHistory,
   getVisaWalletsAndDetails,
-  importRegistrations,
+  seedPaidRegistrations,
   unblockVisaCard,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -35,24 +30,9 @@ describe('(Un)Block visa debit card', () => {
 
   it('should succesfully block a Visa Debit card', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
-      referenceIds: [registrationVisa.referenceId],
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-    const paymentReferenceIds = [registrationVisa.referenceId];
-    await doPayment({
-      programId: programIdVisa,
-      paymentNr: paymentNrVisa,
-      amount: amountVisa,
-      referenceIds: paymentReferenceIds,
-      accessToken,
-    });
+    await seedPaidRegistrations([registrationVisa], programIdVisa);
 
     // Act
-    await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
@@ -91,24 +71,9 @@ describe('(Un)Block visa debit card', () => {
 
   it('should succesfully unblock a Visa Debit card', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
-      referenceIds: [registrationVisa.referenceId],
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-    const paymentReferenceIds = [registrationVisa.referenceId];
-    await doPayment({
-      programId: programIdVisa,
-      paymentNr: paymentNrVisa,
-      amount: amountVisa,
-      referenceIds: paymentReferenceIds,
-      accessToken,
-    });
+    await seedPaidRegistrations([registrationVisa], programIdVisa);
 
     // Act
-    await waitFor(2_000);
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
       programIdVisa,
       registrationVisa.referenceId,
