@@ -37,9 +37,6 @@ export class IntersolveVisaChildWalletEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public cardStatus: IntersolveVisaCardStatus | null;
 
-  @Column({ type: 'timestamp', nullable: true })
-  public lastUsedDate: Date | null;
-
   // Last time we got an update from Intersolve about the wallet status or when it was last used
   @Column({ type: 'timestamp', nullable: true })
   public lastExternalUpdate: Date | null;
