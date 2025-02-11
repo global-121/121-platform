@@ -19,6 +19,8 @@
   <form
     class="block w-full"
     (ngSubmit)="onFormSubmit()"
+    (keydown.control.enter)="onFormSubmit()"
+    (keydown.meta.enter)="onFormSubmit()"
   >
     <div class="space-y-4">
       <p>
@@ -51,6 +53,16 @@
           }
         }
       </p>
+
+      @let registrationStatus = status();
+      @if (reasonIsRequired() && registrationStatus) {
+        <app-change-status-reason
+          [status]="registrationStatus"
+          [(reason)]="reason"
+          [reasonValidationErrorMessage]="reasonValidationErrorMessage()"
+          (reasonUpdated)="reasonValidationErrorMessage.set(undefined)"
+        ></app-change-status-reason>
+      }
 
       <app-form-error [error]="changeStatusMutation.error()?.message" />
 

@@ -2,10 +2,20 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.enable": true,
   "eslint.format.enable": true,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
   },
+  "tailwindCSS.rootFontSize": 14,
+  "tailwindCSS.showPixelEquivalents": true,
+  "tailwindCSS.classAttributes": [
+    "class",
+    "styleClass",
+    "icon",
+    "ngClass",
+    "class:list"
+  ],
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   // The following setting is necessary to avoid false negatives in the VSCode Angular Language

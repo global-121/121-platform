@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 
@@ -12,6 +13,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getTailwindConfig } from '~/utils/tailwind';
 
 const tailwindConfig = getTailwindConfig();
@@ -24,9 +26,11 @@ const tailwindConfig = getTailwindConfig();
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentChartComponent {
-  paymentDetails = input.required<PaymentAggregate>();
+  readonly paymentDetails = input.required<PaymentAggregate>();
 
-  chartData = computed(() => {
+  readonly translatableStringService = inject(TranslatableStringService);
+
+  readonly chartData = computed(() => {
     const { waiting, success, failed } = this.paymentDetails();
     const data = {
       labels: [
@@ -53,6 +57,7 @@ export class ProjectPaymentChartComponent {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
+    borderRadius: 4,
     layout: {
       padding: {
         right: 50,
@@ -89,17 +94,17 @@ export class ProjectPaymentChartComponent {
     },
   };
 
-  chartAriaLabel = computed(() => {
+  readonly chartAriaLabel = computed(() => {
     const chartData = this.chartData();
     const metrics = chartData.datasets[0].data;
 
     return (
       $localize`Payment status chart. ` +
-      chartData.labels
-        .map((label, index) => {
-          return `${label}: ${String(metrics[index])}`;
-        })
-        .join(', ')
+      this.translatableStringService.commaSeparatedList(
+        chartData.labels.map(
+          (label, index) => `${label}: ${String(metrics[index])}`,
+        ),
+      )
     );
   });
 }

@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -17,6 +19,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
+import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import {
   REGISTRATION_STATUS_CHIP_VARIANTS,
@@ -36,13 +39,14 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 export class ActivityLogExpandedRowComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
+  private locale = inject(LOCALE_ID);
   private readonly projectApiService = inject(ProjectApiService);
   private readonly registrationAttributeService = inject(
     RegistrationAttributeService,
   );
 
-  value = input.required<Activity>();
-  context = input.required<ActivityLogTableCellContext>();
+  readonly value = input.required<Activity>();
+  readonly context = input.required<ActivityLogTableCellContext>();
 
   registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(this.context),
@@ -51,15 +55,18 @@ export class ActivityLogExpandedRowComponent
   intersolveVoucherBalance = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucherBalance({
       projectId: this.context().projectId,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       registrationReferenceId: this.context().referenceId!,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       paymentId: this.paymentId()!,
     })(),
-    enabled: () => this.isIntersolveVoucher() && !!this.context().referenceId,
+    enabled: () =>
+      this.isIntersolveVoucher() &&
+      !!this.context().referenceId &&
+      !!this.paymentId(),
   }));
 
-  isIntersolveVoucher = computed(() => {
+  readonly isIntersolveVoucher = computed(() => {
     const activity = this.value();
 
     return (
@@ -69,7 +76,7 @@ export class ActivityLogExpandedRowComponent
     );
   });
 
-  paymentId = computed(() => {
+  readonly paymentId = computed(() => {
     const activity = this.value();
     return activity.type === ActivityTypeEnum.Transaction
       ? activity.attributes.payment
@@ -79,15 +86,14 @@ export class ActivityLogExpandedRowComponent
   private localizeAttribute = (
     attributeName?: GenericRegistrationAttributes | string,
     attributeValue = '',
-  ) => {
-    return this.registrationAttributeService.localizeAttribute({
+  ) =>
+    this.registrationAttributeService.localizeAttribute({
       attributes: this.registrationAttributes.data(),
       attributeName,
       attributeOptionValue: attributeValue,
     });
-  };
 
-  dataList = computed<DataListItem[] | undefined>(() => {
+  readonly dataList = computed<DataListItem[] | undefined>(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.DataChange:
@@ -146,13 +152,25 @@ export class ActivityLogExpandedRowComponent
             chipVariant:
               REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.newValue],
           },
+          {
+            label: $localize`Change reason`,
+            value: item.attributes.reason,
+          },
         ];
       case ActivityTypeEnum.Transaction: {
         const list: DataListItem[] = [
           {
-            label: $localize`Sent`,
-            value: item.attributes.paymentDate,
-            type: 'date',
+            label: $localize`Payment`,
+            value:
+              new DatePipe(this.locale).transform(
+                item.attributes.paymentDate,
+                'short',
+              ) ?? '',
+            type: 'text',
+            routerLink: paymentLink({
+              projectId: this.context().projectId(),
+              paymentId: item.attributes.payment,
+            }),
           },
           {
             label: $localize`Received`,
@@ -191,15 +209,33 @@ export class ActivityLogExpandedRowComponent
     }
   });
 
-  message = computed<string | undefined>(() => {
+  readonly message = computed<string | undefined>(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.Note:
         return item.attributes.text;
       case ActivityTypeEnum.Message:
-        return item.attributes.body;
+        return this.getMessageBody(
+          item.attributes.body,
+          item.attributes.mediaUrl,
+        );
       default:
         return undefined;
     }
   });
+
+  private getMessageBody(messageBody?: string, mediaUrl?: string): string {
+    const imageString = $localize`(image)`;
+    const message = messageBody ?? '';
+
+    if (!mediaUrl) {
+      return message;
+    }
+
+    if (!message) {
+      return imageString;
+    }
+
+    return `${imageString}\n\n${message}`;
+  }
 }

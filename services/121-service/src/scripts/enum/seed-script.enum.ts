@@ -1,4 +1,5 @@
 export enum SeedScript {
+  productionInitialState = 'production-initial-state',
   testMultiple = 'test-multiple',
   nlrcMultiple = 'nlrc-multiple',
   nlrcMultipleMock = 'nlrc-multiple-mock-data',
@@ -6,5 +7,5 @@ export enum SeedScript {
   cbeProgram = 'cbe-program',
   safaricomProgram = 'safari-program',
   // excelProgram = 'excel-program',
-  // nedbankProgram = 'nedbank-program',
+  nedbankProgram = 'nedbank-program',
 }

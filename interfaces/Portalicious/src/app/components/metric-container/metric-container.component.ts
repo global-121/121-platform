@@ -11,5 +11,5 @@ import { SummaryMetric } from '~/domains/metric/metric.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetricContainerComponent {
-  public metric = input.required<SummaryMetric>();
+  public readonly metric = input.required<SummaryMetric>();
 }

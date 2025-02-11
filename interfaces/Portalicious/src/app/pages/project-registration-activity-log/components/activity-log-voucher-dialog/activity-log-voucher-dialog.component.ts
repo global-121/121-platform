@@ -27,10 +27,10 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogVoucherDialogComponent {
-  projectId = input.required<string>();
-  paymentId = input.required<number>();
-  totalTransfers = input.required<number>();
-  voucherReferenceId = input.required<string>();
+  readonly projectId = input.required<string>();
+  readonly paymentId = input.required<number>();
+  readonly totalTransfers = input.required<number>();
+  readonly voucherReferenceId = input.required<string>();
 
   private readonly projectApiService = inject(ProjectApiService);
   private readonly domSanitizer = inject(DomSanitizer);
@@ -38,11 +38,12 @@ export class ActivityLogVoucherDialogComponent {
   readonly voucherIframe =
     viewChild<ElementRef<HTMLIFrameElement>>('voucherIframe');
 
-  dialogVisible = model(false);
+  readonly dialogVisible = model(false);
 
-  dialogHeader = computed(() => {
-    return $localize`Voucher - payment ${this.paymentId()} of ${this.totalTransfers()}`;
-  });
+  readonly dialogHeader = computed(
+    () =>
+      $localize`Voucher - payment ${this.paymentId()} of ${this.totalTransfers()}`,
+  );
 
   voucher = injectQuery(() => ({
     ...this.projectApiService.getIntersolveVoucher({
@@ -53,7 +54,7 @@ export class ActivityLogVoucherDialogComponent {
     enabled: !!this.dialogVisible(),
   }));
 
-  sanitizedVoucherUrl = computed(() => {
+  readonly sanitizedVoucherUrl = computed(() => {
     const voucherBlob = this.voucher.data();
 
     if (!voucherBlob) {
@@ -73,7 +74,7 @@ export class ActivityLogVoucherDialogComponent {
     return this.domSanitizer.bypassSecurityTrustResourceUrl(sanitizedUrl);
   });
 
-  voucherFileName = computed(
+  readonly voucherFileName = computed(
     () =>
       `voucher-project-${this.projectId().toString()}-payment-${this.paymentId().toString()}-voucher-${this.voucherReferenceId()}.png`,
   );

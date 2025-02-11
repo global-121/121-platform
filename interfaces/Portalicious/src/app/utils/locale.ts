@@ -12,17 +12,17 @@ export enum Locale {
   nl = 'nl',
 }
 
-export function getLocaleLabel(locale: Locale): string {
+export const getLocaleLabel = (locale: Locale): string => {
   const localeLabels = {
     [Locale.en]: 'English',
     [Locale.nl]: 'Nederlands',
   };
 
   return localeLabels[locale];
-}
+};
 
-export function getAvailableLanguages() {
-  return environment.locales
+export const getAvailableLanguages = () =>
+  environment.locales
     .split(',')
     .map((locale) => locale.trim())
     .filter(isValidLocale)
@@ -30,22 +30,20 @@ export function getAvailableLanguages() {
       label: getLocaleLabel(locale),
       value: locale,
     }));
-}
 
-export function getLanguageEnumFromLocale(locale: Locale): LanguageEnum {
+export const getLanguageEnumFromLocale = (locale: Locale): LanguageEnum => {
   switch (locale) {
     case Locale.en:
       return LanguageEnum.en;
     default:
       return LanguageEnum[locale];
   }
-}
+};
 
-function isValidLocale(locale: string): locale is Locale {
-  return Object.values(Locale).includes(locale as Locale);
-}
+const isValidLocale = (locale: string): locale is Locale =>
+  Object.values(Locale).includes(locale as Locale);
 
-export function getLocaleForInitialization({
+export const getLocaleForInitialization = ({
   defaultLocale,
   urlLocale,
 }: {
@@ -59,7 +57,7 @@ export function getLocaleForInitialization({
   | {
       localStorageLocale: Locale;
       localeIsOutOfSyncWithUrl: true;
-    } {
+    } => {
   if (!isValidLocale(defaultLocale)) {
     // This should never happen, but it could be set incorrectly in ENV variables
     throw new Error(
@@ -97,9 +95,9 @@ export function getLocaleForInitialization({
   }
 
   return { locale: localStorageLanguage };
-}
+};
 
-export function changeLanguage(desiredLocale: Locale): void {
+export const changeLanguage = (desiredLocale: Locale): void => {
   // persist locale in locale storage
   localStorage.setItem(LOCAL_STORAGE_LOCALE_KEY, desiredLocale);
 
@@ -107,4 +105,4 @@ export function changeLanguage(desiredLocale: Locale): void {
   const pathnameArray = window.location.pathname.split('/');
   pathnameArray[1] = desiredLocale;
   window.location.pathname = pathnameArray.join('/');
-}
+};

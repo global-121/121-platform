@@ -1,21 +1,23 @@
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-export function registerChartDefaults() {
-  const documentStyle = getComputedStyle(document.documentElement);
+import { getTailwindConfig } from '~/utils/tailwind';
 
-  Chart.defaults.font.family = 'Montserrat, sans-serif';
+const tailwindConfig = getTailwindConfig();
+const colors = tailwindConfig.theme.colors;
+
+export const registerChartDefaults = () => {
+  Chart.defaults.font.family =
+    tailwindConfig.theme.fontFamily.display.join(', ');
   Chart.defaults.font.weight = 500;
 
-  Chart.defaults.scale.ticks.color =
-    documentStyle.getPropertyValue('--text-color');
+  Chart.defaults.scale.ticks.color = colors.black.DEFAULT;
 
   Chart.register(ChartDataLabels);
 
   if (!Chart.defaults.plugins.datalabels) {
     console.error('Chart.js datalabels plugin failed to load');
   } else {
-    Chart.defaults.plugins.datalabels.color =
-      documentStyle.getPropertyValue('--text-color');
+    Chart.defaults.plugins.datalabels.color = colors.black.DEFAULT;
   }
-}
+};

@@ -1,5 +1,7 @@
 import * as request from 'supertest';
 
+import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -46,12 +48,19 @@ export function bulkUpdateRegistrationsCSV(
     .field('reason', reason);
 }
 
-export function deleteRegistrations(
-  programId: number,
-  referenceIds: string[],
-  accessToken: string,
-  filter: Record<string, string> = {},
-): Promise<request.Response> {
+export function deleteRegistrations({
+  programId,
+  referenceIds,
+  accessToken,
+  reason = 'default reason',
+  filter = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  accessToken: string;
+  reason?: string;
+  filter?: Record<string, string>;
+}): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
@@ -68,7 +77,47 @@ export function deleteRegistrations(
     .delete(`/programs/${programId}/registrations`)
     .set('Cookie', [accessToken])
     .query(queryParams)
-    .send();
+    .send({
+      reason,
+    });
+}
+
+export async function waitForDeleteRegistrations({
+  programId,
+  referenceIds,
+  maxWaitTimeMs = 8000,
+}: {
+  programId: number;
+  referenceIds: string[];
+  maxWaitTimeMs?: number;
+}) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    // Get payment transactions
+    let totalRegistrationSuccesfullyDeleted = 0;
+    for (const referenceId of referenceIds) {
+      const getEventResponse = await getEvents(
+        programId,
+        undefined,
+        undefined,
+        referenceId,
+      );
+      const deleteEvent = getEventResponse.body.find(
+        (event) =>
+          event.type === EventEnum.registrationStatusChange &&
+          event.attributes?.newValue === RegistrationStatusEnum.deleted,
+      );
+      if (deleteEvent) {
+        totalRegistrationSuccesfullyDeleted++;
+      }
+    }
+    if (totalRegistrationSuccesfullyDeleted === referenceIds.length) {
+      return;
+    }
+
+    await waitFor(200);
+  }
+  throw new Error('Registrations were not deleted in time');
 }
 
 export function searchRegistrationByReferenceId(
@@ -146,14 +195,27 @@ export function getRegistrations({
     .send();
 }
 
-export async function awaitChangePaStatus(
-  programId: number,
-  referenceIds: string[],
-  status: RegistrationStatusEnum,
-  accessToken: string,
-  filter: Record<string, string> = {},
-  includeTemplatedMessage = false,
-): Promise<request.Response> {
+export async function changeRegistrationStatus({
+  programId,
+  referenceIds,
+  status,
+  accessToken,
+  options: {
+    filter = {},
+    includeTemplatedMessage = false,
+    reason = 'default reason',
+  } = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (referenceIds) {
@@ -174,7 +236,36 @@ export async function awaitChangePaStatus(
       status,
       message: null,
       messageTemplateKey: includeTemplatedMessage ? status : null,
+      reason,
     });
+
+  return result;
+}
+
+export async function awaitChangeRegistrationStatus({
+  programId,
+  referenceIds,
+  status,
+  accessToken,
+  options = {},
+}: {
+  programId: number;
+  referenceIds: string[];
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
+  const result = await changeRegistrationStatus({
+    programId,
+    referenceIds,
+    status,
+    accessToken,
+    options,
+  });
 
   await waitForStatusChangeToComplete(
     programId,
@@ -376,8 +467,15 @@ export async function seedPaidRegistrations(
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
 
-  await doPayment(programId, 1, 25, [], accessToken, {
-    'filter.status': '$in:included',
+  await doPayment({
+    programId,
+    paymentNr: 1,
+    amount: 20,
+    referenceIds: [],
+    accessToken,
+    filter: {
+      'filter.status': '$in:included',
+    },
   });
 
   const registrationReferenceIds = registrations.map((r) => r.referenceId);
@@ -387,6 +485,7 @@ export async function seedPaidRegistrations(
     registrationReferenceIds,
     accessToken,
     30_000,
+    [TransactionStatusEnum.success, TransactionStatusEnum.waiting],
   );
 }
 
@@ -415,12 +514,12 @@ export async function seedIncludedRegistrations(
     );
   }
 
-  await awaitChangePaStatus(
+  await awaitChangeRegistrationStatus({
     programId,
-    registrations.map((r) => r.referenceId),
-    RegistrationStatusEnum.included,
+    referenceIds: registrations.map((r) => r.referenceId),
+    status: RegistrationStatusEnum.included,
     accessToken,
-  );
+  });
 }
 
 export async function getEvents(
@@ -481,7 +580,7 @@ export async function getImportFspReconciliationTemplate(
   const accessToken = await getAccessToken();
 
   return getServer()
-    .get(`/programs/${programId}/payments/fsp-reconciliation/import-template`)
+    .get(`/programs/${programId}/payments/excel-reconciliation/template`)
     .set('Cookie', [accessToken])
     .send();
 }

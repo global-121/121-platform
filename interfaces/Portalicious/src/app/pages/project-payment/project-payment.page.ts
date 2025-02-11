@@ -33,6 +33,7 @@ import {
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentMetricDetails } from '~/domains/metric/metric.model';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
+import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import {
@@ -51,6 +52,7 @@ import { SinglePaymentExportComponent } from '~/pages/project-payment/components
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+import { getOriginUrl } from '~/utils/url-helper';
 
 export interface TransactionsTableCellContext {
   projectId: Signal<string>;
@@ -98,7 +100,9 @@ export class ProjectPaymentPageComponent {
   readonly retryTransfersDialog =
     viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
 
-  contextMenuSelection = signal<PaymentMetricDetails | undefined>(undefined);
+  readonly contextMenuSelection = signal<PaymentMetricDetails | undefined>(
+    undefined,
+  );
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   paymentStatus = injectQuery(
@@ -106,8 +110,16 @@ export class ProjectPaymentPageComponent {
   );
   payment = injectQuery(() => ({
     ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
-    // Refetch the data every second if a payment is in progress
-    refetchInterval: this.paymentStatus.data()?.inProgress ? 1000 : undefined,
+    // Refetch the data every second if a payment count !== transactions count
+    refetchInterval: this.refetchPayment() ? 1000 : undefined,
+    success: (data: PaymentAggregate) => {
+      if (
+        data.success.count + data.failed.count + data.waiting.count ===
+        this.transactions.data()?.length
+      ) {
+        this.refetchPayment.set(false);
+      }
+    },
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   transactions = injectQuery(
@@ -117,14 +129,16 @@ export class ProjectPaymentPageComponent {
     }),
   );
 
-  allPaymentsLink = computed(() => [
+  readonly refetchPayment = signal(true);
+
+  readonly allPaymentsLink = computed(() => [
     '/',
     AppRoutes.project,
     this.projectId(),
     AppRoutes.projectPayments,
   ]);
 
-  paymentDate = computed(() => {
+  readonly paymentDate = computed(() => {
     if (!this.payments.isSuccess()) {
       return '';
     }
@@ -138,11 +152,11 @@ export class ProjectPaymentPageComponent {
     return new DatePipe(this.locale).transform(date, 'short') ?? '';
   });
 
-  paymentTitle = computed(() => {
-    return $localize`Payment` + ' ' + this.paymentDate();
-  });
+  readonly paymentTitle = computed(
+    () => $localize`Payment` + ' ' + this.paymentDate(),
+  );
 
-  totalPaymentAmount = computed(() => {
+  readonly totalPaymentAmount = computed(() => {
     if (!this.payment.isSuccess()) {
       return '-';
     }
@@ -162,7 +176,7 @@ export class ProjectPaymentPageComponent {
     );
   });
 
-  successfulPaymentsAmount = computed(() => {
+  readonly successfulPaymentsAmount = computed(() => {
     if (!this.payment.isSuccess()) {
       return '-';
     }
@@ -177,7 +191,7 @@ export class ProjectPaymentPageComponent {
     );
   });
 
-  columns = computed(() => {
+  readonly columns = computed(() => {
     if (!this.project.isSuccess()) {
       return [];
     }
@@ -251,12 +265,17 @@ export class ProjectPaymentPageComponent {
             value: config.name,
           })),
       },
+      {
+        field: 'timestamp',
+        header: $localize`Time and date`,
+        type: QueryTableColumnType.DATE,
+      },
     ];
 
     return projectPaymentColumns;
   });
 
-  contextMenuItems = computed<MenuItem[]>(() => {
+  readonly contextMenuItems = computed<MenuItem[]>(() => {
     const transaction = this.contextMenuSelection();
 
     if (!transaction) {
@@ -276,7 +295,7 @@ export class ProjectPaymentPageComponent {
               }),
             ),
           );
-          window.open(url, '_blank');
+          window.open(getOriginUrl() + url, '_blank');
         },
       },
       {
@@ -292,12 +311,12 @@ export class ProjectPaymentPageComponent {
     ];
   });
 
-  localStorageKey = computed(
+  readonly localStorageKey = computed(
     () =>
       `project-payment-table-${this.projectId().toString()}-${this.paymentId().toString()}`,
   );
 
-  canRetryTransfers = computed(() => {
+  readonly canRetryTransfers = computed(() => {
     if (
       !this.authService.hasAllPermissions({
         projectId: this.projectId(),
@@ -320,6 +339,9 @@ export class ProjectPaymentPageComponent {
       .some((payment) => payment.status === TransactionStatusEnum.error);
   });
 
+  readonly hasFspWithExportFileIntegration = computed(() =>
+    projectHasFspWithExportFileIntegration(this.project.data()),
+  );
   retryFailedTransfers({
     triggeredFromContextMenu = false,
   }: {
@@ -339,8 +361,4 @@ export class ProjectPaymentPageComponent {
       contextMenuItem: this.contextMenuSelection(),
     });
   }
-
-  hasFspWithExportFileIntegration = computed(() =>
-    projectHasFspWithExportFileIntegration(this.project.data()),
-  );
 }

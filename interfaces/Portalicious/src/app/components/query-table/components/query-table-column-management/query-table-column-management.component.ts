@@ -35,11 +35,12 @@ import { QueryTableColumn } from '~/components/query-table/query-table.component
 export class QueryTableColumnManagementComponent<
   TData extends { id: PropertyKey },
 > {
-  columns = input.required<QueryTableColumn<TData>[]>();
-  visibleColumns = model.required<QueryTableColumn<TData>[]>();
+  readonly columns = input.required<QueryTableColumn<TData>[]>();
+  readonly visibleColumns = model.required<QueryTableColumn<TData>[]>();
+  readonly selectedColumnsStateKey = input<string>();
   readonly resetColumnVisibility = output();
 
-  formVisible = model<boolean>(false);
+  readonly formVisible = model<boolean>(false);
 
   formGroup = new FormGroup({
     selectedColumns: new FormControl<QueryTableColumn<TData>[]>([], {
@@ -47,21 +48,24 @@ export class QueryTableColumnManagementComponent<
     }),
   });
 
-  showColumnManagement() {
-    this.formGroup.patchValue({
-      selectedColumns: this.visibleColumns(),
-    });
-    this.formVisible.set(true);
-  }
-
   updateColumnVisibility = injectMutation(() => ({
     // We don't technically need a mutation here, but we're using one
     // so that we can easily reuse the form-sidebar component
     mutationFn: () =>
       Promise.resolve(this.formGroup.getRawValue().selectedColumns),
     onSuccess: (selectedColumns) => {
+      const stateKey = this.selectedColumnsStateKey();
+      if (stateKey) {
+        localStorage.setItem(stateKey, JSON.stringify(selectedColumns));
+      }
       this.visibleColumns.set(selectedColumns);
       this.formVisible.set(false);
     },
   }));
+  showColumnManagement() {
+    this.formGroup.patchValue({
+      selectedColumns: this.visibleColumns(),
+    });
+    this.formVisible.set(true);
+  }
 }

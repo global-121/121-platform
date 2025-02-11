@@ -7,11 +7,11 @@ import { ActivatedRoute } from '@angular/router';
 export class RegistrationLookupService {
   private route = inject(ActivatedRoute);
 
-  phonenumber = computed(
+  readonly phonenumber = computed(
     () =>
       (this.route.snapshot.queryParams.phonenumber ??
         this.route.snapshot.queryParams.phoneNumber) as string | undefined,
   );
 
-  isActive = computed(() => !!this.phonenumber());
+  readonly isActive = computed(() => !!this.phonenumber());
 }

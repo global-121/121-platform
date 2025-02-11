@@ -29,6 +29,20 @@ test('Deployment-configuration contains a Content-Security-Policy', () => {
   );
 });
 
+test('Deployment-configuration contains the defaults of the Content-Security-Policy', () => {
+  const defaults = [
+    `default-src 'self'`,
+    `connect-src 'self'`,
+    `img-src data: 'self'`,
+    `object-src 'none'`,
+    `style-src 'self' 'unsafe-inline'`,
+  ];
+
+  defaults.forEach((defaultDirective) =>
+    match(csp, new RegExp(defaultDirective)),
+  );
+});
+
 test('Content-Security-Policy configuration for Azure Entra SSO', () => {
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/login\.microsoftonline\.com/;
@@ -62,7 +76,7 @@ test('Configuration to control pop-ups for SSO when the Portal is in an iframe o
     process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
     process.env.USE_SSO_AZURE_ENTRA === 'true'
   ) {
-    match(openerPolicy, /same-origin-allow-popups/);
+    match(openerPolicy, /unsafe-none/);
   } else {
     match(openerPolicy, /same-origin/);
   }

@@ -4,7 +4,6 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -46,50 +45,6 @@ export class CommercialBankEthiopiaController {
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
       programId,
-    );
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      'Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Done getting and storing account enquiry data for all registrations in this program.',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(
-    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
-  )
-  public async validate(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<void> {
-    return this.commercialBankEthiopiaService.validatePasForProgram(programId);
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Done getting and storing account enquiry data for all registrations in all programs.',
-  })
-  @Post(
-    'financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation',
-  )
-  public async validateAllPas(): Promise<void> {
-    console.info(
-      'CronjobService - Started: validateCommercialBankEthiopiaAccountEnquiries',
-    );
-    await this.commercialBankEthiopiaService.validateAllPas();
-    console.info(
-      'CronjobService - Complete: validateCommercialBankEthiopiaAccountEnquiries',
     );
   }
 }

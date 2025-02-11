@@ -24,22 +24,26 @@
     <ng-content select="[table-actions]"></ng-content>
   </div>
   <ng-template #tableEmptyMessage>
-    <i class="pi pi-user-plus mb-5 inline text-3xl"></i>
+    <div class="flex items-center">
+      <i class="pi pi-user-plus me-3 inline text-xl"></i>
+
+      <span
+        i18n
+        class="font-bold"
+      >
+        Welcome to {{ project.data()?.titlePortal | translatableString }}
+      </span>
+    </div>
+
     <p
       i18n
-      class="mb-4 font-bold"
-    >
-      Welcome to {{ project.data()?.titlePortal | translatableString }}
-    </p>
-    <p
-      i18n
-      class="mt-2"
+      class="mt-4"
     >
       There are no registrations in this project yet.<br />
       For information about importing registrations to your project check out
       the
       <a
-        href="https://manual.121.global/"
+        href="https://new.manual.121.global/"
         target="_blank"
         title="Opens in a new window"
         i18n-title="@@generic-opens-in-new-window"

@@ -3,6 +3,13 @@ import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuratio
 
 export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   {
+    name: SeedScript.productionInitialState,
+    seedAdminOnly: true,
+    programs: [],
+    includeDebugScopes: true,
+    firstProgramId: 1,
+  },
+  {
     name: SeedScript.nlrcMultiple,
     organization: 'organization-nlrc.json',
     programs: [
@@ -51,6 +58,16 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-safaricom.json',
+        messageTemplate: 'message-template-generic.json',
+      },
+    ],
+  },
+  {
+    name: SeedScript.nedbankProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'program-nedbank.json',
         messageTemplate: 'message-template-generic.json',
       },
     ],

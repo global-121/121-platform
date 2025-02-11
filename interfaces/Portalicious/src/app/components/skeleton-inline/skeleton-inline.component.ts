@@ -17,8 +17,8 @@ import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonInlineComponent {
-  width = input<string>();
-  skeletonWidth = computed(
+  readonly width = input<string>();
+  readonly skeletonWidth = computed(
     () => this.width() ?? `${getRandomInt(42, 98).toString()}%`,
   );
 }

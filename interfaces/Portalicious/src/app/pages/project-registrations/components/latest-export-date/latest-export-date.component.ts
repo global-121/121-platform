@@ -24,8 +24,8 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LatestExportDateComponent {
-  projectId = input.required<string>();
-  exportType = input.required<ExportType>();
+  readonly projectId = input.required<string>();
+  readonly exportType = input.required<ExportType>();
 
   private authService = inject(AuthService);
   private projectApiService = inject(ProjectApiService);
@@ -38,7 +38,7 @@ export class LatestExportDateComponent {
     enabled: this.canSeeLastExportTime(),
   }));
 
-  canSeeLastExportTime = computed(() =>
+  readonly canSeeLastExportTime = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.ActionREAD,

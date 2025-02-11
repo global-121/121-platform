@@ -48,44 +48,26 @@ type AddUserToTeamFormGroup =
   ],
 })
 export class AddUserFormComponent {
-  userToEdit = input<undefined | User>();
-  formVisible = model.required<boolean>();
+  readonly userToEdit = input<undefined | User>();
+  readonly formVisible = model.required<boolean>();
 
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
 
-  constructor() {
-    effect(() => {
-      const user = this.userToEdit();
-      if (user) {
-        this.formGroup.patchValue({
-          displayNameValue: user.displayName,
-          usernameValue: user.username,
-        });
-        this.formGroup.controls.usernameValue.disable();
-      } else {
-        this.formGroup.controls.usernameValue.enable();
-      }
-    });
-  }
-
-  isEditing = computed(() => !!this.userToEdit());
-
+  readonly isEditing = computed(() => !!this.userToEdit());
   allUsers = injectQuery(this.userApiService.getAllUsers());
-
   formGroup = new FormGroup({
     displayNameValue: new FormControl<string>('', {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
       nonNullable: true,
     }),
     usernameValue: new FormControl<string>('', {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.email],
       nonNullable: true,
     }),
   });
-
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
@@ -98,7 +80,6 @@ export class AddUserFormComponent {
       },
     },
   );
-
   userMutation = injectMutation(() => ({
     mutationFn: ({
       displayNameValue,
@@ -131,4 +112,18 @@ export class AddUserFormComponent {
       void this.userApiService.invalidateCache();
     },
   }));
+  constructor() {
+    effect(() => {
+      const user = this.userToEdit();
+      if (user) {
+        this.formGroup.patchValue({
+          displayNameValue: user.displayName,
+          usernameValue: user.username,
+        });
+        this.formGroup.controls.usernameValue.disable();
+      } else {
+        this.formGroup.controls.usernameValue.enable();
+      }
+    });
+  }
 }

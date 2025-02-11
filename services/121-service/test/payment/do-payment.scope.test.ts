@@ -10,7 +10,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -47,19 +47,19 @@ describe('Registrations - [Scoped]', () => {
 
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
 
-    await awaitChangePaStatus(
-      OcwProgramId,
-      registrationsOCW.map((r) => r.referenceId),
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: OcwProgramId,
+      referenceIds: registrationsOCW.map((r) => r.referenceId),
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
-    await awaitChangePaStatus(
-      programIdPV,
-      registrationsPvFirst3ReferenceIds,
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdPV,
+      referenceIds: registrationsPvFirst3ReferenceIds,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
   });
 
   it('should payout all registrations within the scope of the requesting user', async () => {
@@ -71,14 +71,14 @@ describe('Registrations - [Scoped]', () => {
     // 7 registrations in total are included
     // 3 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope of the requesting user
-    const doPaymentResponse = await doPayment(
-      PvProgramId,
-      payment,
-      25,
-      [],
-      accessTokenScoped,
-      { 'filter.status': '$in:included' },
-    );
+    const doPaymentResponse = await doPayment({
+      programId: PvProgramId,
+      paymentNr: payment,
+      amount: 25,
+      referenceIds: [],
+      accessToken: accessTokenScoped,
+      filter: { 'filter.status': '$in:included' },
+    });
 
     // Assert
     await waitForPaymentTransactionsToComplete(

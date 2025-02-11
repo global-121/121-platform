@@ -46,15 +46,16 @@ import { AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  AppRoutes = AppRoutes;
   private authService = inject(AuthService);
-  projectId = input<string>();
+  readonly projectId = input<string>();
 
-  userName = computed(() => this.authService.user?.username);
+  readonly userName = computed(() => this.authService.user?.username);
 
-  userMenuOptions = computed<MenuItem[]>(() => [
+  readonly userMenuOptions = computed<MenuItem[]>(() => [
     {
       label: $localize`:Menu-item:Change password`,
-      icon: 'pi pi-cog',
+      icon: 'pi pi-key',
       routerLink: `/${AppRoutes.changePassword}`,
       visible: !!this.authService.ChangePasswordComponent,
     },
@@ -67,9 +68,9 @@ export class HeaderComponent {
     },
   ]);
 
-  sidebarVisible = model(false);
+  readonly sidebarVisible = model(false);
 
-  sidebarLinks = computed(() => {
+  readonly sidebarLinks = computed(() => {
     const links = [
       {
         label: $localize`:@@page-title-all-projects:All projects`,

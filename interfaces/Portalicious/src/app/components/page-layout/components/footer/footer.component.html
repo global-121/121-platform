@@ -1,3 +1,20 @@
 <div class="bg-navy px-6 py-2 text-end text-white txt-body-m lg:px-24">
+  <a
+    i18n="@@page-title-privacy"
+    [attr.rel]="'privacy-policy'"
+    [routerLink]="['/', AppRoutes.privacy]"
+    class="hover:underline focus:underline"
+    >Privacy</a
+  >
+
+  <span
+    class="text-grey-500"
+    aria-hidden="true"
+    role="presentation"
+    class="px-2"
+  >
+    &vellip;
+  </span>
+
   &copy; 510 {{ currentYear }}
 </div>

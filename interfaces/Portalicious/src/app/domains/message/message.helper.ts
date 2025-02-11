@@ -38,9 +38,7 @@ const TwilioMessageStatusMapping: Record<string, MessageStatus> = {
 
 export const convertTwilioMessageStatusToMessageStatus = (
   status: string,
-): MessageStatus => {
-  return TwilioMessageStatusMapping[status] ?? MessageStatus.unknown;
-};
+): MessageStatus => TwilioMessageStatusMapping[status] ?? MessageStatus.unknown;
 
 export const MESSAGE_STATUS_LABELS: Record<MessageStatus, string> = {
   [MessageStatus.delivered]: $localize`:@@message-status-delivered:Delivered`,

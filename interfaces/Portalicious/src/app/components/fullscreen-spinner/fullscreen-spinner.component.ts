@@ -11,5 +11,5 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullscreenSpinnerComponent {
-  loading = input.required<boolean>();
+  readonly loading = input.required<boolean>();
 }

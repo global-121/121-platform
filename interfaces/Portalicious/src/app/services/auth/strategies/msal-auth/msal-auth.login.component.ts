@@ -20,9 +20,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FormDefaultComponent } from '~/components/form/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
+import { areAutomatedPopupsBlocked } from '~/utils/are-popups-blocked';
 import { generateFieldErrors } from '~/utils/form-validation';
 import { isIframed } from '~/utils/is-iframed';
-import { isPopupBlocked } from '~/utils/is-pop-up-blocked';
 
 type LoginFormSsoGroup =
   (typeof MsalAuthLoginComponent)['prototype']['formGroup'];
@@ -46,12 +46,14 @@ type LoginFormSsoGroup =
 })
 export class MsalAuthLoginComponent {
   private authService = inject(AuthService);
-  returnUrl = input<string | undefined>(undefined);
+  private arePopupsAutoBlocked = areAutomatedPopupsBlocked(); // Should not be called in a user-initiated event
+
+  readonly returnUrl = input<string | undefined>(undefined);
 
   formGroup = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.email],
     }),
   });
@@ -63,9 +65,10 @@ export class MsalAuthLoginComponent {
       return $localize`Enter a valid email address`;
     },
   });
+
   loginMutation = injectMutation(() => ({
     onMutate: () => {
-      if (isIframed() && isPopupBlocked()) {
+      if (isIframed() && this.arePopupsAutoBlocked) {
         throw Error(
           $localize`Please allow pop-up windows in your browser settings to login`,
         );

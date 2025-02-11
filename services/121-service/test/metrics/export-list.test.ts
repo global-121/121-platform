@@ -10,9 +10,10 @@ import {
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   deleteRegistrations,
   importRegistrations,
+  waitForDeleteRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -52,25 +53,29 @@ describe('Metric export list', () => {
 
     accessToken = await getAccessToken();
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
-    await deleteRegistrations(
-      OcwProgramId,
-      [registrationsOCW[0].referenceId],
+    await deleteRegistrations({
+      programId: OcwProgramId,
+      referenceIds: [registrationsOCW[0].referenceId],
       accessToken,
-    );
-    await awaitChangePaStatus(
-      OcwProgramId,
-      [registrationsOCW[1].referenceId],
-      RegistrationStatusEnum.included,
+    });
+    await waitForDeleteRegistrations({
+      programId: OcwProgramId,
+      referenceIds: [registrationsOCW[0].referenceId],
+    });
+    await awaitChangeRegistrationStatus({
+      programId: OcwProgramId,
+      referenceIds: [registrationsOCW[1].referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-    await awaitChangePaStatus(
-      PvProgramId,
-      [registrationScopedMiddelburgPv.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: PvProgramId,
+      referenceIds: [registrationScopedMiddelburgPv.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
   });
 
   it('should export all people affected of a single program regardless of status', async () => {

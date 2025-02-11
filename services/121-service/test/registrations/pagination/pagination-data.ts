@@ -97,6 +97,22 @@ export const registrationOCW5 = {
   whatsappPhoneNumber: '14155235556',
 };
 
+export const registrationOCW6Fail = {
+  referenceId: '54e62864557597e0d',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 3,
+  fullName: 'Test mock-fail-create-customer',
+  phoneNumber: '14155235555',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.intersolveVisa,
+  whatsappPhoneNumber: '14155235555',
+  addressStreet: 'AnotherStreet',
+  addressHouseNumber: '4',
+  addressHouseNumberAddition: 'C',
+  addressPostalCode: '4567DE',
+  addressCity: 'AnotherCity',
+};
+
 export const registrationsOCW = [
   registrationOCW1,
   registrationOCW2,
@@ -336,3 +352,14 @@ export const registrationsPvExcel = [
   registrationPvExcel3,
   registrationPvExcel4,
 ];
+
+export const registrationNedbank = {
+  referenceId: 'registration-nedbank-1',
+  phoneNumber: '27000000000',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.nedbank,
+  maxPayments: 3,
+  fullName: 'nedbank pa',
+};

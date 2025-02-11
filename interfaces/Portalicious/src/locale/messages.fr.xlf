@@ -1,0 +1,2003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="ng2.template" datatype="plaintext" xml:space="preserve" source-language="en-GB" target-language="fr">
+    <header>
+      <tool tool-id="lokalise.com" tool-name="Lokalise"></tool>
+    </header>
+    <body>
+      <trans-unit id="13613170635045985" datatype="html">
+        <source>Drag and drop file here<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>or</source>
+        <target>Glisser puis déposer le fichier ici<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>ou</target>
+      </trans-unit>
+      <trans-unit id="17234570072885140" datatype="html">
+        <source>Registrations</source>
+        <target>Enregistrements</target>
+      </trans-unit>
+      <trans-unit id="19569847887954644" datatype="html">
+        <source>Included registrations</source>
+        <target>Enregistrements Inclus</target>
+      </trans-unit>
+      <trans-unit id="29569660367309272" datatype="html">
+        <source>Custom message</source>
+        <target>Personnaliser le message</target>
+      </trans-unit>
+      <trans-unit id="37959892232763790" datatype="html">
+        <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
+        <target>Bienvenue sur <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="126074860850048964" datatype="html">
+        <source>End date</source>
+        <target>Date de fin</target>
+      </trans-unit>
+      <trans-unit id="138735154290622738" datatype="html">
+        <source>yourname@example.org</source>
+        <target>votrenom@exemple.org</target>
+      </trans-unit>
+      <trans-unit id="153799456510623899" datatype="html">
+        <source>Portuguese</source>
+        <target>Portugais</target>
+      </trans-unit>
+      <trans-unit id="165273856698591793" datatype="html">
+        <source>Contact Us:</source>
+        <target>Nous contacter :</target>
+      </trans-unit>
+      <trans-unit id="276843485197819536" datatype="html">
+        <source>Select registrations with the status “included” and try again.</source>
+        <target>Sélectionner les enregistrements avec le statut inclus(e)» et réessayer.</target>
+      </trans-unit>
+      <trans-unit id="330884522576296166" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel avec tous les enregistrements inclus dans le dernier <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> paiement(s).</target>
+      </trans-unit>
+      <trans-unit id="337088933774172577" datatype="html">
+        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
+        <target>Nous conservons votre adresse e-mail tant qu'un projet est stocké sur la plateforme 121.</target>
+      </trans-unit>
+      <trans-unit id="349264413670639690" datatype="html">
+        <source>Choose message</source>
+        <target>Sélectionner le message</target>
+      </trans-unit>
+      <trans-unit id="350646349607555710" datatype="html">
+        <source>Registered:</source>
+        <target>Enregistré(e) :</target>
+      </trans-unit>
+      <trans-unit id="362413796363960378" datatype="html">
+        <source>View voucher</source>
+        <target>Voir le bon d’achat</target>
+      </trans-unit>
+      <trans-unit id="414383194277792669" datatype="html">
+        <source>There are no records to display.</source>
+        <target>Il n’y a aucun enregistrement à afficher.</target>
+      </trans-unit>
+      <trans-unit id="428968768517674095" datatype="html">
+        <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
+        <target>Souhaitez-vous poursuivre avec <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> enregistrement(s) ?</target>
+      </trans-unit>
+      <trans-unit id="471816275243265264" datatype="html">
+        <source>Location</source>
+        <target>Emplacement</target>
+      </trans-unit>
+      <trans-unit id="495282157937447440" datatype="html">
+        <source>Make sure to upload the correct file as this will override the current file.</source>
+        <target>Assurez-vous de télécharger le bon fichier, car cela remplacera le fichier actuel.</target>
+      </trans-unit>
+      <trans-unit id="504281469996866803" datatype="html">
+        <source>Retry failed transfers</source>
+        <target>Réessayer les transferts ayant échoué</target>
+      </trans-unit>
+      <trans-unit id="561353031255604069" datatype="html">
+        <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
+        <target>Cette action ne peut pas être appliquée sur <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> enregistrement(s).</target>
+      </trans-unit>
+      <trans-unit id="565163819313820565" datatype="html">
+        <source>You&apos;re about to unpause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
+        <target>Vous êtes sur le point de réactiver le numéro de carte de débit <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="581189508098722225" datatype="html">
+        <source>Reconciliation data imported successfully.</source>
+        <target>Les données de réconciliation ont été importées avec succès.</target>
+      </trans-unit>
+      <trans-unit id="614288202138197410" datatype="html">
+        <source>Export the FSP instructions from the payment page. This is only possible once the payment is no longer in progress.</source>
+        <target>Exportez les instructions de paiements du PSF à partir de la page de paiement. Cela n’est possible que lorsque le paiement n’est plus en cours.</target>
+      </trans-unit>
+      <trans-unit id="635399988713647542" datatype="html">
+        <source>If you have any questions about our use of necessary cookies, please feel free to contact us at:</source>
+        <target>Si vous avez des questions sur notre utilisation des cookies nécessaires, n’hésitez pas à nous contacter à l’adresse suivante :</target>
+      </trans-unit>
+      <trans-unit id="652725573989033199" datatype="html">
+        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status.</source>
+        <target>L'action &quot; Validé &quot; ne peut être appliquée qu'aux enregistrements ayant le statut &quot; Enregistré(e)&quot;.</target>
+      </trans-unit>
+      <trans-unit id="668066055906448779" datatype="html">
+        <source>Cash disbursed</source>
+        <target>Montant déboursé</target>
+      </trans-unit>
+      <trans-unit id="684272908201420787" datatype="html">
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
+        <target>L'action &quot;Décliné&quot; ne peut pas être appliquée aux enregistrements ayant le statut &quot;Complété&quot;.</target>
+      </trans-unit>
+      <trans-unit id="706820993579364519" datatype="html">
+        <source>Where we get personal information from</source>
+        <target>La provenance de vos données personnelles</target>
+      </trans-unit>
+      <trans-unit id="721179600254881872" datatype="html">
+        <source>Exporting</source>
+        <target>Export en cours</target>
+      </trans-unit>
+      <trans-unit id="771623267264728975" datatype="html">
+        <source>You&apos;re about to download an Excel file for all duplicate registrations.</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel pour vérifier les doublons de vos enregistrements.</target>
+      </trans-unit>
+      <trans-unit id="795890916060309463" datatype="html">
+        <source>Roles</source>
+        <target>Rôles</target>
+      </trans-unit>
+      <trans-unit id="796736218174025913" datatype="html">
+        <source>Note successfully added.</source>
+        <target>Note ajoutée avec succès.</target>
+      </trans-unit>
+      <trans-unit id="819996403327805209" datatype="html">
+        <source>Learn more</source>
+        <target>En savoir plus</target>
+      </trans-unit>
+      <trans-unit id="834363245149274787" datatype="html">
+        <source>User added</source>
+        <target>Utilisateur ajouté</target>
+      </trans-unit>
+      <trans-unit id="888341446683346521" datatype="html">
+        <source>Start date</source>
+        <target>Date de début</target>
+      </trans-unit>
+      <trans-unit id="888507803757257524" datatype="html">
+        <source>API Version:</source>
+        <target>Version API :</target>
+      </trans-unit>
+      <trans-unit id="908038299240128268" datatype="html">
+        <source>Transfer status</source>
+        <target>Statut du transfert</target>
+      </trans-unit>
+      <trans-unit id="926636196686296455" datatype="html">
+        <source>Base transfer value</source>
+        <target>Valeur du transfert de base</target>
+      </trans-unit>
+      <trans-unit id="935187492052582731" datatype="html">
+        <source>Submit</source>
+        <target>Soumettre</target>
+      </trans-unit>
+      <trans-unit id="976904059902830801" datatype="html">
+        <source>Change reason</source>
+        <target>Motif de la modification</target>
+      </trans-unit>
+      <trans-unit id="1021287001460137349" datatype="html">
+        <source>Exporting FSP Instructions</source>
+        <target>Export des instructions de paiements du PSF</target>
+      </trans-unit>
+      <trans-unit id="1023894478419315290" datatype="html">
+        <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+        <target>Langue : <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="1024350856876797494" datatype="html">
+        <source>People registered</source>
+        <target>Personnes enregistrées</target>
+      </trans-unit>
+      <trans-unit id="1061597182953948916" datatype="html">
+        <source>Use your work email to log in.</source>
+        <target>Utilisez votre adresse e-mail pour vous connecter.</target>
+      </trans-unit>
+      <trans-unit id="1070128073768279969" datatype="html">
+        <source>Select a message from the template messages or write a custom message.</source>
+        <target>Sélectionnez un message dans le modèle de messages ou rédigez un message personnalisé.</target>
+      </trans-unit>
+      <trans-unit id="1071721880474488785" datatype="html">
+        <source>Import</source>
+        <target>Importer le fichier</target>
+      </trans-unit>
+      <trans-unit id="1105070151875122157" datatype="html">
+        <source>No Payments found</source>
+        <target>Aucun paiement trouvé</target>
+      </trans-unit>
+      <trans-unit id="1181910457994920507" datatype="html">
+        <source>Proceed</source>
+        <target>Continuer</target>
+      </trans-unit>
+      <trans-unit id="1194881950571757496" datatype="html">
+        <source>Payment frequency</source>
+        <target>Fréquence de paiement</target>
+      </trans-unit>
+      <trans-unit id="1221596867309460035" datatype="html">
+        <source>New Password</source>
+        <target>Nouveau mot de passe</target>
+      </trans-unit>
+      <trans-unit id="1224115488810733068" datatype="html">
+        <source>FSP(s)</source>
+        <target>PSF(s)</target>
+      </trans-unit>
+      <trans-unit id="1256134236732654436" datatype="html">
+        <source>Done by</source>
+        <target>Fait par</target>
+      </trans-unit>
+      <trans-unit id="1270421233965290368" datatype="html">
+        <source>Current balance</source>
+        <target>Solde actuel</target>
+      </trans-unit>
+      <trans-unit id="1336542143746897548" datatype="html">
+        <source>Email Support</source>
+        <target>Assistance par e-mail</target>
+      </trans-unit>
+      <trans-unit id="1369610904910546430" datatype="html">
+        <source>Who we share information with</source>
+        <target>Avec qui partageons-nous vos données</target>
+      </trans-unit>
+      <trans-unit id="1431416938026210429" datatype="html">
+        <source>Password</source>
+        <target>Mot de passe</target>
+      </trans-unit>
+      <trans-unit id="1467059276438662086" datatype="html">
+        <source>New status</source>
+        <target>Nouveau statut</target>
+      </trans-unit>
+      <trans-unit id="1485624035618673724" datatype="html">
+        <source>Import reconciliation data</source>
+        <target>Importer les données de réconciliation</target>
+      </trans-unit>
+      <trans-unit id="1543931596742881836" datatype="html">
+        <source>There has been no export yet.</source>
+        <target>Il n’y a pas encore eu d’exportation.</target>
+      </trans-unit>
+      <trans-unit id="1545261806462361427" datatype="html">
+        <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
+        <target>La valeur ne correspond pas au format requis : <x equiv-text="attribute.pattern" id="PH"/></target>
+      </trans-unit>
+      <trans-unit id="1579692722565712588" datatype="html">
+        <source>Okay</source>
+        <target>Okay</target>
+      </trans-unit>
+      <trans-unit id="1670560559011171681" datatype="html">
+        <source>I understand this action can not be undone.</source>
+        <target>Je comprends que cette action est irréversible.</target>
+      </trans-unit>
+      <trans-unit id="1692337501325731003" datatype="html">
+        <source>There is currently no data to export</source>
+        <target>Il n'y a actuellement aucune donnée à exporter</target>
+      </trans-unit>
+      <trans-unit id="1693473022450987876" datatype="html">
+        <source>Reset user password</source>
+        <target>Réinitialiser le mot de passe de l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="1703221125772306676" datatype="html">
+        <source>Filipino</source>
+        <target>Philippin</target>
+      </trans-unit>
+      <trans-unit id="1755386264837692034" datatype="html">
+        <source>User updated</source>
+        <target>Mise à jour de l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="1767359435550986288" datatype="html">
+        <source>The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.</source>
+        <target>Le montant total du paiement est calculé en additionnant le nombre de transferts pour chaque enregistrement inclus dans le paiement.</target>
+      </trans-unit>
+      <trans-unit id="1782658553741372004" datatype="html">
+        <source>They do not require explicit consent, and by using our website, you agree to their use. However, you may still manage or block these cookies via your browser settings.</source>
+        <target>Ils ne nécessitent pas de consentement explicite, et en utilisant notre site Web, vous acceptez leur utilisation. Cependant, vous pouvez toujours gérer ou bloquer ces cookies via les paramètres de votre navigateur.</target>
+        <note priority="1" from="description">They=&apos;Necessary cookies&apos;</note>
+      </trans-unit>
+      <trans-unit id="1846542227840529109" datatype="html">
+        <source>Current Password</source>
+        <target>Mot de passe actuel</target>
+      </trans-unit>
+      <trans-unit id="1867309401161150879" datatype="html">
+        <source>The data of the 121 Platform is hosted in a Microsoft Azure-environment of The Netherlands Red Cross.</source>
+        <target>Les données de la plateforme 121 sont hébergées dans un environnement Microsoft Azure de la Croix-Rouge néerlandaise.</target>
+      </trans-unit>
+      <trans-unit id="1873935802798572654" datatype="html">
+        <source>Tip: Press Command / Ctrl + Enter to submit.</source>
+        <target>Conseil : Appuyez sur Commande / Ctrl + Entrée pour valider.</target>
+      </trans-unit>
+      <trans-unit id="1887371025019909976" datatype="html">
+        <source>Kobo Asset ID</source>
+        <target>Kobo Asset ID</target>
+      </trans-unit>
+      <trans-unit id="1890300073702152532" datatype="html">
+        <source>E-mail</source>
+        <target>E-mail</target>
+      </trans-unit>
+      <trans-unit id="1894127940120118823" datatype="html">
+        <source>Card successfully updated</source>
+        <target>Mise à jour de la carte réussie</target>
+      </trans-unit>
+      <trans-unit id="1953762348939012822" datatype="html">
+        <source>Revert to default</source>
+        <target>Revenir aux paramètres par défaut</target>
+      </trans-unit>
+      <trans-unit id="2012659005494284050" datatype="html">
+        <source>Forgot your password?</source>
+        <target>Mot de passe oublié ?</target>
+      </trans-unit>
+      <trans-unit id="2046529380163546074" datatype="html">
+        <source>Project successfully created.</source>
+        <target>Projet créé avec succès.</target>
+      </trans-unit>
+      <trans-unit id="2077280297780026969" datatype="html">
+        <source>Review payment summary and follow the next steps:</source>
+        <target>Consultez le récapitulatif des paiements et suivez les étapes suivantes :</target>
+      </trans-unit>
+      <trans-unit id="2077783620698115246" datatype="html">
+        <source>Your score is <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</source>
+        <target>Votre score est <x equiv-text="{{ score() }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="2099469692592361098" datatype="html">
+        <source>Personal information: e-mail and name.</source>
+        <target>Données Personnelles : adresse e-mail et nom (complet).</target>
+      </trans-unit>
+      <trans-unit id="2099886964241384522" datatype="html">
+        <source>Copy email</source>
+        <target>Copier l’e-mail</target>
+      </trans-unit>
+      <trans-unit id="2114848494510177632" datatype="html">
+        <source>Your e-mail address and/or your (full) name.</source>
+        <target>Votre adresse e-mail et/ou votre nom (complet).</target>
+      </trans-unit>
+      <trans-unit id="2161871078253886554" datatype="html">
+        <source>Unknown user</source>
+        <target>Utilisateur inconnu</target>
+      </trans-unit>
+      <trans-unit id="2200382670798092138" datatype="html">
+        <source>Add to payment</source>
+        <target>Ajouter au paiement</target>
+      </trans-unit>
+      <trans-unit id="2221378397919016725" datatype="html">
+        <source>characters.</source>
+        <target>caractères.</target>
+      </trans-unit>
+      <trans-unit id="2224540478181897692" datatype="html">
+        <source>All Payments</source>
+        <target>Tous les paiements</target>
+      </trans-unit>
+      <trans-unit id="2233560223291461480" datatype="html">
+        <source>Manual</source>
+        <target>Manuel d'utilisation</target>
+      </trans-unit>
+      <trans-unit id="2236371857137398396" datatype="html">
+        <source>No results found</source>
+        <target>Aucun résultat trouvé</target>
+      </trans-unit>
+      <trans-unit id="2276030451798485888" datatype="html">
+        <source>Amount of money successfully transferred.</source>
+        <target>Montant d'argent transféré avec succès.</target>
+      </trans-unit>
+      <trans-unit id="2301617863328425684" datatype="html">
+        <source>The following message will be sent to each registration in their language.</source>
+        <target>Le message suivant sera envoyé à chaque enregistrement dans la langue sélectionnée.</target>
+      </trans-unit>
+      <trans-unit id="2309376472788575612" datatype="html">
+        <source>Registrations with the status “new”.</source>
+        <target>Enregistrements avec le statut "nouveau".</target>
+      </trans-unit>
+      <trans-unit id="2317261224640464417" datatype="html">
+        <source>Write a reason for the update</source>
+        <target>Indiquer la raison de la mise à jour</target>
+      </trans-unit>
+      <trans-unit id="2336550011721758066" datatype="html">
+        <source>Log in</source>
+        <target>Se connecter</target>
+      </trans-unit>
+      <trans-unit id="2342712167124906317" datatype="html">
+        <source>Targeted people</source>
+        <target>Personnes ciblées</target>
+      </trans-unit>
+      <trans-unit id="2352629566113014741" datatype="html">
+        <source>Old status</source>
+        <target>Ancien statut</target>
+      </trans-unit>
+      <trans-unit id="2372906683883945604" datatype="html">
+        <source>Choose user</source>
+        <target>Choisir l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="2378622458638065888" datatype="html">
+        <source>How to contact us</source>
+        <target>Comment nous contacter</target>
+      </trans-unit>
+      <trans-unit id="2413028101045997188" datatype="html">
+        <source>You&apos;re about to reset <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>&apos;s password. The user will receive an email with the new password sent to their registered email address. Only proceed if the user has requested this action.</source>
+        <target>Vous êtes sur le point de réinitialiser le mot de passe de <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.displayName }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b &gt;" id="CLOSE_BOLD_TEXT"/>. L’utilisateur recevra un e-mail avec le nouveau mot de passe envoyé à l’adresse e-mail qu’il a enregistrée. Ne poursuivez que si l’utilisateur a demandé cette action.</target>
+      </trans-unit>
+      <trans-unit id="2438590582556677910" datatype="html">
+        <source>Start!</source>
+        <target>Commencez !</target>
+      </trans-unit>
+      <trans-unit id="2511966165374777397" datatype="html">
+        <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
+        <target>Cela peut prendre quelques minutes. Le fichier sera automatiquement téléchargé lorsqu’il sera prêt. La fermeture de cette notification n’annulera pas l’exportation.</target>
+      </trans-unit>
+      <trans-unit id="2512429297957946940" datatype="html">
+        <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
+        <target>Nous n'utilisons que des cookies nécessaires pour permettre aux utilisateurs de se connecter à la plateforme 121. Ces cookies ne sont pas utilisés pour suivre l'utilisation (répétée) de la plateforme 121 au fil du temps.</target>
+      </trans-unit>
+      <trans-unit id="2569607511969570423" datatype="html">
+        <source>Export selected registrations</source>
+        <target>Exporter les enregistrements sélectionnés</target>
+      </trans-unit>
+      <trans-unit id="2614607010577950577" datatype="html">
+        <source>Overview</source>
+        <target>Vue d'ensemble</target>
+      </trans-unit>
+      <trans-unit id="2648122632166597138" datatype="html">
+        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+        <target>Importer le fichier envoyé par le PSF pour actualiser le statut de paiement des bénéficiaires inclus dans cette distribution. Télécharger le modèle <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/> ici <x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/></target>
+      </trans-unit>
+      <trans-unit id="2669678082320549438" datatype="html">
+        <source>Reference ID</source>
+        <target>Numéro de référence</target>
+      </trans-unit>
+      <trans-unit id="2756397788360043544" datatype="html">
+        <source>Remaining budget</source>
+        <target>Budget restant</target>
+      </trans-unit>
+      <trans-unit id="2772023564304193657" datatype="html">
+        <source>Enter your password</source>
+        <target>Entrez votre mot de passe</target>
+      </trans-unit>
+      <trans-unit id="2772534939673815092" datatype="html">
+        <source>Please allow pop-up windows in your browser settings to login</source>
+        <target>Veuillez autoriser les fenêtres contextuelles dans les paramètres de votre navigateur pour vous connecter</target>
+      </trans-unit>
+      <trans-unit id="2779521124294512411" datatype="html">
+        <source>Custom messages are <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>not automatically translated<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> to the registration&apos;s preferred language.</source>
+        <target>Les messages personnalisés <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>ne sont pas traduits automatiquement<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> dans la langue préférée de l'enregistrement.</target>
+      </trans-unit>
+      <trans-unit id="2795059376397351120" datatype="html">
+        <source>Registration Status</source>
+        <target>Statut d'enregistrement</target>
+      </trans-unit>
+      <trans-unit id="2801963853605151683" datatype="html">
+        <source>No PowerBI dashboard has been configured for this project, please contact <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> to set this up</source>
+        <target>Aucun tableau PowerBI n’a été configuré pour ce projet, veuillez contacter <x ctype="x-a" equiv-text="&lt;a href=&quot;mailto:support@121.global&quot;&gt;" id="START_LINK"/>support@121.global<x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/> pour le configurer.</target>
+      </trans-unit>
+      <trans-unit id="2832894421278390919" datatype="html">
+        <source>Invalid email or password. Double-check your credentials and try again.</source>
+        <target>E-mail ou mot de passe invalide. Vérifiez vos identifiants et réessayez.</target>
+      </trans-unit>
+      <trans-unit id="2932497983463949366" datatype="html">
+        <source>Export unused vouchers</source>
+        <target>Exporter les bons d’achat inutilisés</target>
+      </trans-unit>
+      <trans-unit id="2981043932069425956" datatype="html">
+        <source>Let&apos;s start!</source>
+        <target>C'est parti !</target>
+      </trans-unit>
+      <trans-unit id="2982203751444563776" datatype="html">
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <target>Il n'y a pas encore d'enregistrements dans ce projet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Pour plus d'informations sur l'importation d'enregistrements dans votre projet, consultez <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> manuel d'utilisation 121 <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</target>
+      </trans-unit>
+      <trans-unit id="3003940161121195414" datatype="html">
+        <source>Update information</source>
+        <target>Mettre à jour les informations</target>
+      </trans-unit>
+      <trans-unit id="3005732335203491098" datatype="html">
+        <source>The confirm password must be equal to the new password.</source>
+        <target>Le mot de passe de confirmation doit être égal au nouveau mot de passe.</target>
+      </trans-unit>
+      <trans-unit id="3046019795799616878" datatype="html">
+        <source>Registrations with the status “included”.</source>
+        <target>Enregistrements avec le statut "inclus".</target>
+      </trans-unit>
+      <trans-unit id="3054018033337101957" datatype="html">
+        <source>Old data</source>
+        <target>Anciennes données</target>
+      </trans-unit>
+      <trans-unit id="3071065188816255493" datatype="html">
+        <source>Dutch</source>
+        <target>Néerlandais</target>
+      </trans-unit>
+      <trans-unit id="3082094200535618477" datatype="html">
+        <source>Message preview</source>
+        <target>Aperçu du message</target>
+      </trans-unit>
+      <trans-unit id="3086090297914662332" datatype="html">
+        <source>No Project-ID returned.</source>
+        <target>Aucun identifiant de projet n'a été renvoyé.</target>
+      </trans-unit>
+      <trans-unit id="3132687678063886490" datatype="html">
+        <source>Voucher - payment <x equiv-text="this.paymentId()" id="PH"/> of <x equiv-text="this.totalTransfers()" id="PH_1"/></source>
+        <target>Bon d’achat - paiement <x equiv-text="this.paymentId()" id="PH"/> sur <x equiv-text="this.totalTransfers()" id="PH_1"/></target>
+      </trans-unit>
+      <trans-unit id="3142649024295180156" datatype="html">
+        <source>Choose file</source>
+        <target>Choisir le fichier</target>
+      </trans-unit>
+      <trans-unit id="3193976279273491157" datatype="html">
+        <source>Actions</source>
+        <target>Actions</target>
+      </trans-unit>
+      <trans-unit id="3241357959735682038" datatype="html">
+        <source>Confirm Password</source>
+        <target>Confirmer le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="3273287482679757457" datatype="html">
+        <source>Use @ to add personalized fields.</source>
+        <target>Utilisez @ pour ajouter des champs personnalisés.</target>
+      </trans-unit>
+      <trans-unit id="3284816784388197103" datatype="html">
+        <source>Project not found. Please check the URL and try again.</source>
+        <target>Projet non trouvé. Veuillez vérifier l'URL et réessayer.</target>
+      </trans-unit>
+      <trans-unit id="3301086086650990787" datatype="html">
+        <source>Register</source>
+        <target>Enregistrer</target>
+      </trans-unit>
+      <trans-unit id="3302381073867974185" datatype="html">
+        <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
+        <target><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>Cette action est irréversible.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Êtes-vous sûr(e) de vouloir supprimer ces enregistrements ?</target>
+      </trans-unit>
+      <trans-unit id="3307214558906712688" datatype="html">
+        <source>In progress</source>
+        <target>En cours</target>
+      </trans-unit>
+      <trans-unit id="3382504338655482064" datatype="html">
+        <source>Cash distributed in the last payment.</source>
+        <target>Argent distribué lors du dernier paiement.</target>
+      </trans-unit>
+      <trans-unit id="3382782841789683257" datatype="html">
+        <source><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</source>
+        <target><x equiv-text="projectData.distributionDuration" id="count"/> distributions</target>
+      </trans-unit>
+      <trans-unit id="3488602326654044677" datatype="html">
+        <source>Approved by</source>
+        <target>Approuvé par</target>
+      </trans-unit>
+      <trans-unit id="3523288603730580118" datatype="html">
+        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
+        <target>L'action &quot;Supprimer&quot; ne peut pas être appliquée aux enregistrements ayant le statut &quot;Complété(e)&quot;.</target>
+      </trans-unit>
+      <trans-unit id="3545183022492788567" datatype="html">
+        <source>A payment is currently in progress. Please wait until it has finished.</source>
+        <target>Un paiement est en cours. Veuillez attendre qu'il soit finalisé.</target>
+      </trans-unit>
+      <trans-unit id="3573847364103936169" datatype="html">
+        <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
+        <target>Notez que si vous dépassez 160 caractères, le message pourra être envoyé en plusieurs parties, notamment si le destinataire utilise un téléphone classique (non smartphone).</target>
+      </trans-unit>
+      <trans-unit id="3595291210637281374" datatype="html">
+        <source>Transfers data</source>
+        <target>Transfert de données</target>
+      </trans-unit>
+      <trans-unit id="3604386807230411192" datatype="html">
+        <source>Start Date</source>
+        <target>Date de début</target>
+      </trans-unit>
+      <trans-unit id="3619477798940026244" datatype="html">
+        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
+        <target>Nous conservons votre adresse e-mail et votre nom tant que vous êtes un utilisateur associé à un projet sur la plateforme 121.</target>
+      </trans-unit>
+      <trans-unit id="3626484707935812949" datatype="html">
+        <source>0 selected registrations support this action.</source>
+        <target>Cette action ne peut pas être appliquée aux enregistrements sélectionnés.</target>
+      </trans-unit>
+      <trans-unit id="3743895927280936154" datatype="html">
+        <source>Most web browsers allow you to control cookies through their settings. If you wish to disable cookies, please refer to your browser&apos;s help section. Note that disabling necessary cookies may affect the website&apos;s functionality.</source>
+        <target>La plupart des navigateurs Web vous permettent de contrôler les cookies via leurs paramètres. Si vous souhaitez désactiver les cookies, veuillez vous référer à votre navigateur&apos;. Notez que la désactivation des cookies nécessaires peut affecter le site web&apos;.</target>
+      </trans-unit>
+      <trans-unit id="3783659685891310731" datatype="html">
+        <source>Project description:</source>
+        <target>Description du projet :</target>
+      </trans-unit>
+      <trans-unit id="3797627476744587316" datatype="html">
+        <source>Logged in as:<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x equiv-text="{{ userName() }}" id="INTERPOLATION"/></source>
+        <target>Connecté en tant que : <x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> <x equiv-text="{{ userName() }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="3797778920049399855" datatype="html">
+        <source>Logout</source>
+        <target>Déconnexion</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="3805310091097915389" datatype="html">
+        <source>How long we keep information</source>
+        <target>Quelle est la durée de conservation de vos données</target>
+      </trans-unit>
+      <trans-unit id="3865701940123165586" datatype="html">
+        <source>Included reg.</source>
+        <target>Enreg. inclus</target>
+      </trans-unit>
+      <trans-unit id="3871260480214506166" datatype="html">
+        <source>Showing [first] to [last] of [totalRecords] records</source>
+        <target>Affichage de [premier] à [dernier] sur [totalRecords] enregistrements.</target>
+        <note priority="1" from="description">The contents of the square brackets should not be touched/changed</note>
+      </trans-unit>
+      <trans-unit id="3890824728366334701" datatype="html">
+        <source>Below is a table of all <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> registrations. Select registrations you would like to add to this payment.</source>
+        <target>Vous trouverez ci-dessous un tableau de tous les <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;includedChipData.chipVariant&quot; [label]=&quot;includedChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/> enregistrements. Sélectionnez les enregistrements que vous souhaitez ajouter à ce paiement.</target>
+      </trans-unit>
+      <trans-unit id="3894950702316166331" datatype="html">
+        <source>Loading...</source>
+        <target>En cours de téléchargement...</target>
+      </trans-unit>
+      <trans-unit id="3900182075447065445" datatype="html">
+        <source>*Please make sure registration data is available for all used personalized fields.</source>
+        <target>*Veuillez vous assurer que les données d’enregistrements sont affichées sur tous les champs personnalisés ajoutés.</target>
+      </trans-unit>
+      <trans-unit id="3934118952625564148" datatype="html">
+        <source>We don&apos;t store your IP-address. We only use it to generate an anonymous identifier not linked to any personal information.</source>
+        <target>Nous ne stockons pas votre adresse IP. Nous l'utilisons uniquement pour générer un identifiant anonyme sans lien avec vos données personnelles.</target>
+      </trans-unit>
+      <trans-unit id="3971565293367630153" datatype="html">
+        <source>Retry transfers</source>
+        <target>Réessayer les transferts</target>
+      </trans-unit>
+      <trans-unit id="3979054462974448924" datatype="html">
+        <source>The message must be at least 20 characters long.</source>
+        <target>Le message doit comporter au moins 20 caractères.</target>
+      </trans-unit>
+      <trans-unit id="4009667361617596446" datatype="html">
+        <source>We couldn&apos;t find any information linked to this person&apos;s phone number in the projects you have access to on the 121 Platform.</source>
+        <target>Aucune information liée au numéro de téléphone de cette personne dans les projets auxquels vous avez accès sur la Plateforme 121.</target>
+      </trans-unit>
+      <trans-unit id="4026691210548476882" datatype="html">
+        <source>Failed to load options</source>
+        <target>Echec du chargement des options</target>
+      </trans-unit>
+      <trans-unit id="4044492363974277530" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in this payment.</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel avec tous les enregistrements inclus dans ce paiement.</target>
+      </trans-unit>
+      <trans-unit id="4067653603451364018" datatype="html">
+        <source>The payment will be in progress while the number of transfers sent, total amount and registrations in the table below are loading.</source>
+        <target>Le paiement sera en cours pendant que le nombre de virements envoyés, le montant total et les enregistrements figurant dans le tableau ci-dessous seront en cours de téléchargement.</target>
+      </trans-unit>
+      <trans-unit id="4097796198739407763" datatype="html">
+        <source>This identifier is stored for max. 90 days in our logs-storage.</source>
+        <target>Cet identifiant est stocké pendant un maximum de 90 jours dans notre système de stockage.</target>
+      </trans-unit>
+      <trans-unit id="4145496584631696119" datatype="html">
+        <source>Role</source>
+        <target>Rôle</target>
+      </trans-unit>
+      <trans-unit id="4175321634261799700" datatype="html">
+        <source>Information you or your employer has provided us.</source>
+        <target>Les informations que vous ou votre employeur nous avez fournies.</target>
+      </trans-unit>
+      <trans-unit id="4207014437413577720" datatype="html">
+        <source>Start payment</source>
+        <target>Instruire les paiements</target>
+      </trans-unit>
+      <trans-unit id="4213825410774196775" datatype="html">
+        <source>No results</source>
+        <target>Aucun résultat</target>
+      </trans-unit>
+      <trans-unit id="4249207548869932033" datatype="html">
+        <source>Password reset successful</source>
+        <target>Réinitialisation du mot de passe réussie</target>
+      </trans-unit>
+      <trans-unit id="4273825032754891897" datatype="html">
+        <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
+        <target>* Pour utiliser un sous-périmètre, taper un point entre le périmètre et le sous-périmètre (par ex. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>paris.nord<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</target>
+      </trans-unit>
+      <trans-unit id="4309697217076303455" datatype="html">
+        <source><x equiv-text="paymentCount.toString()" id="count"/> (out of <x equiv-text="maxPayments.toString()" id="totalCount"/>)</source>
+        <target><x equiv-text="paymentCount.toString()" id="count"/> (sur <x equiv-text="maxPayments.toString()" id="totalCount"/>)</target>
+      </trans-unit>
+      <trans-unit id="4324437964498958057" datatype="html">
+        <source>Transfers sent</source>
+        <target>Transferts envoyés</target>
+      </trans-unit>
+      <trans-unit id="4360422423466093126" datatype="html">
+        <source>Click start payment, this will direct you to the payment page.</source>
+        <target>Cliquez sur Instruire le paiement, cela vous dirigera vers la page de paiement.</target>
+      </trans-unit>
+      <trans-unit id="4388879716045736175" datatype="html">
+        <source>Note</source>
+        <target>Note</target>
+      </trans-unit>
+      <trans-unit id="4404975094271849688" datatype="html">
+        <source>No changes detected.</source>
+        <target>Aucun changement détecté.</target>
+      </trans-unit>
+      <trans-unit id="4452017686076766931" datatype="html">
+        <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
+        <target>Le dernier export de fichier a été effectué le : <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="4478569469579904965" datatype="html">
+        <source>The note will be visible to other 121 users who are permitted to view personal profiles.</source>
+        <target>La note sera visible par les autres utilisateurs de 121 qui sont autorisés à consulter les profils personnels.</target>
+      </trans-unit>
+      <trans-unit id="4516124744118816397" datatype="html">
+        <source>Cookies</source>
+        <target>Cookies</target>
+      </trans-unit>
+      <trans-unit id="4533999713544924009" datatype="html">
+        <source>Remove user from team</source>
+        <target>Supprimer un utilisateur de l'équipe</target>
+      </trans-unit>
+      <trans-unit id="4547875681494013767" datatype="html">
+        <source>This action can not be applied to the registrations you have selected.</source>
+        <target>Cette action ne peut pas être appliquée aux enregistrements que vous avez sélectionnés.</target>
+      </trans-unit>
+      <trans-unit id="4555355588212916481" datatype="html">
+        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
+        <target>Veillez à respecter le format requis du modèle de fichier CSV. Télécharger le modèle <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>ici<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</target>
+      </trans-unit>
+      <trans-unit id="4585448172507601196" datatype="html">
+        <source>Registrations included</source>
+        <target>Enregistrements inclus</target>
+      </trans-unit>
+      <trans-unit id="4667279955724574149" datatype="html">
+        <source>Export status &amp; data changes</source>
+        <target>Exporter les modifications de statuts et des données</target>
+      </trans-unit>
+      <trans-unit id="4680756702302858333" datatype="html">
+        <source>Import registrations</source>
+        <target>Importer le fichier d'enregistrements</target>
+      </trans-unit>
+      <trans-unit id="4702579085370193789" datatype="html">
+        <source>Card successfully replaced</source>
+        <target>Carte remplacée avec succès</target>
+      </trans-unit>
+      <trans-unit id="4746344653872488527" datatype="html">
+        <source>Export payment list</source>
+        <target>Exporter la liste des paiements</target>
+      </trans-unit>
+      <trans-unit id="4747436386182159575" datatype="html">
+        <source>The status column in the file should contain one of the following values:</source>
+        <target>La colonne de statut dans le fichier doit contenir l'une des valeurs suivantes :</target>
+      </trans-unit>
+      <trans-unit id="4788150502649502085" datatype="html">
+        <source>You&apos;re about to update <x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/>&apos;s details.</source>
+        <target>Vous êtes sur le point de mettre à jour les informations de.<x equiv-text="{{ this.registration.data()?.name }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="4892553839051604445" datatype="html">
+        <source>Payment</source>
+        <target>Paiement</target>
+      </trans-unit>
+      <trans-unit id="4902817035128594900" datatype="html">
+        <source>Description</source>
+        <target>Description</target>
+      </trans-unit>
+      <trans-unit id="4957123542385348986" datatype="html">
+        <source>Amount successfully sent</source>
+        <target>Montant envoyé avec succès</target>
+      </trans-unit>
+      <trans-unit id="5004550577313573215" datatype="html">
+        <source>Total amount</source>
+        <target>Montant total</target>
+      </trans-unit>
+      <trans-unit id="5017538200388607229" datatype="html">
+        <source>Assign roles</source>
+        <target>Attribuer des rôles</target>
+      </trans-unit>
+      <trans-unit id="5035732150329518917" datatype="html">
+        <source>You&apos;re about to download an Excel file for all status &amp; data changes.</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel pour visualiser toutes les modifications de statut et de données.</target>
+      </trans-unit>
+      <trans-unit id="5061826209151408276" datatype="html">
+        <source>This privacy notice tells you what to expect us to do with your personal information when you use the 121 Platform.</source>
+        <target>Cette notice de confidentialité vous explique ce à quoi vous pouvez vous attendre concernant l’utilisation de vos données personnelles lorsque vous utilisez la plateforme 121.</target>
+      </trans-unit>
+      <trans-unit id="5081696702832953928" datatype="html">
+        <source>Some of the registrations you have selected are not eligible for this payment. Change your selection and try again</source>
+        <target>Certains des enregistrements que vous avez sélectionnés ne sont pas éligibles pour ce paiement. Modifiez votre sélection, puis réessayez.</target>
+      </trans-unit>
+      <trans-unit id="5156383097673576773" datatype="html">
+        <source>Fail reason</source>
+        <target>Raison de l’échec</target>
+      </trans-unit>
+      <trans-unit id="5169543313827462176" datatype="html">
+        <source>Transfer value</source>
+        <target>Valeur du transfert</target>
+      </trans-unit>
+      <trans-unit id="5172848657173998509" datatype="html">
+        <source>You are about to add a note to <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;s profile.</source>
+        <target>Vous êtes sur le point d’ajouter une note au profil de <x equiv-text="{{ registrationName() }}" id="INTERPOLATION"/>&apos;.</target>
+      </trans-unit>
+      <trans-unit id="5190825892106392539" datatype="html">
+        <source>Spanish</source>
+        <target>Espagnol</target>
+      </trans-unit>
+      <trans-unit id="5209857233936409392" datatype="html">
+        <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
+        <target>L'action &quot; Pause &quot; ne peut être appliquée qu'aux enregistrements ayant le statut &quot; Inclus(e) &quot;.</target>
+      </trans-unit>
+      <trans-unit id="5248644489024163464" datatype="html">
+        <source>Import file</source>
+        <target>Importer le fichier</target>
+      </trans-unit>
+      <trans-unit id="5255226222389200378" datatype="html">
+        <source>Unknown user account or authentication failed</source>
+        <target>Compte utilisateur inconnu ou échec d'authentification</target>
+      </trans-unit>
+      <trans-unit id="5270320047142620174" datatype="html">
+        <source>Information automatically collected about you</source>
+        <target>Données collectées automatiquement à votre sujet</target>
+      </trans-unit>
+      <trans-unit id="5306473977542913614" datatype="html">
+        <source>Activity</source>
+        <target>Activité</target>
+      </trans-unit>
+      <trans-unit id="5312727456282218392" datatype="html">
+        <source>User name</source>
+        <target>Nom de l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="5395278318341499807" datatype="html">
+        <source>Assign scope</source>
+        <target>Attribuer un paramètre</target>
+      </trans-unit>
+      <trans-unit id="5397829192667702490" datatype="html">
+        <source>Sending messages</source>
+        <target>Envoi de messages en cours</target>
+      </trans-unit>
+      <trans-unit id="5402301426403064456" datatype="html">
+        <source>Managing Cookies:</source>
+        <target>Gestion des cookies :</target>
+      </trans-unit>
+      <trans-unit id="5408686534414832538" datatype="html">
+        <source>This will download an Excel file showing the balance of every card from the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
+        <target>Cela téléchargera un fichier Excel indiquant le solde de chaque carte à partir du dernier <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> paiement(s).</target>
+      </trans-unit>
+      <trans-unit id="5438647545299330818" datatype="html">
+        <source>Enter a valid scope. No spaces are allowed.</source>
+        <target>Entrer un périmètre valide. Aucun espace n'est autorisé.</target>
+      </trans-unit>
+      <trans-unit id="5452570589103987928" datatype="html">
+        <source>Payment status chart.</source>
+        <target>Tableau des statuts des paiements.</target>
+      </trans-unit>
+      <trans-unit id="5533720489917693962" datatype="html">
+        <source>You&apos;re about to download an Excel file with the FSP instructions for this payment.</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel avec les instructions du FSP pour ce paiement.</target>
+      </trans-unit>
+      <trans-unit id="5581642292282365168" datatype="html">
+        <source>Time and date</source>
+        <target>Heure et date</target>
+      </trans-unit>
+      <trans-unit id="5587438863454126747" datatype="html">
+        <source>New data</source>
+        <target>Nouvelles données</target>
+      </trans-unit>
+      <trans-unit id="5590086849807274701" datatype="html">
+        <source>Scope</source>
+        <target>Périmètre</target>
+      </trans-unit>
+      <trans-unit id="5595826100350402634" datatype="html">
+        <source>Use the arrow keys or W A S D to play the game</source>
+        <target>Utilisez les touches fléchées ou W A S D pour jouer au jeu.</target>
+      </trans-unit>
+      <trans-unit id="5641945527911431559" datatype="html">
+        <source>Error: <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></source>
+        <target>Erreur : <x equiv-text="{{ versionInfo.error()?.message }}" id="INTERPOLATION"/></target>
+      </trans-unit>
+      <trans-unit id="5677186522471416018" datatype="html">
+        <source>Upload the file to the Financial Service Provider’s portal.</source>
+        <target>Télécharger le fichier sur le portail du prestataire de services financiers.</target>
+      </trans-unit>
+      <trans-unit id="5682129577475133431" datatype="html">
+        <source>Import not possible</source>
+        <target>Importation impossible</target>
+      </trans-unit>
+      <trans-unit id="5682359291233237791" datatype="html">
+        <source>Turkish</source>
+        <target>Turc</target>
+      </trans-unit>
+      <trans-unit id="5701571628417198513" datatype="html">
+        <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
+        <target>Vous êtes sur le point de télécharger un fichier Excel pour <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> Inscriptions sélectionnées.</target>
+      </trans-unit>
+      <trans-unit id="5842006292473012174" datatype="html">
+        <source>The system will create registrations with the status “registered”.</source>
+        <target>Les nouveaux enregistrements créés seront indiqué sous le statut 'inscrit'.</target>
+      </trans-unit>
+      <trans-unit id="5847820864343475107" datatype="html">
+        <source>There are no payments for this project yet.</source>
+        <target>Il n’y a pas encore de paiements pour ce projet.</target>
+      </trans-unit>
+      <trans-unit id="5866254605255506989" datatype="html">
+        <source>English</source>
+        <target>Anglais</target>
+      </trans-unit>
+      <trans-unit id="5889532119950831763" datatype="html">
+        <source>You&apos;re about to replace debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. This will block the current card and a new card will be issued.</source>
+        <target>Vous êtes sur le point de remplacer le numéro de votre carte de débit <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>. Cela bloquera la carte actuelle et une nouvelle carte sera émise.</target>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Add user</source>
+        <target>Ajouter un utilisateur</target>
+      </trans-unit>
+      <trans-unit id="5995232414192798763" datatype="html">
+        <source>Financial Service Provider(s)</source>
+        <target>Prestataire(s) de Services Financiers</target>
+      </trans-unit>
+      <trans-unit id="5995811927641285296" datatype="html">
+        <source>Last log in</source>
+        <target>Dernière connexion</target>
+      </trans-unit>
+      <trans-unit id="6057281094654962766" datatype="html">
+        <source>Validate</source>
+        <target>Valider</target>
+      </trans-unit>
+      <trans-unit id="6102855402615761891" datatype="html">
+        <source>The base transfer value is multiplied by a set factor for each registration. For example, if the base value is $50 and the multiplier is based on household size, a 3-person household would receive $150 per payment.</source>
+        <target>La valeur du transfert de base est multipliée par un facteur défini pour chaque enregistrement. Par exemple, si la valeur de base est de 50 $ et que le multiplicateur est basé sur la taille du ménage, un ménage de 3 personnes recevra 150 $ par paiement.</target>
+      </trans-unit>
+      <trans-unit id="6186007479370342072" datatype="html">
+        <source>Request a password reset</source>
+        <target>Demande de réinitialisation du mot de passe</target>
+      </trans-unit>
+      <trans-unit id="6231535972680055827" datatype="html">
+        <source>121 Portal</source>
+        <target>Portail 121</target>
+      </trans-unit>
+      <trans-unit id="6255566478374242100" datatype="html">
+        <source>Firstname Lastname</source>
+        <target>Prénom Nom de famille</target>
+      </trans-unit>
+      <trans-unit id="6269202464699193298" datatype="html">
+        <source>Arabic</source>
+        <target>Arabe</target>
+      </trans-unit>
+      <trans-unit id="6289725856045829997" datatype="html">
+        <source>Send a message to registration(s)</source>
+        <target>Envoyer un message aux enregistré(e)s</target>
+      </trans-unit>
+      <trans-unit id="6305795241980054784" datatype="html">
+        <source>Necessary cookies are required for the basic operation of the platform.</source>
+        <target>Les cookies nécessaires sont indispensables au fonctionnement de base de la plateforme.</target>
+      </trans-unit>
+      <trans-unit id="6309828574111583895" datatype="html">
+        <source>Change password</source>
+        <target>Modifier le mot de passe</target>
+        <note priority="1" from="description">Menu-item</note>
+      </trans-unit>
+      <trans-unit id="6345542796169013745" datatype="html">
+        <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
+        <target>Sélectionnez les enregistrements avec &apos; « Paiements restants » supérieur à 0 et réessayez.</target>
+      </trans-unit>
+      <trans-unit id="6369488977592373957" datatype="html">
+        <source>This means that they will not be included in payments.</source>
+        <target>Cela signifie qu’ils ne seront pas inclus dans les paiements.</target>
+      </trans-unit>
+      <trans-unit id="6371019092558402602" datatype="html">
+        <source>Export duplicate registrations</source>
+        <target>Exporter les doublons d'enregistrements</target>
+      </trans-unit>
+      <trans-unit id="6371588679924903737" datatype="html">
+        <source>Open in new tab</source>
+        <target>Ouvrir dans un nouvel onglet</target>
+      </trans-unit>
+      <trans-unit id="6381578200008167206" datatype="html">
+        <source>Include</source>
+        <target>Inclure</target>
+      </trans-unit>
+      <trans-unit id="6404965869709788913" datatype="html">
+        <source>Personal information edited successfully.</source>
+        <target>Informations personnelles modifiées avec succès.</target>
+      </trans-unit>
+      <trans-unit id="6430223777327451722" datatype="html">
+        <source>Total payment amount</source>
+        <target>Montant total du paiement</target>
+      </trans-unit>
+      <trans-unit id="6467871397050565968" datatype="html">
+        <source>Choose option(s)</source>
+        <target>Choisir une ou plusieurs option(s)</target>
+      </trans-unit>
+      <trans-unit id="6509003407758128100" datatype="html">
+        <source>Cookie policy</source>
+        <target>Politique de cookies</target>
+      </trans-unit>
+      <trans-unit id="6533918067030990396" datatype="html">
+        <source>Amount</source>
+        <target>Montant</target>
+      </trans-unit>
+      <trans-unit id="6562860910125244453" datatype="html">
+        <source>Use the &apos;Last Message Status&apos; column to check the progress of messages. Closing this notification will not cancel message sending.</source>
+        <target>Utilisez le &apos;Statut du dernier message&apos; pour vérifier la progression des messages. La fermeture de cette notification n’annulera pas l’envoi du message.</target>
+      </trans-unit>
+      <trans-unit id="6651655904432464973" datatype="html">
+        <source>Amount of payments done in the project so far.</source>
+        <target>Montant des paiements effectués dans le cadre du projet jusqu’à présent.</target>
+      </trans-unit>
+      <trans-unit id="6655432650609946987" datatype="html">
+        <source>Are you sure you want to send this message?</source>
+        <target>Êtes-vous sûr(e) de vouloir envoyer ce message ?</target>
+      </trans-unit>
+      <trans-unit id="6725574712013202474" datatype="html">
+        <source>Payment created.</source>
+        <target>Paiement instruit.</target>
+      </trans-unit>
+      <trans-unit id="6828231165009897209" datatype="html">
+        <source>You must select this to proceed.</source>
+        <target>Vous devez sélectionner cette option pour continuer.</target>
+      </trans-unit>
+      <trans-unit id="6884725425179376273" datatype="html">
+        <source>Registration not found. Please check the URL and try again.</source>
+        <target>L'enregistrement n'a pas été trouvé. Veuillez vérifier l'URL et réessayer.</target>
+      </trans-unit>
+      <trans-unit id="6885844978916799621" datatype="html">
+        <source>Budget</source>
+        <target>Budget</target>
+      </trans-unit>
+      <trans-unit id="6909842392958829581" datatype="html">
+        <source><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> registration(s)</source>
+        <target><x equiv-text="{{ statusVerb() }}" id="INTERPOLATION"/> Enregistrements</target>
+      </trans-unit>
+      <trans-unit id="6954699489555837710" datatype="html">
+        <source>Read our Privacy notice</source>
+        <target>Lire notre Politique de Confidentialité</target>
+      </trans-unit>
+      <trans-unit id="6987397690071959130" datatype="html">
+        <source>Old card:</source>
+        <target>Ancienne carte :</target>
+      </trans-unit>
+      <trans-unit id="6988584798455615907" datatype="html">
+        <source>The new password must be at least 8 characters long.</source>
+        <target>Le nouveau mot de passe doit comporter au moins 8 caractères.</target>
+      </trans-unit>
+      <trans-unit id="7005213248357637960" datatype="html">
+        <source>Edit information</source>
+        <target>Modifier les informations</target>
+      </trans-unit>
+      <trans-unit id="7022070615528435141" datatype="html">
+        <source>Delete</source>
+        <target>Supprimer</target>
+      </trans-unit>
+      <trans-unit id="7097489496530398841" datatype="html">
+        <source>You&apos;re about to pause debit card number <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</source>
+        <target>Vous êtes sur le point de mettre en pause le numéro de carte de débit <x equiv-text="{{ currentCard()?.tokenCode }}" id="INTERPOLATION"/>.</target>
+      </trans-unit>
+      <trans-unit id="7102075992666089988" datatype="html">
+        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
+        <target>Étape <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> sur <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></target>
+      </trans-unit>
+      <trans-unit id="7113199794780283377" datatype="html">
+        <source>You are about to retry <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> payment(s). The transfer status will change to Pending until received by the registration.</source>
+        <target>Vous êtes sur le point de réessayer <x equiv-text="{{ referenceIdsForRetryTransfers().length }}" id="INTERPOLATION"/> paiement(s). Le statut du transfert passera à En attente jusqu’à ce qu’il soit reçu par le bénéficiaire inclus.</target>
+      </trans-unit>
+      <trans-unit id="7123246815138482133" datatype="html">
+        <source>The import takes about 1 minute per 100 records</source>
+        <target>L’importation prend environ 1 minute pour 100 enregistrements</target>
+      </trans-unit>
+      <trans-unit id="7148904805726439689" datatype="html">
+        <source>Target registrations</source>
+        <target>Enregistrements ciblés</target>
+      </trans-unit>
+      <trans-unit id="7194723645188865835" datatype="html">
+        <source>We do not share any personal information with other third-parties.</source>
+        <target>Nous ne partageons aucune donnée personnelle avec des tiers.</target>
+      </trans-unit>
+      <trans-unit id="7197861278093051814" datatype="html">
+        <source>Export debit card usage</source>
+        <target>Exporter l’utilisation de la carte de débit</target>
+      </trans-unit>
+      <trans-unit id="7203225042973794131" datatype="html">
+        <source>&lt;UNNAMED TEMPLATE&gt;</source>
+        <target>&lt;UNNAMED TEMPLATE&gt;</target>
+      </trans-unit>
+      <trans-unit id="7316654266676902247" datatype="html">
+        <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
+        <target>Votre adresse IP ainsi que certaines données sur l’appareil et le navigateur web que vous utilisez pour accéder à la plateforme 121.</target>
+      </trans-unit>
+      <trans-unit id="7379726829888309084" datatype="html">
+        <source>End Date</source>
+        <target>Date de fin</target>
+      </trans-unit>
+      <trans-unit id="7410432243549869948" datatype="html">
+        <source>Duration</source>
+        <target>Durée</target>
+      </trans-unit>
+      <trans-unit id="7461594294922045071" datatype="html">
+        <source>This means that they can be included in payments.</source>
+        <target>Cela signifie qu’ils peuvent pas être inclus dans les paiements.</target>
+      </trans-unit>
+      <trans-unit id="7463196084306840699" datatype="html">
+        <source>The data in this report is based on data that is imported every night from CBE. If you changed data today this will not be reflected in the report.</source>
+        <target>Les données de ce rapport sont basées sur des données importées chaque nuit de la CBE. Si vous avez modifié les données aujourd’hui, cela ne sera pas reflété dans le rapport.</target>
+      </trans-unit>
+      <trans-unit id="7476141645378496788" datatype="html">
+        <source>No payments yet</source>
+        <target>Aucun paiement n'a encore été instruit</target>
+      </trans-unit>
+      <trans-unit id="7481183920179363714" datatype="html">
+        <source>Sent</source>
+        <target>Envoyé</target>
+      </trans-unit>
+      <trans-unit id="7483364924749111553" datatype="html">
+        <source>They will not be included in payments.</source>
+        <target>Ils ne seront pas inclus dans les paiements.</target>
+      </trans-unit>
+      <trans-unit id="7509825160805284263" datatype="html">
+        <source>Personal information: IP-address.</source>
+        <target>Données Personnelles : Adresse IP.</target>
+      </trans-unit>
+      <trans-unit id="7582384076029482676" datatype="html">
+        <source>Select registrations with other status and try again.</source>
+        <target>Sélectionner les enregistrements avec un autre statut, puis réessayer.</target>
+      </trans-unit>
+      <trans-unit id="7585097972263982693" datatype="html">
+        <source>Old FSP</source>
+        <target>Ancien PSF</target>
+      </trans-unit>
+      <trans-unit id="7613791439001735010" datatype="html">
+        <source>Template message</source>
+        <target>Modèle de message</target>
+      </trans-unit>
+      <trans-unit id="7633754075223722162" datatype="html">
+        <source>French</source>
+        <target>Français</target>
+      </trans-unit>
+      <trans-unit id="7675424950942601762" datatype="html">
+        <source>Optionally pass a start date and/or an end date to filter the data changes. The export is limited to 100,000 data changes. Adapt your dates if needed.</source>
+        <target>Vous pouvez également indiquer une date de début et/ou une date de fin pour filtrer les modifications de données. L'exportation est limitée à 100 000 modifications de données. Adaptez vos dates si nécessaire.</target>
+      </trans-unit>
+      <trans-unit id="7687442073351590218" datatype="html">
+        <source>Total registrations excluding rejected and deleted registrations.</source>
+        <target>Total des enregistrements, à l'exclusion des enregistrements déclinés jetés et supprimés.</target>
+      </trans-unit>
+      <trans-unit id="7739650586737813677" datatype="html">
+        <source>All Registrations</source>
+        <target>Tous les enregistrements</target>
+      </trans-unit>
+      <trans-unit id="7750664097458673871" datatype="html">
+        <source>Kobo Token</source>
+        <target>Jeton Kobo</target>
+      </trans-unit>
+      <trans-unit id="7781301631011863993" datatype="html">
+        <source>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> selected)</source>
+        <target>(<x equiv-text="selectedItemsCount.toString()" id="PH"/> sélectionné(s))</target>
+      </trans-unit>
+      <trans-unit id="7893013905728176682" datatype="html">
+        <source>Something went wrong with this import. Please fix the errors reported below and try again.</source>
+        <target>Un problème est survenu lors de cette importation. Veuillez corriger les erreurs signalées ci-dessous, puis réessayer.</target>
+      </trans-unit>
+      <trans-unit id="7906932148820692681" datatype="html">
+        <source>Operation not possible.</source>
+        <target>Opération impossible.</target>
+      </trans-unit>
+      <trans-unit id="7910076708497708162" datatype="html">
+        <source>Last login</source>
+        <target>Dernière connexion</target>
+      </trans-unit>
+      <trans-unit id="7924647147478852112" datatype="html">
+        <source>Game over!</source>
+        <target>Fin de la partie !</target>
+      </trans-unit>
+      <trans-unit id="7935811228673267610" datatype="html">
+        <source>No Projects found</source>
+        <target>Aucun projet trouvé</target>
+      </trans-unit>
+      <trans-unit id="8004775102395278439" datatype="html">
+        <source>FSP</source>
+        <target>PSF</target>
+      </trans-unit>
+      <trans-unit id="8029438652061888154" datatype="html">
+        <source>Your password was successfully changed.</source>
+        <target>Votre mot de passe a été modifié avec succès.</target>
+      </trans-unit>
+      <trans-unit id="8040367464671654118" datatype="html">
+        <source>Reg. #</source>
+        <target>Enreg. #</target>
+      </trans-unit>
+      <trans-unit id="8060388914130154528" datatype="html">
+        <source>The new password must be different from the current password.</source>
+        <target>Le nouveau mot de passe doit être différent du mot de passe actuel.</target>
+      </trans-unit>
+      <trans-unit id="8066608938393600549" datatype="html">
+        <source>Message</source>
+        <target>Message</target>
+      </trans-unit>
+      <trans-unit id="8074727237612649640" datatype="html">
+        <source>Review summary and click start payment.</source>
+        <target>Consultez le résumé et cliquez sur Instruire le paiement.</target>
+      </trans-unit>
+      <trans-unit id="8097251469414276924" datatype="html">
+        <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
+        <target><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/><x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> enregistrement(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> trouvé(s) avec ce numéro.</target>
+      </trans-unit>
+      <trans-unit id="8102975218009674229" datatype="html">
+        <source>Print voucher</source>
+        <target>Imprimer le bon d’achat</target>
+      </trans-unit>
+      <trans-unit id="8103250468659936776" datatype="html">
+        <source>Please fill out all required fields.</source>
+        <target>Veuillez indiquer tous les champs requis.</target>
+      </trans-unit>
+      <trans-unit id="8108032945706896800" datatype="html">
+        <source>You do not have permission to view this page.</source>
+        <target>Vous n'avez pas la permission de voir cette page.</target>
+      </trans-unit>
+      <trans-unit id="8116175184239166510" datatype="html">
+        <source>Decline</source>
+        <target>Décliner</target>
+      </trans-unit>
+      <trans-unit id="8116905776887232271" datatype="html">
+        <source>Expected total amount</source>
+        <target>Montant Total attendu</target>
+      </trans-unit>
+      <trans-unit id="8117831125016931547" datatype="html">
+        <source>User removed</source>
+        <target>Utilisateur supprimé</target>
+      </trans-unit>
+      <trans-unit id="8158073155076214675" datatype="html">
+        <source>Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher&apos;s last external update.</source>
+        <target>Remarque importante : Les bons d’achat inutilisés disponibles au téléchargement ne sont pas en temps réel. Le rapport comprend la date et l’heure de la dernière mise à jour externe de chaque bon d'achat.</target>
+      </trans-unit>
+      <trans-unit id="8182296119853145202" datatype="html">
+        <source>username@example.org</source>
+        <target>username@example.org</target>
+      </trans-unit>
+      <trans-unit id="8200577595704036068" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all PAs<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+        <target>* Laisser ce champ vide signifie que le membre de l'équipe aura accès à <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/> tous les PAs <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></target>
+      </trans-unit>
+      <trans-unit id="8209340100752123472" datatype="html">
+        <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
+        <target>Lorsque vous recevez une tâche, toute information liée au numéro de téléphone de la personne trouvée dans les programmes en cours de la Plateforme 121 apparaîtra ici.</target>
+      </trans-unit>
+      <trans-unit id="8220517666190714329" datatype="html">
+        <source>Did you know?</source>
+        <target>Le saviez-vous ?</target>
+      </trans-unit>
+      <trans-unit id="8221183084962199390" datatype="html">
+        <source>Payment not found. Please check the URL and try again.</source>
+        <target>Paiement non trouvé. Veuillez vérifier l'URL, puis réessayer.</target>
+      </trans-unit>
+      <trans-unit id="8255959026836387530" datatype="html">
+        <source>Email copied to clipboard</source>
+        <target>E-mail copié dans le presse-papiers</target>
+      </trans-unit>
+      <trans-unit id="8301535046747035390" datatype="html">
+        <source>Full name</source>
+        <target>Nom et prénom</target>
+      </trans-unit>
+      <trans-unit id="8312065814232621608" datatype="html">
+        <source>Indonesian</source>
+        <target>Indonésien</target>
+      </trans-unit>
+      <trans-unit id="8315909063441814502" datatype="html">
+        <source>Changing statuses</source>
+        <target>Modification des statuts</target>
+      </trans-unit>
+      <trans-unit id="8384225360105280028" datatype="html">
+        <source>Complete</source>
+        <target>Compléter</target>
+      </trans-unit>
+      <trans-unit id="8385553553362590495" datatype="html">
+        <source>If you have any questions regarding your privacy and the 121 Platform, feel free to contact us at: <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></source>
+        <target>Si vous avez des questions concernant la politique de confidentialité de vos données ou la plateforme 121, n’hésitez pas à nous contacter à : <x ctype="x-a" equiv-text="&lt;a [href]=&quot;&apos;mailto:&apos; + privacyOfficerEmail&quot;&gt;" id="START_LINK"/><x equiv-text="{{ privacyOfficerEmail }}" id="INTERPOLATION"/><x ctype="x-a" equiv-text="&lt;/a&gt;" id="CLOSE_LINK"/></target>
+      </trans-unit>
+      <trans-unit id="8390249546875631537" datatype="html">
+        <source>Important Notice: The card balances available for download are not in real-time. The report includes the date and time of each card&apos;s last external update.</source>
+        <target>Remarque importante : Les soldes des cartes disponibles en téléchargement ne sont pas en temps réel. Le rapport comprend la date et l’heure de la dernière mise à jour externe de chaque carte.</target>
+      </trans-unit>
+      <trans-unit id="8411698505854313639" datatype="html">
+        <source>Continue to preview</source>
+        <target>Continuer vers l’aperçu</target>
+      </trans-unit>
+      <trans-unit id="8427406767154725875" datatype="html">
+        <source>New FSP</source>
+        <target>Nouveau PSF</target>
+      </trans-unit>
+      <trans-unit id="8561412171255849133" datatype="html">
+        <source>You are not assigned to any project(s) yet, contact the admin/supervisor to start using the 121 portal.</source>
+        <target>Vous n’êtes pas encore affecté à un ou plusieurs projets, contactez l’administrateur/superviseur du projet pour commencer à utiliser le portail 121.</target>
+      </trans-unit>
+      <trans-unit id="8563473409467586384" datatype="html">
+        <source>Select registrations with another status and try again.</source>
+        <target>Sélectionnez les enregistrements ayant un autre statut et réessayez.</target>
+      </trans-unit>
+      <trans-unit id="8602877633844729884" datatype="html">
+        <source>Changes that you made may not be saved. Are you sure you wish to proceed?</source>
+        <target>Les modifications que vous avez apportées pourraient ne pas être sauvegardées. Êtes-vous sûr de vouloir continuer ?</target>
+      </trans-unit>
+      <trans-unit id="8668090925608056170" datatype="html">
+        <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
+        <target>L'action &quot;Inclure&quot; ne peut être appliquée qu'aux enregistrements dont le nombre de "Paiements restants" de&apos;est supérieur à 0.</target>
+      </trans-unit>
+      <trans-unit id="8670091824036050972" datatype="html">
+        <source>You&apos;re about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> registrations.</source>
+        <target>Vous êtes sur le point de <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ statusVerb() | lowercase }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION_1"/> Enregistrements.</target>
+      </trans-unit>
+      <trans-unit id="8691920320483720007" datatype="html">
+        <source>Received</source>
+        <target>Reçu</target>
+      </trans-unit>
+      <trans-unit id="8705310124062464174" datatype="html">
+        <source>A payment is currently in progress. Please try again later</source>
+        <target>Un paiement est actuellement en cours. Veuillez réessayer plus tard</target>
+      </trans-unit>
+      <trans-unit id="8733206904097373941" datatype="html">
+        <source>This will download an Excel file with all unused voucher(s).</source>
+        <target>Cela téléchargera un fichier Excel avec tous les bons d’achat inutilisés.</target>
+      </trans-unit>
+      <trans-unit id="8735075176632769564" datatype="html">
+        <source>Export account number verification</source>
+        <target>Exporter Vérification des numéros de compte</target>
+      </trans-unit>
+      <trans-unit id="8847988975348610068" datatype="html">
+        <source>Save the exported XLSX-file in the format required by the Financial Service Provider.</source>
+        <target>Sauvegarder le fichier XLSX exporté dans le format requis par le prestataire de services financiers.</target>
+      </trans-unit>
+      <trans-unit id="8875170340911342447" datatype="html">
+        <source>You&apos;re about to remove <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) from your team.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>They will not have access to the project anymore.</source>
+        <target>Vous êtes sur le point de supprimer <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ selectedUser()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> (<x equiv-text="{{ selectedUser()?.allRolesLabel }}" id="INTERPOLATION_1"/>) de votre équipe.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>Ils n’auront plus accès au projet.</target>
+      </trans-unit>
+      <trans-unit id="8890553633144307762" datatype="html">
+        <source>Back</source>
+        <target>Précédent</target>
+      </trans-unit>
+      <trans-unit id="8918915369134420822" datatype="html">
+        <source>Message:</source>
+        <target>Message :</target>
+      </trans-unit>
+      <trans-unit id="8934662076309331939" datatype="html">
+        <source>Last payment:</source>
+        <target>Dernier paiement :</target>
+      </trans-unit>
+      <trans-unit id="8938510541215036054" datatype="html">
+        <source>Enter a valid email address</source>
+        <target>Entrez une adresse e-mail valide</target>
+      </trans-unit>
+      <trans-unit id="8953033926734869941" datatype="html">
+        <source>Name</source>
+        <target>Nom</target>
+      </trans-unit>
+      <trans-unit id="8967125351109863286" datatype="html">
+        <source>Select registrations with the status “Registered” and try again.</source>
+        <target>Sélectionnez les enregistrements avec le statut « Enregistré » et réessayez.</target>
+      </trans-unit>
+      <trans-unit id="8980999496899249966" datatype="html">
+        <source>Table columns:</source>
+        <target>Colonnes du tableau :</target>
+      </trans-unit>
+      <trans-unit id="9011868136618282915" datatype="html">
+        <source>There are no records that match the selected filters, clear some or all filters to continue.</source>
+        <target>Aucun enregistrement ne correspond aux filtres sélectionnés, effacez certains ou tous les filtres pour continuer.</target>
+      </trans-unit>
+      <trans-unit id="9023742269421706395" datatype="html">
+        <source>Failed transfers</source>
+        <target>Échec des transferts</target>
+      </trans-unit>
+      <trans-unit id="9042260521669277115" datatype="html">
+        <source>Pause</source>
+        <target>Pause</target>
+      </trans-unit>
+      <trans-unit id="9047634939215362248" datatype="html">
+        <source>Registrations selected:</source>
+        <target>Enregistrements sélectionnés :</target>
+      </trans-unit>
+      <trans-unit id="9063819144679824048" datatype="html">
+        <source>People included</source>
+        <target>Personnes incluses</target>
+      </trans-unit>
+      <trans-unit id="9109328074966219188" datatype="html">
+        <source>Checking duplicates is based on:</source>
+        <target>La vérification des doublons se base sur :</target>
+      </trans-unit>
+      <trans-unit id="9126928390466272085" datatype="html">
+        <source>The status of <x equiv-text="data.applicableCount" id="PH"/> registration(s) is being changed to &quot;<x equiv-text="this.statusLabel()" id="PH_1"/>&quot; successfully. The status change can take up to a minute to process.</source>
+        <target>Le statut de <x equiv-text="data.applicableCount" id="PH"/> enregistrement(s) a été remplacé par <x equiv-text="this.statusLabel()" id="PH_1"/> avec succès. L'actualisation du statut peut prendre jusqu’à une minute.</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-data-change" datatype="html">
+        <source>Data change</source>
+        <target>Modification des données</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-fsp-change" datatype="html">
+        <source>FSP change</source>
+        <target>Changement de PSF</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-message" datatype="html">
+        <source>Message</source>
+        <target>Message</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-note" datatype="html">
+        <source>Note</source>
+        <target>Note</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-status-update" datatype="html">
+        <source>Status update</source>
+        <target>Mise à jour du statut</target>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-transfer" datatype="html">
+        <source>Transfer</source>
+        <target>Transfert</target>
+      </trans-unit>
+      <trans-unit id="add-note" datatype="html">
+        <source>Add note</source>
+        <target>Ajouter une note</target>
+      </trans-unit>
+      <trans-unit id="add-project-label" datatype="html">
+        <source>Add project</source>
+        <target>Ajouter un projet</target>
+      </trans-unit>
+      <trans-unit id="add-team-member" datatype="html">
+        <source>Add team member</source>
+        <target>Ajouter un membre de l’équipe</target>
+      </trans-unit>
+      <trans-unit id="add-user" datatype="html">
+        <source>Add new user</source>
+        <target>Ajouter un nouvel utilisateur</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-maxPayments" datatype="html">
+        <source>The maximum number of payments for this Person Affected. You can remove the limit by removing the value and saving.</source>
+        <target>Le nombre maximum de paiements pour cette Personne Affectée. Vous pouvez supprimer la limite en supprimant la valeur, puis sauvegarder.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentAmountMultiplier" datatype="html">
+        <source>The transfer value will be multiplied by this number for this Person Affected</source>
+        <target>La valeur du transfert sera multipliée par ce nombre pour cette Personne Affectée.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-paymentCountRemaining" datatype="html">
+        <source>This is automatically calculated based on Max. payments and payments sucessfully sent</source>
+        <target>Cette valeur est calculée automatiquement en fonction du nombre de paiements maximums et des paiements envoyés avec succès.</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-phoneNumber" datatype="html">
+        <source>The required format is: ONLY numbers, including country-code.</source>
+        <target>Le format requis doit comporter : UNIQUEMENT des chiffres, y compris l'indicatif du pays (par exemple, 33 sans le + pour la France).</target>
+      </trans-unit>
+      <trans-unit id="attribute-edit-info-scope" datatype="html">
+        <source>Separate the parts with a dot (i.e. &apos;amsterdam.west&apos;).</source>
+        <target>Séparer les champs par un point (par exemple, 'paris.nord').</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-inclusionScore" datatype="html">
+        <source>Inclusion Score</source>
+        <target>Score d'éligibilité</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-maxPayments" datatype="html">
+        <source>Max. payments</source>
+        <target>Paiements max.</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
+        <source>Transfer value multiplier</source>
+        <target>Multiplicateur de valeur de transfert</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCount" datatype="html">
+        <source>Payment Count</source>
+        <target>Nombre de Paiements</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-paymentCountRemaining" datatype="html">
+        <source>Remaining payments</source>
+        <target>Paiements restants</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-phoneNumber" datatype="html">
+        <source>Phone Number</source>
+        <target>Numéro de téléphone</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-preferredLanguage" datatype="html">
+        <source>Preferred Language</source>
+        <target>Langue préférée</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationLabel" datatype="html">
+        <source>FSP</source>
+        <target>PSF</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
+        <source>FSP Configuration Name</source>
+        <target>Nom du PSF configuré</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-referenceId" datatype="html">
+        <source>Reference ID</source>
+        <target>Numéro de référence</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Registration Created Date</source>
+        <target>Date de création de l'enregistrement</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
+        <source>Registration ID</source>
+        <target>Numéro d'enregistrement</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-scope" datatype="html">
+        <source>Scope</source>
+        <target>Périmètre</target>
+      </trans-unit>
+      <trans-unit id="attribute-label-status" datatype="html">
+        <source>Status</source>
+        <target>Statut</target>
+      </trans-unit>
+      <trans-unit id="change-status-decline-warning" datatype="html">
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
+        <target>L'action &quot;Décliné&quot; ne peut pas être appliquée aux enregistrements ayant le statut &quot;Complété&quot;. Les enregistrements avec le statut "Complété" conserveront leur statut actuel.</target>
+      </trans-unit>
+      <trans-unit id="change-status-delete-warning" datatype="html">
+        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
+        <target>L'action &quot; Supprimer &quot; ne peut pas être appliquée aux enregistrements ayant le statut &quot; Complété(e) &quot;. Les enregistrements ayant le statut « Complété(e) » conserveront leur statut actuel.</target>
+      </trans-unit>
+      <trans-unit id="change-status-include-warning" datatype="html">
+        <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
+        <target>L'action &quot;Inclure&quot; ne peut être appliquée qu'aux enregistrements dont le nombre de "paiements restants" est supérieur à 0. Les enregistrements dont le nombre de paiements restants est de 0 resteront inchangés.</target>
+      </trans-unit>
+      <trans-unit id="change-status-pause-warning" datatype="html">
+        <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
+        <target>L'action &quot; Pause &quot; ne peut être appliquée qu'aux enregistrements ayant le statut &quot;Inclus(e)&quot; Les enregistrements ayant d'autres statuts conserveront leur statut actuel.</target>
+      </trans-unit>
+      <trans-unit id="change-status-validate-warning" datatype="html">
+        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status. Registrations with other statuses will remain with their current status.</source>
+        <target>L'action &quot; Validé(e) &quot; ne peut être appliquée qu'aux enregistrements ayant le statut &quot; Enregistré(e) &quot;. Les enregistrements ayant d'autres statuts conserveront leur statut actuel.</target>
+      </trans-unit>
+      <trans-unit id="confirmation-dialog-header" datatype="html">
+        <source>Are you sure?</source>
+        <target>Êtes-vous sûr(e)?</target>
+      </trans-unit>
+      <trans-unit id="create-payment" datatype="html">
+        <source>Create new payment</source>
+        <target>Créer un nouveau paiement</target>
+      </trans-unit>
+      <trans-unit id="debit-card-actions-pause-card" datatype="html">
+        <source>Pause card</source>
+        <target>Suspendre la carte</target>
+      </trans-unit>
+      <trans-unit id="debit-card-actions-replace-card" datatype="html">
+        <source>Replace card</source>
+        <target>Remplacer la carte</target>
+      </trans-unit>
+      <trans-unit id="debit-card-actions-unpause-card" datatype="html">
+        <source>Unpause card</source>
+        <target>Annuler la pause de la carte</target>
+      </trans-unit>
+      <trans-unit id="debit-card-balance" datatype="html">
+        <source>Current balance</source>
+        <target>Solde actuel</target>
+      </trans-unit>
+      <trans-unit id="debit-card-explanation" datatype="html">
+        <source>Explanation</source>
+        <target>Explication</target>
+      </trans-unit>
+      <trans-unit id="debit-card-issued-on" datatype="html">
+        <source>Issued on</source>
+        <target>Délivrée le</target>
+      </trans-unit>
+      <trans-unit id="debit-card-last-used" datatype="html">
+        <source>Last used</source>
+        <target>Dernière utilisation</target>
+      </trans-unit>
+      <trans-unit id="debit-card-number" datatype="html">
+        <source>Card number</source>
+        <target>Numéro de carte</target>
+      </trans-unit>
+      <trans-unit id="debit-card-spent-this-month" datatype="html">
+        <source>Spent this month (max. EUR 150)</source>
+        <target>Dépenses effectuées ce mois-ci (max. 150 EUR)</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status" datatype="html">
+        <source>Card status</source>
+        <target>Statut de la carte</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-active" datatype="html">
+        <source>Active</source>
+        <target>Actif</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-blocked" datatype="html">
+        <source>Blocked</source>
+        <target>Bloqué</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-card-data-missing" datatype="html">
+        <source>Debit card data missing</source>
+        <target>Données de la carte de débit manquantes</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-issued" datatype="html">
+        <source>Issued</source>
+        <target>Émis(e)</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-paused" datatype="html">
+        <source>Paused</source>
+        <target>En pause</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-substituted" datatype="html">
+        <source>Substituted</source>
+        <target>Substitué</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-suspected-fraud" datatype="html">
+        <source>Suspected fraud</source>
+        <target>Suspicion de fraude</target>
+      </trans-unit>
+      <trans-unit id="debit-card-status-unknown" datatype="html">
+        <source>Unknown</source>
+        <target>Inconnu</target>
+      </trans-unit>
+      <trans-unit id="error-rate-limit" datatype="html">
+        <source>Rate limit exceeded. Please try again later.</source>
+        <target>Limite de débit dépassée. Veuillez réessayer plus tard.</target>
+      </trans-unit>
+      <trans-unit id="error-token-expired" datatype="html">
+        <source>Token expired</source>
+        <target>Jeton expiré</target>
+      </trans-unit>
+      <trans-unit id="export" datatype="html">
+        <source>Export</source>
+        <target>Exporter</target>
+      </trans-unit>
+      <trans-unit id="export-changes" datatype="html">
+        <source>Export status &amp; data changes</source>
+        <target>Exporter les modifications de statuts et des données</target>
+      </trans-unit>
+      <trans-unit id="export-duplicate" datatype="html">
+        <source>Export duplicate registrations</source>
+        <target>Exporter les doublons d'enregistrements</target>
+      </trans-unit>
+      <trans-unit id="export-fsp-payment-list" datatype="html">
+        <source>Export FSP payment list</source>
+        <target>Exporter la liste des paiements du PSF</target>
+      </trans-unit>
+      <trans-unit id="export-payments-debit-card-usage" datatype="html">
+        <source>Export debit card usage</source>
+        <target>Exporter l’utilisation de la carte de débit</target>
+      </trans-unit>
+      <trans-unit id="export-payments-last" datatype="html">
+        <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
+        <target>Exporter le dernier <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> paiement(s)</target>
+      </trans-unit>
+      <trans-unit id="export-payments-unused-vouchers" datatype="html">
+        <source>Export unused vouchers</source>
+        <target>Exporter les bons d’achat inutilisés</target>
+      </trans-unit>
+      <trans-unit id="export-selected" datatype="html">
+        <source>Export selected registrations</source>
+        <target>Exporter les enregistrements sélectionnés</target>
+      </trans-unit>
+      <trans-unit id="export-verification" datatype="html">
+        <source>Export account number verification</source>
+        <target>Exporter Vérification des numéros de compte</target>
+      </trans-unit>
+      <trans-unit id="generic-apply" datatype="html">
+        <source>Apply</source>
+        <target>Appliquer</target>
+      </trans-unit>
+      <trans-unit id="generic-approve" datatype="html">
+        <source>Approve</source>
+        <target>Approuver</target>
+      </trans-unit>
+      <trans-unit id="generic-boolean-false" datatype="html">
+        <source>No</source>
+        <target>Non</target>
+      </trans-unit>
+      <trans-unit id="generic-boolean-true" datatype="html">
+        <source>Yes</source>
+        <target>Oui</target>
+      </trans-unit>
+      <trans-unit id="generic-cancel" datatype="html">
+        <source>Cancel</source>
+        <target>Annuler</target>
+      </trans-unit>
+      <trans-unit id="generic-clear" datatype="html">
+        <source>Clear</source>
+        <target>Effacer</target>
+      </trans-unit>
+      <trans-unit id="generic-close" datatype="html">
+        <source>Close</source>
+        <target>Fermer</target>
+      </trans-unit>
+      <trans-unit id="generic-download" datatype="html">
+        <source>Download</source>
+        <target>Télécharger</target>
+      </trans-unit>
+      <trans-unit id="generic-edit" datatype="html">
+        <source>Edit</source>
+        <target>Modifier</target>
+      </trans-unit>
+      <trans-unit id="generic-error" datatype="html">
+        <source>Error</source>
+        <target>Erreur</target>
+      </trans-unit>
+      <trans-unit id="generic-error-try-again" datatype="html">
+        <source>An unexpected error has occurred. Please try again later.</source>
+        <target>Une erreur inattendue est survenue. Veuillez réessayer plus tard.</target>
+      </trans-unit>
+      <trans-unit id="generic-error-with-message" datatype="html">
+        <source>Something went wrong: <x equiv-text="errorMessage" id="errorMessage"/></source>
+        <target>Une erreur s'est produite : <x equiv-text="errorMessage" id="errorMessage"/></target>
+      </trans-unit>
+      <trans-unit id="generic-go-back" datatype="html">
+        <source>Go back</source>
+        <target>Retourner</target>
+      </trans-unit>
+      <trans-unit id="generic-loading" datatype="html">
+        <source>Loading...</source>
+        <target>Téléchargement...</target>
+      </trans-unit>
+      <trans-unit id="generic-message-will-be-sent" datatype="html">
+        <source>A message will be sent to the registration about this update.</source>
+        <target>Un message sera envoyé à l’enregistrement à propos de cette mise à jour.</target>
+      </trans-unit>
+      <trans-unit id="generic-not-available" datatype="html">
+        <source>Not available</source>
+        <target>Non disponible</target>
+      </trans-unit>
+      <trans-unit id="generic-opens-in-new-window" datatype="html">
+        <source>Opens in a new window</source>
+        <target>S’ouvre dans une nouvelle fenêtre</target>
+      </trans-unit>
+      <trans-unit id="generic-pending" datatype="html">
+        <source>Pending</source>
+        <target>En attente</target>
+      </trans-unit>
+      <trans-unit id="generic-proceed" datatype="html">
+        <source>Proceed</source>
+        <target>Continuer</target>
+      </trans-unit>
+      <trans-unit id="generic-required-field" datatype="html">
+        <source>This field is required.</source>
+        <target>Ce champ est obligatoire.</target>
+      </trans-unit>
+      <trans-unit id="generic-save" datatype="html">
+        <source>Save</source>
+        <target>Sauvegarder</target>
+      </trans-unit>
+      <trans-unit id="generic-success" datatype="html">
+        <source>Success</source>
+        <target>Succès</target>
+      </trans-unit>
+      <trans-unit id="generic-type-or-select" datatype="html">
+        <source>Type or select</source>
+        <target>Taper ou sélectionner</target>
+      </trans-unit>
+      <trans-unit id="generic-warning" datatype="html">
+        <source>Warning</source>
+        <target>Avertissement</target>
+      </trans-unit>
+      <trans-unit id="header-menu" datatype="html">
+        <source>Menu</source>
+        <target>Menu</target>
+      </trans-unit>
+      <trans-unit id="header-user-menu" datatype="html">
+        <source>Account</source>
+        <target>Compte</target>
+        <note priority="1" from="description">Top-right user-menu</note>
+      </trans-unit>
+      <trans-unit id="import-registrations-success" datatype="html">
+        <source>Registration(s) imported successfully.</source>
+        <target>Enregistrement(s) importé(s) avec succès.</target>
+      </trans-unit>
+      <trans-unit id="last-message-status" datatype="html">
+        <source>Last message status</source>
+        <target>Statut du dernier message</target>
+      </trans-unit>
+      <trans-unit id="max-payments" datatype="html">
+        <source>Max payments</source>
+        <target>Paiements maximums</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-custom" datatype="html">
+        <source>Custom message</source>
+        <target>Message personnalisé</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-default-reply" datatype="html">
+        <source>Default reply</source>
+        <target>Réponse par défaut</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-generic-templated" datatype="html">
+        <source>Message notification</source>
+        <target>Notification de message</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-included" datatype="html">
+        <source>Inclusion</source>
+        <target>Inclusion</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-invited" datatype="html">
+        <source>Invitation for registration</source>
+        <target>Invitation à l'enregistrement</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-paused" datatype="html">
+        <source>Paused</source>
+        <target>Mis(e) en pause</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment" datatype="html">
+        <source>Payment</source>
+        <target>Paiement</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-instructions" datatype="html">
+        <source>Payment instructions</source>
+        <target>Instructions de paiement</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-reminder" datatype="html">
+        <source>Payment reminder</source>
+        <target>Rappel de paiement</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-templated" datatype="html">
+        <source>Payment notification</source>
+        <target>Avis de paiement</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-payment-voucher" datatype="html">
+        <source>Payment voucher</source>
+        <target>Paiement en Bon d'achat</target>
+      </trans-unit>
+      <trans-unit id="message-content-type-registered" datatype="html">
+        <source>Registration</source>
+        <target>Enregistrement</target>
+      </trans-unit>
+      <trans-unit id="message-status-delivered" datatype="html">
+        <source>Delivered</source>
+        <target>Délivré</target>
+      </trans-unit>
+      <trans-unit id="message-status-failed" datatype="html">
+        <source>Failed</source>
+        <target>Échec</target>
+      </trans-unit>
+      <trans-unit id="message-status-read" datatype="html">
+        <source>Read</source>
+        <target>Lu</target>
+      </trans-unit>
+      <trans-unit id="message-status-sent" datatype="html">
+        <source>Sent</source>
+        <target>Envoyé</target>
+      </trans-unit>
+      <trans-unit id="message-status-unknown" datatype="html">
+        <source>Unknown</source>
+        <target>Inconnu</target>
+      </trans-unit>
+      <trans-unit id="no-registrations-selected" datatype="html">
+        <source>Select one or more registrations and try again.</source>
+        <target>Sélectionner un ou plusieurs enregistrements, puis réessayer.</target>
+      </trans-unit>
+      <trans-unit id="page-title-all-projects" datatype="html">
+        <source>All projects</source>
+        <target>Tous les projets</target>
+      </trans-unit>
+      <trans-unit id="page-title-change-password" datatype="html">
+        <source>Change password</source>
+        <target>Modifier le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="page-title-login" datatype="html">
+        <source>Log in</source>
+        <target>Se connecter</target>
+      </trans-unit>
+      <trans-unit id="page-title-privacy" datatype="html">
+        <source>Privacy</source>
+        <target>Confidentialité</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-monitoring" datatype="html">
+        <source>Monitoring</source>
+        <target>Surveillance</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-payment" datatype="html">
+        <source>Payment</source>
+        <target>Paiement</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-payments" datatype="html">
+        <source>Payments</source>
+        <target>Paiements</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registration-details" datatype="html">
+        <source>Registration details</source>
+        <target>Données d'enregistrement</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations" datatype="html">
+        <source>Registrations</source>
+        <target>Enregistrements</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-activity-log" datatype="html">
+        <source>Activity log</source>
+        <target>Journal d'activité</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-debit-cards" datatype="html">
+        <source>Debit cards</source>
+        <target>Cartes de débit</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-registrations-personal-information" datatype="html">
+        <source>Personal information</source>
+        <target>Informations personnelles</target>
+      </trans-unit>
+      <trans-unit id="page-title-project-team" datatype="html">
+        <source>Team</source>
+        <target>Équipe</target>
+      </trans-unit>
+      <trans-unit id="page-title-user-roles" datatype="html">
+        <source>User roles</source>
+        <target>Rôles des utilisateurs</target>
+      </trans-unit>
+      <trans-unit id="page-title-users" datatype="html">
+        <source>Users</source>
+        <target>Utilisateurs</target>
+      </trans-unit>
+      <trans-unit id="payment-count" datatype="html">
+        <source>Number of payments</source>
+        <target>Nombre de paiements</target>
+      </trans-unit>
+      <trans-unit id="payment-count-remaining" datatype="html">
+        <source>Remaining payments</source>
+        <target>Paiements en attente</target>
+      </trans-unit>
+      <trans-unit id="payment-report" datatype="html">
+        <source>Payment report</source>
+        <target>Rapport de paiements</target>
+      </trans-unit>
+      <trans-unit id="privacy-notice-last-updated" datatype="html">
+        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
+        <target>Dernière mise à jour : <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></target>
+      </trans-unit>
+      <trans-unit id="query-table-manage-table" datatype="html">
+        <source>Manage table</source>
+        <target>Gérer le tableau</target>
+      </trans-unit>
+      <trans-unit id="registration-created" datatype="html">
+        <source>Registration created</source>
+        <target>Enregistrement créé</target>
+      </trans-unit>
+      <trans-unit id="registration-full-name" datatype="html">
+        <source>Full Name</source>
+        <target>Nom complet</target>
+      </trans-unit>
+      <trans-unit id="registration-full-name-edit-info" datatype="html">
+        <source>This field is dynamically generated based on the other name fields available below.</source>
+        <target>Ce champ est généré dynamiquement en fonction des autres champs de nom disponibles ci-dessous.</target>
+      </trans-unit>
+      <trans-unit id="registration-payments" datatype="html">
+        <source>Payments</source>
+        <target>Paiements</target>
+      </trans-unit>
+      <trans-unit id="registration-phone-number" datatype="html">
+        <source>Phone number</source>
+        <target>Numéro de téléphone</target>
+      </trans-unit>
+      <trans-unit id="registration-scope" datatype="html">
+        <source>Scope</source>
+        <target>Périmètre</target>
+      </trans-unit>
+      <trans-unit id="registration-status" datatype="html">
+        <source>Status</source>
+        <target>Statut</target>
+      </trans-unit>
+      <trans-unit id="registration-status-completed" datatype="html">
+        <source>Completed</source>
+        <target>Complété(e)</target>
+      </trans-unit>
+      <trans-unit id="registration-status-declined" datatype="html">
+        <source>Declined</source>
+        <target>Décliné(e)</target>
+      </trans-unit>
+      <trans-unit id="registration-status-deleted" datatype="html">
+        <source>Deleted</source>
+        <target>Supprimé(e)</target>
+      </trans-unit>
+      <trans-unit id="registration-status-included" datatype="html">
+        <source>Included</source>
+        <target>Inclus(e)</target>
+      </trans-unit>
+      <trans-unit id="registration-status-paused" datatype="html">
+        <source>Paused</source>
+        <target>Mis(e) en pause</target>
+      </trans-unit>
+      <trans-unit id="registration-status-registered" datatype="html">
+        <source>Registered</source>
+        <target>Enregistré(e)</target>
+      </trans-unit>
+      <trans-unit id="registration-status-validated" datatype="html">
+        <source>Validated</source>
+        <target>Validé(e)</target>
+      </trans-unit>
+      <trans-unit id="remove-user-button" datatype="html">
+        <source>Remove user</source>
+        <target>Supprimer l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="reset-password-button" datatype="html">
+        <source>Reset password</source>
+        <target>Réinitialiser le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="retry-failed-transfers" datatype="html">
+        <source>Retry failed transfers</source>
+        <target>Reessayer les transferts échoués</target>
+      </trans-unit>
+      <trans-unit id="send-message" datatype="html">
+        <source>Send message</source>
+        <target>Envoyer un message</target>
+      </trans-unit>
+      <trans-unit id="send-message-dialog-preview" datatype="html">
+        <source>You&apos;re about to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>send a message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> to <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> registration(s).</source>
+        <target>Vous êtes sur le point de <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>Envoyer un message<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> À <x equiv-text="{{ actionData()?.count }}" id="INTERPOLATION"/> enregistrements.</target>
+      </trans-unit>
+      <trans-unit id="table-clear-filters" datatype="html">
+        <source>Clear all filters</source>
+        <target>Effacer tous les filtres</target>
+      </trans-unit>
+      <trans-unit id="table-quick-search" datatype="html">
+        <source>Filter by keyword</source>
+        <target>Filtrer par mot-clé</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-error" datatype="html">
+        <source>Error</source>
+        <target>Erreur</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-success" datatype="html">
+        <source>Success</source>
+        <target>Succès</target>
+      </trans-unit>
+      <trans-unit id="transaction-status-waiting" datatype="html">
+        <source>Pending</source>
+        <target>En attente</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

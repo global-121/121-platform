@@ -15,7 +15,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getVisaWalletsAndDetails,
   importRegistrations,
   issueNewVisaCard,
@@ -53,19 +53,19 @@ describe('Load Visa debit cards and details', () => {
       (registration) => registration.referenceId,
     );
     await importRegistrations(programIdVisa, registrations, accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
       referenceIds,
-      RegistrationStatusEnum.included,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
+    });
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
       referenceIds,
       accessToken,
-    );
+    });
 
     // Act
     await waitForPaymentTransactionsToComplete(
@@ -119,12 +119,12 @@ describe('Load Visa debit cards and details', () => {
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,
     );
-    await awaitChangePaStatus(
-      programIdVisa,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
       referenceIds,
-      RegistrationStatusEnum.included,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
     // Act
     const unknownResponse = await getVisaWalletsAndDetails(

@@ -22,9 +22,9 @@ import { AuthService } from '~/services/auth.service';
 })
 export class ProjectMenuComponent {
   private authService = inject(AuthService);
-  projectId = input.required<string>();
+  readonly projectId = input.required<string>();
 
-  navMenuItems = computed<MenuItem[]>(() => [
+  readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-registrations:Registrations`,
       routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}`,

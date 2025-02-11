@@ -32,7 +32,7 @@ export class RetryTransfersDialogComponent {
   private paymentApiService = inject(PaymentApiService);
   private toastService = inject(ToastService);
 
-  referenceIdsForRetryTransfers = signal<string[]>([]);
+  readonly referenceIdsForRetryTransfers = signal<string[]>([]);
 
   readonly retryTransfersConfirmationDialog =
     viewChild.required<ConfirmationDialogComponent>(

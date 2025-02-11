@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Put, UseGuards } from '@nestjs/common';
 import { Get, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -13,7 +13,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 @Controller('exchange-rates')
 export class ExchangeRatesController {
   public constructor(
-    private readonly exchangeRateService: ExchangeRatesService,
+    private readonly exchangeRatesService: ExchangeRatesService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -27,6 +27,23 @@ export class ExchangeRatesController {
   })
   @Get()
   public async getAll(): Promise<GetExchangeRateDto[]> {
-    return this.exchangeRateService.getAll();
+    return this.exchangeRatesService.getAll();
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      '[CRON] GET all exchange rates for all programs and store them in the database',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Get all exchange rates for all programs and store them in the database',
+  })
+  @Put()
+  public async retrieveAndStoreAllExchangeRates(): Promise<void> {
+    console.info('CronjobService - Started: retrieveAndStoreAllExchangeRates');
+    await this.exchangeRatesService.retrieveAndStoreAllExchangeRates();
+    console.info('CronjobService - Ended: retrieveAndStoreAllExchangeRates');
   }
 }

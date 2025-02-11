@@ -48,10 +48,10 @@ Depending on the required/preferred features of the 121-platform instance, some 
 
 #### Instance Icon / `favicon.ico`
 
-Each interface can show to which instance it belongs using an icon. This file will be created during [the build-step in the deployment workflow](../.github/actions/build-interface/action.yml#L66).
+Each interface can show to which instance it belongs using an icon. This file will be created during [the build-step in the deployment workflow](../.github/actions/build-interface/action.yml#L64).
 
 A Base64-encoded string should be provided to the `envIcon`-parameter.  
-This string can be generated from an `.ico`-file (For example via: <https://rodekruis.github.io/browser-tools/image-to-data-url/>. Only the part **AFTER** `data:image/x-icon;base64,` should be used!)
+This string can be generated from an `.ico`-file (For example via: <https://rodekruis.github.io/browser-tools/image-to-data-url/>.)
 
 #### Content Security Policy (CSP)
 

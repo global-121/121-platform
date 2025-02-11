@@ -111,14 +111,21 @@ export async function unpublishProgram(
     });
 }
 
-export async function doPayment(
-  programId: number,
-  paymentNr: number,
-  amount: number,
-  referenceIds: string[],
-  accessToken: string,
-  filter: Record<string, string> = {},
-): Promise<request.Response> {
+export async function doPayment({
+  programId,
+  paymentNr,
+  amount,
+  referenceIds,
+  accessToken,
+  filter = {},
+}: {
+  programId: number;
+  paymentNr: number;
+  amount: number;
+  referenceIds: string[];
+  accessToken: string;
+  filter?: Record<string, string>;
+}): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
     for (const [key, value] of Object.entries(filter)) {
@@ -214,7 +221,7 @@ export async function importFspReconciliationData(
   const csvString = jsonArrayToCsv(reconciliationData);
   const buffer = Buffer.from(csvString, 'utf-8');
   return await getServer()
-    .post(`/programs/${programId}/payments/${paymentNr}/fsp-reconciliation`)
+    .post(`/programs/${programId}/payments/${paymentNr}/excel-reconciliation`)
     .set('Cookie', [accessToken])
     .field('Content-Type', 'multipart/form-data')
     .attach('file', buffer, 'reconciliation.csv');
@@ -236,19 +243,25 @@ function jsonArrayToCsv(json: object[]): string {
   return csv.join('\r\n');
 }
 
-export async function exportList(
-  programId: number,
-  exportType: string,
-  accessToken: string,
-  fromDate?: string,
-  toDate?: string,
-): Promise<request.Response> {
+export async function exportList({
+  programId,
+  exportType,
+  accessToken,
+  options = {},
+}: {
+  programId: number;
+  exportType: string;
+  accessToken: string;
+  options?: {
+    fromDate?: string;
+    toDate?: string;
+    minPayment?: number;
+    maxPayment?: number;
+  };
+}): Promise<request.Response> {
   const queryParams = {};
-  if (fromDate) {
-    queryParams['fromDate'] = fromDate;
-  }
-  if (toDate) {
-    queryParams['toDate'] = toDate;
+  for (const [key, value] of Object.entries(options)) {
+    queryParams[key] = value;
   }
   return await getServer()
     .get(`/programs/${programId}/metrics/export-list/${exportType}`)
@@ -418,8 +431,8 @@ export async function startCbeValidationProcess(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .post(
-      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`,
+    .put(
+      `/programs/${programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`,
     )
     .set('Cookie', [accessToken]);
 }

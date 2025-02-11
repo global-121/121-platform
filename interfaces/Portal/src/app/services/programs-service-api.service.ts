@@ -98,7 +98,7 @@ export class ProgramsServiceApiService {
     return this.apiService.delete(
       environment.url_121_service_api,
       `/programs/${programId}/registrations`,
-      null,
+      { reason: '-' }, // In the portal, the reason is always set to '-'. Setting a different reason is only supported in the new interface
       params,
     );
   }
@@ -348,7 +348,7 @@ export class ProgramsServiceApiService {
     const templates: { name: string; template: string[] }[] =
       await this.apiService.get(
         environment.url_121_service_api,
-        `/programs/${programId}/payments/fsp-reconciliation/import-template`,
+        `/programs/${programId}/payments/excel-reconciliation/template`,
       );
 
     for (const template of templates) {
@@ -377,7 +377,7 @@ export class ProgramsServiceApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const path = `/programs/${programId}/payments/${payment}/fsp-reconciliation`;
+    const path = `/programs/${programId}/payments/${payment}/excel-reconciliation`;
 
     return new Promise<ImportResult>((resolve, reject) => {
       this.apiService
@@ -660,6 +660,7 @@ export class ProgramsServiceApiService {
         status: action,
         message,
         messageTemplateKey,
+        reason: '-', // In the portal, the reason is always set to '-'. Setting a different reason is only supported in the new interface
       },
       false,
       false,

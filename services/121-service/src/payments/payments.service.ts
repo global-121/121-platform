@@ -17,18 +17,16 @@ import {
 } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
-import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
-import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import {
@@ -50,7 +48,6 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -64,6 +61,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
@@ -91,6 +89,7 @@ export class PaymentsService {
     private readonly safaricomService: SafaricomService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
+    private readonly nedbankService: NedbankService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly dataSource: DataSource,
@@ -119,6 +118,7 @@ export class PaymentsService {
       [FinancialServiceProviders.deprecatedJumbo]: [
         {} as FinancialServiceProviderIntegrationInterface,
       ],
+      [FinancialServiceProviders.nedbank]: [this.nedbankService],
     };
   }
 
@@ -333,7 +333,7 @@ export class PaymentsService {
     programFinancialServiceProviderConfigurationName: string,
   ): Promise<string[]> {
     const config =
-      await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
+      await this.programFinancialServiceProviderConfigurationRepository.findOne(
         {
           where: {
             name: Equal(programFinancialServiceProviderConfigurationName),
@@ -342,6 +342,14 @@ export class PaymentsService {
           relations: ['properties'],
         },
       );
+
+    const errorMessages: string[] = [];
+    if (!config) {
+      errorMessages.push(
+        `Missing Program FSP configuration with name ${programFinancialServiceProviderConfigurationName}`,
+      );
+      return errorMessages;
+    }
 
     const requiredConfigurations =
       getFinancialServiceProviderConfigurationRequiredProperties(
@@ -352,7 +360,6 @@ export class PaymentsService {
       return [];
     }
 
-    const errorMessages: string[] = [];
     for (const requiredConfiguration of requiredConfigurations) {
       const foundConfig = config.properties.find(
         (c) => c.name === requiredConfiguration,
@@ -683,6 +690,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviders.nedbank) {
+          return await this.createAndAddNedbankTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -732,7 +756,6 @@ export class PaymentsService {
       (q) => q.name,
     );
     const dataFieldNames = [
-      FinancialServiceProviderAttributes.fullName,
       FinancialServiceProviderAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
@@ -858,6 +881,69 @@ export class PaymentsService {
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
       safaricomTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Nedbank transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Nedbank. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddNedbankTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const nedbankAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+      FinancialServiceProviders.nedbank,
+    ).attributes;
+    const nedbankAttributeNames = nedbankAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      nedbankAttributeNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const nedbankTransferJobs: NedbankTransactionJobDto[] =
+      registrationViews.map((registrationView): NedbankTransactionJobDto => {
+        return {
+          programId,
+          paymentNumber,
+          referenceId: registrationView.referenceId,
+          programFinancialServiceProviderConfigurationId:
+            registrationView.programFinancialServiceProviderConfigurationId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+          phoneNumber:
+            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
+        };
+      });
+    await this.transactionQueuesService.addNedbankTransactionJobs(
+      nedbankTransferJobs,
     );
   }
 
@@ -1040,45 +1126,6 @@ export class PaymentsService {
     return paPaymentDataList;
   }
 
-  public async getImportInstructionsTemplate(
-    programId: number,
-  ): Promise<GetImportTemplateResponseDto[]> {
-    const programWithExcelFspConfigs = await this.programRepository.findOne({
-      where: {
-        id: Equal(programId),
-        programFinancialServiceProviderConfigurations: {
-          financialServiceProviderName: Equal(FinancialServiceProviders.excel),
-        },
-      },
-      relations: ['programFinancialServiceProviderConfigurations'],
-      order: {
-        programFinancialServiceProviderConfigurations: {
-          name: 'ASC',
-        },
-      },
-    });
-
-    if (!programWithExcelFspConfigs) {
-      throw new HttpException(
-        'No program with `Excel` FSP found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
-      const matchColumn = await this.excelService.getImportMatchColumn(
-        fspConfig.id,
-      );
-      templates.push({
-        name: fspConfig.name,
-        template: [matchColumn, 'status'],
-      });
-    }
-
-    return templates;
-  }
-
   public async getFspInstructions(
     programId: number,
     payment: number,
@@ -1208,111 +1255,5 @@ export class PaymentsService {
     throw new Error(
       `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
     );
-  }
-
-  public async importFspReconciliationData(
-    file: Express.Multer.File,
-    programId: number,
-    payment: number,
-    userId: number,
-  ): Promise<{
-    importResult: ReconciliationFeedbackDto[];
-    aggregateImportResult: {
-      countPaymentFailed: number;
-      countPaymentSuccess: number;
-      countNotFound: number;
-    };
-  }> {
-    const program = await this.programRepository.findOneOrFail({
-      where: {
-        id: Equal(programId),
-      },
-      relations: ['programFinancialServiceProviderConfigurations'],
-    });
-    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
-      [];
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.excel
-      ) {
-        fspConfigsExcel.push(fspConfig);
-      }
-    }
-    if (!fspConfigsExcel.length) {
-      throw new HttpException(
-        'Other reconciliation FSPs than `Excel` are currently not supported.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    const importResults = await this.excelService.processReconciliationData({
-      file,
-      payment,
-      programId,
-      fspConfigs: fspConfigsExcel,
-    });
-
-    for (const fspConfig of fspConfigsExcel) {
-      const transactions = importResults
-        .filter(
-          (r) =>
-            r.programFinancialServiceProviderConfigurationId === fspConfig.id,
-        )
-        .map((r) => r.transaction)
-        .filter((t): t is PaTransactionResultDto => t !== undefined);
-
-      await this.transactionsService.storeReconciliationTransactionsBulk(
-        transactions,
-        {
-          programId,
-          paymentNr: payment,
-          userId,
-          programFinancialServiceProviderConfigurationId: fspConfig.id,
-        },
-      );
-    }
-
-    const feedback: ReconciliationFeedbackDto[] = importResults.map(
-      (r) => r.feedback,
-    );
-    const aggregateImportResult = this.countFeedbackResults(feedback);
-
-    await this.actionService.saveAction(
-      userId,
-      programId,
-      AdditionalActionType.importFspReconciliation,
-    );
-
-    return {
-      importResult: feedback,
-      aggregateImportResult,
-    };
-  }
-
-  private countFeedbackResults(feedback: ReconciliationFeedbackDto[]): {
-    countPaymentSuccess: number;
-    countPaymentFailed: number;
-    countNotFound: number;
-  } {
-    let countPaymentSuccess = 0;
-    let countPaymentFailed = 0;
-    let countNotFound = 0;
-
-    for (const result of feedback) {
-      if (!result.referenceId) {
-        countNotFound += 1;
-        continue;
-      }
-      if (result.importStatus === ImportStatus.paymentSuccess) {
-        countPaymentSuccess += 1;
-      } else if (result.importStatus === ImportStatus.paymentFailed) {
-        countPaymentFailed += 1;
-      } else if (result.importStatus === ImportStatus.notFound) {
-        countNotFound += 1;
-      }
-    }
-
-    return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 }

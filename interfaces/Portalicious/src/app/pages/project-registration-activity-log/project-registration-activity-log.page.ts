@@ -51,7 +51,7 @@ export class ProjectRegistrationActivityLogPageComponent {
   registrationApiService = inject(RegistrationApiService);
 
   expandableRowTemplate = ActivityLogExpandedRowComponent;
-  tableCellContext = computed<ActivityLogTableCellContext>(() => ({
+  readonly tableCellContext = computed<ActivityLogTableCellContext>(() => ({
     projectId: this.projectId,
     registrationId: this.registrationId,
     referenceId: this.registration.data()?.referenceId,
@@ -71,23 +71,23 @@ export class ProjectRegistrationActivityLogPageComponent {
     ),
   );
 
-  activities = computed(() => this.activityLog.data()?.data ?? []);
+  readonly activities = computed(() => this.activityLog.data()?.data ?? []);
 
-  uniqueAuthors = computed(() => {
-    return uniqBy(
+  readonly uniqueAuthors = computed(() =>
+    uniqBy(
       this.activities().map(({ user }) => ({
         label: user.username ?? $localize`Unknown user`,
         value: user.username ?? $localize`Unknown user`,
       })),
       'value',
-    ).sort((a, b) => a.label.localeCompare(b.label));
-  });
+    ).sort((a, b) => a.label.localeCompare(b.label)),
+  );
 
-  availableActivityTypes = computed(
+  readonly availableActivityTypes = computed(
     () => this.activityLog.data()?.meta.availableTypes ?? [],
   );
 
-  columns = computed<QueryTableColumn<Activity>[]>(() => [
+  readonly columns = computed<QueryTableColumn<Activity>[]>(() => [
     {
       field: 'type',
       header: $localize`Activity`,
@@ -103,7 +103,13 @@ export class ProjectRegistrationActivityLogPageComponent {
     },
     {
       header: $localize`Overview`,
+      field: 'COMPUTED_FIELD',
       component: TableCellOverviewComponent,
+    },
+    {
+      field: 'created',
+      header: $localize`Time and date`,
+      type: QueryTableColumnType.DATE,
     },
     {
       // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
@@ -112,11 +118,6 @@ export class ProjectRegistrationActivityLogPageComponent {
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: this.uniqueAuthors(),
-    },
-    {
-      field: 'created',
-      header: $localize`Time and date`,
-      type: QueryTableColumnType.DATE,
     },
   ]);
 }

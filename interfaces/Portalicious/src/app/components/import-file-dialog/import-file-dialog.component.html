@@ -27,7 +27,7 @@
       ></app-file-upload-control>
       <app-form-error [error]="formFieldErrors()('file')" />
     </div>
-    @if (mutation().isError()) {
+    @if (mutation().isError() || detailedImportErrors()) {
       <div class="mt-4">
         @let detailedErrors = detailedImportErrors();
 
@@ -38,10 +38,10 @@
           />
 
           <p-scrollPanel
-            styleClass="h-32 w-full border border-grey-300 bg-grey-100 p-4"
+            styleClass="max-h-60 w-full border border-grey-300 bg-grey-100 p-4"
           >
             @for (error of detailedErrors; track $index) {
-              <pre>{{ error | json }}</pre>
+              <pre class="whitespace-pre-wrap">{{ error | json }}</pre>
             }
           </p-scrollPanel>
         } @else {

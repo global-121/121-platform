@@ -46,9 +46,9 @@ export class AddNoteFormComponent {
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  formVisible = model.required<boolean>();
-  projectId = input.required<string>();
-  registrationId = input.required<string>();
+  readonly formVisible = model.required<boolean>();
+  readonly projectId = input.required<string>();
+  readonly registrationId = input.required<string>();
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -61,7 +61,7 @@ export class AddNoteFormComponent {
   formGroup = new FormGroup({
     note: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
   });

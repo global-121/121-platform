@@ -31,9 +31,20 @@ const csp = response.headers.get('Content-Security-Policy');
 console.info('Content-Security-Policy in use:', csp);
 
 test('Response-Headers contain a Content-Security-Policy', () => {
-  ok(
-    response.headers.get('Content-Security-Policy'),
-    'Contain a Content-Security-Policy',
+  ok(csp, 'Contain a Content-Security-Policy');
+});
+
+test('Content-Security-Policy contains defaults', () => {
+  const defaults = [
+    `default-src 'self'`,
+    `connect-src 'self'`,
+    `img-src data: 'self'`,
+    `object-src 'none'`,
+    `style-src 'self' 'unsafe-inline'`,
+  ];
+
+  defaults.forEach((defaultDirective) =>
+    match(csp, new RegExp(defaultDirective)),
   );
 });
 
@@ -70,7 +81,7 @@ test('Configuration set to control pop-ups for SSO when the Portal is in an ifra
     process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
     process.env.USE_SSO_AZURE_ENTRA === 'true'
   ) {
-    match(openerPolicy, /same-origin-allow-popups/);
+    match(openerPolicy, /unsafe-none/);
   } else {
     match(openerPolicy, /same-origin/);
   }

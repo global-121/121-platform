@@ -41,7 +41,7 @@ describe('DashboardIframeComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- actually safe
     expect(fixture.nativeElement.querySelector('iframe').src).toBe(testUrl);
   });
 
@@ -59,7 +59,7 @@ describe('DashboardIframeComponent', () => {
       fixture.detectChanges();
 
       // Assert
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- actually safe
       expect(fixture.nativeElement.querySelector('iframe').src).toBe(
         safeFallbackUrl,
       );

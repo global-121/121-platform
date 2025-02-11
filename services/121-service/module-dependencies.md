@@ -2,7 +2,6 @@
 
 ```mermaid
 graph LR
-  CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
   UserModule-->EmailsModule
   MessageTemplateModule-->UserModule
@@ -16,18 +15,6 @@ graph LR
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
-  ProgramFinancialServiceProviderConfigurationsModule-->TransactionsModule
-  TransactionsModule-->UserModule
-  TransactionsModule-->ActionsModule
-  TransactionsModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
-  MessageQueuesModule-->RegistrationDataModule
-  MessageQueuesModule-->QueuesRegistryModule
-  TransactionsModule-->MessageTemplateModule
-  TransactionsModule-->RegistrationUtilsModule
-  RegistrationUtilsModule-->RegistrationDataModule
-  TransactionsModule-->EventsModule
-  EventsModule-->UserModule
   ProgramModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
   OrganizationModule-->UserModule
@@ -37,10 +24,21 @@ graph LR
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->MessageQueuesModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->RegistrationDataModule
+  MessageQueuesModule-->QueuesRegistryModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
   IntersolveVoucherModule-->TransactionsModule
+  TransactionsModule-->UserModule
+  TransactionsModule-->ActionsModule
+  TransactionsModule-->MessageQueuesModule
+  TransactionsModule-->MessageTemplateModule
+  TransactionsModule-->RegistrationUtilsModule
+  RegistrationUtilsModule-->RegistrationDataModule
+  TransactionsModule-->EventsModule
+  EventsModule-->UserModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -73,6 +71,7 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
+  PaymentsModule-->NedbankModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -103,6 +102,8 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   MessageIncomingModule-->QueuesRegistryModule
+  NedbankReconciliationModule-->NedbankModule
+  NedbankReconciliationModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule
@@ -113,6 +114,7 @@ graph LR
   TransactionJobProcessorsModule-->RedisModule
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->SafaricomModule
+  TransactionJobProcessorsModule-->NedbankModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule
@@ -121,6 +123,18 @@ graph LR
   TransactionJobProcessorsModule-->FinancialServiceProvidersModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
-  FinancialServiceProviderCallbackJobProcessorsModule-->RedisModule
-  FinancialServiceProviderCallbackJobProcessorsModule-->SafaricomModule
+  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
+  ExcelReconcilicationModule-->ActionsModule
+  ExcelReconcilicationModule-->TransactionsModule
+  ExcelReconcilicationModule-->ExcelModule
+  ExcelReconcilicationModule-->RegistrationsModule
+  IntersolveVisaReconciliationModule-->IntersolveVisaModule
+  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
+  IntersolveVoucherReconciliationModule-->ProgramModule
+  IntersolveVoucherReconciliationModule-->ProgramFinancialServiceProviderConfigurationsModule
+  SafaricomReconciliationModule-->SafaricomModule
+  SafaricomReconciliationModule-->RedisModule
+  SafaricomReconciliationModule-->TransactionsModule
+  SafaricomReconciliationModule-->QueuesRegistryModule
 ```

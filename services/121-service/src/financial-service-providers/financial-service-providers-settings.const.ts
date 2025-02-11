@@ -29,7 +29,6 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
         },
       ],
     },
-
     {
       name: FinancialServiceProviders.intersolveVisa,
       integrationType: FinancialServiceProviderIntegrationType.api,
@@ -169,13 +168,23 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       ],
     },
     {
-      name: FinancialServiceProviders.deprecatedJumbo, // This financial service provider is deprecated. However there are still transactions that exists for this FSP in running program. Therefore this is needed as a work around
+      name: FinancialServiceProviders.nedbank,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
-        en: 'JUMBO deprecated',
+        en: 'Nedbank',
       },
       notifyOnTransaction: false,
-      attributes: [],
-      configurationProperties: [],
+      attributes: [
+        {
+          name: FinancialServiceProviderAttributes.phoneNumber,
+          isRequired: true,
+        },
+      ],
+      configurationProperties: [
+        {
+          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          isRequired: true,
+        },
+      ],
     },
   ];

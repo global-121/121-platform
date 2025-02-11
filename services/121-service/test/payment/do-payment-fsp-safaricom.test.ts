@@ -15,7 +15,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -68,22 +68,22 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationSafaricom.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationSafaricom.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,
@@ -122,22 +122,22 @@ describe('Do payment to 1 PA', () => {
         [registrationSafaricom],
         accessToken,
       );
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationSafaricom.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationSafaricom.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,
@@ -178,23 +178,23 @@ describe('Do payment to 1 PA', () => {
         [registrationSafaricom],
         accessToken,
       );
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationSafaricom.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationSafaricom.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
       // Initial failing payment
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,
@@ -245,22 +245,22 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       );
 
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationSafaricom.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationSafaricom.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationSafaricom.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,

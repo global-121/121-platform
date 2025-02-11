@@ -51,8 +51,8 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportRegistrationsComponent {
-  projectId = input.required<string>();
-  getActionData =
+  readonly projectId = input.required<string>();
+  readonly getActionData =
     input.required<
       () => ActionDataWithPaginateQuery<Registration> | undefined
     >();
@@ -74,12 +74,12 @@ export class ExportRegistrationsComponent {
       'exportAccountVerificationDialog',
     );
 
-  exportSelectedActionData = signal<
+  readonly exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
 
-  fromDateExport = model<Date>();
-  toDateExport = model<Date>();
+  readonly fromDateExport = model<Date>();
+  readonly toDateExport = model<Date>();
 
   ExportType = ExportType;
 
@@ -113,9 +113,9 @@ export class ExportRegistrationsComponent {
     },
   }));
 
-  exportOptions = computed<MenuItem[]>(() => [
+  readonly exportOptions = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@export-selected:Export selected registrations`,
+      label: $localize`:@@export-selected:Selected registrations`,
       command: () => {
         const actionData = this.getActionData()();
         if (!actionData) {
@@ -126,13 +126,13 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-duplicate:Export duplicate registrations`,
+      label: $localize`:@@export-duplicate:Duplicate registrations`,
       command: () => {
         this.exportDuplicatesDialog().askForConfirmation();
       },
     },
     {
-      label: $localize`:@@export-changes:Export status & data changes`,
+      label: $localize`:@@export-changes:Status & data changes`,
       command: () => {
         this.fromDateExport.set(undefined);
         this.toDateExport.set(undefined);
@@ -140,7 +140,7 @@ export class ExportRegistrationsComponent {
       },
     },
     {
-      label: $localize`:@@export-verification:Export account number verification`,
+      label: $localize`:@@export-verification:Account number verification`,
       visible:
         this.isCBEProject() &&
         this.authService.hasPermission({
@@ -153,7 +153,7 @@ export class ExportRegistrationsComponent {
     },
   ]);
 
-  isCBEProject = computed(() =>
+  readonly isCBEProject = computed(() =>
     this.project
       .data()
       ?.programFinancialServiceProviderConfigurations.some(

@@ -22,8 +22,8 @@ import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 export class LogoComponent {
   private projectApiService = inject(ProjectApiService);
 
-  projectId = input<string>();
-  projectTitle = computed(() => this.project.data()?.titlePortal);
+  readonly projectId = input<string>();
+  readonly projectTitle = computed(() => this.project.data()?.titlePortal);
 
   public project = injectQuery(
     this.projectApiService.getProject(this.projectId),

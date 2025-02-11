@@ -20,7 +20,7 @@ import {
   getProgramFinancialServiceProviderConfigurations,
 } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getImportFspReconciliationTemplate,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -71,14 +71,20 @@ describe('Do payment with Excel FSP', () => {
       registrationsWesteros,
       accessToken,
     );
-    await awaitChangePaStatus(
-      programIdWesteros,
-      referenceIdsWesteros,
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdWesteros,
+      referenceIds: referenceIdsWesteros,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
-    await doPayment(programIdWesteros, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId: programIdWesteros,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdWesteros,
@@ -99,14 +105,20 @@ describe('Do payment with Excel FSP', () => {
       registrationsProgramWithValidation,
       accessToken,
     );
-    await awaitChangePaStatus(
-      programIdCbe,
-      refrenceIdsWithValidation,
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdCbe,
+      referenceIds: refrenceIdsWithValidation,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
-    await doPayment(programIdCbe, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId: programIdCbe,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdCbe,

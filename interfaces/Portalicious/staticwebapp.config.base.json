@@ -13,6 +13,11 @@
       "statusCode": 302
     },
     {
+      "route": "/change-password",
+      "redirect": "/en-GB/change-password",
+      "statusCode": 302
+    },
+    {
       "route": "*.{js,json,css,jpg,jpeg,png,svg,ico,webmanifest,tff,woff,woff2}",
       "headers": {
         "Cache-Control": "immutable, no-transform, max-age=31536000"
@@ -32,6 +37,11 @@
     }
   ],
   "trailingSlash": "auto",
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html"
+    }
+  },
   "globalHeaders": {
     "Content-Security-Policy": "",
     "Cross-Origin-Opener-Policy": "same-origin",

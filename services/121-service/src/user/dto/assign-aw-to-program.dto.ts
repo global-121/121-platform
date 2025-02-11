@@ -42,5 +42,5 @@ export class DeleteProgramAssignmentDto {
   @IsArray()
   @ArrayMinSize(0)
   @IsOptional()
-  public readonly rolesToDelete?: DefaultUserRole[];
+  public readonly rolesToDelete?: DefaultUserRole[] | string[];
 }

@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 export type ChipVariant =
   | 'blue'
+  | 'contrast'
   | 'green'
   | 'grey'
   | 'orange'
@@ -25,12 +26,12 @@ export type ChipVariant =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoredChipComponent {
-  variant = input.required<ChipVariant>();
-  label = input.required<string>();
-  icon = input<string>();
-  tooltip = input<string>();
+  readonly variant = input.required<ChipVariant>();
+  readonly label = input.required<string>();
+  readonly icon = input<string>();
+  readonly tooltip = input<string>();
 
-  styleClass = computed(() => {
+  readonly styleClass = computed(() => {
     let baseClass = '';
 
     if (this.tooltip()) {
@@ -45,7 +46,7 @@ export class ColoredChipComponent {
       case 'green':
         return `${baseClass} bg-green-100 text-green-700`;
       case 'purple':
-        return `${baseClass} bg-purple-100 text-purple-700`;
+        return `${baseClass} bg-purple-100 text-purple-900`;
       case 'red':
         return `${baseClass} bg-red-100 text-red-700`;
       case 'orange':
@@ -54,6 +55,8 @@ export class ColoredChipComponent {
         return `${baseClass} bg-yellow-100 text-yellow-700`;
       case 'grey':
         return `${baseClass} bg-grey-100 text-grey-700`;
+      case 'contrast':
+        return `${baseClass} bg-grey-50 text-grey-900`;
       default:
         return '';
     }

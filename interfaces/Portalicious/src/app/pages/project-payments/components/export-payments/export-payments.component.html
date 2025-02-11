@@ -30,7 +30,7 @@
   <app-confirmation-dialog
     #exportUnusedVouchersDialog
     header="Export unused vouchers"
-    i18n-header="@@export-payments-unused-vouchers"
+    i18n-header
     headerIcon="pi pi-upload"
     [mutation]="exportPaymentsMutation"
     [mutationData]="
@@ -56,7 +56,7 @@
   <app-confirmation-dialog
     #exportDebitCardUsageDialog
     header="Export debit card usage"
-    i18n-header="@@export-payments-debit-card-usage"
+    i18n-header
     headerIcon="pi pi-upload"
     [mutation]="exportPaymentsMutation"
     [mutationData]="

@@ -5,44 +5,51 @@
 >
   <ng-template #headless>
     <div class="w-[632px] space-y-6 p-6">
-      <div class="flex w-full items-center">
-        <h3 [class]="headerClass()">
-          <i class="me-2 {{ headerIcon() }}"></i>
-          {{ header() }}
-        </h3>
-        <p-button
-          icon="pi pi-times"
-          class="ms-auto"
-          severity="secondary"
-          text
-          (click)="confirmDialog.onReject()"
-        />
-      </div>
-      <div class="w-full">
-        <ng-content></ng-content>
-        @if (mutation().isError()) {
-          <div class="mt-4">
-            <app-form-error [error]="mutation().failureReason()?.message" />
-          </div>
-        }
-      </div>
-      <div class="flex justify-end gap-4">
-        <p-button
-          label="Cancel"
-          i18n-label="@@generic-cancel"
-          outlined
-          rounded
-          severity="contrast"
-          [disabled]="mutation().isPending()"
-          (click)="confirmDialog.onReject()"
-        />
-        <p-button
-          [label]="proceedLabel()"
-          rounded
-          [loading]="mutation().isPending()"
-          (click)="onProceed()"
-        />
-      </div>
+      <form
+        (ngSubmit)="onProceed()"
+        (keydown.control.enter)="onProceed()"
+        (keydown.meta.enter)="onProceed()"
+        pFocusTrap
+      >
+        <div class="flex w-full items-center">
+          <h3 [class]="headerClass()">
+            <i class="me-2 {{ headerIcon() }}"></i>
+            {{ header() }}
+          </h3>
+          <p-button
+            icon="pi pi-times"
+            class="ms-auto"
+            severity="contrast"
+            text
+            (click)="confirmDialog.onReject()"
+          />
+        </div>
+        <div class="w-full">
+          <ng-content></ng-content>
+          @if (mutation().isError()) {
+            <div class="mt-4">
+              <app-form-error [error]="mutation().failureReason()?.message" />
+            </div>
+          }
+        </div>
+        <div class="flex justify-end gap-4">
+          <p-button
+            label="Cancel"
+            i18n-label="@@generic-cancel"
+            outlined
+            rounded
+            severity="contrast"
+            [disabled]="mutation().isPending()"
+            (click)="confirmDialog.onReject()"
+          />
+          <p-button
+            [label]="proceedLabel()"
+            rounded
+            [loading]="mutation().isPending()"
+            type="submit"
+          />
+        </div>
+      </form>
     </div>
   </ng-template>
 </p-confirmDialog>

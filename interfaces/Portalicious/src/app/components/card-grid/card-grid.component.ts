@@ -11,8 +11,8 @@ import { SkeletonModule } from 'primeng/skeleton';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardGridComponent {
-  empty = input.required<boolean>();
-  emptyTitle = input.required<string>();
-  emptySubtitle = input.required<string>();
-  loading = input<boolean>();
+  readonly empty = input.required<boolean>();
+  readonly emptyTitle = input.required<string>();
+  readonly emptySubtitle = input.required<string>();
+  readonly loading = input<boolean>();
 }

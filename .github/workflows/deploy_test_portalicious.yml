@@ -39,6 +39,7 @@ jobs:
     environment: 'test'
     env:
       NG_ENV_NAME: ${{ vars.NG_ENV_NAME }}
+      NG_ENV_ICON: ${{ vars.NG_ENV_ICON }}
       NG_LOCALES: 'en-GB,nl'
       NG_DEFAULT_LOCALE: 'en-GB'
       NG_URL_121_SERVICE_API: ${{ vars.NG_URL_121_SERVICE_API }}
@@ -61,7 +62,7 @@ jobs:
         uses: ./.github/actions/build-interface
         with:
           interfacePath: ${{ env.workingDirectory }}
-          envIcon: 'AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAABNIQAA/OrwAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAiIgAgAAACABAAACAAAAIAAgAAIAAAAgAAIAAgAAACAAACACAAAAIAIAIAIAAAAgAgAgAgAAACAAIgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+          envIcon: ${{ env.NG_ENV_ICON }}
           envIconPath: 'src/assets/favicon.ico'
           envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.
 

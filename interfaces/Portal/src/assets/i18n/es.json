@@ -9,7 +9,7 @@
     "error-with-message": "Algo salió mal: {{error}}",
     "export-error": "Algo salió mal con la exportación.",
     "ok": "OK",
-    "save": "Salvar",
+    "save": "Guardar",
     "save-success": "Guardado con éxito",
     "try-again-contact-support": "Por favor, inténtelo de nuevo. Si el problema persiste, póngase en contacto con el soporte técnico.",
     "unknown-error": "Algo salió mal. Se desconoce el error.",
@@ -78,7 +78,7 @@
   },
   "header": {
     "help": "Manual de usuario",
-    "home": "Hogar",
+    "home": "Inicio",
     "menu": "Menú",
     "users": "Usuarios"
   },
@@ -97,7 +97,7 @@
       "pageTitle": "Salpicadero"
     },
     "home": {
-      "pageTitle": "Hogar"
+      "pageTitle": "Inicio"
     },
     "iframe": {
       "recipient": {
@@ -154,7 +154,7 @@
         "timestamp": "La última importación se ha realizado el: {{dateTime}}"
       },
       "export-fsp-intructions": {
-        "btn-text": "Instrucciones de pago de exportación",
+        "btn-text": "Exportar instrucciones de pago para a el PSF",
         "confirm-message": "Esto descargará un archivo con instrucciones de pago para el Proveedor de Servicios Financieros.",
         "sub-message": {
           "reconciliation": "Esta exportación solo incluirá a las personas afectadas para las que se esté esperando el estado actual <strong>de</strong> la transacción."
@@ -197,7 +197,7 @@
           }
         },
         "payment": {
-          "btn-text": "Informe de exportación",
+          "btn-text": "Exportar informe de pago",
           "confirm-message": "Esto descargará un archivo Excel con todas las personas afectadas incluidas en este pago."
         },
         "select-btn-text": "Exportar",
@@ -538,7 +538,7 @@
           "title": "Agregar miembro del equipo"
         },
         "change": {
-          "confirm": "Salvar",
+          "confirm": "Guardar",
           "succes-message": "™Ha editado correctamente los roles de este usuario",
           "title": "Editar miembro del equipo"
         },
@@ -603,7 +603,7 @@
       "add-new-user": "Agregar nuevo usuario",
       "page-description": "En esta página, puede agregar y administrar usuarios, y ver roles y permisos.",
       "pageTitle": "Usuarios y roles",
-      "roles-tab": "Papeles",
+      "roles-tab": "Roles",
       "search": "Buscar...",
       "table-headers": {
         "last-login": "Último inicio de sesión",

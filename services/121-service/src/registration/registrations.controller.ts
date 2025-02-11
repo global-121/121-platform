@@ -43,6 +43,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
@@ -325,14 +326,19 @@ export class RegistrationsController {
     );
     const dryRunBoolean = dryRun === 'true'; // defaults to false
     const result = await this.registrationsBulkService.patchRegistrationsStatus(
-      query,
-      programId,
-      registrationStatus as RegistrationStatusEnum,
-      dryRunBoolean,
-      userId,
-      statusUpdateDto.message,
-      statusUpdateDto.messageTemplateKey,
-      messageContentType,
+      {
+        paginateQuery: query,
+        programId,
+        registrationStatus: registrationStatus as RegistrationStatusEnum,
+        dryRun: dryRunBoolean,
+        userId,
+        messageContentDetails: {
+          message: statusUpdateDto.message,
+          messageTemplateKey: statusUpdateDto.messageTemplateKey,
+          messageContentType,
+        },
+        reason: statusUpdateDto.reason,
+      },
     );
     if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
@@ -513,6 +519,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Req() req: ScopedUserRequest,
     @Param('programId') programId: number,
+    @Body() body: DeleteRegistrationsDto,
     @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
@@ -524,12 +531,13 @@ export class RegistrationsController {
     );
 
     const dryRunBoolean = dryRun === 'true'; // defaults to false
-    const result = await this.registrationsBulkService.deleteRegistrations(
-      query,
+    const result = await this.registrationsBulkService.deleteRegistrations({
+      paginateQuery: query,
       programId,
-      dryRunBoolean,
+      dryRun: dryRunBoolean,
       userId,
-    );
+      reason: body.reason,
+    });
 
     if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)

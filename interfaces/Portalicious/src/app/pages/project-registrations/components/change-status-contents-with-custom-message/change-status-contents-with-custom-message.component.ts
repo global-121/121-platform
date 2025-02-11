@@ -36,10 +36,10 @@ import { generateFieldErrors } from '~/utils/form-validation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
-  projectId = input.required<string>();
-  previewRegistration = input.required<Registration | undefined>();
-  enableSendMessage = input.required<boolean>();
-  isMutating = input<boolean>(false);
+  readonly projectId = input.required<string>();
+  readonly previewRegistration = input.required<Registration | undefined>();
+  readonly enableSendMessage = input.required<boolean>();
+  readonly isMutating = input<boolean>(false);
   readonly cancelChangeStatus = output();
   readonly customMessageUpdated = output<string>();
 
@@ -47,13 +47,15 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
     customMessage: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
       validators: [
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
         Validators.required,
         Validators.minLength(20),
       ],
     }),
   });
-  previewData = signal<Partial<MessageInputData> | undefined>(undefined);
+  readonly previewData = signal<Partial<MessageInputData> | undefined>(
+    undefined,
+  );
   formFieldErrors = generateFieldErrors(this.formGroup, {
     customMessage: (control) => {
       if (control.errors?.required) {

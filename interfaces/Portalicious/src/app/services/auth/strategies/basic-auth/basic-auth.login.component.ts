@@ -40,17 +40,17 @@ type LoginFormGroup =
 })
 export class BasicAuthLoginComponent {
   private authService = inject(AuthService);
-  returnUrl = input<string | undefined>(undefined);
+  readonly returnUrl = input<string | undefined>(undefined);
 
   formGroup = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required, Validators.email],
     }),
     password: new FormControl('', {
       nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
   });

@@ -17,7 +17,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   getMessageHistoryUntilX,
   importRegistrations,
   issueNewVisaCard,
@@ -50,22 +50,22 @@ describe('Do succesful payment with FSP Visa Debit', () => {
   it('should succesfully pay-out Visa Debit', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
-    const doPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    const doPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -95,23 +95,23 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Arrange
     registrationVisa.fullName = 'succeed';
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
-      [registrationVisa.referenceId],
-      RegistrationStatusEnum.included,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
     // Act
     // do 1st payment
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
-      paymentReferenceIds,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -123,13 +123,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
 
     // do 2nd payment
-    const doSecondPaymentResponse = await doPayment(
-      programIdVisa,
-      paymentNrVisa + 1,
-      amountVisa,
-      paymentReferenceIds,
+    const doSecondPaymentResponse = await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa + 1,
+      amount: amountVisa,
+      referenceIds: paymentReferenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -180,22 +180,22 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const referenceIds = registrations.map((r) => r.referenceId);
 
     await importRegistrations(programIdVisa, registrations, accessToken);
-    await awaitChangePaStatus(
-      programIdVisa,
+    await awaitChangeRegistrationStatus({
+      programId: programIdVisa,
       referenceIds,
-      RegistrationStatusEnum.included,
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
 
     // Act
     // do 1st payment
-    await doPayment(
-      programIdVisa,
-      paymentNrVisa,
-      amountVisa,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      amount: amountVisa,
       referenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,
@@ -214,13 +214,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
     await waitFor(2_000);
 
-    await doPayment(
-      programIdVisa,
-      testPaymentNumber,
-      amountVisa,
+    await doPayment({
+      programId: programIdVisa,
+      paymentNr: testPaymentNumber,
+      amount: amountVisa,
       referenceIds,
       accessToken,
-    );
+    });
 
     await waitForPaymentTransactionsToComplete(
       programIdVisa,

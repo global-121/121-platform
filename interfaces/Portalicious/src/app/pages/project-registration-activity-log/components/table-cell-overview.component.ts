@@ -1,9 +1,11 @@
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -21,14 +23,12 @@ import {
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
-import {
-  ACTIVITY_LOG_ITEM_TYPE_LABELS,
-  REGISTRATION_STATUS_LABELS,
-} from '~/domains/registration/registration.helper';
+import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
+import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-table-cell-overview',
@@ -36,6 +36,7 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
+    NgClass,
   ],
   template: `
     <div class="flex w-full content-between items-center">
@@ -44,7 +45,12 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
       }
 
       @if (chipData()) {
-        <div class="me-auto ms-2">
+        <div
+          class="me-auto"
+          [ngClass]="{
+            'ms-2': !!overview(),
+          }"
+        >
           <app-colored-chip
             [label]="chipData()!.chipLabel"
             [variant]="chipData()!.chipVariant"
@@ -69,8 +75,9 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 export class TableCellOverviewComponent
   implements TableCellComponent<Activity, ActivityLogTableCellContext>
 {
-  value = input.required<Activity>();
-  context = input.required<ActivityLogTableCellContext>();
+  readonly value = input.required<Activity>();
+  readonly context = input.required<ActivityLogTableCellContext>();
+  locale = inject<Locale>(LOCALE_ID);
 
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
@@ -78,7 +85,7 @@ export class TableCellOverviewComponent
     this.registrationAttributeService.getRegistrationAttributes(this.context),
   );
 
-  chipData = computed<ChipData | undefined>(() => {
+  readonly chipData = computed<ChipData | undefined>(() => {
     const { type, attributes } = this.value();
 
     if (type === ActivityTypeEnum.Transaction) {
@@ -92,7 +99,7 @@ export class TableCellOverviewComponent
     return undefined;
   });
 
-  overview = computed(() => {
+  readonly overview = computed(() => {
     const item = this.value();
     switch (item.type) {
       case ActivityTypeEnum.DataChange:
@@ -114,11 +121,11 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.StatusChange:
         return REGISTRATION_STATUS_LABELS[item.attributes.newValue];
       case ActivityTypeEnum.Transaction:
-        return `${ACTIVITY_LOG_ITEM_TYPE_LABELS[item.type]} #${item.attributes.payment.toString()}`;
+        return;
     }
   });
 
-  voucherDialogData = computed(() => {
+  readonly voucherDialogData = computed(() => {
     const item = this.value();
     const referenceId = this.context().referenceId;
 

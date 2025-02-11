@@ -178,10 +178,10 @@ export class RegistrationsService {
         where: { referenceId: Equal(referenceId) },
         select: ['id', 'status'],
       });
-    await this.eventsService.log(
+    await this.eventsService.createFromRegistrationViews(
       registrationBeforeUpdate,
       registrationAfterUpdate,
-      { registrationAttributes: ['status'] },
+      { explicitRegistrationPropertyNames: ['status'] },
     );
     return registrationAfterUpdate;
   }
@@ -584,12 +584,10 @@ export class RegistrationsService {
 
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
-      await this.eventsService.log(
+      await this.eventsService.createFromRegistrationViews(
         { ...oldViewRegistration },
         { ...newRegistration },
-        {
-          additionalLogAttributes: { reason },
-        },
+        { reason },
       );
       return newRegistration;
     }

@@ -41,13 +41,6 @@ export class IntersolveVoucherCronService {
     private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
   ) {}
 
-  public async cacheUnusedVouchers(): Promise<void> {
-    const programs = await this.programRepository.find();
-    for (const program of programs) {
-      await this.intersolveVoucherService.updateUnusedVouchers(program.id);
-    }
-  }
-
   public async cancelByRefposIntersolve(): Promise<void> {
     const tenMinutes = 10 * 60 * 1000;
     const tenMinutesAgo = new Date(Date.now() - tenMinutes);

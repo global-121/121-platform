@@ -36,6 +36,7 @@ const expectedColumnsStatusAndDataChangesExport = [
   'type',
   'newValue',
   'oldValue',
+  'reason',
 ];
 
 const expectedColumnsDuplicateRegistrationsExport = [
@@ -80,6 +81,7 @@ interface ExportStatusAndDataChangesData {
   type: string;
   newValue: string;
   oldValue: string;
+  reason: string;
 }
 
 interface ExportDuplicateRegistrationsData {
@@ -162,6 +164,7 @@ class RegistrationsPage extends BasePage {
 
   async sendMessage() {
     await this.page.getByRole('button', { name: 'Send message' }).click();
+    await this.table.validateSelectionCount(0);
   }
 
   async getFirstRegistrationNameFromTable() {
@@ -260,13 +263,14 @@ class RegistrationsPage extends BasePage {
       const rowCheckbox = await this.table.getCell(i, 0);
       await rowCheckbox.click();
     }
+    await this.table.validateSelectionCount(selectionCount);
   }
 
   async performActionWithRightClick(action: string, row = 0) {
     await this.table.tableRows.nth(row).click({ button: 'right' });
     await this.page.getByLabel(action).click();
 
-    if (action !== 'Message') {
+    if (action !== 'Message' && action !== 'Open in new tab') {
       await this.page.getByRole('button', { name: 'Approve' }).click();
     }
   }
@@ -426,6 +430,7 @@ class RegistrationsPage extends BasePage {
       type,
       newValue,
       oldValue,
+      reason,
     }: ExportStatusAndDataChangesData,
     validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
@@ -435,6 +440,7 @@ class RegistrationsPage extends BasePage {
       type,
       newValue,
       oldValue,
+      reason,
     };
     await this.exportAndAssertData(
       expectedColumnsStatusAndDataChangesExport,

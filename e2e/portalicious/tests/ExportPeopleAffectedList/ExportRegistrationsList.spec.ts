@@ -50,9 +50,7 @@ test('[29358] Export People Affected list', async ({ page }) => {
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
     await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption(
-      'Export selected registrations',
-    );
+    await registrations.clickAndSelectExportOption('Selected registrations');
     await registrations.exportAndAssertSelectedRegistrations(0, {
       id,
       status,

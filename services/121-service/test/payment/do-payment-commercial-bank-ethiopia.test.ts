@@ -9,7 +9,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -35,22 +35,22 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       await importRegistrations(programId, [registrationCbe], accessToken);
 
-      await awaitChangePaStatus(
+      await awaitChangeRegistrationStatus({
         programId,
-        [registrationCbe.referenceId],
-        RegistrationStatusEnum.included,
+        referenceIds: [registrationCbe.referenceId],
+        status: RegistrationStatusEnum.included,
         accessToken,
-      );
+      });
       const paymentReferenceIds = [registrationCbe.referenceId];
 
       // Act
-      const doPaymentResponse = await doPayment(
+      const doPaymentResponse = await doPayment({
         programId,
-        payment,
+        paymentNr: payment,
         amount,
-        paymentReferenceIds,
+        referenceIds: paymentReferenceIds,
         accessToken,
-      );
+      });
 
       await waitForPaymentTransactionsToComplete(
         programId,

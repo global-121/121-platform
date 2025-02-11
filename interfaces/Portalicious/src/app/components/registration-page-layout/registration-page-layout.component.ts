@@ -64,7 +64,7 @@ export class RegistrationPageLayoutComponent {
     ),
   );
 
-  registrationData = computed(() => {
+  readonly registrationData = computed(() => {
     const registrationRawData = this.registration.data();
     const { chipLabel, chipVariant } = getChipDataByRegistrationStatus(
       registrationRawData?.status,
@@ -72,7 +72,7 @@ export class RegistrationPageLayoutComponent {
 
     const listData: DataListItem[] = [
       {
-        label: $localize`:@@registration-status:Status`,
+        label: $localize`:@@registration-status:Registration Status`,
         chipLabel,
         chipVariant,
       },
@@ -104,7 +104,7 @@ export class RegistrationPageLayoutComponent {
     }));
   });
 
-  parentLink = computed(() =>
+  readonly parentLink = computed(() =>
     this.registrationLookupService.isActive()
       ? undefined
       : [
@@ -115,7 +115,7 @@ export class RegistrationPageLayoutComponent {
         ],
   );
 
-  parentTitle = computed(() =>
+  readonly parentTitle = computed(() =>
     this.registrationLookupService.isActive()
       ? this.translatableStringService.translate(
           this.project.data()?.titlePortal,
@@ -123,14 +123,20 @@ export class RegistrationPageLayoutComponent {
       : $localize`All Registrations`,
   );
 
-  registrationTitle = computed(() => {
+  readonly registrationTitle = computed(() => {
     const localized = $localize`Reg. #`;
 
     return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
   });
 
-  addNoteFormVisible = signal(false);
+  readonly addNoteFormVisible = signal(false);
 
+  readonly canUpdatePersonalData = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
+    }),
+  );
   private getPaymentCountString(
     paymentCount?: null | number,
     maxPayments?: null | number,
@@ -145,11 +151,4 @@ export class RegistrationPageLayoutComponent {
 
     return $localize`${paymentCount.toString()}:count: (out of ${maxPayments.toString()}:totalCount:)`;
   }
-
-  canUpdatePersonalData = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
-    }),
-  );
 }

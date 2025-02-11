@@ -11,16 +11,15 @@ const registrationsPage = new RegistrationsModel();
 const programsPage = new ProgramsModel();
 
 export default class InitializePaymentModel {
-  constructor() {}
-
   initializePayment(
     resetScript,
     programId,
     registration,
     duplicateNumber,
-    paymentId,
     maxTimeoutAttempts,
+    status,
     minPassRatePercentage,
+    paymentNr,
     amount,
   ) {
     // reset db
@@ -33,13 +32,14 @@ export default class InitializePaymentModel {
     resetPage.duplicateRegistrations(duplicateNumber);
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
-
-    paymentsPage.createPayment(programId, amount);
+    // Create payment
+    paymentsPage.createPayment(programId, amount, paymentNr);
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
+      status,
       maxTimeoutAttempts,
-      paymentId,
+      paymentNr,
       duplicateNumber,
       minPassRatePercentage,
     );

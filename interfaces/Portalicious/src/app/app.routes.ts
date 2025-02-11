@@ -12,6 +12,7 @@ export enum AppRoutes {
   authCallback = 'auth-callback',
   changePassword = 'change-password',
   login = 'login',
+  privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
   projectPayments = 'payments',
@@ -22,25 +23,41 @@ export enum AppRoutes {
   projects = 'projects',
   projectTeam = 'team',
   registrationLookup = 'registration-lookup',
+  snake = 'snake',
   userRoles = 'user-roles',
   users = 'users',
 }
 export const routes: Routes = [
   {
     path: AppRoutes.login,
+    title: $localize`:@@page-title-login:Log in`,
     loadComponent: () =>
       import('~/pages/login/login.page').then((x) => x.LoginPageComponent),
   },
   {
+    path: AppRoutes.privacy,
+    title: $localize`:@@page-title-privacy:Privacy`,
+    loadComponent: () =>
+      import('~/pages/privacy/privacy.page').then(
+        (x) => x.PrivacyPageComponent,
+      ),
+  },
+  {
     path: AppRoutes.authCallback,
+    title: $localize`:@@generic-loading:Loading...`,
     loadComponent: () =>
       import('~/pages/auth-callback/auth-callback.page').then(
         (x) => x.AuthCallbackPageComponent,
       ),
   },
   {
+    path: AppRoutes.snake,
+    loadComponent: () =>
+      import('~/pages/snake/snake.page').then((x) => x.SnakePageComponent),
+  },
+  {
     path: AppRoutes.changePassword,
-    title: $localize`:Browser-tab-title@@page-title-change-password:Change password`,
+    title: $localize`:@@page-title-change-password:Change password`,
     loadComponent: () =>
       import('~/pages/change-password/change-password.page').then(
         (x) => x.ChangePasswordPageComponent,
@@ -55,6 +72,7 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.projects,
+    title: $localize`:@@page-title-all-projects:All projects`,
     loadComponent: () =>
       import('~/pages/projects-overview/projects-overview.page').then(
         (x) => x.ProjectsOverviewPageComponent,
@@ -63,6 +81,7 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.users,
+    title: $localize`:@@page-title-users:Users`,
     loadComponent: () =>
       import('~/pages/users/users.page').then((x) => x.UsersPageComponent),
     canActivate: [
@@ -72,6 +91,7 @@ export const routes: Routes = [
   },
   {
     path: AppRoutes.userRoles,
+    title: $localize`:@@page-title-user-roles:User roles`,
     loadComponent: () =>
       import('~/pages/user-roles/user-roles.page').then(
         (x) => x.UserRolesPageComponent,
@@ -87,6 +107,7 @@ export const routes: Routes = [
     children: [
       {
         path: AppRoutes.projectMonitoring,
+        title: $localize`:@@page-title-project-monitoring:Monitoring`,
         loadComponent: () =>
           import('~/pages/project-monitoring/project-monitoring.page').then(
             (x) => x.ProjectMonitoringPageComponent,
@@ -97,6 +118,7 @@ export const routes: Routes = [
       },
       {
         path: AppRoutes.projectTeam,
+        title: $localize`:@@page-title-project-team:Team`,
         loadComponent: () =>
           import('~/pages/project-team/project-team.page').then(
             (x) => x.ProjectTeamPageComponent,
@@ -110,6 +132,7 @@ export const routes: Routes = [
         children: [
           {
             path: ``,
+            title: $localize`:@@page-title-project-registrations:Registrations`,
             loadComponent: () =>
               import(
                 '~/pages/project-registrations/project-registrations.page'
@@ -117,10 +140,15 @@ export const routes: Routes = [
           },
           {
             path: `:registrationId`,
+            title: $localize`:@@page-title-project-registration-details:Registration details`,
             canActivate: [foundResourceGuard('registration')],
             children: [
               {
                 path: AppRoutes.projectRegistrationActivityLog,
+                title:
+                  $localize`:@@page-title-project-registrations-activity-log:Activity log` +
+                  ' | ' +
+                  $localize`:@@page-title-project-registration-details:Registration details`,
                 loadComponent: () =>
                   import(
                     '~/pages/project-registration-activity-log/project-registration-activity-log.page'
@@ -128,6 +156,10 @@ export const routes: Routes = [
               },
               {
                 path: AppRoutes.projectRegistrationPersonalInformation,
+                title:
+                  $localize`:@@page-title-project-registrations-personal-information:Personal information` +
+                  ' | ' +
+                  $localize`:@@page-title-project-registration-details:Registration details`,
                 canDeactivate: [pendingChangesGuard],
                 loadComponent: () =>
                   import(
@@ -139,6 +171,10 @@ export const routes: Routes = [
               },
               {
                 path: AppRoutes.projectRegistrationDebitCards,
+                title:
+                  $localize`:@@page-title-project-registrations-debit-cards:Debit cards` +
+                  ' | ' +
+                  $localize`:@@page-title-project-registration-details:Registration details`,
                 loadComponent: () =>
                   import(
                     '~/pages/project-registration-debit-cards/project-registration-debit-cards.page'
@@ -158,6 +194,7 @@ export const routes: Routes = [
         children: [
           {
             path: ``,
+            title: $localize`:@@page-title-project-payments:Payments`,
             loadComponent: () =>
               import('~/pages/project-payments/project-payments.page').then(
                 (x) => x.ProjectPaymentsPageComponent,
@@ -165,6 +202,7 @@ export const routes: Routes = [
           },
           {
             path: `:paymentId`,
+            title: $localize`:@@page-title-project-payment:Payment`,
             pathMatch: 'full',
             canActivate: [foundResourceGuard('payment')],
             loadComponent: () =>

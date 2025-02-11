@@ -8,7 +8,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangePaStatus,
+  awaitChangeRegistrationStatus,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -29,19 +29,25 @@ describe('Metric export list', () => {
 
     accessToken = await getAccessToken();
     await importRegistrations(programId, [registrationSafaricom], accessToken);
-    await awaitChangePaStatus(
+    await awaitChangeRegistrationStatus({
       programId,
-      [registrationSafaricom.referenceId],
-      RegistrationStatusEnum.included,
+      referenceIds: [registrationSafaricom.referenceId],
+      status: RegistrationStatusEnum.included,
       accessToken,
-    );
+    });
   });
 
   it('should export payment report including FSP-specific fields for Safaricom', async () => {
     // Arrange
     const fspSpecificFields = ['mpesaTransactionId'];
 
-    await doPayment(programId, paymentNr, amount, [], accessToken);
+    await doPayment({
+      programId,
+      paymentNr,
+      amount,
+      referenceIds: [],
+      accessToken,
+    });
     await waitForPaymentTransactionsToComplete(
       programId,
       [registrationSafaricom.referenceId],

@@ -34,6 +34,7 @@ mockProgramFspConfigEntity.financialServiceProviderName =
   FinancialServiceProviders.intersolveVisa;
 mockProgramFspConfigEntity.label = { en: 'Test Label' };
 mockProgramFspConfigEntity.properties = [mockProgramFspConfigPropertyEntity];
+mockProgramFspConfigEntity.registrations = [];
 
 const validPropertyDto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
   {
@@ -311,7 +312,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
           name: Equal(configName),
           programId: Equal(programId),
         },
-        relations: ['properties'],
+        relations: ['registrations'],
       });
       expect(mockProgramFspConfigurationRepository.delete).toHaveBeenCalledWith(
         {
@@ -330,21 +331,6 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       await expect(
         service.delete(programId, nonExistingConfigName),
       ).rejects.toThrow(new HttpException('Not found', HttpStatus.NOT_FOUND));
-    });
-
-    it('should throw an exception if the configuration has associated entities', async () => {
-      const error = { code: '23503' };
-      mockProgramFspConfigurationRepository.delete.mockRejectedValue(error);
-
-      await expect(service.delete(programId, configName)).rejects.toThrow(
-        HttpException,
-      );
-      await expect(service.delete(programId, configName)).rejects.toThrow(
-        new HttpException(
-          'Cannot delete Program FSP Configuration because it is related to e.g. transactions or registrations',
-          HttpStatus.CONFLICT,
-        ),
-      );
     });
   });
 

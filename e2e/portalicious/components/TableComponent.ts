@@ -25,7 +25,7 @@ class TableComponent {
     this.globalSearchOpenerButton = this.page.getByTitle('Filter by keyword');
     this.globalSearchInput = this.page.getByPlaceholder('Filter by keyword');
     this.clearAllFiltersButton = this.page.getByRole('button', {
-      name: 'Clear all filters',
+      name: 'Clear filters',
     });
     this.applyFiltersButton = this.page.getByLabel('Apply');
     this.textboxField = this.page.getByRole('textbox');
@@ -201,6 +201,17 @@ class TableComponent {
     await this.sortColumnByName({ columnName, sort: 'descending' });
     textFromColumn = await this.getTextArrayFromColumn(columnIndex);
     expect(textFromColumn).toEqual(descendingExpected);
+  }
+
+  async validateSelectionCount(expectedCount: number) {
+    if (expectedCount === 0) {
+      await expect(this.page.getByText('selected')).not.toBeVisible();
+      return;
+    }
+
+    await expect(
+      this.page.getByText(`(${expectedCount} selected)`),
+    ).toBeVisible();
   }
 }
 

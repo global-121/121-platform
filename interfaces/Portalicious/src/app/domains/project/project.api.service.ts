@@ -27,6 +27,17 @@ import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = 'programs';
 
+export const filterableAttributesToIgnore = [
+  'failedPayment',
+  'waitingPayment',
+  'successPayment',
+  'notYetSentPayment',
+  // Below attributes are already hardcoded in the table columns service
+  'programFinancialServiceProviderConfigurationName',
+  'fullName',
+  'registrationCreatedDate',
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,6 +71,20 @@ export class ProjectApiService extends DomainApiService {
     return this.generateQueryOptions<Project>({
       path: [BASE_ENDPOINT, projectId],
       enabled: () => !!projectId(),
+      processResponse: (project) => {
+        if (project.filterableAttributes) {
+          project.filterableAttributes = project.filterableAttributes.map(
+            (group) => ({
+              ...group,
+              filters: group.filters.filter(
+                (filter) => !filterableAttributesToIgnore.includes(filter.name),
+              ),
+            }),
+          );
+        }
+
+        return project;
+      },
     });
   }
 
@@ -104,8 +129,8 @@ export class ProjectApiService extends DomainApiService {
         includeTemplateDefaultAttributes,
         filterShowInPeopleAffectedTable,
       },
-      processResponse: (attributes) => {
-        return uniqBy(attributes, 'name').map((attribute) => {
+      processResponse: (attributes) =>
+        uniqBy(attributes, 'name').map((attribute) => {
           const translatedLabel = this.translatableStringService.translate(
             attribute.label,
           );
@@ -118,8 +143,7 @@ export class ProjectApiService extends DomainApiService {
                 : undefined) ??
               attribute.name,
           };
-        });
-      },
+        }),
     });
   }
 

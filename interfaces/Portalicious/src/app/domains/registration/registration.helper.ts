@@ -39,7 +39,7 @@ export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.validated]: 'pi pi-check-circle',
     [RegistrationStatusEnum.included]: 'pi pi-check',
     [RegistrationStatusEnum.paused]: 'pi pi-pause',
-    [RegistrationStatusEnum.declined]: 'pi pi-times',
+    [RegistrationStatusEnum.declined]: 'pi pi-ban',
     [RegistrationStatusEnum.deleted]: 'pi pi-trash',
   };
 
@@ -53,6 +53,19 @@ export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.declined]: $localize`Decline`,
     [RegistrationStatusEnum.deleted]: $localize`Delete`,
   };
+
+export const REGISTRATION_STATUS_VERB_PROGRESSIVE: Record<
+  RegistrationStatusEnum,
+  string
+> = {
+  [RegistrationStatusEnum.registered]: $localize`Registering`,
+  [RegistrationStatusEnum.completed]: $localize`Completing`,
+  [RegistrationStatusEnum.validated]: $localize`Validating`,
+  [RegistrationStatusEnum.included]: $localize`Including`,
+  [RegistrationStatusEnum.paused]: $localize`Pausing`,
+  [RegistrationStatusEnum.declined]: $localize`Declining`,
+  [RegistrationStatusEnum.deleted]: $localize`Deleting`,
+};
 
 export const LANGUAGE_ENUM_LABEL: Record<LanguageEnum, string> = {
   ar: $localize`Arabic`,
@@ -95,18 +108,16 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.Transaction]: 'pi pi-money-bill',
 };
 
-export function registrationLink({
+export const registrationLink = ({
   projectId,
   registrationId,
 }: {
   projectId: number | string;
   registrationId: number | string;
-}) {
-  return [
-    '/',
-    AppRoutes.project,
-    projectId,
-    AppRoutes.projectRegistrations,
-    registrationId,
-  ];
-}
+}) => [
+  '/',
+  AppRoutes.project,
+  projectId,
+  AppRoutes.projectRegistrations,
+  registrationId,
+];

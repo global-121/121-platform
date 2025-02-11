@@ -21,6 +21,7 @@ const changedBy = 'admin@example.org';
 const type = 'registrationStatusChange';
 const newValue = 'included';
 const oldValue = 'registered';
+const reason = 'default reason';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -48,15 +49,14 @@ test('[29337] Export all People Affected data changes', async ({ page }) => {
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
     await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption(
-      'Export status & data changes',
-    );
+    await registrations.clickAndSelectExportOption('Status & data changes');
     await registrations.exportAndAssertStatusAndDataChanges(0, {
       referenceId: registrationsPV[0].referenceId, // Assert only the first registration
       changedBy,
       type,
       newValue,
       oldValue,
+      reason,
     });
   });
 });

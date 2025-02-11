@@ -15,6 +15,11 @@
     "params": []
   },
   {
+    "method": "put",
+    "path": "/api/exchange-rates",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/roles",
     "params": []
@@ -365,39 +370,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/transactions",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": [
-      "registrationId",
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa",
-    "params": []
-  },
-  {
-    "method": "get",
     "path": "/api/organization",
     "params": []
   },
@@ -465,25 +437,41 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/batch-jobs",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
     "path": "/api/financial-service-providers/intersolve-voucher/cancel",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/intersolve-voucher/cache-unused-vouchers",
     "params": []
   },
   {
     "method": "post",
     "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
     "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
+    "params": [
+      "registrationId",
+      "programId"
+    ]
   },
   {
     "method": "get",
@@ -874,31 +862,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/fsp-reconciliation/import-template",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/payments/{payment}/fsp-reconciliation",
-    "params": [
-      "programId",
-      "payment"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/safaricom/transfer-callback",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/safaricom/timeout-callback",
-    "params": []
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
@@ -906,16 +869,11 @@
     "returnType": "CommercialBankEthiopiaValidationReportDto"
   },
   {
-    "method": "post",
-    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
+    "method": "put",
+    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
     ]
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation",
-    "params": []
   },
   {
     "method": "post",
@@ -930,6 +888,11 @@
   {
     "method": "post",
     "path": "/api/notifications/sms/status",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/financial-service-providers/nedbank",
     "params": []
   },
   {
@@ -955,5 +918,52 @@
       "programId",
       "registrationId"
     ]
+  },
+  {
+    "method": "put",
+    "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/payments/{payment}/excel-reconciliation",
+    "params": [
+      "programId",
+      "payment"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/all",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/financial-service-providers/intersolve-voucher/unused-vouchers",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/transfer-callback",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/safaricom/timeout-callback",
+    "params": []
   }
 ]

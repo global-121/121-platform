@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
@@ -14,8 +13,6 @@ function shouldBeEnabled(envVariable: string | undefined): boolean {
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
-
-  constructor(private exchangeRatesService: ExchangeRatesService) {}
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !shouldBeEnabled(
@@ -39,9 +36,9 @@ export class CronjobService {
   public async validateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries/validation`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    await this.httpService.put(url, {}, headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -49,12 +46,12 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronCacheUnusedVouchers(): Promise<void> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cache-unused-vouchers`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    await this.httpService.post(url, {}, headers);
+    await this.httpService.patch(url, {}, headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -84,14 +81,25 @@ export class CronjobService {
     await this.httpService.post(url, {}, headers);
   }
 
+  // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
+  @Cron(CronExpression.EVERY_DAY_AT_4AM, {
+    disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
+  })
+  public async cronDoNedbankReconciliation(): Promise<void> {
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/nedbank`;
+    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    await this.httpService.patch(url, {}, headers);
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
   public async getDailyExchangeRates(): Promise<void> {
-    console.info('CronjobService - Started: getDailyExchangeRates');
-
-    await this.exchangeRatesService.getAndStoreProgramsExchangeRates();
-
-    console.info('CronjobService - Complete: getDailyExchangeRates');
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
+    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    await this.httpService.put(url, {}, headers);
   }
 }

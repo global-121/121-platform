@@ -3,12 +3,14 @@ const globals = require('globals');
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
+const eslintPluginComments = require('eslint-plugin-eslint-comments');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
 const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
 const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
 const eslintPluginRegexp = require('eslint-plugin-regexp');
 const eslintPluginSimpleSort = require('eslint-plugin-simple-import-sort');
+const eslintPluginSortClassMembers = require('eslint-plugin-sort-class-members');
 
 module.exports = tseslint.config(
   {
@@ -27,6 +29,7 @@ module.exports = tseslint.config(
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
       'simple-import-sort': eslintPluginSimpleSort,
+      'eslint-comments': eslintPluginComments,
     },
     extends: [
       eslint.configs.recommended,
@@ -36,17 +39,12 @@ module.exports = tseslint.config(
       // @ts-ignore-next-line - `configs` DOES exist.
       ...eslintPluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginSortClassMembers.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
     rules: {
-      'no-relative-import-paths/no-relative-import-paths': [
-        'error',
-        {
-          prefix: '~',
-          rootDir: './src/app',
-        },
-      ],
+      '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-extraneous-class': [
         'error',
         {
@@ -69,19 +67,31 @@ module.exports = tseslint.config(
           style: 'camelCase',
         },
       ],
+      '@angular-eslint/component-max-inline-declarations': [
+        'error',
+        { template: 30 },
+      ],
       '@angular-eslint/no-async-lifecycle-method': ['error'],
       '@angular-eslint/no-conflicting-lifecycle': ['error'],
       '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
       '@angular-eslint/prefer-output-readonly': ['error'],
       '@angular-eslint/prefer-standalone': ['error'],
+      '@angular-eslint/prefer-signals': ['error'],
       '@angular-eslint/sort-lifecycle-methods': ['error'],
       '@angular-eslint/use-component-selector': ['error'],
       '@angular-eslint/use-lifecycle-interface': ['error'],
+      'eslint-comments/require-description': 'error',
+      'no-relative-import-paths/no-relative-import-paths': [
+        'error',
+        {
+          prefix: '~',
+          rootDir: './src/app',
+        },
+      ],
       'perfectionist/sort-array-includes': ['error'],
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
-      'object-shorthand': 'error',
       'simple-import-sort/imports': [
         'error',
         {
@@ -100,6 +110,11 @@ module.exports = tseslint.config(
         },
       ],
       'simple-import-sort/exports': 'error',
+      'arrow-body-style': 'error',
+      'func-style': 'error',
+      'no-inner-declarations': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
     },
   },
   {
@@ -123,6 +138,7 @@ module.exports = tseslint.config(
             'ng-container[slot]',
             'p-button[icon]',
             'p-button[iconPos]',
+            'p-button[size]',
             'p-columnFilter[display]',
             'p-drawer[position]',
             'p-fileUpload[accept]',
@@ -141,6 +157,7 @@ module.exports = tseslint.config(
             'styleClass',
             'severity',
             'th[pSortableColumn]',
+            'app-button-menu[size]',
             'app-colored-chip[variant]',
             'app-confirmation-dialog[headerClass]',
             'app-confirmation-dialog[headerIcon]',

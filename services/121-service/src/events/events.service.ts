@@ -4,7 +4,6 @@ import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isMatch, isObject } from 'lodash';
 
-import { EventLogOptionsDto } from '@121-service/src/events/dto/event-log-options.dto';
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
 import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
 import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
@@ -13,6 +12,7 @@ import { EventAttributeEntity } from '@121-service/src/events/entities/event-att
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
+import { createFromRegistrationViewsOptions } from '@121-service/src/events/interfaces/create-from-registration-views-options.interface';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -20,10 +20,10 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 
-type LogEntity = Partial<RegistrationViewEntity> & {
+// Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id is in.
+interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
   id: number;
-  status?: string;
-};
+}
 
 @Injectable()
 export class EventsService {
@@ -34,18 +34,24 @@ export class EventsService {
     private readonly userService: UserService,
   ) {}
 
-  public async getEventsJsonDto(
-    programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): Promise<GetEventDto[]> {
+  public async getEventsAsJson({
+    programId,
+    searchOptions,
+  }: {
+    programId: number;
+    searchOptions: EventSearchOptionsDto;
+  }): Promise<GetEventDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
     return EventsMapper.mapEventsToJsonDtos(events);
   }
 
-  public async getEventsXlsxDto(
-    programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): Promise<GetEventXlsxDto[]> {
+  public async getEventsAsXlsx({
+    programId,
+    searchOptions,
+  }: {
+    programId: number;
+    searchOptions: EventSearchOptionsDto;
+  }): Promise<GetEventXlsxDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
     return EventsMapper.mapEventsToXlsxDtos(events);
   }
@@ -60,20 +66,56 @@ export class EventsService {
     );
   }
 
-  public async log(
-    oldRegistrationOrRegistrations: LogEntity | LogEntity[],
-    newRegistrationOrRegistrations: LogEntity | LogEntity[],
-    eventLogOptions?: EventLogOptionsDto,
+  /**
+   * Create events by looking the changed in property values between old and new registration view entities.
+   *
+   * @param {RegistrationViewWithId | RegistrationViewWithId[]} oldRegistrationViews - The old registration view entity or entities before the change.
+   * @param {RegistrationViewWithId | RegistrationViewWithId[]} newRegistrationViews - The new registration view entity or entities after the change.
+   * @param {createFromRegistrationViewsOptions} [createEventOptions] - Optional event creation options to specify additional attributes and registration properties to log.
+   * @returns {Promise<void>}
+   *
+   * @example
+   * // Single registration change
+   * const oldRegistrationView = { id: 1, name: 'Old Name' };
+   * const newRegistrationView = { id: 1, name: 'New Name' };
+   * await createFromRegistrationViews(oldRegistrationView, newRegistrationView);
+   *
+   * @example
+   * // Multiple registrations change
+   * const oldRegistrationViews = [
+   *   { id: 1, name: 'Old Name 1' },
+   *   { id: 2, name: 'Old Name 2' },
+   * ];
+   * const newRegistrationViews = [
+   *   { id: 1, name: 'New Name 1' },
+   *   { id: 2, name: 'New Name 2' },
+   * ];
+   * await createFromRegistrationViews(oldRegistrationViews, newRegistrationViews);
+   *
+   * @example
+   * // With event creation options
+   * const oldRegistrationView = { id: 1, name: 'Old Name' };
+   * const newRegistrationView = { id: 1, name: 'New Name' };
+   * const eventCreateOptions = {
+   *   explicitRegistrationPropertyNames: ['name'],
+   *   reason: 'Name change',
+   * };
+   * await createFromRegistrationViews(oldRegistrationView, newRegistrationView, eventCreateOptions);
+   */
+  public async createFromRegistrationViews(
+    oldRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
+    newRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
+    createEventOptions?: createFromRegistrationViewsOptions,
   ): Promise<void> {
     // Convert to array if not already
-    const oldEntities = Array.isArray(oldRegistrationOrRegistrations)
-      ? oldRegistrationOrRegistrations
-      : [oldRegistrationOrRegistrations];
-    const newEntities = Array.isArray(newRegistrationOrRegistrations)
-      ? newRegistrationOrRegistrations
-      : [newRegistrationOrRegistrations];
+    const oldEntities = Array.isArray(oldRegistrationViews)
+      ? oldRegistrationViews
+      : [oldRegistrationViews];
+    const newEntities = Array.isArray(newRegistrationViews)
+      ? newRegistrationViews
+      : [newRegistrationViews];
 
-    this.validateEntities(oldEntities, newEntities, eventLogOptions);
+    this.validateEntities(oldEntities, newEntities, createEventOptions);
     // Get userId from request if it exists otherwise this update was done using a queue
     // than get it from the request of the job of the queue
 
@@ -81,6 +123,7 @@ export class EventsService {
       ? this.request?.user?.['id']
       : this.jobRef?.data?.request?.userId;
 
+    // UserId can be null if the registration change was done by a system user, for example when the system puts a registration to status complete
     let userIdToStore: number | undefined = undefined;
     if (requestUserId) {
       const user = await this.userService.findById(requestUserId);
@@ -89,43 +132,36 @@ export class EventsService {
       }
     }
 
-    // TODO: userIdToStore can be null, which causes an exception
-    const allEventsForChange: EventEntity[] = this.createEventsForChanges(
+    const events = this.createEventsForChanges(
       oldEntities,
       newEntities,
       userIdToStore,
-      eventLogOptions?.registrationAttributes,
+      createEventOptions?.explicitRegistrationPropertyNames,
     );
-    const events = this.addAdditionalAttributesToEvents(
-      allEventsForChange,
-      eventLogOptions?.additionalLogAttributes,
-    );
+
+    if (createEventOptions?.reason) {
+      for (const event of events) {
+        const reasonAttribute = this.createEventAttributeForReason(
+          createEventOptions?.reason,
+        );
+        event.attributes.push(reasonAttribute);
+      }
+    }
 
     await this.eventRepository.save(events, { chunk: 2000 });
   }
 
-  private addAdditionalAttributesToEvents(
-    events: EventEntity[],
-    additionalAttributeObject?: EventLogOptionsDto['additionalLogAttributes'],
-  ): EventEntity[] {
-    if (!additionalAttributeObject) {
-      return events;
-    }
-    for (const event of events) {
-      for (const [key, value] of Object.entries(additionalAttributeObject)) {
-        const attribute = new EventAttributeEntity();
-        attribute.key = key as EventAttributeKeyEnum;
-        attribute.value = value ?? null;
-        event.attributes.push(attribute);
-      }
-    }
-    return events;
+  private createEventAttributeForReason(reason: string): EventAttributeEntity {
+    const attribute = new EventAttributeEntity();
+    attribute.key = EventAttributeKeyEnum.reason;
+    attribute.value = reason;
+    return attribute;
   }
 
   private validateEntities(
-    oldEntities: LogEntity[],
-    newEntities: LogEntity[],
-    eventLogOptionsDto?: EventLogOptionsDto,
+    oldEntities: RegistrationViewWithId[],
+    newEntities: RegistrationViewWithId[],
+    eventLogOptionsDto?: createFromRegistrationViewsOptions,
   ): void {
     // check if oldEntities and newEntities are same length
     if (oldEntities.length !== newEntities.length) {
@@ -148,7 +184,7 @@ export class EventsService {
 
     // Check if one entity is RegistrationViewEntity and the other is not
     if (
-      !eventLogOptionsDto?.registrationAttributes &&
+      !eventLogOptionsDto?.explicitRegistrationPropertyNames &&
       isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
     ) {
       throw new Error(
@@ -156,11 +192,11 @@ export class EventsService {
       );
     }
 
-    // Check if both entities are not RegistrationViewEntity and registrationAttributes is not provided
+    // Check if both entities are not RegistrationViewEntity and explicitRegistrationAttributes is not provided
     if (
       !isFirstOldEntityRegistrationView &&
       !isFirstNewEntityRegistrationView &&
-      !eventLogOptionsDto?.registrationAttributes
+      !eventLogOptionsDto?.explicitRegistrationPropertyNames
     ) {
       throw new Error(
         'When using a partial RegistrationViewEntity, you need to provide the registrationAttributes in the eventLogOptionsDto.',
@@ -198,8 +234,8 @@ export class EventsService {
   }
 
   private createEventsForChanges(
-    oldEntities: LogEntity[],
-    newEntities: LogEntity[],
+    oldEntities: RegistrationViewWithId[],
+    newEntities: RegistrationViewWithId[],
     userId?: number,
     registrationAttributes?: string[],
   ): EventEntity[] {
@@ -217,8 +253,8 @@ export class EventsService {
   }
 
   private createEventsForEntityChanges(
-    oldEntity: LogEntity,
-    newEntity: LogEntity,
+    oldEntity: RegistrationViewWithId,
+    newEntity: RegistrationViewWithId,
     userId?: number,
     registeredAttributes?: string[],
   ): EventEntity[] {
@@ -303,18 +339,18 @@ export class EventsService {
   }
 
   private getRelevantRegistrationViewKeys(
-    oldEntity: LogEntity,
-    newEntity: LogEntity,
-  ): (keyof LogEntity)[] {
-    const array1 = Object.keys(newEntity) as (keyof LogEntity)[];
-    const array2 = Object.keys(oldEntity) as (keyof LogEntity)[];
+    oldEntity: RegistrationViewWithId,
+    newEntity: RegistrationViewWithId,
+  ): (keyof RegistrationViewWithId)[] {
+    const array1 = Object.keys(newEntity) as (keyof RegistrationViewWithId)[];
+    const array2 = Object.keys(oldEntity) as (keyof RegistrationViewWithId)[];
 
     // Merge and remove duplicates by creating a Set and converting it back to an array
     const mergedArray = Array.from(new Set([...array1, ...array2]));
 
     // List of irrelevant keys
     // TODO: Explain why 'name' property is exception.
-    const irrelevantKeys: (keyof LogEntity | 'name')[] = [
+    const irrelevantKeys: (keyof RegistrationViewWithId | 'name')[] = [
       'id',
       'paymentCount',
       'paymentCountRemaining',
