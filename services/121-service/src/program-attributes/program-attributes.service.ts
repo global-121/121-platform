@@ -110,18 +110,18 @@ export class ProgramAttributesService {
     programId,
     includeProgramRegistrationAttributes,
     includeTemplateDefaultAttributes,
-    filterShowInPeopleAffectedTable,
+    filterShowInRegistrationsTable,
   }: {
     programId: number;
     includeProgramRegistrationAttributes: boolean;
     includeTemplateDefaultAttributes: boolean;
-    filterShowInPeopleAffectedTable?: boolean;
+    filterShowInRegistrationsTable?: boolean;
   }): Promise<Attribute[]> {
     let programAttributes: Attribute[] = [];
     if (includeProgramRegistrationAttributes) {
       programAttributes = await this.getAndMapProgramRegistrationAttributes(
         programId,
-        filterShowInPeopleAffectedTable,
+        filterShowInRegistrationsTable,
       );
     }
 
@@ -188,13 +188,13 @@ export class ProgramAttributesService {
 
   private async getAndMapProgramRegistrationAttributes(
     programId: number,
-    filterShowInPeopleAffectedTable?: boolean,
+    filterShowInRegistrationsTable?: boolean,
   ): Promise<Attribute[]> {
     let queryRegistrationAttr = this.programRegistrationAttributeEntity
       .createQueryBuilder('programRegistrationAttribute')
       .where({ program: { id: programId } });
 
-    if (filterShowInPeopleAffectedTable) {
+    if (filterShowInRegistrationsTable) {
       queryRegistrationAttr = queryRegistrationAttr.andWhere({
         showInPeopleAffectedTable: true,
       });
