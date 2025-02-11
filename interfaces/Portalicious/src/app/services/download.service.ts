@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import * as XLSX from 'xlsx';
+import { ExportService } from '~/services/export.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,13 +29,14 @@ export class DownloadService {
     });
   }
 
-  downloadUnknownArrayToCSV({
+  async downloadUnknownArrayToCSV({
     file,
     filename,
   }: {
     file: unknown[];
     filename: string;
   }) {
+    const XLSX = await import('~/utils/xlsx-wrapper');
     const worksheet = XLSX.utils.json_to_sheet(file);
     const csvContents = XLSX.utils.sheet_to_csv(worksheet);
 
@@ -43,5 +44,21 @@ export class DownloadService {
       file: new Blob([csvContents], { type: 'text/csv' }),
       filename: `${filename}.csv`,
     });
+  }
+
+  async downloadArrayToXlsx({
+    data,
+    fileName,
+  }: {
+    data: unknown[];
+    fileName: string;
+  }) {
+    const XLSX = await import('~/utils/xlsx-wrapper');
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    XLSX.writeFile(workbook, ExportService.toExportFileName(fileName));
   }
 }

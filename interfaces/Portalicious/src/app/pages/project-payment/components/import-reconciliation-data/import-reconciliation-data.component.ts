@@ -105,7 +105,7 @@ export class ImportReconciliationDataComponent {
       });
 
       if (response.importResult) {
-        this.downloadService.downloadUnknownArrayToCSV({
+        void this.downloadService.downloadUnknownArrayToCSV({
           file: response.importResult,
           filename: `import-fsp-reconciliation-response-${new Date().toISOString().substring(0, 10)}`,
         });

@@ -9,8 +9,8 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
-import { uniqBy } from 'lodash';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { unique } from 'radashi';
 
 import {
   QueryTableColumn,
@@ -74,12 +74,12 @@ export class ProjectRegistrationActivityLogPageComponent {
   readonly activities = computed(() => this.activityLog.data()?.data ?? []);
 
   readonly uniqueAuthors = computed(() =>
-    uniqBy(
+    unique(
       this.activities().map(({ user }) => ({
         label: user.username ?? $localize`Unknown user`,
         value: user.username ?? $localize`Unknown user`,
       })),
-      'value',
+      (activity) => activity.value,
     ).sort((a, b) => a.label.localeCompare(b.label)),
   );
 
