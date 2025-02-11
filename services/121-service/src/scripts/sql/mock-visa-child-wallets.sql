@@ -10,7 +10,6 @@ INSERT INTO "121-service"."intersolve_visa_child_wallet" (
   "isDebitCardCreated",
   "walletStatus",
   "cardStatus",
-  "lastUsedDate",
   "lastExternalUpdate"
 )
 SELECT
@@ -23,7 +22,6 @@ SELECT
   true,
   'ACTIVE',
   'CARD_OK',
-  NOW(),
   NOW()
 FROM
   "121-service".intersolve_visa_parent_wallet;
