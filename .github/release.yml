@@ -18,6 +18,3 @@ changelog:
     - title: Chores 🧹
       labels:
         - chore
-    - title: Portalicious 🚀
-      labels:
-        - portalicious

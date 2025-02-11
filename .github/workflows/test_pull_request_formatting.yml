@@ -40,7 +40,15 @@ jobs:
               core.notice('✅ PR description contains a DevOps ID');
             }
 
-            const validLabels = ['enhancement', 'bugfix', 'dependencies', 'chore', 'ignore-for-release', 'portalicious', 'other'];
+            const validLabels = [
+              'enhancement',
+              'bugfix',
+              'dependencies',
+              'chore',
+              'ignore-for-release',
+              'other'
+            ];
+
             if (!prLabels.some(label => validLabels.includes(label))) {
               core.setFailed('Add one of the following labels to your PR: ' + validLabels.join(', '));
             } else {
