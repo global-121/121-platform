@@ -4,15 +4,8 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
-import { config } from 'dotenv';
 import test from 'node:test';
 import { ok, match, doesNotMatch } from 'node:assert/strict';
-
-// Load environment-variables from .env file
-config({
-  debug: process.env.DEBUG,
-  override: process.env.DEBUG,
-});
 
 const url = process.argv[2]?.replace('--url=', '');
 

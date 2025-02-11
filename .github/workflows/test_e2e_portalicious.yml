@@ -58,8 +58,13 @@ jobs:
         working-directory: ./interfaces/Portalicious
         env:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: true
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         run: |
           npm install
+          cp .env.example .env
+          npm run build:download-translations
           npm run start:debug-production > portalicious-server-logs.txt 2>&1 &
 
       - name: Install 121-Service dependencies
