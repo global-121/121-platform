@@ -106,6 +106,7 @@ export default {
         'project-menu': '0px 4px 14px 0px #0000001A',
         'payment-stepper': '4px 0px 14px 0px #00000033',
         toast: '0px 2px 12px 0px #0000001A',
+        tooltip: '2px 0px 10px 0px #0000000F',
       },
     },
   },
