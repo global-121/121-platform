@@ -276,7 +276,7 @@
       "programId",
       "includeProgramRegistrationAttributes",
       "includeTemplateDefaultAttributes",
-      "filterShowInPeopleAffectedTable"
+      "filterShowInRegistrationsTable"
     ]
   },
   {
