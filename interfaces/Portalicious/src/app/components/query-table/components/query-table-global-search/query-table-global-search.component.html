@@ -24,6 +24,25 @@
           class="absolute end-1 top-1/2 -translate-y-1/2"
         />
       }
+      @if (globalFilterValue()?.toLowerCase() === 'henry dunant') {
+        <div class="fixed bottom-0 right-0 z-50 m-4">
+          <img
+            src="assets/henry.png"
+            class="w-64"
+            alt="Gotcha!"
+            i18n-alt
+          />
+        </div>
+      } @else {
+        <p-button
+          icon="pi pi-times"
+          (click)="filterChange.emit(undefined)"
+          text
+          severity="secondary"
+          class="absolute end-0 top-1/2 -translate-y-1/2"
+          styleClass="bg-transparent hover:text-purple-700 focus:text-purple-700"
+        />
+      }
     </p-iconField>
   } @else {
     <p-button
