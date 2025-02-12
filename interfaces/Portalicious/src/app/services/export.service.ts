@@ -53,7 +53,7 @@ export class ExportService {
     maxPayment?: number;
   }) {
     if (type !== ExportType.allRegistrations && paginateQuery) {
-      throw new Error('Paginate query is only supported for allRegistrations');
+      throw new Error(`Paginate query is only supported for type: ${ExportType.allRegistrations}`);
     }
 
     const exportParams: HttpParamsOptions['fromObject'] = {
