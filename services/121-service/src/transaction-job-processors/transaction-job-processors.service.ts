@@ -9,7 +9,7 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
+import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
@@ -103,7 +103,7 @@ export class TransactionJobProcessorsService {
       throw error;
     }
 
-    let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardReturnType;
+    let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
       const intersolveVisaConfig =
         await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
