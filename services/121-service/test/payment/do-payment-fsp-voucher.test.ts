@@ -104,26 +104,33 @@ describe('Do payment to 1 PA', () => {
 
       let imageCodeSecret;
 
-      expect(
-        messages.map((message) => {
-          // we need to remove the "created" field from the messages
-          // because it is dynamic and it would make the snapshot fail
-          // we need to remove the "from" field from the messages
-          // because it is dynamic and it makes the snapshot fail when run in random order
-          delete message.created;
-          delete message.from;
-          if (message.mediaUrl?.includes('imageCode')) {
-            const [mediaUrlPath, mediaUrlSecret] =
-              message.mediaUrl.split('imageCode/');
-            imageCodeSecret = mediaUrlSecret;
-            // override the actual mediaUrl with a fixed value to avoid snapshot mismatches
-            message.mediaUrl = mediaUrlPath + 'imageCode/secret';
-          }
+      // Validate and remove dynamic fields before snapshot
+      messages.forEach((message) => {
+        // Validate the created date
+        const createdDate = new Date(message.created);
+        expect(createdDate.toString()).not.toBe('Invalid Date');
 
-          return message;
-        }),
-      ).toMatchSnapshot();
+        // Validate the from field
+        expect(typeof message.from).toBe('string');
+        expect(message.from).not.toBe('');
 
+        // Remove the "created" and "from" fields from the messages
+        delete message.created;
+        delete message.from;
+
+        if (message.mediaUrl?.includes('imageCode')) {
+          const [mediaUrlPath, mediaUrlSecret] =
+            message.mediaUrl.split('imageCode/');
+          imageCodeSecret = mediaUrlSecret;
+          // Override the actual mediaUrl with a fixed value to avoid snapshot mismatches
+          message.mediaUrl = mediaUrlPath + 'imageCode/secret';
+        }
+      });
+
+      // Assert the modified messages against the snapshot
+      expect(messages).toMatchSnapshot();
+
+      // Additional assertion for imageCodeSecret
       expect(imageCodeSecret).toHaveLength(200);
     });
   });

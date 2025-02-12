@@ -31,7 +31,11 @@ describe('Export CBE validation report', () => {
 
     // Assert
     expect(exportResult.body.fileName).toBe('cbe-validation-report');
-    // We remove updated, because aways changes
+    // Validate the updated date
+    const updated = new Date(exportResult.body.data[0].updated);
+    expect(updated.toString()).not.toBe('Invalid Date');
+
+    // We remove updated, because always changes
     const { updated: _updated, ...result } = exportResult.body.data[0];
     expect(result).toMatchSnapshot();
   });

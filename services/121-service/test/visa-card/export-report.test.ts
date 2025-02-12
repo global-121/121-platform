@@ -61,6 +61,8 @@ describe('Export Visa debit card report', () => {
       expect(lastUsedDate.toString()).not.toBe('Invalid Date');
       const issuedDate = new Date(item.issuedDate);
       expect(issuedDate.toString()).not.toBe('Invalid Date');
+      expect(item.cardNumber.length).toBeGreaterThan(0);
+      expect(typeof item.cardNumber).toBe('string');
     }
 
     const results = exportResult.body.data.map(
