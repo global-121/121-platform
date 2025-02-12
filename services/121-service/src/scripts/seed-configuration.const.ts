@@ -43,6 +43,19 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     firstProgramId: 2,
   },
   {
+    name: SeedScript.nlrcPvExcelFail,
+    organization: 'organization-nlrc.json',
+    programs: [
+      {
+        program: 'program-nlrc-pv-excel-fail.json',
+        messageTemplate: 'message-template-nlrc-pv.json',
+      },
+    ],
+    includeDebugScopes: true,
+    includeMockData: true,
+    firstProgramId: 2,
+  },
+  {
     name: SeedScript.cbeProgram,
     organization: 'organization-generic.json',
     programs: [
