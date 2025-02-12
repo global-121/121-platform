@@ -1,4 +1,4 @@
-export class DoTransferOrIssueCardReturnType {
+export class DoTransferOrIssueCardResult {
   isNewCardCreated: boolean;
   amountTransferredInMajorUnit: number;
 }

@@ -11,10 +11,10 @@ import { IntersolveVisaCardStatus } from '@121-service/src/payments/fsp-integrat
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { CreatePhysicalCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/create-physical-card-params.interface';
 import { DoTransferOrIssueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-params.interface';
-import { DoTransferOrIssueCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-return-type.interface';
-import { GetPhysicalCardReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-return-type.interface';
-import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
-import { GetTransactionInformationReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-return-type.interface';
+import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
+import { GetPhysicalCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-physical-card-result.interface';
+import { GetTokenResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-result.interface';
+import { GetTransactionInformationResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-transaction-information-result.interface';
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/reissue-card-params.interface';
 import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
@@ -60,7 +60,7 @@ export class IntersolveVisaService
    * - Finally, it transfers money from the client's funding token to the parent token.
    *
    * @param {DoTransferOrIssueCardParams} input - The parameters for the transfer or card issuance.
-   * @returns {Promise<DoTransferOrIssueCardReturnType>} The result of the operation, including whether a card was created, whether a transfer was done, and the amount transferred in major units.
+   * @returns {Promise<DoTransferOrIssueCardResult>} The result of the operation, including whether a card was created, whether a transfer was done, and the amount transferred in major units.
    */
   public async doTransferOrIssueCard({
     registrationId,
@@ -72,7 +72,7 @@ export class IntersolveVisaService
     fundingTokenCode,
     transferAmountInMajorUnit,
     transferReference,
-  }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardReturnType> {
+  }: DoTransferOrIssueCardParams): Promise<DoTransferOrIssueCardResult> {
     const intersolveVisaCustomer = await this.getCustomerOrCreate({
       registrationId,
       createCustomerReference,
@@ -445,13 +445,13 @@ export class IntersolveVisaService
     intersolveVisaParentWallet: IntersolveVisaParentWalletEntity,
   ): Promise<IntersolveVisaParentWalletEntity> {
     // Get balance on the parent wallet
-    const getTokenResult: GetTokenReturnType =
+    const getTokenResult: GetTokenResult =
       await this.intersolveVisaApiService.getToken(
         intersolveVisaParentWallet.tokenCode,
       );
 
     // Get parent wallet transaction info from Intersolve
-    const getTransactionInformationResultDto: GetTransactionInformationReturnType =
+    const getTransactionInformationResultDto: GetTransactionInformationResult =
       await this.intersolveVisaApiService.getTransactionInformation(
         intersolveVisaParentWallet.tokenCode,
       );
@@ -474,14 +474,14 @@ export class IntersolveVisaService
     intersolveVisaChildWallet: IntersolveVisaChildWalletEntity,
   ): Promise<IntersolveVisaChildWalletEntity> {
     // Get child wallet information
-    const getTokenResult: GetTokenReturnType =
+    const getTokenResult: GetTokenResult =
       await this.intersolveVisaApiService.getToken(
         intersolveVisaChildWallet.tokenCode,
       );
 
     // Get card status
     if (intersolveVisaChildWallet.isDebitCardCreated) {
-      const GetPhysicalCardReturnDto: GetPhysicalCardReturnType =
+      const GetPhysicalCardReturnDto: GetPhysicalCardResult =
         await this.intersolveVisaApiService.getPhysicalCard(
           intersolveVisaChildWallet.tokenCode,
         );

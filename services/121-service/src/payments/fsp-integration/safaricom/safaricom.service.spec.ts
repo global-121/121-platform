@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
-import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
+import { TransferResult } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-result.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
@@ -41,7 +41,7 @@ describe('SafaricomService', () => {
 
   describe('doTransfer', () => {
     it('should do transfer', async () => {
-      const transferResult: TransferReturnType = {
+      const transferResult: TransferResult = {
         mpesaConversationId: 'mocked_conversation_id',
       };
 

@@ -5,7 +5,7 @@ import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integ
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
-import { TransferReturnType } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-return-type.interface';
+import { TransferResult } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/transfer-result.interface';
 import { SafaricomApiHelperService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
@@ -30,7 +30,7 @@ export class SafaricomApiService {
     phoneNumber: string;
     idNumber: string;
     originatorConversationId: string;
-  }): Promise<TransferReturnType> {
+  }): Promise<TransferResult> {
     const payload = this.safaricomApiHelperService.createTransferPayload({
       transferAmount,
       phoneNumber,

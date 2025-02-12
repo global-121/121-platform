@@ -7,7 +7,7 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
+import { GetTokenResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
@@ -540,7 +540,7 @@ export class ProgramService {
     }
 
     // loop over all properties and return all wallets as an array
-    const wallets: GetTokenReturnType[] = [];
+    const wallets: GetTokenResult[] = [];
     for (const property of properties) {
       if (
         property.name ===
