@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 

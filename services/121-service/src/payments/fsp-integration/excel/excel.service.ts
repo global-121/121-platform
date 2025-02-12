@@ -18,7 +18,7 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 

@@ -13,7 +13,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { UserModule } from '@121-service/src/user/user.module';

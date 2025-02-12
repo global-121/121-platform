@@ -38,7 +38,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';

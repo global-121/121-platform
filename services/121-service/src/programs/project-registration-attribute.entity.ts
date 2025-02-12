@@ -11,7 +11,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';

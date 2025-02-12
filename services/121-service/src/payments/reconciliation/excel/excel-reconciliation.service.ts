@@ -14,8 +14,8 @@ import { ReconciliationReturnType } from '@121-service/src/payments/interfaces/r
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';

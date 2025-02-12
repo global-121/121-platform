@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 
 export class CreateAndUpdateMessageTemplates1701426130489
   implements MigrationInterface

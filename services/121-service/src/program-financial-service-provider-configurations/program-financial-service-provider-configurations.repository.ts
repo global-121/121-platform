@@ -5,7 +5,7 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 
 export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProjectFinancialServiceProviderConfigurationEntity> {

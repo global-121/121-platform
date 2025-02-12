@@ -10,8 +10,8 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';

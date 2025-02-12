@@ -4,8 +4,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 

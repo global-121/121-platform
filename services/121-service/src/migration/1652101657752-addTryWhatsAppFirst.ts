@@ -1,6 +1,6 @@
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 
 export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
   name = 'addTryWhatsAppFirst1652101657752';

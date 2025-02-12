@@ -20,7 +20,7 @@ import {
   TwilioMessageEntity,
 } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()

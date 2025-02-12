@@ -37,9 +37,9 @@ import {
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';

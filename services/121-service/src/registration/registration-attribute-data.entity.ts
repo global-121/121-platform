@@ -11,7 +11,7 @@ import {
 
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 @Unique('registrationProjectAttributeUnique', [

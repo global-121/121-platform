@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,

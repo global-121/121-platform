@@ -12,7 +12,7 @@ import {
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';

@@ -10,8 +10,8 @@ import {
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 

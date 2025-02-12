@@ -1,4 +1,4 @@
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 
 // TODO: refactor this to be a proper DTO

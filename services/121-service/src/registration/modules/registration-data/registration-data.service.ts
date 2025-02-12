@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,

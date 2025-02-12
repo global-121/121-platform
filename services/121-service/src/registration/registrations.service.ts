@@ -21,8 +21,8 @@ import { ContactInformation } from '@121-service/src/payments/fsp-integration/in
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';

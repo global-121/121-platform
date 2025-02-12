@@ -11,9 +11,9 @@ import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payment
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';

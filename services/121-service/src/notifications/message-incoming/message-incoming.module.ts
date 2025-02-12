@@ -21,7 +21,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/project.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
