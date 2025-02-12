@@ -6,6 +6,7 @@ import {
   inject,
   input,
   model,
+  signal,
 } from '@angular/core';
 import {
   FormControl,
@@ -28,7 +29,6 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
-import { UserApiService } from '~/domains/user/user.api.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -60,16 +60,23 @@ export class AddProjectTeamUserFormComponent {
   readonly userToEdit = input<ProjectUserWithRolesLabel | undefined>();
 
   private projectApiService = inject(ProjectApiService);
-  private userApiService = inject(UserApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
 
   readonly isEditing = computed(() => !!this.userToEdit());
+
   roles = injectQuery(this.roleApiService.getRoles());
-  allUsers = injectQuery(this.userApiService.getAllUsers());
+  userSearchResults = injectQuery(
+    this.projectApiService.getUserSearchResults(
+      this.projectId,
+      // NOTE: Hard-coded a generic search term, to replicate the "All Users"-endpoint; Should be replaced by user-provided search-query.
+      signal('@'),
+    ),
+  );
   projectUsers = injectQuery(
     this.projectApiService.getProjectUsers(this.projectId),
   );
+
   formGroup = new FormGroup({
     userValue: new FormControl<number>(-1, {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -86,6 +93,7 @@ export class AddProjectTeamUserFormComponent {
       nonNullable: true,
     }),
   });
+
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
@@ -99,30 +107,33 @@ export class AddProjectTeamUserFormComponent {
       },
     },
   );
+
   readonly availableUsersIsLoading = computed(
     () =>
-      this.allUsers.isPending() ||
+      this.userSearchResults.isPending() ||
       (!this.isEditing() && this.projectUsers.isPending()),
   );
+
   readonly availableUsers = computed(() => {
-    const allUsers = this.allUsers.data();
+    const userSearchResults = this.userSearchResults.data();
     const projectUsers = this.projectUsers.data();
 
-    if (!projectUsers || !allUsers) {
+    if (!projectUsers || !userSearchResults) {
       return [];
     }
 
     if (this.isEditing()) {
-      return allUsers;
+      return userSearchResults;
     }
 
-    return allUsers.filter(
+    return userSearchResults.filter(
       (anyUser) =>
         !projectUsers.some(
           (thisProjectUser) => thisProjectUser.id === anyUser.id,
         ),
     );
   });
+
   assignUserMutation = injectMutation(() => ({
     mutationFn: ({
       userValue,
@@ -170,6 +181,7 @@ export class AddProjectTeamUserFormComponent {
       void this.projectApiService.invalidateCache(this.projectId);
     },
   }));
+
   constructor() {
     effect(() => {
       const user = this.userToEdit();

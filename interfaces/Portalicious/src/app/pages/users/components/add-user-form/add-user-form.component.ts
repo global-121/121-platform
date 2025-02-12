@@ -89,7 +89,7 @@ export class AddUserFormComponent {
       usernameValue: string;
     }) => {
       if (this.isEditing()) {
-        return this.userApiService.udpateUserDisplayName({
+        return this.userApiService.updateUserDisplayName({
           id: this.userToEdit()?.id,
           displayName: displayNameValue,
         });

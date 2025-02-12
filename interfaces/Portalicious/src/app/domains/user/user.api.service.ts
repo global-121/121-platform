@@ -95,7 +95,7 @@ export class UserApiService extends DomainApiService {
     });
   }
 
-  udpateUserDisplayName({
+  updateUserDisplayName({
     id,
     displayName,
   }: {

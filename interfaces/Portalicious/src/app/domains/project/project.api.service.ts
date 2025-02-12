@@ -108,6 +108,18 @@ export class ProjectApiService extends DomainApiService {
     });
   }
 
+  getUserSearchResults(
+    projectId: Signal<number | string>,
+    searchQuery: Signal<string>,
+  ) {
+    return this.generateQueryOptions<ProjectUser[]>({
+      path: [BASE_ENDPOINT, projectId, 'users', 'search'],
+      params: {
+        username: searchQuery,
+      },
+    });
+  }
+
   getProjectAttributes({
     projectId,
     includeProgramRegistrationAttributes = false,
