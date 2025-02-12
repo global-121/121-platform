@@ -25,7 +25,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -43,8 +43,8 @@ export class MessageIncomingService {
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
   private transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private programRepository: Repository<ProjectEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
@@ -69,7 +69,7 @@ export class MessageIncomingService {
 
   public async getGenericNotificationText(
     language: string,
-    program: ProgramEntity,
+    program: ProjectEntity,
   ): Promise<string> {
     const key = ProgramNotificationEnum.whatsappGenericMessage;
     const messageTemplates =
@@ -298,15 +298,15 @@ export class MessageIncomingService {
       // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
-        where: { id: Equal(tryWhatsapp.registration.programId) },
+        where: { id: Equal(tryWhatsapp.registration.projectId) },
         relations: ['programFinancialServiceProviderConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
-        program.programFinancialServiceProviderConfigurations.find((config) => {
+        program.projectFinancialServiceProviderConfigurations.find((config) => {
           return (config.financialServiceProviderName =
             FinancialServiceProviders.intersolveVoucherWhatsapp);
         })!;
-      tryWhatsapp.registration.programFinancialServiceProviderConfigurationId =
+      tryWhatsapp.registration.projectFinancialServiceProviderConfigurationId =
         fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
@@ -373,7 +373,7 @@ export class MessageIncomingService {
         .createQueryBuilder('transaction')
         .select('MAX(transaction.payment)', 'max')
         .where('transaction.programId = :programId', {
-          programId: r.programId,
+          programId: r.projectId,
         })
         .getRawOne();
       const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
@@ -433,11 +433,11 @@ export class MessageIncomingService {
           id: 'ASC',
         },
       });
-      let program: ProgramEntity | undefined;
+      let program: ProjectEntity | undefined;
       // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
 
       if (registrationsWithPhoneNumber.length > 0) {
-        program = registrationsWithPhoneNumber[0].program;
+        program = registrationsWithPhoneNumber[0].project;
       } else {
         // If only 1 program in database: use default reply of that program
         const programs = await this.programRepository.find();
@@ -486,7 +486,7 @@ export class MessageIncomingService {
         (image) => image.voucher,
       );
       const program = await this.programRepository.findOneByOrFail({
-        id: registration.programId,
+        id: registration.projectId,
       });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 

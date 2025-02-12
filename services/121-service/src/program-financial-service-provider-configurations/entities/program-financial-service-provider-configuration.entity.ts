@@ -11,25 +11,25 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-@Unique('programFinancialServiceProviderConfigurationUnique', [
-  'programId',
+@Unique('projectFinancialServiceProviderConfigurationUnique', [
+  'projectId',
   'name',
 ])
-@Entity('program_financial_service_provider_configuration')
-export class ProgramFinancialServiceProviderConfigurationEntity extends Base121Entity {
+@Entity('project_financial_service_provider_configuration')
+export class ProjectFinancialServiceProviderConfigurationEntity extends Base121Entity {
   @ManyToOne(
-    (_type) => ProgramEntity,
-    (program) => program.programFinancialServiceProviderConfigurations,
+    (_type) => ProjectEntity,
+    (project) => project.projectFinancialServiceProviderConfigurations,
     { onDelete: 'CASCADE' },
   )
-  @JoinColumn({ name: 'programId' })
+  @JoinColumn({ name: 'projectId' })
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @Column({ type: 'character varying' })
   public financialServiceProviderName: FinancialServiceProviders;
@@ -41,25 +41,25 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends Base121E
   public label: LocalizedString;
 
   @OneToMany(
-    (_type) => ProgramFinancialServiceProviderConfigurationPropertyEntity,
-    (programFinancialServiceProviderConfigurationProperty) =>
-      programFinancialServiceProviderConfigurationProperty.programFinancialServiceProviderConfiguration,
+    (_type) => ProjectFinancialServiceProviderConfigurationPropertyEntity,
+    (projectFinancialServiceProviderConfigurationProperty) =>
+      projectFinancialServiceProviderConfigurationProperty.projectFinancialServiceProviderConfiguration,
     { cascade: ['insert'] },
   )
   public properties: Relation<
-    ProgramFinancialServiceProviderConfigurationPropertyEntity[]
+    ProjectFinancialServiceProviderConfigurationPropertyEntity[]
   >;
 
   @OneToMany(
     (_type) => TransactionEntity,
-    (transactions) => transactions.programFinancialServiceProviderConfiguration,
+    (transactions) => transactions.projectFinancialServiceProviderConfiguration,
   )
   public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
     (_type) => RegistrationEntity,
     (registrations) =>
-      registrations.programFinancialServiceProviderConfiguration,
+      registrations.projectFinancialServiceProviderConfiguration,
   )
   public registrations: Relation<RegistrationEntity[]>;
 }

@@ -21,8 +21,8 @@ import { ContactInformation } from '@121-service/src/payments/fsp-integration/in
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -64,10 +64,10 @@ import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindW
 export class RegistrationsService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -150,7 +150,7 @@ export class RegistrationsService {
     const registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOneByOrFail({
+    registration.project = await this.programRepository.findOneByOrFail({
       id: programId,
     });
     await this.registrationUtilsService.save(registration);
@@ -375,7 +375,7 @@ export class RegistrationsService {
     }
   }
 
-  private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
+  private async findProgramOrThrow(programId: number): Promise<ProjectEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
       relations: ['programRegistrationAttributes'],
@@ -517,7 +517,7 @@ export class RegistrationsService {
       relations: ['program'],
       programId,
     });
-    const program = registrationToUpdate.program;
+    const program = registrationToUpdate.project;
 
     const oldViewRegistration =
       await this.getPaginateRegistrationForReferenceId(referenceId, programId);
@@ -602,12 +602,12 @@ export class RegistrationsService {
     attribute: Attributes | string;
     value: string | number | string[] | boolean | null;
     registration: RegistrationEntity;
-    program: ProgramEntity;
+    program: ProjectEntity;
   }): Promise<RegistrationEntity> {
     value = await this.cleanCustomDataIfPhoneNr(
       attribute,
       value,
-      registration.programId,
+      registration.projectId,
     );
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -649,7 +649,7 @@ export class RegistrationsService {
       attribute ===
       AdditionalAttributes.programFinancialServiceProviderConfigurationName
     ) {
-      registration.programFinancialServiceProviderConfigurationId =
+      registration.projectFinancialServiceProviderConfigurationId =
         await this.getChosenFspConfigurationId({
           registration,
           newFspConfigurationName: String(value),
@@ -749,7 +749,7 @@ export class RegistrationsService {
       })
     ).map((r) => {
       return {
-        programId: r.programId,
+        programId: r.projectId,
         referenceId: r.referenceId,
         scope: r.scope,
       };
@@ -769,7 +769,7 @@ export class RegistrationsService {
         registrationAttributesPhoneNumberNames.includes(dataName)
       ) {
         matchingRegistrations.push({
-          programId: d.registration.programId,
+          programId: d.registration.projectId,
           referenceId: d.registration.referenceId,
           scope: d.registration.scope,
         });
@@ -848,7 +848,7 @@ export class RegistrationsService {
         {
           where: {
             name: Equal(newFspConfigurationName),
-            programId: Equal(registration.programId),
+            programId: Equal(registration.projectId),
           },
         },
       );
@@ -967,8 +967,8 @@ export class RegistrationsService {
       relations: ['programFinancialServiceProviderConfiguration'],
     });
     if (
-      !registration.programFinancialServiceProviderConfigurationId ||
-      registration.programFinancialServiceProviderConfiguration
+      !registration.projectFinancialServiceProviderConfigurationId ||
+      registration.projectFinancialServiceProviderConfiguration
         ?.financialServiceProviderName !==
         FinancialServiceProviders.intersolveVisa
     ) {
@@ -982,7 +982,7 @@ export class RegistrationsService {
       await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
-            registration.programFinancialServiceProviderConfigurationId,
+            registration.projectFinancialServiceProviderConfigurationId,
           names: [
             FinancialServiceProviderConfigurationProperties.brandCode,
             FinancialServiceProviderConfigurationProperties.coverLetterCode,

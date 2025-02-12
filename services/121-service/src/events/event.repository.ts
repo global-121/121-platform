@@ -52,7 +52,7 @@ export class EventScopedRepository extends ScopedRepository<EventEntity> {
       };
     } = {
       registration: {
-        programId,
+        projectId: programId,
       },
     };
 

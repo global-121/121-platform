@@ -13,7 +13,7 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -28,8 +28,8 @@ export class IntersolveVoucherCronService {
   private readonly intersolveVoucherRepository: Repository<IntersolveVoucherEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public programRepository: Repository<ProjectEntity>;
 
   private readonly fallbackLanguage = 'en';
 
@@ -176,7 +176,7 @@ export class IntersolveVoucherCronService {
         const language = await this.getLanguageForRegistration(referenceId);
         let whatsappPayment =
           await this.intersolveVoucherService.getNotificationText(
-            registration.program,
+            registration.project,
             ProgramNotificationEnum.whatsappPayment,
             language,
           );

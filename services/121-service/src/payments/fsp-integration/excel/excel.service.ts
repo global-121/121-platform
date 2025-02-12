@@ -18,7 +18,7 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
@@ -26,8 +26,8 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 export class ExcelService
   implements FinancialServiceProviderIntegrationInterface
 {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   private statusColumnName = 'status';
 
@@ -159,7 +159,7 @@ export class ExcelService
     });
     // Default to using all program registration attributes names if columnsToExport is not specified
     // So generic fields must be specified in the programFspConfiguration
-    return programWithAttributes.programRegistrationAttributes.map(
+    return programWithAttributes.projectRegistrationAttributes.map(
       (q) => q.name,
     );
   }

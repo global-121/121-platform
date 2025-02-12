@@ -66,7 +66,7 @@ describe('MessageQueuesService', () => {
     registration.referenceId = 'refview';
     registration.preferredLanguage = LanguageEnum.fr;
     registration.phoneNumber = '234567891';
-    registration.programId = 1;
+    registration.projectId = 1;
     registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
       '0987654321';
 
@@ -92,7 +92,7 @@ describe('MessageQueuesService', () => {
         phoneNumber: registration.phoneNumber,
         preferredLanguage: registration.preferredLanguage,
         registrationId: registration.id,
-        programId: registration.programId,
+        programId: registration.projectId,
         referenceId: registration.referenceId,
         customData: undefined,
         mediaUrl: undefined,
@@ -109,7 +109,7 @@ describe('MessageQueuesService', () => {
     registration.referenceId = 'ref';
     registration.preferredLanguage = LanguageEnum.en;
     registration.phoneNumber = '1234567890';
-    registration.programId = 1;
+    registration.projectId = 1;
 
     const mockGetRegistrationDataValueByName = jest
       .spyOn(registrationDataService, 'getRegistrationDataValueByName')
@@ -136,7 +136,7 @@ describe('MessageQueuesService', () => {
         preferredLanguage: registration.preferredLanguage,
         registrationId: registration.id,
         referenceId: registration.referenceId,
-        programId: registration.programId,
+        programId: registration.projectId,
         customData: undefined,
         mediaUrl: undefined,
         messageProcessType: MessageProcessType.whatsappTemplateGeneric,

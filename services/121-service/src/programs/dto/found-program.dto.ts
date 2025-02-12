@@ -1,13 +1,13 @@
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 
 // TODO: refactor this to be a proper DTO
 export interface FoundProgramDto
   extends Omit<
-      ProgramEntity,
+      ProjectEntity,
       'monitoringDashboardUrl' | 'programFspConfiguration'
     >,
-    Partial<Pick<ProgramEntity, 'monitoringDashboardUrl'>> {
+    Partial<Pick<ProjectEntity, 'monitoringDashboardUrl'>> {
   filterableAttributes?: {
     group: string;
     filters: FilterAttributeDto[];

@@ -291,7 +291,7 @@ export class MessageService {
     const whatsappGenericMessage = await this.getNotificationText(
       language,
       ProgramNotificationEnum.whatsappGenericMessage,
-      registration?.program.id,
+      registration?.project.id,
     );
     const sid = await this.whatsappService.sendWhatsapp({
       message: whatsappGenericMessage,
@@ -316,7 +316,7 @@ export class MessageService {
     programId?: number,
   ): Promise<string> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
-      program: { id: programId },
+      project: { id: programId },
       type: messageTemplateKey,
     });
 

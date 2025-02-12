@@ -4,12 +4,12 @@ import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-serv
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 
 export class ProgramFinancialServiceProviderConfigurationMapper {
   public static mapEntitiesToDtos(
-    entities: ProgramFinancialServiceProviderConfigurationEntity[],
+    entities: ProjectFinancialServiceProviderConfigurationEntity[],
   ): ProgramFinancialServiceProviderConfigurationResponseDto[] {
     return entities.map((entity) =>
       ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(entity),
@@ -17,7 +17,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   }
 
   public static mapEntityToDto(
-    entity: ProgramFinancialServiceProviderConfigurationEntity,
+    entity: ProjectFinancialServiceProviderConfigurationEntity,
   ): ProgramFinancialServiceProviderConfigurationResponseDto {
     // Remove unnecessary properties from the financialServiceProvider object
     const {
@@ -29,7 +29,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     );
 
     const dto: ProgramFinancialServiceProviderConfigurationResponseDto = {
-      programId: entity.programId,
+      programId: entity.projectId,
       financialServiceProviderName: entity.financialServiceProviderName,
       name: entity.name,
       label: entity.label,
@@ -45,9 +45,9 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   public static mapDtoToEntity(
     dto: CreateProgramFinancialServiceProviderConfigurationDto,
     programId: number,
-  ): ProgramFinancialServiceProviderConfigurationEntity {
-    const entity = new ProgramFinancialServiceProviderConfigurationEntity();
-    entity.programId = programId;
+  ): ProjectFinancialServiceProviderConfigurationEntity {
+    const entity = new ProjectFinancialServiceProviderConfigurationEntity();
+    entity.projectId = programId;
     entity.financialServiceProviderName = dto.financialServiceProviderName;
     entity.name = dto.name;
     entity.label = dto.label;
@@ -55,7 +55,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   }
 
   public static mapPropertyEntitiesToDtos(
-    properties?: ProgramFinancialServiceProviderConfigurationPropertyEntity[],
+    properties?: ProjectFinancialServiceProviderConfigurationPropertyEntity[],
   ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto[] {
     if (!properties) {
       return [];
@@ -68,7 +68,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   }
 
   public static mapPropertyEntityToDto(
-    property: ProgramFinancialServiceProviderConfigurationPropertyEntity,
+    property: ProjectFinancialServiceProviderConfigurationPropertyEntity,
   ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto {
     return {
       name: property.name,
@@ -79,7 +79,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   public static mapPropertyDtosToEntities(
     dtos: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
     programFinancialServiceProviderConfigurationId: number,
-  ): ProgramFinancialServiceProviderConfigurationPropertyEntity[] {
+  ): ProjectFinancialServiceProviderConfigurationPropertyEntity[] {
     return dtos.map((dto) =>
       ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoToEntity(
         dto,
@@ -91,11 +91,11 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   private static mapPropertyDtoToEntity(
     dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
     programFinancialServiceProviderConfigurationId: number,
-  ): ProgramFinancialServiceProviderConfigurationPropertyEntity {
+  ): ProjectFinancialServiceProviderConfigurationPropertyEntity {
     const entity =
-      new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+      new ProjectFinancialServiceProviderConfigurationPropertyEntity();
     entity.name = dto.name;
-    entity.programFinancialServiceProviderConfigurationId =
+    entity.projectFinancialServiceProviderConfigurationId =
       programFinancialServiceProviderConfigurationId;
     // Later we can add a switch case and a type for each property if there are more non-string properties
     entity.value =

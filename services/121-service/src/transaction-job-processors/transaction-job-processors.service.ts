@@ -518,9 +518,9 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
+    transaction.projectFinancialServiceProviderConfigurationId =
       programFinancialServiceProviderConfigurationId;
-    transaction.programId = programId;
+    transaction.projectId = programId;
     transaction.payment = paymentNumber;
     transaction.userId = userId;
     transaction.status = status;

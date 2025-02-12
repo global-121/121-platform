@@ -41,9 +41,9 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
@@ -68,8 +68,8 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 @Injectable()
 export class PaymentsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
@@ -263,7 +263,7 @@ export class PaymentsService {
       new Set(
         registrationsForPayment.map(
           (registration) =>
-            registration.programFinancialServiceProviderConfigurationName,
+            registration.projectFinancialServiceProviderConfigurationName,
         ),
       ),
     );
@@ -512,7 +512,7 @@ export class PaymentsService {
 
   private async getProgramWithFspConfigOrThrow(
     programId: number,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProjectEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
       relations: ['programFinancialServiceProviderConfigurations'],
@@ -782,7 +782,7 @@ export class PaymentsService {
             paymentNumber,
             referenceId: registrationView.referenceId,
             programFinancialServiceProviderConfigurationId:
-              registrationView.programFinancialServiceProviderConfigurationId,
+              registrationView.projectFinancialServiceProviderConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
               registrationView.referenceId,
@@ -866,7 +866,7 @@ export class PaymentsService {
           paymentNumber,
           referenceId: registrationView.referenceId,
           programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+            registrationView.projectFinancialServiceProviderConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -931,7 +931,7 @@ export class PaymentsService {
           paymentNumber,
           referenceId: registrationView.referenceId,
           programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+            registrationView.projectFinancialServiceProviderConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -1202,7 +1202,7 @@ export class PaymentsService {
 
   private filterTransactionsWithFspInstructionBasedOnStatus(
     transactions: TransactionReturnDto[],
-    programFspConfigEntitiesWithFspInstruction: ProgramFinancialServiceProviderConfigurationEntity[],
+    programFspConfigEntitiesWithFspInstruction: ProjectFinancialServiceProviderConfigurationEntity[],
   ): TransactionReturnDto[] {
     const programFspConfigNamesThatRequireInstructions =
       programFspConfigEntitiesWithFspInstruction.map((c) => c.name);

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
@@ -19,12 +19,12 @@ import {
 
 @Injectable()
 export class ProgramAttributesService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeEntity: Repository<ProgramRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeEntity: Repository<ProjectRegistrationAttributeEntity>;
 
-  public getFilterableAttributes(program: ProgramEntity) {
+  public getFilterableAttributes(program: ProjectEntity) {
     const genericPaAttributeFilters = [
       'personAffectedSequence',
       'referenceId',

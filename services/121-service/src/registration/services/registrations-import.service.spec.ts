@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
@@ -58,7 +58,7 @@ describe('RegistrationsImportService', () => {
 
     // Mock programRepository.findOneBy
     const programRepository = unitRef.get(
-      getRepositoryToken(ProgramEntity) as string,
+      getRepositoryToken(ProjectEntity) as string,
     );
     jest.spyOn(programRepository as any, 'findOneBy').mockImplementation(() => {
       return Promise.resolve({

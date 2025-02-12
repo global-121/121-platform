@@ -168,7 +168,7 @@ describe('EventsService', () => {
     expect(resultEvent.oldValue).toBe(attributeEntityOldValue.value);
     expect(resultEvent.newValue).toBe(attributeEntityNewValue.value);
     expect(resultEvent.paId).toBe(
-      mockFindEventResult[0].registration.registrationProgramId,
+      mockFindEventResult[0].registration.registrationProjectId,
     );
   });
 
@@ -209,7 +209,7 @@ describe('EventsService', () => {
     newViewRegistration[
       FinancialServiceProviderAttributes.whatsappPhoneNumber
     ] = '1234567890';
-    newViewRegistration['programFinancialServiceProviderConfigurationLabel'] = {
+    newViewRegistration['projectFinancialServiceProviderConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
     delete newViewRegistration[FinancialServiceProviderAttributes.addressCity];
@@ -227,7 +227,7 @@ describe('EventsService', () => {
     ];
 
     // Changes that should not be logged
-    newViewRegistration.programFinancialServiceProviderConfigurationName =
+    newViewRegistration.projectFinancialServiceProviderConfigurationName =
       FinancialServiceProviders.intersolveVoucherWhatsapp;
 
     // Act
@@ -247,14 +247,14 @@ describe('EventsService', () => {
             key: 'oldValue',
             value:
               oldViewRegistration[
-                'programFinancialServiceProviderConfigurationLabel'
+                'projectFinancialServiceProviderConfigurationLabel'
               ],
           },
           {
             key: 'newValue',
             value:
               newViewRegistration[
-                'programFinancialServiceProviderConfigurationLabel'
+                'projectFinancialServiceProviderConfigurationLabel'
               ],
           },
         ],

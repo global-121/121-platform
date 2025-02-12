@@ -8,7 +8,7 @@ import {
 } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Injectable()
@@ -17,8 +17,8 @@ export class ActionsService {
   private readonly actionRepository: Repository<ActionEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   public async postAction(
     userId: number,
@@ -50,7 +50,7 @@ export class ActionsService {
       id: programId,
     });
 
-    action.program = program;
+    action.project = program;
 
     return await this.actionRepository.save(action);
   }

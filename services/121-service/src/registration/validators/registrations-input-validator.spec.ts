@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -23,7 +23,7 @@ import { UserService } from '@121-service/src/user/user.service';
 
 const programId = 1;
 const userId = 1;
-const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
+const dynamicAttributes: Partial<ProjectRegistrationAttributeEntity>[] = [
   {
     id: 8,
     name: FinancialServiceProviderAttributes.addressStreet,
@@ -109,7 +109,7 @@ const program = {
 
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
-  let mockProgramRepository: Partial<Repository<ProgramEntity>>;
+  let mockProgramRepository: Partial<Repository<ProjectEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
   let userService: UserService;
 
@@ -128,7 +128,7 @@ describe('RegistrationsInputValidator', () => {
       providers: [
         RegistrationsInputValidator,
         {
-          provide: getRepositoryToken(ProgramEntity),
+          provide: getRepositoryToken(ProjectEntity),
           useValue: mockProgramRepository,
         },
         {

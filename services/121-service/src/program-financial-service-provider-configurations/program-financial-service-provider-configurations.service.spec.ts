@@ -11,25 +11,25 @@ import { TransactionScopedRepository } from '@121-service/src/payments/transacti
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/update-program-financial-service-provider-configuration.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
 
 const programId = 1;
 const mockProgramFspConfigPropertyEntity =
-  new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+  new ProjectFinancialServiceProviderConfigurationPropertyEntity();
 mockProgramFspConfigPropertyEntity.id = 1;
 mockProgramFspConfigPropertyEntity.name =
   FinancialServiceProviderConfigurationProperties.brandCode;
 mockProgramFspConfigPropertyEntity.value = '123';
-mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId = 1;
+mockProgramFspConfigPropertyEntity.projectFinancialServiceProviderConfigurationId = 1;
 
 const configName = 'Config 1';
 const mockProgramFspConfigEntity =
-  new ProgramFinancialServiceProviderConfigurationEntity();
+  new ProjectFinancialServiceProviderConfigurationEntity();
 mockProgramFspConfigEntity.id = 1;
 mockProgramFspConfigEntity.name = configName;
-mockProgramFspConfigEntity.programId = 1;
+mockProgramFspConfigEntity.projectId = 1;
 mockProgramFspConfigEntity.financialServiceProviderName =
   FinancialServiceProviders.intersolveVisa;
 mockProgramFspConfigEntity.label = { en: 'Test Label' };
@@ -113,13 +113,13 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         ProgramFinancialServiceProviderConfigurationsService,
         {
           provide: getRepositoryToken(
-            ProgramFinancialServiceProviderConfigurationEntity,
+            ProjectFinancialServiceProviderConfigurationEntity,
           ),
           useValue: mockProgramFspConfigurationRepository,
         },
         {
           provide: getRepositoryToken(
-            ProgramFinancialServiceProviderConfigurationPropertyEntity,
+            ProjectFinancialServiceProviderConfigurationPropertyEntity,
           ),
           useValue: mockProgramFspConfigurationPropertyRepository,
         },
@@ -275,7 +275,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         mockProgramFspConfigurationPropertyRepository.delete,
       ).toHaveBeenCalledWith({
         programFinancialServiceProviderConfigurationId: Equal(
-          mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId,
+          mockProgramFspConfigPropertyEntity.projectFinancialServiceProviderConfigurationId,
         ),
       });
       expect(mockProgramFspConfigurationRepository.save).toHaveBeenCalled();

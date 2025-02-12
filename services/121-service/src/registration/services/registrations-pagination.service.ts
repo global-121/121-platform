@@ -20,7 +20,7 @@ import {
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
   AllowedFilterOperatorsString,
@@ -51,8 +51,8 @@ type ColumnsFilters = Record<string, Filter[]>;
 
 @Injectable()
 export class RegistrationsPaginationService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 

@@ -11,7 +11,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -105,7 +105,7 @@ describe('TransactionJobProcessorsService', () => {
 
     jest
       .spyOn(programRepository, 'findByIdOrFail')
-      .mockResolvedValue(mockedProgram as ProgramEntity);
+      .mockResolvedValue(mockedProgram as ProjectEntity);
 
     jest
       .spyOn(transactionScopedRepository, 'save')

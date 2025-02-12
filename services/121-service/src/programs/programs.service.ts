@@ -10,7 +10,7 @@ import {
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
@@ -23,8 +23,8 @@ import {
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -33,10 +33,10 @@ import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 
 @Injectable()
 export class ProgramService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
 
@@ -73,7 +73,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    program.programRegistrationAttributes =
+    program.projectRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
         where: { program: { id: Equal(programId) } },
       });
@@ -93,7 +93,7 @@ export class ProgramService {
 
     program['financialServiceProviderConfigurations'] =
       ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
-        program.programFinancialServiceProviderConfigurations,
+        program.projectFinancialServiceProviderConfigurations,
       );
     const outputProgram: FoundProgramDto = program;
 
@@ -154,11 +154,11 @@ export class ProgramService {
   public async create(
     programData: CreateProgramDto,
     userId: number,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProjectEntity> {
     let newProgram;
 
     await this.validateProgram(programData);
-    const program = new ProgramEntity();
+    const program = new ProjectEntity();
     program.published = programData.published;
     program.validation = programData.validation;
     program.location = programData.location;
@@ -175,7 +175,7 @@ export class ProgramService {
       programData.paymentAmountMultiplierFormula ?? null;
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.aboutProgram = programData.aboutProgram;
+    program.aboutProject = programData.aboutProgram;
     program.fullnameNamingConvention = programData.fullnameNamingConvention;
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
@@ -189,15 +189,15 @@ export class ProgramService {
 
     // Make sure to use these repositories in this transaction else save will be part of another transacion
     // This can lead to duplication of data
-    const programRepository = queryRunner.manager.getRepository(ProgramEntity);
+    const programRepository = queryRunner.manager.getRepository(ProjectEntity);
     const programRegistrationAttributeRepository =
-      queryRunner.manager.getRepository(ProgramRegistrationAttributeEntity);
+      queryRunner.manager.getRepository(ProjectRegistrationAttributeEntity);
 
-    let savedProgram: ProgramEntity;
+    let savedProgram: ProjectEntity;
     try {
       savedProgram = await programRepository.save(program);
 
-      savedProgram.programRegistrationAttributes = [];
+      savedProgram.projectRegistrationAttributes = [];
       for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
         const attributeReturn =
           await this.createProgramRegistrationAttributeEntity({
@@ -206,7 +206,7 @@ export class ProgramService {
             repository: programRegistrationAttributeRepository,
           });
         if (attributeReturn) {
-          savedProgram.programRegistrationAttributes.push(attributeReturn);
+          savedProgram.projectRegistrationAttributes.push(attributeReturn);
         }
       }
 
@@ -236,7 +236,7 @@ export class ProgramService {
 
   public async deleteProgram(programId: number): Promise<void> {
     const program = await this.findProgramOrThrow(programId);
-    await this.programRepository.remove(program as ProgramEntity);
+    await this.programRepository.remove(program as ProjectEntity);
   }
 
   public async updateProgram(
@@ -261,7 +261,7 @@ export class ProgramService {
       }
     }
 
-    let savedProgram: ProgramEntity;
+    let savedProgram: ProjectEntity;
     try {
       savedProgram = await this.programRepository.save(program);
     } catch (err) {
@@ -297,16 +297,16 @@ export class ProgramService {
         program.paymentAmountMultiplierFormula ?? undefined,
       financialServiceProviderConfigurations:
         ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
-          program.programFinancialServiceProviderConfigurations,
+          program.projectFinancialServiceProviderConfigurations,
         ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
       budget: program.budget ?? undefined,
       programRegistrationAttributes:
         ProgramRegistrationAttributeMapper.entitiesToDtos(
-          program.programRegistrationAttributes,
+          program.projectRegistrationAttributes,
         ),
-      aboutProgram: program.aboutProgram ?? undefined,
+      aboutProgram: program.aboutProject ?? undefined,
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
@@ -368,8 +368,8 @@ export class ProgramService {
   }: {
     programId: number;
     createProgramRegistrationAttributeDto: ProgramRegistrationAttributeDto;
-    repository?: Repository<ProgramRegistrationAttributeEntity>;
-  }): Promise<ProgramRegistrationAttributeEntity> {
+    repository?: Repository<ProjectRegistrationAttributeEntity>;
+  }): Promise<ProjectRegistrationAttributeEntity> {
     await this.validateAttributeName(
       programId,
       createProgramRegistrationAttributeDto.name,
@@ -378,7 +378,7 @@ export class ProgramService {
       this.programRegistrationAttributeDtoToEntity(
         createProgramRegistrationAttributeDto,
       );
-    programRegistrationAttribute.programId = programId;
+    programRegistrationAttribute.projectId = programId;
 
     try {
       if (repository) {
@@ -400,9 +400,9 @@ export class ProgramService {
 
   private programRegistrationAttributeDtoToEntity(
     dto: ProgramRegistrationAttributeDto,
-  ): ProgramRegistrationAttributeEntity {
+  ): ProjectRegistrationAttributeEntity {
     const programRegistrationAttribute =
-      new ProgramRegistrationAttributeEntity();
+      new ProjectRegistrationAttributeEntity();
     programRegistrationAttribute.name = dto.name;
     programRegistrationAttribute.label = dto.label;
     programRegistrationAttribute.type = dto.type;
@@ -424,7 +424,7 @@ export class ProgramService {
     programId: number,
     programRegistrationAttributeName: string,
     updateProgramRegistrationAttribute: UpdateProgramRegistrationAttributeDto,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProjectRegistrationAttributeEntity> {
     const programRegistrationAttribute =
       await this.programRegistrationAttributeRepository.findOne({
         where: {
@@ -451,7 +451,7 @@ export class ProgramService {
   public async deleteProgramRegistrationAttribute(
     programId: number,
     programRegistrationAttributeId: number,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProjectRegistrationAttributeEntity> {
     await this.findProgramOrThrow(programId);
 
     const programRegistrationAttribute =
@@ -518,7 +518,7 @@ export class ProgramService {
     }
 
     // add all properties to a single array
-    const properties: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
+    const properties: ProjectFinancialServiceProviderConfigurationPropertyEntity[] =
       [];
     for (const programFspConfiguration of programFspConfigurations) {
       properties.push(...programFspConfiguration.properties);

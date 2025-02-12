@@ -4,17 +4,17 @@ import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectAidworkerAssignmentEntity as ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectRegistrationAttributeEntity as ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 // ##TODO: Rename this to ProjectEntity
-@Entity('program')
-export class ProgramEntity extends Base121Entity {
+@Entity('project')
+export class ProjectEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public location: string | null;
 
@@ -58,38 +58,38 @@ export class ProgramEntity extends Base121Entity {
   public validation: boolean;
 
   @Column('json', { nullable: true, default: null })
-  public aboutProgram: LocalizedString | null;
+  public aboutProject: LocalizedString | null;
 
   public editableAttributes?: Attribute[];
 
   @OneToMany(
-    () => ProgramAidworkerAssignmentEntity,
-    (assignment) => assignment.program,
+    () => ProjectAidworkerAssignmentEntity,
+    (assignment) => assignment.project,
   )
-  public aidworkerAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
+  public aidworkerAssignments: Relation<ProjectAidworkerAssignmentEntity[]>;
 
-  @OneToMany(() => ActionEntity, (action) => action.program)
+  @OneToMany(() => ActionEntity, (action) => action.project)
   public actions: ActionEntity[];
 
   @OneToMany(
-    () => ProgramRegistrationAttributeEntity,
-    (programRegistrationAttributes) => programRegistrationAttributes.program,
+    () => ProjectRegistrationAttributeEntity,
+    (projectRegistrationAttributes) => projectRegistrationAttributes.project,
   )
-  public programRegistrationAttributes: Relation<
-    ProgramRegistrationAttributeEntity[]
+  public projectRegistrationAttributes: Relation<
+    ProjectRegistrationAttributeEntity[]
   >;
 
-  @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
+  @OneToMany(() => TransactionEntity, (transactions) => transactions.project)
   public transactions: Relation<TransactionEntity[]>;
 
-  @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
+  @OneToMany(() => RegistrationEntity, (registrations) => registrations.project)
   public registrations: Relation<RegistrationEntity[]>;
 
   @Column({ default: false })
   public tryWhatsAppFirst: boolean;
 
   // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
-  // This is an array of ProgramRegistrationAttributeEntity names that build up the full name of a PA.
+  // This is an array of ProjectRegistrationAttributeEntity names that build up the full name of a PA.
   @Column('json', { nullable: true })
   public fullnameNamingConvention: string[] | null;
 
@@ -106,11 +106,11 @@ export class ProgramEntity extends Base121Entity {
   public budget: number | null;
 
   @OneToMany(
-    () => ProgramFinancialServiceProviderConfigurationEntity,
-    (programFspConfiguration) => programFspConfiguration.programId,
+    () => ProjectFinancialServiceProviderConfigurationEntity,
+    (projectFspConfiguration) => projectFspConfiguration.projectId,
   )
-  public programFinancialServiceProviderConfigurations: Relation<
-    ProgramFinancialServiceProviderConfigurationEntity[]
+  public projectFinancialServiceProviderConfigurations: Relation<
+    ProjectFinancialServiceProviderConfigurationEntity[]
   >;
 
   @Column({ nullable: true, default: null, type: 'character varying' })
@@ -121,7 +121,7 @@ export class ProgramEntity extends Base121Entity {
 
   @OneToMany(
     () => MessageTemplateEntity,
-    (messageTemplates) => messageTemplates.program,
+    (messageTemplates) => messageTemplates.project,
   )
   public messageTemplates: Relation<MessageTemplateEntity[]>;
 }

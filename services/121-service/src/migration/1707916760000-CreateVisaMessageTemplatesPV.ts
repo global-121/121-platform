@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
 export class CreateVisaMessageTemplatesPV1707916760000
   implements MigrationInterface
@@ -20,7 +20,7 @@ export class CreateVisaMessageTemplatesPV1707916760000
     const messageTemplateRepository = manager.getRepository(
       MessageTemplateEntity,
     );
-    const programRepository = manager.getRepository(ProgramEntity);
+    const programRepository = manager.getRepository(ProjectEntity);
 
     const relevantPrograms = await programRepository
       .createQueryBuilder('program')

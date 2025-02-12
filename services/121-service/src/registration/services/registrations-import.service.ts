@@ -7,8 +7,8 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { EventsService } from '@121-service/src/events/events.service';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
@@ -37,10 +37,10 @@ const MASS_UPDATE_ROW_LIMIT = 100000;
 
 @Injectable()
 export class RegistrationsImportService {
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly actionService: ActionsService,
@@ -135,7 +135,7 @@ export class RegistrationsImportService {
 
   public async importRegistrations(
     inputRegistrations: Record<string, string | boolean | number | undefined>[],
-    program: ProgramEntity,
+    program: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     const validatedImportRecords = await this.validateImportRegistrationsInput(
@@ -152,7 +152,7 @@ export class RegistrationsImportService {
 
   public async importRegistrationsFromCsv(
     csvFile: Express.Multer.File,
-    program: ProgramEntity,
+    program: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     const maxRecords = 1000;
@@ -170,7 +170,7 @@ export class RegistrationsImportService {
 
   public async importValidatedRegistrations(
     validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
+    program: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     let countImported = 0;
@@ -189,7 +189,7 @@ export class RegistrationsImportService {
       registration.referenceId = record.referenceId || uuid();
       registration.phoneNumber = record.phoneNumber ?? null;
       registration.preferredLanguage = record.preferredLanguage ?? null;
-      registration.program = program;
+      registration.project = program;
       registration.inclusionScore = 0;
       registration.registrationStatus = RegistrationStatusEnum.registered;
       const customData = {};
@@ -215,7 +215,7 @@ export class RegistrationsImportService {
         }
       }
 
-      registration.programFinancialServiceProviderConfiguration =
+      registration.projectFinancialServiceProviderConfiguration =
         programFinancialServiceProviderConfigurations[
           record.programFinancialServiceProviderConfigurationName!
         ];
@@ -293,7 +293,7 @@ export class RegistrationsImportService {
 
   private async getProgramFinancialServiceProviderConfigurations(
     validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
+    program: ProjectEntity,
   ) {
     const programFinancialServiceProviderConfigurations = {};
     const uniqueConfigNames = Array.from(
@@ -372,7 +372,7 @@ export class RegistrationsImportService {
           const registrationData = new RegistrationAttributeDataEntity();
           registrationData.registration = registration;
           registrationData.value = value as string;
-          registrationData.programRegistrationAttributeId =
+          registrationData.projectRegistrationAttributeId =
             att.relation.programRegistrationAttributeId;
           registrationDataArray.push(registrationData);
         }

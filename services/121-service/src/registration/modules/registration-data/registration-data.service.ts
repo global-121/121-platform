@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
@@ -17,8 +17,8 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 
 @Injectable()
 export class RegistrationDataService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   public constructor(
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -104,7 +104,7 @@ export class RegistrationDataService {
         'programRegistrationAttributes',
       )
       .andWhere('program.id = :programId', {
-        programId: registration.programId,
+        programId: registration.projectId,
       })
       .andWhere('programRegistrationAttributes.name = :name', { name })
       .select('"programRegistrationAttributes".id', 'id');
@@ -200,7 +200,7 @@ export class RegistrationDataService {
       const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programRegistrationAttributeId = id;
+      newRegistrationData.projectRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
@@ -212,14 +212,14 @@ export class RegistrationDataService {
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      programRegistrationAttribute: { id },
+      projectRegistrationAttribute: { id },
     });
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programRegistrationAttributeId = id;
+      newRegistrationData.projectRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
@@ -239,7 +239,7 @@ export class RegistrationDataService {
     if (relation.programRegistrationAttributeId) {
       await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: Equal(registration.id),
-        programRegistrationAttribute: {
+        projectRegistrationAttribute: {
           id: relation.programRegistrationAttributeId,
         },
       });

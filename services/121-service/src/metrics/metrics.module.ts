@@ -10,8 +10,8 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -23,8 +23,8 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      ProgramRegistrationAttributeEntity,
-      ProgramEntity,
+      ProjectRegistrationAttributeEntity,
+      ProjectEntity,
       SafaricomTransferEntity,
     ]),
     UserModule,

@@ -10,8 +10,8 @@ import {
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
@@ -31,14 +31,14 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions, {
+  @ManyToOne((_type) => ProjectEntity, (project) => project.transactions, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project: Relation<ProjectEntity>;
   @Index()
   @Column({ type: 'int' })
-  public programId: number;
+  public projectId: number;
 
   @Column({ default: 1 })
   @Index()
@@ -54,18 +54,18 @@ export class TransactionEntity extends Base121AuditedEntity {
   public transactionStep: number;
 
   @ManyToOne(
-    (_type) => ProgramFinancialServiceProviderConfigurationEntity,
-    (programFinancialServiceProviderConfiguration) =>
-      programFinancialServiceProviderConfiguration.transactions,
+    (_type) => ProjectFinancialServiceProviderConfigurationEntity,
+    (projectFinancialServiceProviderConfiguration) =>
+      projectFinancialServiceProviderConfiguration.transactions,
     { onDelete: 'SET NULL' },
   )
   @JoinColumn({
-    name: 'programFinancialServiceProviderConfigurationId',
+    name: 'projectFinancialServiceProviderConfigurationId',
   })
-  public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
+  public projectFinancialServiceProviderConfiguration: Relation<ProjectFinancialServiceProviderConfigurationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public programFinancialServiceProviderConfigurationId: number;
+  public projectFinancialServiceProviderConfigurationId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,

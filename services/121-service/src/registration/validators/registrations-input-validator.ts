@@ -5,8 +5,8 @@ import { Equal, Not, Repository } from 'typeorm';
 
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
 import {
@@ -28,8 +28,8 @@ type InputAttributeType = string | boolean | number | undefined | null;
 
 @Injectable()
 export class RegistrationsInputValidator {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
@@ -208,7 +208,7 @@ export class RegistrationsInputValidator {
               .programFinancialServiceProviderConfigurationName
           ],
         programFinancialServiceProviderConfigurations:
-          program.programFinancialServiceProviderConfigurations,
+          program.projectFinancialServiceProviderConfigurations,
         i,
         typeOfInput,
       });
@@ -231,7 +231,7 @@ export class RegistrationsInputValidator {
           row,
           originalRegistration,
           programFinancialServiceProviderConfigurations:
-            program.programFinancialServiceProviderConfigurations,
+            program.projectFinancialServiceProviderConfigurations,
           i,
         },
       );
@@ -246,7 +246,7 @@ export class RegistrationsInputValidator {
       // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
 
       await Promise.all(
-        program.programRegistrationAttributes.map(async (att) => {
+        program.projectRegistrationAttributes.map(async (att) => {
           // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
           if (
             typeOfInput === RegistrationValidationInputType.update &&
@@ -427,7 +427,7 @@ export class RegistrationsInputValidator {
     typeOfInput,
   }: {
     programFinancialServiceProviderConfigurationName: InputAttributeType;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFinancialServiceProviderConfigurations: ProjectFinancialServiceProviderConfigurationEntity[];
     i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
@@ -671,7 +671,7 @@ export class RegistrationsInputValidator {
   }: {
     row: any;
     i: number;
-    program: ProgramEntity;
+    program: ProjectEntity;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
     // If the program allows empty phone numbers, skip this validation
@@ -746,7 +746,7 @@ export class RegistrationsInputValidator {
   }: {
     row: object;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFinancialServiceProviderConfigurations: ProjectFinancialServiceProviderConfigurationEntity[];
     i: number;
   }): ValidateRegistrationErrorObject[] {
     // Decide which required attributes to check
@@ -758,7 +758,7 @@ export class RegistrationsInputValidator {
         GenericRegistrationAttributes
           .programFinancialServiceProviderConfigurationName
       ] ??
-      originalRegistration?.programFinancialServiceProviderConfigurationName;
+      originalRegistration?.projectFinancialServiceProviderConfigurationName;
     if (!relevantFspConfigName) {
       // If the programFinancialServiceProviderConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
       // Errors will be thrown in a different validation step
@@ -825,7 +825,7 @@ export class RegistrationsInputValidator {
 
   private getRequiredAttributesForFsp(
     programFinancialServiceProviderConfigurationName: string,
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+    programFinancialServiceProviderConfigurations: ProjectFinancialServiceProviderConfigurationEntity[],
   ): string[] {
     const fspName = programFinancialServiceProviderConfigurations.find(
       (programFspConfig) =>

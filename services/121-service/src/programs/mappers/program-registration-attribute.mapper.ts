@@ -1,16 +1,16 @@
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 
 export class ProgramRegistrationAttributeMapper {
   public static entitiesToDtos(
-    entities: ProgramRegistrationAttributeEntity[],
+    entities: ProjectRegistrationAttributeEntity[],
   ): ProgramRegistrationAttributeDto[] {
     return entities.map((entity) => this.entityToDto(entity));
   }
 
   public static entityToDto(
-    entity: ProgramRegistrationAttributeEntity,
+    entity: ProjectRegistrationAttributeEntity,
   ): ProgramRegistrationAttributeDto {
     return {
       name: entity.name,
@@ -30,13 +30,13 @@ export class ProgramRegistrationAttributeMapper {
 
   public static dtosToEntities(
     attributes: ProgramRegistrationAttributeDto[],
-  ): Partial<ProgramRegistrationAttributeEntity>[] {
+  ): Partial<ProjectRegistrationAttributeEntity>[] {
     return attributes.map((attribute) => this.dtoToEntity(attribute));
   }
 
   private static dtoToEntity(
     attribute: ProgramRegistrationAttributeDto,
-  ): Partial<ProgramRegistrationAttributeEntity> {
+  ): Partial<ProjectRegistrationAttributeEntity> {
     return {
       name: attribute.name,
       label: attribute.label,

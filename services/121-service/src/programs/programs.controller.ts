@@ -37,8 +37,8 @@ import {
 } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
@@ -101,7 +101,7 @@ export class ProgramController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'The program has been successfully created.',
-    type: ProgramEntity,
+    type: ProjectEntity,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -152,7 +152,7 @@ You can also leave the body empty.`,
     koboAssetId: string,
 
     @Req() req: ScopedUserRequest,
-  ): Promise<ProgramEntity> {
+  ): Promise<ProjectEntity> {
     const userId = RequestHelper.getUserId(req);
 
     if (importFromKobo) {
@@ -250,7 +250,7 @@ You can also leave the body empty.`,
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return program registration attribute',
-    type: ProgramRegistrationAttributeEntity,
+    type: ProjectRegistrationAttributeEntity,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
@@ -270,7 +270,7 @@ You can also leave the body empty.`,
     programId: number,
     @Param('programRegistrationAttributeName')
     programRegistrationAttributeName: string,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProjectRegistrationAttributeEntity> {
     return await this.programService.updateProgramRegistrationAttribute(
       programId,
       programRegistrationAttributeName,
@@ -297,7 +297,7 @@ You can also leave the body empty.`,
     programId: number,
     @Param('programRegistrationAttributeId', ParseIntPipe)
     programRegistrationAttributeId: number,
-  ): Promise<ProgramRegistrationAttributeEntity> {
+  ): Promise<ProjectRegistrationAttributeEntity> {
     return await this.programService.deleteProgramRegistrationAttribute(
       programId,
       programRegistrationAttributeId,

@@ -4,18 +4,18 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 
 describe('ProgramAttributesService', () => {
-  let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  let programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
   let programAttributesService: ProgramAttributesService;
   const programRepositoryToken: string | Function =
-    getRepositoryToken(ProgramEntity);
+    getRepositoryToken(ProjectEntity);
   const programRegistrationAttributeToken: string | Function =
-    getRepositoryToken(ProgramRegistrationAttributeEntity);
+    getRepositoryToken(ProjectRegistrationAttributeEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -36,7 +36,7 @@ describe('ProgramAttributesService', () => {
       ProgramAttributesService,
     );
     programRegistrationAttributeRepository = module.get<
-      Repository<ProgramRegistrationAttributeEntity>
+      Repository<ProjectRegistrationAttributeEntity>
     >(programRegistrationAttributeToken);
   });
 

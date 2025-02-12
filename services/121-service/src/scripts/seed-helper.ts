@@ -14,12 +14,12 @@ import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
@@ -83,7 +83,7 @@ export class SeedHelper {
   }
 
   public async addDefaultUsers(
-    program: ProgramEntity,
+    program: ProjectEntity,
     debugScopeUsers: string[] = [],
   ): Promise<void> {
     const users = [
@@ -205,11 +205,11 @@ export class SeedHelper {
   public async addProgram(
     programExample: any,
     isApiTests: boolean,
-  ): Promise<ProgramEntity> {
-    const programRepository = this.dataSource.getRepository(ProgramEntity);
+  ): Promise<ProjectEntity> {
+    const programRepository = this.dataSource.getRepository(ProjectEntity);
 
     const programRegistrationAttributeRepo = this.dataSource.getRepository(
-      ProgramRegistrationAttributeEntity,
+      ProjectRegistrationAttributeEntity,
     );
 
     const programExampleDump = JSON.stringify(programExample);
@@ -251,7 +251,7 @@ export class SeedHelper {
     });
     const fspConfigArrayFromJson =
       programFromJSON.programFinancialServiceProviderConfigurations;
-    foundProgram.programFinancialServiceProviderConfigurations = [];
+    foundProgram.projectFinancialServiceProviderConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
       const financialServiceProviderObject =
@@ -285,9 +285,9 @@ export class SeedHelper {
     },
     financialServiceProviderObject: FinancialServiceProviderDto,
     programId: number,
-  ): ProgramFinancialServiceProviderConfigurationEntity {
+  ): ProjectFinancialServiceProviderConfigurationEntity {
     const fspConfigEntity =
-      new ProgramFinancialServiceProviderConfigurationEntity();
+      new ProjectFinancialServiceProviderConfigurationEntity();
     fspConfigEntity.financialServiceProviderName =
       fspConfigFromJson.financialServiceProvider;
     fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
@@ -300,14 +300,14 @@ export class SeedHelper {
       ? fspConfigFromJson.name
       : financialServiceProviderObject.name;
     fspConfigEntity.transactions = [];
-    fspConfigEntity.programId = programId;
+    fspConfigEntity.projectId = programId;
     return fspConfigEntity;
   }
 
   private createProgramFspConfigurationProperties(
     propertiesFromJSON: { name: string; value: string }[],
-  ): ProgramFinancialServiceProviderConfigurationPropertyEntity[] {
-    const fspConfigPropertyEntities: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
+  ): ProjectFinancialServiceProviderConfigurationPropertyEntity[] {
+    const fspConfigPropertyEntities: ProjectFinancialServiceProviderConfigurationPropertyEntity[] =
       [];
 
     for (const property of propertiesFromJSON) {
@@ -316,7 +316,7 @@ export class SeedHelper {
         fspConfigPropertyValue = process.env[property.value] || property.value;
       }
       const fspConfigPropertyEntity =
-        new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+        new ProjectFinancialServiceProviderConfigurationPropertyEntity();
       fspConfigPropertyEntity.name =
         property.name as FinancialServiceProviderConfigurationProperties;
       fspConfigPropertyEntity.value = fspConfigPropertyValue;
@@ -332,10 +332,10 @@ export class SeedHelper {
     scope?: string,
   ): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
-    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const programRepository = this.dataSource.getRepository(ProjectEntity);
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
     const assignmentRepository = this.dataSource.getRepository(
-      ProgramAidworkerAssignmentEntity,
+      ProjectAidworkerAssignmentEntity,
     );
     const user = await userRepository.findOneBy({
       id: userId,
@@ -343,7 +343,7 @@ export class SeedHelper {
     await assignmentRepository.save({
       scope,
       user,
-      program: await programRepository.findOne({
+      project: await programRepository.findOne({
         where: {
           id: Equal(programId),
         },
@@ -353,7 +353,7 @@ export class SeedHelper {
           role: In(roles),
         },
       }),
-    } as DeepPartial<ProgramAidworkerAssignmentEntity>);
+    } as DeepPartial<ProjectAidworkerAssignmentEntity>);
   }
 
   public async assignAdminUserToProgram(programId: number): Promise<void> {
@@ -370,7 +370,7 @@ export class SeedHelper {
 
   public async addMessageTemplates(
     messageTemplatesExample: any,
-    program: ProgramEntity,
+    program: ProjectEntity,
   ): Promise<void> {
     const messageTemplatesExampleDump = JSON.stringify(messageTemplatesExample);
     const messageTemplates = JSON.parse(messageTemplatesExampleDump);
@@ -397,7 +397,7 @@ export class SeedHelper {
   }
 
   public async createMessageTemplate(
-    program: ProgramEntity,
+    program: ProjectEntity,
     type: string,
     language: string,
     message: string,
@@ -406,7 +406,7 @@ export class SeedHelper {
     label: LocalizedString,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
-    messageTemplateEntity.program = program;
+    messageTemplateEntity.project = program;
     messageTemplateEntity.type = type;
     messageTemplateEntity.label = label
       ? JSON.parse(JSON.stringify(label))

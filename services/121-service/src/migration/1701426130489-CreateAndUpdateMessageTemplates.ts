@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
 export class CreateAndUpdateMessageTemplates1701426130489
   implements MigrationInterface
@@ -41,7 +41,7 @@ export class CreateAndUpdateMessageTemplates1701426130489
 
     // Add new status-change templates
     // use the same templates for LVV and PV (although PV does not need arabic)
-    const programRepository = manager.getRepository(ProgramEntity);
+    const programRepository = manager.getRepository(ProjectEntity);
 
     // Raw get many is used else it tries to explicitly select the columns of the entity
     // that are only created in a next migration (and thus not yet available e.g. enableScope)

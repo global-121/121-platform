@@ -10,14 +10,14 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 
-@Unique('userProgramAssignmentUnique', ['userId', 'programId'])
-@Entity('program_aidworker_assignment')
-export class ProgramAidworkerAssignmentEntity extends Base121Entity {
-  @ManyToOne(() => UserEntity, (user) => user.programAssignments, {
+@Unique('userProjectAssignmentUnique', ['userId', 'projectId'])
+@Entity('project_aidworker_assignment')
+export class ProjectAidworkerAssignmentEntity extends Base121Entity {
+  @ManyToOne(() => UserEntity, (user) => user.projectAssignments, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
@@ -25,13 +25,13 @@ export class ProgramAidworkerAssignmentEntity extends Base121Entity {
   @Column()
   public userId: number;
 
-  @ManyToOne(() => ProgramEntity, (program) => program.aidworkerAssignments, {
+  @ManyToOne(() => ProjectEntity, (project) => project.aidworkerAssignments, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project: Relation<ProjectEntity>;
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @ManyToMany(() => UserRoleEntity, (role) => role.assignments)
   @JoinTable()

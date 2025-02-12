@@ -21,8 +21,8 @@ import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -59,10 +59,10 @@ const userPermissionMapByExportType = {
 
 @Injectable()
 export class MetricsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -302,7 +302,7 @@ export class MetricsService {
       relations: ['programRegistrationAttributes'],
     });
 
-    for (const programRegistrationAttribute of program.programRegistrationAttributes) {
+    for (const programRegistrationAttribute of program.projectRegistrationAttributes) {
       if (
         JSON.parse(
           JSON.stringify(programRegistrationAttribute.export),
@@ -321,7 +321,7 @@ export class MetricsService {
   }
 
   private getRelationOptionsForDuplicates(
-    programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
+    programRegistrationAttributes: ProjectRegistrationAttributeEntity[],
   ): RegistrationDataOptions[] {
     const relationOptions: RegistrationDataOptions[] = [];
     for (const programRegistrationAttribute of programRegistrationAttributes) {
@@ -552,7 +552,7 @@ export class MetricsService {
       },
     });
     const relationOptions: RegistrationDataOptions[] = [];
-    for (const entry of program.programRegistrationAttributes) {
+    for (const entry of program.projectRegistrationAttributes) {
       if (
         JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
           entry.name,
@@ -671,7 +671,7 @@ export class MetricsService {
     duplicatesMap: Map<number, number[]>,
     uniqueRegistrationProgramIds: Set<number>,
     relationOptions: RegistrationDataOptions[],
-    program: ProgramEntity,
+    program: ProjectEntity,
   ): Promise<{
     fileName: ExportType;
     data: unknown[];
@@ -681,7 +681,7 @@ export class MetricsService {
         registrationProgramId: In([
           ...Array.from(uniqueRegistrationProgramIds),
         ]),
-        programId: Equal(program.id),
+        projectId: Equal(program.id),
       },
       select: [
         'registrationProgramId',
@@ -691,7 +691,7 @@ export class MetricsService {
     const registrationIds = registrationAndFspId.map((r) => {
       return {
         registrationProgramId: r.registrationProgramId,
-        fspId: r.programFinancialServiceProviderConfigurationId,
+        fspId: r.projectFinancialServiceProviderConfigurationId,
       };
     });
 
@@ -716,7 +716,8 @@ export class MetricsService {
         // If a mapping exists, get the display name for the preferred language else use the FSP name
         // TODO: Destructuring object to prevent type errors, should be refactored
         const {
-          programFinancialServiceProviderConfigurationLabel,
+          projectFinancialServiceProviderConfigurationLabel:
+            programFinancialServiceProviderConfigurationLabel,
           ...registrationCopy
         } = registration;
         registrationCopy['programFinancialServiceProviderConfigurationLabel'] =
@@ -884,7 +885,7 @@ export class MetricsService {
       alias: string;
     }[] = [];
 
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+    for (const fspConfig of program.projectFinancialServiceProviderConfigurations) {
       if (
         fspConfig.financialServiceProviderName ===
         FinancialServiceProviders.safaricom

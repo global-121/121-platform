@@ -46,7 +46,7 @@ describe('MessageService', () => {
 
     jest
       .spyOn(messageService.registrationRepository, 'findOne')
-      .mockResolvedValue({ program: { id: 1 } } as RegistrationEntity);
+      .mockResolvedValue({ project: { id: 1 } } as RegistrationEntity);
 
     jest.spyOn(console, 'log').mockImplementation();
 

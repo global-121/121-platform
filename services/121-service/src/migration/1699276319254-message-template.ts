@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
 export class MessageTemplate1699276319254 implements MigrationInterface {
   name = 'MessageTemplate1699276319254';
@@ -29,7 +29,7 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
       'whatsappGenericMessage',
       'whatsappPayment',
     ];
-    const programsRepository = manager.getRepository(ProgramEntity);
+    const programsRepository = manager.getRepository(ProjectEntity);
 
     const programsQb = programsRepository
       .createQueryBuilder('program')

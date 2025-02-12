@@ -24,7 +24,9 @@ export class MessageTemplateService {
     type?: string,
     language?: LanguageEnum,
   ): Promise<MessageTemplateEntity[]> {
-    let where: FindOptionsWhere<MessageTemplateEntity> = { programId };
+    let where: FindOptionsWhere<MessageTemplateEntity> = {
+      projectId: programId,
+    };
 
     if (type) {
       where = { ...where, type };
@@ -56,7 +58,7 @@ export class MessageTemplateService {
     }
 
     const template = new MessageTemplateEntity();
-    template.programId = programId;
+    template.projectId = programId;
     template.type = postData.type;
     template.language = postData.language;
     template.label = postData.label;
@@ -108,13 +110,13 @@ export class MessageTemplateService {
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({
-        programId,
+        projectId: programId,
         type: messageType,
         language,
       });
     } else {
       return await this.messageTemplateRepository.delete({
-        programId,
+        projectId: programId,
         type: messageType,
       });
     }

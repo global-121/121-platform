@@ -14,8 +14,8 @@ import { ReconciliationReturnType } from '@121-service/src/payments/interfaces/r
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -23,8 +23,8 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 
 @Injectable()
 export class ExcelRecociliationService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   private statusColumnName = 'status';
 
@@ -62,7 +62,7 @@ export class ExcelRecociliationService {
     }
 
     const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
+    for (const fspConfig of programWithExcelFspConfigs.projectFinancialServiceProviderConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
@@ -94,9 +94,9 @@ export class ExcelRecociliationService {
       },
       relations: ['programFinancialServiceProviderConfigurations'],
     });
-    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
+    const fspConfigsExcel: ProjectFinancialServiceProviderConfigurationEntity[] =
       [];
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+    for (const fspConfig of program.projectFinancialServiceProviderConfigurations) {
       if (
         fspConfig.financialServiceProviderName ===
         FinancialServiceProviders.excel
@@ -190,7 +190,7 @@ export class ExcelRecociliationService {
     file: Express.Multer.File;
     payment: number;
     programId: number;
-    fspConfigs: ProgramFinancialServiceProviderConfigurationEntity[];
+    fspConfigs: ProjectFinancialServiceProviderConfigurationEntity[];
   }): Promise<ReconciliationReturnType[]> {
     const maxRecords = 10000;
     const validatedExcelImport = await this.fileImportService.validateCsv(
@@ -260,7 +260,7 @@ export class ExcelRecociliationService {
     programId: number;
     payment: number;
     validatedExcelImport: object[];
-    fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
+    fspConfig: ProjectFinancialServiceProviderConfigurationEntity;
     matchColumn: string;
   }): Promise<ReconciliationReturnType[]> {
     const registrationsForReconciliation =

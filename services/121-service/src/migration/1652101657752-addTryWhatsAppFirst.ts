@@ -1,6 +1,6 @@
 import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
 export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
   name = 'addTryWhatsAppFirst1652101657752';
@@ -32,7 +32,7 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
   }
 
   private async migrateData(manager: EntityManager): Promise<void> {
-    const programRepo = manager.getRepository(ProgramEntity);
+    const programRepo = manager.getRepository(ProjectEntity);
     const programs = await programRepo
       .createQueryBuilder('program')
       .select('program.id')

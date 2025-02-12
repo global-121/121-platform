@@ -38,7 +38,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -58,8 +58,8 @@ export class IntersolveVoucherService
   private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
   public readonly transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  public readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public readonly programRepository: Repository<ProjectEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -131,7 +131,7 @@ export class IntersolveVoucherService
       1,
       paResult.status,
       paResult.message ?? null,
-      registration.programId,
+      registration.projectId,
       {
         programFinancialServiceProviderConfigurationId:
           jobData.paymentInfo.programFinancialServiceProviderConfigurationId,
@@ -329,7 +329,7 @@ export class IntersolveVoucherService
       where: { referenceId: Equal(paymentInfo.referenceId) },
     });
 
-    const programId = registration.programId;
+    const programId = registration.projectId;
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
     });
@@ -357,7 +357,7 @@ export class IntersolveVoucherService
   }
 
   public async getNotificationText(
-    program: ProgramEntity,
+    program: ProjectEntity,
     type: string,
     language?: string,
   ): Promise<string> {
@@ -534,7 +534,7 @@ export class IntersolveVoucherService
     }
 
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
-    intersolveInstructionsEntity.programId = programId;
+    intersolveInstructionsEntity.projectId = programId;
 
     await this.intersolveInstructionsRepository.save(
       intersolveInstructionsEntity,
@@ -754,7 +754,7 @@ export class IntersolveVoucherService
     }
 
     const fspNameOfRegistration =
-      registration.programFinancialServiceProviderConfiguration
+      registration.projectFinancialServiceProviderConfiguration
         .financialServiceProviderName;
     if (
       fspNameOfRegistration ===
@@ -810,7 +810,7 @@ export class IntersolveVoucherService
   ): Promise<VoucherWithBalanceDto> {
     const voucherWithBalance = new VoucherWithBalanceDto();
     voucherWithBalance.paNumber =
-      voucher.image[0].registration.registrationProgramId;
+      voucher.image[0].registration.registrationProjectId;
     voucherWithBalance.name = await this.registrationUtilsService.getFullName(
       voucher.image[0].registration,
     );

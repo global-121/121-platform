@@ -11,17 +11,17 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-@Unique('programAttributeUnique', ['name', 'programId'])
+@Unique('projectAttributeUnique', ['name', 'projectId'])
 @Check(`"name" NOT IN (${NameConstraintQuestions})`)
-@Entity('program_registration_attribute')
-export class ProgramRegistrationAttributeEntity extends Base121Entity {
+@Entity('project_registration_attribute')
+export class ProjectRegistrationAttributeEntity extends Base121Entity {
   @Column()
   public name: string;
 
@@ -44,14 +44,14 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public scoring: Record<string, unknown>;
 
   @ManyToOne(
-    (_type) => ProgramEntity,
-    (program) => program.programRegistrationAttributes,
+    (_type) => ProjectEntity,
+    (project) => project.projectRegistrationAttributes,
     { onDelete: 'CASCADE' },
   )
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project: Relation<ProjectEntity>;
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @Column('json', {
     default: [ExportType.allPeopleAffected, ExportType.included],
@@ -70,7 +70,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @OneToMany(
     () => RegistrationAttributeDataEntity,
     (registrationAttributeData) =>
-      registrationAttributeData.programRegistrationAttribute,
+      registrationAttributeData.projectRegistrationAttribute,
   )
   public registrationAttributeData: Relation<RegistrationAttributeDataEntity[]>;
 

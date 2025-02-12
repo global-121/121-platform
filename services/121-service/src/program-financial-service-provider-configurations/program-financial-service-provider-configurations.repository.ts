@@ -5,13 +5,13 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 
-export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProgramFinancialServiceProviderConfigurationEntity> {
+export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProjectFinancialServiceProviderConfigurationEntity> {
   constructor(
-    @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-    private baseRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>,
+    @InjectRepository(ProjectFinancialServiceProviderConfigurationEntity)
+    private baseRepository: Repository<ProjectFinancialServiceProviderConfigurationEntity>,
   ) {
     super(
       baseRepository.target,
@@ -26,7 +26,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }: {
     programId: number;
     financialServiceProviderName: FinancialServiceProviders;
-  }): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
+  }): Promise<ProjectFinancialServiceProviderConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
         programId: Equal(programId),

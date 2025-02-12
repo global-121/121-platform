@@ -23,7 +23,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -33,8 +33,8 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 @Injectable()
 export class TransactionsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(LatestTransactionEntity)
   private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
 
@@ -111,9 +111,9 @@ export class TransactionsService {
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
+    transaction.projectFinancialServiceProviderConfigurationId =
       relationDetails.programFinancialServiceProviderConfigurationId;
-    transaction.program = program;
+    transaction.project = program;
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
@@ -245,7 +245,7 @@ export class TransactionsService {
       .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
       .leftJoin('transaction.registration', 'r')
       .andWhere('transaction.program.id = :programId', {
-        programId: registration.programId,
+        programId: registration.projectId,
       })
       .andWhere('r.id = :registrationId', {
         registrationId: registration.id,
@@ -323,9 +323,9 @@ export class TransactionsService {
         const transaction = new TransactionEntity();
         transaction.amount = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
-        transaction.programFinancialServiceProviderConfigurationId =
+        transaction.projectFinancialServiceProviderConfigurationId =
           transactionRelationDetails.programFinancialServiceProviderConfigurationId;
-        transaction.programId = transactionRelationDetails.programId;
+        transaction.projectId = transactionRelationDetails.programId;
         transaction.payment = transactionRelationDetails.paymentNr;
         transaction.userId = transactionRelationDetails.userId;
         transaction.status = transactionResponse.status;

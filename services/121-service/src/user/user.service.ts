@@ -10,8 +10,8 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 import { DEBUG } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {
@@ -52,10 +52,10 @@ export class UserService {
   private readonly permissionRepository: Repository<PermissionEntity>;
   @InjectRepository(UserRoleEntity)
   private readonly userRoleRepository: Repository<UserRoleEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramAidworkerAssignmentEntity)
-  private readonly assignmentRepository: Repository<ProgramAidworkerAssignmentEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectAidworkerAssignmentEntity)
+  private readonly assignmentRepository: Repository<ProjectAidworkerAssignmentEntity>;
 
   public constructor(
     @Inject(REQUEST) private readonly request: Request,
@@ -122,11 +122,11 @@ export class UserService {
   ): Promise<{ programId: number; scope: string }[]> {
     const user = await this.findUserProgramAssignmentsOrThrow(userId);
     const programIdScopeObjects: { programId: number; scope: string }[] = [];
-    for (const assignment of user.programAssignments) {
+    for (const assignment of user.projectAssignments) {
       for (const role of assignment.roles) {
         if (role.permissions.map((p) => p.name).includes(permission)) {
           const programIdScopeObject = {
-            programId: assignment.programId,
+            programId: assignment.projectId,
             scope: assignment.scope,
           };
 
@@ -152,8 +152,8 @@ export class UserService {
     });
     if (
       !user ||
-      !user.programAssignments ||
-      user.programAssignments.length === 0
+      !user.projectAssignments ||
+      user.projectAssignments.length === 0
     ) {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -396,8 +396,8 @@ export class UserService {
     response.userId = userId;
     response.scope = scope;
     // if already assigned: add roles and scope to program assignment
-    for (const programAssignment of user.programAssignments) {
-      if (programAssignment.program.id === programId) {
+    for (const programAssignment of user.projectAssignments) {
+      if (programAssignment.project.id === programId) {
         programAssignment.roles = newRoles;
         programAssignment.scope = scope;
         await this.assignmentRepository.save(programAssignment);
@@ -459,8 +459,8 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (const programAssignment of user.programAssignments) {
-      if (programAssignment.program.id === programId) {
+    for (const programAssignment of user.projectAssignments) {
+      if (programAssignment.project.id === programId) {
         const rolesToKeep = programAssignment.roles.filter(
           (role) => !rolesToDelete.some((newRole) => newRole.id === role.id),
         );
@@ -496,7 +496,7 @@ export class UserService {
       relations: ['programAssignments', 'programAssignments.roles'],
     });
 
-    await this.assignmentRepository.remove(user.programAssignments);
+    await this.assignmentRepository.remove(user.projectAssignments);
 
     try {
       return await this.userRepository.remove(user);
@@ -572,10 +572,10 @@ export class UserService {
     exp.setDate(today.getDate() + tokenExpirationDays);
 
     const roles = {};
-    if (user.programAssignments && user.programAssignments[0]) {
-      for (const programAssignment of user.programAssignments) {
+    if (user.projectAssignments && user.projectAssignments[0]) {
+      for (const programAssignment of user.projectAssignments) {
         const programRoles = programAssignment.roles.map((role) => role.role);
-        roles[`${programAssignment.programId}`] = programRoles;
+        roles[`${programAssignment.projectId}`] = programRoles;
       }
     }
 
@@ -645,13 +645,13 @@ export class UserService {
     });
 
     const permissionsObject = {};
-    if (user.programAssignments && user.programAssignments[0]) {
-      for (const programAssignment of user.programAssignments) {
+    if (user.projectAssignments && user.projectAssignments[0]) {
+      for (const programAssignment of user.projectAssignments) {
         let permissions: PermissionEnum[] = [];
         for (const role of programAssignment.roles) {
           const permissionNames = role.permissions.map((a) => a.name);
           permissions = [...new Set([...permissions, ...permissionNames])];
-          permissionsObject[programAssignment.program.id] = permissions;
+          permissionsObject[programAssignment.project.id] = permissions;
         }
       }
     }
@@ -847,8 +847,8 @@ export class UserService {
     }
 
     // if already assigned: add roles to program assignment
-    for (const programAssignment of user.programAssignments) {
-      if (programAssignment.program.id === programId) {
+    for (const programAssignment of user.projectAssignments) {
+      if (programAssignment.project.id === programId) {
         // Get the existing roles
         const existingRoles = programAssignment.roles;
 
@@ -888,8 +888,8 @@ export class UserService {
     programId: number,
   ): Promise<string> {
     const user = await this.findById(userId);
-    const assignment = user.programAssignments.find(
-      (a) => a.programId === programId,
+    const assignment = user.projectAssignments.find(
+      (a) => a.projectId === programId,
     );
     if (!assignment) {
       throw new HttpException(
@@ -902,8 +902,8 @@ export class UserService {
 
   public getScopeForUser(user: UserEntity, programId: number): string {
     programId = Number(programId);
-    const assignment = user.programAssignments.find(
-      (programAssignment) => programAssignment.programId === programId,
+    const assignment = user.projectAssignments.find(
+      (programAssignment) => programAssignment.projectId === programId,
     );
     const scope = assignment?.scope ? assignment.scope : '';
     return scope;

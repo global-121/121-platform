@@ -1,12 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
-export class ProgramRepository extends Repository<ProgramEntity> {
+export class ProgramRepository extends Repository<ProjectEntity> {
   constructor(
-    @InjectRepository(ProgramEntity)
-    private baseRepository: Repository<ProgramEntity>,
+    @InjectRepository(ProjectEntity)
+    private baseRepository: Repository<ProjectEntity>,
   ) {
     super(
       baseRepository.target,
@@ -15,7 +15,7 @@ export class ProgramRepository extends Repository<ProgramEntity> {
     );
   }
 
-  public async findByIdOrFail(id: number): Promise<ProgramEntity> {
+  public async findByIdOrFail(id: number): Promise<ProjectEntity> {
     const program = await this.baseRepository.findOne({
       where: { id: Equal(id) },
     });

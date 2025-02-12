@@ -10,14 +10,14 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 
-@Unique('programFinancialServiceProviderConfigurationPropertyUnique', [
-  'programFinancialServiceProviderConfigurationId',
+@Unique('projectFinancialServiceProviderConfigurationPropertyUnique', [
+  'projectFinancialServiceProviderConfigurationId',
   'name',
 ])
-@Entity('program_financial_service_provider_configuration_property')
-export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends Base121Entity {
+@Entity('project_financial_service_provider_configuration_property')
+export class ProjectFinancialServiceProviderConfigurationPropertyEntity extends Base121Entity {
   @Column({ type: 'character varying' })
   public name: FinancialServiceProviderConfigurationProperties;
 
@@ -48,13 +48,13 @@ export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends 
   public value: string | string[] | Record<string, string>;
 
   @ManyToOne(
-    (_type) => ProgramFinancialServiceProviderConfigurationEntity,
-    (programFinancialServiceProviderConfiguration) =>
-      programFinancialServiceProviderConfiguration.properties,
+    (_type) => ProjectFinancialServiceProviderConfigurationEntity,
+    (projectFinancialServiceProviderConfiguration) =>
+      projectFinancialServiceProviderConfiguration.properties,
     { cascade: true, onDelete: 'CASCADE' },
   )
-  @JoinColumn({ name: 'programFinancialServiceProviderConfigurationId' })
-  public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
+  @JoinColumn({ name: 'projectFinancialServiceProviderConfigurationId' })
+  public projectFinancialServiceProviderConfiguration: Relation<ProjectFinancialServiceProviderConfigurationEntity>;
   @Column()
-  public programFinancialServiceProviderConfigurationId: number;
+  public projectFinancialServiceProviderConfigurationId: number;
 }

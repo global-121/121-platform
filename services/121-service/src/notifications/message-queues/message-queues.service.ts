@@ -102,7 +102,7 @@ export class MessageQueuesService {
         preferredLanguage: registration.preferredLanguage ?? LanguageEnum.en,
         whatsappPhoneNumber,
         phoneNumber: registration.phoneNumber ?? undefined,
-        programId: registration.programId,
+        programId: registration.projectId,
         message,
         messageTemplateKey,
         messageContentType,

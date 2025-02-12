@@ -17,10 +17,10 @@ import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
@@ -39,9 +39,9 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       IntersolveVoucherInstructionsEntity,
       RegistrationEntity,
       TransactionEntity,
-      ProgramEntity,
-      ProgramFinancialServiceProviderConfigurationEntity,
-      ProgramAidworkerAssignmentEntity,
+      ProjectEntity,
+      ProjectFinancialServiceProviderConfigurationEntity,
+      ProjectAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),
     ImageCodeModule,

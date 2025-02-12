@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 
 export class programLanguages1669802888828 implements MigrationInterface {
   name = 'programLanguages1669802888828';
@@ -28,7 +28,7 @@ export class programLanguages1669802888828 implements MigrationInterface {
       const languages = Object.keys(program.notifications).map((key) => {
         return key;
       });
-      const programRepo = queryRunner.manager.getRepository(ProgramEntity);
+      const programRepo = queryRunner.manager.getRepository(ProjectEntity);
       program.languages = languages;
       await programRepo.save(program);
     }

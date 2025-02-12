@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
 export class RegistrationUtilsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   constructor(
     private registrationScopedRepository: RegistrationScopedRepository,
@@ -28,13 +28,13 @@ export class RegistrationUtilsService {
         .createQueryBuilder('r')
         .select('r."registrationProgramId"')
         .andWhere('r.programId = :programId', {
-          programId: registration.program.id,
+          programId: registration.project.id,
         })
         .andWhere('r.registrationProgramId is not null')
         .orderBy('r."registrationProgramId"', 'DESC')
         .limit(1);
       const result = await query.getRawOne();
-      registration.registrationProgramId = result
+      registration.registrationProjectId = result
         ? result.registrationProgramId + 1
         : 1;
     }
@@ -67,7 +67,7 @@ export class RegistrationUtilsService {
     let fullName = '';
     const fullnameConcat: string[] = [];
     const program = await this.programRepository.findOneBy({
-      id: registration.programId,
+      id: registration.projectId,
     });
     if (program && program.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(

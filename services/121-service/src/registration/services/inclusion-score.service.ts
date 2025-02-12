@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -12,8 +12,8 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 
 @Injectable()
 export class InclusionScoreService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -22,7 +22,7 @@ export class InclusionScoreService {
   ) {}
 
   public async calculatePaymentAmountMultiplier(
-    program: ProgramEntity,
+    program: ProjectEntity,
     referenceId: string,
   ): Promise<RegistrationEntity | undefined> {
     if (!program.paymentAmountMultiplierFormula) {
@@ -62,11 +62,11 @@ export class InclusionScoreService {
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
     const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(registration.program.id) },
+      where: { id: Equal(registration.project.id) },
       relations: ['programRegistrationAttributes'],
     });
     const score = this.calculateScoreAllProgramAttributes(
-      program.programRegistrationAttributes,
+      program.projectRegistrationAttributes,
       scoreList,
     );
 
@@ -84,11 +84,11 @@ export class InclusionScoreService {
     });
     const scoreList = {};
     for (const entry of registration.data) {
-      if (entry.programRegistrationAttribute) {
+      if (entry.projectRegistrationAttribute) {
         const attrValue = entry.value;
-        const newKeyName = entry.programRegistrationAttribute.name;
+        const newKeyName = entry.projectRegistrationAttribute.name;
         if (
-          entry.programRegistrationAttribute.type ===
+          entry.projectRegistrationAttribute.type ===
           RegistrationAttributeTypes.multiSelect
         ) {
           if (scoreList[newKeyName] !== undefined) {
@@ -105,7 +105,7 @@ export class InclusionScoreService {
   }
 
   private calculateScoreAllProgramAttributes(
-    programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
+    programRegistrationAttributes: ProjectRegistrationAttributeEntity[],
     scoreList: object,
   ): number {
     let totalScore = 0;
@@ -133,7 +133,7 @@ export class InclusionScoreService {
   }
 
   private getScoreForDropDown(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    programRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: object,
   ): number {
     // If attribute has no scoring system return 0;
@@ -156,7 +156,7 @@ export class InclusionScoreService {
   }
 
   private getScoreForMultiSelect(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    programRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: object[],
   ): number {
     // If attribute has no scoring system return 0;
@@ -182,7 +182,7 @@ export class InclusionScoreService {
   }
 
   private getScoreForNumeric(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    programRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: number,
   ): number {
     let score = 0;

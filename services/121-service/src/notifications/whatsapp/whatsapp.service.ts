@@ -20,15 +20,15 @@ import {
   TwilioMessageEntity,
 } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 
@@ -189,7 +189,7 @@ export class WhatsappService {
   }
 
   private async testProgramTemplate(
-    program: ProgramEntity,
+    program: ProjectEntity,
     sessionId: string,
   ): Promise<void> {
     const messageTemplates = (
@@ -217,7 +217,7 @@ export class WhatsappService {
       await this.whatsappTemplateTestRepository.save({
         sid: message.sid,
         language: messageTemplate.language,
-        programId: messageTemplate.programId,
+        programId: messageTemplate.projectId,
         messageKey: messageTemplate.type,
         sessionId,
       });
@@ -272,7 +272,7 @@ export class WhatsappService {
   }
 
   private async getProgramTemplateResult(
-    program: ProgramEntity,
+    program: ProjectEntity,
     sessionId: string,
   ): Promise<object> {
     const messageTemplates = (
@@ -301,7 +301,7 @@ export class WhatsappService {
           where: {
             language: Equal(messageTemplate.language),
             messageKey: Equal(messageTemplate.type),
-            programId: Equal(messageTemplate.programId),
+            programId: Equal(messageTemplate.projectId),
             sessionId: Equal(sessionId),
           },
           order: { created: 'ASC' },

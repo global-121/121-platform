@@ -5,8 +5,8 @@ import {
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
+import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
 
 describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
@@ -14,8 +14,8 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
     it('should correctly map ProgramFinancialServiceProviderConfigurationEntity to ProgramFinancialServiceProviderConfigurationResponseDto', () => {
       // Arrange
       const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
-      testEntity.programId = 1;
+        new ProjectFinancialServiceProviderConfigurationEntity();
+      testEntity.projectId = 1;
       testEntity.financialServiceProviderName =
         FinancialServiceProviders.intersolveVisa;
       testEntity.name = 'Intersolve Visa';
@@ -29,7 +29,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
           name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
           updated: new Date('2023-02-01'),
         },
-      ] as ProgramFinancialServiceProviderConfigurationPropertyEntity[];
+      ] as ProjectFinancialServiceProviderConfigurationPropertyEntity[];
 
       // Act
       const result =
@@ -38,7 +38,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
         );
 
       // Assert
-      expect(result.programId).toBe(testEntity.programId);
+      expect(result.programId).toBe(testEntity.projectId);
       expect(result.financialServiceProviderName).toBe(
         testEntity.financialServiceProviderName,
       );
@@ -71,8 +71,8 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
     it('should handle an entity with no properties', () => {
       // Arrange
       const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
-      testEntity.programId = 1;
+        new ProjectFinancialServiceProviderConfigurationEntity();
+      testEntity.projectId = 1;
       testEntity.financialServiceProviderName =
         FinancialServiceProviders.safaricom;
       testEntity.name = 'Safaricom M-Pesa';
@@ -86,7 +86,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
         );
 
       // Assert
-      expect(result.programId).toBe(testEntity.programId);
+      expect(result.programId).toBe(testEntity.projectId);
       expect(result.financialServiceProviderName).toBe(
         testEntity.financialServiceProviderName,
       );
@@ -127,7 +127,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
         );
 
       // Assert
-      expect(entity.programId).toBe(programId);
+      expect(entity.projectId).toBe(programId);
       expect(entity.financialServiceProviderName).toBe(
         dto.financialServiceProviderName,
       );
@@ -155,7 +155,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       const entity = entities[0];
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
+      expect(entity.projectFinancialServiceProviderConfigurationId).toBe(
         programFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(dto.value);
@@ -180,7 +180,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
+      expect(entity.projectFinancialServiceProviderConfigurationId).toBe(
         programFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(JSON.stringify(dto.value)); // Expect value to be JSON string

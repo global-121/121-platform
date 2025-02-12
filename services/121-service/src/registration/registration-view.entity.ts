@@ -12,7 +12,7 @@ import {
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
@@ -27,14 +27,14 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .select('registration.id', 'id')
       .from(RegistrationEntity, 'registration')
       .addSelect(
-        `CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR)`,
+        `CAST(CONCAT('PA #',registration."registrationProjectId") as VARCHAR)`,
         'personAffectedSequence',
       )
       .addSelect(
-        `registration."registrationProgramId"`,
-        'registrationProgramId',
+        `registration."registrationProjectId"`,
+        'registrationProjectId',
       )
-      .orderBy(`registration.registrationProgramId`, 'ASC')
+      .orderBy(`registration.registrationProjectId`, 'ASC')
       .addSelect('registration.created', 'registrationCreated')
       .addSelect(
         `TO_CHAR(registration.created,'yyyy-mm-dd')`,
@@ -42,16 +42,16 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       )
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
-      .addSelect('registration.programId', 'programId')
+      .addSelect('registration.projectId', 'projectId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
       .addSelect(
         'fspconfig."name"',
-        'programFinancialServiceProviderConfigurationName',
+        'projectFinancialServiceProviderConfigurationName',
       )
       .addSelect(
         'fspconfig."id"',
-        'programFinancialServiceProviderConfigurationId',
+        'projectFinancialServiceProviderConfigurationId',
       )
       .addSelect(
         'fspconfig."financialServiceProviderName"',
@@ -59,7 +59,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       )
       .addSelect(
         'fspconfig.label',
-        'programFinancialServiceProviderConfigurationLabel',
+        'projectFinancialServiceProviderConfigurationLabel',
       )
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
@@ -74,7 +74,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
       .leftJoin(
-        'registration.programFinancialServiceProviderConfiguration',
+        'registration.projectFinancialServiceProviderConfiguration',
         'fspconfig',
       )
       .leftJoin('registration.latestMessage', 'latestMessage')
@@ -92,11 +92,11 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public status: RegistrationStatusEnum;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
-  @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  @ManyToOne((_type) => ProjectEntity, (project) => project.registrations)
+  @JoinColumn({ name: 'projectId' })
+  public project: ProjectEntity;
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @ViewColumn()
   public registrationCreated: string;
@@ -123,17 +123,17 @@ export class RegistrationViewEntity {
   public financialServiceProviderName?: FinancialServiceProviders;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationId: number;
+  public projectFinancialServiceProviderConfigurationId: number;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationName: string;
+  public projectFinancialServiceProviderConfigurationName: string;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationLabel: LocalizedString;
+  public projectFinancialServiceProviderConfigurationLabel: LocalizedString;
 
-  /** This is an "auto" incrementing field with a registration ID per program. */
+  /** This is an "auto" incrementing field with a registration ID per project. */
   @ViewColumn()
-  public registrationProgramId: number;
+  public registrationProjectId: number;
 
   @ViewColumn()
   public personAffectedSequence: string;
