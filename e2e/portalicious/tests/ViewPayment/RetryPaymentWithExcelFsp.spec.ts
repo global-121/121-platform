@@ -4,13 +4,17 @@ import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  seedIncludedRegistrations,
+  updateRegistration,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPvExcel5Fail,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -29,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsPvExcel,
+    [...registrationsPvExcel, registrationPvExcel5Fail],
     programIdPV,
     accessToken,
   );
@@ -47,8 +51,6 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
-
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.join(
@@ -96,5 +98,15 @@ test('[32304] Retry payments should put failed transactions back in pending and 
       },
       { condition: true, rowCount: 2 },
     );
+    await paymentsPage.retryFiledTransfers();
+  });
+
+  // DO NOT MAKE IT A RULE!!!
+  // Only in this case we need to reload the page to get the updated data of the successful payments.
+  // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
+  await page.reload();
+
+  await test.step('Check presence of retry button', async () => {
+    await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
   });
 });
