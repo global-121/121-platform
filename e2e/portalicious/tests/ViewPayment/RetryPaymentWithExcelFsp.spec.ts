@@ -47,6 +47,8 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
+
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.join(
