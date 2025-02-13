@@ -135,7 +135,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   it('Should bulk update chosen FSP and validate changed records', async () => {
     const registrationDataThatWillChangePa1 = {
       financialServiceProviderName: 'Intersolve-voucher-whatsapp',
-      programFinancialServiceProviderConfigurationId: 5,
+      projectFinancialServiceProviderConfigurationId: 5,
       programFinancialServiceProviderConfigurationName:
         'Intersolve-voucher-whatsapp',
       programFinancialServiceProviderConfigurationLabel: {
@@ -144,7 +144,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     };
     const registrationDataThatWillChangePa2 = {
       financialServiceProviderName: 'Intersolve-visa',
-      programFinancialServiceProviderConfigurationId: 6,
+      projectFinancialServiceProviderConfigurationId: 6,
       programFinancialServiceProviderConfigurationName: 'Intersolve-visa',
       programFinancialServiceProviderConfigurationLabel: {
         en: 'Visa debit card',
