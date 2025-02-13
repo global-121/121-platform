@@ -49,22 +49,6 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "uniqueTemplatePerTypeLanguageProgram"`,
     );
-    // Rename columns
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."registration_attribute_data" RENAME COLUMN "programRegistrationAttributeId" TO "projectRegistrationAttributeId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."action" RENAME COLUMN "programId" TO "projectId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."message_template" RENAME COLUMN "programId" TO "projectId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."whatsapp_template_test" RENAME COLUMN "programId" TO "projectId"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."intersolve_voucher_instruction" RENAME COLUMN "programId" TO "projectId"`,
-    );
 
     // Rename tables
     await queryRunner.query(
@@ -107,7 +91,23 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
     //   `CREATE INDEX "IDX_e5feb050d3b610c6e9008edfbd" ON "121-service"."project_aidworker_assignment_roles_user_role" ("userRoleId") `,
     // );
 
-    // Rename more columns
+    // Rename columns
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_attribute_data" RENAME COLUMN "programRegistrationAttributeId" TO "projectRegistrationAttributeId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" RENAME COLUMN "programId" TO "projectId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" RENAME COLUMN "programId" TO "projectId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."whatsapp_template_test" RENAME COLUMN "programId" TO "projectId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" RENAME COLUMN "programId" TO "projectId"`,
+    );
+
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" RENAME COLUMN "programId" TO "projectId"`,
     );
@@ -122,6 +122,22 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration" RENAME COLUMN "programFinancialServiceProviderConfigurationId" TO "projectFinancialServiceProviderConfigurationId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" RENAME COLUMN "programId" TO "projectId"`,
+    );
+
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" RENAME COLUMN "programFinancialServiceProviderConfigurationId" TO "projectFinancialServiceProviderConfigurationId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" RENAME COLUMN "programId" TO "projectId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" RENAME COLUMN "programId" TO "projectId"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" RENAME COLUMN "programAidworkerAssignmentId" TO "projectAidworkerAssignmentId"`,
     );
 
     // Add indexes
@@ -189,7 +205,12 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" ADD CONSTRAINT "FK_e5feb050d3b610c6e9008edfbda" FOREIGN KEY ("userRoleId") REFERENCES "121-service"."user_role"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    // Create view
+    // Re-create view (drop and create)
+    await queryRunner.query(
+      `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
+      ['VIEW', 'registration_view', '121-service'],
+    );
+    await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
     await queryRunner.query(
       `CREATE VIEW "121-service"."registration_view" AS SELECT "registration"."id" AS "id", "registration"."created" AS "registrationCreated", "registration"."projectId" AS "projectId", "registration"."registrationStatus" AS "status", "registration"."referenceId" AS "referenceId", "registration"."phoneNumber" AS "phoneNumber", "registration"."preferredLanguage" AS "preferredLanguage", "registration"."inclusionScore" AS "inclusionScore", "registration"."paymentAmountMultiplier" AS "paymentAmountMultiplier", "registration"."maxPayments" AS "maxPayments", "registration"."paymentCount" AS "paymentCount", "registration"."scope" AS "scope", "fspconfig"."label" AS "projectFinancialServiceProviderConfigurationLabel", CAST(CONCAT('PA #',registration."registrationProjectId") as VARCHAR) AS "personAffectedSequence", registration."registrationProjectId" AS "registrationProjectId", TO_CHAR("registration"."created",'yyyy-mm-dd') AS "registrationCreatedDate", fspconfig."name" AS "projectFinancialServiceProviderConfigurationName", fspconfig."id" AS "projectFinancialServiceProviderConfigurationId", fspconfig."financialServiceProviderName" AS "financialServiceProviderName", "registration"."maxPayments" - "registration"."paymentCount" AS "paymentCountRemaining", COALESCE("message"."type" || ': ' || "message"."status",'no messages yet') AS "lastMessageStatus" FROM "121-service"."registration" "registration" LEFT JOIN "121-service"."project_financial_service_provider_configuration" "fspconfig" ON "fspconfig"."id"="registration"."projectFinancialServiceProviderConfigurationId"  LEFT JOIN "121-service"."latest_message" "latestMessage" ON "latestMessage"."registrationId"="registration"."id"  LEFT JOIN "121-service"."twilio_message" "message" ON "message"."id"="latestMessage"."messageId" ORDER BY "registration"."registrationProjectId" ASC`,
     );
