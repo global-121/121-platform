@@ -173,7 +173,7 @@ export class ProgramAttributesService {
   ): Promise<Attribute[]> {
     const programRegistrationAttributes = (
       await this.programRegistrationAttributeEntity.find({
-        where: { program: { id: Equal(programId) } },
+        where: { project: { id: Equal(programId) } },
       })
     ).map((c) => {
       return {

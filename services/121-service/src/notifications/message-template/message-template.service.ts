@@ -47,7 +47,7 @@ export class MessageTemplateService {
   ): Promise<void> {
     const existingTemplate = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(programId),
         type: Equal(postData.type),
         language: Equal(postData.language),
       },
@@ -79,7 +79,7 @@ export class MessageTemplateService {
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(programId),
         type: Equal(type),
         language: Equal(language),
       },

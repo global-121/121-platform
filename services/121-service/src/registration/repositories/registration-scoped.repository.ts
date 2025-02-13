@@ -158,7 +158,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return await this.repository.findOne({
       where: {
         referenceId: Equal(referenceId),
-        ...(programId != undefined ? { programId: Equal(programId) } : {}),
+        ...(programId != undefined ? { projectId: Equal(programId) } : {}),
       },
       relations,
     });

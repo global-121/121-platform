@@ -75,7 +75,7 @@ export class ProgramService {
 
     program.projectRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
-        where: { program: { id: Equal(programId) } },
+        where: { project: { id: Equal(programId) } },
       });
 
     program.editableAttributes =
@@ -429,7 +429,7 @@ export class ProgramService {
       await this.programRegistrationAttributeRepository.findOne({
         where: {
           name: Equal(programRegistrationAttributeName),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       });
     if (!programRegistrationAttribute) {
@@ -474,7 +474,7 @@ export class ProgramService {
 
     const programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
-        where: { program: { id: Equal(programId) } },
+        where: { project: { id: Equal(programId) } },
       });
     for (const attribute of programRegistrationAttributes) {
       relations.push({

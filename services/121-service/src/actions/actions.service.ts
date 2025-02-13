@@ -61,7 +61,7 @@ export class ActionsService {
   ): Promise<ActionReturnDto | null> {
     const action = await this.actionRepository.findOne({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(programId) },
         actionType: Equal(actionType),
       },
       relations: ['user'],

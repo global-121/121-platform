@@ -678,19 +678,19 @@ export class MetricsService {
   }> {
     const registrationAndFspId = await this.registrationScopedRepository.find({
       where: {
-        registrationProgramId: In([
+        registrationProjectId: In([
           ...Array.from(uniqueRegistrationProgramIds),
         ]),
         projectId: Equal(program.id),
       },
       select: [
-        'registrationProgramId',
-        'programFinancialServiceProviderConfigurationId',
+        'registrationProjectId',
+        'projectFinancialServiceProviderConfigurationId',
       ],
     });
     const registrationIds = registrationAndFspId.map((r) => {
       return {
-        registrationProgramId: r.registrationProgramId,
+        registrationProgramId: r.registrationProjectId,
         fspId: r.projectFinancialServiceProviderConfigurationId,
       };
     });
@@ -976,7 +976,7 @@ export class MetricsService {
     const currentPaymentRegistrationsAndCount =
       await this.transactionScopedRepository.findAndCount({
         where: {
-          program: { id: Equal(programId) },
+          project: { id: Equal(programId) },
           status: Equal(TransactionStatusEnum.success),
           payment: Equal(payment),
           transactionStep: Equal(transactionStepOfInterest),
@@ -1029,21 +1029,21 @@ export class MetricsService {
 
     const includedPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(programId) },
         registrationStatus: Equal(RegistrationStatusEnum.included),
       },
     });
 
     const newPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(programId) },
         registrationStatus: Equal(RegistrationStatusEnum.registered),
       },
     });
 
     const registeredPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(programId) },
         registrationStatus: Not(
           In([RegistrationStatusEnum.declined, RegistrationStatusEnum.deleted]),
         ),

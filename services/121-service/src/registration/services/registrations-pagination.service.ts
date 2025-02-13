@@ -722,13 +722,13 @@ export class RegistrationsPaginationService {
   public getQueryBuilderForFspInstructions({
     programId,
     payment,
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     financialServiceProviderName,
     status,
   }: {
     programId: number;
     payment: number;
-    programFinancialServiceProviderConfigurationId?: number;
+    projectFinancialServiceProviderConfigurationId?: number;
     financialServiceProviderName?: FinancialServiceProviders;
     status?: TransactionStatusEnum;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
@@ -742,10 +742,10 @@ export class RegistrationsPaginationService {
     if (status) {
       query.andWhere('transaction.status = :status', { status });
     }
-    if (programFinancialServiceProviderConfigurationId) {
+    if (projectFinancialServiceProviderConfigurationId) {
       query.andWhere(
-        'transaction.programFinancialServiceProviderConfigurationId = :programFinancialServiceProviderConfigurationId',
-        { programFinancialServiceProviderConfigurationId },
+        'transaction.projectFinancialServiceProviderConfigurationId = :projectFinancialServiceProviderConfigurationId',
+        { projectFinancialServiceProviderConfigurationId },
       );
     }
     if (financialServiceProviderName) {

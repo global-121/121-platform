@@ -514,7 +514,7 @@ export class RegistrationsService {
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['program'],
+      relations: ['project'],
       programId,
     });
     const program = registrationToUpdate.project;
@@ -674,7 +674,7 @@ export class RegistrationsService {
 
     return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
-      relations: ['program'],
+      relations: ['project'],
     });
   }
 
@@ -912,7 +912,7 @@ export class RegistrationsService {
   ): Promise<RegistrationEntity | null> {
     return await this.registrationScopedRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(programId),
         registrationProgramId: Equal(paId),
       },
     });
@@ -964,7 +964,7 @@ export class RegistrationsService {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
-      relations: ['programFinancialServiceProviderConfiguration'],
+      relations: ['projectFinancialServiceProviderConfiguration'],
     });
     if (
       !registration.projectFinancialServiceProviderConfigurationId ||
@@ -981,7 +981,7 @@ export class RegistrationsService {
     const intersolveVisaConfig =
       await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
-          programFinancialServiceProviderConfigurationId:
+          projectFinancialServiceProviderConfigurationId:
             registration.projectFinancialServiceProviderConfigurationId,
           names: [
             FinancialServiceProviderConfigurationProperties.brandCode,

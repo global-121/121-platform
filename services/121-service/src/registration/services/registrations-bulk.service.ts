@@ -322,7 +322,7 @@ export class RegistrationsBulkService {
     ];
     if (includePaymentAttributes) {
       query.select.push(GenericRegistrationAttributes.paymentAmountMultiplier);
-      query.select.push('programFinancialServiceProviderConfigurationId');
+      query.select.push('projectFinancialServiceProviderConfigurationId');
       query.select.push(
         GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
       );
@@ -674,7 +674,7 @@ export class RegistrationsBulkService {
   ): Promise<void> {
     const template = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(programId),
         type: Equal(messageTemplateKey),
       },
     });

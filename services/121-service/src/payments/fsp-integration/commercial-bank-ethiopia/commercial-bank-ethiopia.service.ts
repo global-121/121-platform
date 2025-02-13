@@ -118,7 +118,7 @@ export class CommercialBankEthiopiaService
   ): Promise<void> {
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+        data.paPaymentData.projectFinancialServiceProviderConfigurationId,
       );
 
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -131,8 +131,8 @@ export class CommercialBankEthiopiaService
       programId: data.programId,
       paymentNr: data.paymentNr,
       userId: data.userId,
-      programFinancialServiceProviderConfigurationId:
-        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId:
+        data.paPaymentData.projectFinancialServiceProviderConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -315,11 +315,11 @@ export class CommercialBankEthiopiaService
   }
 
   public async getCommercialBankEthiopiaCredentialsOrThrow(
-    programFinancialServiceProviderConfigurationId: number,
+    projectFinancialServiceProviderConfigurationId: number,
   ): Promise<RequiredUsernamePasswordInterface> {
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId,
       );
 
     if (credentials.password == null || credentials.username == null) {

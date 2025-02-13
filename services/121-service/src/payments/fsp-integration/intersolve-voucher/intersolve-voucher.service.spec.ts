@@ -18,7 +18,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     paymentAddress: '14155238886',
     financialServiceProviderName:
       FinancialServiceProviders.intersolveVoucherWhatsapp,
-    programFinancialServiceProviderConfigurationId: 1,
+    projectFinancialServiceProviderConfigurationId: 1,
     bulkSize: 1,
     userId: 1,
   },

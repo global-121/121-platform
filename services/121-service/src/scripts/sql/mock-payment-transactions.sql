@@ -11,7 +11,7 @@ INSERT INTO "121-service"."transaction"
   amount,
   updated,
   "userId",
-  "programFinancialServiceProviderConfigurationId"
+  "projectFinancialServiceProviderConfigurationId"
 )
 SELECT
   created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY id),
@@ -25,7 +25,7 @@ SELECT
   amount,
   updated,
   "userId",
-  "programFinancialServiceProviderConfigurationId"
+  "projectFinancialServiceProviderConfigurationId"
 FROM
   "121-service"."transaction"
 WHERE

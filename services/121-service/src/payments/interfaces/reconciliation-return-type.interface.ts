@@ -4,7 +4,7 @@ import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconci
 export class ReconciliationReturnType {
   feedback: ReconciliationFeedbackDto;
 
-  programFinancialServiceProviderConfigurationId?: number;
+  projectFinancialServiceProviderConfigurationId?: number;
 
   transaction?: PaTransactionResultDto;
 }

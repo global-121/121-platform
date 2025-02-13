@@ -8,5 +8,5 @@ INSERT
 			,'mock-holderId'
 			,r.id
 	from "121-service".registration r 
-	left join "121-service".program_financial_service_provider_configuration f on r."programFinancialServiceProviderConfigurationId" = f.id 
+	left join "121-service".program_financial_service_provider_configuration f on r."projectFinancialServiceProviderConfigurationId" = f.id 
 	where f."financialServiceProviderName" = 'Intersolve-visa');

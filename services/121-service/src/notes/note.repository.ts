@@ -25,7 +25,7 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
       where: {
         registration: {
           id: Equal(registrationId),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       },
       relations: ['user'],

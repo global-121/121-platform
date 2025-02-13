@@ -98,10 +98,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
     mockTransactionScopedRepository = {
       count: jest.fn().mockImplementation((criteria) => {
-        const programFinancialServiceProviderConfigurationIdOfWhere =
-          criteria.where.programFinancialServiceProviderConfigurationId._value;
+        const projectFinancialServiceProviderConfigurationIdOfWhere =
+          criteria.where.projectFinancialServiceProviderConfigurationId._value;
 
-        if (programFinancialServiceProviderConfigurationIdOfWhere === 1) {
+        if (projectFinancialServiceProviderConfigurationIdOfWhere === 1) {
           return 0;
         }
         return 1;
@@ -141,7 +141,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       const result = await service.getByProgramId(programId);
 
       expect(mockProgramFspConfigurationRepository.find).toHaveBeenCalledWith({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(programId) },
         relations: ['properties'],
       });
       expect(Array.isArray(result)).toBe(true);
@@ -169,7 +169,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       ).toHaveBeenCalledWith({
         where: {
           name: Equal(createDto.name),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       });
       expect(mockProgramFspConfigurationRepository.save).toHaveBeenCalled();
@@ -268,13 +268,13 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       ).toHaveBeenCalledWith({
         where: {
           name: Equal(configName),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       });
       expect(
         mockProgramFspConfigurationPropertyRepository.delete,
       ).toHaveBeenCalledWith({
-        programFinancialServiceProviderConfigurationId: Equal(
+        projectFinancialServiceProviderConfigurationId: Equal(
           mockProgramFspConfigPropertyEntity.projectFinancialServiceProviderConfigurationId,
         ),
       });
@@ -310,7 +310,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       ).toHaveBeenCalledWith({
         where: {
           name: Equal(configName),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
         relations: ['registrations'],
       });
@@ -387,7 +387,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({
-        where: { programId: Equal(programId), name: Equal(configName) },
+        where: { projectId: Equal(programId), name: Equal(configName) },
       });
       expect(
         mockProgramFspConfigurationPropertyRepository.save,
@@ -451,7 +451,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       expect(
         mockProgramFspConfigurationRepository.findOne,
       ).toHaveBeenCalledWith({
-        where: { programId: Equal(programId), name: Equal(configName) },
+        where: { projectId: Equal(programId), name: Equal(configName) },
       });
       expect(
         mockProgramFspConfigurationPropertyRepository.delete,

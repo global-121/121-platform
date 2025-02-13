@@ -285,7 +285,7 @@ export class MessageService {
 
     const registration = await this.registrationRepository.findOne({
       where: { id: Equal(registrationId) },
-      relations: ['program'],
+      relations: ['project'],
     });
     const language = registration?.preferredLanguage || this.fallbackLanguage;
     const whatsappGenericMessage = await this.getNotificationText(

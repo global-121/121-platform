@@ -223,7 +223,7 @@ describe('Manage financial service provider configurations', () => {
   });
 
   // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('deleting program financial service provider configuration with existing transactions should set programFinancialServiceProviderConfigurationId of transactions to null', async () => {
+  it('deleting program financial service provider configuration with existing transactions should set projectFinancialServiceProviderConfigurationId of transactions to null', async () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
@@ -272,7 +272,7 @@ describe('Manage financial service provider configurations', () => {
     expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(getResultConfig).not.toBeDefined();
     expect(
-      getTranactions.body[0].programFinancialServiceProviderConfigurationId,
+      getTranactions.body[0].projectFinancialServiceProviderConfigurationId,
     ).toBe(null);
   });
 

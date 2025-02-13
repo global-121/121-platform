@@ -144,19 +144,19 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
           name: FinancialServiceProviderConfigurationProperties.brandCode,
           value: 'brand123',
         };
-      const programFinancialServiceProviderConfigurationId = 1;
+      const projectFinancialServiceProviderConfigurationId = 1;
 
       // Act
       const entities =
         ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
           [dto],
-          programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId,
         );
       const entity = entities[0];
       // Assert
       expect(entity.name).toBe(dto.name);
       expect(entity.projectFinancialServiceProviderConfigurationId).toBe(
-        programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(dto.value);
     });
@@ -168,20 +168,20 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
           name: FinancialServiceProviderConfigurationProperties.columnsToExport,
           value: ['column1', 'column2', 'column3'],
         };
-      const programFinancialServiceProviderConfigurationId = 2;
+      const projectFinancialServiceProviderConfigurationId = 2;
 
       // Act
       const entities =
         ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
           [dto],
-          programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId,
         );
       const entity = entities[0];
 
       // Assert
       expect(entity.name).toBe(dto.name);
       expect(entity.projectFinancialServiceProviderConfigurationId).toBe(
-        programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(JSON.stringify(dto.value)); // Expect value to be JSON string
     });

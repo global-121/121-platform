@@ -108,7 +108,7 @@ export class IntersolveVoucherService
   ): Promise<void> {
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        jobData.paymentInfo.programFinancialServiceProviderConfigurationId,
+        jobData.paymentInfo.projectFinancialServiceProviderConfigurationId,
       );
     const paResult = await this.sendIndividualPayment(
       jobData.paymentInfo,
@@ -133,8 +133,8 @@ export class IntersolveVoucherService
       paResult.message ?? null,
       registration.projectId,
       {
-        programFinancialServiceProviderConfigurationId:
-          jobData.paymentInfo.programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId:
+          jobData.paymentInfo.projectFinancialServiceProviderConfigurationId,
         userId: jobData.paymentInfo.userId,
       },
     );
@@ -481,7 +481,7 @@ export class IntersolveVoucherService
     const registration = await this.registrationScopedRepository.findOne({
       where: {
         referenceId: Equal(referenceId),
-        programId: Equal(programId),
+        projectId: Equal(programId),
       },
       relations: ['images', 'images.voucher'],
     });
@@ -507,7 +507,7 @@ export class IntersolveVoucherService
   public async getInstruction(programId: number): Promise<any> {
     const intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(programId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -526,7 +526,7 @@ export class IntersolveVoucherService
   ): Promise<any> {
     let intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(programId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -672,8 +672,8 @@ export class IntersolveVoucherService
     );
 
     let userId = options.userId;
-    let programFinancialServiceProviderConfigurationId =
-      options.programFinancialServiceProviderConfigurationId;
+    let projectFinancialServiceProviderConfigurationId =
+      options.projectFinancialServiceProviderConfigurationId;
     if (transactionStep === 2) {
       const userFspConfigIdObject =
         await this.getUserFspConfigIdForTransactionStep2(
@@ -682,8 +682,8 @@ export class IntersolveVoucherService
         );
       if (userFspConfigIdObject) {
         userId = userFspConfigIdObject.userId;
-        programFinancialServiceProviderConfigurationId =
-          userFspConfigIdObject.programFinancialServiceProviderConfigurationId;
+        projectFinancialServiceProviderConfigurationId =
+          userFspConfigIdObject.projectFinancialServiceProviderConfigurationId;
       }
     }
 
@@ -692,9 +692,9 @@ export class IntersolveVoucherService
         'Could not find userId for transaction in storeTransactionResult.',
       );
     }
-    if (programFinancialServiceProviderConfigurationId === undefined) {
+    if (projectFinancialServiceProviderConfigurationId === undefined) {
       throw new Error(
-        'Could not find programFinancialServiceProviderConfigurationId for transaction in storeTransactionResult.',
+        'Could not find projectFinancialServiceProviderConfigurationId for transaction in storeTransactionResult.',
       );
     }
 
@@ -702,7 +702,7 @@ export class IntersolveVoucherService
       programId,
       paymentNr: payment,
       userId,
-      programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId,
     };
 
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -717,14 +717,14 @@ export class IntersolveVoucherService
   ) {
     const transaction: null | {
       userId: number;
-      programFinancialServiceProviderConfigurationId: number;
+      projectFinancialServiceProviderConfigurationId: number;
     } = await this.transactionRepository.findOne({
       where: {
         registrationId: Equal(registrationId),
         payment: Equal(payment),
       },
       order: { created: 'DESC' },
-      select: ['userId', 'programFinancialServiceProviderConfigurationId'],
+      select: ['userId', 'projectFinancialServiceProviderConfigurationId'],
     });
     return transaction;
   }

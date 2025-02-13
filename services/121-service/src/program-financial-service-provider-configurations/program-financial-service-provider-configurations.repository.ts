@@ -29,7 +29,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }): Promise<ProjectFinancialServiceProviderConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(programId),
         financialServiceProviderName: Equal(financialServiceProviderName),
       },
       relations: { properties: true },
@@ -37,10 +37,10 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }
 
   public async getUsernamePasswordProperties(
-    programFinancialServiceProviderConfigurationId: number,
+    projectFinancialServiceProviderConfigurationId: number,
   ): Promise<UsernamePasswordInterface> {
     const properties = await this.getProperties(
-      programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId,
     );
     const propertyUsername = properties.find(
       (c) =>
@@ -93,17 +93,17 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
 
   // This methods specfically does not throw as it also used to check if the property exists
   public async getPropertyValueByName({
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     name,
   }: {
-    programFinancialServiceProviderConfigurationId: number;
+    projectFinancialServiceProviderConfigurationId: number;
     name: FinancialServiceProviderConfigurationProperties;
   }) {
     const configuration = await this.baseRepository
       .createQueryBuilder('configuration')
       .leftJoinAndSelect('configuration.properties', 'properties')
       .where('configuration.id = :id', {
-        id: programFinancialServiceProviderConfigurationId,
+        id: projectFinancialServiceProviderConfigurationId,
       })
       .andWhere('properties.name = :name', { name })
       .getOne();
@@ -112,20 +112,20 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }
 
   public async getPropertiesByNamesOrThrow({
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     names,
   }: {
-    programFinancialServiceProviderConfigurationId: number;
+    projectFinancialServiceProviderConfigurationId: number;
     names: string[];
   }) {
     const properties = await this.getProperties(
-      programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId,
     );
 
     for (const name of names) {
       if (!properties.find((property) => property.name === name)) {
         throw new Error(
-          `Configuration with name ${name} not found for ProgramFinancialServiceProviderConfigurationEntity with id:  ${programFinancialServiceProviderConfigurationId}`,
+          `Configuration with name ${name} not found for ProgramFinancialServiceProviderConfigurationEntity with id:  ${projectFinancialServiceProviderConfigurationId}`,
         );
       }
     }
@@ -137,11 +137,11 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }
 
   private async getProperties(
-    programFinancialServiceProviderConfigurationId: number,
+    projectFinancialServiceProviderConfigurationId: number,
   ) {
     const configuration = await this.baseRepository.findOne({
       where: {
-        id: Equal(programFinancialServiceProviderConfigurationId),
+        id: Equal(projectFinancialServiceProviderConfigurationId),
       },
       relations: ['properties'],
     });

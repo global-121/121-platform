@@ -61,7 +61,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
         'fspconfig.financialServiceProviderName as "financialServiceProviderName"',
-        'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
+        'transaction.projectFinancialServiceProviderConfigurationId as "projectFinancialServiceProviderConfigurationId"',
         'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
         'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])

@@ -59,7 +59,7 @@ export class IntersolveVoucherCronService {
       return;
     }
 
-    // Get the first intersolve programFinancialServiceProviderConfigurationId that has intersolveVoucherWhatsapp as FSP
+    // Get the first intersolve projectFinancialServiceProviderConfigurationId that has intersolveVoucherWhatsapp as FSP
     // TODO: store the programFspConfigurationId or the usename and password in the intersolveRequest table so we know which credentials to use for the cancelation
     // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
     const configId = await this.programFspConfigurationRepository.findOne({
@@ -159,7 +159,7 @@ export class IntersolveVoucherCronService {
         const referenceId = unsentIntersolveVoucher.referenceId;
         const registration = await this.registrationRepository.findOneOrFail({
           where: { referenceId: Equal(referenceId) },
-          relations: ['program'],
+          relations: ['project'],
         });
         const fromNumber =
           await this.registrationDataService.getRegistrationDataValueByName(

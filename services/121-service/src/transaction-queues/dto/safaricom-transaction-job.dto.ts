@@ -1,6 +1,6 @@
 export interface SafaricomTransactionJobDto {
   readonly programId: number;
-  readonly programFinancialServiceProviderConfigurationId: number;
+  readonly projectFinancialServiceProviderConfigurationId: number;
   readonly paymentNumber: number;
   readonly referenceId: string;
   readonly transactionAmount: number;

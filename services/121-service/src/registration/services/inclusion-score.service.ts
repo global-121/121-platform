@@ -56,7 +56,7 @@ export class InclusionScoreService {
   public async calculateInclusionScore(referenceId: string): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['program'],
+      relations: ['project'],
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);

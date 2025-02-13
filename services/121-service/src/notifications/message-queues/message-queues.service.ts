@@ -129,7 +129,7 @@ export class MessageQueuesService {
       const messageTemplate = await this.messageTemplateRepository.findOne({
         where: {
           type: Equal(messageTemplateKey),
-          programId: Equal(programId),
+          projectId: Equal(programId),
           language: Equal('en'), // use English to determine which placeholders are used
         },
       });

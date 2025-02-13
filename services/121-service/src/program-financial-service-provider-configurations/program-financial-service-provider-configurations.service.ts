@@ -30,7 +30,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
     const programFspConfigurations =
       await this.programFspConfigurationRepository.find({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(programId) },
         relations: ['properties'],
       });
 
@@ -57,7 +57,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       {
         where: {
           name: Equal(programFspConfigurationDto.name),
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       },
     );
@@ -108,7 +108,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
-        programId: Equal(programId),
+        projectId: Equal(programId),
       },
     });
 
@@ -151,7 +151,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
-        programId: Equal(programId),
+        projectId: Equal(programId),
       },
       relations: ['registrations'], //TODO: Should this module know about registrations?
     });
@@ -265,7 +265,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
       const exisingProperties =
         await this.programFspConfigurationPropertyRepository.find({
           where: {
-            programFinancialServiceProviderConfigurationId: Equal(
+            projectFinancialServiceProviderConfigurationId: Equal(
               configIdToCheckForDuplicates,
             ),
             name: In(propertyNames),
@@ -390,7 +390,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
-        programId: Equal(programId),
+        projectId: Equal(programId),
       },
     });
     if (!config) {
@@ -409,7 +409,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     const property =
       await this.programFspConfigurationPropertyRepository.findOne({
         where: {
-          programFinancialServiceProviderConfigurationId: Equal(
+          projectFinancialServiceProviderConfigurationId: Equal(
             programFspConfigurationId,
           ),
           name: Equal(propertyName),

@@ -354,13 +354,13 @@ export class EventsService {
       'id',
       'paymentCount',
       'paymentCountRemaining',
-      'programId',
+      'projectId',
       'registrationCreated',
       'registrationCreatedDate',
       'financialServiceProviderName',
-      'programFinancialServiceProviderConfigurationId',
-      'programFinancialServiceProviderConfigurationLabel',
-      'registrationProgramId',
+      'projectFinancialServiceProviderConfigurationId',
+      'projectFinancialServiceProviderConfigurationLabel',
+      'registrationProjectId',
       'personAffectedSequence',
       'lastMessageStatus',
       'name',
@@ -373,7 +373,7 @@ export class EventsService {
 
   private getEventType(key: string): EventEnum {
     const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'programFinancialServiceProviderConfigurationName';
+      'projectFinancialServiceProviderConfigurationName';
     if (key === financialServiceProviderKey) {
       return EventEnum.financialServiceProviderChange;
     }

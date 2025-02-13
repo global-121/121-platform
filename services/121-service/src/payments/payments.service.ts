@@ -337,7 +337,7 @@ export class PaymentsService {
         {
           where: {
             name: Equal(programFinancialServiceProviderConfigurationName),
-            programId: Equal(programId),
+            projectId: Equal(programId),
           },
           relations: ['properties'],
         },
@@ -781,7 +781,7 @@ export class PaymentsService {
             userId,
             paymentNumber,
             referenceId: registrationView.referenceId,
-            programFinancialServiceProviderConfigurationId:
+            projectFinancialServiceProviderConfigurationId:
               registrationView.projectFinancialServiceProviderConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
@@ -865,7 +865,7 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
+          projectFinancialServiceProviderConfigurationId:
             registrationView.projectFinancialServiceProviderConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
@@ -930,7 +930,7 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
+          projectFinancialServiceProviderConfigurationId:
             registrationView.projectFinancialServiceProviderConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
@@ -1016,7 +1016,7 @@ export class PaymentsService {
         '"fspConfig"."financialServiceProviderName" as "financialServiceProviderName"',
       )
       .addSelect(
-        '"fspConfig"."id" as "programFinancialServiceProviderConfigurationId"',
+        '"fspConfig"."id" as "projectFinancialServiceProviderConfigurationId"',
       )
       .andWhere('registration."programId" = :programId', { programId })
       .leftJoin(
@@ -1113,8 +1113,8 @@ export class PaymentsService {
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
         userId,
-        programFinancialServiceProviderConfigurationId:
-          row.programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId:
+          row.projectFinancialServiceProviderConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
@@ -1139,7 +1139,7 @@ export class PaymentsService {
     const programFspConfigEntitiesWithFspInstruction =
       await this.programFinancialServiceProviderConfigurationRepository.find({
         where: {
-          programId: Equal(programId),
+          projectId: Equal(programId),
           financialServiceProviderName: In(
             this.getFspNamesThatRequireInstructions(),
           ),
@@ -1176,7 +1176,7 @@ export class PaymentsService {
           ),
           programFinancialServiceProviderConfigurationName:
             fspConfigEntity.name,
-          programFinancialServiceProviderConfigurationId: fspConfigEntity.id,
+          projectFinancialServiceProviderConfigurationId: fspConfigEntity.id,
           financialServiceProviderName:
             fspConfigEntity.financialServiceProviderName,
         });
@@ -1230,14 +1230,14 @@ export class PaymentsService {
     programId,
     payment,
     programFinancialServiceProviderConfigurationName,
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     financialServiceProviderName,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
     payment: number;
     programFinancialServiceProviderConfigurationName: string;
-    programFinancialServiceProviderConfigurationId: number;
+    projectFinancialServiceProviderConfigurationId: number;
     financialServiceProviderName: FinancialServiceProviders;
   }): Promise<FspInstructions> {
     if (financialServiceProviderName === FinancialServiceProviders.excel) {
@@ -1246,7 +1246,7 @@ export class PaymentsService {
           transactions,
           programId,
           payment,
-          programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId,
         }),
         fileNamePrefix: programFinancialServiceProviderConfigurationName,
       };

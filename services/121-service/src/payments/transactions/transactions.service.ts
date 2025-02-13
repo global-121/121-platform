@@ -112,7 +112,7 @@ export class TransactionsService {
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
     transaction.projectFinancialServiceProviderConfigurationId =
-      relationDetails.programFinancialServiceProviderConfigurationId;
+      relationDetails.projectFinancialServiceProviderConfigurationId;
     transaction.project = program;
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
@@ -324,7 +324,7 @@ export class TransactionsService {
         transaction.amount = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
         transaction.projectFinancialServiceProviderConfigurationId =
-          transactionRelationDetails.programFinancialServiceProviderConfigurationId;
+          transactionRelationDetails.projectFinancialServiceProviderConfigurationId;
         transaction.projectId = transactionRelationDetails.programId;
         transaction.payment = transactionRelationDetails.paymentNr;
         transaction.userId = transactionRelationDetails.userId;

@@ -59,8 +59,8 @@ export class ExcelService
         programId,
         paymentNr,
         userId: paPaymentList[0].userId,
-        programFinancialServiceProviderConfigurationId:
-          paPayment.programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId:
+          paPayment.projectFinancialServiceProviderConfigurationId,
       };
 
       const transactionResultObject = {
@@ -88,15 +88,15 @@ export class ExcelService
     transactions,
     programId,
     payment,
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
     payment: number;
-    programFinancialServiceProviderConfigurationId: number;
+    projectFinancialServiceProviderConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
     const exportColumns = await this.getExportColumnsForProgramFspConfig(
-      programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId,
       programId,
     );
     // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
@@ -106,7 +106,7 @@ export class ExcelService
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,
         payment,
-        programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId,
         status: TransactionStatusEnum.waiting,
       });
     const chunkSize = 400000;
@@ -129,13 +129,13 @@ export class ExcelService
   }
 
   private async getExportColumnsForProgramFspConfig(
-    programFinancialServiceProviderConfigurationId: number,
+    projectFinancialServiceProviderConfigurationId: number,
     programId: number,
   ): Promise<string[]> {
     const columnsToExportConfig =
       await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
-          programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId,
           name: FinancialServiceProviderConfigurationProperties.columnsToExport,
         },
       );
@@ -217,19 +217,19 @@ export class ExcelService
   }
 
   public async getImportMatchColumn(
-    programFinancialServiceProviderConfigurationId: number,
+    projectFinancialServiceProviderConfigurationId: number,
   ): Promise<string> {
     const matchColumn =
       await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
-          programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId,
           name: FinancialServiceProviderConfigurationProperties.columnToMatch,
         },
       );
     if (!matchColumn) {
       throw new HttpException(
         {
-          errors: `No match column found for FSP 'Excel' and programFinancialServiceProviderConfigurationId with id ${programFinancialServiceProviderConfigurationId}`,
+          errors: `No match column found for FSP 'Excel' and projectFinancialServiceProviderConfigurationId with id ${projectFinancialServiceProviderConfigurationId}`,
         },
         HttpStatus.NOT_FOUND,
       );

@@ -40,7 +40,7 @@ const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   bulkSize: 10,
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
-  programFinancialServiceProviderConfigurationId: 1,
+  projectFinancialServiceProviderConfigurationId: 1,
   originatorConversationId: 'originator-conversation-id',
 };
 
@@ -164,7 +164,7 @@ describe('TransactionJobProcessorsService', () => {
       userId: 1,
       bulkSize: 10,
       phoneNumber: registrationNedbank.phoneNumber,
-      programFinancialServiceProviderConfigurationId: 1,
+      projectFinancialServiceProviderConfigurationId: 1,
     };
 
     const mockedCreateOrderReturn = NedbankVoucherStatus.PENDING;

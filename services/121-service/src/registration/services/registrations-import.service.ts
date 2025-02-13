@@ -331,7 +331,7 @@ export class RegistrationsImportService {
     const programRegistrationAttributes =
       await this.programRegistrationAttributeRepository.find({
         where: {
-          programId: Equal(programId),
+          projectId: Equal(programId),
         },
       });
     for (const attribute of programRegistrationAttributes) {
@@ -386,7 +386,7 @@ export class RegistrationsImportService {
   ): Promise<AttributeWithOptionalLabel[]> {
     const programRegistrationAttributes = (
       await this.programRegistrationAttributeRepository.find({
-        where: { program: { id: Equal(programId) } },
+        where: { project: { id: Equal(programId) } },
       })
     ).map((attribute) => {
       return {

@@ -3,7 +3,7 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 export class PaPaymentDataDto {
   public referenceId: string;
   public paymentAddress: string;
-  public programFinancialServiceProviderConfigurationId: number;
+  public projectFinancialServiceProviderConfigurationId: number;
   // TODO: Do not use the the PaPaymentDataDto in Intersolve voucher & CBE than we we can refactor this to not need the FinancialServiceProviders enum anymore
   public financialServiceProviderName: FinancialServiceProviders;
   public transactionAmount: number;

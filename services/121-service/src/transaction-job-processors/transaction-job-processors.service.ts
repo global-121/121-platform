@@ -41,7 +41,7 @@ interface ProcessTransactionResultInput {
   paymentNumber: number;
   userId: number;
   transferAmountInMajorUnit: number;
-  programFinancialServiceProviderConfigurationId: number;
+  projectFinancialServiceProviderConfigurationId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
   isRetry: boolean;
@@ -89,8 +89,8 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-          programFinancialServiceProviderConfigurationId:
-            input.programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId:
+            input.projectFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -108,8 +108,8 @@ export class TransactionJobProcessorsService {
       const intersolveVisaConfig =
         await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
           {
-            programFinancialServiceProviderConfigurationId:
-              input.programFinancialServiceProviderConfigurationId,
+            projectFinancialServiceProviderConfigurationId:
+              input.projectFinancialServiceProviderConfigurationId,
             names: [
               FinancialServiceProviderConfigurationProperties.brandCode,
               FinancialServiceProviderConfigurationProperties.coverLetterCode,
@@ -155,8 +155,8 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           transferAmountInMajorUnit,
-          programFinancialServiceProviderConfigurationId:
-            input.programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId:
+            input.projectFinancialServiceProviderConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -192,8 +192,8 @@ export class TransactionJobProcessorsService {
       userId: input.userId,
       transferAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-      programFinancialServiceProviderConfigurationId:
-        input.programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId:
+        input.projectFinancialServiceProviderConfigurationId,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
@@ -227,8 +227,8 @@ export class TransactionJobProcessorsService {
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
         transferAmountInMajorUnit: transactionJob.transactionAmount,
-        programFinancialServiceProviderConfigurationId:
-          transactionJob.programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId:
+          transactionJob.projectFinancialServiceProviderConfigurationId,
         registration,
         oldRegistration,
         isRetry: transactionJob.isRetry,
@@ -292,8 +292,8 @@ export class TransactionJobProcessorsService {
     const paymentReferencePrefix =
       (await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
-          programFinancialServiceProviderConfigurationId:
-            transactionJob.programFinancialServiceProviderConfigurationId,
+          projectFinancialServiceProviderConfigurationId:
+            transactionJob.projectFinancialServiceProviderConfigurationId,
           name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
         },
       )) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
@@ -326,8 +326,8 @@ export class TransactionJobProcessorsService {
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
         transferAmountInMajorUnit: transactionJob.transactionAmount,
-        programFinancialServiceProviderConfigurationId:
-          transactionJob.programFinancialServiceProviderConfigurationId,
+        projectFinancialServiceProviderConfigurationId:
+          transactionJob.projectFinancialServiceProviderConfigurationId,
         registration,
         oldRegistration,
         isRetry: transactionJob.isRetry,
@@ -423,7 +423,7 @@ export class TransactionJobProcessorsService {
     paymentNumber,
     userId,
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     registration,
     oldRegistration,
     isRetry,
@@ -433,7 +433,7 @@ export class TransactionJobProcessorsService {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
-      programFinancialServiceProviderConfigurationId,
+      projectFinancialServiceProviderConfigurationId,
       programId,
       paymentNumber,
       userId,
@@ -498,7 +498,7 @@ export class TransactionJobProcessorsService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    programFinancialServiceProviderConfigurationId,
+    projectFinancialServiceProviderConfigurationId,
     programId,
     paymentNumber,
     userId,
@@ -507,7 +507,7 @@ export class TransactionJobProcessorsService {
   }: {
     amount: number;
     registration: RegistrationEntity;
-    programFinancialServiceProviderConfigurationId: number;
+    projectFinancialServiceProviderConfigurationId: number;
     programId: number;
     paymentNumber: number;
     userId: number;
@@ -519,7 +519,7 @@ export class TransactionJobProcessorsService {
     transaction.created = new Date();
     transaction.registration = registration;
     transaction.projectFinancialServiceProviderConfigurationId =
-      programFinancialServiceProviderConfigurationId;
+      projectFinancialServiceProviderConfigurationId;
     transaction.projectId = programId;
     transaction.payment = paymentNumber;
     transaction.userId = userId;
