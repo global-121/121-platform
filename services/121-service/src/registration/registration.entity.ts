@@ -30,7 +30,7 @@ import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imageco
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';

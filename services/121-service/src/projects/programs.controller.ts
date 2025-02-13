@@ -29,17 +29,17 @@ import { validate } from 'class-validator';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
+import { CreateProgramDto } from '@121-service/src/projects/dtos/create-program.dto';
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
-} from '@121-service/src/programs/dto/program-registration-attribute.dto';
-import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
-import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProgramService } from '@121-service/src/programs/programs.service';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+} from '@121-service/src/projects/dtos/program-registration-attribute.dto';
+import { ProgramReturnDto } from '@121-service/src/projects/dtos/program-return.dto';
+import { UpdateProgramDto } from '@121-service/src/projects/dtos/update-program.dto';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
+import { ProgramService } from '@121-service/src/projects/programs.service';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -52,7 +52,7 @@ import { RequestHelper } from '@121-service/src/utils/request-helper/request-hel
 export class ProgramController {
   public constructor(
     private readonly programService: ProgramService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programAttributesService: ProjectAttributesService,
     private readonly koboConnectService: KoboConnectService,
   ) {}
 

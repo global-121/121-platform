@@ -8,7 +8,7 @@ import {
 } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Injectable()

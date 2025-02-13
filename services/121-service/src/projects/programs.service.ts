@@ -9,22 +9,22 @@ import {
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GetTokenReturnType } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-return-type.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.service';
-import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
-import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
+import { CreateProgramDto } from '@121-service/src/projects/dtos/create-program.dto';
+import { FoundProgramDto } from '@121-service/src/projects/dtos/found-program.dto';
 import {
   ProgramRegistrationAttributeDto,
   UpdateProgramRegistrationAttributeDto,
-} from '@121-service/src/programs/dto/program-registration-attribute.dto';
-import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
-import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
-import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+} from '@121-service/src/projects/dtos/program-registration-attribute.dto';
+import { ProgramReturnDto } from '@121-service/src/projects/dtos/program-return.dto';
+import { UpdateProgramDto } from '@121-service/src/projects/dtos/update-program.dto';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
+import { ProgramRegistrationAttributeMapper } from '@121-service/src/projects/mappers/program-registration-attribute.mapper';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -43,7 +43,7 @@ export class ProgramService {
   public constructor(
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programAttributesService: ProjectAttributesService,
     private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,

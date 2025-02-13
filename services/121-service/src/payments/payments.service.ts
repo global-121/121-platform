@@ -43,7 +43,7 @@ import { TransactionScopedRepository } from '@121-service/src/payments/transacti
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,

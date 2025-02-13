@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
+import { CreateOptionsDto } from '@121-service/src/projects/dtos/create-options.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';

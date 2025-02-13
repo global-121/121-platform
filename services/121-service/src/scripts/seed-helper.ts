@@ -17,9 +17,9 @@ import { OrganizationEntity } from '@121-service/src/organization/organization.e
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProjectFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/project-aidworker.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/entities/project-aidworker.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';

@@ -5,7 +5,7 @@ import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-inte
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CommercialBankEthiopiaReconciliationController } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.controller';
 import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.service';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 

@@ -19,9 +19,9 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.module';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
+import { ProgramModule } from '@121-service/src/projects/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';

@@ -6,7 +6,7 @@ import { Equal, Not, Repository } from 'typeorm';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
 import {

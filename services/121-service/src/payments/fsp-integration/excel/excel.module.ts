@@ -7,7 +7,7 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 

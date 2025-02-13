@@ -10,7 +10,7 @@ import {
 } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -32,7 +32,7 @@ const defaultMessageJob = {
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
   let queuesService: QueuesRegistryService;
-  let programAttributesService: ProgramAttributesService;
+  let programAttributesService: ProjectAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
@@ -48,7 +48,7 @@ describe('MessageQueuesService', () => {
 
     queueMessageService = unit;
     queuesService = unitRef.get(QueuesRegistryService);
-    programAttributesService = unitRef.get(ProgramAttributesService);
+    programAttributesService = unitRef.get(ProjectAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,

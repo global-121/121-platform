@@ -13,7 +13,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';

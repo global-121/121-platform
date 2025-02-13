@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -13,17 +14,17 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-response.dto';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/projects/dtos/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-// This declared at the top of the file because it is used in the dto class and else it is not defined yet
+// This declared at the top of the file because it is used in the CreateProgramDto and else it is not defined yet
 // It's not defined inline because typing works more convient here
-const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
+const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   {
     name: 'nameFirst',
     type: RegistrationAttributeTypes.text,
@@ -60,8 +61,9 @@ const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
       '19-65': 0,
       '65>': 6,
     },
-    showInPeopleAffectedTable: true,
+    showInPeopleAffectedTable: false,
     editableInPortal: false,
+    isRequired: true,
   },
   {
     name: 'roof_type',
@@ -87,14 +89,26 @@ const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
       '0': 3,
       '1': 6,
     },
-    showInPeopleAffectedTable: true,
+    showInPeopleAffectedTable: false,
     editableInPortal: true,
   },
 ];
-export class ProgramReturnDto {
-  @ApiProperty({ example: 1, type: 'number' })
-  id: number;
 
+export class ProgramFinancialServiceProviderDto {
+  @ApiProperty()
+  @IsEnum(FinancialServiceProviders)
+  fsp: WrapperType<FinancialServiceProviders>;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  configuration?: {
+    name: WrapperType<FinancialServiceProviders>;
+    value: string | string[] | Record<string, string>;
+  }[];
+}
+
+export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly published: boolean;
@@ -106,19 +120,16 @@ export class ProgramReturnDto {
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  public readonly location?: string;
+  public readonly location: string;
 
   @ApiProperty({ example: 'NLRC' })
   @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  public readonly ngo?: string;
+  public readonly ngo: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  @IsOptional()
-  public readonly titlePortal?: LocalizedString;
+  public readonly titlePortal: LocalizedString;
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
@@ -127,14 +138,12 @@ export class ProgramReturnDto {
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
-  @IsOptional()
-  public readonly startDate?: Date;
+  public readonly startDate: Date;
 
   @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
-  @IsOptional()
-  public readonly endDate?: Date;
+  public readonly endDate: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
@@ -142,22 +151,18 @@ export class ProgramReturnDto {
   @Length(3, 3, {
     message: 'Currency should be a 3 letter abbreviation',
   })
-  @IsOptional()
-  public readonly currency?: string;
+  public readonly currency: string;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
-  @IsOptional()
-  public readonly distributionFrequency?: string;
+  public readonly distributionFrequency: string;
 
   @ApiProperty({ example: 10 })
   @IsNumber()
-  @IsOptional()
-  public readonly distributionDuration?: number;
+  public readonly distributionDuration: number;
 
   @ApiProperty({ example: 500 })
-  @IsOptional()
-  public readonly fixedTransferValue?: number;
+  public readonly fixedTransferValue: number;
 
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })
   @IsOptional()
@@ -166,15 +171,14 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: 250 })
   @IsNumber()
-  @IsOptional()
-  public readonly targetNrRegistrations?: number;
+  public readonly targetNrRegistrations: number;
 
   @ApiProperty({ example: true })
   @IsBoolean()
   public readonly tryWhatsAppFirst: boolean;
 
   @ApiProperty({
-    example: exampleAttributesReturn,
+    example: exampleAttributes,
   })
   @IsArray()
   @ValidateNested()
@@ -184,8 +188,7 @@ export class ProgramReturnDto {
 
   @ApiProperty({ example: { en: 'about program' } })
   @IsNotEmpty()
-  @IsOptional()
-  public readonly aboutProgram?: LocalizedString;
+  public readonly aboutProgram: LocalizedString;
 
   @ApiProperty({
     example: ['nameFirst', 'nameLast'],
@@ -193,8 +196,7 @@ export class ProgramReturnDto {
       'Should be array of name-related program-registration-attributes.',
   })
   @IsArray()
-  @IsOptional()
-  public readonly fullnameNamingConvention?: string[];
+  public readonly fullnameNamingConvention: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
@@ -211,10 +213,6 @@ export class ProgramReturnDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly allowEmptyPhoneNumber: boolean;
-
-  @ApiProperty()
-  @IsArray()
-  public readonly financialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationResponseDto[];
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()

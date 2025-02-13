@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 
 @Entity('intersolve_voucher_instruction')
 export class IntersolveVoucherInstructionsEntity extends Base121Entity {

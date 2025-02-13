@@ -5,14 +5,14 @@ graph LR
   ExchangeRatesModule-->UserModule
   UserModule-->EmailsModule
   MessageTemplateModule-->UserModule
-  MessageTemplateModule-->ProgramAttributesModule
+  MessageTemplateModule-->ProjectAttributesModule
   ProgramModule-->ActionsModule
   ActionsModule-->UserModule
   ProgramModule-->UserModule
   ProgramModule-->FinancialServiceProvidersModule
   FinancialServiceProvidersModule-->UserModule
   ProgramModule-->LookupModule
-  ProgramModule-->ProgramAttributesModule
+  ProgramModule-->ProjectAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
   ProgramModule-->IntersolveVisaModule
@@ -24,7 +24,7 @@ graph LR
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->ProjectAttributesModule
   MessageQueuesModule-->RegistrationDataModule
   MessageQueuesModule-->QueuesRegistryModule
   MessageModule-->IntersolveVoucherModule

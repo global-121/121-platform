@@ -21,8 +21,8 @@ import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
 import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {

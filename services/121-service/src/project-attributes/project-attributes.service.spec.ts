@@ -3,41 +3,41 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
 
-describe('ProgramAttributesService', () => {
-  let programRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
-  let programAttributesService: ProgramAttributesService;
-  const programRepositoryToken: string | Function =
+describe('ProjectAttributesService', () => {
+  let projectRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
+  let projectAttributesService: ProjectAttributesService;
+  const projectRepositoryToken: string | Function =
     getRepositoryToken(ProjectEntity);
-  const programRegistrationAttributeToken: string | Function =
+  const projectRegistrationAttributeToken: string | Function =
     getRepositoryToken(ProjectRegistrationAttributeEntity);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProgramAttributesService,
+        ProjectAttributesService,
         {
-          provide: programRegistrationAttributeToken,
+          provide: projectRegistrationAttributeToken,
           useClass: Repository,
         },
         {
-          provide: programRepositoryToken,
+          provide: projectRepositoryToken,
           useClass: Repository,
         },
       ],
     }).compile();
 
-    programAttributesService = module.get<ProgramAttributesService>(
-      ProgramAttributesService,
+    projectAttributesService = module.get<ProjectAttributesService>(
+      ProjectAttributesService,
     );
-    programRegistrationAttributeRepository = module.get<
+    projectRegistrationAttributeRepository = module.get<
       Repository<ProjectRegistrationAttributeEntity>
-    >(programRegistrationAttributeToken);
+    >(projectRegistrationAttributeToken);
   });
 
   describe('getAttributes', () => {
@@ -57,10 +57,10 @@ describe('ProgramAttributesService', () => {
       );
 
       jest
-        .spyOn(programRegistrationAttributeRepository, 'createQueryBuilder')
+        .spyOn(projectRegistrationAttributeRepository, 'createQueryBuilder')
         .mockImplementation(() => createQueryBuilder) as any;
 
-      const result = await programAttributesService.getAttributes({
+      const result = await projectAttributesService.getAttributes({
         programId: 1,
         includeProgramRegistrationAttributes: true,
         includeTemplateDefaultAttributes: false,
@@ -69,8 +69,8 @@ describe('ProgramAttributesService', () => {
       const includeTemplateDefaultAttributes: (keyof RegistrationViewEntity)[] =
         [
           'paymentAmountMultiplier',
-          'programFinancialServiceProviderConfigurationLabel',
-          'programFinancialServiceProviderConfigurationLabel',
+          'projectFinancialServiceProviderConfigurationLabel',
+          'projectFinancialServiceProviderConfigurationLabel',
           'paymentCountRemaining',
         ];
 

@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 import { Equal } from 'typeorm';
 
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProgramRepository } from '@121-service/src/projects/repositories/program.repository';
 
 //
 @Injectable()

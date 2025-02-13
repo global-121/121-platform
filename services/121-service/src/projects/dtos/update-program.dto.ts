@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
+import { ProgramFinancialServiceProviderDto } from '@121-service/src/projects/dtos/create-program.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class UpdateProgramDto {

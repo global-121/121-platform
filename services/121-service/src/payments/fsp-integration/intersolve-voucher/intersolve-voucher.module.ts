@@ -19,8 +19,8 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProjectFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/project-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-financial-service-provider-configurations/program-financial-service-provider-configurations.repository';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/project-aidworker.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/entities/project-aidworker.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';

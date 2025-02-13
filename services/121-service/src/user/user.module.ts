@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EmailsModule } from '@121-service/src/emails/emails.module';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/project-aidworker.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/entities/project-aidworker.entity';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 import { UserController } from '@121-service/src/user/user.controller';
 import { UserEntity } from '@121-service/src/user/user.entity';

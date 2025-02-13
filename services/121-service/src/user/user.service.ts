@@ -10,8 +10,8 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 import { DEBUG } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/project-aidworker.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/entities/project-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {

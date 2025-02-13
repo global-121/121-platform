@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
@@ -18,7 +18,7 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 @Injectable()
-export class ProgramAttributesService {
+export class ProjectAttributesService {
   @InjectRepository(ProjectEntity)
   private readonly programRepository: Repository<ProjectEntity>;
   @InjectRepository(ProjectRegistrationAttributeEntity)

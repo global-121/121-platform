@@ -16,7 +16,7 @@ import { WhatsappController } from '@121-service/src/notifications/whatsapp/what
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({

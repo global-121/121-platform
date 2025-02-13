@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProjectAidworkerAssignmentEntity } from '@121-service/src/programs/project-aidworker.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/entities/project-aidworker.entity';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 
 @Entity('user_role')

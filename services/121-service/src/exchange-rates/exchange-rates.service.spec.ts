@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
 import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
 import { ExchangeRatesService as ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 
 // Mock for ExchangeRateApiService
 const mockExchangeRatesApiService = {

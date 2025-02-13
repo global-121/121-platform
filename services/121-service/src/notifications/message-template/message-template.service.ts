@@ -7,7 +7,7 @@ import {
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class MessageTemplateService {
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   constructor(
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly programAttributesService: ProjectAttributesService,
   ) {}
 
   public async getMessageTemplatesByProgramId(

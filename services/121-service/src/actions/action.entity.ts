@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, Relation } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProjectEntity } from '@121-service/src/programs/project.entity';
+import { ProjectEntity } from '@121-service/src/projects/entities/project.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('action')

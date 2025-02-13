@@ -1,6 +1,6 @@
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
-import { ProjectRegistrationAttributeEntity } from '@121-service/src/programs/project-registration-attribute.entity';
+import { ProgramRegistrationAttributeDto } from '@121-service/src/projects/dtos/program-registration-attribute.dto';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/entities/project-registration-attribute.entity';
 
 export class ProgramRegistrationAttributeMapper {
   public static entitiesToDtos(
