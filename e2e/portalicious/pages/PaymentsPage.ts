@@ -19,6 +19,8 @@ class PaymentsPage extends BasePage {
   readonly proceedButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
+  readonly retryFailedTransfersButton: Locator;
+  readonly popupRetryTransferButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -50,6 +52,12 @@ class PaymentsPage extends BasePage {
       name: 'Payment',
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
+    this.retryFailedTransfersButton = this.page.getByRole('button', {
+      name: 'Retry failed transfers',
+    });
+    this.popupRetryTransferButton = this.page.getByRole('button', {
+      name: 'Retry transfers',
+    });
   }
 
   async selectAllRegistrations() {
@@ -218,6 +226,27 @@ class PaymentsPage extends BasePage {
     const normalizedPaymentAmountText = paymentAmountText?.replace(/,/g, '');
 
     expect(normalizedPaymentAmountText).toContain(amount.toString());
+  }
+
+  async validateRetryFailedTransfersButtonToBeVisible() {
+    await expect(this.retryFailedTransfersButton).toBeVisible();
+  }
+
+  async validateRetryFailedTransfersButtonToBeHidden() {
+    await expect(this.retryFailedTransfersButton).toBeHidden();
+  }
+
+  async retryFiledTransfers() {
+    await this.table.filterColumnByDopDownSelection({
+      columnName: 'Transfer status',
+      selection: 'Failed',
+    });
+
+    await this.table.selectAllCheckbox();
+
+    await this.retryFailedTransfersButton.click();
+
+    await this.popupRetryTransferButton.click();
   }
 }
 

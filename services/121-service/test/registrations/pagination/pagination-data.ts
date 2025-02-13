@@ -98,7 +98,7 @@ export const registrationOCW5 = {
 };
 
 export const registrationOCW6Fail = {
-  referenceId: '54e62864557597e0d',
+  referenceId: '54e6286jZ4mhkTtgjM',
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 3,
   fullName: 'Test mock-fail-create-customer',
