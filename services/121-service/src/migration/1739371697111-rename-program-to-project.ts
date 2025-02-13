@@ -205,6 +205,337 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" ADD CONSTRAINT "FK_e5feb050d3b610c6e9008edfbda" FOREIGN KEY ("userRoleId") REFERENCES "121-service"."user_role"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+
+    // Dropping and recreating constraints, sequences, and indexes, so that the names become what the generate migration script function expects (stuff below is just a copy-past of what came out of a generate migration script to test if all migrations are done)
+    // ##TODO: Is it ok just to copy-paste whatever comes out of a create migration generation until it does not find changes anymore? Or do we need to be more considerate if the stuff below is correct?
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" DROP CONSTRAINT "FK_5e40569627925419cd94db0da36"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" DROP CONSTRAINT "FK_f7400125e09c4d8fec5747ec588"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "FK_8788ebf12909c03049a0d8c377d"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_1315d078dc3df552bba424c032b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_b60be4bf492f3ee8745dfee8806"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_55d6e02b7aed4a6cbd027cc97d6"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_8b938a5145fb00a8e324504f620"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_2ea95dd85e592bad75d0278873"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_04aac36fce58b33d30d71b700f"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_1387f030d9f04f7d80c78a60d5"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_0e82cb4d2ae009af92e6fb7271"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_bc351c7a1289829b04cb2b22b0"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_8b938a5145fb00a8e324504f62"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_55d6e02b7aed4a6cbd027cc97d"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "CHK_88f5ede846c87b3059ed09f967"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" DROP CONSTRAINT "programFinancialServiceProviderConfigurationPropertyUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" DROP CONSTRAINT "programFinancialServiceProviderConfigurationUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "programAttributeUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "userProgramAssignmentUnique"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project" RENAME COLUMN "aboutProgram" TO "aboutProject"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_financial_service_pro_id_seq" OWNED BY "121-service"."project_financial_service_provider_configuration_property"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_financial_service_pro_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ALTER COLUMN "id" DROP DEFAULT`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_c3a8fb6575fab35938bb7595b3b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_1cd9a70c74da19822c8c02bca80"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" DROP CONSTRAINT "FK_5ce0ac4d1461a28a639ecd4808e"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_financial_service_provider_configuration_id_seq" OWNED BY "121-service"."project_financial_service_provider_configuration"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_financial_service_provider_configuration_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ALTER COLUMN "id" DROP DEFAULT`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "FK_fed2e5f03b41f1e80706fa11c5e"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_registration_attribute_id_seq" OWNED BY "121-service"."project_registration_attribute"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_registration_attribute_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ALTER COLUMN "id" DROP DEFAULT`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_aidworker_assignment_id_seq" OWNED BY "121-service"."project_aidworker_assignment"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_aidworker_assignment_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ALTER COLUMN "id" DROP DEFAULT`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" DROP CONSTRAINT "FK_c79edeabacf7c9f57f18eb1c398"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_2519423f484cbd2b1d021d2bc46"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_7aa669b5d45a9916651005fb8cc"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d5e1fdbbc0bc0cbc3fc2e202d7f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_198f8684a88021ab0e582e96c36"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_a531dfb386d5a3cd5535360c45d"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" DROP CONSTRAINT "FK_e6b974a6e3a3a1546e7b017ce68"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "FK_f8b499e184ee720b813aae77775"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_id_seq" OWNED BY "121-service"."project"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project" ALTER COLUMN "id" DROP DEFAULT`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_f0e87583b7f6dfcdfaebb696ef" ON "121-service"."project_financial_service_provider_configuration_property" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_103691dfea98011c4d43dab76c" ON "121-service"."project_financial_service_provider_configuration" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_d4b58ae5fff2496f1da267a01c" ON "121-service"."project_registration_attribute" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_50e80892202c66fb232755173b" ON "121-service"."project_aidworker_assignment" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_09e3cb480f23f8d59ae50a0984" ON "121-service"."project" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_8d869b02ca4f44ea0102c16bfe" ON "121-service"."project_aidworker_assignment_roles_user_role" ("projectAidworkerAssignmentId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_e5feb050d3b610c6e9008edfbd" ON "121-service"."project_aidworker_assignment_roles_user_role" ("userRoleId") `,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ADD CONSTRAINT "CHK_8a9bf996f17fb6b58a0ad46c18" CHECK ("name" NOT IN ('id', 'status', 'referenceId', 'preferredLanguage', 'inclusionScore', 'paymentAmountMultiplier', 'financialServiceProvider', 'registrationProgramId', 'maxPayments', 'lastTransactionCreated', 'lastTransactionPaymentNumber', 'lastTransactionStatus', 'lastTransactionAmount', 'lastTransactionErrorMessage', 'lastTransactionCustomData', 'paymentCount', 'paymentCountRemaining', 'registeredDate', 'validationDate', 'inclusionDate', 'deleteDate', 'completedDate', 'lastMessageStatus', 'lastMessageType', 'declinedDate'))`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ADD CONSTRAINT "projectFinancialServiceProviderConfigurationPropertyUnique" UNIQUE ("projectFinancialServiceProviderConfigurationId", "name")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ADD CONSTRAINT "projectFinancialServiceProviderConfigurationUnique" UNIQUE ("projectId", "name")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ADD CONSTRAINT "projectAttributeUnique" UNIQUE ("name", "projectId")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ADD CONSTRAINT "userProjectAssignmentUnique" UNIQUE ("userId", "projectId")`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_a531dfb386d5a3cd5535360c45d" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ADD CONSTRAINT "FK_5ce0ac4d1461a28a639ecd4808e" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ADD CONSTRAINT "FK_e6b974a6e3a3a1546e7b017ce68" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ADD CONSTRAINT "FK_f8b499e184ee720b813aae77775" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "FK_fed2e5f03b41f1e80706fa11c5e" FOREIGN KEY ("projectRegistrationAttributeId") REFERENCES "121-service"."project_registration_attribute"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_198f8684a88021ab0e582e96c36" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_1cd9a70c74da19822c8c02bca80" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d5e1fdbbc0bc0cbc3fc2e202d7f" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_c3a8fb6575fab35938bb7595b3b" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ADD CONSTRAINT "FK_2519423f484cbd2b1d021d2bc46" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_7aa669b5d45a9916651005fb8cc" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" ADD CONSTRAINT "FK_c79edeabacf7c9f57f18eb1c398" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" ADD CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed" FOREIGN KEY ("projectAidworkerAssignmentId") REFERENCES "121-service"."project_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_financial_service_pro_id_seq" OWNED BY "121-service"."project_financial_service_provider_configuration_property"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_financial_service_pro_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_c3a8fb6575fab35938bb7595b3b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_1cd9a70c74da19822c8c02bca80"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" DROP CONSTRAINT "FK_5ce0ac4d1461a28a639ecd4808e"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_financial_service_provider_configuration_id_seq" OWNED BY "121-service"."project_financial_service_provider_configuration"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_financial_service_provider_configuration_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "FK_fed2e5f03b41f1e80706fa11c5e"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_registration_attribute_id_seq" OWNED BY "121-service"."project_registration_attribute"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_registration_attribute_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_aidworker_assignment_id_seq" OWNED BY "121-service"."project_aidworker_assignment"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_aidworker_assignment_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" DROP CONSTRAINT "FK_c79edeabacf7c9f57f18eb1c398"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_2519423f484cbd2b1d021d2bc46"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_7aa669b5d45a9916651005fb8cc"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d5e1fdbbc0bc0cbc3fc2e202d7f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_198f8684a88021ab0e582e96c36"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_a531dfb386d5a3cd5535360c45d"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" DROP CONSTRAINT "FK_e6b974a6e3a3a1546e7b017ce68"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "FK_f8b499e184ee720b813aae77775"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."project_id_seq" OWNED BY "121-service"."project"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."project_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_a531dfb386d5a3cd5535360c45d" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" ADD CONSTRAINT "FK_5ce0ac4d1461a28a639ecd4808e" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_financial_service_provider_configuration" ADD CONSTRAINT "FK_e6b974a6e3a3a1546e7b017ce68" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_registration_attribute" ADD CONSTRAINT "FK_f8b499e184ee720b813aae77775" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "FK_fed2e5f03b41f1e80706fa11c5e" FOREIGN KEY ("projectRegistrationAttributeId") REFERENCES "121-service"."project_registration_attribute"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_198f8684a88021ab0e582e96c36" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_1cd9a70c74da19822c8c02bca80" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d5e1fdbbc0bc0cbc3fc2e202d7f" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_c3a8fb6575fab35938bb7595b3b" FOREIGN KEY ("projectFinancialServiceProviderConfigurationId") REFERENCES "121-service"."project_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment" ADD CONSTRAINT "FK_2519423f484cbd2b1d021d2bc46" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_7aa669b5d45a9916651005fb8cc" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."intersolve_voucher_instruction" ADD CONSTRAINT "FK_c79edeabacf7c9f57f18eb1c398" FOREIGN KEY ("projectId") REFERENCES "121-service"."project"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" ADD CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed" FOREIGN KEY ("projectAidworkerAssignmentId") REFERENCES "121-service"."project_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+
     // Re-create view (drop and create)
     await queryRunner.query(
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
@@ -226,198 +557,6 @@ export class RenameProgramToProject1739371697111 implements MigrationInterface {
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
-    // ##TODO: Do we need to create a down migration?
-    // await queryRunner.query(
-    //   `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-    //   ['VIEW', 'registration_view', '121-service'],
-    // );
-    // await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_e5feb050d3b610c6e9008edfbda"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" DROP CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."intersolve_voucher_instruction" DROP CONSTRAINT "FK_c79edeabacf7c9f57f18eb1c398"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_2519423f484cbd2b1d021d2bc46"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_aidworker_assignment" DROP CONSTRAINT "FK_961f169408a77e18e19765cca27"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "FK_a531dfb386d5a3cd5535360c45d"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."action" DROP CONSTRAINT "FK_7aa669b5d45a9916651005fb8cc"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_1cd9a70c74da19822c8c02bca80"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "FK_198f8684a88021ab0e582e96c36"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "FK_fed2e5f03b41f1e80706fa11c5e"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_registration_attribute" DROP CONSTRAINT "FK_f8b499e184ee720b813aae77775"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_c3a8fb6575fab35938bb7595b3b"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d5e1fdbbc0bc0cbc3fc2e202d7f"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_financial_service_provider_configuration" DROP CONSTRAINT "FK_e6b974a6e3a3a1546e7b017ce68"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."project_financial_service_provider_configuration_property" DROP CONSTRAINT "FK_5ce0ac4d1461a28a639ecd4808e"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."message_template" DROP CONSTRAINT "uniqueTemplatePerTypeLanguageProject"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP CONSTRAINT "registrationProjectUnique"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration_attribute_data" DROP CONSTRAINT "registrationProjectAttributeUnique"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_bc9119239d5bd0994682a6732f"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_c3a8fb6575fab35938bb7595b3"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_d5e1fdbbc0bc0cbc3fc2e202d7"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "registrationProjectId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "projectFinancialServiceProviderConfigurationId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" DROP COLUMN "projectId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" DROP COLUMN "projectFinancialServiceProviderConfigurationId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" DROP COLUMN "projectId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD "programFinancialServiceProviderConfigurationId" integer`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD "registrationProgramId" integer NOT NULL`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD "programId" integer NOT NULL`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" ADD "programFinancialServiceProviderConfigurationId" integer`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" ADD "programId" integer NOT NULL`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_e5feb050d3b610c6e9008edfbd"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_8d869b02ca4f44ea0102c16bfe"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP TABLE "121-service"."project_aidworker_assignment_roles_user_role"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_50e80892202c66fb232755173b"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP TABLE "121-service"."project_aidworker_assignment"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_09e3cb480f23f8d59ae50a0984"`,
-    // );
-    // await queryRunner.query(`DROP TABLE "121-service"."project"`);
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_d4b58ae5fff2496f1da267a01c"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP TABLE "121-service"."project_registration_attribute"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_103691dfea98011c4d43dab76c"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP TABLE "121-service"."project_financial_service_provider_configuration"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP INDEX "121-service"."IDX_f0e87583b7f6dfcdfaebb696ef"`,
-    // );
-    // await queryRunner.query(
-    //   `DROP TABLE "121-service"."project_financial_service_provider_configuration_property"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."intersolve_voucher_instruction" RENAME COLUMN "projectId" TO "programId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."whatsapp_template_test" RENAME COLUMN "projectId" TO "programId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."message_template" RENAME COLUMN "projectId" TO "programId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."action" RENAME COLUMN "projectId" TO "programId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration_attribute_data" RENAME COLUMN "projectRegistrationAttributeId" TO "programRegistrationAttributeId"`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "uniqueTemplatePerTypeLanguageProgram" UNIQUE ("type", "language", "programId")`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "registrationProgramUnique" UNIQUE ("programId", "registrationProgramId")`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "registrationProgramAttributeUnique" UNIQUE ("registrationId", "programRegistrationAttributeId")`,
-    // );
-    // await queryRunner.query(
-    //   `CREATE INDEX "IDX_f2257d31c7aabd2568ea3093ed" ON "121-service"."registration" ("registrationProgramId") `,
-    // );
-    // await queryRunner.query(
-    //   `CREATE INDEX "IDX_d8a56a1864ef40e1551833430b" ON "121-service"."transaction" ("programFinancialServiceProviderConfigurationId") `,
-    // );
-    // await queryRunner.query(
-    //   `CREATE INDEX "IDX_d3c35664dbb056d04694819316" ON "121-service"."transaction" ("programId") `,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."intersolve_voucher_instruction" ADD CONSTRAINT "FK_a4b70f5b341879f17bd410e8d52" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."message_template" ADD CONSTRAINT "FK_55ebe1d2e603be11a0cfc97372f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."action" ADD CONSTRAINT "FK_20a407367336fd4352de7f8138f" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_5423104a960c57439e028eb57c5" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration" ADD CONSTRAINT "FK_148b6bb5c37ca2d444b01c00c2f" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."registration_attribute_data" ADD CONSTRAINT "FK_3bd62b57d06901bcd85e28fd060" FOREIGN KEY ("programRegistrationAttributeId") REFERENCES "121-service"."program_registration_attribute"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d3c35664dbb056d04694819316e" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    // );
-    // await queryRunner.query(
-    //   `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d8a56a1864ef40e1551833430bb" FOREIGN KEY ("programFinancialServiceProviderConfigurationId") REFERENCES "121-service"."program_financial_service_provider_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
-    // );
+    // We decided not to create a down script of the migration involves table name changes: https://github.com/global-121/121-platform/tree/main/services/121-service#refactoring
   }
 }
