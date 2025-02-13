@@ -3,32 +3,28 @@ import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  seedIncludedRegistrations,
+  updateRegistration,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPvExcel5Fail,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-
-// Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
-const fullName = registrationsPvExcel[0].fullName;
-const addressStreet = registrationsPvExcel[0].addressStreet;
-const addressHouseNumber = registrationsPvExcel[0].addressHouseNumber;
-const addressPostalCode = registrationsPvExcel[0].addressPostalCode;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsPvExcel,
+    [...registrationsPvExcel, registrationPvExcel5Fail],
     programIdPV,
     accessToken,
   );
@@ -46,16 +42,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
-
   const projectTitle = NLRCProgramPV.titlePortal.en;
-  const numberOfPas = registrationsPvExcel.length;
-  const defaultTransferValue = amount;
-  const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
-  const financialServiceProviders: string[] = ['Excel Payment Instructions'];
-
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -64,43 +51,40 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.validateExcelFspInstructions();
-  });
-
   await test.step('Do payment', async () => {
-    await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
-      registrationsNumber: numberOfPas,
-      currency: '€',
-      paymentAmount: defaultMaxTransferValue,
-    });
+    await paymentsPage.createPayment();
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/2/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Download payment instructions', async () => {
-    await paymentsPage.openPaymentByDate({ date: lastPaymentDate });
-    await paymentsPage.selectPaymentExportOption({
-      option: 'Export FSP payment list',
-    });
-    await registrationsPage.exportAndAssertExcelFspList(
-      0,
-      {
-        amount,
-        fullName,
-        addressStreet,
-        addressHouseNumber,
-        addressPostalCode,
-      },
-      { condition: true, rowCount: 4 },
+  await test.step('Check presence of retry button', async () => {
+    await paymentsPage.validateRetryFailedTransfersButtonToBeVisible();
+  });
+
+  await test.step('Retry payment with correct PA values', async () => {
+    const accessToken = await getAccessToken();
+
+    await updateRegistration(
+      programIdPV,
+      registrationPvExcel5Fail.referenceId,
+      { fullName: 'John Doe' },
+      'automated test',
+      accessToken,
     );
+    await paymentsPage.retryFiledTransfers();
+  });
+
+  // DO NOT MAKE IT A RULE!!!
+  // Only in this case we need to reload the page to get the updated data of the successful payments.
+  // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
+  await page.reload();
+
+  await test.step('Check presence of retry button', async () => {
+    await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
   });
 });
