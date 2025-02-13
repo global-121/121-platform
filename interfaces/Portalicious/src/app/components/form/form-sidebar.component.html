@@ -10,6 +10,7 @@
 >
   <ng-template pTemplate="headless">
     <form
+      #sideBarForm
       class="flex max-h-full min-h-full w-full flex-col overflow-y-auto p-4 pb-20"
       [formGroup]="formGroup()"
       (ngSubmit)="onFormSubmit()"
@@ -17,7 +18,6 @@
       (keydown.meta.enter)="onFormSubmit()"
       pFocusTrap
       [pFocusTrapDisabled]="!visible()"
-      [pAutoFocus]="visible()"
     >
       <div class="flex grow flex-col gap-2">
         <h2 class="mb-5">

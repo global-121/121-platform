@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   input,
   model,
+  viewChild,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { FocusTrapModule } from 'primeng/focustrap';
@@ -17,7 +18,6 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 @Component({
   selector: 'app-form-sidebar',
   imports: [
-    AutoFocusModule,
     ButtonModule,
     ReactiveFormsModule,
     FormErrorComponent,
@@ -34,6 +34,8 @@ export class FormSidebarComponent<
   readonly visible = model<boolean>(false);
   readonly formTitle = input.required<string>();
   readonly modal = model<boolean>(true);
+  readonly sideBarForm =
+    viewChild.required<ElementRef<HTMLFormElement>>('sideBarForm');
 
   triggerElement: HTMLElement | null = null;
 
@@ -46,6 +48,9 @@ export class FormSidebarComponent<
 
   onShow() {
     this.rememberTrigger();
+    const firstInput = this.sideBarForm().nativeElement
+      .elements[0] as HTMLElement;
+    firstInput.focus();
   }
 
   onHide() {
