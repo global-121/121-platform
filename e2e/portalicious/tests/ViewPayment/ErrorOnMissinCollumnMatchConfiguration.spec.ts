@@ -60,7 +60,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
     await paymentsPage.validateExcelFspInstructions();
   });
 
-  await test.step('Do payment', async () => {
+  await test.step('Start payment and validate Error message', async () => {
     await paymentsPage.validatePaymentSummary({
       fsp: financialServiceProviders,
       registrationsNumber: numberOfPas,

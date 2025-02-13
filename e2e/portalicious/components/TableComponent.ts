@@ -168,7 +168,7 @@ class TableComponent {
     await this.applyFiltersButton.click();
   }
 
-  async filterColumnByDopDownSelection({
+  async filterColumnByDropDownSelection({
     columnName,
     selection,
   }: {

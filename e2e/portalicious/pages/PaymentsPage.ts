@@ -16,6 +16,9 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportFspPaymentListButton: Locator;
   readonly exportDropdown: Locator;
+  readonly importDropdown: Locator;
+  readonly chooseFileButton: Locator;
+  readonly importFileButton: Locator;
   readonly proceedButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
@@ -47,6 +50,13 @@ class PaymentsPage extends BasePage {
       name: 'Export FSP payment list',
     });
     this.exportDropdown = this.page.locator('app-single-payment-export');
+    this.importDropdown = this.page.locator('app-import-reconciliation-data');
+    this.chooseFileButton = this.page.getByRole('button', {
+      name: 'Choose file',
+    });
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
+    });
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: 'Payment',
@@ -236,8 +246,8 @@ class PaymentsPage extends BasePage {
     await expect(this.retryFailedTransfersButton).toBeHidden();
   }
 
-  async retryFiledTransfers() {
-    await this.table.filterColumnByDopDownSelection({
+  async retryFailedTransfers() {
+    await this.table.filterColumnByDropDownSelection({
       columnName: 'Transfer status',
       selection: 'Failed',
     });
@@ -247,6 +257,17 @@ class PaymentsPage extends BasePage {
     await this.retryFailedTransfersButton.click();
 
     await this.popupRetryTransferButton.click();
+  }
+
+  async importReconciliationData(filePath: string) {
+    await this.importDropdown.click();
+
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.chooseFileButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(filePath);
+
+    await this.importFileButton.click();
   }
 }
 

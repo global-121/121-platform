@@ -1,19 +1,16 @@
 import { test } from '@playwright/test';
 import { format } from 'date-fns';
+import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import {
-  seedIncludedRegistrations,
-  updateRegistration,
-} from '@121-service/test/helpers/registration.helper';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationPvExcel5Fail,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -24,7 +21,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    [...registrationsPvExcel, registrationPvExcel5Fail],
+    registrationsPvExcel,
     programIdPV,
     accessToken,
   );
@@ -44,6 +41,10 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
+  const reconciliationData = path.resolve(
+    __dirname,
+    '../../../test-registration-data/test-reconciliation-Excel-pv.csv',
+  );
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -62,29 +63,14 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Check presence of retry button', async () => {
+  await test.step('Upload payment reconciliation data & Retry Payment', async () => {
+    await paymentsPage.importReconciliationData(reconciliationData);
+  });
+
+  await test.step('Retry payment, Export FSP payment data and assert file', async () => {
     await paymentsPage.validateRetryFailedTransfersButtonToBeVisible();
-  });
-
-  await test.step('Retry payment with correct PA values', async () => {
-    const accessToken = await getAccessToken();
-
-    await updateRegistration(
-      programIdPV,
-      registrationPvExcel5Fail.referenceId,
-      { fullName: 'John Doe' },
-      'automated test',
-      accessToken,
-    );
-    await paymentsPage.retryFiledTransfers();
-  });
-
-  // DO NOT MAKE IT A RULE!!!
-  // Only in this case we need to reload the page to get the updated data of the successful payments.
-  // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-  await page.reload();
-
-  await test.step('Check presence of retry button', async () => {
-    await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
+    // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
+    await page.waitForTimeout(200);
+    await paymentsPage.retryFailedTransfers();
   });
 });

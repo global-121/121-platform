@@ -303,10 +303,10 @@ export const registrationPvExcel2 = {
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Jan Janssen',
-  phoneNumber: '14155235551',
+  phoneNumber: '14155235552',
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.excel,
-  whatsappPhoneNumber: '14155235551',
+  whatsappPhoneNumber: '14155235552',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -319,10 +319,10 @@ export const registrationPvExcel3 = {
   preferredLanguage: LanguageEnum.nl,
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
-  phoneNumber: '14155235551',
+  phoneNumber: '14155235553',
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.excel,
-  whatsappPhoneNumber: '14155235551',
+  whatsappPhoneNumber: '14155235553',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -335,22 +335,6 @@ export const registrationPvExcel4 = {
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
-  phoneNumber: '14155235557',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
-  whatsappPhoneNumber: '14155235557',
-  addressStreet: 'Teststraat',
-  addressHouseNumber: '1',
-  addressHouseNumberAddition: '',
-  addressPostalCode: '1234AB',
-  addressCity: 'Stad',
-};
-
-export const registrationPvExcel5Fail = {
-  referenceId: 'asdf234f4gg4ag64568',
-  preferredLanguage: LanguageEnum.en,
-  paymentAmountMultiplier: 1,
-  fullName: 'Test mock-fail-create-customer',
   phoneNumber: '14155235557',
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.excel,
