@@ -4,17 +4,13 @@ import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import {
-  seedIncludedRegistrations,
-  updateRegistration,
-} from '@121-service/test/helpers/registration.helper';
+import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationPvExcel5Fail,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -33,7 +29,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    [...registrationsPvExcel, registrationPvExcel5Fail],
+    registrationsPvExcel,
     programIdPV,
     accessToken,
   );

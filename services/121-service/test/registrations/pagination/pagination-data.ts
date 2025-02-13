@@ -346,22 +346,6 @@ export const registrationPvExcel4 = {
   addressCity: 'Stad',
 };
 
-export const registrationPvExcel5Fail = {
-  referenceId: 'asdf234f4gg4ag64568',
-  preferredLanguage: LanguageEnum.en,
-  paymentAmountMultiplier: 1,
-  fullName: 'Test mock-fail-create-customer',
-  phoneNumber: '14155235557',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
-  whatsappPhoneNumber: '14155235557',
-  addressStreet: 'Teststraat',
-  addressHouseNumber: '1',
-  addressHouseNumberAddition: '',
-  addressPostalCode: '1234AB',
-  addressCity: 'Stad',
-};
-
 export const registrationsPvExcel = [
   registrationPvExcel1,
   registrationPvExcel2,
