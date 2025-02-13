@@ -16,6 +16,14 @@ import {
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
+import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
+
+// Export Excel FSP payment list
+const amount = NLRCProgramPV.fixedTransferValue;
+const fullName = registrationsPvExcel[2].fullName;
+const addressStreet = registrationsPvExcel[2].addressStreet;
+const addressHouseNumber = registrationsPvExcel[2].addressHouseNumber;
+const addressPostalCode = registrationsPvExcel[2].addressPostalCode;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -39,6 +47,8 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
+
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.resolve(
@@ -72,5 +82,19 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
     await page.waitForTimeout(200);
     await paymentsPage.retryFailedTransfers();
+    // Start download of the payment instructions file
+    await paymentsPage.exportFspPaymentList();
+    // Assert excel fsp list it should only include the failed transactions that were retried and are now in status pending
+    await registrationsPage.exportAndAssertExcelFspList(
+      0,
+      {
+        amount,
+        fullName,
+        addressStreet,
+        addressHouseNumber,
+        addressPostalCode,
+      },
+      { condition: true, rowCount: 2 },
+    );
   });
 });

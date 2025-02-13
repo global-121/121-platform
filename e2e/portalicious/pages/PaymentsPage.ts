@@ -46,9 +46,9 @@ class PaymentsPage extends BasePage {
     this.paymentSummaryWithInstructions = this.page.getByTestId(
       'create-payment-excel-fsp-instructions',
     );
-    this.exportFspPaymentListButton = this.page.getByRole('button', {
-      name: 'Export FSP payment list',
-    });
+    this.exportFspPaymentListButton = this.page.getByLabel(
+      'Export FSP payment list',
+    );
     this.exportDropdown = this.page.locator('app-single-payment-export');
     this.importDropdown = this.page.locator('app-import-reconciliation-data');
     this.chooseFileButton = this.page.getByRole('button', {
@@ -268,6 +268,11 @@ class PaymentsPage extends BasePage {
     await fileChooser.setFiles(filePath);
 
     await this.importFileButton.click();
+  }
+
+  async exportFspPaymentList() {
+    await this.exportDropdown.click();
+    await this.exportFspPaymentListButton.click();
   }
 }
 
