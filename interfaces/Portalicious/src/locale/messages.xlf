@@ -649,9 +649,6 @@
       <trans-unit id="5395278318341499807" datatype="html">
         <source>Assign scope</source>
       </trans-unit>
-      <trans-unit id="5190493535045874438" datatype="html">
-        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all Registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
-      </trans-unit>
       <trans-unit id="4273825032754891897" datatype="html">
         <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
       </trans-unit>
