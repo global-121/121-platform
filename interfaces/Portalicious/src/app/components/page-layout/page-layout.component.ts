@@ -71,7 +71,7 @@ export class PageLayoutComponent {
       case 'project':
         return $localize`Project not found. Please check the URL and try again.`;
       case 'registration':
-        return $localize`Registration not found. Please check the URL and try again.`;
+        return $localize`Registration out of scope or not found - please check URL or contact your supervisor`;
       case 'payment':
         return $localize`Payment not found. Please check the URL and try again.`;
     }
