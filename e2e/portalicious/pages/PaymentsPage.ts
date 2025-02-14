@@ -15,8 +15,8 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportFspPaymentListButton: Locator;
-  readonly exportDropdown: Locator;
-  readonly importDropdown: Locator;
+  readonly exportButton: Locator;
+  readonly importReconcilationDataButton: Locator;
   readonly chooseFileButton: Locator;
   readonly importFileButton: Locator;
   readonly proceedButton: Locator;
@@ -49,8 +49,12 @@ class PaymentsPage extends BasePage {
     this.exportFspPaymentListButton = this.page.getByLabel(
       'Export FSP payment list',
     );
-    this.exportDropdown = this.page.locator('app-single-payment-export');
-    this.importReconcilationDataButton = this.page.getByLabel('Import reconciliation data')
+    this.exportButton = this.page.getByRole('button', {
+      name: 'Export',
+    });
+    this.importReconcilationDataButton = this.page.getByRole('button', {
+      name: 'Import reconciliation data',
+    });
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
@@ -199,7 +203,7 @@ class PaymentsPage extends BasePage {
     }
   }
   async selectPaymentExportOption({ option }: { option: string }) {
-    await this.exportDropdown.click();
+    await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
@@ -260,7 +264,7 @@ class PaymentsPage extends BasePage {
   }
 
   async importReconciliationData(filePath: string) {
-    await this.importDropdown.click();
+    await this.importReconcilationDataButton.click();
 
     await this.FileChooserComponent(filePath);
 
@@ -268,7 +272,7 @@ class PaymentsPage extends BasePage {
   }
 
   async exportFspPaymentList() {
-    await this.exportDropdown.click();
+    await this.exportButton.click();
     await this.exportFspPaymentListButton.click();
   }
 }
