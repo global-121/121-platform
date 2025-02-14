@@ -502,6 +502,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",
@@ -581,6 +582,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",
@@ -622,6 +624,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",
@@ -664,6 +667,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",
@@ -714,6 +718,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",
@@ -727,6 +732,14 @@
   {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/messages",
+    "params": [
+      "referenceId",
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/duplicates",
     "params": [
       "referenceId",
       "programId"
@@ -824,6 +837,7 @@
       "filter.paymentCountRemaining",
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
+      "filter.duplicateStatus",
       "filter.failedPayment",
       "filter.waitingPayment",
       "filter.successPayment",

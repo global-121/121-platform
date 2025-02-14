@@ -18,8 +18,8 @@ function filterUnchangedProperties(
   const unchangedProperties: Record<string, unknown> = {};
 
   for (const key of Object.keys(originalData)) {
-    // registration.name is a special case as it is a derived property so it cannot be patched
-    if (!(key in patchData) && key !== 'name') {
+    // registration.name and duplicateStatus are a special cases that are derived propertiess so the cannot be patched
+    if (!(key in patchData) && key !== 'name' && key !== 'duplicateStatus') {
       unchangedProperties[key] = originalData[key];
     }
   }
