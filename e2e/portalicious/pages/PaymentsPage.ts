@@ -262,10 +262,7 @@ class PaymentsPage extends BasePage {
   async importReconciliationData(filePath: string) {
     await this.importDropdown.click();
 
-    const fileChooserPromise = this.page.waitForEvent('filechooser');
-    await this.chooseFileButton.click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles(filePath);
+    await this.FileChooserComponent(filePath);
 
     await this.importFileButton.click();
   }
