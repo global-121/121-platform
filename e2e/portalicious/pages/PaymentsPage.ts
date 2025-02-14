@@ -50,7 +50,7 @@ class PaymentsPage extends BasePage {
       'Export FSP payment list',
     );
     this.exportDropdown = this.page.locator('app-single-payment-export');
-    this.importDropdown = this.page.locator('app-import-reconciliation-data');
+    this.importReconcilationDataButton = this.page.getByLabel('Import reconciliation data')
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
