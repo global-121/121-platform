@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { AppDataSource } from '@121-service/src/appdatasource';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -288,6 +289,29 @@ export class SeedMockHelper {
       }
     }
     console.log('**Done updating sequence numbers.**');
+  }
+
+  public async introduceDuplicates(): Promise<void> {
+    console.log('**Introducing duplicates **');
+    const selectProgramRegistrationAttributesWithDuplicateCheck =
+      await this.dataSource.manager
+        .getRepository(ProgramRegistrationAttributeEntity)
+        .createQueryBuilder('program_registration_attribute')
+        .select('id')
+        .where('"duplicateCheck" = true')
+        .getRawMany();
+
+    for (const {
+      id,
+    } of selectProgramRegistrationAttributesWithDuplicateCheck) {
+      const queryIntroduceDuplicates = readSqlFile(
+        '../../src/scripts/sql/mock-introduce-duplicates.sql',
+      );
+      // TODO: Could not get proper parameter to work here so resorted to string replace
+      const qWithParam = queryIntroduceDuplicates.replace('$1', id);
+      await this.dataSource.query(qWithParam);
+    }
+    console.log('**Done introducing duplicates**');
   }
 
   public async importRegistrations(
