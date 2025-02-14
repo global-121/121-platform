@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
-import { Equal, Not, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -13,13 +13,11 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
@@ -37,7 +35,6 @@ export class RegistrationsInputValidator {
     private readonly userService: UserService,
     private readonly lookupService: LookupService,
     private readonly registrationPaginationService: RegistrationsPaginationService,
-    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async validateAndCleanInput({
@@ -851,20 +848,9 @@ export class RegistrationsInputValidator {
     const referenceIds = csvArray
       .filter((row) => row[GenericRegistrationAttributes.referenceId])
       .map((row) => row[GenericRegistrationAttributes.referenceId]);
-    let qb = this.registrationViewScopedRepository
-      .createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
-    if (referenceIds.length > 0) {
-      qb = qb.andWhere('registration.referenceId IN (:...referenceIds)', {
-        referenceIds,
-      });
-    }
     const originalRegistrations =
-      await this.registrationPaginationService.getRegistrationsChunked(
-        programId,
-        { limit: 10000, path: '' },
-        10000,
-        qb,
+      await this.registrationPaginationService.getRegistrationViewsByReferenceIds(
+        { programId, referenceIds },
       );
     const originalRegistrationsMap = new Map(
       originalRegistrations.map((reg) => [reg.referenceId, reg]),

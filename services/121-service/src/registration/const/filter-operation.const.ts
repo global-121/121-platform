@@ -37,6 +37,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       'paymentCount',
       'paymentCountRemaining',
       'lastMessageStatus',
+      'duplicateStatus',
       'data.value',
     ],
     filterableColumns: {
@@ -59,6 +60,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       paymentCountRemaining: AllowedFilterOperatorsNumber,
       personAffectedSequence: AllowedFilterOperatorsString,
       lastMessageStatus: AllowedFilterOperatorsString,
+      duplicateStatus: AllowedFilterOperatorsString,
     },
   };
 

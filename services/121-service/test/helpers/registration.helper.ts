@@ -584,3 +584,18 @@ export async function getImportFspReconciliationTemplate(
     .set('Cookie', [accessToken])
     .send();
 }
+
+export async function getDuplicates({
+  programId,
+  referenceId,
+  accessToken,
+}: {
+  programId: number;
+  referenceId: string;
+  accessToken: string;
+}): Promise<any> {
+  return getServer()
+    .get(`/programs/${programId}/registrations/${referenceId}/duplicates`)
+    .set('Cookie', [accessToken])
+    .send();
+}
