@@ -48,3 +48,8 @@ jobs:
       - name: 'Test: Code'
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:ci'
+
+      - name: 'Check translations'
+        uses: nickcharlton/diff-check@main
+        with:
+          command: cd ${{ env.interfacePath }} && npm run set-env-variables -- env=development && npm run extract-i18n
