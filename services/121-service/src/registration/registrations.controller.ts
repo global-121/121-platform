@@ -44,6 +44,7 @@ import {
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
 import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
+import { DuplicateDto } from '@121-service/src/registration/dto/duplicate.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
@@ -655,6 +656,32 @@ export class RegistrationsController {
   ): Promise<MessageHistoryDto[]> {
     return await this.registrationsService.getMessageHistoryRegistration(
       params.referenceId,
+    );
+  }
+
+  @ApiTags('programs/registration')
+  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
+  @ApiOperation({
+    summary: '[SCOPED] Gets duplicate registrations for a registration',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Returns duplicate registrations for a registration. NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+    type: DuplicateDto,
+    isArray: true,
+  })
+  @Get('programs/:programId/registrations/:referenceId/duplicates')
+  public async getDuplicates(
+    @Param('referenceId') referenceId: string, // TODO: change to registrationId for now we use referenceId as else a lot of helper code needs to be duplicated to start using registrationId in these controllers
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<DuplicateDto[]> {
+    return await this.registrationsService.getDuplicates(
+      referenceId,
+      programId,
     );
   }
 

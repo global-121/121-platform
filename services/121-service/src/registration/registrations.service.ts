@@ -25,6 +25,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
+import { DuplicateDto } from '@121-service/src/registration/dto/duplicate.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
@@ -904,6 +905,49 @@ export class RegistrationsService {
     });
 
     return result;
+  }
+
+  public async getDuplicates(
+    referenceId: string,
+    programId: number,
+  ): Promise<DuplicateDto[]> {
+    const registration = await this.getRegistrationOrThrow({
+      referenceId,
+      programId,
+    });
+    const duplicates = await this.registrationScopedRepository.getDuplicates({
+      registrationId: registration.id,
+      programId,
+    });
+    if (duplicates.length === 0) {
+      return [];
+    }
+    const referenceIds = duplicates.map((d) => d.referenceId);
+    // Get the full names of the duplicate using the pagination functionality
+    // This is done to avoid because getting fullNames because this is complex logic and in the pagination service this is already implemented
+    // TODO: In the future this can be refactored so this logic lives in the registration repository
+    const registrationViews =
+      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+        {
+          programId,
+          referenceIds,
+        },
+      );
+
+    // Add the name to the duplicate information together in one object
+    return duplicates.map((duplicate) => {
+      const registration = registrationViews.find(
+        (r) => r.id === duplicate.registrationId,
+      );
+      return {
+        registrationId: duplicate.registrationId,
+        registrationProgramId: duplicate.registrationProgramId,
+        attributeNames: duplicate.attributeNames,
+        scope: duplicate.scope,
+        name: registration?.name,
+        isDuplicateAccessibleWithinScope: registration !== undefined,
+      };
+    });
   }
 
   public async getReferenceId(

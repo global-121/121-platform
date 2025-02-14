@@ -14,7 +14,11 @@ import {
 import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/get-duplicates-result.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
@@ -162,6 +166,99 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       },
       relations,
     });
+  }
+
+  public async getDuplicates({
+    registrationId,
+    programId,
+  }: {
+    registrationId: number;
+    programId: number;
+  }): Promise<GetDuplicatesResult[]> {
+    // Added a limit to the number of duplicates to prevent a large amount of duplicates from being returned which could cause performance issues
+    // I think if there are more than this amount of duplicates a user misconfiguration is likely
+    // Should we also add this limit in the frontend somewhere to inform the user or is this not necessary?
+    const maxDuplicates = 30;
+
+    const rawDuplicates: {
+      registrationId: number;
+      referenceId: string;
+      registrationProgramId: number;
+      scope: string;
+      attributeName: string;
+    }[] = await this.createQueryBuilder('registration')
+      .select([
+        'duplicate.id as "registrationId"',
+        'duplicate.registrationProgramId as "registrationProgramId"',
+        'duplicate.referenceId as "referenceId"',
+        'duplicate.scope as "scope"',
+        'attribute.name as "attributeName"',
+      ])
+      .leftJoin(
+        RegistrationAttributeDataEntity,
+        'attributeData1',
+        '"attributeData1"."registrationId" = registration.id',
+      )
+      .innerJoin(
+        RegistrationAttributeDataEntity,
+        'attributeData2',
+        `"attributeData1"."programRegistrationAttributeId" = "attributeData2"."programRegistrationAttributeId"
+       AND "attributeData1".value = "attributeData2".value
+       AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
+      )
+      .leftJoin(
+        RegistrationEntity,
+        'duplicate',
+        `"attributeData2"."registrationId" = duplicate.id AND duplicate."registrationStatus" != :declinedStatusDuplicate`,
+        {
+          declinedStatusDuplicate: RegistrationStatusEnum.declined,
+        },
+      )
+      .leftJoin(
+        ProgramRegistrationAttributeEntity,
+        'attribute',
+        '"attributeData1"."programRegistrationAttributeId" = attribute.id',
+      )
+      .andWhere('"attributeData1"."registrationId" = :registrationId', {
+        registrationId,
+      })
+      .andWhere(
+        'registration."registrationStatus" != :declinedStatusRegistration',
+        {
+          declinedStatusRegistration: RegistrationStatusEnum.declined,
+        },
+      )
+      .andWhere('attribute."duplicateCheck" = true')
+      .andWhere('duplicate."programId" = :programId', { programId })
+      .orderBy('"attributeData1"."programRegistrationAttributeId"', 'ASC')
+      .limit(maxDuplicates)
+      .getRawMany();
+
+    // Group the duplicates by registrationId
+    const duplicatesMap: Record<number, GetDuplicatesResult> = {};
+
+    for (const duplicate of rawDuplicates) {
+      const {
+        registrationId,
+        referenceId,
+        registrationProgramId,
+        scope,
+        attributeName,
+      } = duplicate;
+
+      if (!duplicatesMap[registrationId]) {
+        duplicatesMap[registrationId] = {
+          registrationId,
+          referenceId,
+          registrationProgramId,
+          scope,
+          attributeNames: [],
+        };
+      }
+      duplicatesMap[registrationId].attributeNames.push(attributeName);
+    }
+
+    return Object.values(duplicatesMap);
   }
 
   // This is put in the registration repository as this function queries both registration an intersolve visa entities
