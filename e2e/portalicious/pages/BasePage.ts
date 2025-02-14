@@ -98,7 +98,7 @@ class BasePage {
     await this.page.getByRole('button', { name: 'Add project' }).click();
   }
 
-  async FileChooserComponent(filePath: string) {
+  async chooseAndUploadFile(filePath: string) {
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseFileButton.click();
     const fileChooser = await fileChooserPromise;

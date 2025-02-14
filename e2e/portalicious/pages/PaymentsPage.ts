@@ -266,7 +266,7 @@ class PaymentsPage extends BasePage {
   async importReconciliationData(filePath: string) {
     await this.importReconcilationDataButton.click();
 
-    await this.FileChooserComponent(filePath);
+    await this.chooseAndUploadFile(filePath);
 
     await this.importFileButton.click();
   }
