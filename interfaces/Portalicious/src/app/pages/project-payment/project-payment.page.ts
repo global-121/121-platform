@@ -23,7 +23,10 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
+import {
+  getChipDataByRegistrationStatus,
+  getChipDataByTransactionStatus,
+} from '~/components/colored-chip/colored-chip.helper';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -40,10 +43,7 @@ import {
   REGISTRATION_STATUS_LABELS,
   registrationLink,
 } from '~/domains/registration/registration.helper';
-import {
-  TRANSACTION_STATUS_CHIP_VARIANTS,
-  TRANSACTION_STATUS_LABELS,
-} from '~/domains/transaction/transaction.helper';
+import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
 import { ImportReconciliationDataComponent } from '~/pages/project-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
@@ -234,10 +234,8 @@ export class ProjectPaymentPageComponent {
           label: TRANSACTION_STATUS_LABELS[status],
           value: status,
         })),
-        getCellChipData: (transaction) => ({
-          chipLabel: TRANSACTION_STATUS_LABELS[transaction.status],
-          chipVariant: TRANSACTION_STATUS_CHIP_VARIANTS[transaction.status],
-        }),
+        getCellChipData: (transaction) =>
+          getChipDataByTransactionStatus(transaction.status),
       },
       {
         field: 'errorMessage',

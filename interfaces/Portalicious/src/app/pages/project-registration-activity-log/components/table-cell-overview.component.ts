@@ -18,7 +18,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
   ChipData,
-  getChipDataByTransactionStatusEnum,
+  getChipDataByTransactionStatus,
   getChipDataByTwilioMessageStatus,
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
@@ -89,7 +89,7 @@ export class TableCellOverviewComponent
     const { type, attributes } = this.value();
 
     if (type === ActivityTypeEnum.Transaction) {
-      return getChipDataByTransactionStatusEnum(attributes.status);
+      return getChipDataByTransactionStatus(attributes.status);
     }
 
     if (type === ActivityTypeEnum.Message) {

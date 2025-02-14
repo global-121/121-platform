@@ -14,6 +14,7 @@ import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
+import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,
   DataListItem,
@@ -21,10 +22,6 @@ import {
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import {
-  REGISTRATION_STATUS_CHIP_VARIANTS,
-  REGISTRATION_STATUS_LABELS,
-} from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
@@ -142,15 +139,11 @@ export class ActivityLogExpandedRowComponent
         return [
           {
             label: $localize`Old status`,
-            chipLabel: REGISTRATION_STATUS_LABELS[item.attributes.oldValue],
-            chipVariant:
-              REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.oldValue],
+            ...getChipDataByRegistrationStatus(item.attributes.oldValue),
           },
           {
             label: $localize`New status`,
-            chipLabel: REGISTRATION_STATUS_LABELS[item.attributes.newValue],
-            chipVariant:
-              REGISTRATION_STATUS_CHIP_VARIANTS[item.attributes.newValue],
+            ...getChipDataByRegistrationStatus(item.attributes.newValue),
           },
           {
             label: $localize`Change reason`,
