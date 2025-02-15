@@ -15,7 +15,10 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportFspPaymentListButton: Locator;
-  readonly exportDropdown: Locator;
+  readonly exportButton: Locator;
+  readonly importReconcilationDataButton: Locator;
+  readonly chooseFileButton: Locator;
+  readonly importFileButton: Locator;
   readonly proceedButton: Locator;
   readonly viewPaymentTitle: Locator;
   readonly paymentAmount: Locator;
@@ -43,10 +46,21 @@ class PaymentsPage extends BasePage {
     this.paymentSummaryWithInstructions = this.page.getByTestId(
       'create-payment-excel-fsp-instructions',
     );
-    this.exportFspPaymentListButton = this.page.getByRole('button', {
-      name: 'Export FSP payment list',
+    this.exportFspPaymentListButton = this.page.getByLabel(
+      'Export FSP payment list',
+    );
+    this.exportButton = this.page.getByRole('button', {
+      name: 'Export',
     });
-    this.exportDropdown = this.page.locator('app-single-payment-export');
+    this.importReconcilationDataButton = this.page.getByRole('button', {
+      name: 'Import reconciliation data',
+    });
+    this.chooseFileButton = this.page.getByRole('button', {
+      name: 'Choose file',
+    });
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
+    });
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
     this.viewPaymentTitle = this.page.getByRole('heading', {
       name: 'Payment',
@@ -189,7 +203,7 @@ class PaymentsPage extends BasePage {
     }
   }
   async selectPaymentExportOption({ option }: { option: string }) {
-    await this.exportDropdown.click();
+    await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
@@ -236,8 +250,8 @@ class PaymentsPage extends BasePage {
     await expect(this.retryFailedTransfersButton).toBeHidden();
   }
 
-  async retryFiledTransfers() {
-    await this.table.filterColumnByDopDownSelection({
+  async retryFailedTransfers() {
+    await this.table.filterColumnByDropDownSelection({
       columnName: 'Transfer status',
       selection: 'Failed',
     });
@@ -247,6 +261,19 @@ class PaymentsPage extends BasePage {
     await this.retryFailedTransfersButton.click();
 
     await this.popupRetryTransferButton.click();
+  }
+
+  async importReconciliationData(filePath: string) {
+    await this.importReconcilationDataButton.click();
+
+    await this.chooseAndUploadFile(filePath);
+
+    await this.importFileButton.click();
+  }
+
+  async exportFspPaymentList() {
+    await this.exportButton.click();
+    await this.exportFspPaymentListButton.click();
   }
 }
 

@@ -13,6 +13,7 @@ class BasePage {
   readonly accountDropdown: Locator;
   readonly formError: Locator;
   readonly toast: Locator;
+  readonly chooseFileButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,6 +29,9 @@ class BasePage {
     this.accountDropdown = this.page.getByRole('button', { name: 'Account' });
     this.formError = this.page.getByTestId('form-error');
     this.toast = this.page.getByRole('alert');
+    this.chooseFileButton = this.page.getByRole('button', {
+      name: 'Choose file',
+    });
   }
 
   async openSidebar() {
@@ -92,6 +96,13 @@ class BasePage {
 
   async openCreateNewProject() {
     await this.page.getByRole('button', { name: 'Add project' }).click();
+  }
+
+  async chooseAndUploadFile(filePath: string) {
+    const fileChooserPromise = this.page.waitForEvent('filechooser');
+    await this.chooseFileButton.click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(filePath);
   }
 }
 

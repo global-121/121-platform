@@ -74,7 +74,7 @@ test('[32300] Retry failed transfers', async ({ page }) => {
       'automated test',
       accessToken,
     );
-    await paymentsPage.retryFiledTransfers();
+    await paymentsPage.retryFailedTransfers();
   });
 
   // DO NOT MAKE IT A RULE!!!

@@ -114,7 +114,7 @@ test('[32298] Table should be a filtered list of registrations included in the t
     await table.clearAllFilters();
 
     // Apply filter for FSP
-    await table.filterColumnByDopDownSelection({
+    await table.filterColumnByDropDownSelection({
       columnName: 'FSP',
       selection: 'Albert Heijn voucher WhatsApp',
     });
