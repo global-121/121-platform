@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy [Ethiopia] Interface: Portal'
+name: 'Deploy [KRCS] Interface: Portalicious'
 
 env:
   workingDirectory: interfaces/Portalicious
@@ -12,7 +12,7 @@ permissions:
 on:
   workflow_call:
     secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL:
+      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS:
         required: true
       LOKALISE_API_TOKEN:
         required: true
@@ -22,12 +22,12 @@ jobs:
   build_and_deploy:
     name: Build and Deploy Job
     runs-on: ubuntu-latest
-    environment: 'client-ethiopia'
+    environment: 'client-krcs'
     env:
       NG_ENV_NAME: ${{ vars.NG_ENV_NAME }}
       NG_ENV_ICON: ${{ vars.NG_ENV_ICON }}
-      NG_LOCALES: ${{ vars.NG_LOCALES }}
-      NG_DEFAULT_LOCALE: ${{ vars.NG_DEFAULT_LOCALE }}
+      NG_LOCALES: 'en-GB'
+      NG_DEFAULT_LOCALE: 'en-GB'
       NG_URL_121_SERVICE_API: ${{ vars.NG_URL_121_SERVICE_API }}
       USE_IN_TWILIO_FLEX_IFRAME: ${{ vars.USE_IN_TWILIO_FLEX_IFRAME }}
       USE_POWERBI_DASHBOARDS: ${{ vars.USE_POWERBI_DASHBOARDS }}
@@ -45,6 +45,9 @@ jobs:
       - name: Build Interface
         id: build
         uses: ./.github/actions/build-interface
+        env:
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:
           interfacePath: ${{ env.workingDirectory }}
           buildType: 'portalicious'
@@ -58,7 +61,7 @@ jobs:
         id: deploy_to_aswa
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTAL }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           config_file_location: '${{ env.workingDirectory }}/'
