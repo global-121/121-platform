@@ -11,9 +11,6 @@
       <trans-unit id="generic-success" datatype="html">
         <source>Success</source>
       </trans-unit>
-      <trans-unit id="generic-pending" datatype="html">
-        <source>Pending</source>
-      </trans-unit>
       <trans-unit id="generic-error" datatype="html">
         <source>Error</source>
       </trans-unit>

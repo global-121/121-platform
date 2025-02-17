@@ -4,7 +4,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 import { AppRoutes } from '~/app.routes';
-import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
 
 export const REGISTRATION_STATUS_LABELS: Record<
   RegistrationStatusEnum,
@@ -17,19 +16,6 @@ export const REGISTRATION_STATUS_LABELS: Record<
   [RegistrationStatusEnum.completed]: $localize`:@@registration-status-completed:Completed`,
   [RegistrationStatusEnum.deleted]: $localize`:@@registration-status-deleted:Deleted`,
   [RegistrationStatusEnum.paused]: $localize`:@@registration-status-paused:Paused`,
-};
-
-export const REGISTRATION_STATUS_CHIP_VARIANTS: Record<
-  RegistrationStatusEnum,
-  ChipVariant
-> = {
-  [RegistrationStatusEnum.included]: 'green',
-  [RegistrationStatusEnum.registered]: 'blue',
-  [RegistrationStatusEnum.validated]: 'yellow',
-  [RegistrationStatusEnum.declined]: 'red',
-  [RegistrationStatusEnum.completed]: 'purple',
-  [RegistrationStatusEnum.deleted]: 'red',
-  [RegistrationStatusEnum.paused]: 'orange',
 };
 
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =

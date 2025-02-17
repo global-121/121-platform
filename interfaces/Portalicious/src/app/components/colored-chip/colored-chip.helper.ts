@@ -9,20 +9,22 @@ import {
   MessageStatus,
 } from '~/domains/message/message.helper';
 import {
-  REGISTRATION_STATUS_CHIP_VARIANTS,
   REGISTRATION_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
+import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 
 export interface ChipData {
   chipLabel: string;
   chipVariant: ChipVariant;
 }
 
-export const getChipDataByRegistrationStatus = (
-  status?: null | RegistrationStatusEnum,
+const mapValueToChipData = <Enum extends string>(
+  value: Enum | null | undefined,
+  labels: Record<NonNullable<Enum>, string>,
+  chipVariants: Record<NonNullable<Enum>, ChipVariant>,
 ): ChipData => {
-  if (!status) {
+  if (!value) {
     return {
       chipVariant: 'grey',
       chipLabel: $localize`:@@generic-not-available:Not available`,
@@ -30,103 +32,56 @@ export const getChipDataByRegistrationStatus = (
   }
 
   return {
-    chipLabel: REGISTRATION_STATUS_LABELS[status],
-    chipVariant: REGISTRATION_STATUS_CHIP_VARIANTS[status],
+    chipLabel: labels[value],
+    chipVariant: chipVariants[value],
   };
 };
 
-export const getChipDataByTransactionStatusEnum = (
+export const getChipDataByRegistrationStatus = (
+  status?: null | RegistrationStatusEnum,
+): ChipData =>
+  mapValueToChipData(status, REGISTRATION_STATUS_LABELS, {
+    [RegistrationStatusEnum.included]: 'green',
+    [RegistrationStatusEnum.registered]: 'blue',
+    [RegistrationStatusEnum.validated]: 'yellow',
+    [RegistrationStatusEnum.declined]: 'red',
+    [RegistrationStatusEnum.completed]: 'purple',
+    [RegistrationStatusEnum.deleted]: 'red',
+    [RegistrationStatusEnum.paused]: 'orange',
+  });
+
+export const getChipDataByTransactionStatus = (
   status?: null | TransactionStatusEnum,
-): ChipData => {
-  if (!status) {
-    return {
-      chipVariant: 'grey',
-      chipLabel: $localize`:@@generic-not-available:Not available`,
-    };
-  }
-  switch (status) {
-    case TransactionStatusEnum.success:
-      return {
-        chipLabel: $localize`:@@generic-success:Success`,
-        chipVariant: 'green',
-      };
-    case TransactionStatusEnum.waiting:
-      return {
-        chipLabel: $localize`:@@generic-pending:Pending`,
-        chipVariant: 'orange',
-      };
-    case TransactionStatusEnum.error:
-      return {
-        chipLabel: $localize`:@@generic-error:Error`,
-        chipVariant: 'red',
-      };
-  }
-};
+): ChipData =>
+  mapValueToChipData(status, TRANSACTION_STATUS_LABELS, {
+    [TransactionStatusEnum.waiting]: 'blue',
+    [TransactionStatusEnum.error]: 'red',
+    [TransactionStatusEnum.success]: 'green',
+  });
 
-export const getChipDataByTwilioMessageStatus = (status: string): ChipData => {
-  const messageStatus = convertTwilioMessageStatusToMessageStatus(status);
-  const chipLabel = MESSAGE_STATUS_LABELS[messageStatus];
-
-  switch (messageStatus) {
-    case MessageStatus.delivered:
-    case MessageStatus.read:
-      return {
-        chipLabel,
-        chipVariant: 'green',
-      };
-    case MessageStatus.failed:
-      return {
-        chipLabel,
-        chipVariant: 'red',
-      };
-    case MessageStatus.sent:
-    default:
-      return {
-        chipLabel,
-        chipVariant: 'blue',
-      };
-  }
-};
+export const getChipDataByTwilioMessageStatus = (status: string): ChipData =>
+  mapValueToChipData(
+    convertTwilioMessageStatusToMessageStatus(status),
+    MESSAGE_STATUS_LABELS,
+    {
+      [MessageStatus.delivered]: 'green',
+      [MessageStatus.read]: 'green',
+      [MessageStatus.failed]: 'red',
+      [MessageStatus.sent]: 'blue',
+      [MessageStatus.unknown]: 'blue',
+    },
+  );
 
 export const getChipDataByVisaCardStatus = (
   status?: null | VisaCard121Status,
-): ChipData => {
-  if (!status) {
-    return {
-      chipVariant: 'grey',
-      chipLabel: $localize`:@@generic-not-available:Not available`,
-    };
-  }
-
-  const chipLabel = VISA_CARD_STATUS_LABELS[status];
-  switch (status) {
-    case VisaCard121Status.Unknown:
-      return {
-        chipLabel,
-        chipVariant: 'grey',
-      };
-    case VisaCard121Status.Active:
-      return {
-        chipLabel,
-        chipVariant: 'green',
-      };
-    case VisaCard121Status.Issued:
-      return {
-        chipLabel,
-        chipVariant: 'blue',
-      };
-    case VisaCard121Status.Substituted:
-    case VisaCard121Status.Blocked:
-    case VisaCard121Status.SuspectedFraud:
-      return {
-        chipLabel,
-        chipVariant: 'red',
-      };
-    case VisaCard121Status.CardDataMissing:
-    case VisaCard121Status.Paused:
-      return {
-        chipLabel,
-        chipVariant: 'orange',
-      };
-  }
-};
+): ChipData =>
+  mapValueToChipData(status, VISA_CARD_STATUS_LABELS, {
+    [VisaCard121Status.Unknown]: 'grey',
+    [VisaCard121Status.Active]: 'green',
+    [VisaCard121Status.Issued]: 'blue',
+    [VisaCard121Status.Substituted]: 'red',
+    [VisaCard121Status.Blocked]: 'red',
+    [VisaCard121Status.SuspectedFraud]: 'red',
+    [VisaCard121Status.CardDataMissing]: 'orange',
+    [VisaCard121Status.Paused]: 'orange',
+  });
