@@ -43,6 +43,7 @@ export default function () {
     programId,
     queryParams,
   );
+  console.log('🚀 ~ getRegistration:', getRegistration.timings.duration);
 
   const getRegistrationBody = JSON.parse(getRegistration.body);
   checkAndFail(getRegistrationBody, {
