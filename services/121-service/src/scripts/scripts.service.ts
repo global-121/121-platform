@@ -83,5 +83,6 @@ export class ScriptsService {
 
     await this.seedMockHelper.multiplyRegistrations(powerNrRegistrations);
     await this.seedMockHelper.updateSequenceNumbers();
+    await this.seedMockHelper.introduceDuplicates();
   }
 }

@@ -1,6 +1,18 @@
+#!/bin/bash
+
 # Array to collect failed tests
 failed_tests=()
-for file in tests/*.js; do
+
+# Check if filenames are provided as arguments
+if [ "$#" -eq 0 ]; then
+  # No filenames provided, run all tests
+  test_files=(tests/*.js)
+else
+  # Use provided filenames
+  test_files=("$@")
+fi
+
+for file in "${test_files[@]}"; do
   echo "Test: $file"
   echo "Starting services"
   (cd ../services ; docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300)
@@ -18,6 +30,7 @@ for file in tests/*.js; do
   echo "Stopping services"
   (cd ../services ; docker compose -f docker-compose.yml down)
 done
+
 # Check if there were any failed tests
 if [ ${#failed_tests[@]} -ne 0 ]; then
   echo "The following tests failed:"
