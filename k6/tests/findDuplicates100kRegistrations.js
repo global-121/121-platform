@@ -14,7 +14,8 @@ const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 
-const maxRequestDuration = 20000;
+// At the time of implementation, the request duration was 12s on the server and 3s on the local machine for 130k registrations and about 8k duplicates
+const maxRequestDuration = 12000;
 
 const failedChecks = new Counter('failed_checks');
 
