@@ -114,6 +114,12 @@ exports[`Do payment with Excel FSP Import FSP reconciliation data Should give an
 }
 `;
 
+exports[`Do payment with Excel FSP Import FSP reconciliation data Should give an error when there a duplicate values in the toMatch column 1`] = `
+{
+  "errors": "The match column 'phoneNumber' contains duplicate values.",
+}
+`;
+
 exports[`Do payment with Excel FSP Import FSP reconciliation data should give me a CSV template when I request it 1`] = `
 [
   {

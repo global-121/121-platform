@@ -219,6 +219,10 @@ export class ExcelRecociliationService {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
+      this.validateNoDuplicateValuesInMatchColumn({
+        importRecords: validatedExcelImport,
+        matchColumn,
+      });
       const importResultForFspConfig = await this.reconciliatePayments({
         programId,
         payment,
@@ -388,6 +392,22 @@ export class ExcelRecociliationService {
     }
 
     return resultFeedback;
+  }
+
+  // Duplicate values are not allowed in the match column because it would be ambiguous which registration to match with and create a transaction for
+  private validateNoDuplicateValuesInMatchColumn({
+    importRecords,
+    matchColumn,
+  }: {
+    importRecords: object[];
+    matchColumn: string;
+  }): void {
+    const matchColumnValues = importRecords.map((r) => r[matchColumn]);
+    const uniqueMatchColumnValues = new Set(matchColumnValues);
+    if (uniqueMatchColumnValues.size !== matchColumnValues.length) {
+      const errors = `The match column '${matchColumn}' contains duplicate values.`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   private createTransactionResult(
