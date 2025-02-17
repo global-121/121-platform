@@ -59,6 +59,7 @@ jobs:
         working-directory: ${{ env.k6TestsPath }}
         run: |
           npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
+          npx dotenv -e ../services/.env -- ./k6 run tests/findDuplicates100kRegistrations.js
 
       - name: Docker logs
         if: always()
