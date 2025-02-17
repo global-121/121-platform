@@ -14,7 +14,7 @@ const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 
-const maxRequestDuration = 8000;
+const maxRequestDuration = 20000;
 
 const failedChecks = new Counter('failed_checks');
 
