@@ -416,4 +416,30 @@ describe('RegistrationsInputValidator', () => {
 
     expect(result[0]).toEqual(expected);
   });
+
+  it('should only return the value you try to validate', async () => {
+    const fullName = 'testName';
+    const csvArray = [
+      {
+        fullName,
+      },
+    ];
+    const result = await validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.update,
+      validationConfig: {
+        validatePhoneNumberLookup: true,
+        validateUniqueReferenceId: true,
+        validateExistingReferenceId: true,
+      },
+    });
+    const expectedResult = {
+      data: {
+        fullName,
+      },
+    };
+    expect(result[0]).toEqual(expectedResult);
+  });
 });
