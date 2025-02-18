@@ -45,6 +45,9 @@ jobs:
       - name: Build Interface
         id: build
         uses: ./.github/actions/build-interface
+        env:
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:
           interfacePath: ${{ env.workingDirectory }}
           buildType: 'portalicious'
