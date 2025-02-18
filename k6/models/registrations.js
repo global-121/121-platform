@@ -35,4 +35,19 @@ export default class RegistrationsModel {
 
     return res;
   }
+
+  getRegistrations(programId, filter) {
+    let queryParams = '';
+    if (filter) {
+      queryParams = Object.entries(filter)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+        )
+        .join('&');
+    }
+
+    const url = `${baseUrl}api/programs/${programId}/registrations?${queryParams}`;
+    return http.get(url);
+  }
 }
