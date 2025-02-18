@@ -1,5 +1,6 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
@@ -51,6 +52,11 @@ export const REGISTRATION_STATUS_VERB_PROGRESSIVE: Record<
   [RegistrationStatusEnum.paused]: $localize`Pausing`,
   [RegistrationStatusEnum.declined]: $localize`Declining`,
   [RegistrationStatusEnum.deleted]: $localize`Deleting`,
+};
+
+export const DUPLICATE_STATUS_LABELS: Record<DuplicateStatus, string> = {
+  [DuplicateStatus.duplicate]: $localize`:@@duplicate-status-duplicate:Duplicate`,
+  [DuplicateStatus.unique]: $localize`:@@duplicate-status-unique:Unique`,
 };
 
 export const LANGUAGE_ENUM_LABEL: Record<LanguageEnum, string> = {

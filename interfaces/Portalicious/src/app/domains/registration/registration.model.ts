@@ -7,6 +7,7 @@ import { StatusChangeActivity } from '@121-service/src/activities/interfaces/sta
 import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -21,6 +22,7 @@ export type FindAllRegistrationsResult = {
 } & Omit<Dto<FindAllRegistrationsResultDto>, 'data'>;
 
 export type ChangeStatusResult = Dto<BulkActionResultDto>;
+export type DuplicatesResult = Dto<DuplicateReponseDto>;
 
 // The discriminated union type doesn't play well with our Dto utility type, so we need to define the Activity type manually
 export type Activity =

@@ -92,7 +92,6 @@ export class AddNoteFormComponent {
       });
       void this.registrationApiService.invalidateCache({
         projectId: this.projectId,
-        registration: this.registration.data(),
       });
       this.formVisible.set(false);
     },
