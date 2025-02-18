@@ -264,7 +264,6 @@ describe('Do payment with Excel FSP', () => {
     it(`Should give an error when there a duplicate values in the toMatch column`, async () => {
       // Arrange
       const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
-      // construct reconciliation-file here
       const reconciliationData = [
         {
           [matchColumn]: registrationWesteros1.phoneNumber,
