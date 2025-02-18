@@ -20,6 +20,10 @@ body {
   --font-family: theme(fontFamily.body);
 }
 
+svg-icon svg {
+  fill: currentColor;
+}
+
 @layer tailwind-base {
   h1 {
     @apply font-bold txt-h-1;
