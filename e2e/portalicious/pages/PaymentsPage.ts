@@ -67,7 +67,7 @@ class PaymentsPage extends BasePage {
     });
     this.paymentAmount = this.page.getByTestId('metric-tile-component');
     this.retryFailedTransfersButton = this.page.getByRole('button', {
-      name: 'Retry failed transfers',
+      name: 'Retry failed transfer(s)',
     });
     this.popupRetryTransferButton = this.page.getByRole('button', {
       name: 'Retry transfers',

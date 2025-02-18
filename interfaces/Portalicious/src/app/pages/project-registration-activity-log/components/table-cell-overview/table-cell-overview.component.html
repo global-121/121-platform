@@ -1,0 +1,51 @@
+<div class="flex w-full content-between items-center">
+  @if (!!overview()) {
+    <span class="max-w-96 truncate text-ellipsis">{{ overview() }}</span>
+  }
+
+  <div
+    class="me-auto"
+    [ngClass]="{
+      'ms-2': !!overview(),
+    }"
+  >
+    @if (chipData()) {
+      <app-colored-chip
+        [label]="chipData()!.chipLabel"
+        [variant]="chipData()!.chipVariant"
+      />
+    }
+
+    @if (canRetryTransfer()) {
+      <p-button
+        [ngClass]="{
+          'ms-1': !!chipData(),
+        }"
+        label="Retry transfer"
+        i18n-label="@@retry-transfer"
+        rounded
+        size="small"
+        (click)="retryTransfer()"
+      />
+    }
+  </div>
+
+  @let dialogData = voucherDialogData();
+  @if (dialogData) {
+    <app-activity-log-voucher-dialog
+      [projectId]="dialogData.projectId"
+      [paymentId]="dialogData.paymentId"
+      [totalTransfers]="dialogData.totalTransfers"
+      [voucherReferenceId]="dialogData.voucherReferenceId"
+    />
+  }
+</div>
+
+@let payment = paymentId();
+@if (payment) {
+  <app-retry-transfers-dialog
+    #retryTransfersDialog
+    [projectId]="context().projectId()"
+    [paymentId]="payment"
+  />
+}

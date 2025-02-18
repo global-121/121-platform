@@ -12,7 +12,6 @@ html {
 
 body {
   @apply bg-grey-100 font-body text-black;
-  overflow-y: scroll; /* Always show scrollbars to avoid page skipping about */
 }
 
 :root {
