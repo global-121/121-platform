@@ -669,7 +669,14 @@ export class RegistrationsService {
       });
     }
 
-    if (process.env.SYNC_WITH_THIRD_PARTIES) {
+    const intersolveVisaAttributeNames =
+      getFinancialServiceProviderSettingByNameOrThrow(
+        FinancialServiceProviders.intersolveVisa,
+      ).attributes.map((attr) => attr.name) as string[];
+    if (
+      process.env.SYNC_WITH_THIRD_PARTIES &&
+      intersolveVisaAttributeNames.includes(attribute)
+    ) {
       await this.sendContactInformationToIntersolve(registration);
     }
 

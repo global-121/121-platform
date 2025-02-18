@@ -103,21 +103,24 @@ export class RegistrationsInputValidator {
        * Add default registration attributes without custom validation
        * =============================================================
        */
-      const {
-        errorOjb: errorObjPaymentAmountMultiplier,
-        validatedPaymentAmountMultiplier,
-      } = this.validatePaymentAmountMultiplier({
-        value: row.paymentAmountMultiplier,
-        programPaymentAmountMultiplierFormula:
-          program.paymentAmountMultiplierFormula,
-        i,
-      });
-      if (errorObjPaymentAmountMultiplier) {
-        errors.push(errorObjPaymentAmountMultiplier);
-      } else {
-        validatedRegistrationInput.paymentAmountMultiplier =
-          validatedPaymentAmountMultiplier;
+      if (row[AdditionalAttributes.paymentAmountMultiplier] !== undefined) {
+        const {
+          errorOjb: errorObjPaymentAmountMultiplier,
+          validatedPaymentAmountMultiplier,
+        } = this.validatePaymentAmountMultiplier({
+          value: row.paymentAmountMultiplier,
+          programPaymentAmountMultiplierFormula:
+            program.paymentAmountMultiplierFormula,
+          i,
+        });
+        if (errorObjPaymentAmountMultiplier) {
+          errors.push(errorObjPaymentAmountMultiplier);
+        } else {
+          validatedRegistrationInput.paymentAmountMultiplier =
+            validatedPaymentAmountMultiplier;
+        }
       }
+
       if (program.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
@@ -137,19 +140,21 @@ export class RegistrationsInputValidator {
        * Validate default registration properties
        * ========================================
        */
-      const errorObjScope = this.validateRowScope({
-        row,
-        userScope,
-        i,
-        typeOfInput,
-      });
-      if (errorObjScope) {
-        errors.push(errorObjScope);
-      } else if (program.enableScope) {
-        // We know that scope is undefined or string, or an error would have occured
-        validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
-          | undefined
-          | string;
+      if (row[AdditionalAttributes.scope] !== undefined) {
+        const errorObjScope = this.validateRowScope({
+          row,
+          userScope,
+          i,
+          typeOfInput,
+        });
+        if (errorObjScope) {
+          errors.push(errorObjScope);
+        } else if (program.enableScope) {
+          // We know that scope is undefined or string, or an error would have occured
+          validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
+            | undefined
+            | string;
+        }
       }
 
       const {
