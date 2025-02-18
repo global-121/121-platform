@@ -180,10 +180,6 @@ export class EditPersonalInformationComponent
       this.toastService.showToast({
         detail: $localize`Personal information edited successfully.`,
       });
-      void this.registrationApiService.invalidateCache({
-        projectId: this.projectId,
-        registration: patchedRegistration,
-      });
       this.registrationUpdated.emit(patchedRegistration);
     },
   }));

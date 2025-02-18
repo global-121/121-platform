@@ -19,6 +19,7 @@ import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
+import { provideAngularSvgIcon } from 'angular-svg-icon';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from '~/app.routes';
@@ -34,6 +35,7 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     provideExperimentalZonelessChangeDetection(),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
+    provideAngularSvgIcon(),
     providePrimeNG({
       theme: {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- AppTheme is typed as any in primeng
