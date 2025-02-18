@@ -90,10 +90,10 @@ export class AddNoteFormComponent {
       this.toastService.showToast({
         detail: $localize`Note successfully added.`,
       });
-      void this.registrationApiService.invalidateCache(
-        this.projectId,
-        this.registrationId,
-      );
+      void this.registrationApiService.invalidateCache({
+        projectId: this.projectId,
+        registration: this.registration.data(),
+      });
       this.formVisible.set(false);
     },
   }));

@@ -22,6 +22,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { Registration } from '~/domains/registration/registration.model';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
 import { AuthService } from '~/services/auth.service';
@@ -121,12 +122,12 @@ export class ProjectRegistrationPersonalInformationPageComponent
     ),
   );
 
-  onRegistrationUpdated() {
+  onRegistrationUpdated(registration: Registration) {
     this.isEditing.set(false);
-    void this.registrationApiService.invalidateCache(
-      this.projectId,
-      this.registrationId,
-    );
+    void this.registrationApiService.invalidateCache({
+      projectId: this.projectId,
+      registration,
+    });
     void this.registrationAttributes.refetch();
   }
 

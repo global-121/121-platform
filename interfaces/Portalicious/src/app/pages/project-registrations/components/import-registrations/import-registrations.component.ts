@@ -68,7 +68,9 @@ export class ImportRegistrationsComponent {
       });
     },
     onSuccess: () => {
-      void this.registrationApiService.invalidateCache(this.projectId);
+      void this.registrationApiService.invalidateCache({
+        projectId: this.projectId,
+      });
       this.dialogVisible.set(false);
       this.toastService.showToast({
         summary: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,
