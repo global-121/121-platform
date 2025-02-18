@@ -206,11 +206,15 @@ export class ChangeStatusDialogComponent
           showSpinner: true,
         });
         this.actionComplete.emit();
-        void this.registrationApiService.invalidateCache(this.projectId);
+        void this.registrationApiService.invalidateCache({
+          projectId: this.projectId,
+        });
 
         setTimeout(() => {
           // invalidate the cache again after a delay to try and make the status change reflected in the UI
-          void this.registrationApiService.invalidateCache(this.projectId);
+          void this.registrationApiService.invalidateCache({
+            projectId: this.projectId,
+          });
         }, 500);
         return;
       }

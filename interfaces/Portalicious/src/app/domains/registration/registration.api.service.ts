@@ -290,18 +290,28 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
-  public invalidateCache(
-    projectId: Signal<number | string>,
-    registrationId?: Signal<number | string>,
-  ): Promise<void> {
+  public async invalidateCache({
+    projectId,
+    registration,
+  }: {
+    projectId: Signal<number | string>;
+    registration?: Registration;
+  }): Promise<void> {
     const path = [...BASE_ENDPOINT(projectId)];
 
-    if (registrationId) {
-      path.push(registrationId);
+    if (!registration) {
+      return this.queryClient.invalidateQueries({
+        queryKey: this.pathToQueryKey(path),
+      });
     }
 
-    return this.queryClient.invalidateQueries({
-      queryKey: this.pathToQueryKey(path),
-    });
+    await Promise.all([
+      this.queryClient.invalidateQueries({
+        queryKey: this.pathToQueryKey([...path, registration.id]),
+      }),
+      this.queryClient.invalidateQueries({
+        queryKey: this.pathToQueryKey([...path, registration.referenceId]),
+      }),
+    ]);
   }
 }

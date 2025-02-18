@@ -38,6 +38,7 @@ import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/co
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { Registration } from '~/domains/registration/registration.model';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import {
   NormalizedRegistrationAttribute,
@@ -75,7 +76,7 @@ export class EditPersonalInformationComponent
   readonly registrationId = input.required<string>();
   readonly attributeList = input.required<NormalizedRegistrationAttribute[]>();
   readonly cancelEditing = output();
-  readonly registrationUpdated = output();
+  readonly registrationUpdated = output<Registration>();
 
   readonly projectApiService = inject(ProjectApiService);
   readonly registrationApiService = inject(RegistrationApiService);
@@ -175,15 +176,15 @@ export class EditPersonalInformationComponent
         reason,
       });
     },
-    onSuccess: () => {
+    onSuccess: (patchedRegistration) => {
       this.toastService.showToast({
         detail: $localize`Personal information edited successfully.`,
       });
-      void this.registrationApiService.invalidateCache(
-        this.projectId,
-        this.registrationId,
-      );
-      this.registrationUpdated.emit();
+      void this.registrationApiService.invalidateCache({
+        projectId: this.projectId,
+        registration: patchedRegistration,
+      });
+      this.registrationUpdated.emit(patchedRegistration);
     },
   }));
   ngOnInit() {
