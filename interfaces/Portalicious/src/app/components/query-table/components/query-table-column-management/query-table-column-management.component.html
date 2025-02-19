@@ -39,11 +39,13 @@
   @for (column of columns(); track $index) {
     <div class="align-items-center flex w-full gap-1">
       <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-      <label>
+      <label class="flex">
         <p-checkbox
           formControlName="selectedColumns"
           [value]="column"
-        /><span class="pl-2">{{ column.header }}</span>
+          class="me-2"
+        />
+        <span>{{ column.header }}</span>
       </label>
     </div>
   }
