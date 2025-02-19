@@ -46,7 +46,7 @@ test('Content-Security-Policy set for tracking with ApplicationInsights', () => 
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/\*\.in\.applicationinsights\.azure\.com/;
 
-  if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     match(csp, connectSrcCondition);
   } else {
     doesNotMatch(csp, connectSrcCondition);

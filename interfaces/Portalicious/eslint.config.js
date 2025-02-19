@@ -181,7 +181,30 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.js', '**/*.mjs'],
-    extends: [eslintPluginPrettierRecommended],
-    rules: {},
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: {
+        module: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+      },
+    },
+    plugins: {
+      regexp: eslintPluginRegexp,
+      'eslint-comments': eslintPluginComments,
+    },
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPrettierRecommended,
+    ],
+    rules: {
+      'eslint-comments/require-description': 'error',
+      'arrow-body-style': 'error',
+      'func-style': 'error',
+      'no-inner-declarations': 'error',
+      'object-shorthand': 'error',
+      'prefer-arrow-callback': 'error',
+    },
   },
 );
