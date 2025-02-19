@@ -19,13 +19,17 @@ import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
+import { provideMatomo, withRouter } from 'ngx-matomo-client';
 import { providePrimeNG } from 'primeng/config';
 
-import { routes } from '~/app.routes';
+import { AppRoutes, routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
 import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
+import { environment } from '~environment';
+
+import { parseMatomoConnectionString } from '../../_matomo.utils.mjs';
 
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
@@ -70,5 +74,27 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     ...AuthService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
+    environment.matomo_connection_string
+      ? provideMatomo(
+          {
+            siteId: Number(
+              parseMatomoConnectionString(environment.matomo_connection_string)
+                .id,
+            ),
+            trackerUrl: String(
+              parseMatomoConnectionString(environment.matomo_connection_string)
+                .api,
+            ),
+            acceptDoNotTrack: true,
+            disabled: !environment.production, // NOTE: To debug tracking locally, omit or set to `false`
+            enableJSErrorTracking: true,
+            requireConsent: 'none',
+            runOutsideAngularZone: true,
+          },
+          withRouter({
+            exclude: [new RegExp(AppRoutes.authCallback)],
+          }),
+        )
+      : [],
   ],
 });
