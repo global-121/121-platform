@@ -10,6 +10,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import {
   ActitivitiesResponse,
   ChangeStatusResult,
+  DuplicatesResult,
   FindAllRegistrationsResult,
   Registration,
   SendMessageData,
@@ -49,6 +50,18 @@ export class RegistrationApiService extends DomainApiService {
         registrationId,
       ],
       enabled: () => !!projectId() && !!registrationId(),
+    });
+  }
+
+  getDuplicates({
+    projectId,
+    referenceId,
+  }: {
+    projectId: Signal<number | string>;
+    referenceId: string;
+  }) {
+    return this.generateQueryOptions<DuplicatesResult[]>({
+      path: [...BASE_ENDPOINT(projectId), referenceId, 'duplicates'],
     });
   }
 

@@ -1,0 +1,66 @@
+@if (loading() || duplicates().length > 0) {
+  <div
+    class="mb-6 flex w-full items-start rounded-2xl border p-4"
+    [ngClass]="{
+      'border-blue-500 bg-blue-100 text-blue-700': loading(),
+      'border-red-500 bg-red-100 text-red-700': !loading(),
+    }"
+  >
+    <svg-icon
+      src="assets/duplicates.svg"
+      class="me-2 h-7 w-7"
+    ></svg-icon>
+    @if (loading()) {
+      <strong
+        i18n
+        class="me-auto"
+        >Loading duplicate information...</strong
+      >
+      <i class="pi pi-spinner animate-spin self-center text-xl"></i>
+    } @else {
+      <strong
+        i18n
+        class="me-2"
+        >Duplicated with:</strong
+      >
+      <ul class="me-auto">
+        @for (duplicate of duplicates(); track $index) {
+          <li class="ms-6 list-disc text-black">
+            <a
+              [routerLink]="registrationLink(duplicate.registrationId)"
+              class="underline hover:no-underline focus:no-underline"
+              target="_blank"
+            >
+              <ng-container i18n>Reg. #</ng-container
+              >{{ duplicate.registrationProgramId }} -
+              @if (duplicate.isInScope) {
+                {{ duplicate.name }}
+              } @else {
+                <ng-container i18n
+                  >(Scope - {{ duplicate.scope }})</ng-container
+                >
+              }
+              <span class="pi pi-external-link ms-1"></span>
+            </a>
+            <span
+              i18n
+              class="ms-1"
+            >
+              (matching fields:
+              {{
+                translatableStringService.commaSeparatedList(
+                  duplicate.attributeNames
+                )
+              }})</span
+            >
+          </li>
+        }
+      </ul>
+      <i
+        class="pi pi-info-circle cursor-help self-center text-xl text-black"
+        pTooltip="To handle duplications you can edit the personal information or decline the registration."
+        i18n-pTooltip
+      ></i>
+    }
+  </div>
+}

@@ -12,16 +12,22 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import {
+  getChipDataByDuplicateStatus,
+  getChipDataByRegistrationStatus,
+} from '~/components/colored-chip/colored-chip.helper';
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AddNoteFormComponent } from '~/components/registration-page-layout/components/add-note-form/add-note-form.component';
+import { RegistrationDuplicatesBannerComponent } from '~/components/registration-page-layout/components/registration-duplicates-banner/registration-duplicates-banner.component';
 import { RegistrationMenuComponent } from '~/components/registration-page-layout/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -41,6 +47,8 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     SkeletonInlineComponent,
     AddNoteFormComponent,
     RegistrationMenuComponent,
+    RegistrationDuplicatesBannerComponent,
+    ColoredChipComponent,
   ],
   templateUrl: './registration-page-layout.component.html',
   styles: ``,
@@ -63,6 +71,16 @@ export class RegistrationPageLayoutComponent {
       this.registrationId,
     ),
   );
+  duplicates = injectQuery(() => ({
+    ...this.registrationApiService.getDuplicates({
+      projectId: this.projectId,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
+      referenceId: this.registration.data()!.referenceId,
+    })(),
+    enabled: !!this.registration.data(),
+  }));
+
+  readonly addNoteFormVisible = signal(false);
 
   readonly registrationData = computed(() => {
     const registrationRawData = this.registration.data();
@@ -129,14 +147,22 @@ export class RegistrationPageLayoutComponent {
     return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
   });
 
-  readonly addNoteFormVisible = signal(false);
-
   readonly canUpdatePersonalData = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
     }),
   );
+
+  readonly duplicateArray = computed(() => this.duplicates.data() ?? []);
+  readonly duplicateChipData = computed(() =>
+    getChipDataByDuplicateStatus(
+      this.duplicateArray().length > 0
+        ? DuplicateStatus.duplicate
+        : DuplicateStatus.unique,
+    ),
+  );
+
   private getPaymentCountString(
     paymentCount?: null | number,
     maxPayments?: null | number,

@@ -1,5 +1,6 @@
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { ChipVariant } from '~/components/colored-chip/colored-chip.component';
@@ -9,6 +10,7 @@ import {
   MessageStatus,
 } from '~/domains/message/message.helper';
 import {
+  DUPLICATE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
   VISA_CARD_STATUS_LABELS,
 } from '~/domains/registration/registration.helper';
@@ -84,4 +86,12 @@ export const getChipDataByVisaCardStatus = (
     [VisaCard121Status.SuspectedFraud]: 'red',
     [VisaCard121Status.CardDataMissing]: 'orange',
     [VisaCard121Status.Paused]: 'orange',
+  });
+
+export const getChipDataByDuplicateStatus = (
+  status?: DuplicateStatus | null,
+): ChipData =>
+  mapValueToChipData(status, DUPLICATE_STATUS_LABELS, {
+    [DuplicateStatus.unique]: 'green',
+    [DuplicateStatus.duplicate]: 'red',
   });
