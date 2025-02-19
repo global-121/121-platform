@@ -37,7 +37,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "scoring": {},
       "showInPeopleAffectedTable": false
     },
@@ -52,7 +52,7 @@
       },
       "type": "date",
       "options": null,
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
@@ -147,7 +147,7 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "tel",
       "options": null,
       "duplicateCheck": true,
@@ -265,7 +265,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "showInPeopleAffectedTable": false
     }
   ],

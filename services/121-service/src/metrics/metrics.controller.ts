@@ -51,7 +51,7 @@ export class MetricsController {
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
   @ApiOperation({
-    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allPeopleAffected}`,
+    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allRegistrations}`,
   })
   @ApiResponse({
     status: HttpStatus.OK,

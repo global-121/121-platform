@@ -13,7 +13,7 @@
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
-    type: ExportType.allPeopleAffected,
+    type: ExportType.allRegistrations,
     paginateQuery: exportSelectedActionData()?.query,
   }"
 >
@@ -23,7 +23,7 @@
   </p>
   <app-latest-export-date
     [projectId]="projectId()"
-    [exportType]="ExportType.allPeopleAffected"
+    [exportType]="ExportType.allRegistrations"
   />
 </app-confirmation-dialog>
 <app-confirmation-dialog
@@ -52,7 +52,7 @@
   </ul>
   <app-latest-export-date
     [projectId]="projectId()"
-    [exportType]="ExportType.allPeopleAffected"
+    [exportType]="ExportType.allRegistrations"
   />
 </app-confirmation-dialog>
 <app-confirmation-dialog

@@ -45,7 +45,7 @@ class BaseProgramRegistrationAttributeDto {
   public readonly editableInPortal?: boolean;
 
   @ApiProperty({
-    example: [ExportType.allPeopleAffected, ExportType.included],
+    example: [ExportType.allRegistrations, ExportType.included],
     required: false,
   })
   @IsOptional()

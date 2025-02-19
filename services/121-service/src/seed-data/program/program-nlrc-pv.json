@@ -24,7 +24,7 @@
       },
       "name": "namePartnerOrganization",
       "type": "text",
-      "export": ["all-people-affected", "included", "payment"],
+      "export": ["all-registrations", "included", "payment"],
       "showInPeopleAffectedTable": true
     },
     {
@@ -35,7 +35,7 @@
       "type": "text",
       "pattern": null,
       "options": null,
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
@@ -66,7 +66,7 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "tel",
       "options": null,
       "duplicateCheck": true,
@@ -77,7 +77,7 @@
       "label": {
         "en": "Address street"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -87,7 +87,7 @@
       "label": {
         "en": "Address house number"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "numeric",
       "showInPeopleAffectedTable": false
     },
@@ -96,7 +96,7 @@
       "label": {
         "en": "Address house number addition"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "text",
       "showInPeopleAffectedTable": false
     },
@@ -105,7 +105,7 @@
       "label": {
         "en": "Address postal code"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -115,7 +115,7 @@
       "label": {
         "en": "Address city"
       },
-      "export": ["all-people-affected", "included"],
+      "export": ["all-registrations", "included"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false

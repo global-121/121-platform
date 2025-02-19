@@ -272,7 +272,7 @@ export class CreatePaymentComponent {
       icon: 'pi pi-upload',
       command: () => {
         this.exportRegistrationsMutation.mutate({
-          type: ExportType.allPeopleAffected,
+          type: ExportType.allRegistrations,
           paginateQuery: this.registrationsTable()?.getActionData()?.query,
         });
       },
