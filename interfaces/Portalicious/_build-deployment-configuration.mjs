@@ -5,6 +5,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 // Set up specifics
 const sourcePath = './staticwebapp.config.base.json';
@@ -105,6 +106,24 @@ if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
     `https://app.powerbi.com`,
   ]);
 }
+
+// Optional: Matomo analytics/metrics
+if (process.env.MATOMO_CONNECTION_STRING) {
+  console.info('✅ Allow tracking with Matomo');
+
+  const matomoConnectionInfo = parseMatomoConnectionString(
+    process.env.MATOMO_CONNECTION_STRING,
+  );
+
+  if (matomoConnectionInfo && matomoConnectionInfo.api) {
+    const matomoOrigin = new URL(matomoConnectionInfo.api).origin;
+
+    let connectSrc = contentSecurityPolicy.get('connect-src');
+    contentSecurityPolicy.set('connect-src', [...connectSrc, matomoOrigin]);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 // Construct the Content-Security-Policy header-value
 const contentSecurityPolicyValue = Array.from(contentSecurityPolicy)

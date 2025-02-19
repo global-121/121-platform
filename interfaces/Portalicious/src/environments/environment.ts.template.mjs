@@ -14,6 +14,7 @@ export const environment = {
 
   // Monitoring/Telemetry:
   applicationinsights_connection_string: '${process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || ''}',
+  matomo_connection_string: '${process.env.MATOMO_CONNECTION_STRING || ''}',
 
   // Azure AD
   use_sso_azure_entra: ${process.env.USE_SSO_AZURE_ENTRA || 'false'},

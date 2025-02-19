@@ -6,6 +6,7 @@
 
 import test from 'node:test';
 import { ok, match, doesNotMatch } from 'node:assert/strict';
+import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const url = process.argv[2]?.replace('--url=', '');
 
@@ -100,3 +101,16 @@ test('Content-Security-Policy set to load PowerBI dashboard(s) in iframe', () =>
     doesNotMatch(csp, frameSrcCondition);
   }
 });
+
+test(
+  'Content-Security-Policy set for tracking with Matomo',
+  { skip: !process.env.MATOMO_CONNECTION_STRING },
+  () => {
+    const matomoHost = parseMatomoConnectionString(
+      process.env.MATOMO_CONNECTION_STRING,
+    ).api;
+
+    const connectSrcCondition = new RegExp(`connect-src[^;]* ${matomoHost}`);
+    match(csp, connectSrcCondition);
+  },
+);

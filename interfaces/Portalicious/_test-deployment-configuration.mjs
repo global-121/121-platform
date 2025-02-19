@@ -5,8 +5,9 @@
  */
 
 import test from 'node:test';
-import { ok, match, doesNotMatch } from 'node:assert/strict';
+import { ok, match, doesNotMatch, strictEqual } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const swaConfig = JSON.parse(
   readFileSync('./staticwebapp.config.json', 'utf8'),
@@ -95,3 +96,22 @@ test('Content-Security-Policy configuration to load PowerBI dashboard(s) in ifra
     doesNotMatch(csp, frameSrcCondition);
   }
 });
+
+test(
+  'Content-Security-Policy configuration whether to allow tracking with Matomo',
+  { skip: !process.env.MATOMO_CONNECTION_STRING },
+  () => {
+    const matomoHost = parseMatomoConnectionString(
+      process.env.MATOMO_CONNECTION_STRING,
+    ).api;
+    ok(matomoHost, 'Matomo API is defined correctly');
+    strictEqual(
+      matomoHost,
+      new URL(matomoHost).origin,
+      'Matomo API is a valid URL origin',
+    );
+
+    const connectSrcCondition = new RegExp(`connect-src[^;]* ${matomoHost}`);
+    match(csp, connectSrcCondition);
+  },
+);
