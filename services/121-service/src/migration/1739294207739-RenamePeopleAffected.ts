@@ -1,7 +1,4 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class RenamePeopleAffected1739294207739 implements MigrationInterface {
   name = 'RenamePeopleAffected1739294207739';
@@ -10,7 +7,7 @@ export class RenamePeopleAffected1739294207739 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_registration_attribute" ALTER COLUMN "export" SET DEFAULT '["all-registrations","included"]'`,
     );
-    await this.migrateData(queryRunner.manager);
+    await this.migrateData(queryRunner);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -19,29 +16,28 @@ export class RenamePeopleAffected1739294207739 implements MigrationInterface {
     );
   }
 
-  private async migrateData(manager: EntityManager): Promise<void> {
+  private async migrateData(queryRunner: QueryRunner): Promise<void> {
     const oldExportTypeString = 'all-people-affected';
     const newExportTypeString = 'all-registrations';
 
-    const programRegistrationAttributeRepo = manager.getRepository(
-      ProgramRegistrationAttributeEntity,
-    );
-    const programRegistrationAttributes = await programRegistrationAttributeRepo
-      .createQueryBuilder('program_registration_attribute')
-      .getMany();
+    const programRegistrationAttributes = await queryRunner.query(`
+      SELECT id, export
+      FROM "121-service"."program_registration_attribute"
+    `);
+
     for (const programCustomAttribute of programRegistrationAttributes) {
-      const stringArray: string[] = [...programCustomAttribute.export];
+      const updatedExport = programCustomAttribute.export.map((item) =>
+        item === oldExportTypeString ? newExportTypeString : item,
+      );
 
-      if (!stringArray.includes(oldExportTypeString)) {
-        continue;
-      }
-
-      stringArray[stringArray.indexOf(oldExportTypeString)] =
-        newExportTypeString;
-
-      programCustomAttribute.export = stringArray as ExportType[];
+      await queryRunner.query(
+        `
+        UPDATE "121-service"."program_registration_attribute"
+        SET export = $1
+        WHERE id = $2
+      `,
+        [JSON.stringify(updatedExport), programCustomAttribute.id],
+      );
     }
-
-    await programRegistrationAttributeRepo.save(programRegistrationAttributes);
   }
 }
