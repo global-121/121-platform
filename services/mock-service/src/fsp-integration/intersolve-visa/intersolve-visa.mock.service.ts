@@ -408,9 +408,6 @@ export class IntersolveVisaMockService {
       correlationId: 'string',
       data: {
         status: returnStatus,
-        cardURL: 'string',
-        cardFrameURL: 'string',
-        accessToken: 'string',
       },
     };
     return response;
