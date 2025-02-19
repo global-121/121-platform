@@ -33,7 +33,7 @@ let contentSecurityPolicy = new Map([
   ['style-src', [`'self'`, `'unsafe-inline'`]],
 ]);
 
-// Set API-origin
+// Required: Set API-origin
 if (process.env.NG_URL_121_SERVICE_API) {
   console.info('✅ Set API-origin of the 121-service');
 
@@ -43,7 +43,7 @@ if (process.env.NG_URL_121_SERVICE_API) {
   contentSecurityPolicy.set('connect-src', [...connectSrc, apiUrl.origin]);
 }
 
-// Feature: Application-Insights logging
+// Optional: Application-Insights logging
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   console.info('✅ Allow logging to Application Insights');
 
@@ -55,7 +55,7 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   ]);
 }
 
-// Feature: Azure Entra SSO
+// Optional: Azure Entra SSO
 if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
   console.info('✅ Allow use of Azure Entra endpoints and iframe(s)');
 
@@ -72,7 +72,7 @@ if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
   ]);
 }
 
-// Feature: Twilio Flex
+// Optional: Twilio Flex
 if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
   console.info('✅ Allow loading the Portal in an iframe on Twilio Flex');
 
@@ -83,6 +83,7 @@ if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
   ]);
 }
 
+// Depending on: Using "Azure Entra SSO" AND "Twilio Flex"
 if (
   process.env.USE_SSO_AZURE_ENTRA === 'true' &&
   process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true'
@@ -94,7 +95,7 @@ if (
   swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] = 'unsafe-none';
 }
 
-// Feature: PowerBI Dashboard(s)
+// Optional: PowerBI Dashboard(s)
 if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
   console.info('✅ Allow loading Power BI-dashboards');
 
