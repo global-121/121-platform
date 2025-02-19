@@ -1531,6 +1531,9 @@
       <trans-unit id="retry-transfer" datatype="html">
         <source>Retry transfer</source>
       </trans-unit>
+      <trans-unit id="402937248192485030" datatype="html">
+        <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
