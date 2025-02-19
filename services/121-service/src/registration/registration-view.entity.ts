@@ -13,6 +13,7 @@ import {
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
@@ -82,6 +83,46 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect(
         `COALESCE(message.type || ': ' || message.status,'no messages yet')`,
         'lastMessageStatus',
+      )
+
+      .addSelect(
+        `
+        (CASE
+            WHEN dup."registrationId" IS NOT NULL THEN 'duplicate'
+        ELSE 'unique'
+        END)
+        `,
+        'duplicateStatus',
+      )
+      .leftJoin(
+        (qb) =>
+          qb
+            .select('distinct d1."registrationId"')
+            .from('registration_attribute_data', 'd1')
+            .innerJoin(
+              'registration_attribute_data',
+              'd2',
+              'd1."programRegistrationAttributeId" = d2."programRegistrationAttributeId" AND d1.value = d2.value AND d1."registrationId" != d2."registrationId"',
+            )
+            .innerJoin(
+              'registration',
+              'registration1',
+              `d1."registrationId" = registration1.id AND registration1."registrationStatus" != '${RegistrationStatusEnum.declined}'`,
+            )
+            .innerJoin(
+              'registration',
+              'registration2',
+              `d2."registrationId" = registration2.id AND registration2."registrationStatus" != '${RegistrationStatusEnum.declined}'`,
+            )
+            .innerJoin(
+              'program_registration_attribute',
+              'pra',
+              'd1."programRegistrationAttributeId" = pra.id',
+            )
+            .andWhere("d1.value != ''")
+            .andWhere('pra."duplicateCheck" = true'),
+        'dup',
+        'registration.id = dup."registrationId"',
       ),
 })
 export class RegistrationViewEntity {
@@ -152,6 +193,9 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public scope: string;
+
+  @ViewColumn()
+  public duplicateStatus: DuplicateStatus;
 
   @OneToMany(
     () => RegistrationAttributeDataEntity,
