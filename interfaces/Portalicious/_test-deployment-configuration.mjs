@@ -36,6 +36,17 @@ test('Deployment-configuration contains the defaults of the Content-Security-Pol
   );
 });
 
+test('Content-Security-Policy configuration whether to allow tracking with ApplicationInsights', () => {
+  const connectSrcCondition =
+    /connect-src[^;]* https:\/\/\*\.in\.applicationinsights\.azure\.com/;
+
+  if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    match(csp, connectSrcCondition);
+  } else {
+    doesNotMatch(csp, connectSrcCondition);
+  }
+});
+
 test('Content-Security-Policy configuration for Azure Entra SSO', () => {
   const connectSrcCondition =
     /connect-src[^;]* https:\/\/login\.microsoftonline\.com/;
