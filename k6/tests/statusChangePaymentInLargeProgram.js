@@ -15,7 +15,7 @@ const paymentsPage = new PaymentsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';
-const duplicateNumber = 15; // should be 15
+const duplicateNumber = 5; // should be 15
 const programId = 3;
 const paymentId = 3;
 const paymentNr = 3;
