@@ -15,6 +15,7 @@ import {
   withComponentInputBinding,
 } from '@angular/router';
 
+import { parseMatomoConnectionString } from '_matomo.utils.mjs';
 import {
   provideTanStackQuery,
   QueryClient,
@@ -28,8 +29,6 @@ import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
 import { environment } from '~environment';
-
-import { parseMatomoConnectionString } from '../../_matomo.utils.mjs';
 
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
@@ -81,10 +80,9 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
               parseMatomoConnectionString(environment.matomo_connection_string)
                 .id ?? 0,
             ),
-            trackerUrl: String(
+            trackerUrl:
               parseMatomoConnectionString(environment.matomo_connection_string)
                 .api ?? '',
-            ),
             acceptDoNotTrack: true,
             disabled: !environment.production, // NOTE: To debug tracking locally, omit or set to `false`
             enableJSErrorTracking: true,
