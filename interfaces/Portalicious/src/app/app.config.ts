@@ -30,6 +30,29 @@ import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
 import { environment } from '~environment';
 
+const conditionalProvideMatomo = () => {
+  const connectionInfo = parseMatomoConnectionString(
+    environment.matomo_connection_string,
+  );
+  if (!connectionInfo.id || !connectionInfo.api || !connectionInfo.sdk) {
+    return [];
+  }
+  return provideMatomo(
+    {
+      siteId: connectionInfo.id,
+      trackerUrl: connectionInfo.api,
+      trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
+      scriptUrl: connectionInfo.sdk as string,
+      enableJSErrorTracking: true,
+      requireConsent: 'none',
+      runOutsideAngularZone: true,
+    },
+    withRouter({
+      exclude: [new RegExp(AppRoutes.authCallback)],
+    }),
+  );
+};
+
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
     provideRouter(routes, withComponentInputBinding()),
@@ -73,26 +96,6 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     ...AuthService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
-    environment.matomo_connection_string
-      ? provideMatomo(
-          {
-            siteId: Number(
-              parseMatomoConnectionString(environment.matomo_connection_string)
-                .id ?? 0,
-            ),
-            trackerUrl:
-              parseMatomoConnectionString(environment.matomo_connection_string)
-                .api ?? '',
-            acceptDoNotTrack: true,
-            disabled: !environment.production, // NOTE: To debug tracking locally, omit or set to `false`
-            enableJSErrorTracking: true,
-            requireConsent: 'none',
-            runOutsideAngularZone: true,
-          },
-          withRouter({
-            exclude: [new RegExp(AppRoutes.authCallback)],
-          }),
-        )
-      : [],
+    conditionalProvideMatomo(),
   ],
 });

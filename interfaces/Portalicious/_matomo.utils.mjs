@@ -1,11 +1,11 @@
 /**
- * @param {string} connectionString - Format: "id=<site-id-number>;api=<host-of-matomo.php>"
- * @returns {{ id?: string; api?: string; }}
+ * @param {string} connectionString - Format: "id=<site-id-number>;api=<URL-of-matomo.php>;sdk=<URL-of-matomo.js>"
+ * @returns {{ id?: string; api?: string; sdk?: string; }}
  */
 export const parseMatomoConnectionString = (connectionString) => {
-  const properties = ['id', 'api'];
+  const properties = ['id', 'api', 'sdk'];
 
-  /** @type {{ id?: string; api?: string; }} */
+  /** @type {{ id?: string; api?: string; sdk?: string; }} */
   const connection = {};
 
   if (typeof connectionString === 'string') {

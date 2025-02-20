@@ -106,11 +106,18 @@ test(
   'Content-Security-Policy set for tracking with Matomo',
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
-    const matomoHost = parseMatomoConnectionString(
+    const matomoConnectionInfo = parseMatomoConnectionString(
       process.env.MATOMO_CONNECTION_STRING ?? '',
-    ).api;
+    );
 
-    const connectSrcCondition = new RegExp(`connect-src[^;]* ${matomoHost}`);
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api ?? '').origin;
+    const connectSrcCondition = new RegExp(
+      `connect-src[^;]* ${matomoApiOrigin}`,
+    );
     match(csp, connectSrcCondition);
+
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk ?? '').origin;
+    const scriptSrcCondition = new RegExp(`script-src[^;]* ${matomoSdkOrigin}`);
+    match(csp, scriptSrcCondition);
   },
 );

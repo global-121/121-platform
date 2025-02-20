@@ -31,6 +31,7 @@ let contentSecurityPolicy = new Map([
   ['frame-src', [`blob:`, `'self'`]],
   ['img-src', [`data:`, `'self'`]],
   ['object-src', [`'none'`]],
+  ['script-src', [`'self'`]],
   ['style-src', [`'self'`, `'unsafe-inline'`]],
 ]);
 
@@ -116,10 +117,15 @@ if (process.env.MATOMO_CONNECTION_STRING) {
   );
 
   if (matomoConnectionInfo && matomoConnectionInfo.api) {
-    const matomoOrigin = new URL(matomoConnectionInfo.api).origin;
-
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
     let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
-    contentSecurityPolicy.set('connect-src', [...connectSrc, matomoOrigin]);
+    contentSecurityPolicy.set('connect-src', [...connectSrc, matomoApiOrigin]);
+  }
+
+  if (matomoConnectionInfo && matomoConnectionInfo.sdk) {
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
+    let scriptSrc = contentSecurityPolicy.get('script-src') ?? [];
+    contentSecurityPolicy.set('script-src', [...scriptSrc, matomoSdkOrigin]);
   }
 }
 

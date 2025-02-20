@@ -5,7 +5,7 @@
  */
 
 import test from 'node:test';
-import { ok, match, doesNotMatch, strictEqual } from 'node:assert/strict';
+import { ok, match, doesNotMatch } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
@@ -101,17 +101,18 @@ test(
   'Content-Security-Policy configuration whether to allow tracking with Matomo',
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
-    const matomoHost = parseMatomoConnectionString(
+    const matomoConnectionInfo = parseMatomoConnectionString(
       process.env.MATOMO_CONNECTION_STRING ?? '',
-    ).api;
-    ok(matomoHost, 'Matomo API is defined correctly');
-    strictEqual(
-      matomoHost,
-      new URL(matomoHost).origin,
-      'Matomo API is a valid URL origin',
     );
 
-    const connectSrcCondition = new RegExp(`connect-src[^;]* ${matomoHost}`);
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api ?? '').origin;
+    const connectSrcCondition = new RegExp(
+      `connect-src[^;]* ${matomoApiOrigin}`,
+    );
     match(csp, connectSrcCondition);
+
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk ?? '').origin;
+    const scriptSrcCondition = new RegExp(`script-src[^;]* ${matomoSdkOrigin}`);
+    match(csp, scriptSrcCondition);
   },
 );
