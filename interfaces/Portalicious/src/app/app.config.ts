@@ -42,7 +42,7 @@ const conditionalProvideMatomo = () => {
       siteId: connectionInfo.id,
       trackerUrl: connectionInfo.api,
       trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
-      scriptUrl: connectionInfo.sdk as string,
+      scriptUrl: connectionInfo.sdk,
       enableJSErrorTracking: true,
       requireConsent: 'none',
       runOutsideAngularZone: true,

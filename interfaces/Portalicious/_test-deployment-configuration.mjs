@@ -105,13 +105,13 @@ test(
       process.env.MATOMO_CONNECTION_STRING ?? '',
     );
 
-    const matomoApiOrigin = new URL(matomoConnectionInfo.api ?? '').origin;
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
     const connectSrcCondition = new RegExp(
       `connect-src[^;]* ${matomoApiOrigin}`,
     );
     match(csp, connectSrcCondition);
 
-    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk ?? '').origin;
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
     const scriptSrcCondition = new RegExp(`script-src[^;]* ${matomoSdkOrigin}`);
     match(csp, scriptSrcCondition);
   },
