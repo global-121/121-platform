@@ -203,7 +203,7 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
 
     let exportType = this.exportType;
     if (this.exportType === ExportType.filteredTable) {
-      exportType = ExportType.allPeopleAffected;
+      exportType = ExportType.allRegistrations;
     }
 
     this.programsService

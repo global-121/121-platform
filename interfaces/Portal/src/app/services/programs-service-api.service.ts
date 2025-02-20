@@ -434,7 +434,7 @@ export class ProgramsServiceApiService {
     if (maxPayment) {
       params = params.append('maxPayment', maxPayment);
     }
-    if (type === ExportType.allPeopleAffected && allPeopleAffectedOptions) {
+    if (type === ExportType.allRegistrations && allPeopleAffectedOptions) {
       params = params.append('limit', allPeopleAffectedOptions.limit);
       params = params.append('page', allPeopleAffectedOptions.page);
       // TODO: This still needs to be added to the back-end in a future item

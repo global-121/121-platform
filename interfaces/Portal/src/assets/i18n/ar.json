@@ -162,7 +162,7 @@
         "timestamp": "آخر تصدير تم في: {{dateTime}}"
       },
       "export-list": {
-        "all-people-affected": {
+        "all-registrations": {
           "btn-text": "تصدير الأشخاص المتأثرين",
           "confirm-message": "سيؤدي هذا إلى تنزيل ملف Excel مع جميع الأشخاص المتأثرين."
         },
