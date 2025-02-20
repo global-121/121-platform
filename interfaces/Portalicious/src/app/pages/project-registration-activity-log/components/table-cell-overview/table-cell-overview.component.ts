@@ -147,9 +147,9 @@ export class TableCellOverviewComponent
     if (
       item.type !== ActivityTypeEnum.Transaction ||
       (item.attributes.financialServiceProviderName !==
-      FinancialServiceProviders.intersolveVoucherWhatsapp &&
-      item.attributes.financialServiceProviderName !==
-        FinancialServiceProviders.intersolveVoucherPaper)
+        FinancialServiceProviders.intersolveVoucherWhatsapp &&
+        item.attributes.financialServiceProviderName !==
+          FinancialServiceProviders.intersolveVoucherPaper)
     ) {
       return;
     }
