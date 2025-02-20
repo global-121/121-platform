@@ -162,7 +162,7 @@
         "timestamp": "La última exportación se ha realizado el: {{dateTime}}"
       },
       "export-list": {
-        "all-people-affected": {
+        "all-registrations": {
           "btn-text": "Exportación: Afectados",
           "confirm-message": "Esto descargará un archivo de Excel con todas las personas afectadas."
         },

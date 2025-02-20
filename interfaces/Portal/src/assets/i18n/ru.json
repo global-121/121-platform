@@ -180,7 +180,7 @@
         "timestamp": "Последний экспорт был сделан: {{dateTime}}"
       },
       "export-list": {
-        "all-people-affected": {
+        "all-registrations": {
           "btn-text": "Экспорт Пострадавшие лица",
           "confirm-message": "При этом будет загружен файл Excel со всеми Пострадавшими людьми."
         },

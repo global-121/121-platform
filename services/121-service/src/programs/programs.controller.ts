@@ -312,7 +312,7 @@ You can also leave the body empty.`,
     description: 'Return attributes by program-id.',
   })
   @ApiQuery({
-    name: 'filterShowInPeopleAffectedTable',
+    name: 'filterShowInRegistrationsTable',
     required: false,
     type: 'boolean',
   })
@@ -341,10 +341,10 @@ You can also leave the body empty.`,
     )
     includeTemplateDefaultAttributes: boolean,
     @Query(
-      'filterShowInPeopleAffectedTable',
+      'filterShowInRegistrationsTable',
       new ParseBoolPipe({ optional: true }),
     )
-    filterShowInPeopleAffectedTable: boolean,
+    filterShowInRegistrationsTable: boolean,
     @Req() req: ScopedUserRequest,
   ): Promise<Attribute[]> {
     const userId = RequestHelper.getUserId(req);
@@ -365,7 +365,7 @@ You can also leave the body empty.`,
       programId,
       includeProgramRegistrationAttributes,
       includeTemplateDefaultAttributes,
-      filterShowInPeopleAffectedTable,
+      filterShowInRegistrationsTable,
     });
     return attr;
   }

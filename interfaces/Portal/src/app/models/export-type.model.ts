@@ -1,5 +1,5 @@
 export enum ExportType {
-  allPeopleAffected = 'all-people-affected',
+  allRegistrations = 'all-registrations',
   duplicates = 'duplicates',
   included = 'included',
   payment = 'payment',

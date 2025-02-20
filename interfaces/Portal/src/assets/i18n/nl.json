@@ -170,7 +170,7 @@
         "timestamp": "Laatste export is uitgevoerd op: {{dateTime}}"
       },
       "export-list": {
-        "all-people-affected": {
+        "all-registrations": {
           "btn-text": "Exporteer hulpvragers",
           "confirm-message": "Hiermee wordt een Excel-bestand gedownload met alle hulpvragers"
         },

@@ -364,7 +364,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 29,
@@ -386,7 +386,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 31,
@@ -409,7 +409,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 26,
@@ -431,7 +431,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 30,
@@ -468,7 +468,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": true,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 28,
@@ -490,7 +490,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 27,
@@ -899,7 +899,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 25,
@@ -920,7 +920,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 22,
@@ -941,7 +941,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 23,
@@ -962,7 +962,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 24,
@@ -983,7 +983,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 21,
@@ -1004,7 +1004,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 18,
@@ -1045,7 +1045,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": true,
       "editableInPortal": false,
       "export": [
-        "all-people-affected",
+        "all-registrations",
         "included",
       ],
       "id": 20,

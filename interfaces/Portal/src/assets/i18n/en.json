@@ -179,7 +179,7 @@
         "timestamp": "Latest export has been done on: {{dateTime}}"
       },
       "export-list": {
-        "all-people-affected": {
+        "all-registrations": {
           "btn-text": "Export People Affected",
           "confirm-message": "This will download an Excel file with all People Affected."
         },
