@@ -42,6 +42,7 @@ const conditionalProvideMatomo = () => {
       siteId: connectionInfo.id,
       trackerUrl: connectionInfo.api,
       trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `scriptUrl` seems to be expecting more than only a string
       scriptUrl: connectionInfo.sdk,
       enableJSErrorTracking: true,
       requireConsent: 'none',
