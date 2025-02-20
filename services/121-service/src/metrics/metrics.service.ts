@@ -743,6 +743,7 @@ export class MetricsService {
     maxPaymentId: number,
     registrationDataOptions: RegistrationDataOptions[],
   ): Promise<unknown[]> {
+    // TODO: This should use the latestTransactionEntity instead of the custom query here to decide what is the lastest transaction
     const latestTransactionPerPa = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
       .select('transaction.registrationId', 'registrationId')

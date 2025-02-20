@@ -261,6 +261,33 @@ describe('Do payment with Excel FSP', () => {
       }
     });
 
+    it(`Should give an error when there are duplicate values in the toMatch column`, async () => {
+      // Arrange
+      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
+      const reconciliationData = [
+        {
+          [matchColumn]: registrationWesteros1.phoneNumber,
+          status: TransactionStatusEnum.success,
+        },
+        {
+          [matchColumn]: registrationWesteros1.phoneNumber,
+          status: TransactionStatusEnum.error,
+        },
+      ];
+
+      // Act
+      const importResult = await importFspReconciliationData(
+        programIdWesteros,
+        paymentNr,
+        accessToken,
+        reconciliationData,
+      );
+
+      // Assert
+      expect(importResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(importResult.body).toMatchSnapshot();
+    });
+
     it('should give me a CSV template when I request it', async () => {
       const response =
         await getImportFspReconciliationTemplate(programIdWesteros);
