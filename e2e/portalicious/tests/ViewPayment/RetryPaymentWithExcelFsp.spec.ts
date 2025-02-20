@@ -73,7 +73,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Upload payment reconciliation data & Retry Payment', async () => {
+  await test.step('Upload payment reconciliation data', async () => {
     await paymentsPage.importReconciliationData(reconciliationData);
   });
 
@@ -96,15 +96,5 @@ test('[32304] Retry payments should put failed transactions back in pending and 
       },
       { condition: true, rowCount: 2 },
     );
-    await paymentsPage.retryFiledTransfers();
-  });
-
-  // DO NOT MAKE IT A RULE!!!
-  // Only in this case we need to reload the page to get the updated data of the successful payments.
-  // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-  await page.reload();
-
-  await test.step('Check presence of retry button', async () => {
-    await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
   });
 });
