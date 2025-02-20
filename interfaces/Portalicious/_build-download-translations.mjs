@@ -15,7 +15,8 @@ if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-const requiredTranslations = process.env.NG_LOCALES.split(',')
+const requiredTranslations = (process.env.NG_LOCALES ?? '')
+  .split(',')
   .filter((lang) => lang !== '' && lang !== 'en-GB')
   .map((lang) => lang.trim());
 
@@ -29,7 +30,7 @@ const lokaliseDownloader = new LokaliseDownload(
     enableCompression: true,
   },
   {
-    projectId: process.env.LOKALISE_PROJECT_ID,
+    projectId: process.env.LOKALISE_PROJECT_ID ?? '',
   },
 );
 await lokaliseDownloader.downloadTranslations({
