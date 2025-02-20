@@ -21,7 +21,7 @@ if (!url || !url.startsWith('https')) {
 console.info('Verifying deployment configuration for URL:', url);
 const response = await fetch(url);
 
-const csp = response.headers.get('Content-Security-Policy');
+const csp = response.headers.get('Content-Security-Policy') ?? '';
 console.info('Content-Security-Policy in use:', csp);
 
 test('Response-Headers contain a Content-Security-Policy', () => {
@@ -80,7 +80,7 @@ test('Content-Security-Policy set for loading as iframe in Twilio Flex', () => {
 });
 
 test('Configuration set to control pop-ups for SSO when the Portal is in an iframe on Twilio Flex', () => {
-  const openerPolicy = response.headers.get('Cross-Origin-Opener-Policy');
+  const openerPolicy = response.headers.get('Cross-Origin-Opener-Policy') ?? '';
 
   if (
     process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
@@ -107,7 +107,7 @@ test(
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
     const matomoHost = parseMatomoConnectionString(
-      process.env.MATOMO_CONNECTION_STRING,
+      process.env.MATOMO_CONNECTION_STRING ?? '',
     ).api;
 
     const connectSrcCondition = new RegExp(`connect-src[^;]* ${matomoHost}`);

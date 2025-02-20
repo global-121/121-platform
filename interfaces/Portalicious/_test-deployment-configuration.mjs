@@ -102,7 +102,7 @@ test(
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
     const matomoHost = parseMatomoConnectionString(
-      process.env.MATOMO_CONNECTION_STRING,
+      process.env.MATOMO_CONNECTION_STRING ?? '',
     ).api;
     ok(matomoHost, 'Matomo API is defined correctly');
     strictEqual(

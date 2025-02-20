@@ -40,7 +40,7 @@ if (process.env.NG_URL_121_SERVICE_API) {
 
   const apiUrl = new URL(process.env.NG_URL_121_SERVICE_API);
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [...connectSrc, apiUrl.origin]);
 }
 
@@ -48,7 +48,7 @@ if (process.env.NG_URL_121_SERVICE_API) {
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   console.info('✅ Allow logging to Application Insights');
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [
     ...connectSrc,
     'https://*.in.applicationinsights.azure.com',
@@ -60,13 +60,13 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
 if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
   console.info('✅ Allow use of Azure Entra endpoints and iframe(s)');
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [
     ...connectSrc,
     `https://login.microsoftonline.com`,
   ]);
 
-  let frameSrc = contentSecurityPolicy.get('frame-src');
+  let frameSrc = contentSecurityPolicy.get('frame-src') ?? [];
   contentSecurityPolicy.set('frame-src', [
     ...frameSrc,
     `https://login.microsoftonline.com`,
@@ -77,7 +77,7 @@ if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
 if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
   console.info('✅ Allow loading the Portal in an iframe on Twilio Flex');
 
-  let frameAncestors = contentSecurityPolicy.get('frame-ancestors');
+  let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
   contentSecurityPolicy.set('frame-ancestors', [
     ...frameAncestors,
     `https://flex.twilio.com`,
@@ -100,7 +100,7 @@ if (
 if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
   console.info('✅ Allow loading Power BI-dashboards');
 
-  let frameSrc = contentSecurityPolicy.get('frame-src');
+  let frameSrc = contentSecurityPolicy.get('frame-src') ?? [];
   contentSecurityPolicy.set('frame-src', [
     ...frameSrc,
     `https://app.powerbi.com`,
@@ -118,7 +118,7 @@ if (process.env.MATOMO_CONNECTION_STRING) {
   if (matomoConnectionInfo && matomoConnectionInfo.api) {
     const matomoOrigin = new URL(matomoConnectionInfo.api).origin;
 
-    let connectSrc = contentSecurityPolicy.get('connect-src');
+    let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
     contentSecurityPolicy.set('connect-src', [...connectSrc, matomoOrigin]);
   }
 }

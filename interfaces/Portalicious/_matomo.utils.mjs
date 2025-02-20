@@ -1,5 +1,5 @@
 /**
- * @param {string} connectionString Format: "id=<site-id-number>;api=<host-of-matomo.php>"
+ * @param {string} connectionString - Format: "id=<site-id-number>;api=<host-of-matomo.php>"
  * @returns {{ id?: string; api?: string; }}
  */
 export const parseMatomoConnectionString = (connectionString) => {

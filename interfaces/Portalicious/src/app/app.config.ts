@@ -79,11 +79,11 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
           {
             siteId: Number(
               parseMatomoConnectionString(environment.matomo_connection_string)
-                .id,
+                .id ?? 0,
             ),
             trackerUrl: String(
               parseMatomoConnectionString(environment.matomo_connection_string)
-                .api,
+                .api ?? '',
             ),
             acceptDoNotTrack: true,
             disabled: !environment.production, // NOTE: To debug tracking locally, omit or set to `false`
