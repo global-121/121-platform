@@ -10,7 +10,7 @@ const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 5; // This leads to 128 registrations
+const duplicateNumber = 7; // '7' leads to 128 registrations
 const programId = 3;
 const paymentId = 3;
 const paymentNr = 3;
