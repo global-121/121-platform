@@ -9,6 +9,7 @@ import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integrati
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { Dto } from '~/utils/dto-type';
 
@@ -39,3 +40,8 @@ export type WalletWithCards = Dto<IntersolveVisaWalletDto>;
 export type SendMessageData =
   | { customMessage: string }
   | { messageTemplateKey: string };
+
+export type RegistrationStatusChangeTarget = Exclude<
+  RegistrationStatusEnum,
+  RegistrationStatusEnum.completed | RegistrationStatusEnum.registered
+>;

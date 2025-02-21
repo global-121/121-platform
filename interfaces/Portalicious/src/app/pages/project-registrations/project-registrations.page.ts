@@ -25,11 +25,13 @@ import {
   REGISTRATION_STATUS_VERB,
   registrationLink,
 } from '~/domains/registration/registration.helper';
+import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
 import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
 import { ExportRegistrationsComponent } from '~/pages/project-registrations/components/export-registrations/export-registrations.component';
 import { ImportRegistrationsComponent } from '~/pages/project-registrations/components/import-registrations/import-registrations.component';
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
+import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { ToastService } from '~/services/toast.service';
 import { getOriginUrl } from '~/utils/url-helper';
 
@@ -59,6 +61,7 @@ export class ProjectRegistrationsPageComponent {
   private router = inject(Router);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
+  private registrationMenuService = inject(RegistrationActionMenuService);
 
   readonly registrationsTable =
     viewChild.required<RegistrationsTableComponent>('registrationsTable');
@@ -73,45 +76,25 @@ export class ProjectRegistrationsPageComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
-  readonly canChangeStatus = computed(
-    () =>
-      (
-        status:
-          | RegistrationStatusEnum.declined
-          | RegistrationStatusEnum.deleted
-          | RegistrationStatusEnum.included
-          | RegistrationStatusEnum.paused
-          | RegistrationStatusEnum.validated,
-      ) => {
-        if (
-          status === RegistrationStatusEnum.validated &&
-          !this.project.data()?.validation
-        ) {
-          return false;
-        }
+  readonly canChangeStatus = computed(() => {
+    const project = this.project.data();
+    if (!project) {
+      return () => false;
+    }
 
-        const statusToPermissionMap = {
-          [RegistrationStatusEnum.validated]:
-            PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-          [RegistrationStatusEnum.included]:
-            PermissionEnum.RegistrationStatusIncludedUPDATE,
-          [RegistrationStatusEnum.declined]:
-            PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
-          [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
-          [RegistrationStatusEnum.paused]:
-            PermissionEnum.RegistrationStatusPausedUPDATE,
-        };
-        return this.authService.hasPermission({
-          projectId: this.projectId(),
-          requiredPermission: statusToPermissionMap[status],
-        });
-      },
-  );
-  readonly canSendMessage = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
-    }),
+    return (status: RegistrationStatusChangeTarget) =>
+      this.registrationMenuService.canChangeStatus()({
+        status,
+        projectId: this.projectId(),
+        hasValidation: !!project.validation,
+      });
+  });
+
+  readonly canSendMessage = computed(
+    () => () =>
+      this.registrationMenuService.canSendMessage()({
+        projectId: this.projectId(),
+      }),
   );
   readonly canImport = computed(() =>
     this.authService.hasAllPermissions({
@@ -150,19 +133,14 @@ export class ProjectRegistrationsPageComponent {
         window.open(getOriginUrl() + url, '_blank');
       },
     },
-    {
-      label: $localize`Message`,
-      icon: 'pi pi-envelope',
-      visible: this.canSendMessage(),
+    this.registrationMenuService.createContextItemForMessage({
+      projectId: this.projectId(),
       command: () => {
         this.sendMessage({
           triggeredFromContextMenu: true,
         });
       },
-    },
-    {
-      separator: true,
-    },
+    }),
     this.createContextMenuItemForRegistrationStatus(
       RegistrationStatusEnum.validated,
     ),
@@ -218,23 +196,18 @@ export class ProjectRegistrationsPageComponent {
   }
 
   private createContextMenuItemForRegistrationStatus(
-    status:
-      | RegistrationStatusEnum.declined
-      | RegistrationStatusEnum.deleted
-      | RegistrationStatusEnum.included
-      | RegistrationStatusEnum.paused
-      | RegistrationStatusEnum.validated,
+    status: RegistrationStatusChangeTarget,
   ) {
-    return {
-      label: REGISTRATION_STATUS_VERB[status],
-      icon: REGISTRATION_STATUS_ICON[status],
-      visible: this.canChangeStatus()(status),
+    return this.registrationMenuService.createContextItemForRegistrationStatus({
+      status,
+      projectId: this.projectId(),
+      hasValidation: this.project.data()?.validation ?? false,
       command: () => {
         this.changeStatus({
           status,
           triggeredFromContextMenu: true,
         });
       },
-    };
+    });
   }
 }
