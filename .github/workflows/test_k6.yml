@@ -55,10 +55,10 @@ jobs:
         run: |
           curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
-      - name: Run k6 tests
+      - name: Run all k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
+          ./run-all-tests.sh tests/retryFailedJobsOnStartupDuringQueueProcessing.js tests/findDuplicates100kRegistrations.js
 
       - name: Docker logs
         if: always()

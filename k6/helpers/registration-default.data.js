@@ -19,6 +19,17 @@ export const registrationVisa = {
   [CustomDataAttributes.whatsappPhoneNumber]: '14155238887',
 };
 
+export const registrationPV = {
+  referenceId: '44e62864557597e0d',
+  preferredLanguage: 'nl',
+  paymentAmountMultiplier: 1,
+  fullName: 'Gemma Houtenbos',
+  phoneNumber: '14155235556',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.intersolveVoucherWhatsapp,
+  whatsappPhoneNumber: '14155235555',
+};
+
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
   programFinancialServiceProviderConfigurationName:
