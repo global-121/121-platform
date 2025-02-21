@@ -14,7 +14,6 @@ import { ButtonModule } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -27,6 +26,7 @@ import {
 } from '~/components/colored-chip/colored-chip.helper';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
+import { FSPS_WITH_VOUCHER_SUPPORT } from '~/domains/payment/payment.helpers';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
@@ -146,8 +146,9 @@ export class TableCellOverviewComponent
 
     if (
       item.type !== ActivityTypeEnum.Transaction ||
-      item.attributes.financialServiceProviderName !==
-        FinancialServiceProviders.intersolveVoucherWhatsapp
+      !FSPS_WITH_VOUCHER_SUPPORT.includes(
+        item.attributes.financialServiceProviderName,
+      )
     ) {
       return;
     }

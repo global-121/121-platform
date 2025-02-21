@@ -11,7 +11,6 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
@@ -20,7 +19,10 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
-import { paymentLink } from '~/domains/payment/payment.helpers';
+import {
+  FSPS_WITH_VOUCHER_SUPPORT,
+  paymentLink,
+} from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
@@ -68,8 +70,9 @@ export class ActivityLogExpandedRowComponent
 
     return (
       activity.type === ActivityTypeEnum.Transaction &&
-      activity.attributes.financialServiceProviderName ===
-        FinancialServiceProviders.intersolveVoucherWhatsapp
+      FSPS_WITH_VOUCHER_SUPPORT.includes(
+        activity.attributes.financialServiceProviderName,
+      )
     );
   });
 
