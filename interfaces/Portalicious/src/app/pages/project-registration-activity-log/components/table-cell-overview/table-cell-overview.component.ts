@@ -152,6 +152,7 @@ export class TableCellOverviewComponent
     ) {
       return;
     }
+
     return {
       projectId: this.context().projectId(),
       paymentId: item.attributes.payment,
