@@ -149,13 +149,15 @@ export class TableCellOverviewComponent
       !FSPS_WITH_VOUCHER_SUPPORT.includes(
         item.attributes.financialServiceProviderName,
       )
-    )
-      return {
-        projectId: this.context().projectId(),
-        paymentId: item.attributes.payment,
-        totalTransfers: item.attributes.amount,
-        voucherReferenceId: referenceId,
-      };
+    ) {
+      return;
+    }
+    return {
+      projectId: this.context().projectId(),
+      paymentId: item.attributes.payment,
+      totalTransfers: item.attributes.amount,
+      voucherReferenceId: referenceId,
+    };
   });
 
   retryTransfer() {
