@@ -34,7 +34,7 @@ export default class ProgramsModel {
       pattern: 'string',
       showInPeopleAffectedTable: false,
       editableInPortal: true,
-      export: ['all-people-affected', 'included'],
+      export: ['all-registrations', 'included'],
       placeholder: {
         en: '+31 6 00 00 00 00',
       },
