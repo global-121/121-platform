@@ -1,16 +1,18 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DatePipe, NgComponentOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { environment } from '~environment';
+import { TrackingService } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-privacy-page',
-  imports: [PageLayoutComponent, DatePipe],
+  imports: [PageLayoutComponent, DatePipe, NgComponentOutlet],
   templateUrl: './privacy.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivacyPageComponent {
-  public isMatomoEnabled = !!environment.matomo_connection_string;
+  readonly trackingService = inject(TrackingService);
+
+  TrackingCopyComponent = this.trackingService.PrivacyCopyComponent;
 }

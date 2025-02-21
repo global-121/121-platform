@@ -69,7 +69,7 @@ module.exports = tseslint.config(
       ],
       '@angular-eslint/component-max-inline-declarations': [
         'error',
-        { template: 10 },
+        { template: 20 },
       ],
       '@angular-eslint/no-async-lifecycle-method': ['error'],
       '@angular-eslint/no-conflicting-lifecycle': ['error'],
