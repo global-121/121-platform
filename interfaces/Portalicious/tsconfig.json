@@ -37,7 +37,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strictFunctionTypes": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "checkJs": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -47,5 +48,6 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "exclude": ["node_modules", "www"]
 }

@@ -27,7 +27,7 @@ if (!existsSync(targetPath)) {
 const logoutJs = readFileSync(`${sourcePath}logout.js`, 'utf8');
 const updatedLogoutJs = logoutJs.replace(
   /NG_URL_121_SERVICE_API/g,
-  process.env.NG_URL_121_SERVICE_API,
+  process.env.NG_URL_121_SERVICE_API ?? '',
 );
 writeFileSync(`${targetPath}logout.js`, updatedLogoutJs);
 console.info(`Logout API set at: ${process.env.NG_URL_121_SERVICE_API}`);

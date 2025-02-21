@@ -15,17 +15,44 @@ import {
   withComponentInputBinding,
 } from '@angular/router';
 
+import { parseMatomoConnectionString } from '_matomo.utils.mjs';
 import {
   provideTanStackQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
+import { provideMatomo, withRouter } from 'ngx-matomo-client';
 import { providePrimeNG } from 'primeng/config';
 
-import { routes } from '~/app.routes';
+import { AppRoutes, routes } from '~/app.routes';
 import AppTheme from '~/app.theme';
 import { CustomPageTitleStrategy } from '~/app.title-strategy';
 import { AuthService } from '~/services/auth.service';
 import { Locale } from '~/utils/locale';
+import { environment } from '~environment';
+
+const conditionalProvideMatomo = () => {
+  const connectionInfo = parseMatomoConnectionString(
+    environment.matomo_connection_string,
+  );
+  if (!connectionInfo.id || !connectionInfo.api || !connectionInfo.sdk) {
+    return [];
+  }
+  return provideMatomo(
+    {
+      siteId: connectionInfo.id,
+      trackerUrl: connectionInfo.api,
+      trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- `scriptUrl` seems to be expecting more than only a string
+      scriptUrl: connectionInfo.sdk,
+      enableJSErrorTracking: true,
+      requireConsent: 'none',
+      runOutsideAngularZone: true,
+    },
+    withRouter({
+      exclude: [new RegExp(AppRoutes.authCallback)],
+    }),
+  );
+};
 
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
@@ -70,5 +97,6 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     ...AuthService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
+    conditionalProvideMatomo(),
   ],
 });

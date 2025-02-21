@@ -7,6 +7,7 @@
 import test from 'node:test';
 import { ok, match, doesNotMatch } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const swaConfig = JSON.parse(
   readFileSync('./staticwebapp.config.json', 'utf8'),
@@ -34,6 +35,17 @@ test('Deployment-configuration contains the defaults of the Content-Security-Pol
   defaults.forEach((defaultDirective) =>
     match(csp, new RegExp(defaultDirective)),
   );
+});
+
+test('Content-Security-Policy configuration whether to allow tracking with ApplicationInsights', () => {
+  const connectSrcCondition =
+    /connect-src[^;]* https:\/\/\*\.in\.applicationinsights\.azure\.com/;
+
+  if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    match(csp, connectSrcCondition);
+  } else {
+    doesNotMatch(csp, connectSrcCondition);
+  }
 });
 
 test('Content-Security-Policy configuration for Azure Entra SSO', () => {
@@ -84,3 +96,23 @@ test('Content-Security-Policy configuration to load PowerBI dashboard(s) in ifra
     doesNotMatch(csp, frameSrcCondition);
   }
 });
+
+test(
+  'Content-Security-Policy configuration whether to allow tracking with Matomo',
+  { skip: !process.env.MATOMO_CONNECTION_STRING },
+  () => {
+    const matomoConnectionInfo = parseMatomoConnectionString(
+      process.env.MATOMO_CONNECTION_STRING ?? '',
+    );
+
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
+    const connectSrcCondition = new RegExp(
+      `connect-src[^;]* ${matomoApiOrigin}`,
+    );
+    match(csp, connectSrcCondition);
+
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
+    const scriptSrcCondition = new RegExp(`script-src[^;]* ${matomoSdkOrigin}`);
+    match(csp, scriptSrcCondition);
+  },
+);

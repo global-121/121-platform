@@ -1447,9 +1447,6 @@
       <trans-unit id="706820993579364519" datatype="html">
         <source>Where we get personal information from</source>
       </trans-unit>
-      <trans-unit id="7194723645188865835" datatype="html">
-        <source>We do not share any personal information with other third-parties.</source>
-      </trans-unit>
       <trans-unit id="7316654266676902247" datatype="html">
         <source>Your IP-address and some information about the device and web-browser you use to access the 121 Platform.</source>
       </trans-unit>
@@ -1533,6 +1530,15 @@
       </trans-unit>
       <trans-unit id="402937248192485030" datatype="html">
         <source>* Leaving this field empty means the team member will have access to <x ctype="x-strong" equiv-text="&lt;strong&gt;" id="START_TAG_STRONG"/>all registrations<x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/></source>
+      </trans-unit>
+      <trans-unit id="4147614495518133899" datatype="html">
+        <source>We do not share any personal information with Matomo/InnoCraft Ltd. Our use of their service is covered by the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://matomo.org/matomo-cloud-privacy-policy/&quot; target=&quot;_blank&quot; &gt;" id="START_LINK"/>Matomo Cloud Privacy Policy<x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/> and the <x equiv-text="&lt;a href=&quot;https://matomo.org/matomo-cloud-dpa/&quot; target=&quot;_blank&quot; &gt;" id="START_LINK_1"/>Matomo Cloud Data Processing Agreement<x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="5393530739323921341" datatype="html">
+        <source>We use the external &quot;<x ctype="x-em" equiv-text="&lt;em&gt;" id="START_EMPHASISED_TEXT"/>Matomo Cloud<x ctype="x-em" equiv-text="&lt;/em&gt;" id="CLOSE_EMPHASISED_TEXT"/>&quot;-service by InnoCraft Ltd. to measure the usage of the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="9022161403115733621" datatype="html">
+        <source>We do not share any personal information with other third-parties.</source>
       </trans-unit>
     </body>
   </file>

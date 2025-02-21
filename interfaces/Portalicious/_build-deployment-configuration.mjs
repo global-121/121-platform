@@ -5,6 +5,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 // Set up specifics
 const sourcePath = './staticwebapp.config.base.json';
@@ -30,24 +31,25 @@ let contentSecurityPolicy = new Map([
   ['frame-src', [`blob:`, `'self'`]],
   ['img-src', [`data:`, `'self'`]],
   ['object-src', [`'none'`]],
+  ['script-src', [`'self'`]],
   ['style-src', [`'self'`, `'unsafe-inline'`]],
 ]);
 
-// Set API-origin
+// Required: Set API-origin
 if (process.env.NG_URL_121_SERVICE_API) {
   console.info('✅ Set API-origin of the 121-service');
 
   const apiUrl = new URL(process.env.NG_URL_121_SERVICE_API);
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [...connectSrc, apiUrl.origin]);
 }
 
-// Feature: Application-Insights logging
+// Optional: Application-Insights logging
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   console.info('✅ Allow logging to Application Insights');
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [
     ...connectSrc,
     'https://*.in.applicationinsights.azure.com',
@@ -55,34 +57,35 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   ]);
 }
 
-// Feature: Azure Entra SSO
+// Optional: Azure Entra SSO
 if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
   console.info('✅ Allow use of Azure Entra endpoints and iframe(s)');
 
-  let connectSrc = contentSecurityPolicy.get('connect-src');
+  let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
   contentSecurityPolicy.set('connect-src', [
     ...connectSrc,
     `https://login.microsoftonline.com`,
   ]);
 
-  let frameSrc = contentSecurityPolicy.get('frame-src');
+  let frameSrc = contentSecurityPolicy.get('frame-src') ?? [];
   contentSecurityPolicy.set('frame-src', [
     ...frameSrc,
     `https://login.microsoftonline.com`,
   ]);
 }
 
-// Feature: Twilio Flex
+// Optional: Twilio Flex
 if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
   console.info('✅ Allow loading the Portal in an iframe on Twilio Flex');
 
-  let frameAncestors = contentSecurityPolicy.get('frame-ancestors');
+  let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
   contentSecurityPolicy.set('frame-ancestors', [
     ...frameAncestors,
     `https://flex.twilio.com`,
   ]);
 }
 
+// Depending on: Using "Azure Entra SSO" AND "Twilio Flex"
 if (
   process.env.USE_SSO_AZURE_ENTRA === 'true' &&
   process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true'
@@ -94,16 +97,39 @@ if (
   swaConfig.globalHeaders['Cross-Origin-Opener-Policy'] = 'unsafe-none';
 }
 
-// Feature: PowerBI Dashboard(s)
+// Optional: PowerBI Dashboard(s)
 if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
   console.info('✅ Allow loading Power BI-dashboards');
 
-  let frameSrc = contentSecurityPolicy.get('frame-src');
+  let frameSrc = contentSecurityPolicy.get('frame-src') ?? [];
   contentSecurityPolicy.set('frame-src', [
     ...frameSrc,
     `https://app.powerbi.com`,
   ]);
 }
+
+// Optional: Matomo analytics/metrics
+if (process.env.MATOMO_CONNECTION_STRING) {
+  console.info('✅ Allow tracking with Matomo');
+
+  const matomoConnectionInfo = parseMatomoConnectionString(
+    process.env.MATOMO_CONNECTION_STRING,
+  );
+
+  if (matomoConnectionInfo && matomoConnectionInfo.api) {
+    const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
+    let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
+    contentSecurityPolicy.set('connect-src', [...connectSrc, matomoApiOrigin]);
+  }
+
+  if (matomoConnectionInfo && matomoConnectionInfo.sdk) {
+    const matomoSdkOrigin = new URL(matomoConnectionInfo.sdk).origin;
+    let scriptSrc = contentSecurityPolicy.get('script-src') ?? [];
+    contentSecurityPolicy.set('script-src', [...scriptSrc, matomoSdkOrigin]);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 // Construct the Content-Security-Policy header-value
 const contentSecurityPolicyValue = Array.from(contentSecurityPolicy)

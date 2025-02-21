@@ -2,18 +2,18 @@
  * See the README.md-file in this folder for more information.
  */
 // The value of this variable will be replaced at build-time with the proper environment-value.
-window.API_URL = `NG_URL_121_SERVICE_API`;
+const API_URL = `NG_URL_121_SERVICE_API`;
 
-function redirectToLogin() {
+const redirectToLogin = () => {
   window.location.assign('/en-GB/login?' + Date.now());
-}
+};
 
 window.setTimeout(async () => {
   window.localStorage.clear();
   window.sessionStorage.clear();
 
   await window
-    .fetch(`${window.API_URL}/users/logout`, {
+    .fetch(`${API_URL}/users/logout`, {
       credentials: 'include',
       method: 'POST',
       mode: 'cors',

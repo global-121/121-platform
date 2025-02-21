@@ -15,6 +15,7 @@ export const environment = {
 
   // Monitoring/Telemetry:
   applicationinsights_connection_string: '',
+  matomo_connection_string: '',
 
   // Azure AD
   use_sso_azure_entra: false, // Enable Azure AD login

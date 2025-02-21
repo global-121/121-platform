@@ -36,7 +36,7 @@ jobs:
       AZURE_ENTRA_TENANT_ID: ${{ vars.AZURE_ENTRA_TENANT_ID }}
       AZURE_ENTRA_URL: ${{ vars.AZURE_ENTRA_URL }}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ vars.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-
+      MATOMO_CONNECTION_STRING: ${{ vars.MATOMO_CONNECTION_STRING }}
     steps:
       - uses: actions/checkout@v4
         with:
