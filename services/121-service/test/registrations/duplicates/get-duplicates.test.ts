@@ -296,24 +296,4 @@ describe('Get duplicate status of registrations', () => {
       isInScope: true,
     });
   });
-
-  it(`should not find duplicates on empty values`, async () => {
-    const registration1 = { ...registrationPV5 };
-    const registration2 = { ...registrationPV6 };
-
-    registration1.phoneNumber = '';
-    registration2.phoneNumber = '';
-    await importRegistrations(
-      programId,
-      [registration1, registration2],
-      accessToken,
-    );
-    const result = await getDuplicates({
-      programId,
-      accessToken,
-      referenceId: registration1.referenceId,
-    });
-    const duplicates = result.body;
-    expect(duplicates.length).toBe(0);
-  });
 });

@@ -52,7 +52,7 @@ export default function () {
       r.meta.totalItems >= 3000 && r.meta.totalItems <= 10000,
   });
 
-  // Check if the request duration is less than 5 seconds
+  // Check the request duration
   checkAndFail(getRegistration, {
     'smaller than max request duration': (r) =>
       r.timings.duration < maxRequestDuration,
