@@ -226,6 +226,30 @@ export class RegistrationsPaginationService {
     return allRegistrations;
   }
 
+  // TODO: Move this function to registration view scoped repository
+  public async getRegistrationViewsByReferenceIds({
+    programId,
+    referenceIds,
+  }: {
+    programId: number;
+    referenceIds: string[];
+  }): Promise<MappedPaginatedRegistrationDto[]> {
+    let qb = this.registrationViewScopedRepository
+      .createQueryBuilder('registration')
+      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
+    if (referenceIds.length > 0) {
+      qb = qb.andWhere('registration.referenceId IN (:...referenceIds)', {
+        referenceIds,
+      });
+    }
+    return await this.getRegistrationsChunked(
+      programId,
+      { limit: 10000, path: '' },
+      10000,
+      qb,
+    );
+  }
+
   public async throwIfNoPermissionsForQuery(
     userId: number,
     programId: number,
@@ -346,7 +370,7 @@ export class RegistrationsPaginationService {
     }
   }
 
-  public filterOnRegistrationData(
+  private filterOnRegistrationData(
     query: PaginateQuery,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     registrationDataRelations: RegistrationDataInfo[],
