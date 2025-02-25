@@ -6,15 +6,20 @@ import {
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { MenuModule } from 'primeng/menu';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import {
   getChipDataByDuplicateStatus,
@@ -31,7 +36,12 @@ import { RegistrationMenuComponent } from '~/components/registration-page-layout
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { RegistrationStatusChangeTarget } from '~/domains/registration/registration.model';
+import { ChangeStatusDialogComponent } from '~/pages/project-registrations/components/change-status-dialog/change-status-dialog.component';
+import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
 import { AuthService } from '~/services/auth.service';
+import { PaginateQueryService } from '~/services/paginate-query.service';
+import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -39,15 +49,19 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   selector: 'app-registration-page-layout',
   imports: [
     PageLayoutComponent,
+    ButtonMenuComponent,
     CardModule,
     DataListComponent,
     ButtonModule,
     DatePipe,
+    MenuModule,
     SkeletonInlineComponent,
     AddNoteFormComponent,
     RegistrationMenuComponent,
     RegistrationDuplicatesBannerComponent,
     ColoredChipComponent,
+    SendMessageDialogComponent,
+    ChangeStatusDialogComponent,
   ],
   templateUrl: './registration-page-layout.component.html',
   styles: ``,
@@ -62,6 +76,13 @@ export class RegistrationPageLayoutComponent {
   readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationLookupService = inject(RegistrationLookupService);
   readonly translatableStringService = inject(TranslatableStringService);
+  private registrationMenuService = inject(RegistrationActionMenuService);
+  private paginateQueryService = inject(PaginateQueryService);
+
+  readonly sendMessageDialog =
+    viewChild.required<SendMessageDialogComponent>('sendMessageDialog');
+  readonly changeStatusDialog =
+    viewChild.required<ChangeStatusDialogComponent>('changeStatusDialog');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -72,6 +93,46 @@ export class RegistrationPageLayoutComponent {
   );
 
   readonly addNoteFormVisible = signal(false);
+  readonly actionMenuItems = computed<MenuItem[]>(() => [
+    {
+      items: [
+        {
+          label: $localize`Add note`,
+          icon: 'pi pi-pen-to-square',
+          command: () => {
+            this.addNoteFormVisible.set(true);
+          },
+          visible: this.canUpdatePersonalData(),
+        },
+        this.registrationMenuService.createContextItemForMessage({
+          projectId: this.projectId(),
+          command: () => {
+            this.sendMessage();
+          },
+        }),
+      ],
+    },
+    {
+      label: $localize`Status Update`,
+      items: [
+        this.createContextItemForRegistrationStatusChange(
+          RegistrationStatusEnum.validated,
+        ),
+        this.createContextItemForRegistrationStatusChange(
+          RegistrationStatusEnum.included,
+        ),
+        this.createContextItemForRegistrationStatusChange(
+          RegistrationStatusEnum.declined,
+        ),
+        this.createContextItemForRegistrationStatusChange(
+          RegistrationStatusEnum.paused,
+        ),
+        this.createContextItemForRegistrationStatusChange(
+          RegistrationStatusEnum.deleted,
+        ),
+      ],
+    },
+  ]);
 
   readonly registrationData = computed(() => {
     const registrationRawData = this.registration.data();
@@ -155,6 +216,27 @@ export class RegistrationPageLayoutComponent {
     getChipDataByDuplicateStatus(this.registration.data()?.duplicateStatus),
   );
 
+  sendMessage() {
+    const registration = this.registration.data();
+    if (!registration) {
+      return;
+    }
+    const actionData =
+      this.paginateQueryService.getActionDataForRegistration(registration);
+    this.sendMessageDialog().triggerAction(actionData);
+  }
+
+  changeStatus({ status }: { status: RegistrationStatusEnum }) {
+    const registration = this.registration.data();
+    if (!registration) {
+      return;
+    }
+    const actionData =
+      this.paginateQueryService.getActionDataForRegistration(registration);
+
+    this.changeStatusDialog().triggerAction(actionData, status);
+  }
+
   private getPaymentCountString(
     paymentCount?: null | number,
     maxPayments?: null | number,
@@ -168,5 +250,22 @@ export class RegistrationPageLayoutComponent {
     }
 
     return $localize`${paymentCount.toString()}:count: (out of ${maxPayments.toString()}:totalCount:)`;
+  }
+
+  private createContextItemForRegistrationStatusChange(
+    status: RegistrationStatusChangeTarget,
+  ) {
+    return this.registrationMenuService.createContextItemForRegistrationStatusChange(
+      {
+        status,
+        projectId: this.projectId(),
+        hasValidation: this.project.data()?.validation ?? false,
+        command: () => {
+          this.changeStatus({
+            status,
+          });
+        },
+      },
+    );
   }
 }

@@ -136,6 +136,24 @@ export function searchRegistrationByReferenceId(
     .send();
 }
 
+export async function getRegistrationIdByReferenceId({
+  programId,
+  referenceId,
+  accessToken,
+}: {
+  programId: number;
+  referenceId: string;
+  accessToken: string;
+}): Promise<number> {
+  const searchRegistrationResponse = await searchRegistrationByReferenceId(
+    referenceId,
+    programId,
+    accessToken,
+  );
+
+  return searchRegistrationResponse.body.data[0].id;
+}
+
 export function searchRegistrationByPhoneNumber(
   phoneNumber: string,
   accessToken: string,

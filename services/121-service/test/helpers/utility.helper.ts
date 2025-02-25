@@ -146,6 +146,19 @@ export async function removePermissionsFromRole(
   });
 }
 
+export async function addPermissionToRole(
+  roleName: DefaultUserRole,
+  permissionsToAdd: PermissionEnum[],
+): Promise<void> {
+  const role = await getRole(roleName);
+  const permissionSet = new Set(role.permissions || []);
+  permissionsToAdd.forEach((permission) => permissionSet.add(permission));
+  const updatedPermissions = Array.from(permissionSet) as PermissionEnum[];
+  await updatePermissionsOfRole(role.id, {
+    permissions: updatedPermissions,
+  });
+}
+
 function removeNestedProperties<T extends object>(
   obj: T,
   keysToIgnore: string[],

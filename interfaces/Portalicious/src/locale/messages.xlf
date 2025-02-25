@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1569,6 +1569,15 @@
       </trans-unit>
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
+      </trans-unit>
+      <trans-unit id="8433732438274024544" datatype="html">
+        <source>Add note</source>
+      </trans-unit>
+      <trans-unit id="actions" datatype="html">
+        <source>Actions</source>
+      </trans-unit>
+      <trans-unit id="2327464032941214758" datatype="html">
+        <source>Status Update</source>
       </trans-unit>
     </body>
   </file>

@@ -26,6 +26,15 @@ class RegistrationActivityLogPage extends RegistrationBasePage {
     expect(sentMessageText).toBe(message);
     await dropdownButton.click();
   }
+
+  async clickActionDropdown() {
+    await this.page.getByRole('button', { name: 'Actions' }).click();
+  }
+
+  async inititateAction(action: string) {
+    await this.clickActionDropdown();
+    await this.page.getByRole('menuitem', { name: action }).click();
+  }
 }
 
 export default RegistrationActivityLogPage;
