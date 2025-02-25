@@ -1540,6 +1540,15 @@
       <trans-unit id="9022161403115733621" datatype="html">
         <source>We do not share any personal information with other third-parties.</source>
       </trans-unit>
+      <trans-unit id="8433732438274024544" datatype="html">
+        <source>Add note</source>
+      </trans-unit>
+      <trans-unit id="9195124130913900158" datatype="html">
+        <source>Change Status</source>
+      </trans-unit>
+      <trans-unit id="actions" datatype="html">
+        <source>Actions</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

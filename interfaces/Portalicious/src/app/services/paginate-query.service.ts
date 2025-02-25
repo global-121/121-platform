@@ -5,6 +5,7 @@ import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
 import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
+import { Registration } from '~/domains/registration/registration.model';
 
 export enum FilterOperator {
   EQ = '$eq',
@@ -246,6 +247,22 @@ export class PaginateQueryService {
       selection,
       selectAll: false,
       previewItem: selection[0],
+    };
+  }
+
+  public getActionDataForRegistration(
+    registration: Registration,
+  ): ActionDataWithPaginateQuery<Registration> {
+    return {
+      query: {
+        filter: {
+          referenceId: `${FilterOperator.EQ}:${registration.referenceId}`,
+        },
+      },
+      count: 1,
+      selection: [],
+      selectAll: false,
+      previewItem: registration,
     };
   }
 }

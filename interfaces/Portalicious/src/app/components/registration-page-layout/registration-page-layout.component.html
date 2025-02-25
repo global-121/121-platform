@@ -12,23 +12,14 @@
       <h1 class="me-auto">
         {{ registrationTitle() }}
       </h1>
-      @if (canUpdatePersonalData() && !registration.isError()) {
-        <p-button
-          label="Add note"
-          i18n-label="@@add-note"
-          rounded
-          outlined
-          [loading]="registration.isPending()"
-          icon="pi pi-pen-to-square"
-          (click)="addNoteFormVisible.set(true)"
+
+      @if (!registration.isError()) {
+        <app-button-menu
+          label="Actions"
+          i18n-label="@@actions"
+          [menuItems]="actionMenuItems()"
+          [icon]="'pi pi-user-edit'"
         />
-        @if (registration.isSuccess()) {
-          <app-add-note-form
-            [(formVisible)]="addNoteFormVisible"
-            [projectId]="projectId()"
-            [registrationId]="registrationId()"
-          />
-        }
       }
     </div>
     <app-data-list [data]="registrationData()" />
@@ -58,3 +49,19 @@
     <ng-content></ng-content>
   </p-card>
 </app-page-layout>
+
+<app-send-message-dialog
+  #sendMessageDialog
+  [projectId]="projectId()"
+/>
+
+<app-change-status-dialog
+  #changeStatusDialog
+  [projectId]="projectId()"
+/>
+
+<app-add-note-form
+  [(formVisible)]="addNoteFormVisible"
+  [projectId]="projectId()"
+  [registrationId]="registrationId()"
+/>
