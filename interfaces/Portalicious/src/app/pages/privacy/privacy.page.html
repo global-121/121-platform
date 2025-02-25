@@ -71,31 +71,7 @@
     The data of the 121 Platform is hosted in a Microsoft Azure-environment of
     The Netherlands Red Cross.
   </p>
-  @if (isMatomoEnabled) {
-    <p i18n>
-      We use the external "<em>Matomo Cloud</em>"-service by InnoCraft Ltd. to
-      measure the usage of the 121 Platform.
-    </p>
-    <p i18n>
-      We do not share any personal information with Matomo/InnoCraft Ltd. Our
-      use of their service is covered by the
-      <a
-        href="https://matomo.org/matomo-cloud-privacy-policy/"
-        target="_blank"
-        >Matomo Cloud Privacy Policy</a
-      >
-      and the
-      <a
-        href="https://matomo.org/matomo-cloud-dpa/"
-        target="_blank"
-        >Matomo Cloud Data Processing Agreement</a
-      >.
-    </p>
-  } @else {
-    <p i18n>
-      We do not share any personal information with other third-parties.
-    </p>
-  }
+  <ng-container *ngComponentOutlet="TrackingCopyComponent"></ng-container>
 
   <h2 i18n>Cookies</h2>
 
