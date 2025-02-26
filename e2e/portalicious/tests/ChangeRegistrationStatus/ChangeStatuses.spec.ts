@@ -15,6 +15,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import MovePasFromRegisteredToDeclined from './MovePasFromRegisteredToDeclined';
 import MovePasFromRegisteredToIncluded from './MovePasFromRegisteredToIncluded';
 import MovePasFromRegisteredToValidated from './MovePasFromRegisteredToValidated';
+import MovePasFromValidatedToIncluded from './MovePasFromValidatedToIncluded';
 
 let page: Page;
 // Declare pages and components
@@ -58,5 +59,6 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     MovePasFromRegisteredToValidated(pages, components);
     MovePasFromRegisteredToIncluded(pages, components);
     MovePasFromRegisteredToDeclined(pages, components);
+    MovePasFromValidatedToIncluded(pages, components);
   });
 });

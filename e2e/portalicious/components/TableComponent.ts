@@ -87,7 +87,7 @@ class TableComponent {
   }
 
   async clearAllFilters() {
-    await this.clearAllFiltersButton.click();
+    await this.clearAllFiltersButton.first().click();
     // wait for 500s for filter to be cleared in the BE
     await this.page.waitForTimeout(500);
   }
