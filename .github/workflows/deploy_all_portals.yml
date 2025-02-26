@@ -1,0 +1,15 @@
+name: Deploy All portals
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_demo_portal:
+    name: 'Build + Deploy: Demo portal'
+    uses: ./.github/workflows/deploy_client-demo_portalicious.yml
+    secrets: inherit
+
+  deploy_training_portal:
+    name: 'Build + Deploy: Training portal'
+    uses: ./.github/workflows/deploy_client-training_portalicious.yml
+    secrets: inherit
