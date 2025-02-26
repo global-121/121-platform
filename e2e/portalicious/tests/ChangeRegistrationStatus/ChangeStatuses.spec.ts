@@ -50,9 +50,9 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     await basePage.selectProgram(projectTitle);
   });
 
-  // test.afterAll(async () => {
-  //   await page.close();
-  // });
+  test.afterAll(async () => {
+    await page.close();
+  });
 
   test.describe('Change Statuses', () => {
     MovePasFromRegisteredToValidated(pages, components);
