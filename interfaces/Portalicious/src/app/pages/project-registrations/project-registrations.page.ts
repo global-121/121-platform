@@ -61,7 +61,7 @@ export class ProjectRegistrationsPageComponent {
   private router = inject(Router);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
-  private registrationMenuService = inject(RegistrationActionMenuService);
+  readonly registrationMenuService = inject(RegistrationActionMenuService);
 
   readonly registrationsTable =
     viewChild.required<RegistrationsTableComponent>('registrationsTable');
@@ -76,23 +76,18 @@ export class ProjectRegistrationsPageComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
-  readonly canChangeStatus = computed(() => {
-    const project = this.project.data();
-    if (!project) {
-      return () => false;
-    }
-
-    return (status: RegistrationStatusChangeTarget) =>
-      this.registrationMenuService.canChangeStatus()({
+  readonly canChangeStatus = computed(
+    () => (status: RegistrationStatusChangeTarget) =>
+      this.registrationMenuService.canChangeStatus({
         status,
         projectId: this.projectId(),
-        hasValidation: !!project.validation,
-      });
-  });
+        hasValidation: !!this.project.data()?.validation,
+      }),
+  );
 
   readonly canSendMessage = computed(
     () => () =>
-      this.registrationMenuService.canSendMessage()({
+      this.registrationMenuService.canSendMessage({
         projectId: this.projectId(),
       }),
   );
@@ -157,6 +152,7 @@ export class ProjectRegistrationsPageComponent {
       RegistrationStatusEnum.deleted,
     ),
   ]);
+
   sendMessage({
     triggeredFromContextMenu = false,
   }: {
@@ -201,7 +197,7 @@ export class ProjectRegistrationsPageComponent {
     return this.registrationMenuService.createContextItemForRegistrationStatus({
       status,
       projectId: this.projectId(),
-      hasValidation: this.project.data()?.validation ?? false,
+      hasValidation: !!this.project.data()?.validation,
       command: () => {
         this.changeStatus({
           status,

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -16,50 +16,45 @@ import { AuthService } from '~/services/auth.service';
 export class RegistrationActionMenuService {
   private readonly authService = inject(AuthService);
 
-  readonly canChangeStatus = computed(
-    () =>
-      ({
-        status,
-        projectId,
-        hasValidation,
-      }: {
-        status: RegistrationStatusChangeTarget;
-        projectId: string;
-        hasValidation: boolean;
-      }) => {
-        if (status === RegistrationStatusEnum.validated && !hasValidation) {
-          return false;
-        }
+  public canChangeStatus({
+    status,
+    projectId,
+    hasValidation,
+  }: {
+    status: RegistrationStatusChangeTarget;
+    projectId: string;
+    hasValidation: boolean;
+  }): boolean {
+    if (status === RegistrationStatusEnum.validated && !hasValidation) {
+      return false;
+    }
 
-        const statusToPermissionMap = {
-          [RegistrationStatusEnum.validated]:
-            PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
-          [RegistrationStatusEnum.included]:
-            PermissionEnum.RegistrationStatusIncludedUPDATE,
-          [RegistrationStatusEnum.declined]:
-            PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
-          [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
-          [RegistrationStatusEnum.paused]:
-            PermissionEnum.RegistrationStatusPausedUPDATE,
-        };
+    const statusToPermissionMap = {
+      [RegistrationStatusEnum.validated]:
+        PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+      [RegistrationStatusEnum.included]:
+        PermissionEnum.RegistrationStatusIncludedUPDATE,
+      [RegistrationStatusEnum.declined]:
+        PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
+      [RegistrationStatusEnum.deleted]: PermissionEnum.RegistrationDELETE,
+      [RegistrationStatusEnum.paused]:
+        PermissionEnum.RegistrationStatusPausedUPDATE,
+    };
 
-        return this.authService.hasPermission({
-          projectId,
-          requiredPermission: statusToPermissionMap[status],
-        });
-      },
-  );
+    return this.authService.hasPermission({
+      projectId,
+      requiredPermission: statusToPermissionMap[status],
+    });
+  }
 
-  readonly canSendMessage = computed(
-    () =>
-      ({ projectId }: { projectId: string }) =>
-        this.authService.hasPermission({
-          projectId,
-          requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
-        }),
-  );
+  public canSendMessage({ projectId }: { projectId: string }): boolean {
+    return this.authService.hasPermission({
+      projectId,
+      requiredPermission: PermissionEnum.RegistrationNotificationCREATE,
+    });
+  }
 
-  createContextItemForRegistrationStatus({
+  public createContextItemForRegistrationStatus({
     status,
     projectId,
     hasValidation,
@@ -73,12 +68,12 @@ export class RegistrationActionMenuService {
     return {
       label: REGISTRATION_STATUS_VERB[status],
       icon: REGISTRATION_STATUS_ICON[status],
-      visible: this.canChangeStatus()({ status, projectId, hasValidation }),
+      visible: this.canChangeStatus({ status, projectId, hasValidation }),
       command,
     };
   }
 
-  createContextItemForMessage({
+  public createContextItemForMessage({
     projectId,
     command,
   }: {
@@ -88,7 +83,7 @@ export class RegistrationActionMenuService {
     return {
       label: $localize`Message`,
       icon: 'pi pi-envelope',
-      visible: this.canSendMessage()({ projectId }),
+      visible: this.canSendMessage({ projectId }),
       command,
     };
   }
