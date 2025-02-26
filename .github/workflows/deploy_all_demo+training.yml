@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Deploy All Clients'
+name: 'Deploy Portal + Service for Demo & Training'
 
 permissions:
   actions: read

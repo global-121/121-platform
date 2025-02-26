@@ -1,4 +1,4 @@
-name: Deploy All portals
+name: 'Deploy Portal for Demo & Training'
 
 on:
   workflow_dispatch:
