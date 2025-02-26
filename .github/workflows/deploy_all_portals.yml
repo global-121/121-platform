@@ -1,0 +1,80 @@
+name: Deploy All portals
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_demo_portal:
+    name: 'Build + Deploy: Demo portal'
+    uses: ./.github/workflows/deploy_client-demo_portalicious.yml
+    secrets: inherit
+
+  deploy_training_portal:
+    name: 'Build + Deploy: Training portal'
+    uses: ./.github/workflows/deploy_client-training_portalicious.yml
+    secrets: inherit
+
+  deploy_drc_portal:
+    name: 'Build + Deploy: DRC portal'
+    uses: ./.github/workflows/deploy_client-drc_portal.yml
+    secrets: inherit
+
+  deploy_eswatini_portal:
+    name: 'Build + Deploy: Eswatini portal'
+    uses: ./.github/workflows/deploy_client-eswatini_portal.yml
+    secrets: inherit
+
+  deploy_ethiopia_portal:
+    name: 'Build + Deploy: Ethiopia portal'
+    uses: ./.github/workflows/deploy_client-ethiopia_portal.yml
+    secrets: inherit
+
+  deploy_greece_portal:
+    name: 'Build + Deploy: Greece portal'
+    uses: ./.github/workflows/deploy_client-greece_portal.yml
+    secrets: inherit
+
+  deploy_ivorycoast_portal:
+    name: 'Build + Deploy: Ivory Coast portal'
+    uses: ./.github/workflows/deploy_client-ivorycoast_portal.yml
+    secrets: inherit
+
+  deploy_jrethiopia_portal:
+    name: 'Build + Deploy: JREthiopia portal'
+    uses: ./.github/workflows/deploy_client-jrethiopia_portal.yml
+    secrets: inherit
+
+  deploy_krcs_portal:
+    name: 'Build + Deploy: KRCS portal'
+    uses: ./.github/workflows/deploy_client-krcs_portalicious.yml
+    secrets: inherit
+
+  deploy_nlrc_portal:
+    name: 'Build + Deploy: NLRC portal'
+    uses: ./.github/workflows/deploy_client-nlrc_portalicious.yml
+    secrets: inherit
+
+  deploy_slovakia_portal:
+    name: 'Build + Deploy: Slovakia portal'
+    uses: ./.github/workflows/deploy_client-slovakia_portal.yml
+    secrets: inherit
+
+  deploy_somalia_portal:
+    name: 'Build + Deploy: Somalia portal'
+    uses: ./.github/workflows/deploy_client-somalia_portal.yml
+    secrets: inherit
+
+  deploy_southafrica_portal:
+    name: 'Build + Deploy: South Africa portal'
+    uses: ./.github/workflows/deploy_client-southafrica_portalicious.yml
+    secrets: inherit
+
+  deploy_sudan_portal:
+    name: 'Build + Deploy: Sudan portal'
+    uses: ./.github/workflows/deploy_client-sudan_portal.yml
+    secrets: inherit
+
+  deploy_zambia_portal:
+    name: 'Build + Deploy: Zambia portal'
+    uses: ./.github/workflows/deploy_client-zambia_portal.yml
+    secrets: inherit
