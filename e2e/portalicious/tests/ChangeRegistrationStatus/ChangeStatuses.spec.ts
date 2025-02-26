@@ -1,5 +1,5 @@
 import { Page, test } from '@playwright/test';
-import { Pages } from 'helpers/interfaces';
+import { Components, Pages } from 'helpers/interfaces';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -7,15 +7,21 @@ import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.h
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
 
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
+import MovePasFromRegisteredToDeclined from './MovePasFromRegisteredToDeclined';
+import MovePasFromRegisteredToIncluded from './MovePasFromRegisteredToIncluded';
 import MovePasFromRegisteredToValidated from './MovePasFromRegisteredToValidated';
 
 let page: Page;
 // Declare pages and components
 const pages: Partial<Pages> = {};
+const components: Partial<Components> = {};
+// Select program name
+const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
 test.describe('Scenario: Change multiple statuses of registrations', () => {
   test.beforeAll(async ({ browser }) => {
@@ -23,6 +29,7 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     // Initialize pages and components after sharedPage is assigned
     pages.basePage = new BasePage(page);
     pages.registrations = new RegistrationsPage(page);
+    components.tableComponent = new TableComponent(page);
 
     await resetDB(SeedScript.nlrcMultiple);
     const programIdPV = 2;
@@ -38,13 +45,18 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
     );
+    // Navigate to program
+    const basePage = new BasePage(page);
+    await basePage.selectProgram(projectTitle);
   });
 
-  test.afterAll(async () => {
-    await page.close();
-  });
+  // test.afterAll(async () => {
+  //   await page.close();
+  // });
 
   test.describe('Change Statuses', () => {
-    MovePasFromRegisteredToValidated(pages);
+    MovePasFromRegisteredToValidated(pages, components);
+    MovePasFromRegisteredToIncluded(pages, components);
+    MovePasFromRegisteredToDeclined(pages, components);
   });
 });

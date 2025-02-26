@@ -3,10 +3,10 @@ import test from '@playwright/test';
 import { Components, Pages } from '../../../helpers/interfaces';
 
 const toastMessage =
-  'The status of 1 registration(s) is being changed to "Validated" successfully. The status change can take up to a minute to process.';
+  'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
 
 export default (pages: Partial<Pages>, components: Partial<Components>) => {
-  test('[31206] Move PA(s) from status "Registered" to "Validated"', async () => {
+  test('[31207] Move PA(s) from status "Registered" to "Included"', async () => {
     const { basePage, registrations } = pages;
     const { tableComponent } = components;
 
@@ -21,24 +21,24 @@ export default (pages: Partial<Pages>, components: Partial<Components>) => {
       });
     });
 
-    await test.step('Change status of first selected registration to "Validated"', async () => {
+    await test.step('Change status of first selected registration to "Included"', async () => {
       await tableComponent.changeStatusOfRegistrationInTable({
-        status: 'Validate',
+        status: 'Include',
       });
       await basePage.validateToastMessage(toastMessage);
     });
 
-    await test.step('Search for the registration with status "Validated"', async () => {
+    await test.step('Search for the registration with status "Included"', async () => {
       await tableComponent.clearAllFilters();
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Registration Status',
-        selection: 'Validated',
+        selection: 'Included',
       });
     });
 
     await test.step('Validate the status of the registration', async () => {
       await registrations.validateStatusOfFirstRegistration({
-        status: 'Validated',
+        status: 'Included',
       });
     });
 
