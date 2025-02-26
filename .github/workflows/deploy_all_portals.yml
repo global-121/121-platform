@@ -7,16 +7,7 @@ jobs:
   deploy_demo_portal:
     name: 'Build + Deploy: Demo portal'
     uses: ./.github/workflows/deploy_client-demo_portalicious.yml
-    secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS }}
-      LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-      AZURE_WEBAPP_PUBLISH_PROFILE_MOCK_SERVICE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_MOCK_SERVICE }}
 
   deploy_training_portal:
     name: 'Build + Deploy: Training portal'
     uses: ./.github/workflows/deploy_client-training_portalicious.yml
-    secrets:
-      AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PORTALICIOUS }}
-      LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
