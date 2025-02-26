@@ -355,7 +355,7 @@ This is how we create and publish a new release of the 121-platform.
      If there are, then make any configuration changes to the staging-service(_Or Mock-Service_) in the Azure Portal, relating to new/changed/removed `ENV`-variables, changed default values, etc.
   - `interfaces/Portal/.env.example`:  
      If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
-  - `interfaces/Portalicious/.env.example` (_Optional_)  
+  - `interfaces/Portalicious/.env.example`  
      If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
 - Define the [`version`](#glossary)-name for the upcoming release.
 - "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
