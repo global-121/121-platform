@@ -13,8 +13,10 @@ jobs:
   deploy_demo:
     name: 'Build + Deploy: Demo'
     uses: ./.github/workflows/deploy_client-demo_all.yml
+    secrets: inherit
 
   deploy_training:
     name: 'Build + Deploy: Training'
     needs: deploy_demo
     uses: ./.github/workflows/deploy_client-training_all.yml
+    secrets: inherit
