@@ -1,4 +1,5 @@
 import PaymentsPage from '@121-e2e/pages/Payments/PaymentsPage';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import ChangePasswordPage from '@121-e2e/portalicious/pages/ChangePasswordPage';
 import CreateProject from '@121-e2e/portalicious/pages/CreateProjectPage';
@@ -22,4 +23,8 @@ export interface Pages {
   projectMonitoring: ProjectMonitoring;
   projectTeam: ProjectTeam;
   registrationActivityLogPage: RegistrationActivityLogPage;
+}
+
+export interface Components {
+  tableComponent: TableComponent;
 }
