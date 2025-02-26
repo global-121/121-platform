@@ -13,6 +13,8 @@ class TableComponent {
   readonly applyFiltersButton: Locator;
   readonly textboxField: Locator;
   readonly searchBox: Locator;
+  readonly checkbox: Locator;
+  readonly approveButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,6 +32,8 @@ class TableComponent {
     this.applyFiltersButton = this.page.getByLabel('Apply');
     this.textboxField = this.page.getByRole('textbox');
     this.searchBox = this.page.getByRole('searchbox');
+    this.checkbox = this.page.getByRole('checkbox');
+    this.approveButton = this.page.getByRole('button', { name: 'Approve' });
   }
 
   async getCell(row: number, column: number) {
@@ -212,6 +216,20 @@ class TableComponent {
     await expect(
       this.page.getByText(`(${expectedCount} selected)`),
     ).toBeVisible();
+  }
+
+  async changeStatusOfRegistrationInTable({ status }: { status: string }) {
+    const firstCheckbox = this.checkbox.nth(1);
+    const statusButton = this.page.getByRole('button', { name: status });
+    const placeholder = this.page.getByPlaceholder('Enter reason');
+
+    await firstCheckbox.click();
+    await statusButton.click();
+    // Condition for when reason is required
+    if (await placeholder.isVisible()) {
+      await placeholder.fill('Test reason');
+    }
+    await this.approveButton.click();
   }
 }
 
