@@ -376,6 +376,7 @@ This is how we create and publish a new release of the 121-platform.
     Start with deployment of the "**_Demo_**"-instance.  
     This will **_also_** deploy the Mock-Service to its production-environment.
   - The "Help a Child" instance should be skipped. They are using an fsp integration we don't support anymore, so we can't roll out new code to their environment.
+- Send the "Inform stakeholders"-message to Teams in the necessary locations.
 
 ### Patch/Hotfix Checklist
 
