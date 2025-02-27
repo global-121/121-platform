@@ -2,9 +2,15 @@ import test from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { doPayment } from '@121-service/test/helpers/program.helper';
-import { changeBulkRegistrationStatus } from '@121-service/test/helpers/registration.helper';
+import {
+  changeBulkRegistrationStatus,
+  importRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import { getAccessToken } from '@121-service/test/helpers/utility.helper';
-import { registrationPvMaxPayment } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationPvMaxPayment,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import { Components, Pages } from '../../../helpers/interfaces';
 
@@ -18,6 +24,14 @@ export default (pages: Partial<Pages>, components: Partial<Components>) => {
     if (!basePage || !registrations || !tableComponent) {
       throw new Error('pages and components not found');
     }
+
+    await test.step('Upload extra registration with max payment set to 1', async () => {
+      await importRegistrations(
+        programIdPV,
+        [registrationPvMaxPayment],
+        accessToken,
+      );
+    });
 
     await test.step('Change status of all registrations to "Included"', async () => {
       await changeBulkRegistrationStatus({
