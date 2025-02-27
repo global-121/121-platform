@@ -30,6 +30,7 @@ import { ChangeStatusDialogComponent } from '~/pages/project-registrations/compo
 import { ExportRegistrationsComponent } from '~/pages/project-registrations/components/export-registrations/export-registrations.component';
 import { ImportRegistrationsComponent } from '~/pages/project-registrations/components/import-registrations/import-registrations.component';
 import { SendMessageDialogComponent } from '~/pages/project-registrations/components/send-message-dialog/send-message-dialog.component';
+import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { ToastService } from '~/services/toast.service';
@@ -47,6 +48,7 @@ import { getOriginUrl } from '~/utils/url-helper';
     ChangeStatusDialogComponent,
     ImportRegistrationsComponent,
     RegistrationsTableComponent,
+    TranslatableStringPipe,
   ],
   providers: [ToastService],
   templateUrl: './project-registrations.page.html',

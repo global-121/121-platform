@@ -1,10 +1,13 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   inject,
   input,
   signal,
+  TemplateRef,
   viewChild,
 } from '@angular/core';
 
@@ -18,13 +21,12 @@ import { QueryTableComponent } from '~/components/query-table/query-table.compon
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
-import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 
 @Component({
   selector: 'app-registrations-table',
-  imports: [QueryTableComponent, TranslatableStringPipe],
+  imports: [QueryTableComponent, NgTemplateOutlet],
   templateUrl: './registrations-table.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +39,9 @@ export class RegistrationsTableComponent {
     {},
   );
   readonly showSelectionInHeader = input<boolean>(false);
+
+  readonly emptyMessage =
+    contentChild<TemplateRef<unknown>>('tableEmptyMessage');
 
   private projectApiService = inject(ProjectApiService);
   private registrationApiService = inject(RegistrationApiService);
