@@ -3,9 +3,14 @@ import { Components, Pages } from 'helpers/interfaces';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDuplicateRegistrations } from '@121-service/test/helpers/utility.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
-import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  resetDB,
+  resetDuplicateRegistrations,
+} from '@121-service/test/helpers/utility.helper';
+import {
+  programIdPV,
+  registrationsPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
@@ -34,11 +39,10 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     components.tableComponent = new TableComponent(page);
 
     await resetDB(SeedScript.nlrcMultiple);
-    const programIdPV = 2;
 
     await seedRegistrations(registrationsPV, programIdPV);
     // multiply registrations
-    await resetDuplicateRegistrations(4);
+    await resetDuplicateRegistrations(3);
 
     // Login
     const loginPage = new LoginPage(page);
