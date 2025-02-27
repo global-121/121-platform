@@ -7,11 +7,12 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
+import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
-import { DuplicatesResult } from '~/domains/registration/registration.model';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
@@ -22,12 +23,21 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationDuplicatesBannerComponent {
-  readonly translatableStringService = inject(TranslatableStringService);
+  readonly registrationApiService = inject(RegistrationApiService);
   readonly router = inject(Router);
+  readonly translatableStringService = inject(TranslatableStringService);
 
   readonly projectId = input.required<string>();
-  readonly duplicates = input.required<DuplicatesResult[]>();
-  readonly loading = input.required<boolean>();
+  readonly registrationReferenceId = input<string>();
+
+  duplicates = injectQuery(() => ({
+    ...this.registrationApiService.getDuplicates({
+      projectId: this.projectId,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
+      referenceId: this.registrationReferenceId()!,
+    })(),
+    enabled: !!this.registrationReferenceId(),
+  }));
 
   registrationLink = (registrationId: number | string) =>
     registrationLink({ projectId: this.projectId(), registrationId });

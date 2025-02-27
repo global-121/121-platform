@@ -5,11 +5,16 @@
   [pageTitle]="registrationTitle()"
   [isPending]="registration.isPending()"
 >
-  <app-registration-duplicates-banner
-    [projectId]="projectId()"
-    [duplicates]="duplicateArray()"
-    [loading]="duplicates.isPending()"
-  />
+  @if (
+    canViewPersonalData() &&
+    (!registration.isSuccess() ||
+      registration.data().duplicateStatus === 'duplicate')
+  ) {
+    <app-registration-duplicates-banner
+      [projectId]="projectId()"
+      [registrationReferenceId]="registration.data()?.referenceId"
+    />
+  }
   <p-card
     styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
   >
@@ -19,7 +24,7 @@
       <h1>
         {{ registrationTitle() }}
       </h1>
-      @if (duplicates.isSuccess()) {
+      @if (registration.isSuccess() && canViewPersonalData()) {
         <app-colored-chip
           [variant]="duplicateChipData().chipVariant"
           [label]="duplicateChipData().chipLabel"

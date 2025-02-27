@@ -12,7 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
@@ -71,14 +70,6 @@ export class RegistrationPageLayoutComponent {
       this.registrationId,
     ),
   );
-  duplicates = injectQuery(() => ({
-    ...this.registrationApiService.getDuplicates({
-      projectId: this.projectId,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
-      referenceId: this.registration.data()!.referenceId,
-    })(),
-    enabled: !!this.registration.data(),
-  }));
 
   readonly addNoteFormVisible = signal(false);
 
@@ -147,6 +138,12 @@ export class RegistrationPageLayoutComponent {
     return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
   });
 
+  readonly canViewPersonalData = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationPersonalREAD,
+    }),
+  );
   readonly canUpdatePersonalData = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
@@ -154,13 +151,8 @@ export class RegistrationPageLayoutComponent {
     }),
   );
 
-  readonly duplicateArray = computed(() => this.duplicates.data() ?? []);
   readonly duplicateChipData = computed(() =>
-    getChipDataByDuplicateStatus(
-      this.duplicateArray().length > 0
-        ? DuplicateStatus.duplicate
-        : DuplicateStatus.unique,
-    ),
+    getChipDataByDuplicateStatus(this.registration.data()?.duplicateStatus),
   );
 
   private getPaymentCountString(
