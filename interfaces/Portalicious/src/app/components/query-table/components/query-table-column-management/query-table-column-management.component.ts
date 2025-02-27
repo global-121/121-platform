@@ -55,8 +55,17 @@ export class QueryTableColumnManagementComponent<
   updateColumnVisibility = injectMutation(() => ({
     // We don't technically need a mutation here, but we're using one
     // so that we can easily reuse the form-sidebar component
-    mutationFn: () =>
-      Promise.resolve(this.formGroup.getRawValue().selectedColumns),
+    mutationFn: () => {
+      const { selectedColumns } = this.formGroup.getRawValue();
+
+      if (selectedColumns.length === 0) {
+        return Promise.reject(
+          new Error($localize`At least one column must be selected`),
+        );
+      }
+
+      return Promise.resolve(selectedColumns);
+    },
     onSuccess: (selectedColumns) => {
       const stateKey = this.selectedColumnsStateKey();
       if (stateKey) {

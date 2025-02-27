@@ -1567,6 +1567,9 @@
       <trans-unit id="registration-duplicates" datatype="html">
         <source>Duplicates</source>
       </trans-unit>
+      <trans-unit id="1160840788795450422" datatype="html">
+        <source>At least one column must be selected</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
