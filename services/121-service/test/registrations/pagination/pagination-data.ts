@@ -197,6 +197,7 @@ export const registrationsPV = [
   registrationPV6,
   registrationPV7,
   registrationPV8,
+  registrationPvMaxPayment,
 ];
 
 export const registrationPvScoped = {
