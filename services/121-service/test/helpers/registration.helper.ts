@@ -213,6 +213,37 @@ export function getRegistrations({
     .send();
 }
 
+export async function changeBulkRegistrationStatus({
+  programId,
+  status,
+  accessToken,
+  options: { includeTemplatedMessage = false, reason = 'default reason' } = {},
+}: {
+  programId: number;
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
+  const queryParams: Record<string, string> = {};
+
+  const result = await getServer()
+    .patch(`/programs/${programId}/registrations/status`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send({
+      status,
+      message: null,
+      messageTemplateKey: includeTemplatedMessage ? status : null,
+      reason,
+    });
+
+  return result;
+}
+
 export async function changeRegistrationStatus({
   programId,
   referenceIds,

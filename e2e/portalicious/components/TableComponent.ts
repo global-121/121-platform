@@ -231,6 +231,19 @@ class TableComponent {
     }
     await this.approveButton.click();
   }
+
+  async changeStatusOfAllRegistrationsInTable({ status }: { status: string }) {
+    const statusButton = this.page.getByRole('button', { name: status });
+    const placeholder = this.page.getByPlaceholder('Enter reason');
+
+    await this.selectAllCheckbox();
+    await statusButton.click();
+    // Condition for when reason is required
+    if (await placeholder.isVisible()) {
+      await placeholder.fill('Test reason');
+    }
+    await this.approveButton.click();
+  }
 }
 
 export default TableComponent;
