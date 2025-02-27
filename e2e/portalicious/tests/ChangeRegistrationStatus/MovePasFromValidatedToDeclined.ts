@@ -6,11 +6,11 @@ import { getAccessToken } from '@121-service/test/helpers/utility.helper';
 
 import { Components, Pages } from '../../../helpers/interfaces';
 
-const toastMessageIncluded =
-  'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
+const toastMessageDeclined =
+  'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 
 export default (pages: Partial<Pages>, components: Partial<Components>) => {
-  test('[31209] Move PA(s) from status "Validated" to "Included"', async () => {
+  test('[31210] Move PA(s) from status "Validated" to "Declined"', async () => {
     const accessToken = await getAccessToken();
     const { basePage, registrations } = pages;
     const { tableComponent } = components;
@@ -27,37 +27,23 @@ export default (pages: Partial<Pages>, components: Partial<Components>) => {
       });
     });
 
-    await test.step('Search for the registration with status "Validated"', async () => {
-      await tableComponent.filterColumnByDropDownSelection({
-        columnName: 'Registration Status',
-        selection: 'Validated',
-      });
-    });
-
-    await test.step('Validate the status of the registration', async () => {
-      await registrations.validateStatusOfFirstRegistration({
-        status: 'Validated',
-      });
-    });
-
-    await test.step('Change status of first selected registration to "Validated"', async () => {
+    await test.step('Change status of first selected registration to "Declined"', async () => {
       await tableComponent.changeStatusOfRegistrationInTable({
-        status: 'Include',
+        status: 'Decline',
       });
-      await basePage.validateToastMessage(toastMessageIncluded);
+      await basePage.validateToastMessage(toastMessageDeclined);
     });
 
-    await test.step('Search for the registration with status "Validated"', async () => {
-      await tableComponent.clearAllFilters();
+    await test.step('Search for the registration with status "Declined"', async () => {
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Registration Status',
-        selection: 'Included',
+        selection: 'Declined',
       });
     });
 
     await test.step('Validate the status of the registration', async () => {
       await registrations.validateStatusOfFirstRegistration({
-        status: 'Included',
+        status: 'Declined',
       });
     });
 
