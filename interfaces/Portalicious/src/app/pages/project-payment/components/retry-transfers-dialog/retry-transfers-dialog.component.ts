@@ -7,7 +7,10 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
@@ -28,6 +31,11 @@ export class RetryTransfersDialogComponent {
 
   private metricApiService = inject(MetricApiService);
   private paymentApiService = inject(PaymentApiService);
+  private toastService = inject(ToastService);
+
+  paymentStatus = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
 
   readonly referenceIdsForRetryTransfers = signal<string[]>([]);
 
@@ -53,6 +61,13 @@ export class RetryTransfersDialogComponent {
   }));
 
   public retryFailedTransfers({ referenceIds }: { referenceIds: string[] }) {
+    if (this.paymentStatus.data()?.inProgress) {
+      this.toastService.showToast({
+        severity: 'warn',
+        detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
+      });
+      return;
+    }
     this.referenceIdsForRetryTransfers.set(referenceIds);
     this.retryTransfersConfirmationDialog().askForConfirmation();
   }
