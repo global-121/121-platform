@@ -15,6 +15,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 import MovePasFromRegisteredToDeclined from './MovePasFromRegisteredToDeclined';
 import MovePasFromRegisteredToIncluded from './MovePasFromRegisteredToIncluded';
 import MovePasFromRegisteredToValidated from './MovePasFromRegisteredToValidated';
+import MovePasFromValidatedToDeclined from './MovePasFromValidatedToDeclined';
 import MovePasFromValidatedToIncluded from './MovePasFromValidatedToIncluded';
 
 let page: Page;
@@ -25,7 +26,7 @@ const components: Partial<Components> = {};
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
 test.describe('Scenario: Change multiple statuses of registrations', () => {
-  test.beforeAll(async ({ browser }) => {
+  test.beforeEach(async ({ browser }) => {
     page = await browser.newPage();
     // Initialize pages and components after sharedPage is assigned
     pages.basePage = new BasePage(page);
@@ -37,7 +38,7 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
 
     await seedRegistrations(registrationsPV, programIdPV);
     // multiply registrations
-    await resetDuplicateRegistrations(7);
+    await resetDuplicateRegistrations(4);
 
     // Login
     const loginPage = new LoginPage(page);
@@ -60,5 +61,6 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     MovePasFromRegisteredToIncluded(pages, components);
     MovePasFromRegisteredToDeclined(pages, components);
     MovePasFromValidatedToIncluded(pages, components);
+    MovePasFromValidatedToDeclined(pages, components);
   });
 });
