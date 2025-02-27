@@ -23,6 +23,7 @@ import { LanguageSwitcherComponent } from '~/components/language-switcher/langua
 import { LogoComponent } from '~/components/logo/logo.component';
 import { HealthWidgetComponent } from '~/components/page-layout/components/health-widget/health-widget.component';
 import { AuthService } from '~/services/auth.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-header',
@@ -48,6 +49,8 @@ import { AuthService } from '~/services/auth.service';
 export class HeaderComponent {
   AppRoutes = AppRoutes;
   private authService = inject(AuthService);
+  readonly rtlHelper = inject(RtlHelperService);
+
   readonly projectId = input<string>();
 
   readonly userName = computed(() => this.authService.user?.username);

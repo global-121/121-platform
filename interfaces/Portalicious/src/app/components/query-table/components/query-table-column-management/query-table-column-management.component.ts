@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   model,
   output,
@@ -18,6 +19,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.component';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-query-table-column-management',
@@ -35,6 +37,8 @@ import { QueryTableColumn } from '~/components/query-table/query-table.component
 export class QueryTableColumnManagementComponent<
   TData extends { id: PropertyKey },
 > {
+  readonly rtlHelper = inject(RtlHelperService);
+
   readonly columns = input.required<QueryTableColumn<TData>[]>();
   readonly visibleColumns = model.required<QueryTableColumn<TData>[]>();
   readonly selectedColumnsStateKey = input<string>();

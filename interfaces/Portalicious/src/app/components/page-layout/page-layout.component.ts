@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,6 +22,7 @@ import {
 } from '~/guards/found-resource.guard';
 import { PERMISSION_DENIED_QUERY_KEY } from '~/guards/project-permissions-guard';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-page-layout',
@@ -33,12 +35,14 @@ import { RegistrationLookupService } from '~/services/registration-lookup.servic
     SkeletonModule,
     RouterLink,
     RegistrationLookupMenuComponent,
+    NgClass,
   ],
   templateUrl: './page-layout.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageLayoutComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly route = inject(ActivatedRoute);
   readonly registrationLookupService = inject(RegistrationLookupService);
 

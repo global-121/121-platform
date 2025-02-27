@@ -9,7 +9,7 @@
       plain
       rounded
       text
-      class="lg:mr-9 [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent [&_button]:text-white"
+      class="lg:me-9 [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent [&_button]:text-white"
       (click)="sidebarVisible.set(true)"
       [attr.aria-controls]="sidebarVisible() ? 'menu' : null"
       [attr.aria-expanded]="sidebarVisible()"
@@ -45,6 +45,7 @@
 </p-toolbar>
 <p-drawer
   #sideBar
+  [position]="rtlHelper.createPosition('left')()"
   [(visible)]="sidebarVisible"
   [closeOnEscape]="true"
   [showCloseIcon]="false"
@@ -63,7 +64,7 @@
           label="Close"
           i18n-label="@@generic-close"
           icon="pi pi-times"
-          iconPos="left"
+          [iconPos]="rtlHelper.createPosition('left')()"
           plain
           text
           (click)="sidebarVisible.set(false)"
