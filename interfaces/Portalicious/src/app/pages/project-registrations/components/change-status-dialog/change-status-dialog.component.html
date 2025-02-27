@@ -151,9 +151,10 @@
         i18n="@@change-status-include-warning"
         class="pt-2"
       >
-        The action "Include" can only be applied to registrations who’s
-        “Payments left” is larger than 0. Registrations with 0 payments left
-        will remain with their current status.
+        The action "Include" can only be applied to registrations that do not
+        have status "Included" and whose “Payments left” is larger than 0.
+        Registrations with 0 payments left will remain with their current
+        status.
       </p>
     }
     @case (RegistrationStatusEnum.paused) {
@@ -172,8 +173,8 @@
         class="pt-2"
       >
         The action "Decline" can not be applied to registrations with the
-        "Completed" status. Registrations with “completed” status will remain
-        with their current status.
+        "Declined" or "Completed" status. Registrations with the “Completed”
+        status will remain with their current status.
       </p>
     }
     @case (RegistrationStatusEnum.deleted) {
