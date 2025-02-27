@@ -57,7 +57,7 @@ test.describe('Scenario: Change multiple statuses of registrations', () => {
     await basePage.selectProgram(projectTitle);
   });
 
-  test.afterAll(async () => {
+  test.afterEach(async () => {
     await page.close();
   });
 
