@@ -41,9 +41,5 @@ export default (pages: Partial<Pages>, components: Partial<Components>) => {
         status: 'Validated',
       });
     });
-
-    await test.step('Reset all filters', async () => {
-      await tableComponent.clearAllFilters();
-    });
   });
 };
