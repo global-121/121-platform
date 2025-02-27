@@ -85,11 +85,10 @@ export class ProjectRegistrationsPageComponent {
       }),
   );
 
-  readonly canSendMessage = computed(
-    () => () =>
-      this.registrationMenuService.canSendMessage({
-        projectId: this.projectId(),
-      }),
+  readonly canSendMessage = computed(() =>
+    this.registrationMenuService.canSendMessage({
+      projectId: this.projectId(),
+    }),
   );
   readonly canImport = computed(() =>
     this.authService.hasAllPermissions({
@@ -136,19 +135,22 @@ export class ProjectRegistrationsPageComponent {
         });
       },
     }),
-    this.createContextMenuItemForRegistrationStatus(
+    {
+      separator: true,
+    },
+    this.createContextItemForRegistrationStatusChange(
       RegistrationStatusEnum.validated,
     ),
-    this.createContextMenuItemForRegistrationStatus(
+    this.createContextItemForRegistrationStatusChange(
       RegistrationStatusEnum.included,
     ),
-    this.createContextMenuItemForRegistrationStatus(
+    this.createContextItemForRegistrationStatusChange(
       RegistrationStatusEnum.declined,
     ),
-    this.createContextMenuItemForRegistrationStatus(
+    this.createContextItemForRegistrationStatusChange(
       RegistrationStatusEnum.paused,
     ),
-    this.createContextMenuItemForRegistrationStatus(
+    this.createContextItemForRegistrationStatusChange(
       RegistrationStatusEnum.deleted,
     ),
   ]);
@@ -191,19 +193,21 @@ export class ProjectRegistrationsPageComponent {
     this.registrationsTable().resetSelection();
   }
 
-  private createContextMenuItemForRegistrationStatus(
+  private createContextItemForRegistrationStatusChange(
     status: RegistrationStatusChangeTarget,
   ) {
-    return this.registrationMenuService.createContextItemForRegistrationStatus({
-      status,
-      projectId: this.projectId(),
-      hasValidation: !!this.project.data()?.validation,
-      command: () => {
-        this.changeStatus({
-          status,
-          triggeredFromContextMenu: true,
-        });
+    return this.registrationMenuService.createContextItemForRegistrationStatusChange(
+      {
+        status,
+        projectId: this.projectId(),
+        hasValidation: !!this.project.data()?.validation,
+        command: () => {
+          this.changeStatus({
+            status,
+            triggeredFromContextMenu: true,
+          });
+        },
       },
-    });
+    );
   }
 }

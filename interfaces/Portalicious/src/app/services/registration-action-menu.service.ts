@@ -54,7 +54,7 @@ export class RegistrationActionMenuService {
     });
   }
 
-  public createContextItemForRegistrationStatus({
+  public createContextItemForRegistrationStatusChange({
     status,
     projectId,
     hasValidation,
