@@ -505,6 +505,11 @@ class RegistrationsPage extends BasePage {
       validateExactRowCount,
     );
   }
+
+  async assertDuplicateColumnValues(expectedValues: string[]) {
+    const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
+    expect(duplicateColumnValues).toEqual(expectedValues);
+  }
 }
 
 export default RegistrationsPage;

@@ -75,7 +75,7 @@ npm test -- --headed
 Or, for [Portalicious](../interfaces/Portalicious/)-specific tests:
 
 ```shell
-npm run  test:portalicious
+npm run test:portalicious
 ```
 
 ### Using the VS Code-extension

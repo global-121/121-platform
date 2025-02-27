@@ -2,15 +2,14 @@ import { expect } from '@playwright/test';
 import { Page } from 'playwright';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
-import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
-class RegistrationActivityLogPage extends BasePage {
-  readonly page: Page;
+import RegistrationBasePage from './RegistrationBasePage';
+
+class RegistrationActivityLogPage extends RegistrationBasePage {
   readonly table: TableComponent;
 
   constructor(page: Page) {
     super(page);
-    this.page = page;
     this.table = new TableComponent(page);
   }
 
