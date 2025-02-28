@@ -340,18 +340,12 @@ export class ProjectPaymentPageComponent {
   readonly hasFspWithExportFileIntegration = computed(() =>
     projectHasFspWithExportFileIntegration(this.project.data()),
   );
+
   retryFailedTransfers({
     triggeredFromContextMenu = false,
   }: {
     triggeredFromContextMenu?: boolean;
   } = {}) {
-    if (this.paymentStatus.data()?.inProgress) {
-      this.toastService.showToast({
-        severity: 'warn',
-        detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
-      });
-      return;
-    }
     const actionData = this.table().getActionData({
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuSelection(),

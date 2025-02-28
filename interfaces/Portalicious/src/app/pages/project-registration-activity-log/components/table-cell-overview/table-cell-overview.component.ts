@@ -162,20 +162,13 @@ export class TableCellOverviewComponent
   });
 
   retryTransfer() {
-    // TODO AB#33349: Not sure if this still needs to be checked
-    // if (this.paymentStatus.data()?.inProgress) {
-    //   this.toastService.showToast({
-    //     severity: 'warn',
-    //     detail: $localize`A payment is currently in progress. Please wait until it has finished.`,
-    //   });
-    //   return;
-    // }
     const referenceId = this.context().referenceId;
-    if (referenceId) {
-      const referenceIds = [referenceId];
-      this.retryTransfersDialog().retryFailedTransfers({
-        referenceIds,
-      });
+    if (!referenceId) {
+      return;
     }
+    const referenceIds = [referenceId];
+    this.retryTransfersDialog().retryFailedTransfers({
+      referenceIds,
+    });
   }
 }
