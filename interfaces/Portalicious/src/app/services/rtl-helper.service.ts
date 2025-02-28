@@ -32,12 +32,12 @@ export class RtlHelperService {
    * Creates a computed signal that flips directional values in RTL mode
    */
   createPosition(defaultValue: 'left' | 'right') {
-    return computed(() =>
-      this.isRtl()
-        ? defaultValue === 'left'
-          ? 'right'
-          : 'left'
-        : defaultValue,
-    );
+    return computed(() => {
+      if (!this.isRtl()) {
+        return defaultValue;
+      }
+
+      return defaultValue === 'left' ? 'right' : 'left';
+    });
   }
 }
