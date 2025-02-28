@@ -16,6 +16,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { RtlHelperService } from '~/services/rtl-helper.service';
+
 @Component({
   selector: 'app-query-table-global-search',
   imports: [
@@ -31,6 +33,7 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 export class QueryTableGlobalSearchComponent {
   private renderer = inject(Renderer2);
+  readonly rtlHelper = inject(RtlHelperService);
 
   readonly globalFilterValue = input<string | undefined>();
   readonly globalFilterVisible = model<boolean>(false);

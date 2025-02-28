@@ -40,7 +40,13 @@
                 } @else {
                   <span class="font-normal">{{ parentTitle }}</span>
                 }
-                <i class="pi pi-chevron-right mx-2 text-sm"></i>
+                <i
+                  class="pi mx-2 text-sm"
+                  [ngClass]="{
+                    'pi-chevron-right': !rtlHelper.isRtl(),
+                    'pi-chevron-left': rtlHelper.isRtl(),
+                  }"
+                ></i>
                 {{ pageTitle() }}
               </span>
             }

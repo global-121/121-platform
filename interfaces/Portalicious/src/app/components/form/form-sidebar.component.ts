@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   input,
   model,
   viewChild,
@@ -14,6 +15,7 @@ import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormComponent } from '~/components/form/form.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-form-sidebar',
@@ -31,6 +33,8 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 export class FormSidebarComponent<
   T extends FormGroup,
 > extends FormComponent<T> {
+  readonly rtlHelper = inject(RtlHelperService);
+
   readonly visible = model<boolean>(false);
   readonly formTitle = input.required<string>();
   readonly modal = model<boolean>(true);

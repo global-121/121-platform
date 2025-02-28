@@ -1,7 +1,7 @@
 <div #globalFilterContainer>
   @if (globalFilterVisible() || !!globalFilterValue()) {
     <p-iconField
-      iconPosition="left"
+      [iconPosition]="rtlHelper.createPosition('left')()"
       [autofocus]="true"
     >
       <p-inputIcon styleClass="pi pi-search" />

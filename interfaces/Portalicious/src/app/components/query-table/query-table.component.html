@@ -83,7 +83,9 @@
             [icon]="
               areAllRowsExpanded()
                 ? 'pi pi-chevron-down'
-                : 'pi pi-chevron-right'
+                : rtlHelper.isRtl()
+                  ? 'pi pi-chevron-left'
+                  : 'pi pi-chevron-right'
             "
             (click)="areAllRowsExpanded() ? collapseAll() : expandAll()"
           />
@@ -191,7 +193,13 @@
             [text]="true"
             [rounded]="true"
             [plain]="true"
-            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            [icon]="
+              expanded
+                ? 'pi pi-chevron-down'
+                : rtlHelper.isRtl()
+                  ? 'pi pi-chevron-left'
+                  : 'pi pi-chevron-right'
+            "
           />
         </td>
       }

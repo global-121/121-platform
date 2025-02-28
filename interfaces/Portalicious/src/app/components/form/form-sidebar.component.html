@@ -1,7 +1,7 @@
 <p-drawer
   #sideBar
   [(visible)]="visible"
-  position="right"
+  [position]="rtlHelper.createPosition('right')()"
   styleClass="max-w-[96vw] sm:min-w-[30rem]"
   [blockScroll]="true"
   (onShow)="onShow()"

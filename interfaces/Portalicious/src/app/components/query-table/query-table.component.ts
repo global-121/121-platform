@@ -58,6 +58,7 @@ import {
   PaginateQuery,
   PaginateQueryService,
 } from '~/services/paginate-query.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { Locale } from '~/utils/locale';
 
@@ -130,6 +131,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   locale = inject<Locale>(LOCALE_ID);
   paginateQueryService = inject(PaginateQueryService);
   toastService = inject(ToastService);
+  readonly rtlHelper = inject(RtlHelperService);
 
   readonly items = input.required<TData[]>();
   readonly isPending = input.required<boolean>();
