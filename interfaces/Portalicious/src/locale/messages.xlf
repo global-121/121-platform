@@ -1570,6 +1570,15 @@
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
       </trans-unit>
+      <trans-unit id="actions" datatype="html">
+        <source>Actions</source>
+      </trans-unit>
+      <trans-unit id="4574346850927067014" datatype="html">
+        <source>Status update</source>
+      </trans-unit>
+      <trans-unit id="general" datatype="html">
+        <source>General</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

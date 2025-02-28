@@ -108,6 +108,12 @@ class BasePage {
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(filePath);
   }
+
+  async goto(path: string) {
+    const defaultLanguage = 'en-GB';
+    path = `${defaultLanguage}${path}`;
+    await this.page.goto(path);
+  }
 }
 
 export default BasePage;

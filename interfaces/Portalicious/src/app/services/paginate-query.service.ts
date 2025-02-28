@@ -219,7 +219,7 @@ export class PaginateQueryService {
     totalCount: number;
     currentPaginateQuery?: PaginateQuery;
     previewItemForSelectAll: TData;
-  }): ActionDataWithPaginateQuery<TData> | undefined {
+  }): ActionDataWithPaginateQuery<TData> {
     if ('selectAll' in selection) {
       // Apply action to all items...
       return {
@@ -247,5 +247,20 @@ export class PaginateQueryService {
       selectAll: false,
       previewItem: selection[0],
     };
+  }
+
+  public singleItemToActionData<TData>({
+    item,
+    fieldForFilter,
+  }: {
+    item: TData;
+    fieldForFilter: keyof TData & string;
+  }) {
+    return this.selectionEventToActionData({
+      selection: [item],
+      fieldForFilter,
+      totalCount: 1,
+      previewItemForSelectAll: item,
+    });
   }
 }
