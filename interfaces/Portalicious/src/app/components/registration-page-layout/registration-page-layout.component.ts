@@ -15,6 +15,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -95,9 +96,13 @@ export class RegistrationPageLayoutComponent {
   readonly addNoteFormVisible = signal(false);
   readonly actionMenuItems = computed<MenuItem[]>(() => [
     {
+      // We need to provide a label for this submenu header due to a PrimeNG bug.
+      // Without a label, PrimeNG adds unwanted whitespace in the menu rendering.
+      // See discussion: https://github.com/global-121/121-platform/pull/6541#discussion_r1975162183 on out github which also links to the bug in primeNG
+      label: $localize`:@@general:General`,
       items: [
         {
-          label: $localize`Add note`,
+          label: $localize`:@@add-note:Add note`,
           icon: 'pi pi-pen-to-square',
           command: () => {
             this.addNoteFormVisible.set(true);
@@ -113,7 +118,7 @@ export class RegistrationPageLayoutComponent {
       ],
     },
     {
-      label: $localize`Status Update`,
+      label: $localize`Status update`,
       items: [
         this.createContextItemForRegistrationStatusChange(
           RegistrationStatusEnum.validated,
@@ -221,8 +226,10 @@ export class RegistrationPageLayoutComponent {
     if (!registration) {
       return;
     }
-    const actionData =
-      this.paginateQueryService.getActionDataForRegistration(registration);
+    const actionData = this.paginateQueryService.singleItemToActionData({
+      item: registration,
+      fieldForFilter: GenericRegistrationAttributes.referenceId,
+    });
     this.sendMessageDialog().triggerAction(actionData);
   }
 
@@ -231,9 +238,10 @@ export class RegistrationPageLayoutComponent {
     if (!registration) {
       return;
     }
-    const actionData =
-      this.paginateQueryService.getActionDataForRegistration(registration);
-
+    const actionData = this.paginateQueryService.singleItemToActionData({
+      item: registration,
+      fieldForFilter: GenericRegistrationAttributes.referenceId,
+    });
     this.changeStatusDialog().triggerAction(actionData, status);
   }
 

@@ -23,6 +23,7 @@ import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/Registratio
 
 const projectId = 2;
 let registrationId: number;
+const statusUpdateLabel = 'Status update';
 
 test.beforeEach(async ({}) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -77,10 +78,12 @@ test('User should see actions in actions menu on registration page', async ({
   });
 
   await test.step(`Should show status update subheader in menu`, async () => {
-    const label = 'Status Update';
-    // Resorted to getByText as getByRole does not seems to work for menu items that are a subheader
-    const statusUpdateText = page.getByText(label, { exact: true });
-    await expect(statusUpdateText).toBeVisible();
+    // Resorted to locator as getByRole does not seems to work for menu items that are a subheader
+    const menu = page.locator('.p-menu-list');
+    const statusUpdateHeader = menu.locator(':scope > li', {
+      hasText: statusUpdateLabel,
+    });
+    await expect(statusUpdateHeader).toBeVisible();
   });
 });
 
@@ -154,9 +157,11 @@ test('User should only see actions the user has access too in actions menu on pr
   });
 
   await test.step(`Should not show 'Status Update' subheader in menu in non of the child items are enabled`, async () => {
-    const label = 'Status Update';
-    // Resorted to getByText as getByRole does not seems to work for menu items that are a subheader
-    const statusUpdateText = page.getByText(label, { exact: true });
-    await expect(statusUpdateText).not.toBeVisible();
+    // Resorted to locator as getByRole does not seems to work for menu items that are a subheader
+    const menu = page.locator('.p-menu-list');
+    const statusUpdateHeader = menu.locator(':scope > li', {
+      hasText: statusUpdateLabel,
+    });
+    await expect(statusUpdateHeader).not.toBeVisible();
   });
 });

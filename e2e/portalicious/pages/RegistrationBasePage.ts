@@ -31,6 +31,15 @@ abstract class RegistrationBasePage extends BasePage {
     await expect(this.duplicateChip).toBeVisible();
     await expect(this.duplicateChip).toContainText(status);
   }
+
+  async clickActionDropdown() {
+    await this.page.getByRole('button', { name: 'Actions' }).click();
+  }
+
+  async inititateAction(action: string) {
+    await this.clickActionDropdown();
+    await this.page.getByRole('menuitem', { name: action }).click();
+  }
 }
 
 export default RegistrationBasePage;

@@ -50,7 +50,7 @@ test('User can initiate registration status changes from registration page', asy
   for (const actionName of statusChangeActions) {
     await test.step('Navigate to registration', async () => {
       await activityLogPage.goto(
-        `/project/${projectId}/registrations/${registrationId}`, // TODO should we not hardcode the url here?
+        `/project/${projectId}/registrations/${registrationId}`,
       );
     });
 
@@ -87,7 +87,7 @@ test('User can open add note sidebar from action menu', async ({ page }) => {
     await activityLogPage.inititateAction(actionName);
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');
-    const sidebarDescription = page.getByTestId('add-note-sidebar-subtitle');
+    const sidebarDescription = page.getByText(/You are about to/);
     await expect(sidebarDescription).toBeVisible();
     await expect(sidebarDescription).toHaveText(
       `You are about to add a note to ${registrationPV5.fullName}'s profile. `,

@@ -110,8 +110,8 @@ class BasePage {
   }
 
   async goto(path: string) {
-    const defaulLanguage = 'en-GB';
-    path = `${defaulLanguage}${path}`;
+    const defaultLanguage = 'en-GB';
+    path = `${defaultLanguage}${path}`;
     await this.page.goto(path);
   }
 }

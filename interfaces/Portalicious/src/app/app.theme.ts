@@ -57,6 +57,7 @@ const AppTheme = definePreset(Aura, {
         text: {
           color: colors.black.DEFAULT,
           hoverColor: colors.purple.DEFAULT,
+          mutedColor: colors.grey[700],
         },
         highlight: {
           background: colors.purple[100],
