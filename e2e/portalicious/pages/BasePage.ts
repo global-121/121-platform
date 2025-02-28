@@ -14,6 +14,7 @@ class BasePage {
   readonly formError: Locator;
   readonly toast: Locator;
   readonly chooseFileButton: Locator;
+  readonly dialog: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -32,6 +33,7 @@ class BasePage {
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
+    this.dialog = this.page.getByRole('alertdialog');
   }
 
   async openSidebar() {
@@ -43,7 +45,9 @@ class BasePage {
     await this.sidebar.getByRole('link', { name: pageName }).click();
   }
 
-  async navigateToProgramPage(pageName: string) {
+  async navigateToProgramPage(
+    pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Team',
+  ) {
     await this.projectHeader.getByRole('tab', { name: pageName }).click();
   }
 

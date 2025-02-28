@@ -1540,6 +1540,33 @@
       <trans-unit id="9022161403115733621" datatype="html">
         <source>We do not share any personal information with other third-parties.</source>
       </trans-unit>
+      <trans-unit id="2203244086914052532" datatype="html">
+        <source>Loading duplicate information...</source>
+      </trans-unit>
+      <trans-unit id="2648503122381983554" datatype="html">
+        <source>Duplicated with:</source>
+      </trans-unit>
+      <trans-unit id="3358875394209155806" datatype="html">
+        <source>(matching fields: <x equiv-text="{{ translatableStringService.commaSeparatedList( duplicate.attributeNames ) }}" id="INTERPOLATION"/>)</source>
+      </trans-unit>
+      <trans-unit id="593137515549076612" datatype="html">
+        <source>(Scope - <x equiv-text="{{ duplicate.scope }}" id="INTERPOLATION"/>)</source>
+      </trans-unit>
+      <trans-unit id="7243344858982743222" datatype="html">
+        <source>To handle duplications you can edit the personal information or decline the registration.</source>
+      </trans-unit>
+      <trans-unit id="duplicate-status" datatype="html">
+        <source>Duplicates</source>
+      </trans-unit>
+      <trans-unit id="duplicate-status-duplicate" datatype="html">
+        <source>Duplicate</source>
+      </trans-unit>
+      <trans-unit id="duplicate-status-unique" datatype="html">
+        <source>Unique</source>
+      </trans-unit>
+      <trans-unit id="registration-duplicates" datatype="html">
+        <source>Duplicates</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

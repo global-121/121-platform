@@ -7,6 +7,8 @@ import * as XLSX from 'xlsx';
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
+import { expectedSortedArraysToEqual } from '../utils';
+
 const expectedColumnsSelectedRegistrationsExport = [
   'referenceId',
   'id',
@@ -504,6 +506,11 @@ class RegistrationsPage extends BasePage {
       undefined,
       validateExactRowCount,
     );
+  }
+
+  async assertDuplicateColumnValues(expectedValues: string[]) {
+    const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
+    expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
   }
 }
 
