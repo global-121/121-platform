@@ -914,7 +914,7 @@
         <source>I understand this action can not be undone.</source>
       </trans-unit>
       <trans-unit id="change-status-include-warning" datatype="html">
-        <source>The action &quot;Include&quot; can only be applied to registrations who’s “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
+        <source>The action &quot;Include&quot; can only be applied to registrations that do not have status &quot;Included&quot; and whose “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
       </trans-unit>
       <trans-unit id="276843485197819536" datatype="html">
         <source>Select registrations with the status “included” and try again.</source>
@@ -953,7 +953,7 @@
         <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status.</source>
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
-        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status. Registrations with the “Completed” status will remain with their current status.</source>
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
