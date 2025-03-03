@@ -41,14 +41,6 @@ async function setupNlrcEnvironment() {
 describe('Update attribute of PA', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
-    accessToken = await getAccessToken();
-
-    await importRegistrations(programIdOcw, [registrationVisa], accessToken);
-    await importRegistrations(programIdPv, [registrationPvScoped], accessToken);
-  });
-
   it('should not update unknown registration', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();

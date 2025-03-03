@@ -43,13 +43,9 @@ async function setupNlrcEnvironment() {
 describe('Update program financial servce provider configuration of PA', () => {
   let accessToken: string;
 
-  beforeEach(async () => {
-    accessToken = await setupNlrcEnvironment();
-  });
-
   it('should succeed when updating program financial servce provider configuration when all required properties of new FSP are already present', async () => {
     // Arrange
-    await setupNlrcEnvironment();
+    accessToken = await setupNlrcEnvironment();
 
     // Intersolve-visa and Intersolve-voucher-whatsapp both have whatsappPhoneNumber as required
     const newProgramFinancialServiceProviderConfigurationName =
@@ -78,7 +74,7 @@ describe('Update program financial servce provider configuration of PA', () => {
 
   it('should fail when updating program financial servce provider configuration when a required property of new FSP is not yet present', async () => {
     // Arrange
-    await setupNlrcEnvironment();
+    accessToken = await setupNlrcEnvironment();
 
     // Intersolve-voucher-whtatsapp does not have e.g. addressStreet which is required for Intersolve-visa
     const newProgramFinancialServiceProviderConfigurationName =
@@ -105,7 +101,7 @@ describe('Update program financial servce provider configuration of PA', () => {
 
   it('should succeed when updating program financial servce provider configuration when missing required properties of new FSP are passed along with the request', async () => {
     // Arrange
-    await setupNlrcEnvironment();
+    accessToken = await setupNlrcEnvironment();
 
     // Intersolve-voucher-whtatsapp does not have e.g. addressStreet which is required for Intersolve-visa
     // The missing attributes can be passed along (or can be updated first)
@@ -139,7 +135,7 @@ describe('Update program financial servce provider configuration of PA', () => {
 
   it('should fail when updating program financial servce provider configuration without right permission', async () => {
     // Arrange
-    await setupNlrcEnvironment();
+    accessToken = await setupNlrcEnvironment();
 
     await removePermissionsFromRole(DefaultUserRole.Admin, [
       PermissionEnum.RegistrationFspConfigUPDATE,
