@@ -1,6 +1,24 @@
 import { DOCUMENT } from '@angular/common';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { computed } from '@angular/core';
+
+export type LogicalPosition = 'end' | 'start';
+export type PhysicalPosition = 'left' | 'right';
+export type Direction = 'ltr' | 'rtl';
+
+const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
+  Direction,
+  Record<LogicalPosition, PhysicalPosition>
+> = {
+  ltr: {
+    start: 'left',
+    end: 'right',
+  },
+  rtl: {
+    start: 'right',
+    end: 'left',
+  },
+};
 
 @Injectable({
   providedIn: 'root',
@@ -29,15 +47,13 @@ export class RtlHelperService {
   }
 
   /**
-   * Creates a computed signal that flips directional values in RTL mode
+   * Creates a computed signal that converts a logical property to a physical property in RTL mode
+   * Ideally would be done in primeng, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
    */
-  createPosition(defaultValue: 'left' | 'right') {
+  createPosition(logicalValue: LogicalPosition): Signal<PhysicalPosition> {
     return computed(() => {
-      if (!this.isRtl()) {
-        return defaultValue;
-      }
-
-      return defaultValue === 'left' ? 'right' : 'left';
+      const direction = this.isRtl() ? 'rtl' : 'ltr';
+      return LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[direction][logicalValue];
     });
   }
 }
