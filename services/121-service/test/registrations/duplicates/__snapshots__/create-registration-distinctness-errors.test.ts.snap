@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unsuccessfully mark registrations a distinct from each other should fail to create an ignored duplicate registration pair for more that 10 registrations 1`] = `
+[
+  {
+    "children": [],
+    "constraints": {
+      "arrayMaxSize": "registrationIds must contain no more than 10 elements",
+    },
+    "property": "registrationIds",
+    "target": {
+      "reason": "default reason",
+      "registrationIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+      ],
+    },
+    "value": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+    ],
+  },
+]
+`;
+
+exports[`Unsuccessfully mark registrations a distinct from each other should fail to create an ignored duplicate registration pair for one registration 1`] = `
+[
+  {
+    "children": [],
+    "constraints": {
+      "arrayMinSize": "registrationIds must contain at least 2 elements",
+    },
+    "property": "registrationIds",
+    "target": {
+      "reason": "default reason",
+      "registrationIds": [
+        2,
+      ],
+    },
+    "value": [
+      2,
+    ],
+  },
+]
+`;
+
+exports[`Unsuccessfully mark registrations a distinct from each other should fail to create an ignored duplicate registration pair if a registration id does not exist 1`] = `"Not all registrations were found in program 2. Expected 2 but found 1. Missing registraitonIds: 200"`;
