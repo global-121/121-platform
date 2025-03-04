@@ -4,7 +4,9 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { patchProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
+  createRegistrationDistinctness,
   getDuplicates,
+  getRegistrationIdByReferenceId,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -293,6 +295,92 @@ describe('Get duplicate status of registrations', () => {
       scope: '',
       attributeNames: ['phoneNumber'],
       name: registration3.fullName,
+      isInScope: true,
+    });
+  });
+
+  it(`should not find duplicates if the duplicate registrations are ignored`, async () => {
+    const registration1 = { ...registrationPV5 };
+    const registration2 = { ...registrationPV6 };
+    const registration3 = { ...registrationPV7 };
+
+    registration1.phoneNumber = '1234567890';
+    registration2.phoneNumber = '1234567890';
+    registration3.phoneNumber = '1234567890';
+    registration1.whatsappPhoneNumber = '1234567890';
+    registration2.whatsappPhoneNumber = '1234567890';
+    registration3.whatsappPhoneNumber = '1234567890';
+    await importRegistrations(
+      programId,
+      [registration1, registration2, registration3],
+      accessToken,
+    );
+    const registrationId1 = await getRegistrationIdByReferenceId({
+      referenceId: registration1.referenceId,
+      programId,
+      accessToken,
+    });
+    const registrationId2 = await getRegistrationIdByReferenceId({
+      referenceId: registration2.referenceId,
+      programId,
+      accessToken,
+    });
+    const registrationId3 = await getRegistrationIdByReferenceId({
+      referenceId: registration3.referenceId,
+      programId,
+      accessToken,
+    });
+
+    await createRegistrationDistinctness({
+      programId,
+      accessToken,
+      registrationIds: [registrationId1, registrationId2],
+    });
+    await createRegistrationDistinctness({
+      programId,
+      accessToken,
+      registrationIds: [registrationId1, registrationId3],
+    });
+
+    // Registration 1 is ignored with registration 2 and 3 so it should not have any duplicates
+    const result = await getDuplicates({
+      programId,
+      accessToken,
+      referenceId: registration1.referenceId,
+    });
+    const duplicates = result.body;
+    expect(duplicates.length).toBe(0);
+    await getAccessToken();
+
+    // Registration 2 is ignored with registration 1 so it should only have duplicate with registration 3
+    const result2 = await getDuplicates({
+      programId,
+      accessToken,
+      referenceId: registration2.referenceId,
+    });
+    const duplicates2 = result2.body;
+    expect(duplicates2.length).toBe(1);
+    expect(duplicates2[0]).toMatchObject({
+      registrationProgramId: expect.any(Number),
+      scope: '',
+      attributeNames: ['phoneNumber', 'whatsappPhoneNumber'],
+      name: registration3.fullName,
+      isInScope: true,
+    });
+
+    // Registration 3 is ignored with registration 1 so it should only have duplicate with registration 2
+    const result3 = await getDuplicates({
+      programId,
+      accessToken,
+      referenceId: registration3.referenceId,
+    });
+    const duplicates3 = result3.body;
+    expect(duplicates3.length).toBe(1);
+    expect(duplicates3[0]).toMatchObject({
+      registrationProgramId: expect.any(Number),
+      scope: '',
+      attributeNames: ['phoneNumber', 'whatsappPhoneNumber'],
+      name: registration2.fullName,
       isInScope: true,
     });
   });
