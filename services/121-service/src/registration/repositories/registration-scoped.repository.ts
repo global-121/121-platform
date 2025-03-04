@@ -230,6 +230,14 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere('attribute."duplicateCheck" = true')
       .andWhere('duplicate."programId" = :programId', { programId })
       .andWhere(`"attributeData1"."value" != ''`)
+      .andWhere(
+        'NOT EXISTS (' +
+          'SELECT 1 ' +
+          'FROM "121-service".ignored_duplicate_registration_pair rup ' +
+          'WHERE rup."smallerRegistrationId" = LEAST("attributeData1"."registrationId", "attributeData2"."registrationId") ' +
+          'AND rup."largerRegistrationId" = GREATEST("attributeData1"."registrationId", "attributeData2"."registrationId")' +
+          ')',
+      )
       .orderBy('"attributeData1"."programRegistrationAttributeId"', 'ASC')
       .limit(maxDuplicates)
       .getRawMany();

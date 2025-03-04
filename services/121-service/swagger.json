@@ -746,6 +746,13 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/ignored-duplicate-registration-pairs",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/referenceid/{paId}",
     "params": [

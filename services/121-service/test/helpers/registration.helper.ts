@@ -617,3 +617,37 @@ export async function getDuplicates({
     .set('Cookie', [accessToken])
     .send();
 }
+
+export async function ignoreDuplicates({
+  programId,
+  referenceId1,
+  referenceId2,
+  accessToken,
+  reason = 'default reason',
+}: {
+  programId: number;
+  referenceId1: string;
+  referenceId2: string;
+  accessToken: string;
+  reason?: string;
+}): Promise<any> {
+  return getServer()
+    .post(`/programs/${programId}/ignored-duplicate-registration-pairs`)
+    .set('Cookie', [accessToken])
+    .send({ referenceId1, referenceId2, reason });
+}
+
+export async function getActivities({
+  programId,
+  registrationId,
+  accessToken,
+}: {
+  programId: number;
+  registrationId: number;
+  accessToken: string;
+}): Promise<any> {
+  return getServer()
+    .get(`/programs/${programId}/registrations/${registrationId}/activities`)
+    .set('Cookie', [accessToken])
+    .send();
+}

@@ -6,6 +6,7 @@ import { patchProgramRegistrationAttribute } from '@121-service/test/helpers/pro
 import {
   awaitChangeRegistrationStatus,
   getRegistrations,
+  ignoreDuplicates,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -17,6 +18,7 @@ import {
   registrationOCW1,
   registrationPV5,
   registrationPV6,
+  registrationPV7,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 2;
@@ -226,5 +228,66 @@ describe('Get duplicate status of registrations', () => {
     const registrations2 = result2.body.data;
     expect(registrations2.length).toBe(1);
     expect(registrations2[0].duplicateStatus).toBe(DuplicateStatus.unique);
+  });
+
+  it(`should mark registrations as ${DuplicateStatus.unique} if the duplicate registrations are ignored`, async () => {
+    const registration1 = { ...registrationPV5 };
+    const registration2 = { ...registrationPV6 };
+    const registration3 = { ...registrationPV7 };
+
+    // Give all registrations the same phone numbers to make them duplicates
+    registration1.phoneNumber = '1234567890';
+    registration2.phoneNumber = '1234567890';
+    registration3.phoneNumber = '1234567890';
+    registration1.whatsappPhoneNumber = '1234567890';
+    registration2.whatsappPhoneNumber = '1234567890';
+    registration3.whatsappPhoneNumber = '1234567890';
+
+    await importRegistrations(
+      programId,
+      [registration1, registration2, registration3],
+      accessToken,
+    );
+
+    await ignoreDuplicates({
+      programId,
+      accessToken,
+      referenceId1: registration1.referenceId,
+      referenceId2: registration2.referenceId,
+    });
+    await ignoreDuplicates({
+      programId,
+      accessToken,
+      referenceId1: registration1.referenceId,
+      referenceId2: registration3.referenceId,
+    });
+
+    // Registration1 should be unique as all its duplicates are ignored
+    // Registration2 should be duplicate as it is still duplicate with registration3
+    // Registration3 should be duplicate as it is still duplicate with registration2
+    const result = await getRegistrations({
+      programId,
+      accessToken,
+      attributes: ['referenceId', 'duplicateStatus'],
+    });
+    const resultRegistrations = result.body.data;
+
+    expect(
+      resultRegistrations.find(
+        (r) => r.referenceId === registration1.referenceId,
+      ).duplicateStatus,
+    ).toBe(DuplicateStatus.unique);
+
+    expect(
+      resultRegistrations.find(
+        (r) => r.referenceId === registration2.referenceId,
+      ).duplicateStatus,
+    ).toBe(DuplicateStatus.duplicate);
+
+    expect(
+      resultRegistrations.find(
+        (r) => r.referenceId === registration3.referenceId,
+      ).duplicateStatus,
+    ).toBe(DuplicateStatus.duplicate);
   });
 });

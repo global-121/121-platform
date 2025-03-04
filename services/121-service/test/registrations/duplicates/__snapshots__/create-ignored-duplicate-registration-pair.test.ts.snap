@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Get duplicate status of registrations should fail to create an ignored duplicate registration pair for itself 1`] = `"ReferenceIds are the same"`;
+
+exports[`Get duplicate status of registrations should fail to create an ignored duplicate registration pair if the pair already exists 1`] = `"This registration pair is already ignored"`;
+
+exports[`Get duplicate status of registrations should fail to create an ignored duplicate registration pair if the pair already exists 2`] = `"This registration pair is already ignored"`;

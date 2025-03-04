@@ -50,6 +50,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { IgnoredDuplicateRegistrationPairRepository } from '@121-service/src/registration/repositories/ignored-duplicate-registration-pairs.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
@@ -86,6 +87,7 @@ export class RegistrationsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
+    private readonly ignoredDuplicateRegistrationPairRepository: IgnoredDuplicateRegistrationPairRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -954,6 +956,59 @@ export class RegistrationsService {
         name: registration?.name,
         isInScope: registration !== undefined,
       };
+    });
+  }
+
+  public async createIgnoredDuplicateRegistrationPair({
+    referenceId1,
+    referenceId2,
+    programId,
+    reason,
+  }: {
+    referenceId1: string;
+    referenceId2: string;
+    programId: number;
+    reason: string;
+  }): Promise<void> {
+    if (referenceId1 === referenceId2) {
+      const error = `ReferenceIds are the same`;
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+    const registration1 = await this.getRegistrationOrThrow({
+      referenceId: referenceId1,
+      programId,
+    });
+    const registration2 = await this.getRegistrationOrThrow({
+      referenceId: referenceId2,
+      programId,
+    });
+    const smallerRegistrationId = Math.min(registration1.id, registration2.id);
+    const largerRegistrationId = Math.max(registration1.id, registration2.id);
+    const existingIgnoredPair =
+      await this.ignoredDuplicateRegistrationPairRepository.findOne({
+        where: {
+          smallerRegistrationId: Equal(smallerRegistrationId),
+          largerRegistrationId: Equal(largerRegistrationId),
+        },
+      });
+    if (existingIgnoredPair) {
+      const error = `This registration pair is already ignored`;
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+    await this.ignoredDuplicateRegistrationPairRepository.store({
+      smallerRegistrationId,
+      largerRegistrationId,
+    });
+    await this.eventsService.createForIgnoredDuplicateRegistrationPair({
+      registration1: {
+        id: registration1.id,
+        registrationProgramId: registration1.registrationProgramId,
+      },
+      registration2: {
+        id: registration2.id,
+        registrationProgramId: registration2.registrationProgramId,
+      },
+      reason,
     });
   }
 

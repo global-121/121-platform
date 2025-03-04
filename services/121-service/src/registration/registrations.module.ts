@@ -28,8 +28,10 @@ import { RegistrationUtilsModule } from '@121-service/src/registration/modules/r
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { IgnoredDuplicateRegistrationPairEntity } from '@121-service/src/registration/registration-ignore-duplicate.entity';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import { IgnoredDuplicateRegistrationPairRepository } from '@121-service/src/registration/repositories/ignored-duplicate-registration-pairs.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
@@ -55,6 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
       ProgramRegistrationAttributeEntity,
+      IgnoredDuplicateRegistrationPairEntity,
     ]),
     UserModule,
     HttpModule,
@@ -90,6 +93,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
     createScopedRepositoryProvider(EventEntity),
+    IgnoredDuplicateRegistrationPairRepository,
   ],
   controllers: [RegistrationsController],
   exports: [

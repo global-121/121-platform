@@ -46,6 +46,7 @@ import {
 import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
+import { IgnoredDuplicateRegistrationPairDto } from '@121-service/src/registration/dto/ignored-duplicate-registration-pair.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
@@ -681,6 +682,30 @@ export class RegistrationsController {
     return await this.registrationsService.getDuplicates(
       referenceId,
       programId,
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: 'Add pairs of registrations to ignore for duplicate checks',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Customer data sent',
+  })
+  @Post('programs/:programId/ignored-duplicate-registration-pairs')
+  public async createIgnoredDuplicateRegistrationPair(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Body() body: IgnoredDuplicateRegistrationPairDto,
+  ): Promise<void> {
+    return await this.registrationsService.createIgnoredDuplicateRegistrationPair(
+      {
+        referenceId1: body.referenceId1,
+        referenceId2: body.referenceId2,
+        programId,
+        reason: body.reason,
+      },
     );
   }
 

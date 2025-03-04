@@ -120,7 +120,14 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
               'd1."programRegistrationAttributeId" = pra.id',
             )
             .andWhere("d1.value != ''")
-            .andWhere('pra."duplicateCheck" = true'),
+            .andWhere('pra."duplicateCheck" = true').andWhere(`
+              NOT EXISTS (
+                SELECT 1
+                FROM "121-service".ignored_duplicate_registration_pair rup
+                WHERE rup."smallerRegistrationId" = LEAST(d1."registrationId", d2."registrationId")
+                  AND rup."largerRegistrationId" = GREATEST(d1."registrationId", d2."registrationId")
+              )
+            `),
         'dup',
         'registration.id = dup."registrationId"',
       ),
