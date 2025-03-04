@@ -88,6 +88,10 @@ To update snapshots, amend the `-- -u` option, for example:
 
     docker exec 121-service  npm run test:integration:all -- -u
 
+If you want all the color output Jest can give set the
+[`FORCE_COLOR`](https://force-color.org/) environment variable to `true` in your
+local development environment via the [`services/.env`](../.env.example)-file.
+
 ### Debugging
 
 To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Docker Desktop)
