@@ -34,6 +34,7 @@ jobs:
           envContentSecurityPolicy: >-
             connect-src 'self' https://drc.121.global https://westeurope-5.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com;
             form-action https://drc.121.global;
+            frame-src 'self' https://app.powerbi.com;
         env:
           NG_ENV_NAME: 'DRC'
           NG_LOCALES: ${{ vars.NG_LOCALES }}
