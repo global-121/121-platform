@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOneOptions, Repository } from 'typeorm';
+import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
@@ -50,6 +50,7 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { DistinctRegistrationPairRepository } from '@121-service/src/registration/repositories/distinct-registration-pair.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
@@ -86,6 +87,7 @@ export class RegistrationsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
+    private readonly distinctRegistrationPairRepository: DistinctRegistrationPairRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -954,6 +956,112 @@ export class RegistrationsService {
         name: registration?.name,
         isInScope: registration !== undefined,
       };
+    });
+  }
+
+  public async createRegistrationDistinctPairs({
+    regisrationIds,
+    programId,
+    reason,
+  }: {
+    regisrationIds: number[];
+    programId: number;
+    reason: string;
+  }): Promise<void> {
+    const uniqueIds = new Set(regisrationIds);
+    if (uniqueIds.size !== regisrationIds.length) {
+      // Find the duplicate IDs
+      const duplicateIds = regisrationIds.filter(
+        (id, index) => regisrationIds.indexOf(id) !== index,
+      );
+
+      const error = `Duplicate registrationIds found in input: ${duplicateIds.join(', ')}`;
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+
+    const registrations = await this.registrationScopedRepository.find({
+      where: {
+        id: In(regisrationIds),
+        programId: Equal(programId),
+      },
+      select: ['id'],
+    });
+
+    if (registrations.length !== regisrationIds.length) {
+      const foundIds = registrations.map((reg) => reg.id);
+      const missingIds = regisrationIds.filter((id) => !foundIds.includes(id));
+
+      const error = `Not all registrations were found in program ${programId}. Expected ${regisrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+    // Generate all possible pairs of registration IDs
+    //  and mark each pair as distinct from each other
+    for (let i = 0; i < registrations.length; i++) {
+      for (let j = i + 1; j < registrations.length; j++) {
+        const registration1Id = registrations[i].id;
+        const registration2Id = registrations[j].id;
+        await this.createRegistrationDistinctPair({
+          registration1Id,
+          registration2Id,
+          reason,
+        });
+      }
+    }
+  }
+
+  private async createRegistrationDistinctPair({
+    registration1Id,
+    registration2Id,
+    reason,
+  }: {
+    registration1Id: number;
+    registration2Id: number;
+    reason: string;
+  }): Promise<void> {
+    // Sort the IDs to ensure consistency when storing pairs
+    const smallerRegistrationId = Math.min(registration1Id, registration2Id);
+    const largerRegistrationId = Math.max(registration1Id, registration2Id);
+
+    // Check if this pair already exists
+    const existingDistinctPair =
+      await this.distinctRegistrationPairRepository.findOne({
+        where: {
+          smallerRegistrationId: Equal(smallerRegistrationId),
+          largerRegistrationId: Equal(largerRegistrationId),
+        },
+      });
+
+    // If the pair already exists, do nothing (no need to create a new event or throw an error)
+    if (existingDistinctPair) {
+      return;
+    }
+
+    await this.distinctRegistrationPairRepository.store({
+      smallerRegistrationId,
+      largerRegistrationId,
+    });
+
+    // Get registration details for the event
+    const [registration1, registration2] = await Promise.all([
+      this.registrationScopedRepository.findOneOrFail({
+        where: { id: Equal(smallerRegistrationId) },
+      }),
+      this.registrationScopedRepository.findOneOrFail({
+        where: { id: Equal(largerRegistrationId) },
+      }),
+    ]);
+
+    // Create event
+    await this.eventsService.createForDistinctRegistrationPair({
+      registration1: {
+        id: registration1.id,
+        registrationProgramId: registration1.registrationProgramId,
+      },
+      registration2: {
+        id: registration2.id,
+        registrationProgramId: registration2.registrationProgramId,
+      },
+      reason,
     });
   }
 
