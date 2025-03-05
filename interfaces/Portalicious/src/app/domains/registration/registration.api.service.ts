@@ -170,7 +170,7 @@ export class RegistrationApiService extends DomainApiService {
     messageData?: SendMessageData | undefined;
     dryRun: boolean;
   }) {
-    let body: RegistrationStatusPatchDto = {
+    let body: Dto<RegistrationStatusPatchDto> = {
       status,
       reason,
     };
