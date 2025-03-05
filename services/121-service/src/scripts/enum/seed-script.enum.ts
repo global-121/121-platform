@@ -1,3 +1,5 @@
+// Seed scripts should be per FSP
+// except for the (NLRC one we left for debugging and because it's used in a lot of tests, and test-multiple which is used to test multiple program attributes and programs).
 export enum SeedScript {
   productionInitialState = 'production-initial-state',
   testMultiple = 'test-multiple',
