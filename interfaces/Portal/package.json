@@ -48,7 +48,7 @@
     "@azure/msal-angular": "^4.0.5",
     "@azure/msal-browser": "^4.5.1",
     "@ionic/angular": "^7.8.6",
-    "@microsoft/applicationinsights-web": "^3.3.4",
+    "@microsoft/applicationinsights-web": "^3.3.6",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@swimlane/ngx-datatable": "^20.1.0",
