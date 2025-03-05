@@ -1579,6 +1579,10 @@
       <trans-unit id="general" datatype="html">
         <source>General</source>
       </trans-unit>
+      <trans-unit id="login-image-credit" datatype="html">
+        <source>Image credit: ZOA International</source>
+        <note priority="1" from="description">Login-page background image credit</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

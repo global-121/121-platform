@@ -35,17 +35,25 @@
       <app-language-switcher />
     </div>
     <div class="relative md:grow">
-      <img
-        ngSrc="assets/login.jpeg"
-        fill
-        priority
-        alt=""
-        aria-hidden="true"
-        role="presentation"
-        class="hidden object-cover md:block"
-      />
+      <figure class="hidden md:block">
+        <img
+          ngSrc="assets/login.jpeg"
+          fill
+          priority
+          alt=""
+          aria-hidden="true"
+          role="presentation"
+          class="object-cover"
+        />
+        <figcaption
+          i18n="Login-page background image credit@@login-image-credit"
+          class="absolute bottom-0 end-0 me-4 text-end text-xs text-grey-50"
+        >
+          Image credit: ZOA International
+        </figcaption>
+      </figure>
       <div
-        class="rounded-lg bg-grey-100 p-4 md:absolute md:bottom-0 md:left-0 md:right-0 md:m-4"
+        class="rounded-lg bg-grey-100 p-4 md:absolute md:inset-x-0 md:bottom-0 md:m-4"
       >
         <app-cookie-banner />
       </div>
