@@ -77,7 +77,7 @@ export class ImageCodeService {
     } else {
       throw new HttpException(
         'Twilio is not able to retrieve voucher',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.NOT_FOUND,
       );
     }
   }
