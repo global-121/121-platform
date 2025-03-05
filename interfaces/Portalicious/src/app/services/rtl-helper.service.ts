@@ -20,12 +20,27 @@ const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   },
 };
 
+const LTR_VALUE_TO_RTL_VALUE_MAP: Record<
+  Direction,
+  Record<PhysicalPosition, PhysicalPosition>
+> = {
+  ltr: {
+    left: 'left',
+    right: 'right',
+  },
+  rtl: {
+    left: 'right',
+    right: 'left',
+  },
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class RtlHelperService {
   private readonly document = inject(DOCUMENT);
   readonly isRtl = signal(this.document.documentElement.dir === 'rtl');
+  readonly direction = computed(() => (this.isRtl() ? 'rtl' : 'ltr'));
 
   constructor() {
     // Set up a MutationObserver to watch for changes to the dir attribute
@@ -51,9 +66,19 @@ export class RtlHelperService {
    * Ideally would be done in primeng, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
    */
   createPosition(logicalValue: LogicalPosition): Signal<PhysicalPosition> {
-    return computed(() => {
-      const direction = this.isRtl() ? 'rtl' : 'ltr';
-      return LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[direction][logicalValue];
-    });
+    return computed(
+      () => LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][logicalValue],
+    );
+  }
+
+  createRtlFriendlyChevronIcon(
+    chevronDirection: PhysicalPosition,
+  ): Signal<string> {
+    return computed(
+      () =>
+        `pi pi-chevron-${
+          LTR_VALUE_TO_RTL_VALUE_MAP[this.direction()][chevronDirection]
+        }`,
+    );
   }
 }

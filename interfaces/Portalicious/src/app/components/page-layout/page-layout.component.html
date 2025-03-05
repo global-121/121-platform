@@ -41,11 +41,10 @@
                   <span class="font-normal">{{ parentTitle }}</span>
                 }
                 <i
-                  class="pi mx-2 text-sm"
-                  [ngClass]="{
-                    'pi-chevron-right': !rtlHelper.isRtl(),
-                    'pi-chevron-left': rtlHelper.isRtl(),
-                  }"
+                  [class]="
+                    'mx-2 text-sm ' +
+                    rtlHelper.createRtlFriendlyChevronIcon('right')()
+                  "
                 ></i>
                 {{ pageTitle() }}
               </span>
