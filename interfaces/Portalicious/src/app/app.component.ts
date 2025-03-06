@@ -9,11 +9,12 @@ import { Router, RouterOutlet } from '@angular/router';
 
 import KonamiCode from 'konami-code-js';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { ToastModule, ToastPositionType } from 'primeng/toast';
 import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -26,11 +27,15 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
+  readonly rtlHelper = inject(RtlHelperService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   private authSubscriptions: Subscription[] = [];
-  toastKey = ToastService.TOAST_KEY;
+
+  readonly toastKey = ToastService.TOAST_KEY;
+  readonly toastPosition = ('top-' +
+    this.rtlHelper.createPosition('end')()) as ToastPositionType;
 
   ngOnInit() {
     this.authSubscriptions = this.authService.initializeSubscriptions();
