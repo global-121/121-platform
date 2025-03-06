@@ -5,6 +5,7 @@ import { computed } from '@angular/core';
 export type LogicalPosition = 'end' | 'start';
 export type PhysicalPosition = 'left' | 'right';
 export type Direction = 'ltr' | 'rtl';
+export type ReadingDirection = 'backward' | 'forward';
 
 const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   Direction,
@@ -20,17 +21,17 @@ const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   },
 };
 
-const LTR_VALUE_TO_RTL_VALUE_MAP: Record<
+const READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   Direction,
-  Record<PhysicalPosition, PhysicalPosition>
+  Record<ReadingDirection, PhysicalPosition>
 > = {
   ltr: {
-    left: 'left',
-    right: 'right',
+    backward: 'left',
+    forward: 'right',
   },
   rtl: {
-    left: 'right',
-    right: 'left',
+    backward: 'right',
+    forward: 'left',
   },
 };
 
@@ -72,12 +73,14 @@ export class RtlHelperService {
   }
 
   createRtlFriendlyChevronIcon(
-    chevronDirection: PhysicalPosition,
+    chevronDirection: ReadingDirection,
   ): Signal<string> {
     return computed(
       () =>
         `pi pi-chevron-${
-          LTR_VALUE_TO_RTL_VALUE_MAP[this.direction()][chevronDirection]
+          READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][
+            chevronDirection
+          ]
         }`,
     );
   }

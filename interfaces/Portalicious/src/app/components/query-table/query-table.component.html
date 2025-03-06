@@ -83,7 +83,7 @@
             [icon]="
               areAllRowsExpanded()
                 ? 'pi pi-chevron-down'
-                : rtlHelper.createRtlFriendlyChevronIcon('right')()
+                : rtlHelper.createRtlFriendlyChevronIcon('forward')()
             "
             (click)="areAllRowsExpanded() ? collapseAll() : expandAll()"
           />
@@ -194,7 +194,7 @@
             [icon]="
               expanded
                 ? 'pi pi-chevron-down'
-                : rtlHelper.createRtlFriendlyChevronIcon('right')()
+                : rtlHelper.createRtlFriendlyChevronIcon('forward')()
             "
           />
         </td>
