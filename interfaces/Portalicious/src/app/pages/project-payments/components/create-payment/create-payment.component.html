@@ -67,7 +67,7 @@
         <div data-testid="create-payment-excel-fsp-instructions">
           @if (paymentHasExcelFsp()) {
             <p i18n>Review payment summary and follow the next steps:</p>
-            <ol class="mt-2 list-decimal pl-6">
+            <ol class="mt-2 list-decimal ps-6">
               <li i18n>
                 Click start payment, this will direct you to the payment page.
               </li>
@@ -133,7 +133,7 @@
         }
         <span
           i18n
-          class="absolute left-1/2 -translate-x-1/2"
+          class="absolute start-1/2 -translate-x-1/2"
           >Step {{ currentStep() }} of {{ totalSteps }}</span
         >
         <p-button
