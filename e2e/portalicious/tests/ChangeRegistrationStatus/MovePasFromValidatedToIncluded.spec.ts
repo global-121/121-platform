@@ -53,10 +53,6 @@ test('[31209] Move PA(s) from status "Validated" to "Included"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  if (!basePage || !registrations || !tableComponent) {
-    throw new Error('pages and components not found');
-  }
-
   await test.step('Change status of all registrations to "Validated"', async () => {
     await changeBulkRegistrationStatus({
       programId: 2,
