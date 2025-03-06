@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -35,7 +34,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
     SkeletonModule,
     RouterLink,
     RegistrationLookupMenuComponent,
-    NgClass,
   ],
   templateUrl: './page-layout.component.html',
   styles: ``,

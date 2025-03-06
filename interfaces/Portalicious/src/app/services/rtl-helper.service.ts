@@ -5,6 +5,7 @@ import { computed } from '@angular/core';
 export type LogicalPosition = 'end' | 'start';
 export type PhysicalPosition = 'left' | 'right';
 export type Direction = 'ltr' | 'rtl';
+export type ReadingDirection = 'backward' | 'forward';
 
 const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   Direction,
@@ -20,12 +21,27 @@ const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   },
 };
 
+const READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
+  Direction,
+  Record<ReadingDirection, PhysicalPosition>
+> = {
+  ltr: {
+    backward: 'left',
+    forward: 'right',
+  },
+  rtl: {
+    backward: 'right',
+    forward: 'left',
+  },
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class RtlHelperService {
   private readonly document = inject(DOCUMENT);
   readonly isRtl = signal(this.document.documentElement.dir === 'rtl');
+  readonly direction = computed(() => (this.isRtl() ? 'rtl' : 'ltr'));
 
   constructor() {
     // Set up a MutationObserver to watch for changes to the dir attribute
@@ -51,9 +67,21 @@ export class RtlHelperService {
    * Ideally would be done in primeng, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
    */
   createPosition(logicalValue: LogicalPosition): Signal<PhysicalPosition> {
-    return computed(() => {
-      const direction = this.isRtl() ? 'rtl' : 'ltr';
-      return LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[direction][logicalValue];
-    });
+    return computed(
+      () => LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][logicalValue],
+    );
+  }
+
+  createRtlFriendlyChevronIcon(
+    chevronDirection: ReadingDirection,
+  ): Signal<string> {
+    return computed(
+      () =>
+        `pi pi-chevron-${
+          READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][
+            chevronDirection
+          ]
+        }`,
+    );
   }
 }
