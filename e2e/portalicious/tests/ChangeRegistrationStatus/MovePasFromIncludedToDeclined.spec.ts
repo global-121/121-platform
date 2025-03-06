@@ -23,7 +23,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 const toastMessage =
-  'The status of 1 registration(s) is being changed to "Paused" successfully. The status change can take up to a minute to process.';
+  'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -44,7 +44,7 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram(projectTitle);
 });
 
-test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
+test('[31213] Move PA(s) from status "Included" to "Declined"', async ({
   page,
 }) => {
   const accessToken = await getAccessToken();
@@ -52,7 +52,7 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  await test.step('Change registrations status in bulk via API', async () => {
+  await test.step('Change status of all registrations to "Included"', async () => {
     await changeBulkRegistrationStatus({
       programId: 2,
       status: RegistrationStatusEnum.included,
@@ -60,23 +60,23 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
     });
   });
 
-  await test.step('Change status of first selected registration to "Paused"', async () => {
+  await test.step('Change status of first selected registration to "Declined"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
-      status: 'Pause',
+      status: 'Decline',
     });
     await basePage.validateToastMessage(toastMessage);
   });
 
-  await test.step('Search for the registration with status "Paused"', async () => {
+  await test.step('Search for the registration with status "Declined"', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
-      selection: 'Paused',
+      selection: 'Declined',
     });
   });
 
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
-      status: 'Paused',
+      status: 'Declined',
     });
   });
 });
