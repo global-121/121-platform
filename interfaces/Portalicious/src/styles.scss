@@ -82,7 +82,7 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply py-2 font-semibold text-black txt-body-m #{!important};
+      @apply py-2 text-start font-semibold text-black txt-body-m #{!important};
     }
 
     &.mention-active {
