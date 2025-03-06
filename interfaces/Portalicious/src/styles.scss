@@ -128,10 +128,10 @@ svg-icon svg {
 
   .p-buttongroup {
     p-button:not(:first-child) .p-button-rounded {
-      @apply pl-4;
+      @apply ps-4;
     }
     p-button:not(:last-child) .p-button-rounded {
-      @apply pr-4;
+      @apply pe-4;
     }
   }
 
@@ -139,7 +139,7 @@ svg-icon svg {
     @apply text-black;
 
     .p-card-title {
-      @apply pb-2 pl-2 font-bold text-black txt-h-2;
+      @apply pb-2 ps-2 font-bold text-black txt-h-2;
     }
   }
 
@@ -147,7 +147,7 @@ svg-icon svg {
     color: inherit;
 
     .p-drawer-header {
-      @apply pl-3;
+      @apply ps-3;
       height: calc($toolbar-height - 2px);
 
       .p-drawer-icon {
