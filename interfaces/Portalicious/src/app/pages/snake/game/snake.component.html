@@ -2,10 +2,11 @@
   header="Game over!"
   i18n-header
   [modal]="true"
-  [dismissableMask]="true"
+  [dismissableMask]="false"
   [closeOnEscape]="false"
   [(visible)]="isGameOver"
   [closable]="false"
+  [draggable]="false"
 >
   <b
     i18n
@@ -25,10 +26,11 @@
   header="Let's start!"
   i18n-header
   [modal]="true"
-  [dismissableMask]="true"
+  [dismissableMask]="false"
   [closeOnEscape]="false"
   [visible]="!isGameStarted()"
   [closable]="false"
+  [draggable]="false"
 >
   <b
     i18n
