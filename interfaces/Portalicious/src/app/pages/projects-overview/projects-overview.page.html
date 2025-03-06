@@ -10,6 +10,7 @@
         outlined
         rounded
         icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
         (click)="formVisible.set(true)"
       />
       <app-create-project-form [(formVisible)]="formVisible" />
