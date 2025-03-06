@@ -556,9 +556,6 @@
       <trans-unit id="3573847364103936169" datatype="html">
         <source>Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature-(non-smart-)phone.</source>
       </trans-unit>
-      <trans-unit id="3273287482679757457" datatype="html">
-        <source>Use @ to add personalized fields.</source>
-      </trans-unit>
       <trans-unit id="819996403327805209" datatype="html">
         <source>Learn more</source>
       </trans-unit>
@@ -1243,14 +1240,8 @@
       <trans-unit id="1485624035618673724" datatype="html">
         <source>Import reconciliation data</source>
       </trans-unit>
-      <trans-unit id="2648122632166597138" datatype="html">
-        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadReconciliationTemplatesMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
-      </trans-unit>
       <trans-unit id="2795059376397351120" datatype="html">
         <source>Registration Status</source>
-      </trans-unit>
-      <trans-unit id="4747436386182159575" datatype="html">
-        <source>The status column in the file should contain one of the following values:</source>
       </trans-unit>
       <trans-unit id="495282157937447440" datatype="html">
         <source>Make sure to upload the correct file as this will override the current file.</source>
@@ -1277,7 +1268,7 @@
         <source>Payment status chart.</source>
       </trans-unit>
       <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://new.manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-external-link ml-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://new.manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link ms-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -1582,6 +1573,18 @@
       <trans-unit id="login-image-credit" datatype="html">
         <source>Image credit: ZOA International</source>
         <note priority="1" from="description">Login-page background image credit</note>
+      </trans-unit>
+      <trans-unit id="1335073692428599115" datatype="html">
+        <source>Download the template</source>
+      </trans-unit>
+      <trans-unit id="3195834407708667843" datatype="html">
+        <source>The status column in the file should contain one of the following values:</source>
+      </trans-unit>
+      <trans-unit id="4782986825591367550" datatype="html">
+        <source>Use <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>@<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/> to add personalized fields.</source>
+      </trans-unit>
+      <trans-unit id="8618812090050599119" datatype="html">
+        <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment.</source>
       </trans-unit>
     </body>
   </file>
