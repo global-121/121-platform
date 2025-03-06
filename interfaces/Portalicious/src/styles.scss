@@ -23,10 +23,10 @@ body {
 // Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
 [class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
     .p-toast-top-left
-  ):not(.p-tooltip-left):not(.pi-chevron-left),
+  ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
 [class*='-right']:not(.p-button-icon-right):not(.p-drawer-right):not(
     .p-toast-top-right
-  ):not(.p-tooltip-right):not(.pi-chevron-right),
+  ):not(.p-tooltip-right):not(.pi-chevron-right):not(.p-iconfield-right),
 [class*='left-'],
 [class*='right-'],
 [class*='pr-'],
