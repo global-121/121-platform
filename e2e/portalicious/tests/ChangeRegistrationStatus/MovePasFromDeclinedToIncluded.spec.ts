@@ -45,7 +45,7 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram(projectTitle);
 });
 
-test('[31209] Move PA(s) from status "Validated" to "Included"', async ({
+test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
   page,
 }) => {
   const accessToken = await getAccessToken();
@@ -53,24 +53,24 @@ test('[31209] Move PA(s) from status "Validated" to "Included"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  await test.step('Change status of all registrations to "Validated"', async () => {
+  await test.step('Change status of all registrations to "Declined"', async () => {
     await changeBulkRegistrationStatus({
       programId: 2,
-      status: RegistrationStatusEnum.validated,
+      status: RegistrationStatusEnum.declined,
       accessToken,
     });
   });
 
-  await test.step('Search for the registration with status "Validated"', async () => {
+  await test.step('Search for the registration with status "Declined"', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
-      selection: 'Validated',
+      selection: 'Declined',
     });
   });
 
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
-      status: 'Validated',
+      status: 'Declined',
     });
   });
 
