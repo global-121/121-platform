@@ -5,18 +5,16 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   changeBulkRegistrationStatus,
-  importRegistrations,
   seedRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
-  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPvMaxPayment,
-  registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
@@ -25,14 +23,13 @@ import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+const toastMessage =
+  'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
-  await seedRegistrations(registrationsPV, programIdPV);
-  // multiply registrations
-  await resetDuplicateRegistrations(3);
-
+  await seedRegistrations([registrationPvMaxPayment], programIdPV);
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
@@ -45,21 +42,12 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram(projectTitle);
 });
 
-test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
+test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
   page,
 }) => {
   const accessToken = await getAccessToken();
-  const paymentReferenceId = [registrationPvMaxPayment.referenceId];
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
-
-  await test.step('Upload extra registration with max payment set to 1', async () => {
-    await importRegistrations(
-      programIdPV,
-      [registrationPvMaxPayment],
-      accessToken,
-    );
-  });
 
   await test.step('Change status of all registrations to "Included"', async () => {
     await changeBulkRegistrationStatus({
@@ -86,10 +74,22 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
     await doPayment({
       programId: 2,
       paymentNr: 1,
-      amount: 100,
-      referenceIds: paymentReferenceId,
+      amount: 25,
+      referenceIds: [],
       accessToken,
     });
+  });
+
+  await test.step('Raise amount of max payments for the registration', async () => {
+    await updateRegistration(
+      2,
+      registrationPvMaxPayment.referenceId,
+      {
+        maxPayments: '2',
+      },
+      'automated test',
+      accessToken,
+    );
   });
 
   await test.step('Search for the registration with status "Completed"', async () => {
@@ -100,9 +100,21 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
     });
   });
 
-  await test.step('Validate the status of the registration', async () => {
+  await test.step('Change status of registratios to "Included"', async () => {
+    await tableComponent.changeStatusOfRegistrationInTable({
+      status: 'Include',
+    });
+    await registrations.validateToastMessage(toastMessage);
+  });
+
+  await test.step('Validate status change', async () => {
+    await tableComponent.clearAllFilters();
+    await tableComponent.filterColumnByDropDownSelection({
+      columnName: 'Registration Status',
+      selection: 'Included',
+    });
     await registrations.validateStatusOfFirstRegistration({
-      status: 'Completed',
+      status: 'Included',
     });
   });
 });
