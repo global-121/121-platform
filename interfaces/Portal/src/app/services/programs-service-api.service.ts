@@ -130,14 +130,14 @@ export class ProgramsServiceApiService {
     options?: {
       includeProgramRegistrationAttributes?: boolean;
       includeTemplateDefaultAttributes?: boolean;
-      filterShowInPeopleAffectedTable?: boolean;
+      filterShowInRegistrationsTable?: boolean;
     },
   ): Promise<PaTableAttribute[]> {
     let params = new HttpParams();
     const defaultOptions = {
       includeProgramRegistrationAttributes: true,
       includeTemplateDefaultAttributes: false,
-      filterShowInPeopleAffectedTable: true,
+      filterShowInRegistrationsTable: true,
     };
     params = params.appendAll(Object.assign(defaultOptions, options));
 
