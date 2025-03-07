@@ -11,6 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
@@ -188,6 +189,14 @@ export class ActivityLogExpandedRowComponent
             type: 'currency',
           },
         ];
+
+        if (item.attributes.status === TransactionStatusEnum.error) {
+          list.push({
+            label: $localize`Fail reason`,
+            value: item.attributes.errorMessage,
+            type: 'text',
+          });
+        }
 
         if (this.isIntersolveVoucher()) {
           list.push({
