@@ -15,22 +15,23 @@
         [variant]="chipData()!.chipVariant"
       />
     }
-
-    @if (canRetryTransfer()) {
-      <p-button
-        [ngClass]="{
-          'ms-1': !!chipData(),
-        }"
-        label="Retry transfer"
-        i18n-label="@@retry-transfer"
-        rounded
-        size="small"
-        (click)="retryTransfer()"
-      />
-    }
   </div>
 
   @let dialogData = voucherDialogData();
+
+  @if (canRetryTransfer()) {
+    <p-button
+      [ngClass]="{
+        'me-1': !!dialogData,
+      }"
+      label="Retry transfer"
+      i18n-label="@@retry-transfer"
+      rounded
+      size="small"
+      (click)="retryTransfer()"
+    />
+  }
+
   @if (dialogData) {
     <app-activity-log-voucher-dialog
       [projectId]="dialogData.projectId"
