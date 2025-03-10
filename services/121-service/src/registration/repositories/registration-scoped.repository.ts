@@ -177,7 +177,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }): Promise<GetDuplicatesResult[]> {
     // Added a limit to the number of duplicates to prevent a large amount of duplicates from being returned which could cause performance issues
     // If there are more than this amount of duplicates a user misconfiguration is likely
-    const maxDuplicates = 30;
+    const maxDuplicates = 10;
 
     const rawDuplicates: {
       registrationId: number;
