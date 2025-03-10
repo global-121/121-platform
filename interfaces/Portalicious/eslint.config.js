@@ -11,6 +11,7 @@ const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
 const eslintPluginRegexp = require('eslint-plugin-regexp');
 const eslintPluginSimpleSort = require('eslint-plugin-simple-import-sort');
 const eslintPluginSortClassMembers = require('eslint-plugin-sort-class-members');
+const eslintPluginTailwind = require('eslint-plugin-tailwindcss');
 
 module.exports = tseslint.config(
   {
@@ -40,6 +41,7 @@ module.exports = tseslint.config(
       ...eslintPluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginSortClassMembers.configs['flat/recommended'],
+      ...eslintPluginTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     processor: angular.processInlineTemplates,
@@ -122,6 +124,7 @@ module.exports = tseslint.config(
     extends: [
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
+      ...eslintPluginTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     rules: {
@@ -168,6 +171,19 @@ module.exports = tseslint.config(
             'iframe[referrerpolicy]',
             'iframe[loading]',
             'iframe[sandbox]',
+          ],
+        },
+      ],
+      'tailwindcss/no-contradicting-classname': 'error',
+      'tailwindcss/enforces-negative-arbitrary-values': 'error',
+      'tailwindcss/no-custom-classname': [
+        'error',
+        {
+          whitelist: [
+            // Allow PrimeNG component/icon classes:
+            'p\\-.*',
+            'pi',
+            'pi\\-.*',
           ],
         },
       ],
