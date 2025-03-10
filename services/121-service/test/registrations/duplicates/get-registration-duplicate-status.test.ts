@@ -231,7 +231,7 @@ describe('Get duplicate status of registrations', () => {
     expect(registrations2[0].duplicateStatus).toBe(DuplicateStatus.unique);
   });
 
-  it(`should mark registrations as ${DuplicateStatus.unique} if the duplicate registrations are ignored`, async () => {
+  it(`should mark registrations as ${DuplicateStatus.unique} if the duplicate registrations are marked as unique`, async () => {
     const registration1 = { ...registrationPV5 };
     const registration2 = { ...registrationPV6 };
     const registration3 = { ...registrationPV7 };
