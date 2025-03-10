@@ -23,35 +23,20 @@ describe('RegistrationsInputValidatorHelpers', () => {
         false,
       );
       expect(RegistrationsInputValidatorHelpers.inputToBoolean('')).toBe(false);
-      expect(RegistrationsInputValidatorHelpers.inputToBoolean(null)).toBe(
-        false,
-      );
     });
 
-    it('should return undefined for unrecognized strings if no default value is provided', () => {
+    it('should return undefined if undefined or null is provided as input', () => {
       expect(
-        RegistrationsInputValidatorHelpers.inputToBoolean('unrecognized'),
+        RegistrationsInputValidatorHelpers.inputToBoolean(undefined),
+      ).toBeUndefined();
+      expect(
+        RegistrationsInputValidatorHelpers.inputToBoolean(null),
       ).toBeUndefined();
     });
 
-    it('should return the default value for unrecognized strings if provided', () => {
+    it('should return false as value for unrecognized strings if provided', () => {
       expect(
-        RegistrationsInputValidatorHelpers.inputToBoolean('unrecognized', true),
-      ).toBe(true);
-      expect(
-        RegistrationsInputValidatorHelpers.inputToBoolean(
-          'unrecognized',
-          false,
-        ),
-      ).toBe(false);
-    });
-
-    it('should return the default value for undefined input if provided', () => {
-      expect(
-        RegistrationsInputValidatorHelpers.inputToBoolean(undefined, true),
-      ).toBe(true);
-      expect(
-        RegistrationsInputValidatorHelpers.inputToBoolean(undefined, false),
+        RegistrationsInputValidatorHelpers.inputToBoolean('unrecognized'),
       ).toBe(false);
     });
 
