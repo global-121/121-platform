@@ -213,7 +213,6 @@ export const registrationWesteros1 = {
   referenceId: 'westeros123456789',
   preferredLanguage: 'en',
   name: 'John Snow',
-  dob: '31-08-1990',
   house: 'stark',
   dragon: 1,
   knowsNothing: true,
@@ -221,6 +220,10 @@ export const registrationWesteros1 = {
   programFinancialServiceProviderConfigurationName: 'ironBank',
   whatsappPhoneNumber: '14155235554',
   motto: 'Winter is coming',
+  fixedChoice: 'no',
+  healthArea: 'north',
+  openAnswer: 'I know nothing',
+  accountId: '123456789',
 };
 
 export const registrationWesteros2 = {
