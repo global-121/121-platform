@@ -208,7 +208,6 @@ export class RegistrationsImportService {
           customData[att.name] =
             RegistrationsInputValidatorHelpers.inputToBoolean(
               record.data[att.name],
-              false,
             );
         } else {
           customData[att.name] = record.data[att.name];
@@ -357,7 +356,6 @@ export class RegistrationsImportService {
         values.push(
           RegistrationsInputValidatorHelpers.inputToBoolean(
             customData[att.name],
-            false,
           ),
         );
       } else if (att.type === RegistrationAttributeTypes.text) {
