@@ -32,6 +32,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { AddNoteFormComponent } from '~/components/registration-page-layout/components/add-note-form/add-note-form.component';
+import { IgnoreDuplicationDialogComponent } from '~/components/registration-page-layout/components/ignore-duplicates-dialog/ignore-duplication-dialog.component';
 import { RegistrationDuplicatesBannerComponent } from '~/components/registration-page-layout/components/registration-duplicates-banner/registration-duplicates-banner.component';
 import { RegistrationMenuComponent } from '~/components/registration-page-layout/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
@@ -45,6 +46,8 @@ import { PaginateQueryService } from '~/services/paginate-query.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
+
+import { DuplicateStatus } from '../../../../../../services/121-service/src/registration/enum/duplicate-status.enum';
 
 @Component({
   selector: 'app-registration-page-layout',
@@ -63,6 +66,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ColoredChipComponent,
     SendMessageDialogComponent,
     ChangeStatusDialogComponent,
+    IgnoreDuplicationDialogComponent,
   ],
   templateUrl: './registration-page-layout.component.html',
   styles: ``,
@@ -84,6 +88,10 @@ export class RegistrationPageLayoutComponent {
     viewChild.required<SendMessageDialogComponent>('sendMessageDialog');
   readonly changeStatusDialog =
     viewChild.required<ChangeStatusDialogComponent>('changeStatusDialog');
+  readonly ignoreDuplicationDialog =
+    viewChild.required<IgnoreDuplicationDialogComponent>(
+      'ignoreDuplicationDialog',
+    );
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -135,6 +143,20 @@ export class RegistrationPageLayoutComponent {
         this.createContextItemForRegistrationStatusChange(
           RegistrationStatusEnum.deleted,
         ),
+      ],
+    },
+    {
+      items: [
+        {
+          label: $localize`:@@registration-duplicates:Ignore duplication`,
+          icon: 'pi pi-clone',
+          visible:
+            this.registration.data()?.duplicateStatus ===
+            DuplicateStatus.duplicate,
+          command: () => {
+            this.ignoreDuplicationDialog().setVisible();
+          },
+        },
       ],
     },
   ]);
