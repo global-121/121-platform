@@ -418,7 +418,6 @@ export class RegistrationsImportService {
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig,
     });
-    console.log('🚀 ~ RegistrationsImportService ~ data:', data);
     return data;
   }
 
