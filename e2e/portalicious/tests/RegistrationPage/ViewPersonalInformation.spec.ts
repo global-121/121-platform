@@ -47,7 +47,7 @@ test('User can view the registration data of registration that has all data type
     accessToken,
   });
 
-  const exepectedRegistrationData = {
+  const expectedRegistrationData = {
     Name: 'John Snow',
     FSP: 'ironBank',
     'Preferred Language': 'English',
@@ -74,10 +74,9 @@ test('User can view the registration data of registration that has all data type
     `/project/${projectId}/registrations/${registrationId}/personal-information`,
   );
 
-  for (const [key, value] of Object.entries(exepectedRegistrationData)) {
-    const fieldValue = await personalInfoPage.getFieldValue(key);
-    expect(fieldValue).toBe(value);
-  }
+  const personalInfo = await personalInfoPage.personalInformationDataList();
+
+  expect(personalInfo).toMatchObject(expectedRegistrationData);
 });
 
 test('User can view the registration data of registration that has only the required data', async ({
@@ -130,8 +129,7 @@ test('User can view the registration data of registration that has only the requ
     `/project/${projectId}/registrations/${registrationId}/personal-information`,
   );
 
-  for (const [key, value] of Object.entries(exepectedRegistrationData)) {
-    const fieldValue = await personalInfoPage.getFieldValue(key);
-    expect(fieldValue).toBe(value);
-  }
+  const personalInfo = await personalInfoPage.personalInformationDataList();
+
+  expect(personalInfo).toMatchObject(exepectedRegistrationData);
 });
