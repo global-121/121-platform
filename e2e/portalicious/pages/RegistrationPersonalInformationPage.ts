@@ -1,6 +1,7 @@
 import { Locator, Page } from 'playwright';
 import { expect } from 'playwright/test';
 
+import DataListComponent from '../components/DataListComponent';
 import RegistrationBasePage from './RegistrationBasePage';
 
 class RegistrationPersonalInformationPage extends RegistrationBasePage {
@@ -36,18 +37,10 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     await expect(this.editInformationButton).toBeVisible();
   }
 
-  async personalInformationDataList(): Promise<Record<string, string>> {
-    const datalist = this.page.locator('app-data-list').nth(1);
-    await datalist.waitFor({ state: 'visible' });
-    const unParsed = await datalist.locator('p').allTextContents();
-    const parsed: Record<string, string> = {};
-    unParsed.forEach((element) => {
-      let [key, value] = element.split(':') as [string, string];
-      key = key.trim();
-      value = value.trim();
-      parsed[key] = value;
-    });
-    return parsed;
+  personalInformationDataList(): Promise<Record<string, string>> {
+    return new DataListComponent(
+      this.page.locator('app-data-list').nth(1),
+    ).getData();
   }
 }
 
