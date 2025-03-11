@@ -14,7 +14,6 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
-import { Subscription } from 'rxjs';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -54,7 +53,6 @@ export class IgnoreDuplicationDialogComponent {
     })(),
     enabled: !!this.registrationReferenceId(),
   }));
-
   readonly duplicatesRegistrationIds = computed(() => {
     if (!this.registrationRegistrationId() || !this.duplicates.isSuccess()) {
       return [];
@@ -67,15 +65,12 @@ export class IgnoreDuplicationDialogComponent {
 
     return registrationIds;
   });
-
   readonly ignoreDuplicationDialog =
     viewChild.required<ConfirmationDialogComponent>('ignoreDuplicationDialog');
-  formGroupChangesSubscription: Subscription;
   formGroup!: FormGroup<
     Record<string, FormControl<boolean | number | string | undefined>>
   >;
   readonly updateReason = model<string>('');
-
   approveMutation = injectMutation(() => ({
     mutationFn: async ({ reason }: { reason: string }) => {
       if (!reason || reason.trim() === '') {
@@ -94,8 +89,13 @@ export class IgnoreDuplicationDialogComponent {
         reason,
       });
     },
+    onSuccess: () => {
+      this.updateReason.set('');
+      return this.registrationApiService.invalidateCache({
+        projectId: this.projectId,
+      });
+    },
   }));
-
   formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
     this.formGroup,
     {
