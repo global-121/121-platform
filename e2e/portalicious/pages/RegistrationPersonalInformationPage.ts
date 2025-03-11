@@ -36,30 +36,18 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     await expect(this.editInformationButton).toBeVisible();
   }
 
-  async personalInformationDataList(): Promise<Locator> {
-    return this.page.locator('div.grid.grid-cols-1');
-  }
-
-  async getField(fieldName: string): Promise<Locator> {
-    const personalInformationDataList =
-      await this.personalInformationDataList();
-    const field = personalInformationDataList.getByText(`${fieldName}:`, {
-      exact: true,
+  async personalInformationDataList(): Promise<Record<string, string>> {
+    const datalist = this.page.locator('app-data-list').nth(1);
+    await datalist.waitFor({ state: 'visible' });
+    const unParsed = await datalist.locator('p').allTextContents();
+    const parsed: Record<string, string> = {};
+    unParsed.forEach((element) => {
+      let [key, value] = element.split(':') as [string, string];
+      key = key.trim();
+      value = value.trim();
+      parsed[key] = value;
     });
-    return field;
-  }
-
-  async getFieldValue(fieldName: string): Promise<string> {
-    let row: Locator;
-    if (fieldName === 'Name') {
-      // Name can occur multiple times on the page because of the full name naming convention
-      row = this.page.locator(`p:has(strong:text-is("${fieldName}:"))`).first();
-    } else {
-      row = this.page.locator(`p:has(strong:text-is("${fieldName}:"))`);
-    }
-    await row.waitFor({ state: 'visible', timeout: 1000 });
-    const fullText = (await row.textContent()) || '';
-    return fullText.replace(`${fieldName}:`, '').trim();
+    return parsed;
   }
 }
 
