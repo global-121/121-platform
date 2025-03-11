@@ -35,6 +35,32 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     // this re-appears after the save has been successful
     await expect(this.editInformationButton).toBeVisible();
   }
+
+  async personalInformationDataList(): Promise<Locator> {
+    return this.page.locator('div.grid.grid-cols-1');
+  }
+
+  async getField(fieldName: string): Promise<Locator> {
+    const personalInformationDataList =
+      await this.personalInformationDataList();
+    const field = personalInformationDataList.getByText(`${fieldName}:`, {
+      exact: true,
+    });
+    return field;
+  }
+
+  async getFieldValue(fieldName: string): Promise<string> {
+    let row: Locator;
+    if (fieldName === 'Name') {
+      // Name can occur multiple times on the page because of the full name naming convention
+      row = this.page.locator(`p:has(strong:text-is("${fieldName}:"))`).first();
+    } else {
+      row = this.page.locator(`p:has(strong:text-is("${fieldName}:"))`);
+    }
+    await row.waitFor({ state: 'visible', timeout: 1000 });
+    const fullText = (await row.textContent()) || '';
+    return fullText.replace(`${fieldName}:`, '').trim();
+  }
 }
 
 export default RegistrationPersonalInformationPage;
