@@ -1585,8 +1585,8 @@
       <trans-unit id="3570735198692940811" datatype="html">
         <source>Add a reason</source>
       </trans-unit>
-      <trans-unit id="8319066426518670750" datatype="html">
-        <source>You&apos;re about to mark both registrations as unique. This means that they will no longer appear as duplicates of each other.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
+      <trans-unit id="3720159686083335313" datatype="html">
+        <source>You&apos;re about to mark <x equiv-text="{{ duplicatesRegistrationIds().length === 2 ? &apos;both&apos; : duplicatesRegistrationIds().length }}" id="INTERPOLATION"/> registrations as unique. This means that they will no longer appear as duplicates of each other.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
       </trans-unit>
     </body>
   </file>
