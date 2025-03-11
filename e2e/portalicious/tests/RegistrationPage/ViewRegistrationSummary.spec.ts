@@ -46,7 +46,8 @@ test('User should see a summary of a registration', async ({ page }) => {
 
   await test.step('Validate registration title', async () => {
     const title = await activityLogPage.getRegistrationTitle();
-    const expectedTitle = `Reg. #1 - ${registrationPvScoped.fullName}`;
+    const registrationNumber = registrationId; // Assuming registrationId is the registration number
+    const expectedTitle = `Reg. #${registrationNumber} - ${registrationPvScoped.fullName}`;
     expect(title).toBe(expectedTitle);
   });
 
