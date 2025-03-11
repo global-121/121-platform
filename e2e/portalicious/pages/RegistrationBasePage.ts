@@ -1,6 +1,7 @@
 import { Locator, Page } from 'playwright';
 import { expect } from 'playwright/test';
 
+import DataListComponent from '../components/DataListComponent';
 import BasePage from './BasePage';
 
 abstract class RegistrationBasePage extends BasePage {
@@ -11,6 +12,26 @@ abstract class RegistrationBasePage extends BasePage {
     super(page);
     this.duplicateChip = this.page.getByTestId('duplicate-chip');
     this.duplicatesBanner = this.page.getByTestId('duplicates-banner');
+  }
+
+  async getRegistrationTitle(): Promise<string> {
+    const titleElement = this.page.locator('p-card h1').first();
+    await titleElement.waitFor({ state: 'visible', timeout: 5000 });
+    return (await titleElement.textContent())?.trim() || '';
+  }
+
+  async getRegistrationSummaryList(): Promise<Record<string, string>> {
+    return new DataListComponent(
+      this.page.getByTestId('registration-summary-list'),
+    ).getData();
+  }
+
+  async getRegistrationCreatedDate(): Promise<string> {
+    const dateElement = this.page.locator('span:has-text("Registered:")');
+    await dateElement.waitFor({ state: 'visible', timeout: 5000 });
+    const fullText = (await dateElement.textContent()) || '';
+
+    return fullText.replace('Registered:', '').trim();
   }
 
   async goToRegistrationPage(
