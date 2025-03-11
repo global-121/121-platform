@@ -85,15 +85,16 @@ export class ExportPaymentsComponent {
     withPaymentRange?: boolean;
   }) => {
     const payments = this.payments.data() ?? [];
+    const orderedPayments = [...payments].sort((a, b) => a.payment - b.payment);
     const l = payments.length;
 
     if (!withPaymentRange || l === 0) {
       return { type };
     }
 
-    const minPayment = payments[l - this.maxLastPaymentsNumber()].payment;
-    const maxPayment = payments[l - 1].payment;
-
+    const minPayment =
+      orderedPayments[l - this.maxLastPaymentsNumber()].payment;
+    const maxPayment = orderedPayments[l - 1].payment;
     return {
       type,
       minPayment,
