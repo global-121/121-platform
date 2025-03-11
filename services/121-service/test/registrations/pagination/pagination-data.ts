@@ -251,6 +251,23 @@ export const registrationWesteros3 = {
   motto: 'A lanister always pays his debts',
 };
 
+export const registrationWesteros4 = {
+  referenceId: 'westeros123456789',
+  preferredLanguage: 'en',
+  name: 'John Snow',
+  house: 'stark',
+  dragon: 1,
+  knowsNothing: true,
+  phoneNumber: '14155235554',
+  programFinancialServiceProviderConfigurationName: 'ironBank',
+  whatsappPhoneNumber: '14155235554',
+  motto: 'Winter is coming',
+  fixedChoice: 'no',
+  healthArea: 'north',
+  openAnswer: 'I know nothing',
+  accountId: '123456789',
+};
+
 export const registrationCbe = {
   referenceId: 'registration-cbe-1',
   phoneNumber: '14155238886',
