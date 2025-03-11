@@ -44,7 +44,10 @@
         }
       </div>
     </div>
-    <app-data-list [data]="registrationData()" />
+    <app-data-list
+      [data]="registrationData()"
+      data-testid="registration-summary-list"
+    />
     <div class="mt-4 text-end">
       <span class="text-grey-700 txt-system-s">
         @if (registration.isPending()) {
