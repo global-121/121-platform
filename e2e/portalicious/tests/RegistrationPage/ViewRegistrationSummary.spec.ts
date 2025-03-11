@@ -52,17 +52,15 @@ test('User should see a summary of a registration', async ({ page }) => {
   });
 
   await test.step('Validate registration summary table labels and values', async () => {
-    expect(
-      await activityLogPage.getDataListItemValue('Registration Status'),
-    ).toBe('Included');
-
-    expect(await activityLogPage.getDataListItemValue('Payments')).toBe('1');
-    expect(await activityLogPage.getDataListItemValue('Phone number')).toBe(
-      registrationPvScoped.phoneNumber,
-    );
-    expect(await activityLogPage.getDataListItemValue('Scope')).toBe(
-      registrationPvScoped.scope,
-    );
+    const expectedValueObject = {
+      'Registration Status': 'Included',
+      Payments: '1',
+      'Phone number': registrationPvScoped.phoneNumber,
+      Scope: registrationPvScoped.scope,
+    };
+    const receivedValueObject =
+      await activityLogPage.getRegistrationSummaryList();
+    expect(receivedValueObject).toMatchObject(expectedValueObject);
   });
 
   await test.step('Validate registration created date', async () => {

@@ -1,6 +1,7 @@
 import { Locator, Page } from 'playwright';
 import { expect } from 'playwright/test';
 
+import DataListComponent from '../components/DataListComponent';
 import BasePage from './BasePage';
 
 abstract class RegistrationBasePage extends BasePage {
@@ -19,27 +20,10 @@ abstract class RegistrationBasePage extends BasePage {
     return (await titleElement.textContent())?.trim() || '';
   }
 
-  getRegistrationSummaryList() {
-    return this.page.getByTestId('registration-summary-list');
-  }
-
-  async getDataListItemValue(label: string): Promise<string> {
-    const dataList = this.getRegistrationSummaryList();
-
-    const row = dataList.locator(`p:has(strong:text-is("${label}:"))`).first();
-    await row.waitFor({ state: 'visible', timeout: 5000 });
-    const fullText = (await row.textContent()) || '';
-
-    const labelText = `${label}:`;
-    return fullText
-      .substring(fullText.indexOf(labelText) + labelText.length)
-      .trim();
-  }
-
-  async hasDataListItem(label: string): Promise<boolean> {
-    const dataList = this.getRegistrationSummaryList();
-    const row = dataList.locator(`p:has(strong:text-is("${label}:"))`);
-    return (await row.count()) > 0;
+  async getRegistrationSummaryList(): Promise<Record<string, string>> {
+    return new DataListComponent(
+      this.page.getByTestId('registration-summary-list'),
+    ).getData();
   }
 
   async getRegistrationCreatedDate(): Promise<string> {
