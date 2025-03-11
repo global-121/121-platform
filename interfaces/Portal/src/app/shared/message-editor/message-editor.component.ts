@@ -121,7 +121,7 @@ export class MessageEditorComponent implements AfterViewInit, OnInit {
       this.inputProps.programId,
       {
         includeTemplateDefaultAttributes: true,
-        filterShowInPeopleAffectedTable: false,
+        filterShowInRegistrationsTable: false,
       },
     );
 

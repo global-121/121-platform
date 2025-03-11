@@ -219,8 +219,14 @@ svg-icon svg {
     // }
   }
 
-  .p-chip .p-chip-label {
-    @apply font-semibold txt-body-m;
+  .p-chip {
+    .p-chip-icon {
+      color: inherit;
+    }
+
+    .p-chip-label {
+      @apply font-semibold txt-body-m;
+    }
   }
 
   // All form-inputs should be full-width, a wrapper should be in control of the width.

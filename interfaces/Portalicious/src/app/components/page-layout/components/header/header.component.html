@@ -45,7 +45,7 @@
 </p-toolbar>
 <p-drawer
   #sideBar
-  [position]="rtlHelper.createPosition('left')()"
+  [position]="rtlHelper.createPosition('start')()"
   [(visible)]="sidebarVisible"
   [closeOnEscape]="true"
   [showCloseIcon]="false"
@@ -64,7 +64,7 @@
           label="Close"
           i18n-label="@@generic-close"
           icon="pi pi-times"
-          [iconPos]="rtlHelper.createPosition('left')()"
+          [iconPos]="rtlHelper.createPosition('start')()"
           plain
           text
           (click)="sidebarVisible.set(false)"

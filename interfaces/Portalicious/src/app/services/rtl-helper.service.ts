@@ -1,6 +1,39 @@
 import { DOCUMENT } from '@angular/common';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { computed } from '@angular/core';
+
+export type LogicalPosition = 'end' | 'start';
+export type PhysicalPosition = 'left' | 'right';
+export type Direction = 'ltr' | 'rtl';
+export type ReadingDirection = 'backward' | 'forward';
+
+const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
+  Direction,
+  Record<LogicalPosition, PhysicalPosition>
+> = {
+  ltr: {
+    start: 'left',
+    end: 'right',
+  },
+  rtl: {
+    start: 'right',
+    end: 'left',
+  },
+};
+
+const READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
+  Direction,
+  Record<ReadingDirection, PhysicalPosition>
+> = {
+  ltr: {
+    backward: 'left',
+    forward: 'right',
+  },
+  rtl: {
+    backward: 'right',
+    forward: 'left',
+  },
+};
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +41,7 @@ import { computed } from '@angular/core';
 export class RtlHelperService {
   private readonly document = inject(DOCUMENT);
   readonly isRtl = signal(this.document.documentElement.dir === 'rtl');
+  readonly direction = computed(() => (this.isRtl() ? 'rtl' : 'ltr'));
 
   constructor() {
     // Set up a MutationObserver to watch for changes to the dir attribute
@@ -29,15 +63,25 @@ export class RtlHelperService {
   }
 
   /**
-   * Creates a computed signal that flips directional values in RTL mode
+   * Creates a computed signal that converts a logical property to a physical property in RTL mode
+   * Ideally would be done in primeng, but this is a workaround for now due to https://github.com/orgs/primefaces/discussions/3649
    */
-  createPosition(defaultValue: 'left' | 'right') {
-    return computed(() => {
-      if (!this.isRtl()) {
-        return defaultValue;
-      }
+  createPosition(logicalValue: LogicalPosition): Signal<PhysicalPosition> {
+    return computed(
+      () => LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][logicalValue],
+    );
+  }
 
-      return defaultValue === 'left' ? 'right' : 'left';
-    });
+  createRtlFriendlyChevronIcon(
+    chevronDirection: ReadingDirection,
+  ): Signal<string> {
+    return computed(
+      () =>
+        `pi pi-chevron-${
+          READING_DIRECTION_VALUE_TO_PHYSICAL_VALUE_MAP[this.direction()][
+            chevronDirection
+          ]
+        }`,
+    );
   }
 }

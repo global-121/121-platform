@@ -9,11 +9,12 @@ import {
 
 import { AppComponent } from '~/app.component';
 import { getAppConfig } from '~/app.config';
+import { Locale } from '~/utils/locale';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      ...getAppConfig,
+      ...getAppConfig(Locale.en),
       imports: [AppComponent, RouterModule.forRoot([])],
       providers: [
         provideHttpClient(),
