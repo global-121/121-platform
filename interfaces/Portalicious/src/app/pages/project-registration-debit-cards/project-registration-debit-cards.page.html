@@ -3,42 +3,44 @@
   [registrationId]="registrationId()"
 >
   <div class="px-2">
-    <div class="my-auto ms-auto flex">
-      @if (currentCardHasAction()('pause')) {
-        <p-button
-          label="Pause card"
-          i18n-label="@@debit-card-actions-pause-card"
-          rounded
-          outlined
-          icon="pi pi-pause"
-          class="ms-auto"
-          (click)="pauseConfirmationDialog.askForConfirmation()"
-        />
-      }
-      @if (currentCardHasAction()('unpause')) {
-        <p-button
-          label="Unpause card"
-          i18n-label="@@debit-card-actions-unpause-card"
-          rounded
-          outlined
-          icon="pi pi-play"
-          class="ms-auto"
-          (click)="unpauseConfirmationDialog.askForConfirmation()"
-        />
-      }
-      @if (currentCardHasAction()('reissue')) {
-        <p-button
-          label="Replace card"
-          i18n-label="@@debit-card-actions-replace-card"
-          rounded
-          outlined
-          icon="pi pi-refresh"
-          class="ms-4"
-          (click)="reissueConfirmationDialog.askForConfirmation()"
-        />
-      }
-    </div>
-    <app-data-list [data]="walletWithCurrentCardListData()" />
+    @if (currentCard()) {
+      <div class="my-auto ms-auto flex">
+        @if (currentCardHasAction()('pause')) {
+          <p-button
+            label="Pause card"
+            i18n-label="@@debit-card-actions-pause-card"
+            rounded
+            outlined
+            icon="pi pi-pause"
+            class="ms-auto"
+            (click)="pauseConfirmationDialog.askForConfirmation()"
+          />
+        }
+        @if (currentCardHasAction()('unpause')) {
+          <p-button
+            label="Unpause card"
+            i18n-label="@@debit-card-actions-unpause-card"
+            rounded
+            outlined
+            icon="pi pi-play"
+            class="ms-auto"
+            (click)="unpauseConfirmationDialog.askForConfirmation()"
+          />
+        }
+        @if (currentCardHasAction()('reissue')) {
+          <p-button
+            label="Replace card"
+            i18n-label="@@debit-card-actions-replace-card"
+            rounded
+            outlined
+            icon="pi pi-refresh"
+            class="ms-4"
+            (click)="reissueConfirmationDialog.askForConfirmation()"
+          />
+        }
+      </div>
+      <app-data-list [data]="walletWithCurrentCardListData()" />
+    }
     @if (oldCards().length > 0) {
       <div class="py-1"></div>
       <p-accordion>
