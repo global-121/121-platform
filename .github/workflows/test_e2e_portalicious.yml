@@ -57,6 +57,7 @@ jobs:
       - name: Start Portalicious
         working-directory: ./interfaces/Portalicious
         env:
+          NG_PRODUCTION: true
           NG_URL_121_SERVICE_API: http://localhost:3000/api
           NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: true
           LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}

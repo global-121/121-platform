@@ -20,29 +20,33 @@ body {
   --font-family: theme(fontFamily.body);
 }
 
-// Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
-[class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
-    .p-toast-top-left
-  ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
-[class*='-right']:not(.p-button-icon-right):not(.p-drawer-right):not(
-    .p-toast-top-right
-  ):not(.p-tooltip-right):not(.pi-chevron-right):not(.p-iconfield-right),
-[class*='left-'],
-[class*='right-'],
-[class*='pr-'],
-[class*='pl-'],
-[class*='ml-'],
-[class*='mr-'] {
-  &::before {
-    content: '⚠️ Use -end/-start, not -right/-left!';
-    font-weight: bold;
-    color: red;
+// Styles only for "local-development" purposes:
+// Classname is set on <html> by the AppComponent.
+.dev {
+  // Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
+  [class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
+      .p-toast-top-left
+    ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
+  [class*='-right']:not(.p-button-icon-right):not(.p-drawer-right):not(
+      .p-toast-top-right
+    ):not(.p-tooltip-right):not(.pi-chevron-right):not(.p-iconfield-right),
+  [class*='left-'],
+  [class*='right-'],
+  [class*='pr-'],
+  [class*='pl-'],
+  [class*='ml-'],
+  [class*='mr-'] {
+    &::before {
+      content: '⚠️ Use -end/-start, not -right/-left!';
+      font-weight: bold;
+      color: red;
+    }
+    outline: 2px dashed hotpink;
+    margin-right: unset !important;
+    margin-left: unset !important;
+    padding-right: unset !important;
+    padding-left: unset !important;
   }
-  outline: 2px dashed hotpink;
-  margin-right: unset !important;
-  margin-left: unset !important;
-  padding-right: unset !important;
-  padding-left: unset !important;
 }
 
 svg-icon svg {
