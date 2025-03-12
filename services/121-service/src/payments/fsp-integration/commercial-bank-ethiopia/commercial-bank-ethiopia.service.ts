@@ -314,9 +314,11 @@ export class CommercialBankEthiopiaService
     }
   }
 
-  public async getCommercialBankEthiopiaCredentialsOrThrow(
-    programId: number,
-  ): Promise<RequiredUsernamePasswordInterface> {
+  public async getCommercialBankEthiopiaCredentialsOrThrow({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<RequiredUsernamePasswordInterface> {
     const configs =
       await this.programFspConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
         {
