@@ -87,6 +87,7 @@ class TableComponent {
   }
 
   async clearAllFilters() {
+    // When table is empty we have more than one clear filters button that is why we use first()
     await this.clearAllFiltersButton.first().click();
     // wait for 500s for filter to be cleared in the BE
     await this.page.waitForTimeout(500);

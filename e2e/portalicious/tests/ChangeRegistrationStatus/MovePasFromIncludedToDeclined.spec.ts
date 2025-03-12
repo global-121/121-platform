@@ -21,7 +21,6 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
-const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 
@@ -41,7 +40,7 @@ test.beforeEach(async ({ page }) => {
   );
   // Navigate to program
   const basePage = new BasePage(page);
-  await basePage.selectProgram(projectTitle);
+  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
 test('[31213] Move PA(s) from status "Included" to "Declined"', async ({
