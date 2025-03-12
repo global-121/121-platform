@@ -29,8 +29,11 @@ abstract class RegistrationBasePage extends BasePage {
   async getRegistrationCreatedDate(): Promise<string> {
     const dateElement = this.page.locator('span:has-text("Registered:")');
     await dateElement.waitFor();
-    const fullText = (await dateElement.textContent()) || '';
+    const fullText = await dateElement.textContent();
 
+    if (!fullText) {
+      throw new Error('Registration date not found');
+    }
     return fullText.replace('Registered:', '').trim();
   }
 
