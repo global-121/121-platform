@@ -15,7 +15,7 @@ abstract class RegistrationBasePage extends BasePage {
   }
 
   async getRegistrationTitle(): Promise<string> {
-    const titleElement = this.page.locator('p-card h1').first();
+    const titleElement = this.page.getByTestId('registration-title');
     await titleElement.waitFor();
     return (await titleElement.textContent())?.trim() || '';
   }
