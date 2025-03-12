@@ -223,9 +223,16 @@ class TableComponent {
     const firstCheckbox = this.checkbox.nth(1);
     const statusButton = this.page.getByRole('button', { name: status });
     const placeholder = this.page.getByPlaceholder('Enter reason');
+    const deleteLabel = this.page.getByLabel(
+      'I understand this action can not be undone',
+    );
 
     await firstCheckbox.click();
     await statusButton.click();
+    // Condition for when checkbox is required
+    if (await deleteLabel.isVisible()) {
+      await deleteLabel.click();
+    }
     // Condition for when reason is required
     if (await placeholder.isVisible()) {
       await placeholder.fill('Test reason');
