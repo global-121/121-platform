@@ -2,18 +2,14 @@ import test from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  changeBulkRegistrationStatus,
-  seedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
+import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
-  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationsPV,
+  registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
@@ -21,15 +17,20 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
-const toastMessageIncluded =
+const toastMessage =
   'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
 
+// Arrange
 test.beforeEach(async ({ page }) => {
+  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple);
 
-  await seedRegistrations(registrationsPV, programIdPV);
-  // multiply registrations
-  await resetDuplicateRegistrations(3);
+  await seedRegistrationsWithStatus(
+    [registrationPV5],
+    programIdPV,
+    accessToken,
+    RegistrationStatusEnum.declined,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -46,19 +47,10 @@ test.beforeEach(async ({ page }) => {
 test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
   page,
 }) => {
-  const accessToken = await getAccessToken();
-  const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  await test.step('Change status of all registrations to "Declined"', async () => {
-    await changeBulkRegistrationStatus({
-      programId: 2,
-      status: RegistrationStatusEnum.declined,
-      accessToken,
-    });
-  });
-
+  // Act
   await test.step('Search for the registration with status "Declined"', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
@@ -66,17 +58,11 @@ test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
     });
   });
 
-  await test.step('Validate the status of the registration', async () => {
-    await registrations.validateStatusOfFirstRegistration({
-      status: 'Declined',
-    });
-  });
-
   await test.step('Change status of first selected registration to "Included"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Include',
     });
-    await basePage.validateToastMessage(toastMessageIncluded);
+    await registrations.validateToastMessageAndWait(toastMessage);
   });
 
   await test.step('Search for the registration with status "Included"', async () => {
@@ -87,6 +73,7 @@ test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
     });
   });
 
+  // Assert
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
       status: 'Included',
