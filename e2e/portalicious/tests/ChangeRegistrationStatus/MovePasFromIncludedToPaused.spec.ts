@@ -2,18 +2,14 @@ import test from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  changeBulkRegistrationStatus,
-  seedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
+import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
-  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationsPV,
+  registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
@@ -24,12 +20,17 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Paused" successfully. The status change can take up to a minute to process.';
 
+// Arrange
 test.beforeEach(async ({ page }) => {
+  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple);
 
-  await seedRegistrations(registrationsPV, programIdPV);
-  // multiply registrations
-  await resetDuplicateRegistrations(3);
+  await seedRegistrationsWithStatus(
+    [registrationPV5],
+    programIdPV,
+    accessToken,
+    RegistrationStatusEnum.included,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -46,24 +47,15 @@ test.beforeEach(async ({ page }) => {
 test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
   page,
 }) => {
-  const accessToken = await getAccessToken();
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
-
-  await test.step('Change registrations status in bulk via API', async () => {
-    await changeBulkRegistrationStatus({
-      programId: 2,
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-  });
 
   await test.step('Change status of first selected registration to "Paused"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Pause',
     });
-    await basePage.validateToastMessage(toastMessage);
+    await basePage.validateToastMessageAndWait(toastMessage);
   });
 
   await test.step('Search for the registration with status "Paused"', async () => {

@@ -571,6 +571,32 @@ export async function seedIncludedRegistrations(
   });
 }
 
+export async function seedRegistrationsWithStatus(
+  registrations: any[],
+  programId: number,
+  accessToken: string,
+  status: RegistrationStatusEnum,
+): Promise<void> {
+  const response = await importRegistrations(
+    programId,
+    registrations,
+    accessToken,
+  );
+
+  if (!(response.status >= 200 && response.status < 300)) {
+    throw new Error(
+      `Error occured while importing registrations: ${response.text}`,
+    );
+  }
+
+  await awaitChangeRegistrationStatus({
+    programId,
+    referenceIds: registrations.map((r) => r.referenceId),
+    status,
+    accessToken,
+  });
+}
+
 export async function getEvents(
   programId: number,
   fromDate?: string,
