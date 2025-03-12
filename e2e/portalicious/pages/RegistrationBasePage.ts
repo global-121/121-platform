@@ -16,7 +16,7 @@ abstract class RegistrationBasePage extends BasePage {
 
   async getRegistrationTitle(): Promise<string> {
     const titleElement = this.page.locator('p-card h1').first();
-    await titleElement.waitFor({ state: 'visible', timeout: 5000 });
+    await titleElement.waitFor();
     return (await titleElement.textContent())?.trim() || '';
   }
 
@@ -28,7 +28,7 @@ abstract class RegistrationBasePage extends BasePage {
 
   async getRegistrationCreatedDate(): Promise<string> {
     const dateElement = this.page.locator('span:has-text("Registered:")');
-    await dateElement.waitFor({ state: 'visible', timeout: 5000 });
+    await dateElement.waitFor();
     const fullText = (await dateElement.textContent()) || '';
 
     return fullText.replace('Registered:', '').trim();
