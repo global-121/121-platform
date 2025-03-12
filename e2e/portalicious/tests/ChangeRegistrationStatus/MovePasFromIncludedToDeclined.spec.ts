@@ -43,13 +43,13 @@ test.beforeEach(async ({ page }) => {
   const basePage = new BasePage(page);
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
-
 test('[31213] Move PA(s) from status "Included" to "Declined"', async ({
   page,
 }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
+  // Act
   await test.step('Change status of first selected registration to "Declined"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Decline',
@@ -63,7 +63,7 @@ test('[31213] Move PA(s) from status "Included" to "Declined"', async ({
       selection: 'Declined',
     });
   });
-
+  // Assert
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
       status: 'Declined',
