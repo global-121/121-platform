@@ -22,7 +22,6 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
-const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
 
@@ -39,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   );
   // Navigate to program
   const basePage = new BasePage(page);
-  await basePage.selectProgram(projectTitle);
+  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
 test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
@@ -49,18 +48,11 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  await test.step('Change status of all registrations to "Included"', async () => {
+  await test.step('Change status of registration to "Included"', async () => {
     await changeBulkRegistrationStatus({
       programId: 2,
       status: RegistrationStatusEnum.included,
       accessToken,
-    });
-  });
-
-  await test.step('Search for the registration with status "Included"', async () => {
-    await tableComponent.filterColumnByDropDownSelection({
-      columnName: 'Registration Status',
-      selection: 'Included',
     });
   });
 
@@ -70,7 +62,7 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
     });
   });
 
-  await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
+  await test.step('Change status of registration to "Completed" with doing a payment', async () => {
     await doPayment({
       programId: 2,
       paymentNr: 1,
@@ -92,15 +84,7 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
     );
   });
 
-  await test.step('Search for the registration with status "Completed"', async () => {
-    await tableComponent.clearAllFilters();
-    await tableComponent.filterColumnByDropDownSelection({
-      columnName: 'Registration Status',
-      selection: 'Completed',
-    });
-  });
-
-  await test.step('Change status of registratios to "Included"', async () => {
+  await test.step('Change status of registration to "Included"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Include',
     });
@@ -108,7 +92,6 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
   });
 
   await test.step('Validate status change', async () => {
-    await tableComponent.clearAllFilters();
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
       selection: 'Included',
