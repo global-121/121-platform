@@ -16,6 +16,7 @@ import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { environment } from '~environment';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authSubscriptions = this.authService.initializeSubscriptions();
+
+    if (!environment.production) {
+      // Enable dev/debugging-styles
+      document.documentElement.classList.add('dev');
+    }
+
     new KonamiCode(() => {
       void this.router.navigate(['/', AppRoutes.snake]);
     });
