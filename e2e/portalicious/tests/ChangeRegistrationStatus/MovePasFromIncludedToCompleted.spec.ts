@@ -23,7 +23,7 @@ import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
-
+// Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
@@ -42,7 +42,7 @@ test.beforeEach(async ({ page }) => {
   const basePage = new BasePage(page);
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
-
+// Act
 test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   page,
 }) => {
@@ -97,7 +97,7 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
       selection: 'Completed',
     });
   });
-
+  // Assert
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
       status: 'Completed',
