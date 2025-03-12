@@ -24,8 +24,6 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
-const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
@@ -42,7 +40,7 @@ test.beforeEach(async ({ page }) => {
   );
   // Navigate to program
   const basePage = new BasePage(page);
-  await basePage.selectProgram(projectTitle);
+  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
 test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
