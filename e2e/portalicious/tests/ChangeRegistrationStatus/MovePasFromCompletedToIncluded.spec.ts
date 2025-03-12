@@ -24,7 +24,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
-
+// Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
@@ -47,7 +47,7 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
   const accessToken = await getAccessToken();
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
-
+  // Act
   await test.step('Change status of registration to "Included"', async () => {
     await changeBulkRegistrationStatus({
       programId: 2,
@@ -90,7 +90,7 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
     });
     await registrations.validateToastMessageAndWait(toastMessage);
   });
-
+  // Assert
   await test.step('Validate status change', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',

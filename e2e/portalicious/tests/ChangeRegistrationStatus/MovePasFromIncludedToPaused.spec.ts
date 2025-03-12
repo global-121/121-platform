@@ -50,7 +50,7 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
-
+  // Act
   await test.step('Change status of first selected registration to "Paused"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Pause',
@@ -64,7 +64,7 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
       selection: 'Paused',
     });
   });
-
+  // Assert
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
       status: 'Paused',

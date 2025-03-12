@@ -15,7 +15,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Validated" successfully. The status change can take up to a minute to process.';
-
+// Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
@@ -38,7 +38,7 @@ test('[31206] Move PA(s) from status "Registered" to "Validated"', async ({
 }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
-
+  // Act
   await test.step('Change status of first selected registration to "Validated"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable({
       status: 'Validate',
@@ -52,7 +52,7 @@ test('[31206] Move PA(s) from status "Registered" to "Validated"', async ({
       selection: 'Validated',
     });
   });
-
+  // Assert
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
       status: 'Validated',
