@@ -22,6 +22,7 @@ export enum AppRoutes {
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectTeam = 'team',
+  registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
   snake = 'snake',
   userRoles = 'user-roles',
@@ -211,6 +212,14 @@ export const routes: Routes = [
               ),
           },
         ],
+      },
+      {
+        path: `${AppRoutes.registrationByReferenceId}/:referenceId`,
+        loadComponent: () =>
+          import(
+            '~/pages/registration-by-reference-id/registration-by-reference-id.page'
+          ).then((x) => x.RegistrationByReferenceIdPageComponent),
+        canActivate: [authGuard],
       },
       {
         path: '',
