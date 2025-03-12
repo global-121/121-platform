@@ -102,7 +102,7 @@ test('User can view the registration data of registration that has only the requ
     accessToken,
   });
 
-  const exepectedRegistrationData = {
+  const expectedRegistrationData = {
     Name: '',
     FSP: 'ironBank',
     'Preferred Language': 'English',
@@ -131,5 +131,5 @@ test('User can view the registration data of registration that has only the requ
 
   const personalInfo = await personalInfoPage.personalInformationDataList();
 
-  expect(personalInfo).toMatchObject(exepectedRegistrationData);
+  expect(personalInfo).toMatchObject(expectedRegistrationData);
 });
