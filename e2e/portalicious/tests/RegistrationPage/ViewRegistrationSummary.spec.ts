@@ -18,7 +18,7 @@ const projectId = 2;
 let registrationId: number;
 let registrationProgramId: number;
 
-test.beforeAll(async ({}) => {
+test('User should see a summary of a registration', async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
   const accessToken = await getAccessToken();
@@ -31,9 +31,7 @@ test.beforeAll(async ({}) => {
   const registration = searchRegistrationResponse.body.data[0];
   registrationId = registration.id;
   registrationProgramId = registration.registrationProgramId;
-});
 
-test('User should see a summary of a registration', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
   await loginPage.login(
@@ -65,9 +63,8 @@ test('User should see a summary of a registration', async ({ page }) => {
 
   await test.step('Validate registration created date', async () => {
     const dateText = await activityLogPage.getRegistrationCreatedDate();
-
-    // Validate it is a valid date
     const isValidDate = !isNaN(Date.parse(dateText));
+
     expect(isValidDate).toBeTruthy();
   });
 });
