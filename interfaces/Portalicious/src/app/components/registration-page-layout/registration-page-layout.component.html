@@ -87,3 +87,10 @@
   [projectId]="projectId()"
   [registrationId]="registrationId()"
 />
+
+<app-ignore-duplication-dialog
+  #ignoreDuplicationDialog
+  [projectId]="projectId()"
+  [registrationRegistrationId]="registrationId()"
+  [registrationReferenceId]="registration.data()?.referenceId ?? ''"
+/>
