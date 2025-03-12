@@ -42,7 +42,6 @@ test.beforeEach(async ({ page }) => {
   const basePage = new BasePage(page);
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
-// Act
 test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   page,
 }) => {
@@ -51,6 +50,7 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
+  // Act
   await test.step('Upload extra registration with max payment set to 1', async () => {
     await importRegistrations(
       programIdPV,
