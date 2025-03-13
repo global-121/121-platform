@@ -168,6 +168,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     // Arrange
     const payment = 1;
     await resetDB(SeedScript.nlrcMultiple);
+    accessToken = await getAccessToken();
     await seedIncludedRegistrations(
       [registrationPvScoped],
       programIdPv,
