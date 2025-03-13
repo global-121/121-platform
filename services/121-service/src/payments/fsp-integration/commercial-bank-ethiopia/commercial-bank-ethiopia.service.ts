@@ -314,12 +314,31 @@ export class CommercialBankEthiopiaService
     }
   }
 
-  public async getCommercialBankEthiopiaCredentialsOrThrow(
-    programFinancialServiceProviderConfigurationId: number,
-  ): Promise<RequiredUsernamePasswordInterface> {
+  public async getCommercialBankEthiopiaCredentialsOrThrow({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<RequiredUsernamePasswordInterface> {
+    const configs =
+      await this.programFspConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
+        {
+          programId,
+          financialServiceProviderName:
+            FinancialServiceProviders.commercialBankEthiopia,
+        },
+      );
+
+    // For now we only support one CBE FSP configuration per program
+    if (configs.length !== 1) {
+      throw new HttpException(
+        `Expected exactly one program financial service provider configuration for program ${programId} and financial service provider ${FinancialServiceProviders.commercialBankEthiopia}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        programFinancialServiceProviderConfigurationId,
+        configs[0].id,
       );
 
     if (credentials.password == null || credentials.username == null) {

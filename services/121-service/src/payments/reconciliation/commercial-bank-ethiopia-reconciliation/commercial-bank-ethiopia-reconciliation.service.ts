@@ -62,7 +62,7 @@ export class CommercialBankEthiopiaReconciliationService {
   ): Promise<void> {
     const credentials =
       await this.commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow(
-        programId,
+        { programId },
       );
 
     const getAllPersonsAffectedData =
