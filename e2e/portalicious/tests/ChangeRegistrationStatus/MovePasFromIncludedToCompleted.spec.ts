@@ -1,8 +1,12 @@
 import test from '@playwright/test';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import {
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -57,12 +61,20 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
 
   await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
     await doPayment({
-      programId: 2,
+      programId: programIdPV,
       paymentNr: 1,
       amount: 100,
       referenceIds: paymentReferenceId,
       accessToken,
     });
+    // Wait for payment transactions to complete
+    await waitForPaymentTransactionsToComplete(
+      programIdPV,
+      paymentReferenceId,
+      accessToken,
+      3001,
+      Object.values(TransactionStatusEnum),
+    );
   });
 
   await test.step('Search for the registration with status "Completed"', async () => {
