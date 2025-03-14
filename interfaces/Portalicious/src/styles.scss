@@ -20,6 +20,35 @@ body {
   --font-family: theme(fontFamily.body);
 }
 
+// Styles only for "local-development" purposes:
+// Classname is set on <html> by the AppComponent.
+.dev {
+  // Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
+  [class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
+      .p-toast-top-left
+    ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
+  [class*='-right']:not(.p-button-icon-right):not(.p-drawer-right):not(
+      .p-toast-top-right
+    ):not(.p-tooltip-right):not(.pi-chevron-right):not(.p-iconfield-right),
+  [class*='left-'],
+  [class*='right-'],
+  [class*='pr-'],
+  [class*='pl-'],
+  [class*='ml-'],
+  [class*='mr-'] {
+    &::before {
+      content: '⚠️ Use -end/-start, not -right/-left!';
+      font-weight: bold;
+      color: red;
+    }
+    outline: 2px dashed hotpink;
+    margin-right: unset !important;
+    margin-left: unset !important;
+    padding-right: unset !important;
+    padding-left: unset !important;
+  }
+}
+
 svg-icon svg {
   fill: currentColor;
 }
@@ -57,7 +86,7 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply py-2 font-semibold text-black txt-body-m #{!important};
+      @apply py-2 text-start font-semibold text-black txt-body-m #{!important};
     }
 
     &.mention-active {
@@ -128,10 +157,10 @@ svg-icon svg {
 
   .p-buttongroup {
     p-button:not(:first-child) .p-button-rounded {
-      @apply pl-4;
+      @apply ps-4;
     }
     p-button:not(:last-child) .p-button-rounded {
-      @apply pr-4;
+      @apply pe-4;
     }
   }
 
@@ -139,7 +168,7 @@ svg-icon svg {
     @apply text-black;
 
     .p-card-title {
-      @apply pb-2 pl-2 font-bold text-black txt-h-2;
+      @apply pb-2 ps-2 font-bold text-black txt-h-2;
     }
   }
 
@@ -147,7 +176,7 @@ svg-icon svg {
     color: inherit;
 
     .p-drawer-header {
-      @apply pl-3;
+      @apply ps-3;
       height: calc($toolbar-height - 2px);
 
       .p-drawer-icon {

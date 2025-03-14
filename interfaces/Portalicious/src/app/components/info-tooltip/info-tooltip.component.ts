@@ -1,6 +1,13 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+} from '@angular/core';
 
 import { TooltipModule } from 'primeng/tooltip';
+
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-info-tooltip',
@@ -10,5 +17,6 @@ import { TooltipModule } from 'primeng/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoTooltipComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly message = input.required<string>();
 }
