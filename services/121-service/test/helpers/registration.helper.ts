@@ -617,3 +617,35 @@ export async function getDuplicates({
     .set('Cookie', [accessToken])
     .send();
 }
+
+export async function createRegistrationDistinctness({
+  programId,
+  registrationIds,
+  accessToken,
+  reason = 'default reason',
+}: {
+  programId: number;
+  registrationIds: number[];
+  accessToken: string;
+  reason?: string;
+}): Promise<any> {
+  return getServer()
+    .post(`/programs/${programId}/registrations/distinctness`)
+    .set('Cookie', [accessToken])
+    .send({ registrationIds, reason });
+}
+
+export async function getActivities({
+  programId,
+  registrationId,
+  accessToken,
+}: {
+  programId: number;
+  registrationId: number;
+  accessToken: string;
+}): Promise<any> {
+  return getServer()
+    .get(`/programs/${programId}/registrations/${registrationId}/activities`)
+    .set('Cookie', [accessToken])
+    .send();
+}
