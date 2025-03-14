@@ -30,7 +30,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     await this.page.getByLabel(field).fill(value);
     await this.page.getByRole('button', { name: 'Save' }).click();
     await this.editInformationReasonField.fill(reason);
-    await this.dialog.getByRole('button', { name: 'Save' }).click();
+    await this.alertDialog.getByRole('button', { name: 'Save' }).click();
 
     // this re-appears after the save has been successful
     await expect(this.editInformationButton).toBeVisible();
