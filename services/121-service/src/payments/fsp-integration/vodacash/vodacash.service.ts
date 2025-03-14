@@ -259,9 +259,7 @@ export class VodacashService
   ): Promise<ImportFspReconciliationDto> {
     const validatedArray: ImportFspReconciliationArrayDto[] = [];
     let recordsCount = 0;
-    const rows = Array.isArray(xmlArray.elements)
-      ? xmlArray.elements
-      : [xmlArray];
+    const rows = Array.isArray(xmlArray) ? xmlArray : [xmlArray];
     for (const row of rows) {
       recordsCount += 1;
       if (this.fileImportService.checkForCompletelyEmptyRow(row)) {

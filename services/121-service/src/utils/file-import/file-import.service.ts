@@ -76,6 +76,7 @@ export class FileImportService {
     buffer,
   ): Promise<convert.Element | convert.ElementCompact> {
     const xml = convert.xml2js(buffer.toString());
+    // TODO: REFACTOR: The following line has Vodacash-specific code in that it looks for elements named "Records", which is true for Vodacash Reconciliation XML files, not necessarily for any other XML file.
     return xml.elements[0].elements.find((el) => el.name === 'Records')
       .elements;
   }
