@@ -17,10 +17,16 @@ swagger-spec.json
 #IDEs
 .idea
 
-# certificates
-# database certificate
+# Certificates
+# Azure database certificate(s)
 cert/DigiCertGlobalRootCA.crt.pem
-# nedbank integration certificate
+cert/DigiCert_Global_Root_CA.pem
+cert/DigiCertGlobalRootCA.pem
+cert/Microsoft_RSA_Root_Certificate_Authority_2017.pem
+cert/Microsoft RSA Root Certificate Authority 2017.pem
+cert/DigiCert_Global_Root_G2.pem
+cert/DigiCertGlobalRootG2.crt.pem
+# Nedbank integration certificate
 cert/*.pfx
 
 # Compodoc documentation
