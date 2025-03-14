@@ -1,7 +1,6 @@
 export class RegistrationsInputValidatorHelpers {
   static inputToBoolean(
     input: string | null | undefined | number | boolean,
-    defaultValue?: boolean,
   ): boolean | undefined {
     if (typeof input === 'boolean') {
       return input;
@@ -12,13 +11,11 @@ export class RegistrationsInputValidatorHelpers {
     }
 
     if (input === null) {
-      return false;
+      return undefined;
     }
 
     if (input === undefined) {
-      return this.isValueUndefinedOrNull(defaultValue)
-        ? undefined
-        : defaultValue;
+      return undefined;
     }
 
     switch (input.toLowerCase().trim()) {
@@ -32,13 +29,7 @@ export class RegistrationsInputValidatorHelpers {
       case '':
         return false;
       default:
-        return this.isValueUndefinedOrNull(defaultValue)
-          ? undefined
-          : defaultValue;
+        return false;
     }
-  }
-
-  static isValueUndefinedOrNull(value: any): boolean {
-    return value === undefined || value === null;
   }
 }
