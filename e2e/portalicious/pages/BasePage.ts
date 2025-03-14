@@ -77,6 +77,14 @@ class BasePage {
     });
   }
 
+  // Some data is already updated when the toast message is shown so to speed the test up we can validate the toast message
+  // And wait for 1 second to make sure the data is updated without waiting for the toast to disappear after 6 seconds
+  async validateToastMessageAndWait(message: string) {
+    await expect(this.toast).toBeVisible();
+    expect(await this.toast.textContent()).toContain(message);
+    await this.page.waitForTimeout(1000);
+  }
+
   async validateFormError({ errorText }: { errorText: string }) {
     await this.page.waitForLoadState('networkidle');
     await this.formError.waitFor();
