@@ -37,7 +37,7 @@ const MSALInstanceFactory = (): IPublicClientApplication =>
       cacheLocation: BrowserCacheLocation.LocalStorage,
     },
     system: {
-      allowPlatformBroker: false, // Disables WAM Broker
+      allowNativeBroker: false, // Disables WAM Broker
       allowRedirectInIframe: false,
       loggerOptions: {
         loggerCallback: (_level, message, containsPii) => {
