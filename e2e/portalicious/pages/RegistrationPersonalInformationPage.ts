@@ -1,6 +1,7 @@
 import { Locator, Page } from 'playwright';
 import { expect } from 'playwright/test';
 
+import DataListComponent from '../components/DataListComponent';
 import RegistrationBasePage from './RegistrationBasePage';
 
 class RegistrationPersonalInformationPage extends RegistrationBasePage {
@@ -34,6 +35,12 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
 
     // this re-appears after the save has been successful
     await expect(this.editInformationButton).toBeVisible();
+  }
+
+  personalInformationDataList(): Promise<Record<string, string>> {
+    return new DataListComponent(
+      this.page.locator('app-data-list').nth(1),
+    ).getData();
   }
 }
 
