@@ -231,6 +231,7 @@ export class RegistrationsService {
         result = [
           RegistrationStatusEnum.deleted,
           RegistrationStatusEnum.included,
+          RegistrationStatusEnum.declined,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.paused:
