@@ -14,7 +14,8 @@ class BasePage {
   readonly formError: Locator;
   readonly toast: Locator;
   readonly chooseFileButton: Locator;
-  readonly dialog: Locator;
+  readonly alertDialog: Locator;
+  readonly dialogMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -33,7 +34,8 @@ class BasePage {
     this.chooseFileButton = this.page.getByRole('button', {
       name: 'Choose file',
     });
-    this.dialog = this.page.getByRole('alertdialog');
+    this.alertDialog = this.page.getByRole('alertdialog');
+    this.dialogMessage = this.page.getByRole('dialog');
   }
 
   async openSidebar() {
@@ -83,6 +85,19 @@ class BasePage {
     await expect(this.toast).toBeVisible();
     expect(await this.toast.textContent()).toContain(message);
     await this.page.waitForTimeout(1000);
+  }
+
+  async validateDialogMessage(message: string) {
+    const dialog = this.dialogMessage.getByText(message);
+    const dialogText = await dialog.textContent();
+    const dialogTextCleaned =
+      dialogText
+        ?.replace(/\s*Cancel\s*$/, '') // Remove "Cancel" text if present
+        ?.replace(/\s+/g, ' ') // Normalize whitespace
+        ?.trim() ?? '';
+
+    await expect(dialog).toBeVisible();
+    expect(dialogTextCleaned).toContain(message);
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
