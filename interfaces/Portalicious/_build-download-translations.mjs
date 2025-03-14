@@ -34,6 +34,9 @@ const lokaliseDownloader = new LokaliseDownload(
   },
 );
 await lokaliseDownloader.downloadTranslations({
+  processDownloadFileParams: {
+    asyncDownload: true,
+  },
   downloadFileParams: {
     format: 'xlf',
     original_filenames: false,
