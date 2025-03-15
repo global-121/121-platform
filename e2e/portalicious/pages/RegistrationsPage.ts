@@ -180,6 +180,22 @@ class RegistrationsPage extends BasePage {
     return fullNameText;
   }
 
+  async validateStatusOfFirstRegistration({ status }: { status: string }) {
+    await this.table.waitForLoaded();
+    const registrationStatus = await this.table.getCell(0, 3);
+    const statusText = (await registrationStatus.textContent())?.trim();
+    if (!statusText) {
+      throw new Error('Could not find status in the table');
+    }
+    expect(statusText).toBe(status);
+  }
+
+  async validateRegistrationIsNotPresent() {
+    await this.page.waitForTimeout(200);
+    await this.page.waitForSelector('table tbody tr td');
+    await expect(this.page.getByText('No results found')).toBeVisible();
+  }
+
   async goToRegistrationByName({
     registrationName,
   }: {
