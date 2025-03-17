@@ -18,6 +18,7 @@ import {
 } from '~/components/import-file-dialog/import-file-dialog.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DownloadService } from '~/services/download.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -29,6 +30,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportRegistrationsComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
   private queryClient = inject(QueryClient);

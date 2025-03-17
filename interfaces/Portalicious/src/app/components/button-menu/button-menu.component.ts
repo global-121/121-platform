@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   model,
 } from '@angular/core';
@@ -10,6 +11,8 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-button-menu',
@@ -19,6 +22,7 @@ import { MenuModule } from 'primeng/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonMenuComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly label = input.required<string>();
   readonly menuItems = input.required<MenuItem[]>();
   readonly icon = input<string>();

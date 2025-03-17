@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   model,
   output,
@@ -12,6 +13,8 @@ import { NgxFilesizeModule } from 'ngx-filesize';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
+
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-file-upload-control',
@@ -28,6 +31,7 @@ import { FileUploadModule } from 'primeng/fileupload';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileUploadControlComponent implements ControlValueAccessor {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly accept = input.required<string>();
   readonly clearFiles = output();
 
