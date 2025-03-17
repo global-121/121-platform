@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
+import { DEBUG } from '@121-service/src/config';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -835,5 +836,34 @@ export class IntersolveVoucherService
       voucher.updatedLastRequestedBalance ?? undefined;
     voucherWithBalance.voucherSend = voucher.send ?? undefined;
     return voucherWithBalance;
+  }
+
+  /**
+   * Removes image codes older than one day as they're no longer needed.
+   *
+   * Timeline of image code usage:
+   * 1. Image/URL is created immediately before sending the Twilio message
+   * 2. Twilio downloads the image within seconds after the request is sent
+   * 3. Once downloaded, the image code serves no further purpose
+   *
+   * A one-day retention provides a generous safety buffer (only seconds are actually needed),
+   * ensuring any delayed processing or retry attempts have completed while preventing
+   * unnecessary storage consumption and minimizes the risk by reducing the amount of voucher exposed via the APi.
+   */
+  public async removeDeprecatedImageCodes(
+    currentDate: string | undefined,
+  ): Promise<number> {
+    // Date is optional it's only made available for testing purposes
+    let date: Date;
+    if (currentDate && DEBUG) {
+      date = new Date(currentDate);
+    } else {
+      date = new Date();
+    }
+    const dateFilter = date;
+    dateFilter.setDate(dateFilter.getDate() - 1);
+    return await this.imageCodeService.removeImageCodesCreatedBefore({
+      date: dateFilter,
+    });
   }
 }

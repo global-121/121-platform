@@ -161,6 +161,23 @@ export class CronjobService {
     return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+    disabled: !shouldBeEnabled(
+      process.env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
+    ),
+  })
+  public async cronRemoveDeprecatedImageCodes(): Promise<{
+    url: string;
+    responseStatus: number;
+  }> {
+    // Removes image codes older than one day as they're no longer needed after Twilio has downloaded them
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
+    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const response: AxiosResponse = await this.httpService.delete(url, headers);
+    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+  }
+
   public getAllMethods(): {
     methodNames: string[];
     url: string;

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
 import Jimp from 'jimp';
-import { Equal, Repository } from 'typeorm';
+import { Equal, LessThan, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
@@ -52,6 +52,17 @@ export class ImageCodeService {
     );
   }
 
+  public async removeImageCodesCreatedBefore({
+    date,
+  }: {
+    date: Date;
+  }): Promise<number> {
+    const deleteResult = await this.imageRepository.delete({
+      created: LessThan(date),
+    });
+    return deleteResult?.affected ?? 0;
+  }
+
   private async generateBarCodeImage(code: string): Promise<Buffer> {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const bwipjs = require('bwip-js');
@@ -72,7 +83,6 @@ export class ImageCodeService {
     });
     // Removes the image from the database after getting it
     if (imageCode) {
-      await this.imageRepository.remove(imageCode);
       return imageCode.image;
     } else {
       throw new HttpException(
