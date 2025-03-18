@@ -1,17 +1,10 @@
 #!/usr/bin/env node
-import { accessSync, constants } from 'node:fs';
+import { accessSync, constants, writeFileSync } from 'node:fs';
 import { LokaliseDownload } from 'lokalise-file-exchange';
 
 /**
  * See the README.md-file for more information.
  */
-
-/////////////////////////////////////////////////////////////////////////////
-
-if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
-  console.info('Skipping download of translations.');
-  process.exit(0);
-}
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -21,6 +14,30 @@ const requiredTranslations = (process.env.NG_LOCALES ?? '')
   .map((lang) => lang.trim());
 
 console.log('Required translations: ', requiredTranslations);
+
+/**
+ * @param {string} lang - Language-code
+ * @returns {string} - Full file-path
+ */
+const getTranslationFilePath = (lang) => `src/locale/messages.${lang}.xlf`;
+
+/////////////////////////////////////////////////////////////////////////////
+
+if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
+  console.info('Skipping download of translations. Creating mocks instead.');
+  for (const lang of requiredTranslations) {
+    const filePath = getTranslationFilePath(lang);
+    writeFileSync(
+      filePath,
+      // Use the most minimal, yet valid XLIFF file:
+      `<xliff version="1.2"><file source-language="en-GB" target-language="${lang}"></file></xliff>`,
+    );
+    console.info(`☑️  Mock created: ${filePath}`);
+  }
+  process.exit(0);
+}
+
+/////////////////////////////////////////////////////////////////////////////
 
 // Download translations for all languages
 console.info(`Downloading all translations...`);
@@ -47,9 +64,9 @@ console.info(`Download done ✅`);
 
 console.info(`Verify required translations have been downloaded...`);
 for (const lang of requiredTranslations) {
-  const filePath = `src/locale/messages.${lang}.xlf`;
+  const filePath = getTranslationFilePath(lang);
   accessSync(filePath, constants.R_OK);
-  console.info(`✅ ${filePath} exists.`);
+  console.info(`✅ Translations downloaded: ${filePath}`);
 }
 
 /////////////////////////////////////////////////////////////////////////////
