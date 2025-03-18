@@ -12,7 +12,7 @@ export class EventsMapper {
     return events.map((event) => this.mapEventToJsonDto(event));
   }
 
-  # TODO make private
+  // TODO: make private
   static mapEventToXlsxDto(event: EventEntity): GetEventXlsxDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
