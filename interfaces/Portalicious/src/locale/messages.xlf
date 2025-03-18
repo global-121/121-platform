@@ -1579,9 +1579,6 @@
       <trans-unit id="general" datatype="html">
         <source>General</source>
       </trans-unit>
-      <trans-unit id="1233711102649541270" datatype="html">
-        <source>Ignore duplication</source>
-      </trans-unit>
       <trans-unit id="3570735198692940811" datatype="html">
         <source>Add a reason</source>
       </trans-unit>
