@@ -28,6 +28,7 @@ import { RegistrationsService } from '@121-service/src/registration/registration
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { isValidStatusChange } from '@121-service/src/registration/validators/is-valid-status-change.validator';
 import {
   ScopedQueryBuilder,
   ScopedRepository,
@@ -664,7 +665,7 @@ export class RegistrationsBulkService {
   ): RegistrationStatusEnum[] {
     const allStatuses = Object.values(RegistrationStatusEnum);
     return allStatuses.filter((currentStatus) =>
-      this.registrationsService.canChangeStatus(currentStatus, newStatus),
+      isValidStatusChange(currentStatus, newStatus),
     );
   }
 
