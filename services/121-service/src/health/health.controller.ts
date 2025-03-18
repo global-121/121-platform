@@ -24,7 +24,7 @@ export class HealthController {
   @HealthCheck()
   public check(): Promise<HealthCheckResult> {
     return this.health.check([
-      () => this.db.pingCheck('database', { timeout: 300 }),
+      () => this.db.pingCheck('database', { timeout: 600 }),
     ]);
   }
 
