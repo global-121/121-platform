@@ -1,3 +1,4 @@
+import { I18nPluralPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,6 +34,7 @@ type IgnoreDuplicationFormGroup =
     InputTextModule,
     ConfirmationDialogComponent,
     FormsModule,
+    I18nPluralPipe,
   ],
   providers: [],
   templateUrl: './ignore-duplication-dialog.component.html',

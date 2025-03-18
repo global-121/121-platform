@@ -1565,7 +1565,7 @@
         <source>Unique</source>
       </trans-unit>
       <trans-unit id="registration-duplicates" datatype="html">
-        <source>Ignore duplication</source>
+        <source>Duplicates</source>
       </trans-unit>
       <trans-unit id="1160840788795450422" datatype="html">
         <source>At least one column must be selected</source>
@@ -1586,7 +1586,10 @@
         <source>Add a reason</source>
       </trans-unit>
       <trans-unit id="3720159686083335313" datatype="html">
-        <source>You&apos;re about to mark <x equiv-text="{{ duplicatesRegistrationIds().length === 2 ? &apos;both&apos; : duplicatesRegistrationIds().length }}" id="INTERPOLATION"/> registrations as unique. This means that they will no longer appear as duplicates of each other.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
+        <source>You&apos;re about to mark <x equiv-text="{{ duplicatesRegistrationIds().length | i18nPlural : { &apos;=2&apos;: &apos;both&apos;, other: duplicatesRegistrationIds().length.toString(), } }}" id="INTERPOLATION"/> registrations as unique. This means that they will no longer appear as duplicates of each other.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplication" datatype="html">
+        <source>Ignore duplication</source>
       </trans-unit>
     </body>
   </file>

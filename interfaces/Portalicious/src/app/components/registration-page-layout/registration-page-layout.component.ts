@@ -15,6 +15,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
 
+import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -46,8 +47,6 @@ import { PaginateQueryService } from '~/services/paginate-query.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RegistrationLookupService } from '~/services/registration-lookup.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-
-import { DuplicateStatus } from '../../../../../../services/121-service/src/registration/enum/duplicate-status.enum';
 
 @Component({
   selector: 'app-registration-page-layout',
@@ -148,7 +147,7 @@ export class RegistrationPageLayoutComponent {
     {
       items: [
         {
-          label: $localize`:@@registration-duplicates:Ignore duplication`,
+          label: $localize`:@@ignore-duplication:Ignore duplication`,
           icon: 'pi pi-clone',
           visible:
             this.registration.data()?.duplicateStatus ===

@@ -14,9 +14,12 @@
   >
     You're about to mark
     {{
-      duplicatesRegistrationIds().length === 2
-        ? 'both'
-        : duplicatesRegistrationIds().length
+      duplicatesRegistrationIds().length
+        | i18nPlural
+          : {
+              '=2': 'both',
+              other: duplicatesRegistrationIds().length.toString(),
+            }
     }}
     registrations as unique. This means that they will no longer appear as
     duplicates of each other.<br /><br />However, if either is found to be a
