@@ -1,0 +1,44 @@
+<app-confirmation-dialog
+  #ignoreDuplicationDialog
+  header="Ignore duplication"
+  i18n-header="@@ignore-duplication"
+  headerIcon="pi pi-clone"
+  proceedLabel="Approve"
+  i18n-proceedLabel="@@generic-approve"
+  [mutation]="approveMutation"
+  [mutationData]="{ reason: updateReason() }"
+>
+  @let duplicateCount = this.duplicatesRegistrationIds().length;
+  <p class="mb-7">
+    @if (duplicateCount === 2) {
+      <span i18n="@@ignore-duplicates-confirmation-message-first-2_duplicates">
+        You're about to mark both registrations as unique.
+      </span>
+    } @else {
+      <span
+        i18n="@@ignore-duplicates-confirmation-message-first-more_duplicates"
+      >
+        You're about to mark {{ duplicateCount }} registrations as unique.
+      </span>
+    }
+    <span i18n="@@ignore-duplicates-confirmation-message-second">
+      This means that they will no longer appear as duplicates of each other.
+    </span>
+    <br /><br />
+    <span i18n="@@ignore-duplicates-confirmation-message-third">
+      However, if either is found to be a duplicate of other registrations,
+      their duplication status will be 'Duplicate'.
+    </span>
+  </p>
+  <app-form-field-wrapper
+    label="Add a reason"
+    i18n-label
+  >
+    <input
+      pInputText
+      type="text"
+      [(ngModel)]="updateReason"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+</app-confirmation-dialog>
