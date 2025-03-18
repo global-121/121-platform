@@ -2,6 +2,7 @@ import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
 import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
+import { IgnoredDuplication } from '@121-service/src/activities/interfaces/ignored-duplication.interface';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
@@ -33,8 +34,12 @@ export class ActivitiesMapper {
     const count: Partial<Record<ActivityTypeEnum, number>> = {};
     const activityLogItems: Activity[] = [];
 
-    const { dataChanges, statusUpdates, financialServiceProviderChanges } =
-      this.categoriseEvents(events);
+    const {
+      dataChanges,
+      statusUpdates,
+      financialServiceProviderChanges,
+      ignoredDuplications,
+    } = this.categoriseEvents(events);
 
     availableTypes.forEach((type) => {
       let activities: Activity[] = [];
@@ -55,13 +60,16 @@ export class ActivitiesMapper {
         case ActivityTypeEnum.StatusChange:
           activities = this.mapStatusUpdatesToActivity(statusUpdates);
           break;
+        case ActivityTypeEnum.IgnoredDuplication:
+          activities =
+            this.mapIgnoredDuplicationToActivity(ignoredDuplications);
+          break;
         case ActivityTypeEnum.FinancialServiceProviderChange:
           activities = this.mapFinanacialServiceProviderChangesToActivity(
             financialServiceProviderChanges,
           );
           break;
       }
-
       count[type] = activities.length;
       activityLogItems.push(...activities);
     });
@@ -76,6 +84,7 @@ export class ActivitiesMapper {
     const dataChanges: GetEventDto[] = [];
     const statusUpdates: GetEventDto[] = [];
     const financialServiceProviderChanges: GetEventDto[] = [];
+    const ignoredDuplications: GetEventDto[] = [];
 
     events.forEach((event) => {
       const mappedEvent = EventsMapper.mapEventToJsonDto(event);
@@ -90,12 +99,16 @@ export class ActivitiesMapper {
         case EventEnum.financialServiceProviderChange:
           financialServiceProviderChanges.push(mappedEvent);
           break;
+        case EventEnum.ignoredDuplication:
+          ignoredDuplications.push(mappedEvent);
+          break;
       }
     });
     return {
       dataChanges,
       statusUpdates,
       financialServiceProviderChanges,
+      ignoredDuplications,
     };
   }
 
@@ -211,6 +224,26 @@ export class ActivitiesMapper {
       attributes: {
         oldValue: event.attributes.oldValue,
         newValue: event.attributes.newValue,
+        reason: event.attributes.reason,
+      },
+    }));
+  }
+  private static mapIgnoredDuplicationToActivity(
+    events: GetEventDto[],
+  ): IgnoredDuplication[] {
+    return events.map((event, index) => ({
+      id: `${ActivityTypeEnum.IgnoredDuplication}${index}`,
+      user: {
+        id: event.user?.id,
+        username: event.user?.username,
+      },
+      created: event.created,
+      type: ActivityTypeEnum.IgnoredDuplication,
+      attributes: {
+        duplicateRegistrationId: event.attributes
+          .duplicateRegistrationId as string, // Used as string because in the interface we use this to construct an url and this value is stored as string
+        duplicateRegistrationProgramId: event.attributes
+          .duplicateRegistrationProgramId as string, // Used as string because in the interface we use this to construct an url and this value is stored as string
         reason: event.attributes.reason,
       },
     }));
