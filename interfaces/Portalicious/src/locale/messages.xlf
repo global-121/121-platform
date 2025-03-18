@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1579,6 +1579,23 @@
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+      <trans-unit id="3570735198692940811" datatype="html">
+        <source>Add a reason</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplication" datatype="html">
+        <source>Ignore duplication</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-2_duplicates" datatype="html">
+        <source>You&apos;re about to mark both registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-more_duplicates" datatype="html">
+        <source>You&apos;re about to mark <x equiv-text="{{ duplicateCount }}" id="INTERPOLATION"/> registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-second" datatype="html">
+        <source>This means that they will no longer appear as duplicates of each other.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-third" datatype="html">
+        <source>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
       </trans-unit>
       <trans-unit id="generic-app-name" datatype="html">
         <source>121 Portal</source>
