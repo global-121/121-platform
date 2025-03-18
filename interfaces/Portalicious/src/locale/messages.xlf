@@ -1585,11 +1585,20 @@
       <trans-unit id="3570735198692940811" datatype="html">
         <source>Add a reason</source>
       </trans-unit>
-      <trans-unit id="3720159686083335313" datatype="html">
-        <source>You&apos;re about to mark <x equiv-text="{{ duplicatesRegistrationIds().length | i18nPlural : { &apos;=2&apos;: &apos;both&apos;, other: duplicatesRegistrationIds().length.toString(), } }}" id="INTERPOLATION"/> registrations as unique. This means that they will no longer appear as duplicates of each other.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
-      </trans-unit>
       <trans-unit id="ignore-duplication" datatype="html">
         <source>Ignore duplication</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-2_duplicates" datatype="html">
+        <source>You&apos;re about to mark both registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-more_duplicates" datatype="html">
+        <source>You&apos;re about to mark <x equiv-text="{{ duplicateCount }}" id="INTERPOLATION"/> registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-second" datatype="html">
+        <source>This means that they will no longer appear as duplicates of each other.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-third" datatype="html">
+        <source>However, if either is found to be a duplicate of other registrations, their duplication status will be &apos;Duplicate&apos;.</source>
       </trans-unit>
     </body>
   </file>
