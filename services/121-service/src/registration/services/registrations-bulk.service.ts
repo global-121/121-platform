@@ -22,13 +22,13 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { isValidStatusChange } from '@121-service/src/registration/validators/is-valid-status-change.validator';
 import {
   ScopedQueryBuilder,
   ScopedRepository,
@@ -665,7 +665,7 @@ export class RegistrationsBulkService {
   ): RegistrationStatusEnum[] {
     const allStatuses = Object.values(RegistrationStatusEnum);
     return allStatuses.filter((currentStatus) =>
-      isValidStatusChange(currentStatus, newStatus),
+      StatusChangeHelper.isValidStatusChange(currentStatus, newStatus),
     );
   }
 
