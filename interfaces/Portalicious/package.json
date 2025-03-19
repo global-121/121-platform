@@ -12,7 +12,7 @@
     "prestart": "npm run set-env-variables -- env=development",
     "start": "ng serve",
     "start:debug-production": "npm run build:production && npm run serve:static",
-    "prebuild": "npm run set-env-variables -- env=production && npm run build:deployment-configuration",
+    "prebuild": "npm run set-env-variables -- env=production && npm run build:download-translations && npm run build:deployment-configuration",
     "build": "ng build --localize",
     "postbuild": "shx mv www/browser/* www/ && shx touch www/index.html && npm run build:root-404 && npm run build:manual-logout",
     "build:production": "npm run build -- --configuration=production",
