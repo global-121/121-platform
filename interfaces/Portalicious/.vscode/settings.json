@@ -6,6 +6,7 @@
   },
   "eslint.enable": true,
   "eslint.format.enable": true,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
   "css.customData": [".vscode/tailwind.json"],
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.showPixelEquivalents": true,
