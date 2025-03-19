@@ -16,14 +16,16 @@
   i18n-header
 >
   <p i18n>The system will create registrations with the status “registered”.</p>
-  <p i18n>
-    Make sure to match the required format of the template CSV-file. Download
-    the template
+  <p>
+    <ng-container i18n>
+      Make sure to match the required format of the template CSV-file.
+    </ng-container>
     <p-button
+      i18n="@@download-template"
       [link]="true"
       (click)="downloadImportRegistrationsTemplateMutation.mutate()"
-      >here</p-button
+      >Download the template</p-button
     >.
   </p>
-  <p i18n>The import takes about 1 minute per 100 records</p>
+  <p i18n>The import takes about 1 minute per 100 records.</p>
 </app-import-file-dialog>
