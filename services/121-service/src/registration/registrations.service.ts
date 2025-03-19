@@ -205,6 +205,7 @@ export class RegistrationsService {
           RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,
+          RegistrationStatusEnum.completed,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.included:
@@ -231,7 +232,6 @@ export class RegistrationsService {
         result = [
           RegistrationStatusEnum.deleted,
           RegistrationStatusEnum.included,
-          RegistrationStatusEnum.declined,
         ].includes(currentStatus);
         break;
       case RegistrationStatusEnum.paused:
