@@ -17,9 +17,5 @@
     "class:list"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  // The following setting is necessary to avoid false negatives in the VSCode Angular Language
-  // Service because of discrepancies between the angular versions used in Portal and Portalicious.
-  // It can be removed when the Portal is removed.
-  "angular.suppressAngularDiagnosticCodes": "-992010,-998001,-998002"
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

@@ -190,20 +190,20 @@ export class ActivityLogExpandedRowComponent
           },
         ];
 
-        if (item.attributes.status === TransactionStatusEnum.error) {
-          list.push({
-            label: $localize`Fail reason`,
-            value: item.attributes.errorMessage,
-            type: 'text',
-          });
-        }
-
         if (this.isIntersolveVoucher()) {
           list.push({
             label: $localize`Current balance`,
             value: this.intersolveVoucherBalance.data(),
             type: 'currency',
             loading: this.intersolveVoucherBalance.isLoading(),
+          });
+        }
+
+        if (item.attributes.status === TransactionStatusEnum.error) {
+          list.push({
+            label: $localize`Fail reason`,
+            value: item.attributes.errorMessage,
+            type: 'text',
           });
         }
 
