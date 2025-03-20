@@ -1,5 +1,7 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -27,6 +29,7 @@ import stream from 'stream';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IdentifyVoucherDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/identify-voucher.dto';
+import { RemoveDeprecatedImageCodesDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
@@ -182,5 +185,28 @@ export class IntersolveVoucherController {
     console.info('CronjobService - Started: cronSendWhatsappReminders');
     await this.intersolveVoucherCronService.sendWhatsappReminders();
     console.info('CronjobService - Complete: cronSendWhatsappReminders');
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary: '[CRON] Remove deprecated image codes',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successfully removed deprecated image codes',
+  })
+  @Delete(
+    '/financial-service-providers/intersolve-voucher/deprecated-image-codes',
+  )
+  public async removeDeprecatedImageCodes(
+    @Body() body: RemoveDeprecatedImageCodesDto,
+  ): Promise<number> {
+    console.info('CronjobService - Started: removeDeprecatedImageCodes');
+    const numberOfDeleted =
+      await this.intersolveVoucherService.removeDeprecatedImageCodes(
+        body.mockCurrentDate,
+      );
+    console.info('CronjobService - Complete: removeDeprecatedImageCodes');
+    return numberOfDeleted;
   }
 }

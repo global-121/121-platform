@@ -517,3 +517,22 @@ export async function setAllProgramsRegistrationAttributesNonRequired(
     });
   }
 }
+
+export async function removeDeprecatedImageCodes({
+  accessToken,
+  mockCurrentDateIsoString,
+}: {
+  accessToken: string;
+  mockCurrentDateIsoString?: string;
+}): Promise<request.Response> {
+  const body: Record<string, string> = {};
+  if (mockCurrentDateIsoString) {
+    body.mockCurrentDate = mockCurrentDateIsoString;
+  }
+  return await getServer()
+    .delete(
+      '/financial-service-providers/intersolve-voucher/deprecated-image-codes',
+    )
+    .set('Cookie', [accessToken])
+    .send(body);
+}

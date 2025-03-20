@@ -451,6 +451,11 @@
     "params": []
   },
   {
+    "method": "delete",
+    "path": "/api/financial-service-providers/intersolve-voucher/deprecated-image-codes",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/transactions",
     "params": [
