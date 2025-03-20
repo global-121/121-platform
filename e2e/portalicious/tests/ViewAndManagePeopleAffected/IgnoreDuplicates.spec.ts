@@ -64,11 +64,10 @@ test('[] Ignore duplicates', async ({ page }) => {
   await test.step('Ignore duplication', async () => {
     await registrationActivityLogPage.inititateAction('Ignore duplication');
 
-    const dialog = await registrationActivityLogPage.dialog.getByTestId(
-      'ignore-duplication-dialog',
-    );
+    const dialog = await registrationActivityLogPage.dialog;
 
-    await expect(dialog).toBeVisible();
+    // await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Ignore duplication')).toBeVisible();
 
     const editInformationReasonField = await dialog.getByLabel('Add a reason');
     await editInformationReasonField.fill('E2E test');
