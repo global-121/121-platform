@@ -1012,12 +1012,6 @@
       <trans-unit id="5842006292473012174" datatype="html">
         <source>The system will create registrations with the status “registered”.</source>
       </trans-unit>
-      <trans-unit id="7123246815138482133" datatype="html">
-        <source>The import takes about 1 minute per 100 records</source>
-      </trans-unit>
-      <trans-unit id="4555355588212916481" datatype="html">
-        <source>Make sure to match the required format of the template CSV-file. Download the template <x ctype="x-p_button" equiv-text="&lt;p-button [link]=&quot;true&quot; (click)=&quot;downloadImportRegistrationsTemplateMutation.mutate()&quot; &gt;" id="START_TAG_P_BUTTON"/>here<x ctype="x-p_button" equiv-text="&lt;/p-button &gt;" id="CLOSE_TAG_P_BUTTON"/>.</source>
-      </trans-unit>
       <trans-unit id="import-registrations-success" datatype="html">
         <source>Registration(s) imported successfully.</source>
       </trans-unit>
@@ -1574,9 +1568,6 @@
         <source>Image credit: ZOA International</source>
         <note priority="1" from="description">Login-page background image credit</note>
       </trans-unit>
-      <trans-unit id="1335073692428599115" datatype="html">
-        <source>Download the template</source>
-      </trans-unit>
       <trans-unit id="3195834407708667843" datatype="html">
         <source>The status column in the file should contain one of the following values:</source>
       </trans-unit>
@@ -1585,6 +1576,15 @@
       </trans-unit>
       <trans-unit id="8618812090050599119" datatype="html">
         <source>Import the file sent by the FSP to see the transfer status of the registrations included in this payment.</source>
+      </trans-unit>
+      <trans-unit id="4970172669399649769" datatype="html">
+        <source>Make sure to match the required format of the template CSV-file.</source>
+      </trans-unit>
+      <trans-unit id="6554222446236271125" datatype="html">
+        <source>The import takes about 1 minute per 100 records.</source>
+      </trans-unit>
+      <trans-unit id="download-template" datatype="html">
+        <source>Download the template</source>
       </trans-unit>
     </body>
   </file>
