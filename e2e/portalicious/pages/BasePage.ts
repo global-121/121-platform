@@ -17,6 +17,7 @@ class BasePage {
   readonly dialog: Locator;
   readonly importButton: Locator;
   readonly importFileButton: Locator;
+  readonly ignoreDuplicationDialog: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -40,6 +41,9 @@ class BasePage {
     this.importFileButton = this.page.getByRole('button', {
       name: 'Import file',
     });
+    this.ignoreDuplicationDialog = this.page.getByTestId(
+      'ignore-duplication-dialog',
+    );
   }
 
   async openSidebar() {
