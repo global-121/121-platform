@@ -15,6 +15,7 @@ class BasePage {
   readonly toast: Locator;
   readonly chooseFileButton: Locator;
   readonly dialog: Locator;
+  readonly ignoreDuplicationDialog: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -34,6 +35,9 @@ class BasePage {
       name: 'Choose file',
     });
     this.dialog = this.page.getByRole('alertdialog');
+    this.ignoreDuplicationDialog = this.page.getByTestId(
+      'ignore-duplication-dialog',
+    );
   }
 
   async openSidebar() {
