@@ -25,7 +25,7 @@ const projectId = 2;
 let registrationId: number;
 const statusUpdateLabel = 'Status update';
 
-test.beforeEach(async ({}) => {
+test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
   const accessToken = await getAccessToken();
@@ -35,11 +35,7 @@ test.beforeEach(async ({}) => {
     referenceId: registrationPV5.referenceId,
     accessToken,
   });
-});
 
-test('User should see actions in actions menu on registration page', async ({
-  page,
-}) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
@@ -47,6 +43,11 @@ test('User should see actions in actions menu on registration page', async ({
     process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
+});
+
+test('[34640] User should see actions in actions menu on registration page', async ({
+  page,
+}) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
     `/project/${projectId}/registrations/${registrationId}`,
@@ -87,16 +88,9 @@ test('User should see actions in actions menu on registration page', async ({
   });
 });
 
-test('User with limited permissions should not see actions menu button on registraiton page', async ({
+test('[34640] User with limited permissions should not see actions menu button on registraiton page', async ({
   page,
 }) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
-  );
-
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
     `/project/${projectId}/registrations/${registrationId}`,
@@ -108,13 +102,14 @@ test('User with limited permissions should not see actions menu button on regist
   });
 });
 
-test('User should only see actions the user has access too in actions menu on profile page', async ({
+test('[34640] User should only see actions the user has access too in actions menu on profile page', async ({
   page,
 }) => {
   await addPermissionToRole(DefaultUserRole.View, [
     PermissionEnum.RegistrationPersonalUPDATE,
   ]);
-
+  // login again to update permissions
+  await page.goto(`/logout`);
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
   await loginPage.login(
