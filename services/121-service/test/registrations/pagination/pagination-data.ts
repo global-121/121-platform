@@ -175,6 +175,23 @@ export const registrationPV8 = {
   addressCity: 'Stad',
 };
 
+export const registrationPvMaxPayment = {
+  referenceId: 'asdf234f4gg4ag64569',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jack Strong',
+  phoneNumber: '14155235559',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.intersolveVisa,
+  whatsappPhoneNumber: '14155235559',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+  maxPayments: 1,
+};
+
 export const registrationsPV = [
   registrationPV5,
   registrationPV6,

@@ -202,6 +202,7 @@ export class RegistrationsService {
       case RegistrationStatusEnum.declined:
         result = [
           RegistrationStatusEnum.included,
+          RegistrationStatusEnum.completed,
           RegistrationStatusEnum.paused,
           RegistrationStatusEnum.registered,
           RegistrationStatusEnum.validated,

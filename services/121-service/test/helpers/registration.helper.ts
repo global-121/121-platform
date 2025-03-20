@@ -213,6 +213,37 @@ export function getRegistrations({
     .send();
 }
 
+export async function changeBulkRegistrationStatus({
+  programId,
+  status,
+  accessToken,
+  options: { includeTemplatedMessage = false, reason = 'default reason' } = {},
+}: {
+  programId: number;
+  status: RegistrationStatusEnum;
+  accessToken: string;
+  options?: {
+    filter?: Record<string, string>;
+    includeTemplatedMessage?: boolean;
+    reason?: string | null;
+  };
+}): Promise<request.Response> {
+  const queryParams: Record<string, string> = {};
+
+  const result = await getServer()
+    .patch(`/programs/${programId}/registrations/status`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send({
+      status,
+      message: null,
+      messageTemplateKey: includeTemplatedMessage ? status : null,
+      reason,
+    });
+
+  return result;
+}
+
 export async function changeRegistrationStatus({
   programId,
   referenceIds,
@@ -536,6 +567,32 @@ export async function seedIncludedRegistrations(
     programId,
     referenceIds: registrations.map((r) => r.referenceId),
     status: RegistrationStatusEnum.included,
+    accessToken,
+  });
+}
+
+export async function seedRegistrationsWithStatus(
+  registrations: any[],
+  programId: number,
+  accessToken: string,
+  status: RegistrationStatusEnum,
+): Promise<void> {
+  const response = await importRegistrations(
+    programId,
+    registrations,
+    accessToken,
+  );
+
+  if (!(response.status >= 200 && response.status < 300)) {
+    throw new Error(
+      `Error occured while importing registrations: ${response.text}`,
+    );
+  }
+
+  await awaitChangeRegistrationStatus({
+    programId,
+    referenceIds: registrations.map((r) => r.referenceId),
+    status,
     accessToken,
   });
 }
