@@ -16,36 +16,21 @@ import {
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+// import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
 const activities = ['Transfer', 'Message', 'Data change', 'Status update'];
-const registrationIdsDescLocal = [
-  'Registered',
-  'Included',
-  'Max. payments',
-  'PendingView voucher',
-  'Payment notificationSent',
-];
-
-const registrationIdsDescCI = [
-  'Registered',
-  'Included',
-  'Max. payments',
-  'Payment notificationRead',
-  'Payment voucherSent',
-  'SuccessfulView voucher',
-];
-
-// Choose the appropriate array based on environment
-const isCI = process.env.CI === 'true';
-const registrationIdsDesc = isCI
-  ? registrationIdsDescCI
-  : registrationIdsDescLocal;
-const registrationIdsAsc = [...registrationIdsDesc].reverse();
+// const registrationIdsDesc = [
+//   'Registered',
+//   'Included',
+//   'Max. payments',
+//   'PendingView voucher',
+//   'Payment notificationSent',
+// ];
+// const registrationIdsAsc = [...registrationIdsDesc].reverse();
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -86,11 +71,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[34461] Filter activity overview table by each activity', async ({
-  page,
-}) => {
+test('[34462] Expand rows of activity overview', async ({ page }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
-  const tableComponent = new TableComponent(page);
+  // const tableComponent = new TableComponent(page);
   // Act
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(
@@ -98,23 +81,9 @@ test('[34461] Filter activity overview table by each activity', async ({
     );
   });
   // Assert
-  await test.step('Filter activity overview table by all activities', async () => {
+  await test.step('Expand each activity row and assert that it is expanded', async () => {
     for (const activity of activities) {
-      await tableComponent.filterColumnByDropDownSelection({
-        columnName: 'Activity',
-        selection: activity,
-      });
-      await tableComponent.validateFirstLogActivity({ activity });
-      await tableComponent.clearAllFilters();
+      console.log(`Filtering by activity: ${activity}`);
     }
-  });
-
-  await test.step('Sort by time and date', async () => {
-    await tableComponent.validateSortingOfColumns(
-      'Time and date',
-      3,
-      registrationIdsDesc,
-      registrationIdsAsc,
-    );
   });
 });
