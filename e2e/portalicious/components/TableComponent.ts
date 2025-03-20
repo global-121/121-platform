@@ -208,6 +208,11 @@ class TableComponent {
     expect(textFromColumn).toEqual(descendingExpected);
   }
 
+  async validateFirstLogActivity({ activity }: { activity: string }) {
+    const firstRowText = await this.getTextArrayFromColumn(2);
+    expect(firstRowText[0]).toContain(activity);
+  }
+
   async validateSelectionCount(expectedCount: number) {
     if (expectedCount === 0) {
       await expect(this.page.getByText('selected')).not.toBeVisible();
