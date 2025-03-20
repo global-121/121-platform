@@ -82,7 +82,7 @@ class BasePage {
   async validateToastMessageAndWait(message: string) {
     await expect(this.toast).toBeVisible();
     expect(await this.toast.textContent()).toContain(message);
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForTimeout(1200);
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
