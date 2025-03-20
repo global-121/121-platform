@@ -71,7 +71,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[34461] Filter activity overview table', async ({ page }) => {
+test('[34461] Filter activity overview table by each activity', async ({
+  page,
+}) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   const tableComponent = new TableComponent(page);
   // Act
