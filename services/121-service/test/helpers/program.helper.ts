@@ -518,15 +518,16 @@ export async function setAllProgramsRegistrationAttributesNonRequired(
   }
 }
 
-export async function removeDeprecatedImageCodes(
-  {
-    accessToken,
-    mockCurrentDate,
-  }: { accessToken: string; mockCurrentDate?: string }, // ISO string format
-): Promise<request.Response> {
+export async function removeDeprecatedImageCodes({
+  accessToken,
+  mockCurrentDateIsoString,
+}: {
+  accessToken: string;
+  mockCurrentDateIsoString?: string;
+}): Promise<request.Response> {
   const body: Record<string, string> = {};
-  if (mockCurrentDate) {
-    body.mockCurrentDate = mockCurrentDate;
+  if (mockCurrentDateIsoString) {
+    body.mockCurrentDate = mockCurrentDateIsoString;
   }
   return await getServer()
     .delete(

@@ -848,19 +848,18 @@ export class IntersolveVoucherService
    *
    * A one-day retention provides a generous safety buffer (only seconds are actually needed),
    * ensuring any delayed processing or retry attempts have completed while preventing
-   * unnecessary storage consumption and minimizes the risk by reducing the amount of voucher exposed via the APi.
+   * unnecessary storage consumption and minimizes the risk by reducing the amount of voucher exposed via the API.
    */
   public async removeDeprecatedImageCodes(
-    currentDate: string | undefined,
+    mockCurrentDate?: string | undefined,
   ): Promise<number> {
-    // Date is optional it's only made available for testing purposes
-    let date: Date;
-    if (currentDate && DEBUG) {
-      date = new Date(currentDate);
+    // mockCurrentDate is only made available for testing purposes, as there is no easy way to mock the current date in out test setup
+    let dateFilter: Date;
+    if (mockCurrentDate && DEBUG) {
+      dateFilter = new Date(mockCurrentDate);
     } else {
-      date = new Date();
+      dateFilter = new Date();
     }
-    const dateFilter = date;
     dateFilter.setDate(dateFilter.getDate() - 1);
     return await this.imageCodeService.removeImageCodesCreatedBefore({
       date: dateFilter,

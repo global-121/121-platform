@@ -21,7 +21,7 @@ describe('Delete deprecated vouchers', () => {
     accessToken = await getAccessToken();
   });
 
-  it(`should not deprecate images that are not older than a day`, async () => {
+  it(`should not delete images that are not older than a day`, async () => {
     // Arrange
     await seedPaidRegistrations([registrationPV5], programIdPV);
 
@@ -38,7 +38,7 @@ describe('Delete deprecated vouchers', () => {
     expect(response.text).toBe('0');
   });
 
-  it(`should deprecate image that is older than a day`, async () => {
+  it(`should delete image that is older than a day`, async () => {
     // Arrange
     await seedPaidRegistrations([registrationPV5], programIdPV);
 
@@ -54,7 +54,7 @@ describe('Delete deprecated vouchers', () => {
     });
     const response = await removeDeprecatedImageCodes({
       accessToken,
-      mockCurrentDate: dayAfterTomorrow.toISOString(),
+      mockCurrentDateIsoString: dayAfterTomorrow.toISOString(),
     });
 
     // Assert
