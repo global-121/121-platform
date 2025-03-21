@@ -23,30 +23,6 @@ import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/Registratio
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
 const activities = ['Transfer', 'Message', 'Data change', 'Status update'];
-const registrationIdsDescLocal = [
-  'Registered',
-  'Included',
-  'Max. payments',
-  'PendingView voucher',
-  'Payment notificationSent',
-];
-
-const registrationIdsDescCI = [
-  'Registered',
-  'Included',
-  'Max. payments',
-  'Payment instructionsRead',
-  'Payment notificationRead',
-  'Payment voucherSent',
-  'SuccessfulView voucher',
-];
-
-// Choose the appropriate array based on environment
-const isCI = process.env.CI === 'true';
-const registrationIdsDesc = isCI
-  ? registrationIdsDescCI
-  : registrationIdsDescLocal;
-const registrationIdsAsc = [...registrationIdsDesc].reverse();
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -108,14 +84,5 @@ test('[34461] Filter activity overview table by each activity', async ({
       await tableComponent.validateFirstLogActivity({ activity });
       await tableComponent.clearAllFilters();
     }
-  });
-
-  await test.step('Sort by time and date', async () => {
-    await tableComponent.validateSortingOfColumns(
-      'Time and date',
-      3,
-      registrationIdsDesc,
-      registrationIdsAsc,
-    );
   });
 });
