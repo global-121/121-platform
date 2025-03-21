@@ -6,6 +6,7 @@ class TableComponent {
   readonly tableEmpty: Locator;
   readonly tableLoading: Locator;
   readonly tableRows: Locator;
+  readonly tableHeader: Locator;
   readonly selectAllRegistrationsCheckbox: Locator;
   readonly globalSearchOpenerButton: Locator;
   readonly globalSearchInput: Locator;
@@ -21,6 +22,7 @@ class TableComponent {
     this.tableEmpty = this.page.getByTestId('query-table-empty');
     this.tableLoading = this.page.getByTestId('query-table-loading');
     this.tableRows = this.page.locator('table tbody tr');
+    this.tableHeader = this.page.locator('table thead tr');
     this.selectAllRegistrationsCheckbox = this.page.getByRole('cell', {
       name: 'All items unselected',
     });
@@ -42,6 +44,10 @@ class TableComponent {
 
   async selectAllCheckbox() {
     await this.selectAllRegistrationsCheckbox.click();
+  }
+
+  async expandAllRows() {
+    await this.tableHeader.locator('th').nth(0).click();
   }
 
   async waitForLoaded(rowsCount?: number) {
@@ -68,9 +74,8 @@ class TableComponent {
   }: {
     expectedRowCount: number;
   }) {
-    const regColumnContents = await this.getTextArrayFromColumn(3);
-    const regColumnContentsCount = regColumnContents.length;
-    expect(regColumnContentsCount).toEqual(expectedRowCount);
+    const rowCount = await this.tableRows.count();
+    expect(rowCount).toEqual(expectedRowCount);
   }
 
   async globalSearch(searchText: string) {
