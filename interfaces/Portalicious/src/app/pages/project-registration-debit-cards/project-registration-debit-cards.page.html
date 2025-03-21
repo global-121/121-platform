@@ -39,11 +39,15 @@
           />
         }
       </div>
-      <app-data-list [data]="walletWithCurrentCardListData()" />
+      <app-data-list
+        [data]="walletWithCurrentCardListData()"
+        data-testid="wallet-current-card-list"
+        i18n-
+      />
     }
     @if (oldCards().length > 0) {
       <div class="py-1"></div>
-      <p-accordion>
+      <p-accordion data-testid="old-card-list">
         @for (oldCard of oldCards(); track $index) {
           <p-accordion-panel
             [value]="$index"
