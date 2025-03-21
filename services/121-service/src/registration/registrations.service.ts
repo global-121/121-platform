@@ -187,64 +187,6 @@ export class RegistrationsService {
     return registrationAfterUpdate;
   }
 
-  public canChangeStatus(
-    currentStatus: RegistrationStatusEnum,
-    newStatus: RegistrationStatusEnum,
-  ): boolean {
-    let result = false;
-    switch (newStatus) {
-      case RegistrationStatusEnum.registered:
-        result = false;
-        break;
-      case RegistrationStatusEnum.validated:
-        result = [RegistrationStatusEnum.registered].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.declined:
-        result = [
-          RegistrationStatusEnum.included,
-          RegistrationStatusEnum.completed,
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.validated,
-          RegistrationStatusEnum.completed,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.included:
-        result = [
-          RegistrationStatusEnum.completed,
-          RegistrationStatusEnum.declined,
-          RegistrationStatusEnum.deleted,
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.validated,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.deleted:
-        result = [
-          RegistrationStatusEnum.completed,
-          RegistrationStatusEnum.declined,
-          RegistrationStatusEnum.included,
-          RegistrationStatusEnum.paused,
-          RegistrationStatusEnum.registered,
-          RegistrationStatusEnum.validated,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.completed:
-        result = [
-          RegistrationStatusEnum.deleted,
-          RegistrationStatusEnum.included,
-        ].includes(currentStatus);
-        break;
-      case RegistrationStatusEnum.paused:
-        result = [
-          RegistrationStatusEnum.deleted,
-          RegistrationStatusEnum.included,
-        ].includes(currentStatus);
-        break;
-    }
-    return result;
-  }
-
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],

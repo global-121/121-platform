@@ -22,6 +22,7 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -664,7 +665,7 @@ export class RegistrationsBulkService {
   ): RegistrationStatusEnum[] {
     const allStatuses = Object.values(RegistrationStatusEnum);
     return allStatuses.filter((currentStatus) =>
-      this.registrationsService.canChangeStatus(currentStatus, newStatus),
+      StatusChangeHelper.isValidStatusChange(currentStatus, newStatus),
     );
   }
 
