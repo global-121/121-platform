@@ -16,21 +16,12 @@ import {
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-// import TableComponent from '@121-e2e/portalicious/components/TableComponent';
+import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
-const activities = ['Transfer', 'Message', 'Data change', 'Status update'];
-// const registrationIdsDesc = [
-//   'Registered',
-//   'Included',
-//   'Max. payments',
-//   'PendingView voucher',
-//   'Payment notificationSent',
-// ];
-// const registrationIdsAsc = [...registrationIdsDesc].reverse();
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -73,7 +64,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[34462] Expand rows of activity overview', async ({ page }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
-  // const tableComponent = new TableComponent(page);
+  const tableComponent = new TableComponent(page);
   // Act
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(
@@ -82,8 +73,17 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
   });
   // Assert
   await test.step('Expand each activity row and assert that it is expanded', async () => {
-    for (const activity of activities) {
-      console.log(`Filtering by activity: ${activity}`);
-    }
+    // Mitigate the timeout issue when the table is not fully loaded
+    await tableComponent.filterColumnByDropDownSelection({
+      columnName: 'Activity',
+      selection: 'Transfer',
+    });
+    await tableComponent.clearAllFilters();
+    // Validate amount of rows before expanding
+    await tableComponent.validateTableRowCount({ expectedRowCount: 5 });
+    // Expand all rows
+    await tableComponent.expandAllRows();
+    // Validate amount of rows after expanding
+    await tableComponent.validateTableRowCount({ expectedRowCount: 10 });
   });
 });
