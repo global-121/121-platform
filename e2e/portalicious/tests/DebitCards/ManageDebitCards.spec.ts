@@ -52,7 +52,7 @@ test('[34619] User can view debit cards of a registration with a single active d
   );
 
   await test.step('User can view curent debit card data', async () => {
-    const datePattern = /^\d{1,2}\s[A-Za-z]{3}\s\d{4}$/;
+    const datePattern = /^\d{1,2}\s[A-Za-z]{3}\s\d{4}$/; // e.g. 21 Jan 2022
     const expectedDebitCardData = {
       'Card number': expect.any(String),
       'Card status': 'Active',
