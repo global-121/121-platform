@@ -2,10 +2,10 @@ import { DOCUMENT } from '@angular/common';
 import { effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { computed } from '@angular/core';
 
-export type LogicalPosition = 'end' | 'start';
-export type PhysicalPosition = 'left' | 'right';
-export type Direction = 'ltr' | 'rtl';
-export type ReadingDirection = 'backward' | 'forward';
+type LogicalPosition = 'end' | 'start';
+type PhysicalPosition = 'left' | 'right';
+type Direction = 'ltr' | 'rtl';
+type ReadingDirection = 'backward' | 'forward';
 
 const LOGICAL_VALUE_TO_PHYSICAL_VALUE_MAP: Record<
   Direction,

@@ -12,7 +12,7 @@
  */
 
 type IsOptional<T> = Extract<T, null | undefined> extends never ? false : true;
-export type Func = (...args: any[]) => any;
+type Func = (...args: any[]) => any;
 type IsFunction<T> = T extends Func ? true : false;
 type IsValueType<T> = T extends
   | any[]
@@ -57,5 +57,3 @@ export type Dto<T> =
     : IsOptional<T> extends true
       ? Dtoified<Exclude<T, null | undefined>> | undefined
       : Dtoified<T>;
-
-export type Serializable<T> = { serialize: () => Dto<T> } & T;

@@ -1,6 +1,6 @@
 import { User } from '~/domains/user/user.model';
 export const LOCAL_STORAGE_AUTH_USER_KEY = 'logged-in-user-portalicious';
-export const LOCAL_STORAGE_RETURN_URL = 'return-url-portalicious';
+const LOCAL_STORAGE_RETURN_URL = 'return-url-portalicious';
 export type LocalStorageUser = Pick<
   User,
   | 'expires'
