@@ -51,7 +51,7 @@ test('[34619] User can view debit cards of a registration with a single active d
     `/project/${projectId}/registrations/${registrationId}/debit-cards`,
   );
 
-  await test.step('User can view curent debit card data', async () => {
+  await test.step('User can view current debit card data', async () => {
     const datePattern = /^\d{1,2}\s[A-Za-z]{3}\s\d{4}$/; // e.g. 21 Jan 2022
     const expectedDebitCardData = {
       'Card number': expect.any(String),
@@ -100,7 +100,7 @@ test('[34620] User does not find debit card of a person without payments', async
     `/project/${projectId}/registrations/${registrationId}/debit-cards`,
   );
 
-  await test.step('User can not view curent debit card data', async () => {
+  await test.step('User can not view current debit card data', async () => {
     const debitCardData = await debitCardPage.getCurrentDebitCardElement();
     await expect(debitCardData).not.toBeVisible();
   });
