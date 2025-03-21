@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('User can view the registration data of registration that has all data types', async ({
+test('[34688] User can view the registration data of registration that has all data types', async ({
   page,
 }) => {
   await seedIncludedRegistrations(
@@ -79,7 +79,7 @@ test('User can view the registration data of registration that has all data type
   expect(personalInfo).toMatchObject(expectedRegistrationData);
 });
 
-test('User can view the registration data of registration that has only the required data', async ({
+test('[34689] User can view the registration data of registration that has only the required data', async ({
   page,
 }) => {
   const registrationWithOnlyRequiredData = {
