@@ -96,9 +96,13 @@ test('[34620] User does not find debit card of a person without payments', async
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
-  await debitCardPage.goto(
-    `/project/${projectId}/registrations/${registrationId}/debit-cards`,
-  );
+
+  await test.step('User can view debit card menu', async () => {
+    await debitCardPage.goto(
+      `/project/${projectId}/registrations/${registrationId}/debit-cards`,
+    );
+    await expect(page.getByTestId('registration-menu')).toBeVisible();
+  });
 
   await test.step('User can not view current debit card data', async () => {
     const debitCardData = await debitCardPage.getCurrentDebitCardElement();
