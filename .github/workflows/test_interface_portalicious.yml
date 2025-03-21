@@ -38,6 +38,10 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run lint'
 
+      - name: Check for dead code
+        working-directory: ${{ env.interfacePath }}
+        run: 'npm run knip'
+
       - name: 'Test: Deployment Configuration'
         working-directory: ${{ env.interfacePath }}
         run: |

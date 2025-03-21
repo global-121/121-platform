@@ -36,9 +36,9 @@ export class DownloadService {
     file: unknown[];
     filename: string;
   }) {
-    const XLSX = await import('~/utils/xlsx-wrapper');
-    const worksheet = XLSX.utils.json_to_sheet(file);
-    const csvContents = XLSX.utils.sheet_to_csv(worksheet);
+    const { utils: XLSXUtils } = await import('~/utils/xlsx-wrapper');
+    const worksheet = XLSXUtils.json_to_sheet(file);
+    const csvContents = XLSXUtils.sheet_to_csv(worksheet);
 
     this.downloadFile({
       file: new Blob([csvContents], { type: 'text/csv' }),
@@ -53,12 +53,14 @@ export class DownloadService {
     data: unknown[];
     fileName: string;
   }) {
-    const XLSX = await import('~/utils/xlsx-wrapper');
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const { utils: XLSXUtils, writeFile: writeXLSX } = await import(
+      '~/utils/xlsx-wrapper'
+    );
+    const worksheet = XLSXUtils.json_to_sheet(data);
     const workbook = {
       Sheets: { data: worksheet },
       SheetNames: ['data'],
     };
-    XLSX.writeFile(workbook, ExportService.toExportFileName(fileName));
+    writeXLSX(workbook, ExportService.toExportFileName(fileName));
   }
 }

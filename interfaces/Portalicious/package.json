@@ -26,7 +26,8 @@
     "test": "ng test",
     "verify:deployment-configuration": "node --env-file=.env ./_verify-deployment-configuration.mjs",
     "typecheck": "npx tsc --noEmit",
-    "extract-i18n": "ng extract-i18n"
+    "extract-i18n": "ng extract-i18n",
+    "knip": "knip"
   },
   "private": true,
   "dependencies": {
@@ -72,6 +73,7 @@
     "@tanstack/eslint-plugin-query": "^5.66.1",
     "@types/jasmine": "~5.1.7",
     "@types/konami-code-js": "^0.8.3",
+    "@types/node": "^20.17.27",
     "angular-eslint": "^19.0.2",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.21.0",
@@ -91,6 +93,7 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "knip": "^5.46.0",
     "ng-extract-i18n-merge": "^2.14.3",
     "postcss": "^8.5.3",
     "prettier": "3.5.2",
