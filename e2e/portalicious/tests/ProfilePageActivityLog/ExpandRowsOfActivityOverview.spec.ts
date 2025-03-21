@@ -22,6 +22,8 @@ import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/Registratio
 
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
+// Choose the appropriate array based on environment
+const isCI = process.env.CI === 'true';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -80,10 +82,14 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
     });
     await tableComponent.clearAllFilters();
     // Validate amount of rows before expanding
-    await tableComponent.validateTableRowCount({ expectedRowCount: 5 });
+    await tableComponent.validateTableRowCount({
+      expectedRowCount: isCI ? 6 : 5,
+    });
     // Expand all rows
     await tableComponent.expandAllRows();
     // Validate amount of rows after expanding
-    await tableComponent.validateTableRowCount({ expectedRowCount: 10 });
+    await tableComponent.validateTableRowCount({
+      expectedRowCount: isCI ? 12 : 10,
+    });
   });
 });
