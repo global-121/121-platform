@@ -1,11 +1,8 @@
 import test from '@playwright/test';
 
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
-  changeBulkRegistrationStatus,
-  seedRegistrations,
+  seedPaidRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -28,7 +25,7 @@ const toastMessage =
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
-  await seedRegistrations([registrationPvMaxPayment], programIdPV);
+  await seedPaidRegistrations([registrationPvMaxPayment], programIdPV);
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
@@ -48,27 +45,9 @@ test('[31214] Move PA(s) from status "Completed" to "Included"', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act
-  await test.step('Change status of registration to "Included"', async () => {
-    await changeBulkRegistrationStatus({
-      programId: 2,
-      status: RegistrationStatusEnum.included,
-      accessToken,
-    });
-  });
-
   await test.step('Validate the status of the registration', async () => {
     await registrations.validateStatusOfFirstRegistration({
-      status: 'Included',
-    });
-  });
-
-  await test.step('Change status of registration to "Completed" with doing a payment', async () => {
-    await doPayment({
-      programId: 2,
-      paymentNr: 1,
-      amount: 25,
-      referenceIds: [],
-      accessToken,
+      status: 'Completed',
     });
   });
 
