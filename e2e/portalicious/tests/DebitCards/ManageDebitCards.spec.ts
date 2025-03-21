@@ -86,12 +86,15 @@ test('[34620] User does not find debit card of a person without payments', async
     accessToken,
   });
 
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await test.step('Login', async () => {
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  });
+
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
     `/project/${projectId}/registrations/${registrationId}/debit-cards`,
@@ -124,13 +127,14 @@ test('[34621] User can replace a debit card and view both new and old card', asy
     accessToken,
   });
 
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await test.step('Login', async () => {
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
@@ -240,13 +244,14 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
     accessToken,
   });
 
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await test.step('Login', async () => {
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
