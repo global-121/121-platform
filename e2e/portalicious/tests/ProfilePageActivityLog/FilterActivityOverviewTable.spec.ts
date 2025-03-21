@@ -35,8 +35,8 @@ const registrationIdsDescCI = [
   'Registered',
   'Included',
   'Max. payments',
-  'Payment notificationRead',
   'Payment instructionsRead',
+  'Payment notificationRead',
   'Payment voucherSent',
   'SuccessfulView voucher',
 ];
