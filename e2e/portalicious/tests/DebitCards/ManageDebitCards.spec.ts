@@ -142,7 +142,7 @@ test('[34621] User can replace a debit card and view both new and old card', asy
   );
 
   let initialCardData: Record<string, string>;
-  await test.step('Verify initial card details before replacement', async () => {
+  await test.step('Save initial card details before replacement', async () => {
     // Capture the original card number to verify it appears in old cards later
     initialCardData = await debitCardPage.getCurrentDebitCardDataList();
   });
