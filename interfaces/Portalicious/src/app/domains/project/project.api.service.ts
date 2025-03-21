@@ -27,7 +27,7 @@ import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = 'programs';
 
-export const filterableAttributesToIgnore = [
+const filterableAttributesToIgnore = [
   'failedPayment',
   'waitingPayment',
   'successPayment',
