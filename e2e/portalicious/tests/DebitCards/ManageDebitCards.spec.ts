@@ -37,12 +37,15 @@ test('[34619] User can view debit cards of a registration with a single active d
     accessToken,
   });
 
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await test.step('Login', async () => {
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  });
+
   const debitCardPage = new RegistrationDebitCardPage(page);
   await debitCardPage.goto(
     `/project/${projectId}/registrations/${registrationId}/debit-cards`,
