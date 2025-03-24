@@ -1,8 +1,8 @@
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
-import messageTemplatesPv from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.json';
+import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
+import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
 import {
   programIdVisa,
   registrationVisa,
@@ -79,7 +79,7 @@ describe('Issue new Visa debit card', () => {
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(
-      messageTemplatesOCW.reissueVisaCard.message.en,
+      messageTemplateNlrcOcw?.reissueVisaCard?.message?.en,
     );
   });
 
@@ -155,7 +155,7 @@ describe('Issue new Visa debit card', () => {
 
     const lastMessageAttempt1 = messageReponseAttempt1.body[0];
     expect(lastMessageAttempt1.body).not.toBe(
-      messageTemplatesPv.reissueVisaCard.message.en,
+      messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
     );
 
     expect(issueVisaCardResponseAttempt2.status).toBe(204);
@@ -171,7 +171,7 @@ describe('Issue new Visa debit card', () => {
     );
     const lastMessageAttempt2 = messageReponseAttempt2.body[0];
     expect(lastMessageAttempt2.body).toBe(
-      messageTemplatesPv.reissueVisaCard.message.en,
+      messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
     );
   });
 });

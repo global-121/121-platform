@@ -1,6 +1,6 @@
 import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/wallet-status-121.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import messageTemplatesOCW from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
+import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import {
   programIdVisa,
   registrationVisa,
@@ -66,7 +66,9 @@ describe('(Un)Block visa debit card', () => {
       VisaCard121Status.Paused,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(messageTemplatesOCW.pauseVisaCard.message.en);
+    expect(lastMessage.body).toBe(
+      messageTemplateNlrcOcw.pauseVisaCard?.message?.en,
+    );
   });
 
   it('should succesfully unblock a Visa Debit card', async () => {
@@ -112,7 +114,7 @@ describe('(Un)Block visa debit card', () => {
     );
     const lastMessage = messageReponse.body[0];
     expect(lastMessage.body).toBe(
-      messageTemplatesOCW.unpauseVisaCard.message.en,
+      messageTemplateNlrcOcw?.unpauseVisaCard?.message?.en,
     );
   });
 });

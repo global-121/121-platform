@@ -26,7 +26,7 @@ const defaultMessageJob = {
   userId: 1,
 } as MessageJobDto;
 const mockDefaultNotificationText = 'default notification';
-let getNotificationTextMock: jest.SpyInstance;
+let getMessageTemplateForLanguageOrFallback: jest.SpyInstance;
 
 describe('MessageService', () => {
   let messageService: MessageService;
@@ -45,13 +45,13 @@ describe('MessageService', () => {
     azureLogService = unitRef.get(AzureLogService);
 
     jest
-      .spyOn(messageService.registrationRepository, 'findOne')
+      .spyOn(messageService.registrationRepository, 'findOneOrFail')
       .mockResolvedValue({ program: { id: 1 } } as RegistrationEntity);
 
     jest.spyOn(console, 'log').mockImplementation();
 
-    getNotificationTextMock = jest
-      .spyOn(messageService as any, 'getNotificationText')
+    getMessageTemplateForLanguageOrFallback = jest
+      .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
       .mockResolvedValue(mockDefaultNotificationText);
   });
 
@@ -101,7 +101,7 @@ describe('MessageService', () => {
       await messageService.sendTextMessage(testMessageJob);
 
       // Assert
-      expect(getNotificationTextMock).toHaveBeenCalledTimes(0);
+      expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(0);
       expect(smsService.sendSms).toHaveBeenCalledTimes(1);
       expect(smsService.sendSms).toHaveBeenCalledWith(
         testMessageJob.message,
@@ -121,19 +121,22 @@ describe('MessageService', () => {
         phoneNumber: '999888777',
         whatsappPhoneNumber: undefined,
       };
-      const testNotificationText = 'WhatsApp Generic Message';
-      getNotificationTextMock = jest
-        .spyOn(messageService as any, 'getNotificationText')
-        .mockResolvedValue(testNotificationText);
+      const messageTemplateObject = {
+        contentSid: 'h123',
+      };
+      getMessageTemplateForLanguageOrFallback = jest
+        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+        .mockResolvedValue(messageTemplateObject);
 
       // Act
       await messageService.sendTextMessage(testMessageJob);
 
       // Assert
-      expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
+      expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
-        message: testNotificationText,
+        message: undefined,
+        contentSid: messageTemplateObject.contentSid,
         userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.phoneNumber,
         registrationId: testMessageJob.registrationId,
@@ -151,19 +154,22 @@ describe('MessageService', () => {
         messageContentType: MessageContentType.custom,
         whatsappPhoneNumber: '012343210',
       };
-      const testNotificationText = 'WhatsApp Generic Message';
-      getNotificationTextMock = jest
-        .spyOn(messageService as any, 'getNotificationText')
-        .mockResolvedValue(testNotificationText);
+      const messageTemplateObject = {
+        contentSid: 'h123',
+      };
+      getMessageTemplateForLanguageOrFallback = jest
+        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+        .mockResolvedValue(messageTemplateObject);
 
       // Act
       await messageService.sendTextMessage(testMessageJob);
 
       // Assert
-      expect(getNotificationTextMock).toHaveBeenCalledTimes(1);
+      expect(getMessageTemplateForLanguageOrFallback).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
-        message: testNotificationText,
+        message: undefined,
+        contentSid: messageTemplateObject.contentSid,
         userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         registrationId: testMessageJob.registrationId,
@@ -174,8 +180,12 @@ describe('MessageService', () => {
 
     it('should call whatsappService and intersolveVoucherService when processType = whatsappTemplateVoucher', async () => {
       // Arrange
+      const contentSid = 'h456';
+
       const testMessageJob = {
         ...defaultMessageJob,
+        message: undefined,
+        contentSid,
         messageProcessType: MessageProcessType.whatsappTemplateVoucher,
         messageContentType: MessageContentType.paymentTemplated,
         whatsappPhoneNumber: '94287277',
@@ -196,7 +206,7 @@ describe('MessageService', () => {
       // Assert
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledTimes(1);
       expect(whatsappService.sendWhatsapp).toHaveBeenCalledWith({
-        message: testMessageJob.message,
+        contentSid,
         userId: testMessageJob.userId,
         recipientPhoneNr: testMessageJob.whatsappPhoneNumber,
         registrationId: testMessageJob.registrationId,

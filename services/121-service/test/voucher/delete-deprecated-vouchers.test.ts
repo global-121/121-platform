@@ -31,7 +31,7 @@ describe('Delete deprecated vouchers', () => {
       programId: programIdPV,
       referenceIds: [registrationPV5.referenceId],
       accessToken,
-      minimumNumberOfMessages: 3,
+      minimumNumberOfMessagesPerReferenceId: 3,
     });
     // Assert
     // We expect that no image codes are deleted because all of them are still valid
@@ -50,7 +50,7 @@ describe('Delete deprecated vouchers', () => {
       programId: programIdPV,
       referenceIds: [registrationPV5.referenceId],
       accessToken,
-      minimumNumberOfMessages: 3,
+      minimumNumberOfMessagesPerReferenceId: 3,
     });
     const response = await removeDeprecatedImageCodes({
       accessToken,

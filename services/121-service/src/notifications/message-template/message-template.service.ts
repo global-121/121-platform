@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Equal, FindOptionsWhere, Repository } from 'typeorm';
 
+import { ContentSidMessageTypes } from '@121-service/src/notifications/message-template/const/content-sid-message-types.const';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -39,10 +40,46 @@ export class MessageTemplateService {
     });
   }
 
+  private validateMessageAndContentSid({
+    message,
+    contentSid,
+    type,
+  }: {
+    message: string | undefined;
+    contentSid: string | undefined;
+    type: string;
+  }): void {
+    if ((ContentSidMessageTypes as string[]).includes(type)) {
+      if (!contentSid) {
+        const errors = `Content SID is required for message types: ${ContentSidMessageTypes.join(
+          ', ',
+        )}`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    } else {
+      if (contentSid) {
+        const errors = `Content SID is not allowed for messages that are not of type: ${ContentSidMessageTypes.join(
+          ', ',
+        )}`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+      if (!message) {
+        const errors = `Message is required for message type '${type}'`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
   public async createMessageTemplate(
     programId: number,
     postData: CreateMessageTemplateDto,
   ): Promise<void> {
+    this.validateMessageAndContentSid({
+      message: postData.message,
+      contentSid: postData.contentSid,
+      type: postData.type,
+    });
+
     const existingTemplate = await this.messageTemplateRepository.findOne({
       where: {
         programId: Equal(programId),
@@ -60,11 +97,13 @@ export class MessageTemplateService {
     template.type = postData.type;
     template.language = postData.language;
     template.label = postData.label;
-    template.message = postData.message;
-    template.isWhatsappTemplate = postData.isWhatsappTemplate;
+    template.message = postData.message ?? null;
+    template.contentSid = postData.contentSid ?? null;
     template.isSendMessageTemplate = postData.isSendMessageTemplate;
 
-    await this.validatePlaceholders(programId, template.message);
+    if (template.message) {
+      await this.validatePlaceholders(programId, template.message);
+    }
 
     await this.messageTemplateRepository.save(template);
   }
@@ -86,6 +125,11 @@ export class MessageTemplateService {
       const errors = `No message template found with type '${type}' and language '${language}' in program ${programId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    this.validateMessageAndContentSid({
+      message: updateMessageTemplateDto.message,
+      contentSid: updateMessageTemplateDto.contentSid,
+      type: template.type,
+    });
 
     if (updateMessageTemplateDto.message) {
       await this.validatePlaceholders(

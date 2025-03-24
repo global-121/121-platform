@@ -174,7 +174,7 @@ export class TransactionsService {
     language: LanguageEnum = LanguageEnum.en,
     programId: number,
     transactionNotification: TransactionNotificationObject,
-  ) {
+  ): Promise<string | undefined> {
     const key = transactionNotification.notificationKey;
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
@@ -203,7 +203,7 @@ export class TransactionsService {
         }
       }
     }
-    return message;
+    return message ?? undefined;
   }
 
   private async updateLatestTransaction(

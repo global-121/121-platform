@@ -15,8 +15,14 @@ export enum TwilioStatus {
 
 export class TwilioMessagesCreateDto {
   @ApiProperty()
+  @IsOptional()
   @IsString()
   public readonly Body: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  public readonly ContentSid: string;
 
   @ApiProperty()
   @IsString()

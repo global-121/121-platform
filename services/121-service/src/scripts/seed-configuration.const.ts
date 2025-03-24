@@ -1,5 +1,8 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
+import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
+import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
 
 export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   {
@@ -15,11 +18,11 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-nlrc-pv.json',
-        messageTemplate: 'message-template-nlrc-pv.json',
+        messageTemplate: messageTemplateNlrcPv,
       },
       {
         program: 'program-nlrc-ocw.json',
-        messageTemplate: 'message-template-nlrc-ocw.json',
+        messageTemplate: messageTemplateNlrcOcw,
       },
     ],
     includeDebugScopes: true,
@@ -31,11 +34,11 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-nlrc-pv.json',
-        messageTemplate: 'message-template-nlrc-pv.json',
+        messageTemplate: messageTemplateNlrcPv,
       },
       {
         program: 'program-nlrc-ocw.json',
-        messageTemplate: 'message-template-nlrc-ocw.json',
+        messageTemplate: messageTemplateNlrcOcw,
       },
     ],
     includeDebugScopes: true,
@@ -48,7 +51,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-cbe.json',
-        messageTemplate: 'message-template-generic.json',
+        messageTemplate: messageTemplateGeneric,
       },
     ],
   },
@@ -58,7 +61,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-safaricom.json',
-        messageTemplate: 'message-template-generic.json',
+        messageTemplate: messageTemplateGeneric,
       },
     ],
   },
@@ -68,7 +71,7 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-nedbank.json',
-        messageTemplate: 'message-template-generic.json',
+        messageTemplate: messageTemplateGeneric,
       },
     ],
   },
@@ -78,11 +81,11 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     programs: [
       {
         program: 'program-cbe.json', // The test seed has multiple programs, because some tests scenarios only occur with multiple program
-        messageTemplate: 'message-template-generic.json',
+        messageTemplate: messageTemplateGeneric,
       },
       {
         program: 'program-test.json',
-        messageTemplate: 'message-template-generic.json',
+        messageTemplate: messageTemplateGeneric,
       },
     ],
   },

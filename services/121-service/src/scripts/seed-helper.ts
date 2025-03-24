@@ -23,6 +23,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/pr
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
@@ -59,9 +60,7 @@ export class SeedHelper {
       const programEntity = await this.addProgram(programData, isApiTests);
 
       // Add message templates
-      const messageTemplatePath = `message-template/${program.messageTemplate}`;
-      const messageTemplateData = await this.importData(messageTemplatePath);
-      await this.addMessageTemplates(messageTemplateData, programEntity);
+      await this.addMessageTemplates(program.messageTemplate, programEntity);
 
       // Add default users
       const debugScopes = Object.values(DebugScope);
@@ -369,26 +368,33 @@ export class SeedHelper {
   }
 
   public async addMessageTemplates(
-    messageTemplatesExample: any,
+    messageTemplates: SeedMessageTemplateConfig,
     program: ProgramEntity,
   ): Promise<void> {
-    const messageTemplatesExampleDump = JSON.stringify(messageTemplatesExample);
-    const messageTemplates = JSON.parse(messageTemplatesExampleDump);
-
     const messageTemplateRepo = this.dataSource.getRepository(
       MessageTemplateEntity,
     );
     for (const messageType of Object.keys(messageTemplates)) {
-      const languages = messageTemplates[messageType].message;
-      for (const language of Object.keys(languages)) {
+      const messageObject = messageTemplates[messageType].message;
+      const contentSidObject = messageTemplates[messageType].contentSid;
+
+      const messageLanguages = messageObject ? Object.keys(messageObject) : [];
+      const contentSidLanguages = contentSidObject
+        ? Object.keys(contentSidObject)
+        : [];
+      const languages = [
+        ...new Set([...messageLanguages, ...contentSidLanguages]),
+      ];
+
+      for (const language of languages) {
         const template = await this.createMessageTemplate(
           program,
           messageType,
           language,
-          languages[language],
-          messageTemplates[messageType].isWhatsappTemplate,
+          messageObject?.[language],
+          contentSidObject?.[language],
           messageTemplates[messageType].isSendMessageTemplate,
-          messageTemplates[messageType].label,
+          messageTemplates[messageType]?.label?.[language] ?? null,
         );
 
         await messageTemplateRepo.save(template);
@@ -401,7 +407,7 @@ export class SeedHelper {
     type: string,
     language: string,
     message: string,
-    isWhatsappTemplate: boolean,
+    contentSid: string,
     isSendMessageTemplate: boolean,
     label: LocalizedString,
   ): Promise<MessageTemplateEntity> {
@@ -413,13 +419,15 @@ export class SeedHelper {
       : null;
     messageTemplateEntity.language = language;
     messageTemplateEntity.message = message;
-    messageTemplateEntity.isWhatsappTemplate = isWhatsappTemplate;
+    messageTemplateEntity.contentSid = contentSid;
     messageTemplateEntity.isSendMessageTemplate = isSendMessageTemplate;
 
-    await this.messageTemplateService.validatePlaceholders(
-      program.id,
-      messageTemplateEntity.message,
-    );
+    if (messageTemplateEntity.message) {
+      await this.messageTemplateService.validatePlaceholders(
+        program.id,
+        messageTemplateEntity.message,
+      );
+    }
 
     return messageTemplateEntity;
   }

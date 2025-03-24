@@ -351,12 +351,12 @@ export async function waitForMessagesToComplete({
   programId,
   referenceIds,
   accessToken,
-  minimumNumberOfMessages = 1,
+  minimumNumberOfMessagesPerReferenceId = 1,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
-  minimumNumberOfMessages?: number;
+  minimumNumberOfMessagesPerReferenceId?: number;
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -391,7 +391,9 @@ export async function waitForMessagesToComplete({
           return validStatuses.includes(m.status);
         });
 
-        return messagesWithValidStatus.length < minimumNumberOfMessages;
+        return (
+          messagesWithValidStatus.length < minimumNumberOfMessagesPerReferenceId
+        );
       },
     );
 
@@ -409,7 +411,10 @@ export async function waitForMessagesToComplete({
         'Reference Ids Waiting for Messages: ',
         referenceIdsWaitingForMessages,
       );
-      console.log('Expected number of messages: ', minimumNumberOfMessages);
+      console.log(
+        'Expected number of messages: ',
+        minimumNumberOfMessagesPerReferenceId,
+      );
       for (const referenceId of referenceIdsWaitingForMessages) {
         const response = await getMessageHistory(
           programId,
@@ -481,17 +486,37 @@ export async function postMessageTemplate(
     .send(body);
 }
 
-export async function updateMessageTemplate(
-  programId: number,
-  type: string,
-  language: LanguageEnum,
-  body: UpdateTemplateBodyDto,
-  accessToken: string,
-): Promise<request.Response> {
+export async function updateMessageTemplate({
+  programId,
+  type,
+  language,
+  body,
+  accessToken,
+}: {
+  programId: number;
+  type: string;
+  language: LanguageEnum;
+  body: UpdateTemplateBodyDto;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
     .patch(`/notifications/${programId}/message-templates/${type}/${language}`)
     .set('Cookie', [accessToken])
     .send(body);
+}
+
+export async function deleteMessageTemplate({
+  programId,
+  type,
+  accessToken,
+}: {
+  programId: number;
+  type: string;
+  accessToken: string;
+}): Promise<request.Response> {
+  const url = `/notifications/${programId}/message-templates/${type}`;
+
+  return await getServer().delete(url).set('Cookie', [accessToken]);
 }
 
 export async function getMessageTemplates(

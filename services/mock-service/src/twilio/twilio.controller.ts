@@ -49,4 +49,25 @@ export class TwilioController {
       accountSid,
     );
   }
+
+  @ApiOperation({
+    summary:
+      'Fetch message. We only mocked a body return when getting by messageSid for message created with a contentSid as this is the only part that is used in the 121-service',
+  })
+  @ApiParam({
+    name: 'messageSid',
+    required: true,
+    type: 'string',
+    description: 'Message SID returned from Twilio',
+  })
+  @Get('2010-04-01/Accounts/:accountSid/Messages/:messageSid.json')
+  public async fetchMessage(
+    @Param('accountSid') accountSid: string,
+    @Param('messageSid') messageSid: string,
+  ): Promise<{ body: string }> {
+    console.info(
+      `GET api/2010-04-01/Accounts/${accountSid}/Messages/${messageSid}.json`,
+    );
+    return this.twilioService.fetchMessage({ messageSid });
+  }
 }

@@ -335,18 +335,15 @@ export class IntersolveVoucherService
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
-    let whatsappPayment = await this.getNotificationText(
+    const contentSid = await this.getNotificationContentSid(
       program,
       ProgramNotificationEnum.whatsappPayment,
       language,
     );
-    whatsappPayment = whatsappPayment
-      .split('[[amount]]')
-      .join(String(calculatedAmount));
 
     await this.queueMessageService.addMessageJob({
       registration,
-      message: whatsappPayment,
+      contentSid: contentSid ?? undefined,
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
       customData: { payment, amount: calculatedAmount },
@@ -357,11 +354,11 @@ export class IntersolveVoucherService
     return result;
   }
 
-  public async getNotificationText(
+  public async getNotificationContentSid(
     program: ProgramEntity,
     type: string,
     language?: string,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
         program.id,
@@ -370,19 +367,17 @@ export class IntersolveVoucherService
     const notification = messageTemplates.find(
       (template) => template.type === type && template.language === language,
     );
-    if (notification) {
-      return notification.message;
+    if (notification?.contentSid) {
+      return notification.contentSid;
     }
 
     const fallbackNotification = messageTemplates.find(
       (template) =>
         template.type === type && template.language === this.fallbackLanguage,
     );
-    if (fallbackNotification) {
-      return fallbackNotification.message;
+    if (fallbackNotification?.contentSid) {
+      return fallbackNotification.contentSid;
     }
-
-    return '';
   }
 
   private async storeVoucherData(

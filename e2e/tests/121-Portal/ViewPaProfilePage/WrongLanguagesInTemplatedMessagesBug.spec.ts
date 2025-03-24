@@ -4,7 +4,6 @@ import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
 import { BulkActionId } from '@121-portal/src/app/models/bulk-actions.models';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import messageTemplateNlrc from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.json';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -28,9 +27,11 @@ const arabic =
 const dutch =
   englishTranslations.page.program['program-people-affected'].language.nl;
 const whatsappGenericMessageNL =
-  messageTemplateNlrc.whatsappGenericMessage.message.nl;
+  "Er is een bericht voor u. Antwoord op dit bericht met 'ja' om het bericht te ontvangen.\n\nMvg, Rode Kruis/Programma Schoolmaaltijden";
+
 const whatsappGenericMessageAr =
-  messageTemplateNlrc.whatsappGenericMessage.message.ar;
+  'لديك رسالة تنتظر. الرجاء الرد بـ "نعم" على هذه الرسالة لتلقيها\n\n أطيب التحيات،\nبرنامج الوجبات المدرسية / الصليب الأحمر الهولندي';
+
 const selectFieldDropdownName =
   englishTranslations.page.program['program-people-affected']['action-inputs'][
     'placeholder-typeahead-placeholder'
@@ -99,14 +100,14 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await page.waitForLoadState('networkidle');
     // --------------- This is not a good method but given the circumastances no other wanted to work-------------------------
     await registration.validateMessageContent({
-      messageContent: whatsappGenericMessageAr,
+      messageContent: whatsappGenericMessageAr!,
     });
     // Validate Dutch message
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.selectPaByLanguage({ language: dutch });
     await registration.openActivityOverviewTab(paymentFilterByTab);
     await registration.validateMessageContent({
-      messageContent: whatsappGenericMessageNL,
+      messageContent: whatsappGenericMessageNL!,
     });
   });
 });
