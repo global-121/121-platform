@@ -72,7 +72,7 @@ runs:
       run: |
         echo "${{ inputs.envIcon }}" | sed 's/data:image\/.*;base64,//' | base64 --decode > ${{ inputs.envIconPath }}
 
-    - name: Download latest translations
+    - name: Build (Portalicious)
       if: inputs.buildType == 'portalicious'
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
@@ -82,13 +82,6 @@ runs:
         LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
       run: |
         echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
-        npm run build:download-translations
-
-    - name: Build (Portalicious)
-      if: inputs.buildType == 'portalicious'
-      shell: bash
-      working-directory: ${{ inputs.interfacePath }}
-      run: |
         npm run build:production
 
     - name: Build (deprecated Portal)
