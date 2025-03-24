@@ -74,7 +74,7 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
     );
   });
   // Assert
-  await test.step('Expand each activity row and assert that it is expanded', async () => {
+  await test.step('Expand all activity rows and assert that they are expanded', async () => {
     // Mitigate the timeout issue when the table is not fully loaded
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Activity',
