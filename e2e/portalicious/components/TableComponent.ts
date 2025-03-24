@@ -3,6 +3,7 @@ import { Page } from 'playwright';
 
 class TableComponent {
   readonly page: Page;
+  readonly table: Locator;
   readonly tableEmpty: Locator;
   readonly tableLoading: Locator;
   readonly tableRows: Locator;
@@ -19,18 +20,22 @@ class TableComponent {
 
   constructor(page: Page) {
     this.page = page;
-    this.tableEmpty = this.page.getByTestId('query-table-empty');
-    this.tableLoading = this.page.getByTestId('query-table-loading');
-    this.tableRows = this.page.locator('table tbody tr');
-    this.tableHeader = this.page.locator('table thead tr');
-    this.selectAllRegistrationsCheckbox = this.page.getByRole('cell', {
+    // We assume there's only one of these at a time.
+    this.table = this.page.getByTestId('query-table');
+    this.tableEmpty = this.table.getByTestId('query-table-empty');
+    this.tableLoading = this.table.getByTestId('query-table-loading');
+    this.tableRows = this.table.locator('tbody tr');
+    this.tableHeader = this.table.locator('thead tr');
+    this.selectAllRegistrationsCheckbox = this.table.getByRole('cell', {
       name: 'All items unselected',
     });
-    this.globalSearchOpenerButton = this.page.getByTitle('Filter by keyword');
-    this.globalSearchInput = this.page.getByPlaceholder('Filter by keyword');
-    this.clearAllFiltersButton = this.page.getByRole('button', {
+    this.globalSearchOpenerButton = this.table.getByTitle('Filter by keyword');
+    this.globalSearchInput = this.table.getByPlaceholder('Filter by keyword');
+    this.clearAllFiltersButton = this.table.getByRole('button', {
       name: 'Clear filters',
     });
+
+    // Not in the HTML of the table component.
     this.applyFiltersButton = this.page.getByLabel('Apply');
     this.textboxField = this.page.getByRole('textbox');
     this.searchBox = this.page.getByRole('searchbox');
@@ -47,7 +52,7 @@ class TableComponent {
   }
 
   async expandAllRows() {
-    await this.tableHeader.locator('th').nth(0).click();
+    await this.table.getByTestId('expand-all-rows-button').click();
   }
 
   async waitForLoaded(rowsCount?: number) {
@@ -94,45 +99,39 @@ class TableComponent {
     await this.page.waitForTimeout(500);
   }
 
-  async getSortingTypeOfColumn({ columnName }: { columnName: string }) {
-    const sortingType = await this.page
+  async getSortingTypeOfColumn(columnName: string) {
+    const sortingType = await this.table
       .getByRole('columnheader', { name: columnName })
       .getAttribute('aria-sort');
 
     return sortingType;
   }
 
-  async sortAndValidateColumnByName({ columnName }: { columnName: string }) {
-    const columnToSort = this.page
+  async sortAndValidateColumnByName(columnName: string) {
+    const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
       .locator('p-sorticon');
 
     await columnToSort.click();
-    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+    let sortingType = await this.getSortingTypeOfColumn(columnName);
     expect(sortingType).toContain('ascending');
 
     await columnToSort.click();
-    sortingType = await this.getSortingTypeOfColumn({ columnName });
+    sortingType = await this.getSortingTypeOfColumn(columnName);
     expect(sortingType).toContain('descending');
   }
 
-  async sortColumnByName({
-    columnName,
-    sort,
-  }: {
-    columnName: string;
-    sort: 'ascending' | 'descending';
-  }) {
-    const columnToSort = this.page
+  async sortColumnByName(columnName: string, sort: 'ascending' | 'descending') {
+    const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
       .locator('p-sorticon');
 
-    let sortingType = await this.getSortingTypeOfColumn({ columnName });
+    let sortingType = await this.getSortingTypeOfColumn(columnName);
 
     if (sortingType === 'none') {
       // Click once to go to ascending
       await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn({ columnName });
+      sortingType = await this.getSortingTypeOfColumn(columnName);
 
       if (sort === 'ascending') {
         expect(sortingType).toContain('ascending');
@@ -143,26 +142,20 @@ class TableComponent {
     // If the current state is not the desired state, click to change it
     if (sortingType !== sort) {
       await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn({ columnName });
+      sortingType = await this.getSortingTypeOfColumn(columnName);
 
       // If still not in the desired state, click again
       if (sortingType !== sort) {
         await columnToSort.click();
-        sortingType = await this.getSortingTypeOfColumn({ columnName });
+        sortingType = await this.getSortingTypeOfColumn(columnName);
       }
     }
 
     expect(sortingType).toContain(sort);
   }
 
-  async filterColumnByText({
-    columnName,
-    filterText,
-  }: {
-    columnName: string;
-    filterText: string;
-  }) {
-    const filterMenuButton = this.page
+  async filterColumnByText(columnName: string, filterText: string) {
+    const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
 
@@ -181,7 +174,7 @@ class TableComponent {
     columnName: string;
     selection: string;
   }) {
-    const filterMenuButton = this.page
+    const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
 
@@ -200,28 +193,28 @@ class TableComponent {
     ascendingExpected: string[],
     descendingExpected: string[],
   ) {
-    await this.sortColumnByName({ columnName, sort: 'ascending' });
+    await this.sortColumnByName(columnName, 'ascending');
     let textFromColumn = await this.getTextArrayFromColumn(columnIndex);
     expect(textFromColumn).toEqual(ascendingExpected);
 
-    await this.sortColumnByName({ columnName, sort: 'descending' });
+    await this.sortColumnByName(columnName, 'descending');
     textFromColumn = await this.getTextArrayFromColumn(columnIndex);
     expect(textFromColumn).toEqual(descendingExpected);
   }
 
-  async validateFirstLogActivity({ activity }: { activity: string }) {
+  async validateFirstLogActivity(activity: string) {
     const firstRowText = await this.getTextArrayFromColumn(2);
     expect(firstRowText[0]).toContain(activity);
   }
 
   async validateSelectionCount(expectedCount: number) {
     if (expectedCount === 0) {
-      await expect(this.page.getByText('selected')).not.toBeVisible();
+      await expect(this.table.getByText('selected')).not.toBeVisible();
       return;
     }
 
     await expect(
-      this.page.getByText(`(${expectedCount} selected)`),
+      this.table.getByText(`(${expectedCount} selected)`),
     ).toBeVisible();
   }
 
@@ -246,9 +239,9 @@ class TableComponent {
     await this.approveButton.click();
   }
 
-  async changeStatusOfAllRegistrationsInTable({ status }: { status: string }) {
-    const statusButton = this.page.getByRole('button', { name: status });
-    const placeholder = this.page.getByPlaceholder('Enter reason');
+  async changeStatusOfAllRegistrationsInTable(status: string) {
+    const statusButton = this.table.getByRole('button', { name: status });
+    const placeholder = this.table.getByPlaceholder('Enter reason');
 
     await this.selectAllCheckbox();
     await statusButton.click();

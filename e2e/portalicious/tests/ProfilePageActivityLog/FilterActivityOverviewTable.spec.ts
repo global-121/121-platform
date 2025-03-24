@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPayment } from '@121-service/test/helpers/program.helper';
@@ -22,11 +22,12 @@ import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/Registratio
 
 let registrationId: number;
 const paymentReferenceId = [registrationPV5.referenceId];
-const activities = ['Transfer', 'Message', 'Data change', 'Status update'];
 
-// Arrange
-test.beforeEach(async ({ page }) => {
+let page: Page;
+test.beforeAll(async ({ browser }) => {
+  // Arrange once because tests don't mutate backend state.
   await resetDB(SeedScript.nlrcMultiple);
+  page = await browser.newPage();
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
@@ -61,28 +62,34 @@ test.beforeEach(async ({ page }) => {
     process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
     process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
-});
-
-test('[34461] Filter activity overview table by each activity', async ({
-  page,
-}) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
-  const tableComponent = new TableComponent(page);
-  // Act
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(
       `/project/${programIdPV}/registrations/${registrationId}`,
     );
   });
-  // Assert
-  await test.step('Filter activity overview table by all activities', async () => {
-    for (const activity of activities) {
+});
+
+test.afterEach(async () => {
+  const tableComponent = new TableComponent(page);
+  await tableComponent.clearAllFilters();
+});
+
+['Transfer', 'Message', 'Data change', 'Status update'].forEach((activity) => {
+  test(`[34461] Filter activity overview table by  ${activity}`, async ({}) => {
+    const tableComponent = new TableComponent(page);
+
+    // Act
+    await test.step(`Filter activity log on "${activity}".`, async () => {
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Activity',
         selection: activity,
       });
-      await tableComponent.validateFirstLogActivity({ activity });
-      await tableComponent.clearAllFilters();
-    }
+    });
+
+    // Assert
+    await test.step(`Validating whether "${activity}" is visible.`, async () => {
+      await tableComponent.validateFirstLogActivity(activity);
+    });
   });
 });

@@ -32,6 +32,7 @@
   (selectAllChange)="onSelectAllChange($event)"
   [columns]="visibleColumns()"
   [dataKey]="'id'"
+  data-testid="query-table"
 >
   <ng-template pTemplate="caption">
     <div class="flex min-h-11 items-center overflow-x-auto">
@@ -77,6 +78,7 @@
         <th style="width: 0">
           <p-button
             type="button"
+            data-testid="expand-all-rows-button"
             [text]="true"
             [rounded]="true"
             [plain]="true"
