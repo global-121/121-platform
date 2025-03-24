@@ -114,7 +114,6 @@
     "nodemon": "^3.1.7",
     "prettier": "3.4.2",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.2.4",
-    "tsc-watch": "^6.2.1"
+    "ts-jest": "^29.2.4"
   }
 }
