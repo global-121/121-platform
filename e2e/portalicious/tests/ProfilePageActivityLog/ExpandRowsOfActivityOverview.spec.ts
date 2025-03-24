@@ -82,14 +82,10 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
     });
     await tableComponent.clearAllFilters();
     // Validate amount of rows before expanding
-    await tableComponent.validateTableRowCount({
-      expectedRowCount: isCI ? 6 : 5,
-    });
+    await tableComponent.validateTableRowCount(isCI ? 6 : 5);
     // Expand all rows
     await tableComponent.expandAllRows();
     // Validate amount of rows after expanding
-    await tableComponent.validateTableRowCount({
-      expectedRowCount: isCI ? 12 : 10,
-    });
+    await tableComponent.validateTableRowCount(isCI ? 12 : 10);
   });
 });

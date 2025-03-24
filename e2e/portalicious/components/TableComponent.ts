@@ -69,11 +69,7 @@ class TableComponent {
     );
   }
 
-  async validateTableRowCount({
-    expectedRowCount,
-  }: {
-    expectedRowCount: number;
-  }) {
+  async validateTableRowCount(expectedRowCount: number) {
     const rowCount = await this.tableRows.count();
     expect(rowCount).toEqual(expectedRowCount);
   }
@@ -229,7 +225,7 @@ class TableComponent {
     ).toBeVisible();
   }
 
-  async changeStatusOfRegistrationInTable({ status }: { status: string }) {
+  async changeStatusOfRegistrationInTable(status: string) {
     const firstCheckbox = this.checkbox.nth(1);
     const statusButton = this.page.getByRole('button', { name: status });
     const placeholder = this.page.getByPlaceholder('Enter reason');
