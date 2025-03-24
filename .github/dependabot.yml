@@ -21,7 +21,6 @@ updates:
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
-          - 'tsc-watch'
       nestjs:
         patterns: ['@nestjs/*']
     ignore:
@@ -51,7 +50,6 @@ updates:
           - '@types/*'
           - '*eslint*'
           - '*prettier*'
-          - 'tsc-watch'
       nestjs:
         patterns: ['@nestjs/*']
     ignore:
