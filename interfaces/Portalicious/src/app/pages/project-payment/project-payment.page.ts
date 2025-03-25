@@ -6,7 +6,6 @@ import {
   inject,
   input,
   LOCALE_ID,
-  Signal,
   signal,
   viewChild,
 } from '@angular/core';
@@ -53,10 +52,6 @@ import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getOriginUrl } from '~/utils/url-helper';
-
-export interface TransactionsTableCellContext {
-  projectId: Signal<string>;
-}
 
 @Component({
   selector: 'app-project-payment',

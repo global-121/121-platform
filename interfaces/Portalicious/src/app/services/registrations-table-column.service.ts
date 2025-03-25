@@ -30,7 +30,7 @@ import {
 } from '~/services/registration-attribute.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-export const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
+const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   paymentCount: $localize`:@@payment-count:Number of payments`,
   paymentCountRemaining: $localize`:@@payment-count-remaining:Remaining payments`,
   maxPayments: $localize`:@@max-payments:Max payments`,
@@ -38,7 +38,7 @@ export const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
   duplicateStatus: $localize`:@@duplicate-status:Duplicates`,
 };
 
-export const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
+const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
   'registrationProgramId',
   'name',
   'status',
