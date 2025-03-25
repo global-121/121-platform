@@ -145,6 +145,7 @@ export class RegistrationPageLayoutComponent {
       ],
     },
     {
+      label: $localize`:@@registration-duplicates:Duplicates`,
       items: [
         {
           label: $localize`:@@ignore-duplication:Ignore duplication`,
