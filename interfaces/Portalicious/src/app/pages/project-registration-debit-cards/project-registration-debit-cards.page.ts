@@ -80,12 +80,20 @@ export class ProjectRegistrationDebitCardsPageComponent {
       this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
 
+  readonly convertCentsToMainUnits = (
+    value: null | number | undefined,
+  ): number => {
+    if (!value) {
+      return 0;
+    }
+    return value / 100;
+  };
+
   readonly walletWithCurrentCardListData = computed(() => {
     const { chipLabel, chipVariant } = getChipDataByVisaCardStatus(
       this.currentCard()?.status,
     );
-    const balance = this.walletWithCards.data()?.balance;
-    const spentThisMonth = this.walletWithCards.data()?.spentThisMonth;
+
     const listData: DataListItem[] = [
       {
         label: $localize`:@@debit-card-number:Card number`,
@@ -98,12 +106,16 @@ export class ProjectRegistrationDebitCardsPageComponent {
       },
       {
         label: $localize`:@@debit-card-balance:Current balance`,
-        value: balance ? balance / 100 : '-',
+        value: this.convertCentsToMainUnits(
+          this.walletWithCards.data()?.balance,
+        ),
         type: 'currency',
       },
       {
         label: $localize`:@@debit-card-spent-this-month:Spent this month (max. EUR 150)`,
-        value: spentThisMonth ? spentThisMonth / 100 : '-',
+        value: this.convertCentsToMainUnits(
+          this.walletWithCards.data()?.spentThisMonth,
+        ),
         type: 'currency',
       },
       {
