@@ -34,7 +34,7 @@ export type DataListItem = {
     }
   | {
       type: 'currency';
-      value?: null | number | string;
+      value?: null | number;
       currencyCode?: null | string;
       currencyFormat?: string;
     }
