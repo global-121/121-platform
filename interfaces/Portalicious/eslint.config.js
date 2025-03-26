@@ -82,6 +82,7 @@ module.exports = tseslint.config(
       '@angular-eslint/sort-lifecycle-methods': ['error'],
       '@angular-eslint/use-component-selector': ['error'],
       '@angular-eslint/use-lifecycle-interface': ['error'],
+      'max-params': ['error', 2],
       'eslint-comments/require-description': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'error',

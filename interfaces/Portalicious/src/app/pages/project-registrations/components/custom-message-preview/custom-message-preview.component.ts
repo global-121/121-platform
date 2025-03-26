@@ -37,11 +37,11 @@ export class CustomMessagePreviewComponent {
       this.previewRegistration(),
     ],
     queryFn: () =>
-      this.messagingService.getMessagePreview(
-        this.messageData(),
-        this.projectId,
-        this.previewRegistration(),
-      ),
+      this.messagingService.getMessagePreview({
+        input: this.messageData(),
+        projectId: this.projectId,
+        previewRegistration: this.previewRegistration(),
+      }),
   }));
 
   readonly messageText = computed(() =>
