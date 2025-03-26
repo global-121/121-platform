@@ -52,9 +52,7 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Change status of first selected registration to "Paused"', async () => {
-    await tableComponent.changeStatusOfRegistrationInTable({
-      status: 'Pause',
-    });
+    await tableComponent.changeStatusOfRegistrationInTable('Pause');
     await basePage.validateToastMessageAndWait(toastMessage);
   });
 

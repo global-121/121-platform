@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { type Page, test } from '@playwright/test';
 import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -23,9 +23,8 @@ import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/Registratio
 
 const projectId = 2;
 let registrationId: number;
-const statusUpdateLabel = 'Status update';
 
-test.beforeEach(async ({}) => {
+const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple);
 
   const accessToken = await getAccessToken();
@@ -35,133 +34,198 @@ test.beforeEach(async ({}) => {
     referenceId: registrationPV5.referenceId,
     accessToken,
   });
-});
+};
 
-test('User should see actions in actions menu on registration page', async ({
-  page,
-}) => {
-  // Login
+const login = async (page: Page, email?: string, password?: string) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login(email, password);
+};
+
+const goToActivityLogPage = async (page: Page) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
     `/project/${projectId}/registrations/${registrationId}`,
   );
+  return activityLogPage;
+};
 
-  await test.step('Open action menu', async () => {
-    await activityLogPage.clickActionDropdown();
+test.describe('View available actions for admin', () => {
+  let page: Page;
+  let activityLogPage: RegistrationActivityLogPage;
+
+  test.beforeAll(async ({ browser }) => {
+    await reset();
+    page = await browser.newPage();
+    await login(
+      page,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+    activityLogPage = await goToActivityLogPage(page);
+    await test.step('Open action menu', async () => {
+      await activityLogPage.clickActionDropdown();
+    });
   });
 
-  await test.step('Should display all action menu items', async () => {
-    const actions = [
-      { label: 'Add note', icon: 'pi pi-pen-to-square' },
-      { label: 'Message', icon: 'pi pi-envelope' },
-      { label: 'Validate', icon: 'pi pi-check-circle' },
-      { label: 'Include', icon: 'pi pi-check' },
-      { label: 'Decline', icon: 'pi pi-ban' },
-      { label: 'Pause', icon: 'pi pi-pause' },
-      { label: 'Delete', icon: 'pi pi-trash' },
-    ];
-
-    for (const action of actions) {
-      const actionItem = page.getByRole('menuitem', {
-        name: action.label,
-      });
-      await expect(actionItem).toBeVisible();
-      const icon = actionItem.locator(`.${action.icon.replace(' ', '.')}`);
-      await expect(icon).toBeVisible();
-    }
+  test.afterAll(async () => {
+    await page.close();
   });
 
-  await test.step(`Should show status update subheader in menu`, async () => {
+  test('[34640] Admin should see action button on registration page', async () => {
+    // Assert
+    const actionsButton = page.getByRole('button', { name: 'Actions' });
+    await expect(actionsButton).toBeVisible();
+  });
+
+  test(`[34640] Admin should see "status update" subheader in actions menu`, async () => {
     // Resorted to locator as getByRole does not seems to work for menu items that are a subheader
     const menu = page.locator('.p-menu-list');
     const statusUpdateHeader = menu.locator(':scope > li', {
-      hasText: statusUpdateLabel,
+      hasText: 'Status update',
     });
     await expect(statusUpdateHeader).toBeVisible();
   });
-});
 
-test('User with limited permissions should not see actions menu button on registraiton page', async ({
-  page,
-}) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
-  );
-
-  const activityLogPage = new RegistrationActivityLogPage(page);
-  await activityLogPage.goto(
-    `/project/${projectId}/registrations/${registrationId}`,
-  );
-
-  await test.step('Should not display action menu button', async () => {
-    const actionsButton = page.getByRole('button', { name: 'Actions' });
-    await expect(actionsButton).not.toBeVisible();
-  });
-});
-
-test('User should only see actions the user has access too in actions menu on profile page', async ({
-  page,
-}) => {
-  await addPermissionToRole(DefaultUserRole.View, [
-    PermissionEnum.RegistrationPersonalUPDATE,
-  ]);
-
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
-  );
-
-  const activityLogPage = new RegistrationActivityLogPage(page);
-  await activityLogPage.goto(
-    `/project/${projectId}/registrations/${registrationId}`,
-  );
-
-  await test.step('Open action menu', async () => {
-    await activityLogPage.clickActionDropdown();
-  });
-
-  await test.step('Should only show permitted actions', async () => {
-    const vissibleActions = [
-      { label: 'Add note', icon: 'pi pi-pen-to-square' },
-    ];
-
-    for (const action of vissibleActions) {
+  [
+    { label: 'Add note', icon: 'pi pi-pen-to-square' },
+    { label: 'Message', icon: 'pi pi-envelope' },
+    { label: 'Validate', icon: 'pi pi-check-circle' },
+    { label: 'Include', icon: 'pi pi-check' },
+    { label: 'Decline', icon: 'pi pi-ban' },
+    { label: 'Pause', icon: 'pi pi-pause' },
+    { label: 'Delete', icon: 'pi pi-trash' },
+  ].forEach(({ label, icon }) => {
+    test(`[34640] Admin should see "${label}" action in action menu`, async () => {
+      // Assert
       const actionItem = page.getByRole('menuitem', {
-        name: action.label,
+        name: label,
       });
       await expect(actionItem).toBeVisible();
-      const icon = actionItem.locator(`.${action.icon.replace(' ', '.')}`);
-      await expect(icon).toBeVisible();
-    }
+      const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
+      await expect(iconLocator).toBeVisible();
+    });
+  });
+});
+
+// We need an account with permissions to perform actions, but less than admin.
+test.describe('View available actions for CVA officer', () => {
+  let page: Page;
+  let activityLogPage: RegistrationActivityLogPage;
+
+  test.beforeAll(async ({ browser }) => {
+    await reset();
+    page = await browser.newPage();
+    await login(
+      page,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+    );
+    activityLogPage = await goToActivityLogPage(page);
+    await test.step('Open action menu', async () => {
+      await activityLogPage.clickActionDropdown();
+    });
   });
 
-  await test.step('Should hide restricted actions', async () => {
-    const hiddenActions = ['Validate', 'Include', 'Decline', 'Pause', 'Delete'];
-    for (const action of hiddenActions) {
-      const actionItem = page.getByRole('menuitem', {
-        name: action,
-      });
-      await expect(actionItem).not.toBeVisible();
-    }
+  test('[34640] CVA Officer should see action button on registration page', async () => {
+    // Assert
+    const actionsButton = page.getByRole('button', { name: 'Actions' });
+    await expect(actionsButton).toBeVisible();
   });
 
-  await test.step(`Should not show 'Status Update' subheader in menu in non of the child items are enabled`, async () => {
+  test(`[34640] CVA Officer should see "status update" subheader in actions menu`, async () => {
     // Resorted to locator as getByRole does not seems to work for menu items that are a subheader
     const menu = page.locator('.p-menu-list');
     const statusUpdateHeader = menu.locator(':scope > li', {
-      hasText: statusUpdateLabel,
+      hasText: 'Status update',
+    });
+    await expect(statusUpdateHeader).toBeVisible();
+  });
+
+  [
+    { label: 'Add note', icon: 'pi pi-pen-to-square', visible: true },
+    { label: 'Message', icon: 'pi pi-envelope', visible: true },
+    { label: 'Validate', icon: 'pi pi-check-circle', visible: true },
+    { label: 'Include', icon: 'pi pi-check', visible: false },
+    { label: 'Decline', icon: 'pi pi-ban', visible: true },
+    { label: 'Pause', icon: 'pi pi-pause', visible: true },
+    { label: 'Delete', icon: 'pi pi-trash', visible: false },
+  ].forEach(({ label, icon, visible }) => {
+    test(`[34640] CVA Officer should ${visible ? '' : 'not'} see "${label}" action in action menu`, async () => {
+      // Assert
+      const actionItem = page.getByRole('menuitem', {
+        name: label,
+      });
+      if (visible) {
+        await expect(actionItem).toBeVisible();
+        const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
+        await expect(iconLocator).toBeVisible();
+      } else {
+        await expect(actionItem).not.toBeVisible();
+      }
+    });
+  });
+});
+
+// "viewOnlyUser" has even less permissions, we manually add a single one to be
+// able to see the actions menu
+test.describe('View available actions for a "view only" user', () => {
+  let page: Page;
+  let activityLogPage: RegistrationActivityLogPage;
+
+  test.beforeAll(async ({ browser }) => {
+    await reset();
+    await addPermissionToRole(DefaultUserRole.View, [
+      PermissionEnum.RegistrationPersonalUPDATE,
+    ]);
+    page = await browser.newPage();
+    await login(
+      page,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    );
+    activityLogPage = await goToActivityLogPage(page);
+    await test.step('Open action menu', async () => {
+      await activityLogPage.clickActionDropdown();
+    });
+  });
+
+  test('[34640] "View Only" user should see action button on registration page', async () => {
+    // Assert
+    const actionsButton = page.getByRole('button', { name: 'Actions' });
+    await expect(actionsButton).toBeVisible();
+  });
+
+  test(`[34640] "View Only" user should not see "status update" subheader in actions menu`, async () => {
+    // Resorted to locator as getByRole does not seems to work for menu items that are a subheader
+    const menu = page.locator('.p-menu-list');
+    const statusUpdateHeader = menu.locator(':scope > li', {
+      hasText: 'Status update',
     });
     await expect(statusUpdateHeader).not.toBeVisible();
+  });
+
+  [
+    { label: 'Add note', icon: 'pi pi-pen-to-square', visible: true },
+    { label: 'Message', icon: 'pi pi-envelope', visible: false },
+    { label: 'Validate', icon: 'pi pi-check-circle', visible: false },
+    { label: 'Include', icon: 'pi pi-check', visible: false },
+    { label: 'Decline', icon: 'pi pi-ban', visible: false },
+    { label: 'Pause', icon: 'pi pi-pause', visible: false },
+    { label: 'Delete', icon: 'pi pi-trash', visible: false },
+  ].forEach(({ label, icon, visible }) => {
+    test(`[34640] "View Only" user should ${visible ? '' : 'not'} see "${label}" action in action menu`, async () => {
+      // Assert
+      const actionItem = page.getByRole('menuitem', {
+        name: label,
+      });
+      if (visible) {
+        await expect(actionItem).toBeVisible();
+        const iconLocator = actionItem.locator(`.${icon.replace(' ', '.')}`);
+        await expect(iconLocator).toBeVisible();
+      } else {
+        await expect(actionItem).not.toBeVisible();
+      }
+    });
   });
 });

@@ -77,15 +77,13 @@ test('[32298] Table should be a filtered list of registrations included in the t
 
   await test.step('Validate payment table', async () => {
     // Validate sorting of columns
-    await table.sortAndValidateColumnByName({ columnName: 'Reg.' });
-    await table.sortAndValidateColumnByName({ columnName: 'Name' });
-    await table.sortAndValidateColumnByName({
-      columnName: 'Registration status',
-    });
-    await table.sortAndValidateColumnByName({ columnName: 'Transfer status' });
-    await table.sortAndValidateColumnByName({ columnName: 'Fail reason' });
-    await table.sortAndValidateColumnByName({ columnName: 'Transfer value' });
-    await table.sortAndValidateColumnByName({ columnName: 'FSP' });
+    await table.sortAndValidateColumnByName('Reg.');
+    await table.sortAndValidateColumnByName('Name');
+    await table.sortAndValidateColumnByName('Registration status');
+    await table.sortAndValidateColumnByName('Transfer status');
+    await table.sortAndValidateColumnByName('Fail reason');
+    await table.sortAndValidateColumnByName('Transfer value');
+    await table.sortAndValidateColumnByName('FSP');
 
     // Validate applied sorting filters for Registration IDs
     await table.validateSortingOfColumns(
@@ -104,11 +102,8 @@ test('[32298] Table should be a filtered list of registrations included in the t
     );
 
     // Apply filter for Transfer value
-    await table.filterColumnByText({
-      columnName: 'Transfer value',
-      filterText: '75',
-    });
-    await table.validateTableRowCount({ expectedRowCount: 2 });
+    await table.filterColumnByText('Transfer value', '75');
+    await table.validateTableRowCount(2);
 
     // Reset filters
     await table.clearAllFilters();
@@ -118,6 +113,6 @@ test('[32298] Table should be a filtered list of registrations included in the t
       columnName: 'FSP',
       selection: 'Albert Heijn voucher WhatsApp',
     });
-    await table.validateTableRowCount({ expectedRowCount: 1 });
+    await table.validateTableRowCount(1);
   });
 });
