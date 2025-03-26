@@ -40,6 +40,7 @@ const MSALInstanceFactory = (): IPublicClientApplication =>
       allowNativeBroker: false, // Disables WAM Broker
       allowRedirectInIframe: false,
       loggerOptions: {
+        // eslint-disable-next-line max-params -- External package defines this AP
         loggerCallback: (_level, message, containsPii) => {
           console.log(containsPii ? '👤' : '🌐', message);
         },

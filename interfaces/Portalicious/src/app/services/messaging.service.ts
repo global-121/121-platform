@@ -88,11 +88,15 @@ export class MessagingService {
     )?.message;
   }
 
-  public async getMessagePreview(
-    input: Partial<MessageInputData>,
-    projectId: Signal<number | string>,
-    previewRegistration?: Registration,
-  ): Promise<string | undefined> {
+  public async getMessagePreview({
+    input,
+    projectId,
+    previewRegistration,
+  }: {
+    input: Partial<MessageInputData>;
+    projectId: Signal<number | string>;
+    previewRegistration?: Registration;
+  }): Promise<string | undefined> {
     const messageText = await this.getMessageText(input, projectId);
 
     if (!messageText) {

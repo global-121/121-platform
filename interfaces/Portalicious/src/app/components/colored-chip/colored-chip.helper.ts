@@ -21,11 +21,15 @@ export interface ChipData {
   chipVariant: ChipVariant;
 }
 
-const mapValueToChipData = <Enum extends string>(
-  value: Enum | null | undefined,
-  labels: Record<NonNullable<Enum>, string>,
-  chipVariants: Record<NonNullable<Enum>, ChipVariant>,
-): ChipData => {
+const mapValueToChipData = <Enum extends string>({
+  value,
+  labels,
+  chipVariants,
+}: {
+  value: Enum | null | undefined;
+  labels: Record<NonNullable<Enum>, string>;
+  chipVariants: Record<NonNullable<Enum>, ChipVariant>;
+}): ChipData => {
   if (!value) {
     return {
       chipVariant: 'grey',
@@ -42,56 +46,72 @@ const mapValueToChipData = <Enum extends string>(
 export const getChipDataByRegistrationStatus = (
   status?: null | RegistrationStatusEnum,
 ): ChipData =>
-  mapValueToChipData(status, REGISTRATION_STATUS_LABELS, {
-    [RegistrationStatusEnum.included]: 'green',
-    [RegistrationStatusEnum.registered]: 'blue',
-    [RegistrationStatusEnum.validated]: 'yellow',
-    [RegistrationStatusEnum.declined]: 'red',
-    [RegistrationStatusEnum.completed]: 'purple',
-    [RegistrationStatusEnum.deleted]: 'red',
-    [RegistrationStatusEnum.paused]: 'orange',
+  mapValueToChipData({
+    value: status,
+    labels: REGISTRATION_STATUS_LABELS,
+    chipVariants: {
+      [RegistrationStatusEnum.included]: 'green',
+      [RegistrationStatusEnum.registered]: 'blue',
+      [RegistrationStatusEnum.validated]: 'yellow',
+      [RegistrationStatusEnum.declined]: 'red',
+      [RegistrationStatusEnum.completed]: 'purple',
+      [RegistrationStatusEnum.deleted]: 'red',
+      [RegistrationStatusEnum.paused]: 'orange',
+    },
   });
 
 export const getChipDataByTransactionStatus = (
   status?: null | TransactionStatusEnum,
 ): ChipData =>
-  mapValueToChipData(status, TRANSACTION_STATUS_LABELS, {
-    [TransactionStatusEnum.waiting]: 'blue',
-    [TransactionStatusEnum.error]: 'red',
-    [TransactionStatusEnum.success]: 'green',
+  mapValueToChipData({
+    value: status,
+    labels: TRANSACTION_STATUS_LABELS,
+    chipVariants: {
+      [TransactionStatusEnum.waiting]: 'blue',
+      [TransactionStatusEnum.error]: 'red',
+      [TransactionStatusEnum.success]: 'green',
+    },
   });
 
 export const getChipDataByTwilioMessageStatus = (status: string): ChipData =>
-  mapValueToChipData(
-    convertTwilioMessageStatusToMessageStatus(status),
-    MESSAGE_STATUS_LABELS,
-    {
+  mapValueToChipData({
+    value: convertTwilioMessageStatusToMessageStatus(status),
+    labels: MESSAGE_STATUS_LABELS,
+    chipVariants: {
       [MessageStatus.delivered]: 'green',
       [MessageStatus.read]: 'green',
       [MessageStatus.failed]: 'red',
       [MessageStatus.sent]: 'blue',
       [MessageStatus.unknown]: 'blue',
     },
-  );
+  });
 
 export const getChipDataByVisaCardStatus = (
   status?: null | VisaCard121Status,
 ): ChipData =>
-  mapValueToChipData(status, VISA_CARD_STATUS_LABELS, {
-    [VisaCard121Status.Unknown]: 'grey',
-    [VisaCard121Status.Active]: 'green',
-    [VisaCard121Status.Issued]: 'blue',
-    [VisaCard121Status.Substituted]: 'red',
-    [VisaCard121Status.Blocked]: 'red',
-    [VisaCard121Status.SuspectedFraud]: 'red',
-    [VisaCard121Status.CardDataMissing]: 'orange',
-    [VisaCard121Status.Paused]: 'orange',
+  mapValueToChipData({
+    value: status,
+    labels: VISA_CARD_STATUS_LABELS,
+    chipVariants: {
+      [VisaCard121Status.Unknown]: 'grey',
+      [VisaCard121Status.Active]: 'green',
+      [VisaCard121Status.Issued]: 'blue',
+      [VisaCard121Status.Substituted]: 'red',
+      [VisaCard121Status.Blocked]: 'red',
+      [VisaCard121Status.SuspectedFraud]: 'red',
+      [VisaCard121Status.CardDataMissing]: 'orange',
+      [VisaCard121Status.Paused]: 'orange',
+    },
   });
 
 export const getChipDataByDuplicateStatus = (
   status?: DuplicateStatus | null,
 ): ChipData =>
-  mapValueToChipData(status, DUPLICATE_STATUS_LABELS, {
-    [DuplicateStatus.unique]: 'green',
-    [DuplicateStatus.duplicate]: 'red',
+  mapValueToChipData({
+    value: status,
+    labels: DUPLICATE_STATUS_LABELS,
+    chipVariants: {
+      [DuplicateStatus.unique]: 'green',
+      [DuplicateStatus.duplicate]: 'red',
+    },
   });
