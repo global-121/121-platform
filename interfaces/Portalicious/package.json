@@ -14,7 +14,7 @@
     "start:debug-production": "npm run build:production && npm run serve:static",
     "prebuild": "npm run set-env-variables -- env=production && npm run build:download-translations && npm run build:deployment-configuration",
     "build": "ng build --localize",
-    "postbuild": "shx mv www/browser/* www/ && shx touch www/index.html && npm run build:root-404 && npm run build:manual-logout",
+    "postbuild": "shx mv www/browser/* www/ && shx touch www/index.html && npm run build:root-404 && npm run build:manual-logout && npm run verify:build",
     "build:production": "npm run build -- --configuration=production",
     "build:stats": "npm run build:production -- --stats-json",
     "watch": "ng build --watch --configuration=development",
@@ -25,6 +25,7 @@
     "test:ci": "npm test -- --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
     "verify:deployment-configuration": "node --env-file=.env ./_verify-deployment-configuration.mjs",
+    "verify:build": "node --env-file=.env ./_verify-build.mjs",
     "typecheck": "npx tsc --noEmit",
     "extract-i18n": "ng extract-i18n",
     "knip": "knip"
