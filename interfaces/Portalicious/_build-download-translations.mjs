@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { accessSync, constants, writeFileSync } from 'node:fs';
 import { LokaliseDownload } from 'lokalise-file-exchange';
+import {
+  getRequiredTranslations,
+  getTranslationFilePath,
+  createMockTranslations,
+} from './_translations.utils.mjs';
 
 /**
  * See the README.md-file for more information.
@@ -8,20 +13,8 @@ import { LokaliseDownload } from 'lokalise-file-exchange';
 
 /////////////////////////////////////////////////////////////////////////////
 
-const requiredTranslations = (process.env.NG_LOCALES ?? '')
-  .split(',')
-  .filter((lang) => lang !== '' && lang !== 'en-GB')
-  .map((lang) => lang.trim());
-
+const requiredTranslations = getRequiredTranslations();
 console.log('Required translations: ', requiredTranslations);
-
-/**
- * @param {string} lang - Language-code
- * @returns {string} - Full file-path
- */
-const getTranslationFilePath = (lang) => `src/locale/messages.${lang}.xlf`;
-
-/////////////////////////////////////////////////////////////////////////////
 
 if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
   console.info('Skipping download of translations. Creating mocks instead.');
@@ -30,7 +23,7 @@ if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
     writeFileSync(
       filePath,
       // Use the most minimal, yet valid XLIFF file:
-      `<xliff version="1.2"><file source-language="en-GB" target-language="${lang}"></file></xliff>`,
+      createMockTranslations(lang),
     );
     console.info(`☑️  Mock created: ${filePath}`);
   }
