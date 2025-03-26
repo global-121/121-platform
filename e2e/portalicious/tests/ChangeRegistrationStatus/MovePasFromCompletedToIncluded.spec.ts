@@ -1,6 +1,8 @@
 import test from '@playwright/test';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { doPayment } from '@121-service/test/helpers/program.helper';
 import {
   seedRegistrationsWithStatus,
   updateRegistration,
