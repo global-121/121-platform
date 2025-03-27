@@ -30,6 +30,6 @@ test('[29364] Download template for import registrations', async ({ page }) => {
 
   await test.step('Export import template and validate CSV files columns', async () => {
     await registrations.clickImportButton();
-    await registrations.validateDownloadedTemplate();
+    await registrations.assertImportTemplateForPvProgramme();
   });
 });
