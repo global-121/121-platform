@@ -330,7 +330,7 @@ class RegistrationsPage extends BasePage {
     await this.downloadTemplateButton.click();
   }
 
-  async validateDownloadedTemplate() {
+  async validateDownloadedTemplate(expectedColumns: string[]) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       this.clickDownloadTemplateButton(),
@@ -353,10 +353,9 @@ class RegistrationsPage extends BasePage {
     const headers = data[0] as string[];
 
     // Verify that all expected columns are present
-    const missingColumns =
-      expectedImportRegistrationsTemplateColumnsPvProgramme.filter(
-        (expectedCol) => !headers.some((header) => header === expectedCol),
-      );
+    const missingColumns = expectedColumns.filter(
+      (expectedCol) => !headers.some((header) => header === expectedCol),
+    );
 
     if (missingColumns.length > 0) {
       throw new Error(
@@ -365,13 +364,8 @@ class RegistrationsPage extends BasePage {
     }
 
     // Verify the template doesn't have extra columns
-    if (
-      headers.length >
-      expectedImportRegistrationsTemplateColumnsPvProgramme.length
-    ) {
-      const extraColumns = headers.slice(
-        expectedImportRegistrationsTemplateColumnsPvProgramme.length,
-      );
+    if (headers.length > expectedColumns.length) {
+      const extraColumns = headers.slice(expectedColumns.length);
       throw new Error(
         `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
       );
@@ -610,6 +604,12 @@ class RegistrationsPage extends BasePage {
       undefined,
       undefined,
       validateExactRowCount,
+    );
+  }
+
+  async assertImportTemplateForPvProgramme() {
+    await this.validateDownloadedTemplate(
+      expectedImportRegistrationsTemplateColumnsPvProgramme,
     );
   }
 
