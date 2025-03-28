@@ -128,6 +128,7 @@ class RegistrationsPage extends BasePage {
   readonly proceedButton: Locator;
   readonly importButton: Locator;
   readonly downloadTemplateButton: Locator;
+  readonly importFileButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -141,6 +142,9 @@ class RegistrationsPage extends BasePage {
     this.importButton = this.page.getByRole('button', { name: 'Import' });
     this.downloadTemplateButton = this.page.getByRole('button', {
       name: 'Download the template',
+    });
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
     });
   }
 
@@ -616,6 +620,12 @@ class RegistrationsPage extends BasePage {
   async assertDuplicateColumnValues(expectedValues: string[]) {
     const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
     expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+  }
+
+  async importRegistrations(filePath: string) {
+    await this.clickImportButton();
+    await this.chooseAndUploadFile(filePath);
+    await this.importFileButton.click();
   }
 }
 
