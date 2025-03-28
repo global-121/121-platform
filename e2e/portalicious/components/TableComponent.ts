@@ -271,6 +271,13 @@ class TableComponent {
     }
     expect(actualCount).toBe(expectedCount);
   }
+
+  async validateErrorMessage(errorMessage: string) {
+    const errorElement = this.page
+      .locator('app-form-error')
+      .filter({ hasText: errorMessage });
+    await expect(errorElement).toHaveText(errorMessage);
+  }
 }
 
 export default TableComponent;
