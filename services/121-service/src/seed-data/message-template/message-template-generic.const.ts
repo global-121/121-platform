@@ -12,7 +12,7 @@ export const messageTemplateGeneric: SeedMessageTemplateConfig = {
   whatsappGenericMessage: {
     isSendMessageTemplate: false,
     isWhatsappTemplate: true,
-    message: {
+    contentSid: {
       en: 'enGeneric',
       nl: 'nlGeneric',
     },
