@@ -43,6 +43,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { CreateRegistrationDistinctnessDto } from '@121-service/src/registration/dto/create-registration-distinctness.dto';
 import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
@@ -682,6 +683,30 @@ export class RegistrationsController {
       referenceId,
       programId,
     );
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
+  })
+  @ApiOperation({
+    summary:
+      'Post an array of registrationIds that are marked as distinct from each other. This means that in duplicate checks these registrations will not be considered duplicates with the other registrations in the array.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Registration marked as distinct from each other',
+  })
+  @Post('programs/:programId/registrations/distinctness')
+  public async createRegistrationDistinctPairs(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Body() body: CreateRegistrationDistinctnessDto,
+  ): Promise<void> {
+    return await this.registrationsService.createRegistrationDistinctPairs({
+      regisrationIds: body.registrationIds,
+      programId,
+      reason: body.reason,
+    });
   }
 
   @ApiTags('programs/registrations')

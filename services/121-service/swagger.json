@@ -751,6 +751,13 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/distinctness",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/referenceid/{paId}",
     "params": [
