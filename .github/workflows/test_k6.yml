@@ -1,3 +1,4 @@
+# A fast k6 test we run on every PR.
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
 name: 'Test: k6'
