@@ -37,20 +37,20 @@ test(
   { skip: !process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD },
   () => {
     const validTranslations = {
-      ar: 'اللغة:',
-      es: 'Idioma:',
-      fr: 'Langue :',
-      nl: 'Taal:',
-      sl: 'Jazyk:',
+      ar: 'رسالة مخصصة',
+      es: 'Mensaje personalizado',
+      fr: 'Message personnalisé',
+      nl: 'Custom bericht',
+      sl: 'Vlastná správa',
     };
 
     requiredTranslations.forEach((lang) => {
       const filePath = getTranslationFilePath(lang);
       const contents = readFileSync(filePath, 'utf-8');
       const test =
-        `<trans-unit id="(1023894478419315290|language-switcher-selected)" datatype="html">` +
-        `\\s*<source>Language: <x equiv-text="{{ selectedLanguageLabel\\(\\) }}" id="INTERPOLATION"/>\\s*</source>` +
-        `\\s*<target>\\s*${validTranslations[lang]}\\s*<x equiv-text="{{ selectedLanguageLabel\\(\\) }}" id="INTERPOLATION"/>\\s*</target>` +
+        `<trans-unit id="(message-content-type-custom)" datatype="html">` +
+        `\\s*<source>Custom message\\s*</source>` +
+        `\\s*<target>\\s*${validTranslations[lang]}\\s*</target>` +
         `\\s*</trans-unit>`;
 
       match(
