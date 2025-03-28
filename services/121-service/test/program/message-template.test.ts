@@ -113,7 +113,7 @@ describe('Message template', () => {
         contentSid: 'HCf',
       };
 
-      // Fist delete any existing template with the same type and language
+      // First delete any existing template with the same type and language
       await deleteMessageTemplate({
         programId,
         type: contentSidType,
