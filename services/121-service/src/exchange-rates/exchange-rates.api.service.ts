@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 interface ExchangeRateApiResponse {
@@ -35,9 +35,8 @@ export class ExchangeRatesApiService {
       // Return rate and closeTime directly
       return { rate: data.average_bid, closeTime: data.close_time };
     } catch (error) {
-      throw new HttpException(
+      throw new error(
         `Failed to retrieve exchange rate for ${currency}: ${error}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
