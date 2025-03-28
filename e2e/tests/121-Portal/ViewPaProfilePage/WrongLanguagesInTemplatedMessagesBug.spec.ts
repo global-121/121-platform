@@ -100,14 +100,14 @@ test('[28005] Bug: Only English was enabled in templated messages', async ({
     await page.waitForLoadState('networkidle');
     // --------------- This is not a good method but given the circumastances no other wanted to work-------------------------
     await registration.validateMessageContent({
-      messageContent: whatsappGenericMessageAr!,
+      messageContent: whatsappGenericMessageAr,
     });
     // Validate Dutch message
     await page.goto(`${AppRoutes.program}/${programIdOCW}/payment`);
     await table.selectPaByLanguage({ language: dutch });
     await registration.openActivityOverviewTab(paymentFilterByTab);
     await registration.validateMessageContent({
-      messageContent: whatsappGenericMessageNL!,
+      messageContent: whatsappGenericMessageNL,
     });
   });
 });

@@ -21,7 +21,11 @@ describe('Message template', () => {
   const regularType = 'regular-type';
   const contentSidType = ContentSidMessageTypes[0]; // Using first content SID type
   const language = LanguageEnum.en;
-  let baseTemplateData = {};
+  const baseTemplateData = {
+    isSendMessageTemplate: true,
+    label: { en: 'test' },
+    language,
+  };
 
   beforeAll(async () => {
     await resetDB(SeedScript.testMultiple);
@@ -29,11 +33,6 @@ describe('Message template', () => {
   });
 
   beforeEach(async () => {
-    baseTemplateData = {
-      isSendMessageTemplate: true,
-      label: { en: 'test' },
-      language,
-    };
     // Clean up any existing templates before each test
     // Save a bit of processing time by not resetting the DB
 
@@ -59,9 +58,24 @@ describe('Message template', () => {
         templateData as CreateMessageTemplateDto,
         accessToken,
       );
+      const currentTemplates = await getMessageTemplates(
+        programId,
+        accessToken,
+      );
+      // Check if the template was created
+      const createdTemplate = currentTemplates.body.find(
+        (template) =>
+          template.type === regularType && template.language === language,
+      );
 
       // Assert
       expect(result.statusCode).toBe(HttpStatus.CREATED);
+      expect(createdTemplate).toMatchObject({
+        message: templateData.message,
+        type: templateData.type,
+        language: templateData.language,
+        contentSid: null,
+      });
     });
 
     it('should NOT create regular message template with contentSid', async () => {
@@ -126,9 +140,24 @@ describe('Message template', () => {
         templateData as CreateMessageTemplateDto,
         accessToken,
       );
+      const currentTemplates = await getMessageTemplates(
+        programId,
+        accessToken,
+      );
+      // Check if the template was created
+      const createdTemplate = currentTemplates.body.find(
+        (template) =>
+          template.type === contentSidType && template.language === language,
+      );
 
       // Assert
       expect(result.statusCode).toBe(HttpStatus.CREATED);
+      expect(createdTemplate).toMatchObject({
+        contentSid: templateData.contentSid,
+        type: templateData.type,
+        language: templateData.language,
+        message: null,
+      });
     });
 
     it('should NOT create ContentSid template without contentSid', async () => {
