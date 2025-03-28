@@ -11,6 +11,7 @@ export class MessageJobDto {
   phoneNumber?: string;
   programId: number;
   message?: string;
+  contentSid?: string;
   messageTemplateKey?: string;
   messageContentType?: MessageContentType;
   mediaUrl?: string;

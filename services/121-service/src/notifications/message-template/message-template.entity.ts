@@ -16,6 +16,8 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
   'language',
   'programId',
 ])
+// TODO: It may make sense to refactor this entity into 2 entities:
+// One that stores templates with a message and one that stores templates with a content SID
 @Entity('message_template')
 export class MessageTemplateEntity extends Base121Entity {
   @Column()
@@ -27,11 +29,11 @@ export class MessageTemplateEntity extends Base121Entity {
   @Column()
   public language: string;
 
-  @Column()
-  public message: string;
+  @Column({ type: 'character varying', default: null, nullable: true })
+  public message: string | null;
 
-  @Column()
-  public isWhatsappTemplate: boolean;
+  @Column({ type: 'character varying', default: null, nullable: true })
+  public contentSid: string | null;
 
   @Column({ default: false })
   public isSendMessageTemplate: boolean;

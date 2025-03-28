@@ -610,7 +610,7 @@ export class TransactionJobProcessorsService {
 
     await this.addMessageJobToQueue({
       registration,
-      message: messageContent,
+      message: messageContent ?? undefined,
       bulksize: bulkSize,
       userId,
     });

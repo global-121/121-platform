@@ -54,7 +54,7 @@ describe('send arbitrary messages to set of registrations', () => {
       programId: programIdOCW,
       referenceIds: [referenceIds[0]],
       accessToken,
-      minimumNumberOfMessages: 2,
+      minimumNumberOfMessagesPerReferenceId: 2,
     });
 
     const messageHistories: MessageHistoryDto[][] = [];
@@ -103,7 +103,7 @@ describe('send arbitrary messages to set of registrations', () => {
         registrationOCW4.referenceId,
       ],
       accessToken,
-      minimumNumberOfMessages: 2,
+      minimumNumberOfMessagesPerReferenceId: 2,
     });
 
     const messageHistory1 = (

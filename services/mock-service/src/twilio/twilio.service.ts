@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 
 import {
@@ -7,6 +7,7 @@ import {
   DEVELOPMENT,
   EXTERNAL_API_ROOT,
 } from '@mock-service/src/config';
+import { ContentSidMessageMockMap } from '@mock-service/src/twilio/content-sid-message-mock-map.const';
 import {
   TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
@@ -51,13 +52,41 @@ export class TwilioService {
     };
   }
 
+  public async fetchMessage({ messageSid }: { messageSid: string }): Promise<{
+    body: string;
+  }> {
+    // If the messageSid contains 'mock', return the mock message that is related to the contentSid
+    if (messageSid.includes('mock')) {
+      const contentSid = messageSid.split('-mock-')[1];
+      const body = ContentSidMessageMockMap[contentSid];
+      if (!body) {
+        throw new HttpException(
+          `ContentSid ${body} not found`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      return {
+        body,
+      };
+    }
+  }
+
   public createMessage(
     twilioMessagesCreateDto: TwilioMessagesCreateDto,
     accountSid: string,
   ): Record<string, unknown> {
-    const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
+    // There seems to be a bug in twilio where the body is an empty string when a contentSid is provided, so we replicated this bug in our mock service
+    const body = twilioMessagesCreateDto.ContentSid
+      ? ''
+      : twilioMessagesCreateDto.Body;
+
+    let messageSid = 'SM' + this.createRandomHexaDecimalString(32);
+    if (twilioMessagesCreateDto.ContentSid) {
+      messageSid = `${messageSid}-mock-${twilioMessagesCreateDto.ContentSid}`;
+    }
+
     const response = {
-      body: twilioMessagesCreateDto.Body,
+      body,
       numSegments: twilioMessagesCreateDto.MediaUrl ? '1' : '0',
       direction: 'outbound-api',
       from: twilioMessagesCreateDto.From,
@@ -115,7 +144,6 @@ export class TwilioService {
         messageSid,
         response,
       });
-      return response;
     }
 
     if (
@@ -225,7 +253,6 @@ export class TwilioService {
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
       url = `${EXTERNAL_API_ROOT}/${path}`;
-      console.log(messageSid, response.status);
     }
 
     // This is to simulate a delay in the callback

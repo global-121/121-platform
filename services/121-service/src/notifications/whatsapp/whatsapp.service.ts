@@ -39,6 +39,7 @@ export class WhatsappService {
 
   public async sendWhatsapp({
     message,
+    contentSid,
     recipientPhoneNr,
     mediaUrl,
     registrationId,
@@ -48,6 +49,7 @@ export class WhatsappService {
     userId,
   }: {
     message?: string;
+    contentSid?: string;
     recipientPhoneNr?: string;
     mediaUrl?: null | string;
     registrationId?: number;
@@ -57,7 +59,8 @@ export class WhatsappService {
     userId: number;
   }): Promise<string> {
     const payload = {
-      body: message,
+      body: contentSid ? undefined : message,
+      contentSid,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER!),
       statusCallback:
@@ -76,6 +79,15 @@ export class WhatsappService {
 
     try {
       const messageToStore = await twilioClient.messages.create(payload);
+      // If the message is a template, we need to fetch the body from Twilio due to what we think is a bug in Twilio Node library
+      // I opened an issue for it here: https://github.com/twilio/twilio-node/issues/1081
+      if (contentSid && !messageToStore.body) {
+        const fetchedMessage = await twilioClient
+          .messages(messageToStore.sid)
+          .fetch();
+        // If the contentSid is not found the body will be an empty string. We will later get an error by callback where we can store the error
+        messageToStore.body = fetchedMessage.body;
+      }
       await this.storeSendWhatsapp({
         message: messageToStore,
         userId,
@@ -196,7 +208,7 @@ export class WhatsappService {
       await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
       )
-    ).filter((template) => template.isWhatsappTemplate);
+    ).filter((template) => template.contentSid);
 
     await this.testLanguageTemplates(messageTemplates, sessionId);
   }
@@ -207,7 +219,7 @@ export class WhatsappService {
   ): Promise<void> {
     for (const messageTemplate of messageTemplates) {
       const payload = {
-        body: messageTemplate.message,
+        body: messageTemplate.message ?? undefined,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
         statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
@@ -279,7 +291,7 @@ export class WhatsappService {
       await this.messageTemplateServices.getMessageTemplatesByProgramId(
         program.id,
       )
-    ).filter((template) => template.isWhatsappTemplate);
+    ).filter((template) => template.contentSid);
 
     return await this.getLanguageTemplateResults(messageTemplates, sessionId);
   }

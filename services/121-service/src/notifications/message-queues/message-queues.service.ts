@@ -55,6 +55,7 @@ export class MessageQueuesService {
   public async addMessageJob({
     registration,
     message,
+    contentSid,
     messageTemplateKey,
     messageContentType,
     messageProcessType,
@@ -65,6 +66,7 @@ export class MessageQueuesService {
   }: {
     registration: RegistrationEntity | Omit<RegistrationViewEntity, 'data'>;
     message?: string;
+    contentSid?: string;
     messageTemplateKey?: string;
     messageContentType: MessageContentType;
     messageProcessType: ExtendedMessageProccessType;
@@ -104,6 +106,7 @@ export class MessageQueuesService {
         phoneNumber: registration.phoneNumber ?? undefined,
         programId: registration.programId,
         message,
+        contentSid,
         messageTemplateKey,
         messageContentType,
         mediaUrl: mediaUrl ?? undefined,
@@ -133,7 +136,12 @@ export class MessageQueuesService {
           language: Equal('en'), // use English to determine which placeholders are used
         },
       });
-      messageText = messageTemplate?.message;
+      if (!messageTemplate?.message) {
+        throw new Error(
+          `Message template with key ${messageTemplateKey} not found or has no message`,
+        );
+      }
+      messageText = messageTemplate.message;
     }
     const placeholders = await this.programAttributesService.getAttributes({
       programId,

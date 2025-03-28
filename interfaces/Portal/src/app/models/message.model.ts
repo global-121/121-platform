@@ -55,8 +55,8 @@ export class MessageTemplate {
   type: string;
   label: TranslatableString;
   language: string;
-  message: string;
-  isWhatsappTemplate: true;
+  message: string | null;
+  contentSid: string | null;
   isSendMessageTemplate: true;
   programId: number;
 }

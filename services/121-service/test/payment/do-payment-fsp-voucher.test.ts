@@ -93,7 +93,7 @@ describe('Do payment to 1 PA', () => {
         programId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
-        minimumNumberOfMessages: 3,
+        minimumNumberOfMessagesPerReferenceId: 3,
       });
 
       const { body: messages } = await getMessageHistory(

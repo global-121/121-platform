@@ -12,6 +12,9 @@ export function processMessagePlaceholders(
     (t) =>
       t.type === statusChange && t.language === registration.preferredLanguage,
   )[0].message;
+  if (!template) {
+    return '';
+  }
 
   const processedTemplate = template.replace(
     new RegExp(`{{${placeholderKey}}}`, 'g'),

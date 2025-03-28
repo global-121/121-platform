@@ -174,19 +174,16 @@ export class IntersolveVoucherCronService {
           continue;
         }
         const language = await this.getLanguageForRegistration(referenceId);
-        let whatsappPayment =
-          await this.intersolveVoucherService.getNotificationText(
+        const contentSid =
+          await this.intersolveVoucherService.getNotificationContentSid(
             registration.program,
             ProgramNotificationEnum.whatsappPayment,
             language,
           );
-        whatsappPayment = whatsappPayment
-          .split('[[amount]]')
-          .join(unsentIntersolveVoucher.amount);
 
         await this.queueMessageService.addMessageJob({
           registration,
-          message: whatsappPayment,
+          contentSid,
           messageContentType: MessageContentType.paymentReminder,
           messageProcessType:
             MessageProcessType.whatsappTemplateVoucherReminder,

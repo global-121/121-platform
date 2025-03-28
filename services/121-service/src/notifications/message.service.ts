@@ -97,6 +97,7 @@ export class MessageService {
         case MessageProcessType.whatsappDefaultReply:
           await this.whatsappService.sendWhatsapp({
             message: messageText,
+            contentSid: messageJobDto.contentSid,
             recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
             mediaUrl: messageJobDto.mediaUrl,
             registrationId: messageJobDto.registrationId,
@@ -123,11 +124,11 @@ export class MessageService {
       return messageJobDto.message;
     }
     if (messageJobDto.messageTemplateKey) {
-      return await this.getNotificationText(
-        messageJobDto.preferredLanguage,
-        messageJobDto.messageTemplateKey,
-        messageJobDto.programId,
-      );
+      return await this.getTemplateMessageTextOrFallback({
+        programId: messageJobDto.programId,
+        messageTemplateKey: messageJobDto.messageTemplateKey,
+        preferredLanguage: messageJobDto.preferredLanguage,
+      });
     }
     return '';
   }
@@ -175,7 +176,7 @@ export class MessageService {
     let errorMessage: string | undefined;
     await this.whatsappService
       .sendWhatsapp({
-        message: messageJobDto.message,
+        contentSid: messageJobDto.contentSid,
         recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
         mediaUrl: messageJobDto.mediaUrl,
         registrationId: messageJobDto.registrationId,
@@ -283,18 +284,18 @@ export class MessageService {
     pendingMesssage.userId = userId;
     await this.whatsappPendingMessageRepo.save(pendingMesssage);
 
-    const registration = await this.registrationRepository.findOne({
+    const registration = await this.registrationRepository.findOneOrFail({
       where: { id: Equal(registrationId) },
       relations: ['program'],
     });
-    const language = registration?.preferredLanguage || this.fallbackLanguage;
-    const whatsappGenericMessage = await this.getNotificationText(
-      language,
-      ProgramNotificationEnum.whatsappGenericMessage,
-      registration?.program.id,
-    );
+    const language = registration.preferredLanguage || this.fallbackLanguage;
+    const contentSid = await this.getTemplateContentSidOrFallback({
+      programId: registration.program.id,
+      messageTemplateKey: ProgramNotificationEnum.whatsappGenericMessage,
+      preferredLanguage: language,
+    });
     const sid = await this.whatsappService.sendWhatsapp({
-      message: whatsappGenericMessage,
+      contentSid: contentSid ?? undefined,
       recipientPhoneNr,
       registrationId,
       messageContentType: MessageContentType.genericTemplated,
@@ -310,31 +311,91 @@ export class MessageService {
     }
   }
 
-  private async getNotificationText(
-    language: string,
+  private async getTemplateMessageTextOrFallback({
+    programId,
+    messageTemplateKey,
+    preferredLanguage,
+  }: {
+    programId: number;
+    messageTemplateKey: string;
+    preferredLanguage: string;
+  }): Promise<string> {
+    return (
+      (
+        await this.getMessageTemplateForLanguageOrFallback(
+          programId,
+          messageTemplateKey,
+          preferredLanguage,
+        )
+      ).message ?? ''
+    );
+  }
+
+  private async getTemplateContentSidOrFallback({
+    programId,
+    messageTemplateKey,
+    preferredLanguage,
+  }: {
+    programId: number;
+    messageTemplateKey: string;
+    preferredLanguage: string;
+  }): Promise<string> {
+    const messageTemplate = await this.getMessageTemplateForLanguageOrFallback(
+      programId,
+      messageTemplateKey,
+      preferredLanguage,
+    );
+    if (!messageTemplate.contentSid) {
+      throw new Error(
+        `No contentSid found for message template key: ${messageTemplateKey}, programId: ${programId}, language: ${preferredLanguage}`,
+      );
+    }
+    return messageTemplate.contentSid;
+  }
+
+  private async getMessageTemplateForLanguageOrFallback(
+    programId: number,
     messageTemplateKey: string,
-    programId?: number,
-  ): Promise<string> {
+    preferredLanguage: string,
+  ): Promise<{ message: string | null; contentSid: string | null }> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
       program: { id: programId },
       type: messageTemplateKey,
     });
 
+    // Try to find template in preferred language
     const notification = messageTemplates.find(
-      (template) => template.language === language,
+      (template) => template.language === preferredLanguage,
     );
     if (notification) {
-      return notification.message;
+      return {
+        message: notification.message,
+        contentSid: notification.contentSid,
+      };
     }
 
+    // Fallback to default language
     const fallbackNotification = messageTemplates.find(
       (template) => template.language === this.fallbackLanguage,
     );
     if (fallbackNotification) {
-      return fallbackNotification.message;
+      return {
+        message: fallbackNotification.message,
+        contentSid: fallbackNotification.contentSid,
+      };
     }
 
-    return '';
+    // No template found
+    // This can happen on projects that have Whatsapp and templates configured incorrectly.
+    // TODO: Add feature to pro-actively inform admins of this.
+    // It's (currently) better to return *this* than throw an error here; if we
+    // send this to Twilio the Twilio error message will show up in the user
+    // interface. If we throw an error a user will (probably) not get any
+    // feedback.
+    return {
+      message: '',
+      contentSid: null,
+    };
   }
 
   private async processPlaceholders(

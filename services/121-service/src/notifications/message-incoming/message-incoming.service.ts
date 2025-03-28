@@ -81,14 +81,14 @@ export class MessageIncomingService {
     const notification = messageTemplates.find(
       (template) => template.language === language,
     );
-    if (notification) {
+    if (notification?.message) {
       return notification.message;
     }
 
     const fallbackNotification = messageTemplates.find(
       (template) => template.language === this.fallbackLanguage,
     );
-    if (fallbackNotification) {
+    if (fallbackNotification?.message) {
       return fallbackNotification.message;
     }
 
@@ -460,7 +460,7 @@ export class MessageIncomingService {
         )[0];
         await this.queueMessageService.addMessageJob({
           registration: registrationsWithPhoneNumber[0],
-          message: whatsappDefaultReply.message,
+          message: whatsappDefaultReply.message ?? undefined,
           messageContentType: MessageContentType.defaultReply,
           messageProcessType: MessageProcessType.whatsappDefaultReply,
           userId: userId ? userId.id : 1,
@@ -572,13 +572,13 @@ export class MessageIncomingService {
       (template) => template.language === language,
     );
     if (messageTemplate) {
-      return messageTemplate.message;
+      return messageTemplate.message ?? undefined;
     }
     const fallbackMessageTemplate = messageTemplates.find(
       (template) => template.language === this.fallbackLanguage,
     );
     if (fallbackMessageTemplate) {
-      return fallbackMessageTemplate.message;
+      return fallbackMessageTemplate.message ?? undefined;
     }
   }
 

@@ -1,15 +1,23 @@
 import { test } from '@playwright/test';
 
 import { AppRoutes } from '@121-portal/src/app/app-routes.enum';
+import FspName from '@121-portal/src/app/enums/fsp-name.enum';
 import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import {
+  waitForMessagesToComplete,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationsPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
@@ -34,12 +42,14 @@ const paymentFilterByTab =
   englishTranslations['registration-details']['activity-overview'].filters
     .message;
 
+let accessToken: string;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdPV = 2;
   const pvProgramId = programIdPV;
 
-  const accessToken = await getAccessToken();
+  accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsPV, pvProgramId, accessToken);
 
   // Login
@@ -77,6 +87,23 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages', async () => {
+    await waitForPaymentTransactionsToComplete(
+      programIdPV,
+      registrationsPV.map((pa) => pa.referenceId),
+      accessToken,
+      5000,
+    );
+    const registrationsWithVoucher = registrationsPV.filter(
+      (r) =>
+        r.programFinancialServiceProviderConfigurationName ===
+        FspName.intersolveVoucherWhatsapp,
+    );
+    await waitForMessagesToComplete({
+      programId: programIdPV,
+      referenceIds: registrationsWithVoucher.map((pa) => pa.referenceId),
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 3,
+    });
     await table.openFspProfile({ shouldIncludeVisa: false });
 
     await registrationPage.validateQuantityOfActivity({ quantity: 8 });
