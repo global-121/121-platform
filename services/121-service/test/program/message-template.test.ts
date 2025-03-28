@@ -241,7 +241,7 @@ describe('Message template', () => {
       expect(result.body.contentSid).toBe(updatedContentSid);
     });
 
-    it('should NOT allow adding contentSid to a regular template', async () => {
+    it(`should NOT allow adding contentSid to a template of type: ${ContentSidMessageTypes.join(', ')}`, async () => {
       // Assuming 'registered' is a regular type
       const typeToUpdate = 'registered';
 
