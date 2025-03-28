@@ -386,6 +386,12 @@ export class MessageService {
     }
 
     // No template found
+    // This can happen on projects that have Whatsapp and templates configured incorrectly.
+    // TODO: Add feature to pro-actively inform admins of this.
+    // It's (currently) better to return *this* than throw an error here; if we
+    // send this to Twilio the Twilio error message will show up in the user
+    // interface. If we throw an error a user will (probably) not get any
+    // feedback.
     return {
       message: '',
       contentSid: null,
