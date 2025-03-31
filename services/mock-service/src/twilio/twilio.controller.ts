@@ -52,22 +52,23 @@ export class TwilioController {
 
   @ApiOperation({
     summary:
-      'Fetch message. We only mocked a body return when getting by messageSid for message created with a contentSid as this is the only part that is used in the 121-service',
+      'Fetch content template. Mocks the Twilio Content API for template fetching.',
   })
   @ApiParam({
-    name: 'messageSid',
+    name: 'contentSid',
     required: true,
     type: 'string',
-    description: 'Message SID returned from Twilio',
+    description: 'Content SID for a Twilio template',
   })
-  @Get('2010-04-01/Accounts/:accountSid/Messages/:messageSid.json')
-  public async fetchMessage(
-    @Param('accountSid') accountSid: string,
-    @Param('messageSid') messageSid: string,
-  ): Promise<{ body: string }> {
-    console.info(
-      `GET api/2010-04-01/Accounts/${accountSid}/Messages/${messageSid}.json`,
-    );
-    return this.twilioService.fetchMessage({ messageSid });
+  @Get('v1/Content/:contentSid')
+  public async fetchContent(@Param('contentSid') contentSid: string): Promise<{
+    types: {
+      'twilio/quick-reply'?: {
+        body: string;
+      };
+    };
+  }> {
+    console.info(`GET api/v1/Content/${contentSid}`);
+    return this.twilioService.fetchContent({ contentSid });
   }
 }

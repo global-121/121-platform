@@ -82,11 +82,11 @@ export class WhatsappService {
       // If the message is a template, we need to fetch the body from Twilio due to what we think is a bug in Twilio Node library
       // I opened an issue for it here: https://github.com/twilio/twilio-node/issues/1081
       if (contentSid && !messageToStore.body) {
-        const fetchedMessage = await twilioClient
-          .messages(messageToStore.sid)
+        const fetchedTemplate = await twilioClient.content.v1
+          .contents(contentSid)
           .fetch();
-        // If the contentSid is not found the body will be an empty string. We will later get an error by callback where we can store the error
-        messageToStore.body = fetchedMessage.body;
+        messageToStore.body =
+          fetchedTemplate.types['twilio/quick-reply']?.body ?? '';
       }
       await this.storeSendWhatsapp({
         message: messageToStore,
