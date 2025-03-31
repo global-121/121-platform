@@ -52,23 +52,31 @@ export class TwilioService {
     };
   }
 
-  public async fetchMessage({ messageSid }: { messageSid: string }): Promise<{
-    body: string;
-  }> {
-    // If the messageSid contains 'mock', return the mock message that is related to the contentSid
-    if (messageSid.includes('mock')) {
-      const contentSid = messageSid.split('-mock-')[1];
-      const body = ContentSidMessageMockMap[contentSid];
-      if (!body) {
-        throw new HttpException(
-          `ContentSid ${body} not found`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      return {
-        body,
+  public async fetchContent({ contentSid }: { contentSid: string }): Promise<{
+    types: {
+      'twilio/quick-reply'?: {
+        body: string;
       };
+    };
+  }> {
+    // Check if the contentSid exists in your mock map
+    const body = ContentSidMessageMockMap[contentSid];
+
+    if (!body) {
+      throw new HttpException(
+        `ContentSid ${contentSid} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
+
+    // Return in the format that matches Twilio's content API
+    return {
+      types: {
+        'twilio/quick-reply': {
+          body,
+        },
+      },
+    };
   }
 
   public createMessage(
@@ -80,10 +88,7 @@ export class TwilioService {
       ? ''
       : twilioMessagesCreateDto.Body;
 
-    let messageSid = 'SM' + this.createRandomHexaDecimalString(32);
-    if (twilioMessagesCreateDto.ContentSid) {
-      messageSid = `${messageSid}-mock-${twilioMessagesCreateDto.ContentSid}`;
-    }
+    const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
     const response = {
       body,
