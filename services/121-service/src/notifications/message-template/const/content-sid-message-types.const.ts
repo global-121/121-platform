@@ -2,5 +2,5 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 
 export const ContentSidMessageTypes = [
   ProgramNotificationEnum.whatsappGenericMessage,
-  ProgramNotificationEnum.whatsappReply,
+  ProgramNotificationEnum.whatsappPayment,
 ];
