@@ -34,6 +34,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 interface ProcessTransactionResultInput {
@@ -354,7 +355,7 @@ export class TransactionJobProcessorsService {
 
       // THIS IS MOCK FUNCTIONONALITY FOR TESTING PURPOSES ONLY
       if (
-        process.env.MOCK_NEDBANK &&
+        shouldBeEnabled(process.env.MOCK_NEDBANK) &&
         transactionJob.referenceId.includes('mock')
       ) {
         // If mock, add the referenceId to the orderCreateReference
