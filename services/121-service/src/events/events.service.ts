@@ -67,7 +67,7 @@ export class EventsService {
   }
 
   /**
-   * Create events by looking the changed in property values between old and new registration view entities.
+   * Create events by looking for the changes in property-values between old- and new RegistrationViewEntities.
    *
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} oldRegistrationViews - The old registration view entity or entities before the change.
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} newRegistrationViews - The new registration view entity or entities after the change.
@@ -107,7 +107,6 @@ export class EventsService {
     newRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
     createEventOptions?: createFromRegistrationViewsOptions,
   ): Promise<void> {
-    // Convert to array if not already
     const oldEntities = Array.isArray(oldRegistrationViews)
       ? oldRegistrationViews
       : [oldRegistrationViews];
@@ -116,11 +115,10 @@ export class EventsService {
       : [newRegistrationViews];
 
     this.validateEntities(oldEntities, newEntities, createEventOptions);
-    // Get userId from request if it exists otherwise this update was done using a queue
-    // than get it from the request of the job of the queue
 
+    // Get userId from request if it exists otherwise this update was done using a queue than get it from the request of the job of the queue
     const requestUserId: number = this.request?.user?.['id']
-      ? this.request?.user?.['id']
+      ? this.request.user['id']
       : this.jobRef?.data?.request?.userId;
 
     // UserId can be null if the registration change was done by a system user, for example when the system puts a registration to status complete
@@ -180,7 +178,6 @@ export class EventsService {
     const isFirstNewEntityRegistrationView =
       this.isCompleteRegistrationViewEntity(firstNewEntity);
 
-    // Check if one entity is RegistrationViewEntity and the other is not
     if (
       !eventLogOptionsDto?.explicitRegistrationPropertyNames &&
       isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
@@ -190,7 +187,6 @@ export class EventsService {
       );
     }
 
-    // Check if both entities are not RegistrationViewEntity and explicitRegistrationAttributes is not provided
     if (
       !isFirstOldEntityRegistrationView &&
       !isFirstNewEntityRegistrationView &&
