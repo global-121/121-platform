@@ -26,6 +26,7 @@ import { IssueTokenResult } from '@121-service/src/payments/fsp-integration/inte
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
@@ -47,7 +48,7 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken() {
-    if (process.env.MOCK_INTERSOLVE) {
+    if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
       return 'mocked-token';
     }
     if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
