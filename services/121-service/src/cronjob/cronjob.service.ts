@@ -190,7 +190,7 @@ export class CronjobService {
         );
       })
       // Filter out this method.
-      .filter((name) => name !== 'getAllMethods');
+      .filter((name) => name !== 'getAllMethodNames');
     return methodNames;
   }
 }
