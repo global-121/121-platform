@@ -8,10 +8,7 @@ import {
   Header,
 } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
-
-function shouldBeEnabled(envVariable: string | undefined): boolean {
-  return !!envVariable && envVariable.toLowerCase() === 'true';
-}
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
 type cronReturn = Promise<
   | {
