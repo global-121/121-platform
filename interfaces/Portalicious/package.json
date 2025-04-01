@@ -24,6 +24,7 @@
     "test:deployment-configuration": "node --env-file=.env ./_test-deployment-configuration.mjs",
     "test:ci": "npm test -- --no-watch --no-progress --browsers=ChromeHeadless",
     "test": "ng test",
+    "upgrade:angular": "ng update @angular/core @angular/cli --create-commits",
     "verify:deployment-configuration": "node --env-file=.env ./_verify-deployment-configuration.mjs",
     "verify:build": "node --env-file=.env ./_verify-build.mjs",
     "typecheck": "npx tsc --noEmit",
