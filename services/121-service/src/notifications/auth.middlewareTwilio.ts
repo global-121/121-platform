@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import twilio from 'twilio';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
@@ -12,7 +13,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    if (process.env.MOCK_TWILIO) {
+    if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
       return next();
     }
 

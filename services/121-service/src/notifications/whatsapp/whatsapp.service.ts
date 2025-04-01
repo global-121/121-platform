@@ -21,6 +21,7 @@ import {
 } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
@@ -67,7 +68,7 @@ export class WhatsappService {
       from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER!),
       statusCallback:
         EXTERNAL_API.whatsAppStatus +
-        (!!process.env.MOCK_TWILIO
+        (shouldBeEnabled(process.env.MOCK_TWILIO)
           ? `?messageContentType=${messageContentType}`
           : ''),
       to: formatWhatsAppNumber(recipientPhoneNr),
@@ -75,7 +76,7 @@ export class WhatsappService {
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
-    if (!!process.env.MOCK_TWILIO) {
+    if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
       payload['messageContentType'] = messageContentType;
     }
 

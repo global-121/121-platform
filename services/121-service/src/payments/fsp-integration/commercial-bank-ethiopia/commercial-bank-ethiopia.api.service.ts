@@ -4,10 +4,11 @@ import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
-const cbeApiUrl = process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-  ? `${process.env.MOCK_SERVICE_URL}api/fsp/commercial-bank-ethiopia/services` // Mock URL
+const cbeApiUrl = shouldBeEnabled(process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA)
+  ? `${process.env.MOCK_SERVICE_URL}api/fsp/commercial-bank-ethiopia/services`
   : process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
 
 @Injectable()
@@ -27,7 +28,7 @@ export class CommercialBankEthiopiaApiService {
       const responseBody = await this.soapService.postCBERequest({
         apiUrl: cbeApiUrl,
         payload,
-        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
+        soapAction: `${cbeApiUrl}?xsd=4`,
       });
 
       if (
@@ -158,7 +159,7 @@ export class CommercialBankEthiopiaApiService {
       const responseBody = await this.soapService.postCBERequest({
         apiUrl: cbeApiUrl,
         payload,
-        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
+        soapAction: `${cbeApiUrl}?xsd=6`,
       });
 
       return responseBody;

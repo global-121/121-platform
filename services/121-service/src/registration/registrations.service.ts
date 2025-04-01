@@ -59,6 +59,7 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindWhereOptions.helper';
 
 @Injectable()
@@ -618,7 +619,7 @@ export class RegistrationsService {
         FinancialServiceProviders.intersolveVisa,
       ).attributes.map((attr) => attr.name) as string[];
     if (
-      process.env.SYNC_WITH_THIRD_PARTIES &&
+      shouldBeEnabled(process.env.SYNC_WITH_THIRD_PARTIES) &&
       intersolveVisaAttributeNames.includes(attribute)
     ) {
       await this.sendContactInformationToIntersolve(registration);

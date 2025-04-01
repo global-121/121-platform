@@ -9,8 +9,9 @@ import {
   CustomHttpService,
   Header,
 } from '@121-service/src/shared/services/custom-http.service';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
-const nedbankApiUrl = process.env.MOCK_NEDBANK
+const nedbankApiUrl = shouldBeEnabled(process.env.MOCK_NEDBANK)
   ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank`
   : process.env.NEDBANK_API_URL;
 

@@ -9,6 +9,7 @@ import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integ
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
@@ -63,7 +64,7 @@ export class IntersolveVoucherApiService {
 
     let result = new IntersolveIssueCardResponse();
     try {
-      const responseBody = !!process.env.MOCK_INTERSOLVE
+      const responseBody = shouldBeEnabled(process.env.MOCK_INTERSOLVE)
         ? await this.intersolveMock.post(payload)
         : await this.soapService.post(
             payload,
@@ -120,7 +121,7 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    const responseBody = !!process.env.MOCK_INTERSOLVE
+    const responseBody = shouldBeEnabled(process.env.MOCK_INTERSOLVE)
       ? await this.intersolveMock.post(payload)
       : await this.soapService.post(
           payload,

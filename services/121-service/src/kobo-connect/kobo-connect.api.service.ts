@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { DEBUG } from '@121-service/src/config';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 interface KoboApiResponse<T = unknown> {
@@ -20,10 +21,10 @@ function isErrorResponse(data: unknown): data is { detail: string } {
 
 @Injectable()
 export class KoboConnectApiService {
-  private apiUrl = process.env.KOBO_CONNECT_API_URL || '-';
+  private apiUrl = process.env.KOBO_CONNECT_API_URL;
 
   public constructor(private readonly httpService: CustomHttpService) {
-    if (!this.apiUrl) {
+    if (!this.apiUrl && !DEBUG) {
       throw new HttpException(
         'Kobo-Connect API not configured. Set the KOBO_CONNECT_API_URL environment variable',
         HttpStatus.INTERNAL_SERVER_ERROR,

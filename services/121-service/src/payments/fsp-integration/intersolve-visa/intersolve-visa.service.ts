@@ -24,6 +24,7 @@ import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
 @Injectable()
 export class IntersolveVisaService
@@ -281,7 +282,7 @@ export class IntersolveVisaService
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode,
       activate: true, // Parent Wallets are always created activated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: shouldBeEnabled(process.env.MOCK_INTERSOLVE)
         ? intersolveVisaCustomer.holderId
         : undefined,
     });
@@ -343,7 +344,7 @@ export class IntersolveVisaService
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode,
       activate: false, // Child Wallets are always created deactivated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: shouldBeEnabled(process.env.MOCK_INTERSOLVE)
         ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
         : undefined,
     });
@@ -492,7 +493,7 @@ export class IntersolveVisaService
 
     // Our mock service always return that a token is not blocked
     // However when we are using the mock service, we should not update the token status else it is always false when you refresh the registration page
-    if (!process.env.MOCK_INTERSOLVE) {
+    if (!shouldBeEnabled(process.env.MOCK_INTERSOLVE)) {
       intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
     }
     intersolveVisaChildWallet.lastExternalUpdate = new Date();
@@ -559,7 +560,7 @@ export class IntersolveVisaService
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode: input.brandCode,
       activate: false, // Child Wallets are always created deactivated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: shouldBeEnabled(process.env.MOCK_INTERSOLVE)
         ? intersolveVisaCustomer.holderId
         : undefined,
     });

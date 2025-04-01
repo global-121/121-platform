@@ -42,6 +42,7 @@ import { UserData, UserRO } from '@121-service/src/user/user.interface';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -280,7 +281,7 @@ export class UserService {
       };
 
       // Send SSO template if SSO is enabled
-      if (!!process.env.USE_SSO_AZURE_ENTRA) {
+      if (shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA)) {
         await this.emailsService.sendCreateSSOUserEmail(emailPayload);
       } else {
         await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
@@ -635,7 +636,7 @@ export class UserService {
 
     // For SSO-users, token expiration is handled by Azure
     if (
-      !process.env.USE_SSO_AZURE_ENTRA &&
+      !shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
       !user.isEntraUser &&
       tokenExpiration
     ) {

@@ -121,7 +121,7 @@ export class QueuesRegistryService implements OnModuleInit {
     const keys = await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
     if (keys.length) {
       const keysWithoutPrefix = keys.map((key) =>
-        key.replace(process.env.REDIS_PREFIX + ':', ''),
+        key.replace(`${process.env.REDIS_PREFIX}:`, ''),
       );
       await this.batchDeleteKeys(redisClient, keysWithoutPrefix);
     }

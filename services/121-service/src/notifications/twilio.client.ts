@@ -2,6 +2,8 @@ import twilio, { ClientOpts } from 'twilio';
 import { RequestClient } from 'twilio';
 import { HttpMethod } from 'twilio/lib/interfaces';
 
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
+
 class MockTwilioRequestClient extends RequestClient {
   public mockUrl: string;
 
@@ -22,7 +24,7 @@ class MockTwilioRequestClient extends RequestClient {
 
 let mockClient: ClientOpts | undefined;
 
-if (!!process.env.MOCK_TWILIO) {
+if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
   mockClient = {
     httpClient: new MockTwilioRequestClient(
       `${process.env.MOCK_SERVICE_URL}api`,
