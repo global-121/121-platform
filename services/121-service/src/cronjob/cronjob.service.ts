@@ -178,7 +178,7 @@ export class CronjobService {
     return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
-  public getAllMethods(): string[] {
+  public getAllMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);
     const methodNames = Object.getOwnPropertyNames(prototype)
       .filter((name) => {
