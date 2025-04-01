@@ -251,6 +251,27 @@ class TableComponent {
     }
     await this.approveButton.click();
   }
+
+  async validateAllRecordsCount(expectedCount: number) {
+    // Wait for the pagination element to contain the expected count
+    await expect(async () => {
+      const paginationElement = this.table.getByText(
+        /Showing \d+ to \d+ of \d+ records/,
+      );
+      const paginationText = (await paginationElement.textContent()) ?? '';
+      const regex = /Showing \d+ to \d+ of (\d+) records/;
+      const match = regex.exec(paginationText);
+      const actualCount = parseInt(match?.[1] ?? '', 10);
+
+      if (isNaN(actualCount)) {
+        throw new Error(
+          `Could not extract total count from pagination text: ${paginationText}`,
+        );
+      }
+
+      expect(actualCount).toBe(expectedCount);
+    }).toPass({ timeout: 2000 }); // Custome timeout set to 2 seconds
+  }
 }
 
 export default TableComponent;
