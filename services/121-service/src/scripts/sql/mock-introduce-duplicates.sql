@@ -20,7 +20,7 @@ RandomSample AS (
     FROM MockDuplicates
     WHERE RANDOM() < 0.05
 )
-INSERT INTO "121-service".distinct_registration_pair ("smallerRegistrationId", "largerRegistrationId")
+INSERT INTO "121-service".unique_registration_pair ("smallerRegistrationId", "largerRegistrationId")
 SELECT smallerRegistrationId, largerRegistrationId
 FROM RandomSample
 ON CONFLICT DO NOTHING;

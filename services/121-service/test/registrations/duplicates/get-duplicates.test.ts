@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { patchProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  createRegistrationDistinctness,
+  createRegistrationUniques,
   getDuplicates,
   getRegistrationIdByReferenceId,
   importRegistrations,
@@ -299,7 +299,7 @@ describe('Get duplicate status of registrations', () => {
     });
   });
 
-  it(`should not find duplicates if the duplicate registrations are ignored`, async () => {
+  it(`should not find duplicates if the duplicate registrations are marked as unqiue`, async () => {
     const registration1 = { ...registrationPV5 };
     const registration2 = { ...registrationPV6 };
     const registration3 = { ...registrationPV7 };
@@ -331,12 +331,12 @@ describe('Get duplicate status of registrations', () => {
       accessToken,
     });
 
-    await createRegistrationDistinctness({
+    await createRegistrationUniques({
       programId,
       accessToken,
       registrationIds: [registrationId1, registrationId2],
     });
-    await createRegistrationDistinctness({
+    await createRegistrationUniques({
       programId,
       accessToken,
       registrationIds: [registrationId1, registrationId3],

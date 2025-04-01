@@ -180,9 +180,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     const maxDuplicates = 10;
 
     // First, get the distinct duplicate registration IDs with a limit
-    const distinctRegistrationIds = await this.createQueryBuilder(
-      'registration',
-    )
+    const uniqueRegistrationIds = await this.createQueryBuilder('registration')
       .select('DISTINCT duplicate.id', 'registrationId')
       .leftJoin(
         RegistrationAttributeDataEntity,
@@ -224,7 +222,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere(
         'NOT EXISTS (' +
           'SELECT 1 ' +
-          'FROM "121-service".distinct_registration_pair rup ' +
+          'FROM "121-service".unique_registration_pair rup ' +
           'WHERE rup."smallerRegistrationId" = LEAST("attributeData1"."registrationId", "attributeData2"."registrationId") ' +
           'AND rup."largerRegistrationId" = GREATEST("attributeData1"."registrationId", "attributeData2"."registrationId")' +
           ')',
@@ -233,12 +231,12 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .limit(maxDuplicates)
       .getRawMany();
 
-    if (distinctRegistrationIds.length === 0) {
+    if (uniqueRegistrationIds.length === 0) {
       return [];
     }
 
     // Then, get all attributes for those specific registration IDs
-    const duplicateIds = distinctRegistrationIds.map(
+    const duplicateIds = uniqueRegistrationIds.map(
       (item) => item.registrationId,
     );
 

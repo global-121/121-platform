@@ -23,7 +23,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
-import { DistinctRegistrationPairEntity } from '@121-service/src/registration/distinct-regisration-pair.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
@@ -31,14 +30,15 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
-import { DistinctRegistrationPairRepository } from '@121-service/src/registration/repositories/distinct-registration-pair.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { UniqueRegistrationPairEntity } from '@121-service/src/registration/unique-registration-pair.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -57,7 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
       ProgramRegistrationAttributeEntity,
-      DistinctRegistrationPairEntity,
+      UniqueRegistrationPairEntity,
     ]),
     UserModule,
     HttpModule,
@@ -93,7 +93,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
     createScopedRepositoryProvider(EventEntity),
-    DistinctRegistrationPairRepository,
+    UniqueRegistrationPairRepository,
   ],
   controllers: [RegistrationsController],
   exports: [

@@ -15,9 +15,9 @@ import { RegistrationDataScopedRepository } from '@121-service/src/registration/
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
-import { DistinctRegistrationPairRepository } from '@121-service/src/registration/repositories/distinct-registration-pair.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -25,10 +25,12 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 
+const programId = 10001;
+
 describe('RegistrationsService', () => {
   let service: RegistrationsService;
   let registrationScopedRepository: RegistrationScopedRepository;
-  let distinctRegistrationPairRepository: DistinctRegistrationPairRepository;
+  let uniqueRegistrationPairRepository: UniqueRegistrationPairRepository;
   let eventsService: EventsService;
 
   beforeEach(async () => {
@@ -40,12 +42,15 @@ describe('RegistrationsService', () => {
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
-            findOneOrFail: jest.fn(),
+            findOneOrFail: jest.fn().mockImplementation(({ where }) => {
+              const id = where.id;
+              return Promise.resolve({ id, registrationProgramId: 9999 });
+            }),
             getWithRelationsByReferenceIdAndProgramId: jest.fn(),
           },
         },
         {
-          provide: DistinctRegistrationPairRepository,
+          provide: UniqueRegistrationPairRepository,
           useValue: {
             findOne: jest.fn(),
             store: jest.fn(),
@@ -61,7 +66,7 @@ describe('RegistrationsService', () => {
         {
           provide: EventsService,
           useValue: {
-            createForDistinctRegistrationPair: jest.fn(),
+            createForIgnoredDuplicatePair: jest.fn(),
           },
         },
         {
@@ -166,27 +171,21 @@ describe('RegistrationsService', () => {
     registrationScopedRepository = module.get<RegistrationScopedRepository>(
       RegistrationScopedRepository,
     );
-    distinctRegistrationPairRepository =
-      module.get<DistinctRegistrationPairRepository>(
-        DistinctRegistrationPairRepository,
+    uniqueRegistrationPairRepository =
+      module.get<UniqueRegistrationPairRepository>(
+        UniqueRegistrationPairRepository,
       );
     eventsService = module.get<EventsService>(EventsService);
-
-    // Spy on the private method to test how it's called
-    jest
-      .spyOn(service as any, 'createRegistrationDistinctPair')
-      .mockResolvedValue(undefined);
   });
 
-  describe('createRegistrationDistinctPairs', () => {
+  describe('createUniques', () => {
     it('should throw an error if duplicate registrationIds are provided', async () => {
       const registrationIds = [1, 2, 3, 2];
-      const programId = 1;
       const reason = 'testing';
 
       await expect(
-        service.createRegistrationDistinctPairs({
-          regisrationIds: registrationIds,
+        service.createUniques({
+          registrationIds,
           programId,
           reason,
         }),
@@ -207,8 +206,12 @@ describe('RegistrationsService', () => {
           { id: 2 } as RegistrationEntity,
         ]);
 
-      await service.createRegistrationDistinctPairs({
-        regisrationIds: registrationIds,
+      jest
+        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .mockResolvedValue(undefined);
+
+      await service.createUniques({
+        registrationIds,
         programId,
         reason,
       });
@@ -221,19 +224,15 @@ describe('RegistrationsService', () => {
         select: ['id'],
       });
 
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledWith({
-        registration1Id: 1,
-        registration2Id: 2,
-        reason,
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
+        smallerRegistrationId: 1,
+        largerRegistrationId: 2,
       });
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledTimes(1);
     });
 
     it('should create 3 pairs for 3 registrations', async () => {
       const registrationIds = [1, 2, 3];
-      const programId = 1;
       const reason = 'testing';
 
       jest
@@ -244,8 +243,12 @@ describe('RegistrationsService', () => {
           { id: 3 } as RegistrationEntity,
         ]);
 
-      await service.createRegistrationDistinctPairs({
-        regisrationIds: registrationIds,
+      jest
+        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .mockResolvedValue(undefined);
+
+      await service.createUniques({
+        registrationIds,
         programId,
         reason,
       });
@@ -258,30 +261,23 @@ describe('RegistrationsService', () => {
         select: ['id'],
       });
 
-      // Should call createRegistrationDistinctPair 3 times with IDs (1,2), (1,3), (2,3)
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledTimes(
-        3,
-      );
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledWith({
-        registration1Id: 1,
-        registration2Id: 2,
-        reason,
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledTimes(3);
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
+        smallerRegistrationId: 1,
+        largerRegistrationId: 2,
       });
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledWith({
-        registration1Id: 1,
-        registration2Id: 3,
-        reason,
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
+        smallerRegistrationId: 1,
+        largerRegistrationId: 3,
       });
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledWith({
-        registration1Id: 2,
-        registration2Id: 3,
-        reason,
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
+        smallerRegistrationId: 2,
+        largerRegistrationId: 3,
       });
     });
 
     it('should create 6 pairs for 4 registrations', async () => {
       const registrationIds = [1, 2, 3, 4];
-      const programId = 1;
       const reason = 'testing';
 
       jest
@@ -293,48 +289,66 @@ describe('RegistrationsService', () => {
           { id: 4 } as RegistrationEntity,
         ]);
 
-      await service.createRegistrationDistinctPairs({
-        regisrationIds: registrationIds,
+      jest
+        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .mockResolvedValue(undefined);
+
+      await service.createUniques({
+        registrationIds,
         programId,
         reason,
       });
 
-      // Should be called 6 times (n*(n-1)/2 pairs for n elements)
-      expect(service['createRegistrationDistinctPair']).toHaveBeenCalledTimes(
-        6,
-      );
-      // Verify all pairs are created
+      expect(registrationScopedRepository.find).toHaveBeenCalledWith({
+        where: {
+          id: In(registrationIds),
+          programId: Equal(programId),
+        },
+        select: ['id'],
+      });
+
+      // There should be 6 calls to store (n*(n-1)/2 for n = 4)
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledTimes(6);
+
+      // Verify all pairs are stored
       const expectedPairs = [
-        { registration1Id: 1, registration2Id: 2 },
-        { registration1Id: 1, registration2Id: 3 },
-        { registration1Id: 1, registration2Id: 4 },
-        { registration1Id: 2, registration2Id: 3 },
-        { registration1Id: 2, registration2Id: 4 },
-        { registration1Id: 3, registration2Id: 4 },
+        { smallerRegistrationId: 1, largerRegistrationId: 2 },
+        { smallerRegistrationId: 1, largerRegistrationId: 3 },
+        { smallerRegistrationId: 1, largerRegistrationId: 4 },
+        { smallerRegistrationId: 2, largerRegistrationId: 3 },
+        { smallerRegistrationId: 2, largerRegistrationId: 4 },
+        { smallerRegistrationId: 3, largerRegistrationId: 4 },
       ];
 
       expectedPairs.forEach((pair) => {
-        expect(service['createRegistrationDistinctPair']).toHaveBeenCalledWith({
-          ...pair,
-          reason,
-        });
+        expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith(
+          pair,
+        );
       });
     });
   });
 
-  describe('createRegistrationDistinctPair', () => {
+  describe('createRegistrationUniquePair', () => {
     beforeEach(() => {
-      // Restore the original implementation for this test suite
       jest.restoreAllMocks();
+
+      jest
+        .spyOn(registrationScopedRepository, 'find')
+        .mockResolvedValue([
+          { id: 1, registrationProgramId: 101 } as RegistrationEntity,
+          { id: 2, registrationProgramId: 102 } as RegistrationEntity,
+        ]);
     });
 
-    it('should store a new distinct pair and create an event', async () => {
-      // Mock required dependencies for this test
+    it('should store a new unique pair and create an event', async () => {
+      const registrationIds = [11, 12];
+      const reason = 'testing';
+
       jest
-        .spyOn(distinctRegistrationPairRepository, 'findOne')
+        .spyOn(uniqueRegistrationPairRepository, 'findOne')
         .mockResolvedValue(null);
       jest
-        .spyOn(distinctRegistrationPairRepository, 'store')
+        .spyOn(uniqueRegistrationPairRepository, 'store')
         .mockResolvedValue(undefined);
       jest
         .spyOn(registrationScopedRepository, 'findOneOrFail')
@@ -347,34 +361,42 @@ describe('RegistrationsService', () => {
           registrationProgramId: 102,
         } as RegistrationEntity);
       jest
-        .spyOn(eventsService, 'createForDistinctRegistrationPair')
+        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
         .mockResolvedValue(undefined);
 
-      // Call the private method directly using any type assertion
-      await (service as any).createRegistrationDistinctPair({
-        registration1Id: 2, // Intentionally using larger ID first
-        registration2Id: 1,
-        reason: 'testing',
+      // Call the service method that uses the repository
+      await service.createUniques({
+        registrationIds,
+        programId,
+        reason,
       });
 
-      // Verify IDs are sorted correctly (smaller ID first)
-      expect(distinctRegistrationPairRepository.findOne).toHaveBeenCalledWith({
+      // Verify registration find was called with correct parameters
+      expect(registrationScopedRepository.findOneOrFail).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(registrationScopedRepository.findOneOrFail).toHaveBeenCalledWith({
+        where: { id: Equal(1) },
+      });
+      expect(registrationScopedRepository.findOneOrFail).toHaveBeenCalledWith({
+        where: { id: Equal(2) },
+      });
+
+      // Verify findOne was called to check if the pair exists
+      expect(uniqueRegistrationPairRepository.findOne).toHaveBeenCalledWith({
         where: {
           smallerRegistrationId: Equal(1),
           largerRegistrationId: Equal(2),
         },
       });
 
-      // Verify pair is stored
-      expect(distinctRegistrationPairRepository.store).toHaveBeenCalledWith({
+      // Verify the pair is stored
+      expect(uniqueRegistrationPairRepository.store).toHaveBeenCalledWith({
         smallerRegistrationId: 1,
         largerRegistrationId: 2,
       });
 
-      // Verify event is created with correct data
-      expect(
-        eventsService.createForDistinctRegistrationPair,
-      ).toHaveBeenCalledWith({
+      expect(eventsService.createForIgnoredDuplicatePair).toHaveBeenCalledWith({
         registration1: {
           id: 1,
           registrationProgramId: 101,
@@ -390,23 +412,23 @@ describe('RegistrationsService', () => {
     it('should not store or create event if pair already exists', async () => {
       // Mock existing pair
       jest
-        .spyOn(distinctRegistrationPairRepository, 'findOne')
+        .spyOn(uniqueRegistrationPairRepository, 'findOne')
         .mockResolvedValue({
           id: 1,
           smallerRegistrationId: 1,
           largerRegistrationId: 2,
-        } as any);
+        });
 
-      await (service as any).createRegistrationDistinctPair({
-        registration1Id: 1,
-        registration2Id: 2,
+      await service.createUniques({
+        registrationIds: [1, 2],
+        programId,
         reason: 'testing',
       });
 
       // Verify store and event creation are not called
-      expect(distinctRegistrationPairRepository.store).not.toHaveBeenCalled();
+      expect(uniqueRegistrationPairRepository.store).not.toHaveBeenCalled();
       expect(
-        eventsService.createForDistinctRegistrationPair,
+        eventsService.createForIgnoredDuplicatePair,
       ).not.toHaveBeenCalled();
     });
   });

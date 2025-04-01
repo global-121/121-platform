@@ -1,6 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createRegistrationDistinctness,
+  createRegistrationUniques,
   getRegistrationIdByReferenceId,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -19,7 +19,7 @@ const programId = 2;
 // This is seperate from the other test file because it is testing the error case
 // it also saves a bit of processing time because it does not have to reset db before each test
 
-describe('Unsuccessfully mark registrations a distinct from each other', () => {
+describe('Unsuccessfully mark registrations as unqiue from each other', () => {
   let registrationId1: number;
   let registrationId2: number;
   let accessToken: string;
@@ -49,7 +49,7 @@ describe('Unsuccessfully mark registrations a distinct from each other', () => {
   });
 
   it(`should fail to create an ignored duplicate registration pair for one registration`, async () => {
-    const result = await createRegistrationDistinctness({
+    const result = await createRegistrationUniques({
       registrationIds: [registrationId1],
       programId,
       accessToken,
@@ -59,7 +59,7 @@ describe('Unsuccessfully mark registrations a distinct from each other', () => {
   });
 
   it(`should fail to create an ignored duplicate registration pair for more that 10 registrations`, async () => {
-    const result = await createRegistrationDistinctness({
+    const result = await createRegistrationUniques({
       registrationIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       programId,
       accessToken,
@@ -69,7 +69,7 @@ describe('Unsuccessfully mark registrations a distinct from each other', () => {
   });
 
   it(`should fail to create an ignored duplicate registration pair if a registration id does not exist`, async () => {
-    const result = await createRegistrationDistinctness({
+    const result = await createRegistrationUniques({
       registrationIds: [registrationId2, 200],
       programId,
       accessToken,

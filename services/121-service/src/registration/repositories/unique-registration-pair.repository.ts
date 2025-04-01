@@ -3,15 +3,15 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DistinctRegistrationPairEntity } from '@121-service/src/registration/distinct-regisration-pair.entity';
+import { UniqueRegistrationPairEntity } from '@121-service/src/registration/unique-registration-pair.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
-export class DistinctRegistrationPairRepository extends ScopedRepository<DistinctRegistrationPairEntity> {
+export class UniqueRegistrationPairRepository extends ScopedRepository<UniqueRegistrationPairEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
-    @InjectRepository(DistinctRegistrationPairEntity)
-    repository: Repository<DistinctRegistrationPairEntity>,
+    @InjectRepository(UniqueRegistrationPairEntity)
+    repository: Repository<UniqueRegistrationPairEntity>,
   ) {
     super(request, repository);
   }

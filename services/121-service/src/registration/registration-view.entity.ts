@@ -123,7 +123,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
             .andWhere('pra."duplicateCheck" = true').andWhere(`
               NOT EXISTS (
                 SELECT 1
-                FROM "121-service".distinct_registration_pair rup
+                FROM "121-service".unique_registration_pair rup
                 WHERE rup."smallerRegistrationId" = LEAST(d1."registrationId", d2."registrationId")
                   AND rup."largerRegistrationId" = GREATEST(d1."registrationId", d2."registrationId")
               )

@@ -50,9 +50,9 @@ import { RegistrationDataService } from '@121-service/src/registration/modules/r
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { DistinctRegistrationPairRepository } from '@121-service/src/registration/repositories/distinct-registration-pair.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { UniqueRegistrationPairRepository } from '@121-service/src/registration/repositories/unique-registration-pair.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -87,7 +87,7 @@ export class RegistrationsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
-    private readonly distinctRegistrationPairRepository: DistinctRegistrationPairRepository,
+    private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
   ) {}
 
   // This methods can be used to get the same formattted data as the pagination query using referenceId
@@ -903,20 +903,20 @@ export class RegistrationsService {
     });
   }
 
-  public async createRegistrationDistinctPairs({
-    regisrationIds,
+  public async createUniques({
+    registrationIds,
     programId,
     reason,
   }: {
-    regisrationIds: number[];
+    registrationIds: number[];
     programId: number;
     reason: string;
   }): Promise<void> {
-    const uniqueIds = new Set(regisrationIds);
-    if (uniqueIds.size !== regisrationIds.length) {
+    const uniqueIds = new Set(registrationIds);
+    if (uniqueIds.size !== registrationIds.length) {
       // Find the duplicate IDs
-      const duplicateIds = regisrationIds.filter(
-        (id, index) => regisrationIds.indexOf(id) !== index,
+      const duplicateIds = registrationIds.filter(
+        (id, index) => registrationIds.indexOf(id) !== index,
       );
 
       const error = `Duplicate registrationIds found in input: ${duplicateIds.join(', ')}`;
@@ -925,26 +925,25 @@ export class RegistrationsService {
 
     const registrations = await this.registrationScopedRepository.find({
       where: {
-        id: In(regisrationIds),
+        id: In(registrationIds),
         programId: Equal(programId),
       },
       select: ['id'],
     });
 
-    if (registrations.length !== regisrationIds.length) {
+    if (registrations.length !== registrationIds.length) {
       const foundIds = registrations.map((reg) => reg.id);
-      const missingIds = regisrationIds.filter((id) => !foundIds.includes(id));
+      const missingIds = registrationIds.filter((id) => !foundIds.includes(id));
 
-      const error = `Not all registrations were found in program ${programId}. Expected ${regisrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
+      const error = `Not all registrations were found in program ${programId}. Expected ${registrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
-    // Generate all possible pairs of registration IDs
-    //  and mark each pair as distinct from each other
+    // Generate all possible pairs of registration IDs and create unique entities
     for (let i = 0; i < registrations.length; i++) {
       for (let j = i + 1; j < registrations.length; j++) {
         const registration1Id = registrations[i].id;
         const registration2Id = registrations[j].id;
-        await this.createRegistrationDistinctPair({
+        await this.createRegistrationUniquePair({
           registration1Id,
           registration2Id,
           reason,
@@ -953,7 +952,7 @@ export class RegistrationsService {
     }
   }
 
-  private async createRegistrationDistinctPair({
+  private async createRegistrationUniquePair({
     registration1Id,
     registration2Id,
     reason,
@@ -967,8 +966,8 @@ export class RegistrationsService {
     const largerRegistrationId = Math.max(registration1Id, registration2Id);
 
     // Check if this pair already exists
-    const existingDistinctPair =
-      await this.distinctRegistrationPairRepository.findOne({
+    const existingUniquePair =
+      await this.uniqueRegistrationPairRepository.findOne({
         where: {
           smallerRegistrationId: Equal(smallerRegistrationId),
           largerRegistrationId: Equal(largerRegistrationId),
@@ -976,11 +975,11 @@ export class RegistrationsService {
       });
 
     // If the pair already exists, do nothing (no need to create a new event or throw an error)
-    if (existingDistinctPair) {
+    if (existingUniquePair) {
       return;
     }
 
-    await this.distinctRegistrationPairRepository.store({
+    await this.uniqueRegistrationPairRepository.store({
       smallerRegistrationId,
       largerRegistrationId,
     });
@@ -996,7 +995,7 @@ export class RegistrationsService {
     ]);
 
     // Create event
-    await this.eventsService.createForDistinctRegistrationPair({
+    await this.eventsService.createForIgnoredDuplicatePair({
       registration1: {
         id: registration1.id,
         registrationProgramId: registration1.registrationProgramId,

@@ -752,7 +752,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/distinctness",
+    "path": "/api/programs/{programId}/registrations/uniques",
     "params": [
       "programId"
     ]

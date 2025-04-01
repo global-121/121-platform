@@ -43,7 +43,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
-import { CreateRegistrationDistinctnessDto } from '@121-service/src/registration/dto/create-registration-distinctness.dto';
+import { CreateUniquesDto } from '@121-service/src/registration/dto/create-uniques.dto';
 import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
@@ -690,20 +690,20 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      'Post an array of registrationIds that are marked as distinct from each other. This means that in duplicate checks these registrations will not be considered duplicates with the other registrations in the array.',
+      'Post an array of registrationIds that are marked as unique from each other. This means that in duplicate checks these registrations will not be checked for being duplicate with each other.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Registration marked as distinct from each other',
+    description: 'Registration marked as unique from each other',
   })
-  @Post('programs/:programId/registrations/distinctness')
-  public async createRegistrationDistinctPairs(
+  @Post('programs/:programId/registrations/uniques')
+  public async createUniques(
     @Param('programId', ParseIntPipe) programId: number,
-    @Body() body: CreateRegistrationDistinctnessDto,
+    @Body() body: CreateUniquesDto,
   ): Promise<void> {
-    return await this.registrationsService.createRegistrationDistinctPairs({
-      regisrationIds: body.registrationIds,
+    return await this.registrationsService.createUniques({
+      registrationIds: body.registrationIds,
       programId,
       reason: body.reason,
     });

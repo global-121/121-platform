@@ -11,9 +11,9 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
-@Entity('distinct_registration_pair')
+@Entity('unique_registration_pair')
 @Unique(['smallerRegistrationId', 'largerRegistrationId'])
-export class DistinctRegistrationPairEntity extends Base121Entity {
+export class UniqueRegistrationPairEntity extends Base121Entity {
   @ManyToOne(
     (_type) => RegistrationEntity,
 

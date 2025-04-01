@@ -1,7 +1,7 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  createRegistrationDistinctness,
+  createRegistrationUniques,
   getActivities,
   getRegistrationIdByReferenceId,
   importRegistrations,
@@ -19,7 +19,7 @@ const registration1 = { ...registrationPV5 };
 const registration2 = { ...registrationPV6 };
 const registration3 = { ...registrationPV7 };
 const programId = 2;
-describe('Succesfully mark registrations a distinct from each other', () => {
+describe('Succesfully mark registrations to ignore duplication', () => {
   let registrationId1: number;
   let registrationId2: number;
   let registrationId3: number;
@@ -55,16 +55,16 @@ describe('Succesfully mark registrations a distinct from each other', () => {
     });
   });
 
-  it(`should successfully create distinct registration pairs between 3 registrations`, async () => {
+  it(`should successfully create unique registration pairs between 3 registrations`, async () => {
     const reason = 'test reason';
-    const distinctnessResult = await createRegistrationDistinctness({
+    const createUniquesResult = await createRegistrationUniques({
       registrationIds: [registrationId1, registrationId2, registrationId3],
       programId,
       accessToken,
       reason,
     });
 
-    expect(distinctnessResult.status).toBe(201);
+    expect(createUniquesResult.status).toBe(201);
 
     // Get activities for each registration
     const activities1 = (
@@ -91,47 +91,46 @@ describe('Succesfully mark registrations a distinct from each other', () => {
       })
     ).body.data;
 
-    // Filter for distinct activities
-    const distinctActivities1 = activities1.filter(
-      (act) => act.type === ActivityTypeEnum.IgnoredDuplication,
+    const ignoredDuplicateActivities1 = activities1.filter(
+      (act) => act.type === ActivityTypeEnum.IgnoredDuplicate,
     );
 
-    const distinctActivities2 = activities2.filter(
-      (act) => act.type === ActivityTypeEnum.IgnoredDuplication,
+    const ignoredDuplicateActivities2 = activities2.filter(
+      (act) => act.type === ActivityTypeEnum.IgnoredDuplicate,
     );
 
-    const distinctActivities3 = activities3.filter(
-      (act) => act.type === ActivityTypeEnum.IgnoredDuplication,
+    const ignoredDuplicateActivities3 = activities3.filter(
+      (act) => act.type === ActivityTypeEnum.IgnoredDuplicate,
     );
 
-    // Check counts - each registration should have 2 distinct relationships
-    expect(distinctActivities1.length).toBe(2);
-    expect(distinctActivities2.length).toBe(2);
-    expect(distinctActivities3.length).toBe(2);
+    // Check counts - each registration should have 2
+    expect(ignoredDuplicateActivities1.length).toBe(2);
+    expect(ignoredDuplicateActivities2.length).toBe(2);
+    expect(ignoredDuplicateActivities3.length).toBe(2);
 
     // Check relationships directly - find specific activities by registration ID
-    const reg1ToReg2Activity = distinctActivities1.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId2),
+    const reg1ToReg2Activity = ignoredDuplicateActivities1.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId2,
     );
 
-    const reg1ToReg3Activity = distinctActivities1.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId3),
+    const reg1ToReg3Activity = ignoredDuplicateActivities1.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId3,
     );
 
-    const reg2ToReg1Activity = distinctActivities2.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId1),
+    const reg2ToReg1Activity = ignoredDuplicateActivities2.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId1,
     );
 
-    const reg2ToReg3Activity = distinctActivities2.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId3),
+    const reg2ToReg3Activity = ignoredDuplicateActivities2.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId3,
     );
 
-    const reg3ToReg1Activity = distinctActivities3.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId1),
+    const reg3ToReg1Activity = ignoredDuplicateActivities3.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId1,
     );
 
-    const reg3ToReg2Activity = distinctActivities3.find(
-      (a) => a.attributes.duplicateRegistrationId === String(registrationId2),
+    const reg3ToReg2Activity = ignoredDuplicateActivities3.find(
+      (a) => a.attributes.duplicateWithRegistrationId === registrationId2,
     );
 
     // Verify each relationship exists
@@ -144,10 +143,10 @@ describe('Succesfully mark registrations a distinct from each other', () => {
 
     // Verify one activity in detail to ensure format is correct
     expect(reg1ToReg2Activity).toMatchObject({
-      type: ActivityTypeEnum.IgnoredDuplication,
+      type: ActivityTypeEnum.IgnoredDuplicate,
       attributes: {
-        duplicateRegistrationId: String(registrationId2),
-        duplicateRegistrationProgramId: expect.any(String),
+        duplicateWithRegistrationId: registrationId2,
+        duplicateWithRegistrationProgramId: expect.any(Number),
         reason,
       },
       created: expect.any(String),

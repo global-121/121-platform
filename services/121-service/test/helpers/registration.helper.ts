@@ -675,7 +675,7 @@ export async function getDuplicates({
     .send();
 }
 
-export async function createRegistrationDistinctness({
+export async function createRegistrationUniques({
   programId,
   registrationIds,
   accessToken,
@@ -687,7 +687,7 @@ export async function createRegistrationDistinctness({
   reason?: string;
 }): Promise<any> {
   return getServer()
-    .post(`/programs/${programId}/registrations/distinctness`)
+    .post(`/programs/${programId}/registrations/uniques`)
     .set('Cookie', [accessToken])
     .send({ registrationIds, reason });
 }

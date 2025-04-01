@@ -79,7 +79,7 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.DataChange);
       availableTypes.push(ActivityTypeEnum.StatusChange);
       availableTypes.push(ActivityTypeEnum.FinancialServiceProviderChange);
-      availableTypes.push(ActivityTypeEnum.IgnoredDuplication);
+      availableTypes.push(ActivityTypeEnum.IgnoredDuplicate);
 
       events =
         await this.eventScopedRepository.getManyByProgramIdAndSearchOptions(

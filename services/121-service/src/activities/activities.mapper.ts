@@ -2,7 +2,7 @@ import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
 import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
-import { IgnoredDuplication } from '@121-service/src/activities/interfaces/ignored-duplication.interface';
+import { IgnoredDuplicateActivity } from '@121-service/src/activities/interfaces/ignored-duplicate-activity.interface';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
@@ -38,7 +38,7 @@ export class ActivitiesMapper {
       dataChanges,
       statusUpdates,
       financialServiceProviderChanges,
-      ignoredDuplications,
+      ignoredDuplicates,
     } = this.categoriseEvents(events);
 
     availableTypes.forEach((type) => {
@@ -60,9 +60,8 @@ export class ActivitiesMapper {
         case ActivityTypeEnum.StatusChange:
           activities = this.mapStatusUpdatesToActivity(statusUpdates);
           break;
-        case ActivityTypeEnum.IgnoredDuplication:
-          activities =
-            this.mapIgnoredDuplicationToActivity(ignoredDuplications);
+        case ActivityTypeEnum.IgnoredDuplicate:
+          activities = this.mapIgnoredDuplicatesToActivity(ignoredDuplicates);
           break;
         case ActivityTypeEnum.FinancialServiceProviderChange:
           activities = this.mapFinanacialServiceProviderChangesToActivity(
@@ -84,7 +83,7 @@ export class ActivitiesMapper {
     const dataChanges: GetEventDto[] = [];
     const statusUpdates: GetEventDto[] = [];
     const financialServiceProviderChanges: GetEventDto[] = [];
-    const ignoredDuplications: GetEventDto[] = [];
+    const ignoredDuplicates: GetEventDto[] = [];
 
     events.forEach((event) => {
       const mappedEvent = EventsMapper.mapEventToJsonDto(event);
@@ -99,8 +98,8 @@ export class ActivitiesMapper {
         case EventEnum.financialServiceProviderChange:
           financialServiceProviderChanges.push(mappedEvent);
           break;
-        case EventEnum.ignoredDuplication:
-          ignoredDuplications.push(mappedEvent);
+        case EventEnum.ignoredDuplicate:
+          ignoredDuplicates.push(mappedEvent);
           break;
       }
     });
@@ -108,7 +107,7 @@ export class ActivitiesMapper {
       dataChanges,
       statusUpdates,
       financialServiceProviderChanges,
-      ignoredDuplications,
+      ignoredDuplicates,
     };
   }
 
@@ -228,22 +227,24 @@ export class ActivitiesMapper {
       },
     }));
   }
-  private static mapIgnoredDuplicationToActivity(
+  private static mapIgnoredDuplicatesToActivity(
     events: GetEventDto[],
-  ): IgnoredDuplication[] {
+  ): IgnoredDuplicateActivity[] {
     return events.map((event, index) => ({
-      id: `${ActivityTypeEnum.IgnoredDuplication}${index}`,
+      id: `${ActivityTypeEnum.IgnoredDuplicate}${index}`,
       user: {
         id: event.user?.id,
         username: event.user?.username,
       },
       created: event.created,
-      type: ActivityTypeEnum.IgnoredDuplication,
+      type: ActivityTypeEnum.IgnoredDuplicate,
       attributes: {
-        duplicateRegistrationId: event.attributes
-          .duplicateRegistrationId as string, // Used as string because in the interface we use this to construct an url and this value is stored as string
-        duplicateRegistrationProgramId: event.attributes
-          .duplicateRegistrationProgramId as string, // Used as string because in the interface we use this to construct an url and this value is stored as string
+        duplicateWithRegistrationId: Number(
+          event.attributes.duplicateWithRegistrationId,
+        ),
+        duplicateWithRegistrationProgramId: Number(
+          event.attributes.duplicateWithRegistrationProgramId,
+        ),
         reason: event.attributes.reason,
       },
     }));

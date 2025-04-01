@@ -5,7 +5,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { patchProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  createRegistrationDistinctness,
+  createRegistrationUniques,
   getRegistrationIdByReferenceId,
   getRegistrations,
   importRegistrations,
@@ -265,12 +265,12 @@ describe('Get duplicate status of registrations', () => {
       accessToken,
     });
 
-    await createRegistrationDistinctness({
+    await createRegistrationUniques({
       programId,
       accessToken,
       registrationIds: [registrationId1, registrationId2],
     });
-    await createRegistrationDistinctness({
+    await createRegistrationUniques({
       programId,
       accessToken,
       registrationIds: [registrationId1, registrationId3],
