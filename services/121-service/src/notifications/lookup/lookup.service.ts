@@ -29,7 +29,6 @@ export class LookupService {
       }
       return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {
-      console.log('e: ', e);
       if (throwNoException) {
         return;
       }
