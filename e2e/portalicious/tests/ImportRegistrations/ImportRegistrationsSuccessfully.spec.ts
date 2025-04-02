@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29368] Successfully import registrations', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
   const table = new TableComponent(page);
   const registrationsDataFilePath = path.resolve(
     __dirname,
@@ -32,12 +32,12 @@ test('[29368] Successfully import registrations', async ({ page }) => {
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrations.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(projectTitle);
   });
 
   await test.step('Import registrations to PV program successfully', async () => {
-    await registrations.importRegistrations(registrationsDataFilePath);
-    await registrations.validateToastMessageAndWait(
+    await registrationsPage.importRegistrations(registrationsDataFilePath);
+    await registrationsPage.validateToastMessageAndWait(
       'Registration(s) imported successfully',
     );
   });

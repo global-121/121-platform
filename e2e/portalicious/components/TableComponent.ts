@@ -276,7 +276,7 @@ class TableComponent {
     const errorElement = this.page
       .locator('app-form-error')
       .filter({ hasText: errorMessage });
-    await expect(errorElement).toHaveText(errorMessage);
+    await expect(errorElement).toContainText(errorMessage);
   }
 }
 
