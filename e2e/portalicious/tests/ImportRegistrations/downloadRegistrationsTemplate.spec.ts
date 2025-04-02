@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29364] Download template for import registrations', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
