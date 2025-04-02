@@ -358,7 +358,7 @@ class RegistrationsPage extends BasePage {
 
     // Verify that all expected columns are present
     const missingColumns = expectedColumns.filter(
-      (expectedCol) => !headers.some((header) => header === expectedCol),
+      (expectedCol) => !headers.includes(expectedCol),
     );
 
     if (missingColumns.length > 0) {
