@@ -369,7 +369,7 @@ class RegistrationsPage extends BasePage {
 
     // Verify the template doesn't have extra columns
     if (headers.length > expectedColumns.length) {
-      const extraColumns = headers.slice(expectedColumns.length);
+      const extraColumns = headers.filter((header) => !expectedColumns.includes(header));
       throw new Error(
         `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
       );
