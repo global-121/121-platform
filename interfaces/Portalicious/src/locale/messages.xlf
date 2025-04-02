@@ -580,9 +580,6 @@
       <trans-unit id="349264413670639690" datatype="html">
         <source>Choose message</source>
       </trans-unit>
-      <trans-unit id="29569660367309272" datatype="html">
-        <source>Custom message</source>
-      </trans-unit>
       <trans-unit id="8411698505854313639" datatype="html">
         <source>Continue to preview</source>
       </trans-unit>
