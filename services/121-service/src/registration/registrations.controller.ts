@@ -695,7 +695,7 @@ export class RegistrationsController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Registration marked as unique from each other',
+    description: 'Registration marked as unique to each other',
   })
   @Post('programs/:programId/registrations/uniques')
   public async createUniques(
