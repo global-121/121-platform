@@ -159,7 +159,8 @@ export class CronjobService {
     return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
   }
 
-  public getAllMethodNames(): string[] {
+  // Used for testing and triggering through Swagger UI.
+  public getAllCronJobMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);
     const methodNames = Object.getOwnPropertyNames(prototype)
       .filter((name) => {
@@ -170,8 +171,7 @@ export class CronjobService {
           name !== 'constructor'
         );
       })
-      // Filter out this method.
-      .filter((name) => name !== 'getAllMethodNames');
+      .filter((name) => name.startsWith('cron'));
     return methodNames;
   }
 }
