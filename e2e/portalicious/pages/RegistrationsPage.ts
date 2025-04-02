@@ -330,14 +330,10 @@ class RegistrationsPage extends BasePage {
     await this.importButton.click();
   }
 
-  async clickDownloadTemplateButton() {
-    await this.downloadTemplateButton.click();
-  }
-
   async validateDownloadedTemplate(expectedColumns: string[]) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
-      this.clickDownloadTemplateButton(),
+      await this.downloadTemplateButton.click(),
     ]);
 
     const downloadDir = path.join(__dirname, '../../downloads');
@@ -371,7 +367,9 @@ class RegistrationsPage extends BasePage {
 
     // Verify the template doesn't have extra columns
     if (headers.length > expectedColumns.length) {
-      const extraColumns = headers.filter((header) => !expectedColumns.includes(header));
+      const extraColumns = headers.filter(
+        (header) => !expectedColumns.includes(header),
+      );
       throw new Error(
         `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
       );
@@ -636,7 +634,7 @@ class RegistrationsPage extends BasePage {
 
     // Then wait for loading state to disappear (import completes)
     // It is a primeNG component, so we can't use the built-in waitForLoadState method
-    await expect(this.importFileButton).not.toHaveClass('p-button-loading', {
+    await expect(this.importFileButton).not.toHaveClass(/p-button-loading/, {
       timeout: 10000,
     });
   }

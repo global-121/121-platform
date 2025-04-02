@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29369] Unsuccessfully import registrations', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
   const table = new TableComponent(page);
   const wrongRegistrationsDataFilePath = path.resolve(
     __dirname,
@@ -34,12 +34,12 @@ test('[29369] Unsuccessfully import registrations', async ({ page }) => {
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrations.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(projectTitle);
   });
 
   await test.step('Import registrations to PV programme successfully', async () => {
-    await registrations.importRegistrations(wrongRegistrationsDataFilePath);
-    await registrations.waitForImportProcessToComplete();
+    await registrationsPage.importRegistrations(wrongRegistrationsDataFilePath);
+    await registrationsPage.waitForImportProcessToComplete();
   });
 
   await test.step('Validate import error message', async () => {

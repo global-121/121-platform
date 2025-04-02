@@ -25,11 +25,11 @@ test('[29364] Download template for import registrations', async ({ page }) => {
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await registrations.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(projectTitle);
   });
 
   await test.step('Export import template and validate CSV files columns', async () => {
-    await registrations.clickImportButton();
-    await registrations.assertImportTemplateForPvProgram();
+    await registrationsPage.clickImportButton();
+    await registrationsPage.assertImportTemplateForPvProgram();
   });
 });
