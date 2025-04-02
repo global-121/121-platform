@@ -48,7 +48,7 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken() {
-    if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
+    if (shouldBeEnabled(process.env.MOCK_INTERSOLVE)) {
       return 'mocked-token';
     }
     if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
