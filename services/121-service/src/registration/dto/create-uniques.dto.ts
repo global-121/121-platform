@@ -10,7 +10,7 @@ import {
 
 export class CreateUniquesDto {
   @ApiProperty({
-    description: `Registration IDs of the registration that need to be marked as unique`,
+    description: `Registration IDs of the registrations that need to be marked as unique to each other`,
     example: [1, 2, 8],
   })
   @IsArray()
