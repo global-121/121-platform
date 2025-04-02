@@ -47,7 +47,7 @@ export class AxiosCallsService {
         .split(';')[0];
       return accessToken;
     } catch (error) {
-      console.error(
+      throw new Error(
         `Error while extracting access token from cookies: ${error}`,
       );
     }
