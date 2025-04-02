@@ -10,6 +10,11 @@ function shouldBeEnabled(envVariable: string | undefined): boolean {
   return !!envVariable && envVariable.toLowerCase() === 'true';
 }
 
+type cronReturn = Promise<{
+  url: string;
+  responseStatus: number;
+}>;
+
 @Injectable()
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
@@ -20,10 +25,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
     ),
   })
-  public async cronCancelByRefposIntersolve(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronCancelByRefposIntersolve(): cronReturn {
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
@@ -42,10 +44,7 @@ export class CronjobService {
       process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
     ),
   })
-  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): cronReturn {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
@@ -63,10 +62,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): cronReturn {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
@@ -84,10 +80,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
     ),
   })
-  public async cronRetrieveAndUpdateVisaData(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRetrieveAndUpdateVisaData(): cronReturn {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
@@ -106,10 +99,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
     ),
   })
-  public async cronSendWhatsappReminders(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronSendWhatsappReminders(): cronReturn {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
@@ -126,10 +116,7 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_4AM, {
     disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
   })
-  public async cronDoNedbankReconciliation(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronDoNedbankReconciliation(): cronReturn {
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/nedbank`;
@@ -146,10 +133,7 @@ export class CronjobService {
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
-  public async cronGetDailyExchangeRates(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronGetDailyExchangeRates(): cronReturn {
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
@@ -166,10 +150,7 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
     ),
   })
-  public async cronRemoveDeprecatedImageCodes(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRemoveDeprecatedImageCodes(): cronReturn {
     // Removes image codes older than one day as they're no longer needed after Twilio has downloaded them
     const accessToken = await this.axiosCallsService.getAccessToken();
     const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
