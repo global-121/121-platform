@@ -2,7 +2,7 @@ import { JOB_REF } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
-import { isMatch, isObject } from 'lodash';
+import { isEqual, isMatch, isObject } from 'lodash';
 
 import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
 import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
@@ -67,7 +67,7 @@ export class EventsService {
   }
 
   /**
-   * Create events by looking the changed in property values between old and new registration view entities.
+   * Create events by looking for the changes in property-values between old- and new RegistrationViewEntities.
    *
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} oldRegistrationViews - The old registration view entity or entities before the change.
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} newRegistrationViews - The new registration view entity or entities after the change.
@@ -107,7 +107,6 @@ export class EventsService {
     newRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
     createEventOptions?: createFromRegistrationViewsOptions,
   ): Promise<void> {
-    // Convert to array if not already
     const oldEntities = Array.isArray(oldRegistrationViews)
       ? oldRegistrationViews
       : [oldRegistrationViews];
@@ -116,11 +115,10 @@ export class EventsService {
       : [newRegistrationViews];
 
     this.validateEntities(oldEntities, newEntities, createEventOptions);
-    // Get userId from request if it exists otherwise this update was done using a queue
-    // than get it from the request of the job of the queue
 
+    // Get userId from request if it exists otherwise this update was done using a queue than get it from the request of the job of the queue
     const requestUserId: number = this.request?.user?.['id']
-      ? this.request?.user?.['id']
+      ? this.request.user['id']
       : this.jobRef?.data?.request?.userId;
 
     // UserId can be null if the registration change was done by a system user, for example when the system puts a registration to status complete
@@ -163,15 +161,13 @@ export class EventsService {
     newEntities: RegistrationViewWithId[],
     eventLogOptionsDto?: createFromRegistrationViewsOptions,
   ): void {
-    // check if oldEntities and newEntities are same length
-    if (oldEntities.length !== newEntities.length) {
-      throw new Error('Old and new Entities are not of the same length');
-    }
     const oldIds = oldEntities.map((entity) => entity.id);
     const newIds = newEntities.map((entity) => entity.id);
 
-    if (!this.arraysAreEqual(oldIds, newIds)) {
-      throw new Error(`Old IDs: ${oldIds} and new IDs: ${newIds} do not match`);
+    if (!isEqual(oldIds.sort(), newIds.sort())) {
+      throw new Error(
+        `Old IDs: ${oldIds} and new IDs: ${newIds} do not match.`,
+      );
     }
 
     // Only check the fist entities for perfomance reasons.
@@ -182,7 +178,6 @@ export class EventsService {
     const isFirstNewEntityRegistrationView =
       this.isCompleteRegistrationViewEntity(firstNewEntity);
 
-    // Check if one entity is RegistrationViewEntity and the other is not
     if (
       !eventLogOptionsDto?.explicitRegistrationPropertyNames &&
       isFirstOldEntityRegistrationView !== isFirstNewEntityRegistrationView
@@ -192,7 +187,6 @@ export class EventsService {
       );
     }
 
-    // Check if both entities are not RegistrationViewEntity and explicitRegistrationAttributes is not provided
     if (
       !isFirstOldEntityRegistrationView &&
       !isFirstNewEntityRegistrationView &&
@@ -224,13 +218,6 @@ export class EventsService {
     ];
 
     return requiredProperties.every((prop) => prop in obj);
-  }
-
-  private arraysAreEqual<T>(array1: T[], array2: T[]): boolean {
-    return (
-      array1.length === array2.length &&
-      array1.every((value, index) => value === array2[index])
-    );
   }
 
   private createEventsForChanges(
