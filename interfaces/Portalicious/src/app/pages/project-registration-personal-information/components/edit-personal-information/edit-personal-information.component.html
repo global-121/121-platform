@@ -5,7 +5,7 @@
   (keydown.meta.enter)="onSubmit()"
   class="relative"
 >
-  <div class="sticky top-0 flex w-full items-center bg-white">
+  <div class="sticky top-0 flex w-full items-center bg-white py-1">
     <i class="pi pi-pencil me-4 text-xl"></i>
     <span
       class="me-auto txt-h-1"
@@ -30,9 +30,9 @@
       rounded
     />
   </div>
-  <div class="grid grid-cols-1 gap-x-5 md:grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-5 gap-y-8 md:grid-cols-2">
     @for (attribute of attributeList(); track $index) {
-      <div class="space-x-1 py-4">
+      <div class="">
         <app-form-field-wrapper
           [label]="attribute.label"
           [labelTooltip]="attribute.editInfo"
