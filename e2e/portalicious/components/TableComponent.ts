@@ -17,6 +17,8 @@ class TableComponent {
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
+  readonly calendar: Locator;
+  readonly datePicker: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -41,6 +43,8 @@ class TableComponent {
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.calendar = this.page.getByLabel('Choose Date');
+    this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
   }
 
   async getCell(row: number, column: number) {
@@ -185,6 +189,32 @@ class TableComponent {
     await this.searchBox.click();
     await this.searchBox.fill(selection);
     await this.page.getByRole('option', { name: selection }).click();
+  }
+
+  async filterColumnByDate({
+    columnName,
+    month,
+    day,
+    year,
+  }: {
+    columnName: string;
+    month: string;
+    day: number;
+    year: string;
+  }) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+
+    await expect(this.calendar).toContainText(month);
+    await expect(this.calendar).toContainText(year);
+
+    await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
+
+    await this.applyFiltersButton.click();
   }
 
   async validateSortingOfColumns(

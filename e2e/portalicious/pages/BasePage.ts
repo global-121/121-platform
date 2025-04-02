@@ -134,6 +134,25 @@ class BasePage {
     path = `${defaultLanguage}${path}`;
     await this.page.goto(path);
   }
+
+  async selectDifferentDate(
+    currentDay: number,
+    currentMonth: string,
+    currentYear: string,
+  ): Promise<number> {
+    const yearNum = parseInt(currentYear, 10);
+    const monthIndex = new Date(`${currentMonth} 1, ${yearNum}`).getMonth();
+    const daysInMonth = new Date(yearNum, monthIndex + 1, 0).getDate();
+
+    if (currentDay > 1 && currentDay < daysInMonth) {
+      return currentDay - 1;
+    } else if (currentDay === 1) {
+      return currentDay + 1;
+    } else if (currentDay === daysInMonth) {
+      return currentDay - 1;
+    }
+    return Math.max(1, currentDay - 1);
+  }
 }
 
 export default BasePage;
