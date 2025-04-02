@@ -341,7 +341,9 @@ class RegistrationsPage extends BasePage {
     ]);
 
     const downloadDir = path.join(__dirname, '../../downloads');
-    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+    if (!fs.existsSync(downloadDir)) {
+      fs.mkdirSync(downloadDir);
+    }
 
     const filePath = path.join(downloadDir, download.suggestedFilename());
     await download.saveAs(filePath);
