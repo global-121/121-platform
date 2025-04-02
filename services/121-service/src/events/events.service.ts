@@ -12,7 +12,9 @@ import { EventAttributeEntity } from '@121-service/src/events/entities/event-att
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
+import { CreateForIgnoredDuplicatePair } from '@121-service/src/events/interfaces/create-for-ignored-duplicate-pair.interface';
 import { createFromRegistrationViewsOptions } from '@121-service/src/events/interfaces/create-from-registration-views-options.interface';
+import { RegistrationIdentifiers } from '@121-service/src/events/interfaces/registration-identifiers.interface';
 import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -369,5 +371,61 @@ export class EventsService {
       return EventEnum.registrationStatusChange;
     }
     return EventEnum.registrationDataChange;
+  }
+
+  public async createForIgnoredDuplicatePair(
+    input: CreateForIgnoredDuplicatePair,
+  ): Promise<void> {
+    const event1 = this.createIgnoredDuplicateEvent({
+      registrationId: input.registration1.id,
+      duplicateRegistration: input.registration2,
+      reason: input.reason,
+    });
+    const event2 = this.createIgnoredDuplicateEvent({
+      registrationId: input.registration2.id,
+      duplicateRegistration: input.registration1,
+      reason: input.reason,
+    });
+    await this.eventRepository.save([event1, event2]);
+  }
+
+  private createIgnoredDuplicateEvent({
+    registrationId,
+    duplicateRegistration,
+    reason,
+  }: {
+    registrationId: number;
+    duplicateRegistration: RegistrationIdentifiers;
+    reason: string;
+  }): EventEntity {
+    const event = new EventEntity();
+    event.type = EventEnum.ignoredDuplicate;
+    event.registrationId = registrationId;
+    event.attributes = this.createIgnoredDuplicateEventAttributes({
+      duplicateRegistration,
+      reason,
+    });
+    event.userId = this.request.user?.id ?? null;
+    return event;
+  }
+
+  private createIgnoredDuplicateEventAttributes({
+    duplicateRegistration,
+    reason,
+  }: {
+    duplicateRegistration: RegistrationIdentifiers;
+    reason: string;
+  }): EventAttributeEntity[] {
+    return [
+      this.createEventAttributeEntity(
+        EventAttributeKeyEnum.duplicateWithRegistrationId,
+        String(duplicateRegistration.id),
+      ),
+      this.createEventAttributeEntity(
+        EventAttributeKeyEnum.duplicateWithRegistrationProgramId,
+        String(duplicateRegistration.registrationProgramId),
+      ),
+      this.createEventAttributeForReason(reason),
+    ];
   }
 }

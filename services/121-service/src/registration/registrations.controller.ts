@@ -43,6 +43,7 @@ import {
   ImportRegistrationsDto,
   ImportResult,
 } from '@121-service/src/registration/dto/bulk-import.dto';
+import { CreateUniquesDto } from '@121-service/src/registration/dto/create-uniques.dto';
 import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete-registrations.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
@@ -682,6 +683,30 @@ export class RegistrationsController {
       referenceId,
       programId,
     );
+  }
+
+  @AuthenticatedUser({
+    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
+  })
+  @ApiOperation({
+    summary:
+      'Post an array of registrationIds that are marked as unique to each other. This means that in duplicate checks these registrations will not be checked for being duplicate with each other.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Registration marked as unique to each other',
+  })
+  @Post('programs/:programId/registrations/uniques')
+  public async createUniques(
+    @Param('programId', ParseIntPipe) programId: number,
+    @Body() body: CreateUniquesDto,
+  ): Promise<void> {
+    return await this.registrationsService.createUniques({
+      registrationIds: body.registrationIds,
+      programId,
+      reason: body.reason,
+    });
   }
 
   @ApiTags('programs/registrations')

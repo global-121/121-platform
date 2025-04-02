@@ -11,6 +11,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ActivitiesService } from '@121-service/src/activities/activities.service';
 import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -25,8 +26,7 @@ export class ActivitiesController {
   @ApiOperation({ summary: '[SCOPED] Get activities for registration' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description:
-      'Returns activities (notes, transactions, messages, data changes, status changes, FSP changes) for registration',
+    description: `Returns activities (${Object.values(ActivityTypeEnum).join(', ')}) for registration`,
     type: [ActivitiesDto],
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })

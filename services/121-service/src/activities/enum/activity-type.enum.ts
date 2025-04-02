@@ -5,4 +5,5 @@ export enum ActivityTypeEnum {
   Note = 'note',
   StatusChange = 'status-change',
   Transaction = 'transaction',
+  IgnoredDuplicate = 'ignored-duplicate',
 }

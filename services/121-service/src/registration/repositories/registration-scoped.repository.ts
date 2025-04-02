@@ -177,22 +177,11 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }): Promise<GetDuplicatesResult[]> {
     // Added a limit to the number of duplicates to prevent a large amount of duplicates from being returned which could cause performance issues
     // If there are more than this amount of duplicates a user misconfiguration is likely
-    const maxDuplicates = 30;
+    const maxDuplicates = 10;
 
-    const rawDuplicates: {
-      registrationId: number;
-      referenceId: string;
-      registrationProgramId: number;
-      scope: string;
-      attributeName: string;
-    }[] = await this.createQueryBuilder('registration')
-      .select([
-        'duplicate.id as "registrationId"',
-        'duplicate.registrationProgramId as "registrationProgramId"',
-        'duplicate.referenceId as "referenceId"',
-        'duplicate.scope as "scope"',
-        'attribute.name as "attributeName"',
-      ])
+    // First, get the distinct duplicate registration IDs with a limit
+    const uniqueRegistrationIds = await this.createQueryBuilder('registration')
+      .select('DISTINCT duplicate.id', 'registrationId')
       .leftJoin(
         RegistrationAttributeDataEntity,
         'attributeData1',
@@ -202,8 +191,8 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         RegistrationAttributeDataEntity,
         'attributeData2',
         `"attributeData1"."programRegistrationAttributeId" = "attributeData2"."programRegistrationAttributeId"
-       AND "attributeData1".value = "attributeData2".value
-       AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
+     AND "attributeData1".value = "attributeData2".value
+     AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
       )
       .leftJoin(
         RegistrationEntity,
@@ -230,8 +219,62 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere('attribute."duplicateCheck" = true')
       .andWhere('duplicate."programId" = :programId', { programId })
       .andWhere(`"attributeData1"."value" != ''`)
-      .orderBy('"attributeData1"."programRegistrationAttributeId"', 'ASC')
+      .andWhere(
+        'NOT EXISTS (' +
+          'SELECT 1 ' +
+          'FROM "121-service".unique_registration_pair rup ' +
+          'WHERE rup."smallerRegistrationId" = LEAST("attributeData1"."registrationId", "attributeData2"."registrationId") ' +
+          'AND rup."largerRegistrationId" = GREATEST("attributeData1"."registrationId", "attributeData2"."registrationId")' +
+          ')',
+      )
+      .orderBy('duplicate."id"', 'ASC')
       .limit(maxDuplicates)
+      .getRawMany();
+
+    if (uniqueRegistrationIds.length === 0) {
+      return [];
+    }
+
+    // Then, get all attributes for those specific registration IDs
+    const duplicateIds = uniqueRegistrationIds.map(
+      (item) => item.registrationId,
+    );
+
+    const rawDuplicates = await this.createQueryBuilder('registration')
+      .select([
+        'duplicate.id as "registrationId"',
+        'duplicate.registrationProgramId as "registrationProgramId"',
+        'duplicate.referenceId as "referenceId"',
+        'duplicate.scope as "scope"',
+        'attribute.name as "attributeName"',
+      ])
+      .leftJoin(
+        RegistrationAttributeDataEntity,
+        'attributeData1',
+        '"attributeData1"."registrationId" = registration.id',
+      )
+      .innerJoin(
+        RegistrationAttributeDataEntity,
+        'attributeData2',
+        `"attributeData1"."programRegistrationAttributeId" = "attributeData2"."programRegistrationAttributeId"
+     AND "attributeData1".value = "attributeData2".value
+     AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
+      )
+      .leftJoin(
+        RegistrationEntity,
+        'duplicate',
+        `"attributeData2"."registrationId" = duplicate.id`,
+      )
+      .leftJoin(
+        ProgramRegistrationAttributeEntity,
+        'attribute',
+        '"attributeData1"."programRegistrationAttributeId" = attribute.id',
+      )
+      .andWhere('"attributeData1"."registrationId" = :registrationId', {
+        registrationId,
+      })
+      .andWhere('duplicate.id IN (:...duplicateIds)', { duplicateIds })
+      .andWhere('attribute."duplicateCheck" = true')
       .getRawMany();
 
     // Group the found duplicate pairs of attribute name and value by registrationId

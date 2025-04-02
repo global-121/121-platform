@@ -3,4 +3,6 @@ export enum EventAttributeKeyEnum {
   oldValue = 'oldValue',
   newValue = 'newValue',
   fieldName = 'fieldName',
+  duplicateWithRegistrationId = 'duplicateWithRegistrationId',
+  duplicateWithRegistrationProgramId = 'duplicateWithRegistrationProgramId',
 }

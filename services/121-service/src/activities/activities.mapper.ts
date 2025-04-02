@@ -2,6 +2,7 @@ import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
 import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
+import { IgnoredDuplicateActivity } from '@121-service/src/activities/interfaces/ignored-duplicate-activity.interface';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
@@ -33,8 +34,12 @@ export class ActivitiesMapper {
     const count: Partial<Record<ActivityTypeEnum, number>> = {};
     const activityLogItems: Activity[] = [];
 
-    const { dataChanges, statusUpdates, financialServiceProviderChanges } =
-      this.categoriseEvents(events);
+    const {
+      dataChanges,
+      statusUpdates,
+      financialServiceProviderChanges,
+      ignoredDuplicates,
+    } = this.categoriseEvents(events);
 
     availableTypes.forEach((type) => {
       let activities: Activity[] = [];
@@ -55,13 +60,15 @@ export class ActivitiesMapper {
         case ActivityTypeEnum.StatusChange:
           activities = this.mapStatusUpdatesToActivity(statusUpdates);
           break;
+        case ActivityTypeEnum.IgnoredDuplicate:
+          activities = this.mapIgnoredDuplicatesToActivity(ignoredDuplicates);
+          break;
         case ActivityTypeEnum.FinancialServiceProviderChange:
           activities = this.mapFinanacialServiceProviderChangesToActivity(
             financialServiceProviderChanges,
           );
           break;
       }
-
       count[type] = activities.length;
       activityLogItems.push(...activities);
     });
@@ -76,6 +83,7 @@ export class ActivitiesMapper {
     const dataChanges: GetEventDto[] = [];
     const statusUpdates: GetEventDto[] = [];
     const financialServiceProviderChanges: GetEventDto[] = [];
+    const ignoredDuplicates: GetEventDto[] = [];
 
     events.forEach((event) => {
       const mappedEvent = EventsMapper.mapEventToJsonDto(event);
@@ -90,12 +98,16 @@ export class ActivitiesMapper {
         case EventEnum.financialServiceProviderChange:
           financialServiceProviderChanges.push(mappedEvent);
           break;
+        case EventEnum.ignoredDuplicate:
+          ignoredDuplicates.push(mappedEvent);
+          break;
       }
     });
     return {
       dataChanges,
       statusUpdates,
       financialServiceProviderChanges,
+      ignoredDuplicates,
     };
   }
 
@@ -211,6 +223,28 @@ export class ActivitiesMapper {
       attributes: {
         oldValue: event.attributes.oldValue,
         newValue: event.attributes.newValue,
+        reason: event.attributes.reason,
+      },
+    }));
+  }
+  private static mapIgnoredDuplicatesToActivity(
+    events: GetEventDto[],
+  ): IgnoredDuplicateActivity[] {
+    return events.map((event, index) => ({
+      id: `${ActivityTypeEnum.IgnoredDuplicate}${index}`,
+      user: {
+        id: event.user?.id,
+        username: event.user?.username,
+      },
+      created: event.created,
+      type: ActivityTypeEnum.IgnoredDuplicate,
+      attributes: {
+        duplicateWithRegistrationId: Number(
+          event.attributes.duplicateWithRegistrationId,
+        ),
+        duplicateWithRegistrationProgramId: Number(
+          event.attributes.duplicateWithRegistrationProgramId,
+        ),
         reason: event.attributes.reason,
       },
     }));
