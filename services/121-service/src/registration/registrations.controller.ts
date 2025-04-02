@@ -690,7 +690,7 @@ export class RegistrationsController {
   })
   @ApiOperation({
     summary:
-      'Post an array of registrationIds that are marked as unique from each other. This means that in duplicate checks these registrations will not be checked for being duplicate with each other.',
+      'Post an array of registrationIds that are marked as unique to each other. This means that in duplicate checks these registrations will not be checked for being duplicate with each other.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
