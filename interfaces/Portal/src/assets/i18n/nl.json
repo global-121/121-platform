@@ -375,6 +375,7 @@
         },
         "choose-action": "Kies actie...",
         "column": {
+          "created": "Aanmaakdatum",
           "dob": "Geboortedatum",
           "failedPayment": "Mislukt bij betaling #",
           "financialServiceProvider": "Type hulp",
@@ -397,7 +398,6 @@
           "referenceId": "Referentie nummer",
           "registration-attribute-false": "Nee",
           "registration-attribute-true": "Ja",
-          "registrationCreated": "Aanmaakdatum",
           "registrationCreatedDate": "Aanmaakdatum registratie",
           "select": "Selecteer",
           "status": "Status",

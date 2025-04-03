@@ -23,6 +23,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
+  AllowedFilterOperatorsNumber,
+  AllowedFilterOperatorsPayment,
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
@@ -34,7 +36,10 @@ import {
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  RegistrationAttributeTypes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -111,21 +116,27 @@ export class RegistrationsPaginationService {
       },
     );
 
-    const registrationDataRelations =
+    const programRegistrationAttributeRelations =
       await this.programService.getAllRelationProgram(programId);
-    const registrationDataNamesProgram = registrationDataRelations
-      .map((r) => r.name)
-      .filter((r) => r !== DefaultRegistrationDataAttributeNames.phoneNumber); // Phonenumber is already in the registration table so we do not need to filter on it twice
+    const relationsWithoutPhoneNumber =
+      programRegistrationAttributeRelations.filter(
+        (r) => r.name !== DefaultRegistrationDataAttributeNames.phoneNumber,
+      );
+    const relationNamesWithoutPhonenumber = relationsWithoutPhoneNumber.map(
+      (r) => r.name,
+    );
+    // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (query.filter) {
       const filters = Object.keys(query.filter);
-      if (registrationDataNamesProgram.some((key) => filters.includes(key))) {
-        queryBuilder = this.filterOnRegistrationData(
+      if (
+        relationNamesWithoutPhonenumber.some((key) => filters.includes(key))
+      ) {
+        queryBuilder = this.filterOnRegistrationAttributeData(
           query,
           queryBuilder,
-          registrationDataRelations,
-          registrationDataNamesProgram,
+          relationsWithoutPhoneNumber,
         );
       }
     }
@@ -145,12 +156,12 @@ export class RegistrationsPaginationService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (registrationDataNamesProgram.some((key) => sortByKey === key)) {
+      if (relationNamesWithoutPhonenumber.some((key) => sortByKey === key)) {
         queryBuilder = this.sortOnRegistrationData(
           sortByKey,
           sortByValue,
           queryBuilder,
-          registrationDataRelations,
+          programRegistrationAttributeRelations,
         );
       }
     }
@@ -173,17 +184,17 @@ export class RegistrationsPaginationService {
     );
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
-    let registrationDataRelationsSelect = [...registrationDataRelations];
+    let attributeRelationsSelect = [...programRegistrationAttributeRelations];
     const { select } = query;
     if (select !== undefined && select.length > 0) {
-      registrationDataRelationsSelect = registrationDataRelationsSelect.filter(
-        (relation) => select.includes(relation.name),
+      attributeRelationsSelect = attributeRelationsSelect.filter((relation) =>
+        select.includes(relation.name),
       );
     }
 
     const data = await this.mapPaginatedEntity({
       paginatedResult: result,
-      registrationDataRelations: registrationDataRelationsSelect,
+      attributeRelations: attributeRelationsSelect,
       select,
       orignalSelect,
       fullnameNamingConvention,
@@ -370,58 +381,68 @@ export class RegistrationsPaginationService {
     }
   }
 
-  private filterOnRegistrationData(
+  private filterOnRegistrationAttributeData(
     query: PaginateQuery,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    registrationDataRelations: RegistrationDataInfo[],
-    registrationDataNamesProgram: string[],
+    attributeRelations: RegistrationDataInfo[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const filterableColumnsRegData = this.createFilterObjects(
-      registrationDataNamesProgram,
-      AllowedFilterOperatorsString,
-    );
-    const parsedFilter = parseFilter(query, filterableColumnsRegData);
-    return this.filterRegistrationDataQb(
+    const filterObjects = this.createFilterObjects(attributeRelations);
+    const parsedFilter = parseFilter(query, filterObjects);
+    return this.filterRegistrationAttributeDataQb({
       queryBuilder,
-      registrationDataRelations,
+      attributeRelations,
       parsedFilter,
-    );
+    });
   }
 
   private createFilterObjects(
-    registrationDataNamesProgram: string[],
-    allowedFilterOperators: FilterOperator[],
+    attributeRelations: RegistrationDataInfo[],
   ): Record<string, FilterOperator[] | true> {
     const filterObject = {};
-    for (const name of registrationDataNamesProgram) {
-      filterObject[name] = allowedFilterOperators;
+    for (const r of attributeRelations) {
+      if (r.type === RegistrationAttributeTypes.numeric) {
+        filterObject[r.name] = AllowedFilterOperatorsNumber;
+      } else {
+        filterObject[r.name] = AllowedFilterOperatorsString;
+      }
     }
     return filterObject;
   }
 
-  private filterRegistrationDataQb(
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    registrationDataRelations: RegistrationDataInfo[],
-    parsedFilter: ColumnsFilters,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
+  private filterRegistrationAttributeDataQb({
+    queryBuilder,
+    attributeRelations,
+    parsedFilter,
+  }: {
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
+    attributeRelations: RegistrationDataInfo[];
+    parsedFilter: ColumnsFilters;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
     for (const [filterKey, filters] of Object.entries(parsedFilter)) {
-      const relationInfoArray = registrationDataRelations.filter(
+      const relationInfoArray = attributeRelations.filter(
         (r) => r.name === filterKey,
       );
+      const operatorTypes: FindOperatorType[] = [
+        'equal',
+        'in',
+        'ilike',
+        'isNull',
+        'moreThan',
+        'lessThan',
+        'between',
+      ];
       for (const filter of filters) {
-        if (
-          ['equal', 'in', 'ilike', 'isNull'].includes(filter.findOperator.type)
-        ) {
+        if (operatorTypes.includes(filter.findOperator.type)) {
           const uniqueJoinId = Array.from({ length: 25 }, () =>
             'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
           ).join('');
           queryBuilder.leftJoin('registration.data', uniqueJoinId);
-          queryBuilder = this.applyFilterConditionRegData(
+          queryBuilder = this.applyFilterConditionRegData({
             queryBuilder,
-            filter.findOperator.type,
-            filter.findOperator.value,
+            filterType: filter.findOperator.type,
+            value: filter.findOperator.value,
             uniqueJoinId,
-          );
+          });
           queryBuilder.andWhere(
             new Brackets((qb) => {
               this.whereRegistrationDataIsOneOfIds(
@@ -437,12 +458,17 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  private applyFilterConditionRegData(
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    filterType: FindOperatorType,
-    value: any,
-    uniqueJoinId: string,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
+  private applyFilterConditionRegData({
+    queryBuilder,
+    filterType,
+    value,
+    uniqueJoinId,
+  }: {
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
+    filterType: FindOperatorType;
+    value: any;
+    uniqueJoinId: string;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
     const columnName = 'value';
     switch (filterType) {
       case 'equal':
@@ -462,6 +488,24 @@ export class RegistrationsPaginationService {
         );
       case 'isNull':
         return queryBuilder.andWhere(`${uniqueJoinId}.${columnName} IS NULL`);
+      case 'moreThan':
+        return queryBuilder.andWhere(
+          `${uniqueJoinId}.${columnName}::numeric > :value${uniqueJoinId}`,
+          { [`value${uniqueJoinId}`]: value },
+        );
+      case 'lessThan':
+        return queryBuilder.andWhere(
+          `${uniqueJoinId}.${columnName}::numeric < :value${uniqueJoinId}`,
+          { [`value${uniqueJoinId}`]: value },
+        );
+      case 'between':
+        return queryBuilder.andWhere(
+          `${uniqueJoinId}.${columnName}::numeric BETWEEN :value${uniqueJoinId}1 AND :value${uniqueJoinId}2`,
+          {
+            [`value${uniqueJoinId}1`]: value[0],
+            [`value${uniqueJoinId}2`]: value[1],
+          },
+        );
       default:
         throw new HttpException(
           `Filter type ${filterType} is not supported`,
@@ -492,9 +536,9 @@ export class RegistrationsPaginationService {
     sortByKey: string,
     sortByValue: 'ASC' | 'DESC',
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    registrationDataRelations: RegistrationDataInfo[],
+    attributeRelations: RegistrationDataInfo[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const relationInfoArray = registrationDataRelations.filter(
+    const relationInfoArray = attributeRelations.filter(
       (r) => r.name === sortByKey,
     );
     queryBuilder.leftJoin('registration.data', 'rd');
@@ -512,14 +556,14 @@ export class RegistrationsPaginationService {
 
   private async mapPaginatedEntity({
     paginatedResult,
-    registrationDataRelations,
+    attributeRelations,
     select,
     orignalSelect,
     fullnameNamingConvention,
     hasPersonalReadPermission,
   }: {
     paginatedResult: Paginated<RegistrationViewEntity>;
-    registrationDataRelations: RegistrationDataInfo[];
+    attributeRelations: RegistrationDataInfo[];
     select?: string[];
     orignalSelect: string[];
     fullnameNamingConvention: string[];
@@ -537,7 +581,7 @@ export class RegistrationsPaginationService {
         ? this.mapRegistrationData(
             registration.data,
             mappedRootRegistration,
-            registrationDataRelations,
+            attributeRelations,
           )
         : mappedRootRegistration;
 
@@ -661,10 +705,10 @@ export class RegistrationsPaginationService {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     paginateQuery: PaginateQuery,
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const filterableColumns = this.createFilterObjects(
-      Object.values(PaymentFilterEnum),
-      [FilterOperator.EQ],
-    );
+    const filterableColumns: Record<string, FilterOperator[]> = {};
+    for (const key of Object.keys(PaymentFilterEnum)) {
+      filterableColumns[key] = AllowedFilterOperatorsPayment;
+    }
 
     const parsedFilter = parseFilter(paginateQuery, filterableColumns);
     const filterOptions = [

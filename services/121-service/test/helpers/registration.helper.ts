@@ -1,8 +1,10 @@
 import * as request from 'supertest';
 
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
@@ -12,6 +14,56 @@ import {
   getAccessToken,
   getServer,
 } from '@121-service/test/helpers/utility.helper';
+
+export function createOcwRegistrationForImport({
+  referenceId,
+  paymentAmountMultiplier,
+  addressHouseNumber,
+  fullName,
+  phoneNumber,
+  whatsappPhoneNumber,
+  addressStreet,
+  addressPostalCode,
+  addressCity,
+  programFinancialServiceProviderConfigurationName,
+}: {
+  referenceId?: string;
+  paymentAmountMultiplier?: number;
+  addressHouseNumber?: number | null;
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  whatsappPhoneNumber?: string | null;
+  addressStreet?: string | null;
+  addressPostalCode?: string | null;
+  addressCity?: string | null;
+  programFinancialServiceProviderConfigurationName?: string;
+}) {
+  return {
+    referenceId:
+      referenceId !== undefined
+        ? referenceId
+        : `ref-${Math.random().toString(36).substring(2, 10)}`,
+    preferredLanguage: LanguageEnum.en,
+    paymentAmountMultiplier:
+      paymentAmountMultiplier !== undefined ? paymentAmountMultiplier : 1,
+    fullName: fullName !== undefined ? fullName : 'Default Name',
+    phoneNumber: phoneNumber !== undefined ? phoneNumber : '14155236666',
+    programFinancialServiceProviderConfigurationName:
+      programFinancialServiceProviderConfigurationName
+        ? programFinancialServiceProviderConfigurationName
+        : FinancialServiceProviders.intersolveVisa,
+    whatsappPhoneNumber:
+      whatsappPhoneNumber !== undefined ? whatsappPhoneNumber : '14155236666',
+    addressStreet:
+      addressStreet !== undefined ? addressStreet : 'Default Street',
+    addressHouseNumber:
+      addressHouseNumber !== undefined ? addressHouseNumber : 1,
+    addressHouseNumberAddition: '',
+    addressPostalCode:
+      addressPostalCode !== undefined ? addressPostalCode : '1234AB',
+    addressCity: addressCity !== undefined ? addressCity : 'Default City',
+  };
+}
 
 export function importRegistrations(
   programId: number,

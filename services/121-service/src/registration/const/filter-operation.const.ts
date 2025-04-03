@@ -12,6 +12,15 @@ export const AllowedFilterOperatorsString = [
 export const AllowedFilterOperatorsNumber = [
   FilterOperator.EQ,
   FilterOperator.NULL,
+  FilterOperator.GT,
+  FilterOperator.LT,
+  FilterOperator.BTW,
+];
+
+// TODO: This can be removed after we remove the old portal
+export const AllowedFilterOperatorsPayment = [
+  FilterOperator.EQ,
+  FilterOperator.NULL,
 ];
 
 const dataSearchableColumn = 'data.value';
@@ -22,7 +31,8 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
     maxLimit: 40000,
     sortableColumns: [
       'id',
-      'registrationCreated',
+      'created',
+      'registrationCreatedDate',
       'status',
       'referenceId',
       'phoneNumber',
@@ -45,6 +55,7 @@ const basePaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity>
       status: AllowedFilterOperatorsString,
       id: AllowedFilterOperatorsNumber,
       registrationCreatedDate: AllowedFilterOperatorsString,
+      created: AllowedFilterOperatorsNumber,
       phoneNumber: AllowedFilterOperatorsString,
       preferredLanguage: AllowedFilterOperatorsString,
       inclusionScore: AllowedFilterOperatorsNumber,
@@ -72,10 +83,10 @@ const PaginateConfigRegistrationViewWithPayments: PaginateConfig<RegistrationVie
     ...basePaginateConfigRegistrationView,
     filterableColumns: {
       ...basePaginateConfigRegistrationView.filterableColumns,
-      failedPayment: AllowedFilterOperatorsNumber,
-      waitingPayment: AllowedFilterOperatorsNumber,
-      successPayment: AllowedFilterOperatorsNumber,
-      notYetSentPayment: AllowedFilterOperatorsNumber,
+      failedPayment: AllowedFilterOperatorsPayment,
+      waitingPayment: AllowedFilterOperatorsPayment,
+      successPayment: AllowedFilterOperatorsPayment,
+      notYetSentPayment: AllowedFilterOperatorsPayment,
     },
   };
 

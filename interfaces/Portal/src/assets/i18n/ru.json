@@ -341,6 +341,7 @@
         },
         "choose-action": "Выберите действие...",
         "column": {
+          "created": "Регистрация создана",
           "custom-attribute-false": "Нет",
           "custom-attribute-true": "Да",
           "dob": "Дата рождения",
@@ -364,7 +365,6 @@
           "programFinancialServiceProviderConfigurationLabel": "Поставщик финансовых услуг",
           "programFinancialServiceProviderConfigurationName": "Поставщик финансовых услуг",
           "referenceId": "Идентификатор ссылки",
-          "registrationCreated": "Регистрация создана",
           "registrationCreatedDate": "Дата создания регистрации",
           "select": "Выбрать",
           "status": "Статус",
