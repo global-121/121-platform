@@ -37,7 +37,7 @@ test('[29369] Unsuccessfully import registrations', async ({ page }) => {
     await registrationsPage.selectProgram(projectTitle);
   });
 
-  await test.step('Import registrations to PV programme successfully', async () => {
+  await test.step('Import registrations to PV program successfully', async () => {
     await registrationsPage.importRegistrations(wrongRegistrationsDataFilePath);
     await registrationsPage.waitForImportProcessToComplete();
   });
