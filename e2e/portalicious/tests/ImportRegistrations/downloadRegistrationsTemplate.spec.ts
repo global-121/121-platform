@@ -29,7 +29,6 @@ test('[29364] Download template for import registrations', async ({ page }) => {
   });
 
   await test.step('Export import template and validate CSV files columns', async () => {
-    await registrationsPage.clickImportButton();
     await registrationsPage.assertImportTemplateForPvProgram();
   });
 });

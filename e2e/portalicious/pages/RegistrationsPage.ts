@@ -126,9 +126,8 @@ class RegistrationsPage extends BasePage {
   readonly sendMessageDialogPreview: Locator;
   readonly exportButton: Locator;
   readonly proceedButton: Locator;
-  readonly importButton: Locator;
   readonly downloadTemplateButton: Locator;
-  readonly importFileButton: Locator;
+  readonly importButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -139,13 +138,10 @@ class RegistrationsPage extends BasePage {
     );
     this.exportButton = this.page.getByRole('button', { name: 'Export' });
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
-    this.importButton = this.page.getByRole('button', { name: 'Import' });
     this.downloadTemplateButton = this.page.getByRole('button', {
       name: 'Download the template',
     });
-    this.importFileButton = this.page.getByRole('button', {
-      name: 'Import file',
-    });
+    this.importButton = this.page.getByRole('button', { name: 'Import' });
   }
 
   async waitForLoaded(registrationsCount: number) {
@@ -326,11 +322,8 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async clickImportButton() {
+  async downloadAndValidateTemplate(expectedColumns: string[]) {
     await this.importButton.click();
-  }
-
-  async validateDownloadedTemplate(expectedColumns: string[]) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       await this.downloadTemplateButton.click(),
@@ -612,7 +605,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async assertImportTemplateForPvProgram() {
-    await this.validateDownloadedTemplate(
+    await this.downloadAndValidateTemplate(
       expectedImportRegistrationsTemplateColumnsPvProject,
     );
   }
@@ -620,12 +613,6 @@ class RegistrationsPage extends BasePage {
   async assertDuplicateColumnValues(expectedValues: string[]) {
     const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
     expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
-  }
-
-  async importRegistrations(filePath: string) {
-    await this.clickImportButton();
-    await this.chooseAndUploadFile(filePath);
-    await this.importFileButton.click();
   }
 
   async waitForImportProcessToComplete() {
