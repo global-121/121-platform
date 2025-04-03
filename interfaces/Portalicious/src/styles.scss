@@ -331,8 +331,11 @@ svg-icon svg {
     }
   }
 
-  .p-progress-spinner-svg .p-progress-spinner-circle {
-    @apply stroke-purple-700 #{!important};
+  .p-progressspinner {
+    --p-progressspinner-color-1: theme('colors.purple.700');
+    --p-progressspinner-color-2: theme('colors.purple.700');
+    --p-progressspinner-color-3: theme('colors.purple.700');
+    --p-progressspinner-color-4: theme('colors.purple.700');
   }
 
   .p-toast {
