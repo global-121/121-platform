@@ -171,6 +171,17 @@ class TableComponent {
     await this.applyFiltersButton.click();
   }
 
+  async filterColumnByNumber(columnName: string, filterNumber: number) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+    await this.page.getByRole('spinbutton').fill(String(filterNumber));
+    await this.applyFiltersButton.click();
+  }
+
   async filterColumnByDropDownSelection({
     columnName,
     selection,
