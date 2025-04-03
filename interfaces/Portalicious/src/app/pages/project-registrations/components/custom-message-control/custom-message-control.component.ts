@@ -74,12 +74,14 @@ export class CustomMessageControlComponent implements ControlValueAccessor {
       },
     ];
   });
+
   readonly mentionConfig = computed(() => ({
     items: this.messagePlaceholders(),
     triggerChar: '@',
     labelKey: 'label',
     mentionSelect: (item: AttributeWithTranslatedLabel) => `{{${item.name}}} `,
   }));
+
   writeValue(value: string | undefined) {
     this.customMessageInternalModel.set(value ?? '');
   }

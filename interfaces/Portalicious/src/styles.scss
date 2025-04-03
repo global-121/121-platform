@@ -99,6 +99,11 @@ svg-icon svg {
       }
     }
   }
+
+  // Move the menu from the hard-coded LTR-position to the RTL reading-direction
+  &:dir(rtl) {
+    transform: translateX(-100%);
+  }
 }
 
 // PrimeNG Component overrides
