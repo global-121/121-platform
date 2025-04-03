@@ -17,6 +17,7 @@
       i18n-label="@@generic-cancel"
       (click)="cancelEditing.emit()"
       icon="pi pi-times"
+      [iconPos]="rtlHelper.createPosition('start')()"
       outlined
       rounded
       severity="contrast"
@@ -27,6 +28,7 @@
       label="Save"
       i18n-label="@@generic-save"
       icon="pi pi-check"
+      [iconPos]="rtlHelper.createPosition('start')()"
       rounded
     />
   </div>

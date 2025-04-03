@@ -12,6 +12,7 @@
             rounded
             outlined
             icon="pi pi-pause"
+            [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-auto"
             (click)="pauseConfirmationDialog.askForConfirmation()"
           />
@@ -23,6 +24,7 @@
             rounded
             outlined
             icon="pi pi-play"
+            [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-auto"
             (click)="unpauseConfirmationDialog.askForConfirmation()"
           />
@@ -34,6 +36,7 @@
             rounded
             outlined
             icon="pi pi-refresh"
+            [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
             (click)="reissueConfirmationDialog.askForConfirmation()"
           />

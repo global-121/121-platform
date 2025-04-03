@@ -36,6 +36,7 @@
               [icon]="
                 REGISTRATION_STATUS_ICON[RegistrationStatusEnum.validated]
               "
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="
@@ -49,6 +50,7 @@
                 REGISTRATION_STATUS_VERB[RegistrationStatusEnum.included]
               "
               [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.included]"
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="
@@ -62,6 +64,7 @@
                 REGISTRATION_STATUS_VERB[RegistrationStatusEnum.declined]
               "
               [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.declined]"
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="
@@ -73,6 +76,7 @@
             <p-button
               [label]="REGISTRATION_STATUS_VERB[RegistrationStatusEnum.paused]"
               [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.paused]"
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="changeStatus({ status: RegistrationStatusEnum.paused })"
@@ -83,6 +87,7 @@
               label="Message"
               i18n-label
               icon="pi pi-envelope"
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="sendMessage()"
@@ -92,6 +97,7 @@
             <p-button
               [label]="REGISTRATION_STATUS_VERB[RegistrationStatusEnum.deleted]"
               [icon]="REGISTRATION_STATUS_ICON[RegistrationStatusEnum.deleted]"
+              [iconPos]="rtlHelper.createPosition('start')()"
               rounded
               outlined
               (click)="changeStatus({ status: RegistrationStatusEnum.deleted })"

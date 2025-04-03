@@ -28,6 +28,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -49,6 +50,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectRegistrationDebitCardsPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();

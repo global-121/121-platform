@@ -13,6 +13,7 @@
         i18n-label="@@add-team-member"
         rounded
         icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
       <app-add-project-team-user-form

@@ -18,6 +18,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-activity-log-voucher-dialog',
@@ -27,6 +28,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityLogVoucherDialogComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<number>();
   readonly totalTransfers = input.required<number>();

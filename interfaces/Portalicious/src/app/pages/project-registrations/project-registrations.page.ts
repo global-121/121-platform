@@ -33,6 +33,7 @@ import { SendMessageDialogComponent } from '~/pages/project-registrations/compon
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { getOriginUrl } from '~/utils/url-helper';
 
@@ -56,6 +57,7 @@ import { getOriginUrl } from '~/utils/url-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectRegistrationsPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly projectId = input.required<string>();
 

@@ -30,6 +30,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { AddProjectTeamUserFormComponent } from '~/pages/project-team/components/add-project-team-user-form/add-project-team-user-form.component';
 import { AuthService } from '~/services/auth.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -49,6 +50,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectTeamPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
   private projectApiService = inject(ProjectApiService);

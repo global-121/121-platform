@@ -3,6 +3,7 @@
   i18n-label="@@create-payment"
   rounded
   icon="pi pi-money-bill"
+  [iconPos]="rtlHelper.createPosition('start')()"
   [loading]="paymentStatus.isPending()"
   (click)="openDialog()"
 />

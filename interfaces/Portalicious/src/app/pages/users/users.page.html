@@ -12,6 +12,7 @@
         i18n-label="@@add-user"
         rounded
         icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
       <app-add-user-form

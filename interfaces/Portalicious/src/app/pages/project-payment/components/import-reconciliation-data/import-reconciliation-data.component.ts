@@ -24,6 +24,7 @@ import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -35,6 +36,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportReconciliationDataComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<string>();
 
