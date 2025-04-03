@@ -32,9 +32,6 @@
       <trans-unit id="935187492052582731" datatype="html">
         <source>Submit</source>
       </trans-unit>
-      <trans-unit id="6231535972680055827" datatype="html">
-        <source>121 Portal</source>
-      </trans-unit>
       <trans-unit id="header-menu" datatype="html">
         <source>Menu</source>
       </trans-unit>
@@ -1582,6 +1579,9 @@
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="generic-app-name" datatype="html">
+        <source>121 Portal</source>
       </trans-unit>
     </body>
   </file>
