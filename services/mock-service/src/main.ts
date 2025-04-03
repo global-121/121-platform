@@ -34,7 +34,7 @@ async function bootstrap(): Promise<void> {
   const expressInstance = app.getHttpAdapter().getInstance();
 
   expressInstance.disable('x-powered-by');
-  expressInstance.set('strict routing', true); // Required to prevent Petstore-Inception-bug
+  expressInstance.set('strict routing', true);
 
   app.setGlobalPrefix('api');
 
@@ -43,7 +43,10 @@ async function bootstrap(): Promise<void> {
     .setVersion(APP_VERSION)
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  // To prevent Petstore-Inception-bug the trailing slash is required!
+  // Add redirect for convenience and to keep 'legacy'-URL `/docs` working
+  expressInstance.use(/^\/docs$/, (_req: unknown, res: Response) =>
+    res.redirect('/docs/'),
+  );
   SwaggerModule.setup('/docs/', app, document, {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
@@ -64,7 +67,7 @@ async function bootstrap(): Promise<void> {
       tryItOutEnabled: IS_DEVELOPMENT,
     },
   });
-  // Use root as easy-default entrypoint
+  // Use root as easy-default entry-point
   expressInstance.use(/^\/$/, (_req: unknown, res: Response) =>
     res.redirect('/docs/'),
   );

@@ -151,7 +151,11 @@ async function bootstrap(): Promise<void> {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document, {
+  // Add redirect for convenience and to keep 'legacy'-URL `/docs` working
+  expressInstance.use(/^\/docs$/, (_req: unknown, res: Response) =>
+    res.redirect('/docs/'),
+  );
+  SwaggerModule.setup('/docs/', app, document, {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
