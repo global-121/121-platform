@@ -9,7 +9,7 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
 import { expectedSortedArraysToEqual } from '../utils';
 
-const expectedImportRegistrationsTemplateColumnsPvProgramme = [
+const expectedImportRegistrationsTemplateColumnsPvProject = [
   'referenceId',
   'programFinancialServiceProviderConfigurationName',
   'phoneNumber',
