@@ -21,12 +21,11 @@ export class NedbankReconciliationController {
   })
   @Patch('financial-service-providers/nedbank')
   public async doNedbankReconciliation(): Promise<void> {
-    console.info('Started: Nedbank Reconciliation');
+    console.info('Start: Nedbank Reconciliation');
     this.nedbankReconciliationService
       .doNedbankReconciliation()
-      .then(() => {
+      .finally(() => {
         console.info('Complete: Nedbank Reconciliation');
-        return;
       })
       .catch((error) => {
         console.error(`Failed: Nedbank Reconciliation - ${error}`);

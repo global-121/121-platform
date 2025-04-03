@@ -60,15 +60,14 @@ export class IntersolveVoucherReconciliationController {
   @Patch('/financial-service-providers/intersolve-voucher/unused-vouchers')
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     console.info(
-      'CronjobService - Started: cronRetrieveAndUpdatedUnusedIntersolveVouchers',
+      'Start: Intersolve-Voucher -  cronRetrieveAndUpdatedUnusedIntersolveVouchers',
     );
     this.intersolveVoucherReconciliationService
       .cronRetrieveAndUpdatedUnusedIntersolveVouchers()
-      .then(() => {
+      .finally(() => {
         console.info(
-          'CronjobService - Complete: cronRetrieveAndUpdatedUnusedIntersolveVouchers',
+          'Complete: Intersolve-Voucher - cronRetrieveAndUpdatedUnusedIntersolveVouchers',
         );
-        return;
       })
       .catch((error) => {
         this.azureLogService.logError(error, true);
