@@ -78,7 +78,7 @@ export class RegistrationApiService extends DomainApiService {
       method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
-        'distinctness',
+        'uniques',
       ]).join('/'),
       body: {
         registrationIds,
