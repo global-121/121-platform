@@ -86,7 +86,9 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply py-2 text-start font-semibold text-black txt-body-m #{!important};
+      @apply text-start font-semibold txt-body-m;
+      @apply text-black !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
+      @apply py-2 !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
     }
 
     &.mention-active {
