@@ -15,6 +15,8 @@ class BasePage {
   readonly toast: Locator;
   readonly chooseFileButton: Locator;
   readonly dialog: Locator;
+  readonly importButton: Locator;
+  readonly importFileButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -34,6 +36,10 @@ class BasePage {
       name: 'Choose file',
     });
     this.dialog = this.page.getByRole('alertdialog');
+    this.importButton = this.page.getByRole('button', { name: 'Import' });
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
+    });
   }
 
   async openSidebar() {
@@ -108,6 +114,12 @@ class BasePage {
 
   async openCreateNewProject() {
     await this.page.getByRole('button', { name: 'Add project' }).click();
+  }
+
+  async importRegistrations(filePath: string) {
+    await this.importButton.click();
+    await this.chooseAndUploadFile(filePath);
+    await this.importFileButton.click();
   }
 
   async chooseAndUploadFile(filePath: string) {
