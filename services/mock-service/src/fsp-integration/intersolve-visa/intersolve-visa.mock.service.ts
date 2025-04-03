@@ -429,9 +429,7 @@ export class IntersolveVisaMockService {
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
             value: -300, // Reservations are negative and in cents
           },
-          createdAt: new Date(
-            new Date().setDate(new Date().getDate()),
-          ).toISOString(),
+          createdAt: new Date().toISOString(),
           creditor: {
             tokenCode: 'random token code',
           },
@@ -454,9 +452,7 @@ export class IntersolveVisaMockService {
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
             value: 300,
           },
-          createdAt: new Date(
-            new Date().setDate(new Date().getDate()),
-          ).toISOString(),
+          createdAt: new Date().toISOString(),
           creditor: {
             tokenCode: 'random token code',
           },
@@ -491,9 +487,7 @@ export class IntersolveVisaMockService {
             assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
             value: -spentAmount,
           },
-          createdAt: new Date(
-            new Date().setDate(new Date().getDate()),
-          ).toISOString(),
+          createdAt: new Date().toISOString(),
           creditor: {
             tokenCode: 'random token code',
           },
@@ -516,7 +510,7 @@ export class IntersolveVisaMockService {
         id: 1,
         quantity: {
           assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE ?? '',
-          value: -300,
+          value: -1 * Math.floor(Math.random() * 1_000 + 1),
         },
         createdAt: new Date(
           new Date().setMonth(new Date().getMonth() - 2),

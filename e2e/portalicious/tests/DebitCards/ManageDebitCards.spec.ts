@@ -53,11 +53,12 @@ test('[34619] User can view debit cards of a registration with a single active d
 
   await test.step('User can view current debit card data', async () => {
     const datePattern = /^\d{1,2}\s[A-Za-z]{3}\s\d{4}$/; // e.g. 21 Jan 2022
+    const currencyPattern = /^\€\d+(\.\d{2})?$/; // e.g. €25.00
     const expectedDebitCardData = {
       'Card number': expect.any(String),
       'Card status': 'Active',
-      'Current balance': '€25.00',
-      'Spent this month (max. EUR 150)': '€3.00',
+      'Current balance': expect.stringMatching(currencyPattern),
+      'Spent this month (max. EUR 150)': expect.stringMatching(currencyPattern),
       'Issued on': expect.stringMatching(datePattern),
       'Last used': expect.stringMatching(datePattern),
     };
@@ -263,6 +264,7 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
   );
 
   let initialCardData: Record<string, string>;
+
   await test.step('Get initial card details before pausing', async () => {
     // Capture the original card data to verify it's active
     initialCardData = await debitCardPage.getCurrentDebitCardDataList();

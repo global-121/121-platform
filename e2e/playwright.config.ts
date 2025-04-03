@@ -41,24 +41,24 @@ export default defineConfig({
     //   } as AzureReporterOptions,
     // ],
   ],
-  /* Shared settings for all the projects below. See https://playwright.devdocs/api/class-testoptions. */
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   workers: 1,
   outputDir: './test-results',
-  timeout: 60000,
+  timeout: 60_000,
   use: {
     baseURL: process.env.BASE_URL,
     video: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
     acceptDownloads: true,
-    actionTimeout: 20000,
+    actionTimeout: 20_000,
     launchOptions: {
       downloadsPath: 'resources/downloads',
       args: ['--window-size=1920,1024'],
     },
     viewport: null,
     ignoreHTTPSErrors: true,
-    bypassCSP: true,
+    bypassCSP: false,
     trace: 'on-first-retry',
   },
   projects: [

@@ -31,7 +31,5 @@ function arrayToXlsx(array: any[]): Buffer {
 
 function toExportFileName(excelFileName: string): string {
   const date = new Date();
-  return `${excelFileName}-${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}.xlsx`;
+  return `${excelFileName}-${date.toISOString().substring(0, 10)}.xlsx`;
 }
