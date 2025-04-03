@@ -344,7 +344,7 @@ export class EventsService {
       'paymentCount',
       'paymentCountRemaining',
       'programId',
-      'registrationCreated',
+      'created',
       'registrationCreatedDate',
       'financialServiceProviderName',
       'programFinancialServiceProviderConfigurationId',

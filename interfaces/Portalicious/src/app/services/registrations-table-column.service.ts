@@ -46,7 +46,7 @@ const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
   'phoneNumber',
   'paymentCount',
   'maxPayments',
-  'registrationCreated',
+  'created',
 ];
 
 @Injectable({
@@ -146,7 +146,7 @@ export class RegistrationsTableColumnService {
                 ),
             },
             {
-              field: 'registrationCreated',
+              field: 'created',
               fieldForFilter: 'registrationCreatedDate',
               header: $localize`:@@registration-created:Registration created`,
               type: QueryTableColumnType.DATE,

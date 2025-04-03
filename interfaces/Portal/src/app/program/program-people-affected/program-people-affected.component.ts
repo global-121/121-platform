@@ -535,12 +535,8 @@ export class ProgramPeopleAffectedComponent implements OnDestroy {
       status: this.translate.instant(
         `entity.registration.status.${person.status}`,
       ),
-      registrationCreated: person.registrationCreated
-        ? formatDate(
-            person.registrationCreated,
-            DateFormat.dayAndTime,
-            this.locale,
-          )
+      created: person.created
+        ? formatDate(person.created, DateFormat.dayAndTime, this.locale)
         : null,
       inclusionScore: person.inclusionScore,
       preferredLanguage: person.preferredLanguage

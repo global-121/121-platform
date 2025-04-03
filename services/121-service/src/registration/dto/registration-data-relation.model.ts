@@ -1,3 +1,5 @@
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+
 export class RegistrationDataRelation {
   public programRegistrationAttributeId: number;
 }
@@ -17,5 +19,5 @@ export type RegistrationDataOptions =
 export class RegistrationDataInfo {
   public name: string;
   public relation: RegistrationDataRelation;
-  public type: string;
+  public type: RegistrationAttributeTypes;
 }
