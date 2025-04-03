@@ -141,6 +141,7 @@ async function bootstrap(): Promise<void> {
   }
 
   expressInstance.disable('x-powered-by');
+  expressInstance.set('strict routing', true); // Required to prevent Petstore-Inception-bug
 
   app.setGlobalPrefix('api');
 
@@ -151,7 +152,8 @@ async function bootstrap(): Promise<void> {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document, {
+  // To prevent Petstore-Inception-bug the trailing slash is required!
+  SwaggerModule.setup('/docs/', app, document, {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
