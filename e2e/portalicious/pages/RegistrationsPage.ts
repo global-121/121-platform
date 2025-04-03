@@ -613,7 +613,7 @@ class RegistrationsPage extends BasePage {
 
   async assertImportTemplateForPvProgram() {
     await this.validateDownloadedTemplate(
-      expectedImportRegistrationsTemplateColumnsPvProgramme,
+      expectedImportRegistrationsTemplateColumnsPvProject,
     );
   }
 

@@ -28,8 +28,6 @@ test('[29369] Unsuccessfully import registrations', async ({ page }) => {
     __dirname,
     '../../../test-registration-data/test-registrations-OCW-scoped.csv',
   );
-  const errorMessage =
-    'Something went wrong with this import. Please fix the errors reported below and try again.';
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -43,6 +41,8 @@ test('[29369] Unsuccessfully import registrations', async ({ page }) => {
   });
 
   await test.step('Validate import error message', async () => {
-    await table.validateErrorMessage('Something went wrong with this import. Please fix the errors reported below and try again.');
+    await table.validateErrorMessage(
+      'Something went wrong with this import. Please fix the errors reported below and try again.',
+    );
   });
 });
