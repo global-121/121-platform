@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
+import { endOfDay, startOfDay } from 'date-fns';
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
@@ -46,6 +47,34 @@ describe('PaginateQueryService', () => {
       ).toBe(FilterOperator.IN);
     });
 
+    it('should convert GREATER_THAN to GT', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator(
+          FilterMatchMode.GREATER_THAN,
+        ),
+      ).toBe(FilterOperator.GT);
+    });
+
+    it('should convert LESS_THAN to LT', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator(
+          FilterMatchMode.LESS_THAN,
+        ),
+      ).toBe(FilterOperator.LT);
+    });
+
+    it('should convert EQUALS to BTW for dates', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator(
+          FilterMatchMode.EQUALS,
+          true,
+        ),
+      ).toBe(FilterOperator.BTW);
+    });
+
     it('should default to ILIKE', () => {
       // @ts-expect-error accessing a private method for unit testing purposes
       expect(service.convertPrimeNGMatchModeToFilterOperator(undefined)).toBe(
@@ -71,6 +100,20 @@ describe('PaginateQueryService', () => {
         // @ts-expect-error accessing a private method for unit testing purposes
         service.convertPrimeNGFilterMetadataToValueAndOperator(undefined);
       expect(result).toBeUndefined();
+    });
+
+    it('should handle BETWEEN operator for dates', () => {
+      const filterMetadata: FilterMetadata = {
+        value: new Date('2025-04-03T12:00:00Z'),
+        matchMode: FilterMatchMode.EQUALS,
+      };
+      const result =
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGFilterMetadataToValueAndOperator(filterMetadata);
+      expect(result).toEqual({
+        value: '2025-04-03T00:00:00.000Z,2025-04-03T23:59:59.999Z',
+        operator: FilterOperator.BTW,
+      });
     });
   });
 
@@ -211,6 +254,42 @@ describe('PaginateQueryService', () => {
       const result = service.paginateQueryToHttpParamsObject(query);
       const params = new HttpParams({ fromObject: result });
       expect(params.toString()).toBe('filter.name=$ilike:test1,$ilike:test2');
+    });
+  });
+
+  describe('getDateFilterValue', () => {
+    it('should return start and end of the day for EQUALS match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+      const expectedStartOfDay = startOfDay(date).toISOString();
+      const expectedEndOfDay = endOfDay(date).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(date, FilterMatchMode.EQUALS);
+      expect(result).toBe(`${expectedStartOfDay},${expectedEndOfDay}`);
+    });
+
+    it('should return end of the day for GREATER_THAN match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+      const expectedEndOfDay = endOfDay(date).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(
+        date,
+        FilterMatchMode.GREATER_THAN,
+      );
+      expect(result).toBe(expectedEndOfDay);
+    });
+
+    it('should return start of the day for LESS_THAN match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+      const expectedStartOfDay = startOfDay(date).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(
+        date,
+        FilterMatchMode.LESS_THAN,
+      );
+      expect(result).toBe(expectedStartOfDay);
     });
   });
 });

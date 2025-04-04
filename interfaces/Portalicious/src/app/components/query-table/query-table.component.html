@@ -97,6 +97,7 @@
         @let columnFilterField = getColumnFilterField(column);
         @let columnMatchMode = getColumnMatchMode(column);
         @let isColumnFiltered = getIsColumnFiltered(column);
+        @let matchModeOptions = getMatchModeOptions(column);
 
         <th [pSortableColumn]="columnSortField">
           <div class="flex items-center text-nowrap">
@@ -116,9 +117,10 @@
                 [field]="columnFilterField"
                 [matchMode]="columnMatchMode"
                 display="menu"
-                [showMatchModes]="false"
                 [showOperator]="false"
                 [showAddButton]="false"
+                [showMatchModes]="!!matchModeOptions"
+                [matchModeOptions]="matchModeOptions"
                 [ngClass]="{
                   '[&_.p-button]:bg-purple-100 [&_.p-button]:text-purple':
                     isColumnFiltered,

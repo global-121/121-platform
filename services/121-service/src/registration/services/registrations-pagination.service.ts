@@ -437,7 +437,7 @@ export class RegistrationsPaginationService {
             'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
           ).join('');
           queryBuilder.leftJoin('registration.data', uniqueJoinId);
-          queryBuilder = this.applyFilterConditionRegData({
+          queryBuilder = this.applyFilterConditionAttributes({
             queryBuilder,
             filterType: filter.findOperator.type,
             value: filter.findOperator.value,
@@ -458,7 +458,7 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  private applyFilterConditionRegData({
+  private applyFilterConditionAttributes({
     queryBuilder,
     filterType,
     value,
