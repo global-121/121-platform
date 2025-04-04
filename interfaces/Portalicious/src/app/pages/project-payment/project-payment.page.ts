@@ -49,6 +49,7 @@ import { ProjectPaymentChartComponent } from '~/pages/project-payment/components
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { SinglePaymentExportComponent } from '~/pages/project-payment/components/single-payment-export/single-payment-export.component';
 import { AuthService } from '~/services/auth.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { getOriginUrl } from '~/utils/url-helper';
@@ -74,6 +75,7 @@ import { getOriginUrl } from '~/utils/url-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<string>();

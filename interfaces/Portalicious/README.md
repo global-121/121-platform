@@ -38,7 +38,23 @@ See all supported/enabled languages at: [`angular.json:.../i18n/locales`](angula
 During development, only 1 language can be used.  
 See all available languages at: [`angular.json:.../architect/serve/configurations`](angular.json#L199).
 
-To use a different language, run: `npm run start -- --configuration=<language-code>`.
+To use a different language, run:
+
+```shell
+NG_DEFAULT_LOCALE=<language-code>  npm run start -- --configuration=<language-code>
+```
+
+To run multiple languages at the same time, run: (use different ports for each language!)
+
+```shell
+NG_DEFAULT_LOCALE=ar  npm run start -- --port=8088 --configuration=ar
+```
+
+And, for the other language (in a separate shell/terminal):
+
+```shell
+NG_DEFAULT_LOCALE=nl  npm run start -- --port=8888 --configuration=nl
+```
 
 ### Translations for other languages
 

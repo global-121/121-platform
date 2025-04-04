@@ -2,13 +2,17 @@
   pageTitle="Users"
   i18n-pageTitle="@@page-title-users"
 >
-  <div header-actions>
+  <div
+    header-actions
+    class="flex gap-x-2"
+  >
     @if (canManageUsers()) {
       <p-button
         label="Add new user"
         i18n-label="@@add-user"
         rounded
         icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
       <app-add-user-form

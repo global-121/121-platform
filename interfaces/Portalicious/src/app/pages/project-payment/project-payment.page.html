@@ -7,7 +7,7 @@
   [isPending]="payments.isPending()"
 >
   <p-card styleClass="mb-5">
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center gap-x-4">
       <h1 class="me-auto">
         {{ paymentTitle() }}
       </h1>
@@ -124,6 +124,7 @@
               rounded
               outlined
               icon="pi pi-refresh"
+              [iconPos]="rtlHelper.createPosition('start')()"
               (click)="retryFailedTransfers()"
             />
           }

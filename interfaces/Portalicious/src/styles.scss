@@ -86,7 +86,9 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply py-2 text-start font-semibold text-black txt-body-m #{!important};
+      @apply text-start font-semibold txt-body-m;
+      @apply text-black !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
+      @apply py-2 !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
     }
 
     &.mention-active {
@@ -96,6 +98,11 @@ svg-icon svg {
         background: inherit !important;
       }
     }
+  }
+
+  // Move the menu from the hard-coded LTR-position to the RTL reading-direction
+  &:dir(rtl) {
+    transform: translateX(-100%);
   }
 }
 
@@ -331,8 +338,11 @@ svg-icon svg {
     }
   }
 
-  .p-progress-spinner-svg .p-progress-spinner-circle {
-    @apply stroke-purple-700 #{!important};
+  .p-progressspinner {
+    --p-progressspinner-color-1: theme('colors.purple.700');
+    --p-progressspinner-color-2: theme('colors.purple.700');
+    --p-progressspinner-color-3: theme('colors.purple.700');
+    --p-progressspinner-color-4: theme('colors.purple.700');
   }
 
   .p-toast {
