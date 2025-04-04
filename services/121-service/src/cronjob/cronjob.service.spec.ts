@@ -20,7 +20,6 @@ describe('Cronjobs', () => {
     await cronjobService[cronjobName](cronjobName);
 
     // Assert
-    expect(mockFn).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${cronjobService.baseUrl}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
     const headers = cronjobService.headers;
@@ -39,7 +38,6 @@ describe('Cronjobs', () => {
     await cronjobService[cronjobName](cronjobName);
 
     // Assert
-    expect(mockFn).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${cronjobService.baseUrl}/financial-service-providers/intersolve-voucher/unused-vouchers`;
     const headers = cronjobService.headers;
@@ -58,7 +56,6 @@ describe('Cronjobs', () => {
     await cronjobService[cronjobName](cronjobName);
 
     // Assert
-    expect(mockFn).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${cronjobService.baseUrl}/financial-service-providers/intersolve-voucher/cancel`;
     const headers = cronjobService.headers;
@@ -77,7 +74,6 @@ describe('Cronjobs', () => {
     await cronjobService[cronjobName](cronjobName);
 
     // Assert
-    expect(mockFn).toHaveBeenCalled();
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${cronjobService.baseUrl}/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
     const headers = cronjobService.headers;
