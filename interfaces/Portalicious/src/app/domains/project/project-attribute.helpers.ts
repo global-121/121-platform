@@ -13,7 +13,8 @@ export const ATTRIBUTE_LABELS: Record<GenericRegistrationAttributes, string> = {
   scope: $localize`:@@attribute-label-scope:Scope`,
   status: $localize`:@@attribute-label-status:Status`,
   registrationProgramId: $localize`:@@attribute-label-registrationProgramId:Registration ID`,
-  registrationCreatedDate: $localize`:@@attribute-label-registrationCreatedDate:Registration Created Date`,
+  created: $localize`:@@attribute-label-created:Registration Created Date`,
+  registrationCreatedDate: $localize`:@@attribute-label-registrationCreatedDate:Deprecated`, // TODO: remove this attribute once the old portal is removed
   inclusionScore: $localize`:@@attribute-label-inclusionScore:Inclusion Score`,
 };
 

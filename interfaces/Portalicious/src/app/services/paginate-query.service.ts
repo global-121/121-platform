@@ -7,9 +7,12 @@ import { TableLazyLoadEvent } from 'primeng/table';
 import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
 
 export enum FilterOperator {
+  BTW = '$btw',
   EQ = '$eq',
+  GT = '$gt',
   ILIKE = '$ilike',
   IN = '$in',
+  LT = '$lt',
 }
 
 export interface PaginateQuery {
@@ -43,7 +46,11 @@ export abstract class IActionDataHandler<TData> {
 export class PaginateQueryService {
   private convertPrimeNGMatchModeToFilterOperator(
     matchMode?: FilterMatchMode,
+    isDate?: boolean,
   ): FilterOperator {
+    if (isDate && matchMode === FilterMatchMode.EQUALS) {
+      return FilterOperator.BTW;
+    }
     switch (matchMode) {
       case FilterMatchMode.CONTAINS:
         return FilterOperator.ILIKE;
@@ -51,6 +58,10 @@ export class PaginateQueryService {
         return FilterOperator.EQ;
       case FilterMatchMode.IN:
         return FilterOperator.IN;
+      case FilterMatchMode.GREATER_THAN:
+        return FilterOperator.GT;
+      case FilterMatchMode.LESS_THAN:
+        return FilterOperator.LT;
       default:
         return FilterOperator.ILIKE;
     }
@@ -69,11 +80,12 @@ export class PaginateQueryService {
       return;
     }
 
+    const filterValue: unknown = filterObj.value;
     const operator = this.convertPrimeNGMatchModeToFilterOperator(
       filterObj.matchMode,
+      filterValue instanceof Date,
     );
 
-    const filterValue: unknown = filterObj.value;
     let filterValueString: string;
 
     if (Array.isArray(filterValue)) {
@@ -87,9 +99,10 @@ export class PaginateQueryService {
     } else if (typeof filterValue === 'number') {
       filterValueString = filterValue.toString();
     } else if (filterValue instanceof Date) {
-      // Removing timezone offset to avoid issues where the date is off by a day
-      filterValue.setMinutes(-filterValue.getTimezoneOffset() + 1);
-      filterValueString = filterValue.toISOString().substring(0, 10);
+      filterValueString = this.getDateFilterValue(
+        filterValue,
+        filterObj.matchMode,
+      );
     } else {
       throw new Error(`Unexpected filter value type: ${typeof filterValue}`);
     }
@@ -98,6 +111,26 @@ export class PaginateQueryService {
       operator,
       value: filterValueString,
     };
+  }
+
+  private getDateFilterValue(date: Date, matchMode?: string): string {
+    if (matchMode === FilterMatchMode.EQUALS) {
+      // Calculate start and end of the day with timezone adjustment
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      startOfDay.setMinutes(
+        startOfDay.getMinutes() - startOfDay.getTimezoneOffset(),
+      );
+
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+      endOfDay.setMinutes(endOfDay.getMinutes() - endOfDay.getTimezoneOffset());
+
+      return `${startOfDay.toISOString()},${endOfDay.toISOString()}`;
+    } else {
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+      return date.toISOString().substring(0, 10);
+    }
   }
 
   private convertPrimeNGLazyLoadFilterToPaginateFilter(

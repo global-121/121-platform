@@ -1183,7 +1183,7 @@
       <trans-unit id="attribute-label-referenceId" datatype="html">
         <source>Reference ID</source>
       </trans-unit>
-      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+      <trans-unit id="attribute-label-created" datatype="html">
         <source>Registration Created Date</source>
       </trans-unit>
       <trans-unit id="attribute-label-registrationProgramId" datatype="html">
@@ -1585,6 +1585,9 @@
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Deprecated</source>
       </trans-unit>
     </body>
   </file>
