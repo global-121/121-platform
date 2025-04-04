@@ -147,7 +147,7 @@ export class RegistrationsTableColumnService {
             },
             {
               field: 'created',
-              fieldForFilter: 'registrationCreatedDate',
+              fieldForFilter: 'created',
               header: $localize`:@@registration-created:Registration created`,
               type: QueryTableColumnType.DATE,
               defaultHidden: true,
