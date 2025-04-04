@@ -313,6 +313,17 @@ class TableComponent {
       expect(actualCount).toBe(expectedCount);
     }).toPass({ timeout: 2000 }); // Custome timeout set to 2 seconds
   }
+
+  async validateLabelInTableByRegistrationName(
+    registrationName: string,
+    label: string,
+  ) {
+    const firstRowText = await this.page
+      .getByRole('row', { name: registrationName })
+      .getByLabel(label)
+      .textContent();
+    expect(firstRowText).toBe(label);
+  }
 }
 
 export default TableComponent;
