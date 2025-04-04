@@ -590,7 +590,7 @@ describe('Do payment', () => {
       });
     });
 
-    describe('when program fincancial service configuration is not set properly', () => {
+    describe('when program financial service configuration is not set properly', () => {
       it('should fail payment by nedbank if paymentReferencePrefix is not configured for the program', async () => {
         // Arrange
         await seedIncludedRegistrations(
