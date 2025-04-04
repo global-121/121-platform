@@ -361,6 +361,7 @@
         },
         "choose-action": "Elige acción...",
         "column": {
+          "created": "Registro creado",
           "dob": "Fecha de nacimiento",
           "failedPayment": "Error en el pago #",
           "hasNote": "Tiene nota",
@@ -382,7 +383,6 @@
           "referenceId": "ID de referencia",
           "registration-attribute-false": "No",
           "registration-attribute-true": "Sí",
-          "registrationCreated": "Registro creado",
           "registrationCreatedDate": "Fecha de creación de la inscripción",
           "select": "Escoger",
           "status": "Estado",

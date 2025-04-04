@@ -11,7 +11,7 @@ export class Person {
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
-  registrationCreated?: string;
+  created?: string;
   status: RegistrationStatus;
   note?: string;
   financialServiceProviderName: FspName;
@@ -46,7 +46,7 @@ export class PersonRow {
   registrationStatus: RegistrationStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   status: string;
   hasNote: boolean;
-  registrationCreated?: string;
+  created?: string;
   inclusionScore?: number;
   name?: string | null;
   phoneNumber?: string | null;

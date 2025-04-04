@@ -602,7 +602,7 @@ export class ProgramsServiceApiService {
     params = params.append('page', page);
 
     const defaultSortOption: PaginationSort = {
-      column: 'registrationCreated',
+      column: 'created',
       direction: SortDirection.DESC,
     };
 

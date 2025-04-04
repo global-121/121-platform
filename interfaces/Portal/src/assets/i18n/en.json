@@ -340,6 +340,7 @@
         },
         "choose-action": "Choose action...",
         "column": {
+          "created": "Registration created",
           "dob": "Date of birth",
           "failedPayment": "Failed for payment #",
           "financialServiceProvider": "Financial Service Provider",
@@ -362,7 +363,6 @@
           "referenceId": "Reference ID",
           "registration-attribute-false": "No",
           "registration-attribute-true": "Yes",
-          "registrationCreated": "Registration created",
           "registrationCreatedDate": "Registration created date",
           "select": "Select",
           "status": "Status",
