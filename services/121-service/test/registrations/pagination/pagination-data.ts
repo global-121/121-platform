@@ -179,7 +179,7 @@ export const registrationPvMaxPayment = {
   referenceId: 'asdf234f4gg4ag64569',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
-  fullName: 'Jack Strong',
+  fullName: 'Arkadiusz Zbuczko',
   phoneNumber: '14155235559',
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.intersolveVisa,
