@@ -24,7 +24,8 @@ export class CronjobController {
     const cronJobMethodNames = this.cronjobService.getAllCronJobMethodNames();
     const responses: RunCronjobsResponseDto[] = [];
     for (const cronJobMethodName of cronJobMethodNames) {
-      const result = await this.cronjobService[cronJobMethodName]();
+      const result =
+        await this.cronjobService[cronJobMethodName](cronJobMethodName);
       responses.push({
         methodName: cronJobMethodName,
         url: result.url,
