@@ -55,10 +55,8 @@
           <app-skeleton-inline width="8rem" />
         } @else {
           <ng-container i18n>Registered: </ng-container>
-          @if (registration.data()?.registrationCreatedDate) {
-            {{
-              registration.data()?.registrationCreatedDate | date: 'shortDate'
-            }}
+          @if (registration.data()?.created) {
+            {{ registration.data()?.created | date: 'shortDate' }}
           } @else {
             —
           }

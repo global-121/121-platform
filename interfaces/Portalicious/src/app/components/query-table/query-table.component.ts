@@ -334,12 +334,26 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     switch (type) {
       case QueryTableColumnType.MULTISELECT:
         return FilterMatchMode.IN;
-      // case QueryTableColumnType.DATE:
+      case QueryTableColumnType.DATE:
       case QueryTableColumnType.NUMERIC:
         return FilterMatchMode.EQUALS;
       default:
         return FilterMatchMode.CONTAINS;
     }
+  }
+
+  getMatchModeOptions(column: QueryTableColumn<TData>) {
+    const type = this.getColumnType(column);
+    if (
+      [QueryTableColumnType.DATE, QueryTableColumnType.NUMERIC].includes(type)
+    ) {
+      return [
+        { label: $localize`Equals`, value: FilterMatchMode.EQUALS },
+        { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
+        { label: $localize`Greater than`, value: FilterMatchMode.GREATER_THAN },
+      ];
+    }
+    return undefined;
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {

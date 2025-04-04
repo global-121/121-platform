@@ -1177,7 +1177,7 @@
       <trans-unit id="attribute-label-referenceId" datatype="html">
         <source>Reference ID</source>
       </trans-unit>
-      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+      <trans-unit id="attribute-label-created" datatype="html">
         <source>Registration Created Date</source>
       </trans-unit>
       <trans-unit id="attribute-label-registrationProgramId" datatype="html">
@@ -1582,6 +1582,18 @@
       </trans-unit>
       <trans-unit id="generic-app-name" datatype="html">
         <source>121 Portal</source>
+      </trans-unit>
+      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
+        <source>Deprecated</source>
+      </trans-unit>
+      <trans-unit id="5995604223909447366" datatype="html">
+        <source>Less than</source>
+      </trans-unit>
+      <trans-unit id="6424246633820870206" datatype="html">
+        <source>Equals</source>
+      </trans-unit>
+      <trans-unit id="7732309408488818531" datatype="html">
+        <source>Greater than</source>
       </trans-unit>
     </body>
   </file>
