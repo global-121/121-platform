@@ -4,6 +4,13 @@ describe('Cronjobs', () => {
   let cronjobService;
   beforeAll(() => {
     cronjobService = new CronjobService();
+    // Make these noops so we don't actually call them.
+    cronjobService.axiosCallsService.getAccessToken = jest
+      .fn()
+      .mockResolvedValue(true);
+    cronjobService.axiosCallsService.accesTokenToHeaders = jest
+      .fn()
+      .mockReturnValue(true);
   });
 
   afterEach(jest.resetAllMocks);
