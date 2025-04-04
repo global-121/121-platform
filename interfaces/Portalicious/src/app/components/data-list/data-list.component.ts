@@ -33,10 +33,6 @@ export type DataListItem = {
       value: boolean;
     }
   | {
-      type: 'code';
-      value?: LocalizedString | null | string;
-    }
-  | {
       type: 'currency';
       value?: null | number;
       currencyCode?: null | string;

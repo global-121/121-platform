@@ -54,9 +54,6 @@
               @case ('options') {
                 {{ optionItemValue(item) }}
               }
-              @case ('code') {
-                <code>{{ item.value | translatableString }}</code>
-              }
               @default {
                 @let routerLink = item.routerLink;
 
