@@ -48,13 +48,13 @@ describe('Metric export list', () => {
       referenceIds: [],
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete(
+    await waitForPaymentTransactionsToComplete({
       programId,
-      [registrationSafaricom.referenceId],
+      paymentReferenceIds: [registrationSafaricom.referenceId],
       accessToken,
-      10_000,
-      [TransactionStatusEnum.success],
-    );
+      maxWaitTimeMs: 10000,
+      completeStatusses: [TransactionStatusEnum.success],
+    });
 
     // Act
     const getPaymentReportResponse = await getServer()
