@@ -85,7 +85,9 @@ describe('Cronjobs', () => {
 
     // Assert
     return expect(cronPromise).rejects.toThrow(
-      `While running cronjob "${cronjobName}" an authentication error occurred: Error: could not get headers`,
+      new Error(
+        `While running cronjob "${cronjobName}" an authentication error occurred: Error: could not get headers`,
+      ),
     );
   });
 
@@ -102,7 +104,9 @@ describe('Cronjobs', () => {
 
     // Assert
     return expect(cronPromise).rejects.toThrow(
-      `While running cronjob "${cronjobName}" an error occurred during a request: Error: patch request failed`,
+      new Error(
+        `While running cronjob "${cronjobName}" an error occurred during a request: Error: patch request failed`,
+      ),
     );
   });
 });
