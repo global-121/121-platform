@@ -24,12 +24,12 @@ export class CronjobController {
     const cronJobMethodNames = this.cronjobService.getAllCronJobMethodNames();
     const responses: RunCronjobsResponseDto[] = [];
     for (const cronJobMethodName of cronJobMethodNames) {
-      const result =
+      const response =
         await this.cronjobService[cronJobMethodName](cronJobMethodName);
       responses.push({
         methodName: cronJobMethodName,
-        url: result.url,
-        responseStatus: result.responseStatus,
+        url: response.url,
+        responseStatus: response.responseStatus,
       });
     }
     return responses;

@@ -14,10 +14,8 @@ describe('Cronjobs', () => {
       .fn()
       .mockResolvedValue(true));
 
-    const cronjobName = 'cronValidateCommercialBankEthiopiaAccountEnquiries';
     // Act
-    // Dynamically call the method and pass it the method as argument.
-    await cronjobService[cronjobName](cronjobName);
+    await cronjobService.cronValidateCommercialBankEthiopiaAccountEnquiries();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -32,10 +30,8 @@ describe('Cronjobs', () => {
       .fn()
       .mockResolvedValue(true));
 
-    const cronjobName = 'cronRetrieveAndUpdatedUnusedIntersolveVouchers';
     // Act
-    // Dynamically call the method and pass it the method as argument.
-    await cronjobService[cronjobName](cronjobName);
+    await cronjobService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -50,10 +46,8 @@ describe('Cronjobs', () => {
       .fn()
       .mockResolvedValue(true));
 
-    const cronjobName = 'cronCancelByRefposIntersolve';
     // Act
-    // Dynamically call the method and pass it the method as argument.
-    await cronjobService[cronjobName](cronjobName);
+    await cronjobService.cronCancelByRefposIntersolve();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -68,10 +62,8 @@ describe('Cronjobs', () => {
       .fn()
       .mockResolvedValue(true));
 
-    const cronjobName = 'cronRemoveDeprecatedImageCodes';
     // Act
-    // Dynamically call the method and pass it the method as argument.
-    await cronjobService[cronjobName](cronjobName);
+    await cronjobService.cronRemoveDeprecatedImageCodes();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
