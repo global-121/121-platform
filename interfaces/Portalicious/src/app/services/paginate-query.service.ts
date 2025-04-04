@@ -49,6 +49,9 @@ export class PaginateQueryService {
     matchMode?: FilterMatchMode,
     isDate?: boolean,
   ): FilterOperator {
+    if (isDate && matchMode === FilterMatchMode.EQUALS) {
+      return FilterOperator.BTW;
+    }
     switch (matchMode) {
       case FilterMatchMode.CONTAINS:
         return isDate ? FilterOperator.BTW : FilterOperator.ILIKE;
