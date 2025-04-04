@@ -167,11 +167,15 @@ export async function doPaymentForAllPAs({
     });
 }
 
-export async function retryPayment(
-  programId: number,
-  paymentNr: number,
-  accessToken: string,
-): Promise<request.Response> {
+export async function retryPayment({
+  programId,
+  paymentNr,
+  accessToken,
+}: {
+  programId: number;
+  paymentNr: number;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
@@ -189,12 +193,17 @@ export async function getProgramPaymentsStatus(
     .set('Cookie', [accessToken]);
 }
 
-export async function getTransactions(
-  programId: number,
-  paymentNr: number,
-  referenceId: string | null,
-  accessToken: string,
-): Promise<request.Response> {
+export async function getTransactions({
+  programId,
+  paymentNr,
+  referenceId,
+  accessToken,
+}: {
+  programId: number;
+  paymentNr: number;
+  referenceId: string | null;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/transactions`)
     .set('Cookie', [accessToken])
@@ -269,25 +278,32 @@ export async function exportList({
     .query(queryParams);
 }
 
-export async function waitForPaymentTransactionsToComplete(
-  programId: number,
-  paymentReferenceIds: string[],
-  accessToken: string,
-  maxWaitTimeMs: number,
-  completeStatusses: string[] = [TransactionStatusEnum.success],
+export async function waitForPaymentTransactionsToComplete({
+  programId,
+  paymentReferenceIds,
+  accessToken,
+  maxWaitTimeMs,
+  completeStatusses = [TransactionStatusEnum.success],
   payment = 1,
-): Promise<void> {
+}: {
+  programId: number;
+  paymentReferenceIds: string[];
+  accessToken: string;
+  maxWaitTimeMs: number;
+  completeStatusses: string[];
+  payment?: number;
+}): Promise<void> {
   const startTime = Date.now();
   let allTransactionsComplete = false;
 
   while (Date.now() - startTime < maxWaitTimeMs && !allTransactionsComplete) {
     // Get payment transactions
-    const paymentTransactions = await getTransactions(
+    const paymentTransactions = await getTransactions({
       programId,
-      payment,
-      null,
+      paymentNr: payment,
+      referenceId: null,
       accessToken,
-    );
+    });
 
     // Check if all transactions have a "complete" status
     allTransactionsComplete = paymentReferenceIds.every((referenceId) => {

@@ -67,21 +67,21 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -113,14 +113,14 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa,
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa,
+    });
 
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment({
@@ -131,22 +131,22 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa + 1,
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa + 1,
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa + 1,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa + 1,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doSecondPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doSecondPaymentResponse.body.applicableCount).toBe(
@@ -197,14 +197,14 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      referenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: referenceIds,
       accessToken,
-      6_000,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa,
-    );
+      maxWaitTimeMs: 6_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa,
+    });
 
     // Reissue card so both cards have a spend of 6000
     await issueNewVisaCard(
@@ -222,22 +222,22 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      referenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: referenceIds,
       accessToken,
-      6_000,
-      Object.values(TransactionStatusEnum),
-      testPaymentNumber,
-    );
+      maxWaitTimeMs: 6_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: testPaymentNumber,
+    });
 
     // Assert
-    const transactionsResponse1 = await getTransactions(
-      programIdVisa,
-      testPaymentNumber,
-      registrationVisa.referenceId,
+    const transactionsResponse1 = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: testPaymentNumber,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     // Waits until the 4th message is received
     const messagesHistoryPa1 = await getMessageHistoryUntilX(
@@ -247,30 +247,30 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       4,
     );
 
-    const transactionsResponse2 = await getTransactions(
-      programIdVisa,
-      testPaymentNumber,
-      registrationOCW2.referenceId,
+    const transactionsResponse2 = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: testPaymentNumber,
+      referenceId: registrationOCW2.referenceId,
       accessToken,
-    );
+    });
     const messagesHistoryPa2 = await getMessageHistoryUntilX(
       programIdVisa,
       registrationOCW2.referenceId,
       accessToken,
       4,
     );
-    const transactionsResponse3 = await getTransactions(
-      programIdVisa,
-      testPaymentNumber,
-      registrationOCW3.referenceId,
+    const transactionsResponse3 = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: testPaymentNumber,
+      referenceId: registrationOCW3.referenceId,
       accessToken,
-    );
-    const transactionsResponse4 = await getTransactions(
-      programIdVisa,
-      testPaymentNumber,
-      registrationOCW4.referenceId,
+    });
+    const transactionsResponse4 = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: testPaymentNumber,
+      referenceId: registrationOCW4.referenceId,
       accessToken,
-    );
+    });
 
     const expectedCalculatedAmountPa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
     expect(transactionsResponse1.body[0].amount).toBe(

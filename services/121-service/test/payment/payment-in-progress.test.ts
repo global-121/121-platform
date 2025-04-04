@@ -70,12 +70,12 @@ describe('Payment in progress', () => {
       accessToken,
       filter: filterAllIncluded,
     });
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationReferenceIdsPV,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
-      10_000,
-    );
+      maxWaitTimeMs: 10_000,
+    });
 
     // Act
     const getProgramPaymentsPvResult = (
@@ -111,18 +111,18 @@ describe('Payment in progress', () => {
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
 
     // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationReferenceIdsPV,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
-      30_000,
-    );
-    await waitForPaymentTransactionsToComplete(
-      programIdOCW,
-      registrationReferenceIdsOCW,
+      maxWaitTimeMs: 30_000,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdOCW,
+      paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,
-      30_000,
-    );
+      maxWaitTimeMs: 30_000,
+    });
   });
 
   it('should be in progress when not yet completed combined', async () => {
@@ -181,11 +181,11 @@ describe('Payment in progress', () => {
       filter: filterAllIncluded,
     });
 
-    const retryPaymentPvResult = await retryPayment(
-      programIdPV,
-      1,
+    const retryPaymentPvResult = await retryPayment({
+      programId: programIdPV,
+      paymentNr: 1,
       accessToken,
-    );
+    });
 
     // Assert
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
@@ -197,18 +197,18 @@ describe('Payment in progress', () => {
     expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
 
     // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationReferenceIdsPV,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
-      30_000,
-    );
-    await waitForPaymentTransactionsToComplete(
-      programIdOCW,
-      registrationReferenceIdsOCW,
+      maxWaitTimeMs: 30_000,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdOCW,
+      paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,
-      30_000,
-    );
+      maxWaitTimeMs: 30_000,
+    });
   });
 
   it('should be in progress when not yet completed visa only', async () => {
@@ -266,11 +266,11 @@ describe('Payment in progress', () => {
       filter: filterAllIncluded,
     });
     // We expect that retrying the payment fails since the previous payment is still in progress
-    const retryPaymentPvResult = await retryPayment(
-      programIdPV,
-      1,
+    const retryPaymentPvResult = await retryPayment({
+      programId: programIdPV,
+      paymentNr: 1,
       accessToken,
-    );
+    });
 
     // We expect that doing the next payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
     const doPaymentOcwResultPaymentNext = await doPayment({
@@ -294,17 +294,17 @@ describe('Payment in progress', () => {
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
 
     // Cleanup to make sure nothing is in progress anymore
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationsVisaPV.map((r) => r.referenceId),
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds: registrationsVisaPV.map((r) => r.referenceId),
       accessToken,
-      30_000,
-    );
-    await waitForPaymentTransactionsToComplete(
-      programIdOCW,
-      registrationsVisaOcw.map((r) => r.referenceId),
+      maxWaitTimeMs: 30_000,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdOCW,
+      paymentReferenceIds: registrationsVisaOcw.map((r) => r.referenceId),
       accessToken,
-      30_000,
-    );
+      maxWaitTimeMs: 30_000,
+    });
   });
 });

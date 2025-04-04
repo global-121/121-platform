@@ -74,42 +74,45 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          30_000,
-          [
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
           ],
-        );
+        });
 
-        const getTransactionsBeforeCronjob = await getTransactions(
+        const getTransactionsBeforeCronjob = await getTransactions({
           programId,
-          payment,
-          registrationNedbank.referenceId,
+          paymentNr: payment,
+          referenceId: registrationNedbank.referenceId,
           accessToken,
-        );
+        });
         const transactionBeforeCronJob = getTransactionsBeforeCronjob.body[0];
 
         // Cronjob should update the status of the transaction
         await runCronJobDoNedbankReconciliation();
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          6_000,
-          [TransactionStatusEnum.success, TransactionStatusEnum.error],
-        );
+          maxWaitTimeMs: 6_000,
+          completeStatusses: [
+            TransactionStatusEnum.success,
+            TransactionStatusEnum.error,
+          ],
+        });
 
-        const getTransactionsAfterCronjob = await getTransactions(
+        const getTransactionsAfterCronjob = await getTransactions({
           programId,
-          payment,
-          registrationNedbank.referenceId,
+          paymentNr: payment,
+          referenceId: registrationNedbank.referenceId,
           accessToken,
-        );
+        });
         const transactionAfterCronJob = getTransactionsAfterCronjob.body[0];
 
         const exportPaymentResponse = await exportList({
@@ -173,25 +176,25 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          30_000,
-          [
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
           ],
-        );
+        });
 
         const getTransactionsBody = (
-          await getTransactions(
+          await getTransactions({
             programId,
-            payment,
-            registrationFailDebitorAccount.referenceId,
+            paymentNr: payment,
+            referenceId: registrationFailDebitorAccount.referenceId,
             accessToken,
-          )
+          })
         ).body;
 
         // Assert
@@ -217,25 +220,25 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          30_000,
-          [
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
           ],
-        );
+        });
 
         const getTransactionsBody = (
-          await getTransactions(
+          await getTransactions({
             programId,
-            payment,
-            registrationNedbank.referenceId,
+            paymentNr: payment,
+            referenceId: registrationNedbank.referenceId,
             accessToken,
-          )
+          })
         ).body;
 
         // Assert
@@ -265,27 +268,27 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          30_000,
-          [
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
           ],
-        );
+        });
 
         await runCronJobDoNedbankReconciliation();
 
         const getTransactionsBody = (
-          await getTransactions(
+          await getTransactions({
             programId,
-            payment,
-            registrationFailPhoneNumber.referenceId,
+            paymentNr: payment,
+            referenceId: registrationFailPhoneNumber.referenceId,
             accessToken,
-          )
+          })
         ).body;
 
         // Assert
@@ -316,17 +319,17 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds,
           accessToken,
-          30_000,
-          [
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
             TransactionStatusEnum.success,
             TransactionStatusEnum.error,
             TransactionStatusEnum.waiting,
           ],
-        );
+        });
 
         const paymentExportBeforeReconciliation = (
           await exportList({
@@ -383,13 +386,13 @@ describe('Do payment', () => {
           referenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
         });
-        await waitForPaymentTransactionsToComplete(
+        await waitForPaymentTransactionsToComplete({
           programId,
-          [registrationFailDebitorAccount.referenceId],
+          paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
-          5_000,
-          [TransactionStatusEnum.error],
-        );
+          maxWaitTimeMs: 5_000,
+          completeStatusses: [TransactionStatusEnum.error],
+        });
         const exportPaymentBeforeRetryResponse = await exportList({
           programId,
           exportType: ExportType.payment,
@@ -410,14 +413,14 @@ describe('Do payment', () => {
           'to make payment work this time',
           accessToken,
         );
-        await retryPayment(programId, payment, accessToken);
-        await waitForPaymentTransactionsToComplete(
+        await retryPayment({ programId, paymentNr: payment, accessToken });
+        await waitForPaymentTransactionsToComplete({
           programId,
-          [registrationFailDebitorAccount.referenceId],
+          paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
-          5_000,
-          [TransactionStatusEnum.waiting],
-        );
+          maxWaitTimeMs: 5000,
+          completeStatusses: [TransactionStatusEnum.waiting],
+        });
         const exportPaymentAfterRetryReponse = await exportList({
           programId,
           exportType: ExportType.payment,

@@ -48,7 +48,7 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   page,
 }) => {
   const accessToken = await getAccessToken();
-  const paymentReferenceId = [registrationPvMaxPayment.referenceId];
+  const paymentReferenceIds = [registrationPvMaxPayment.referenceId];
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
@@ -64,17 +64,17 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
       programId: programIdPV,
       paymentNr: 1,
       amount: 100,
-      referenceIds: paymentReferenceId,
+      referenceIds: paymentReferenceIds,
       accessToken,
     });
     // Wait for payment transactions to complete
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      paymentReferenceId,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
   });
 
   await test.step('Search for the registration with status "Completed"', async () => {

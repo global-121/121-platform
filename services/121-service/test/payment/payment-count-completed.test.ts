@@ -69,19 +69,19 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       });
 
       // Assert
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
-        [registrationAh.referenceId],
+        paymentReferenceIds: [registrationAh.referenceId],
         accessToken,
-        10_000,
-      );
+        maxWaitTimeMs: 10_000,
+      });
 
-      const getTransactionsRes = await getTransactions(
+      const getTransactionsRes = await getTransactions({
         programId,
-        payment,
-        registrationAh.referenceId,
+        paymentNr: payment,
+        referenceId: registrationAh.referenceId,
         accessToken,
-      );
+      });
       const getTransactionsBody = getTransactionsRes.body;
       // Wait for registration to be updated
       const timeout = 80_000; // Timeout in milliseconds

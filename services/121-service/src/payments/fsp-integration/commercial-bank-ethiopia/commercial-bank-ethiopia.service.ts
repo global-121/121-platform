@@ -229,7 +229,11 @@ export class CommercialBankEthiopiaService
       ) {
         bankAccountNumber = data.value;
       } else if ((data.fieldName = 'debitTheirRef')) {
-        debitTheirRefRetry = data.value;
+        // This is a test code which is used in mock mode to simulate a transfer credit that is duplicated
+        // The mock service checks if the debitTheirRef starts with 'duplicate-' and if so, will simulate a duplicate transfer flow
+        debitTheirRefRetry = process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+          ? `duplicate-${data.value}`
+          : data.value;
       }
     });
 

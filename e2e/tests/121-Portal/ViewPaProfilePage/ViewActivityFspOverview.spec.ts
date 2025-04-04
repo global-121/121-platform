@@ -81,13 +81,13 @@ test.beforeEach(async ({ page }) => {
     accessToken,
   });
 
-  await waitForPaymentTransactionsToComplete(
-    programIdVisa,
+  await waitForPaymentTransactionsToComplete({
+    programId: programIdVisa,
     paymentReferenceIds,
     accessToken,
-    3001,
-    Object.values(TransactionStatusEnum),
-  );
+    maxWaitTimeMs: 4_000,
+    completeStatusses: Object.values(TransactionStatusEnum),
+  });
 
   await updateRegistration(
     programIdVisa,

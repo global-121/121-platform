@@ -85,21 +85,24 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
-        3001,
-        [TransactionStatusEnum.success, TransactionStatusEnum.error],
-      );
+        maxWaitTimeMs: 4_000,
+        completeStatusses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
 
       // Assert
-      const getTransactionsBody = await getTransactions(
+      const getTransactionsBody = await getTransactions({
         programId,
-        payment,
-        registrationSafaricom.referenceId,
+        paymentNr: payment,
+        referenceId: registrationSafaricom.referenceId,
         accessToken,
-      );
+      });
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
@@ -139,21 +142,21 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
-        3001,
-        Object.values(TransactionStatusEnum),
-      );
+        maxWaitTimeMs: 4_000,
+        completeStatusses: Object.values(TransactionStatusEnum),
+      });
 
       // Assert
-      const getTransactionsBody = await getTransactions(
+      const getTransactionsBody = await getTransactions({
         programId,
-        payment,
-        registrationSafaricom.referenceId,
+        paymentNr: payment,
+        referenceId: registrationSafaricom.referenceId,
         accessToken,
-      );
+      });
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
@@ -196,13 +199,13 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
-        3001,
-        Object.values(TransactionStatusEnum),
-      );
+        maxWaitTimeMs: 4_000,
+        completeStatusses: Object.values(TransactionStatusEnum),
+      });
 
       // update PA
       await updateRegistration(
@@ -215,16 +218,16 @@ describe('Do payment to 1 PA', () => {
       // await waitFor(2_000);
 
       // retry payment
-      await retryPayment(programId, payment, accessToken);
+      await retryPayment({ programId, paymentNr: payment, accessToken });
       await waitFor(2_000);
 
       // Assert
-      const getTransactionsBody = await getTransactions(
+      const getTransactionsBody = await getTransactions({
         programId,
-        payment,
-        registrationSafaricom.referenceId,
+        paymentNr: payment,
+        referenceId: registrationSafaricom.referenceId,
         accessToken,
-      );
+      });
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(
@@ -262,21 +265,24 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
-        3001,
-        [TransactionStatusEnum.success, TransactionStatusEnum.error],
-      );
+        maxWaitTimeMs: 4_000,
+        completeStatusses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
 
       // Assert
-      const getTransactionsBody = await getTransactions(
+      const getTransactionsBody = await getTransactions({
         programId,
-        payment,
-        registrationSafaricom.referenceId,
+        paymentNr: payment,
+        referenceId: registrationSafaricom.referenceId,
         accessToken,
-      );
+      });
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(

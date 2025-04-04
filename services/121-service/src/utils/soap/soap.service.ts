@@ -146,40 +146,52 @@ export class SoapService {
     return xml;
   }
 
-  async postCBERequest(payload: any, soapAction: string): Promise<any> {
+  async postCBERequest({
+    apiUrl,
+    payload,
+    soapAction,
+  }: {
+    apiUrl: string | undefined;
+    payload: any;
+    soapAction: string;
+  }): Promise<any> {
     const soapRequestXml = convert.js2xml(payload, {
       compact: false,
       spaces: 4,
     });
 
     // Configure and send the SOAP request
-    const soapUrl = process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
     const headers = {
       'Content-Type': 'text/xml;charset=UTF-8',
       soapAction,
     };
 
-    let agent: https.Agent;
-
-    if (!!process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
-      try {
-        const certificate = fs.readFileSync(
-          process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
-        );
-        agent = new https.Agent({
-          ca: certificate,
-        });
-      } catch (error) {
-        throw error;
-      }
-    } else {
-      // If no certificate path is provided, create an agent without certificate (for use with the sandbox CBE-API)
+    // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
+    let agent;
+    if (process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA) {
+      // Mock enabled
       agent = new https.Agent();
+    } else {
+      // Mock disabled
+      if (!!process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
+        try {
+          const certificate = fs.readFileSync(
+            process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
+          );
+          agent = new https.Agent({
+            ca: certificate,
+          });
+        } catch (error) {
+          throw error;
+        }
+      } else {
+        // If no certificate path is provided, create an agent without certificate (for use with the sandbox CBE-API)
+        agent = new https.Agent();
+      }
     }
-
     return soapRequest({
       headers,
-      url: soapUrl,
+      url: apiUrl,
       xml: soapRequestXml,
       timeout: 150000,
       extraOpts: {
@@ -189,7 +201,7 @@ export class SoapService {
       .then((rawResponse: any) => {
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
-          { url: soapUrl, payload: soapRequestXml },
+          { url: apiUrl, payload: soapRequestXml },
           {
             status: response.statusCode,
             statusText: undefined,
@@ -225,7 +237,7 @@ export class SoapService {
       })
       .catch((err: any) => {
         this.httpService.logErrorRequest(
-          { url: soapUrl, payload: soapRequestXml },
+          { url: apiUrl, payload: soapRequestXml },
           {
             status: undefined,
             statusText: undefined,

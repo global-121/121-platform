@@ -221,19 +221,19 @@ describe('Update program financial servce provider configuration of PA', () => {
       referenceIds: [registrationPvScoped.referenceId],
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete(
-      programIdPv,
-      [registrationPvScoped.referenceId],
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPv,
+      paymentReferenceIds: [registrationPvScoped.referenceId],
       accessToken,
-      30_000,
-    );
+      maxWaitTimeMs: 30_000,
+    });
 
-    const transactionsResponse = await getTransactions(
-      programIdPv,
-      payment,
-      registrationPvScoped.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdPv,
+      paymentNr: payment,
+      referenceId: registrationPvScoped.referenceId,
       accessToken,
-    );
+    });
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
