@@ -45,6 +45,7 @@ import { financialServiceProviderConfigurationNamesHaveIntegrationType } from '~
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { PaginateQuery } from '~/services/paginate-query.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
@@ -71,6 +72,7 @@ const queryParamStep = 'create-payment-step';
   providers: [CurrencyPipe, ToastService],
 })
 export class CreatePaymentComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
   currencyPipe = inject(CurrencyPipe);

@@ -3,13 +3,17 @@
   i18n-pageTitle="@@page-title-project-team"
   [projectId]="projectId()"
 >
-  <div header-actions>
+  <div
+    header-actions
+    class="flex gap-x-2"
+  >
     @if (canManageAidworkers()) {
       <p-button
         label="Add team member"
         i18n-label="@@add-team-member"
         rounded
         icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
       <app-add-project-team-user-form

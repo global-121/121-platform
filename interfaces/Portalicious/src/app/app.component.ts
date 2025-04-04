@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  isDevMode,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.authSubscriptions = this.authService.initializeSubscriptions();
 
-    if (!environment.production) {
+    if (!environment.production || isDevMode()) {
       // Enable dev/debugging-styles
       document.documentElement.classList.add('dev');
     }

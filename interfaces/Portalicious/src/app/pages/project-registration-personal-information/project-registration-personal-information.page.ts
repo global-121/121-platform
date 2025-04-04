@@ -26,6 +26,7 @@ import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 
 @Component({
   selector: 'app-project-registration-personal-information',
@@ -43,6 +44,7 @@ import { RegistrationAttributeService } from '~/services/registration-attribute.
 export class ProjectRegistrationPersonalInformationPageComponent
   implements ComponentCanDeactivate
 {
+  readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();

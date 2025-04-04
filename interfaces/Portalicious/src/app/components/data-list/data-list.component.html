@@ -6,7 +6,7 @@
 >
   @for (item of data(); track $index) {
     <p
-      class="space-x-1 border-b border-grey-300 py-4"
+      class="border-b border-grey-300 py-4"
       [ngClass]="{
         'col-span-2': item.fullWidth,
       }"
@@ -16,7 +16,7 @@
           <p-skeleton [width]="skeletonWidth()" />
         </div>
       } @else {
-        <strong> {{ item.label | translatableString }}:</strong>
+        <strong class="me-1">{{ item.label | translatableString }}:</strong>
         @if (item.tooltip) {
           <app-info-tooltip [message]="item.tooltip" />
         }

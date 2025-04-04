@@ -44,6 +44,7 @@ import {
   NormalizedRegistrationAttribute,
   RegistrationAttributeService,
 } from '~/services/registration-attribute.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { generateFieldErrors } from '~/utils/form-validation';
 
@@ -72,6 +73,7 @@ type EditPersonalInformationFormGroup =
 export class EditPersonalInformationComponent
   implements OnInit, OnDestroy, ComponentCanDeactivate
 {
+  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
   readonly attributeList = input.required<NormalizedRegistrationAttribute[]>();

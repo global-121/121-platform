@@ -49,7 +49,7 @@ test('Navigation from program header', async ({ page }) => {
   await page.waitForURL((url) =>
     url.pathname.startsWith(`/en-GB/project/${projectId}/registrations`),
   );
-  await expect(await homePage.logo).toHaveText(`121 Portal${projectTitle}`);
+  await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
 
   await homePage.navigateToProgramPage('Monitoring');
   await page.waitForURL((url) =>

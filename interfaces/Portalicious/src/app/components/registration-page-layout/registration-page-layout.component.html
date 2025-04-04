@@ -18,12 +18,11 @@
   <p-card
     styleClass="[&_.p-card-content]:flex-end group relative h-full [&_.p-card-title]:flex-grow"
   >
-    <div
-      class="flex w-full items-center space-x-4 border-b border-grey-300 pb-4"
-    >
+    <div class="flex w-full items-center gap-x-4 border-b border-grey-300 pb-4">
       <h1 data-testid="registration-title">
         {{ registrationTitle() }}
       </h1>
+
       @if (registration.isSuccess() && canViewPersonalData()) {
         <app-colored-chip
           [variant]="duplicateChipData().chipVariant"
@@ -32,7 +31,7 @@
         />
       }
 
-      <div class="!ms-auto">
+      <div class="ms-auto">
         @if (!registration.isError()) {
           <app-button-menu
             label="Actions"
@@ -44,10 +43,12 @@
         }
       </div>
     </div>
+
     <app-data-list
       [data]="registrationData()"
       data-testid="registration-summary-list"
     />
+
     <div class="mt-4 text-end">
       <span class="text-grey-700 txt-system-s">
         @if (registration.isPending()) {

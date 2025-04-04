@@ -5,6 +5,7 @@
     (click)="importReconciliationData()"
     [disabled]="paymentInProgress.isPending()"
     icon="pi pi-download"
+    [iconPos]="rtlHelper.createPosition('start')()"
     outlined
     rounded
   ></p-button>

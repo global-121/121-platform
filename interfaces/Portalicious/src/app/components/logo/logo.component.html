@@ -3,13 +3,15 @@
   data-testid="logo"
 >
   <a
-    i18n
+    i18n="@@generic-app-name"
     [routerLink]="['/']"
-    class="font-bold"
-    >121 Portal</a
+    class="inline-block font-bold"
   >
+    121 Portal
+  </a>
+
   @if (projectTitle()) {
-    <span class="ms-2 h-6 border-s-2 border-s-white ps-2">{{
+    <span class="ms-2 inline-block h-6 border-s-2 border-s-white ps-2">{{
       projectTitle() | translatableString
     }}</span>
   }

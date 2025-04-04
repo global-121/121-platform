@@ -26,6 +26,7 @@ import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { AddUserFormComponent } from '~/pages/users/components/add-user-form/add-user-form.component';
 import { AuthService } from '~/services/auth.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -44,6 +45,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   private authService = inject(AuthService);
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);

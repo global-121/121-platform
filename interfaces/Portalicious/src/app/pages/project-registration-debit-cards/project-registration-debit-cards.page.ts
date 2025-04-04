@@ -28,6 +28,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
@@ -49,6 +50,7 @@ import { ToastService } from '~/services/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectRegistrationDebitCardsPageComponent {
+  readonly rtlHelper = inject(RtlHelperService);
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
@@ -98,6 +100,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
       {
         label: $localize`:@@debit-card-number:Card number`,
         value: this.currentCard()?.tokenCode,
+        type: 'text',
       },
       {
         label: $localize`:@@debit-card-status:Card status`,
@@ -163,6 +166,11 @@ export class ProjectRegistrationDebitCardsPageComponent {
         chipVariant,
         chipLabel,
         dataList: [
+          {
+            label: $localize`:@@debit-card-number:Card number`,
+            value: card.tokenCode,
+            type: 'text',
+          },
           {
             label: $localize`:@@debit-card-explanation:Explanation`,
             value: card.explanation,
