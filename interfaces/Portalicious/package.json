@@ -14,7 +14,7 @@
     "start:debug-production": "npm run build:production && npm run serve:static",
     "prebuild": "npm run set-env-variables -- env=production && npm run build:download-translations && npm run build:deployment-configuration",
     "build": "ng build --localize",
-    "postbuild": "shx mv www/browser/* www/ && shx touch www/index.html && npm run build:root-404 && npm run build:manual-logout && npm run verify:build",
+    "postbuild": "shx mv \"www/browser/*\" www/ && shx touch www/index.html && npm run build:root-404 && npm run build:manual-logout && npm run verify:build",
     "build:production": "npm run build -- --configuration=production",
     "build:stats": "npm run build:production -- --stats-json",
     "watch": "ng build --watch --configuration=development",
@@ -101,7 +101,7 @@
     "postcss": "^8.5.3",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.29.0"
