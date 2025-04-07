@@ -193,6 +193,14 @@ class RegistrationsPage extends BasePage {
     await this.table.validateSelectionCount(0);
   }
 
+  async manageTableColumns(columns: string[]) {
+    await this.page.getByTitle('Manage table').click();
+    for (const column of columns) {
+      await this.page.getByLabel(column).check();
+    }
+    await this.page.getByRole('button', { name: 'Apply' }).click();
+  }
+
   async getFirstRegistrationNameFromTable() {
     await this.page.waitForTimeout(200);
     await this.page.waitForSelector('table tbody tr td');

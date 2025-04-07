@@ -43,9 +43,9 @@ test('[29368] Successfully import registrations', async ({ page }) => {
   });
 
   await test.step('Validate registrations are present in the table and the counts match', async () => {
-    // Default display filter is 10 if at least 10 records are present in this case 20
+    // Default display filter number
     await table.validateTableRowCount(10);
-    // All records count in this case should be 20
+    // Uploaded records count
     await table.validateAllRecordsCount(20);
   });
 });
