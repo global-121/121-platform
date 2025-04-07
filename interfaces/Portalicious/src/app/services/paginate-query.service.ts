@@ -129,6 +129,21 @@ export class PaginateQueryService {
     }
   }
 
+  private getStartAndEndOfDay(date: Date): {
+    startOfDay: Date;
+    endOfDay: Date;
+  } {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setMinutes(
+      startOfDay.getMinutes() - startOfDay.getTimezoneOffset(),
+    );
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setMinutes(endOfDay.getMinutes() - endOfDay.getTimezoneOffset());
+    return { startOfDay, endOfDay };
+  }
+
   private convertPrimeNGLazyLoadFilterToPaginateFilter(
     filters: TableLazyLoadEvent['filters'],
   ) {
