@@ -35,7 +35,7 @@ To support multiple languages, we use the default Angular i18n features, see: <h
 
 See all supported/enabled languages at: [`angular.json`: ...`/i18n/locales`](angular.json).
 
-During development, only 1 language can be used.  
+During development, only 1 language can be used.
 
 #### Translations
 
@@ -49,7 +49,7 @@ For this, some credentials/variables need to be set in the `.env`-file:
 - `LOKALISE_PROJECT_ID` - See in Bitwarden/GitHub-environments
 - `LOKALISE_API_TOKEN` - Create one in your Lokalise-account or use the shared Development-token from Bitwarden
 
-After setting these variables, run the following command to verify the download of translations:  
+After setting these variables, run the following command to verify the download of translations:
 
 ```bash
 npm run build:download-translations
