@@ -317,6 +317,13 @@ class TableComponent {
       .textContent();
     expect(firstRowText).toBe(label);
   }
+
+  async validateErrorMessage(errorMessage: string) {
+    const errorElement = this.page
+      .locator('app-form-error')
+      .filter({ hasText: errorMessage });
+    await expect(errorElement).toContainText(errorMessage);
+  }
 }
 
 export default TableComponent;
