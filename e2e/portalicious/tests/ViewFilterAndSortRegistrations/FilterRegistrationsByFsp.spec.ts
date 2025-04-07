@@ -47,15 +47,18 @@ test('[34949] Filter registrations by FSP (from the bug)', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registrations columns by text', async () => {
-    // Select FSP column to be displayed
+  // First ensure the FSP column is visible
+  await test.step('Display FSP column in the table', async () => {
     await registrations.manageTableColumns(['FSP']);
-    // Filter FSP column by dropdown selection and Visa fsp
+  });
+
+  // Test filtering by Visa FSP
+  await test.step('Filter FSP column by Visa debit card', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'FSP',
       selection: visaFsp,
     });
-    // Get first name from table by name and assert that it includes correct fsp
+
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     await tableComponent.validateLabelInTableByRegistrationName(
       registrationName,
@@ -63,12 +66,15 @@ test('[34949] Filter registrations by FSP (from the bug)', async ({ page }) => {
     );
     await tableComponent.validateAllRecordsCount(2);
     await tableComponent.clearAllFilters();
-    // Filter FSP column by dropdown selection and AH voucher fsp
+  });
+
+  // Test filtering by Albert Heijn voucher FSP
+  await test.step('Filter FSP column by Albert Heijn voucher', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'FSP',
       selection: ahVoucherFsp,
     });
-    // Get first name from table by name and assert that it includes correct fsp
+
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     await tableComponent.validateLabelInTableByRegistrationName(
       registrationName,

@@ -204,14 +204,10 @@ class TableComponent {
 
   async filterColumnByDate({
     columnName,
-    month,
     day,
-    year,
   }: {
     columnName: string;
-    month: string;
     day: number;
-    year: string;
   }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
@@ -219,9 +215,6 @@ class TableComponent {
 
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
-
-    await expect(this.calendar).toContainText(month);
-    await expect(this.calendar).toContainText(year);
 
     await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
 

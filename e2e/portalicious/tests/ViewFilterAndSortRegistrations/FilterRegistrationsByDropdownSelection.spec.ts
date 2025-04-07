@@ -46,15 +46,16 @@ test('[34946] Filter registrations by dropdown selection', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registrations columns by dropdown selection', async () => {
-    // Filter Status column with dropdown selection
+  await test.step('Filter Status column with "Registered" selection', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Status',
       selection: 'Registered',
     });
     await registrations.validateRegistrationIsNotPresent();
     await tableComponent.clearAllFilters();
-    // Update status and filter again
+  });
+
+  await test.step('Update status and filter by "Paused" status', async () => {
     await tableComponent.changeStatusOfRegistrationInTable('Pause');
     await registrations.validateToastMessageAndWait(toastMessage);
     await tableComponent.filterColumnByDropDownSelection({
@@ -65,14 +66,18 @@ test('[34946] Filter registrations by dropdown selection', async ({ page }) => {
       status: 'Paused',
     });
     await tableComponent.clearAllFilters();
-    // Filter Duplicates column by dropdown selection "Unique"
+  });
+
+  await test.step('Filter Duplicates column by "Unique" selection', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Duplicates',
       selection: 'Unique',
     });
     await tableComponent.validateAllRecordsCount(2);
     await tableComponent.clearAllFilters();
-    // Filter Duplicates column by dropdown selection "Duplicate"
+  });
+
+  await test.step('Filter Duplicates column by "Duplicate" selection', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Duplicates',
       selection: 'Duplicate',

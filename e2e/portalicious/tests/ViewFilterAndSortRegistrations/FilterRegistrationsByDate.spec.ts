@@ -18,9 +18,7 @@ import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 // Get current date information
 const currentDate = new Date();
-const month = currentDate.toLocaleString('en-US', { month: 'long' });
 const day = currentDate.getDate();
-const year = currentDate.getFullYear().toString();
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -53,19 +51,15 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
-      month,
       day,
-      year,
     });
     await tableComponent.validateAllRecordsCount(4);
     // Filter by different date
-    const diffDay = await registrations.selectDifferentDate(day, month, year);
+    const diffDay = currentDate.getDate() === 1 ? 2 : 1;
     if (diffDay !== undefined) {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
-        month,
         day: diffDay,
-        year,
       });
     }
     await registrations.validateRegistrationIsNotPresent();

@@ -25,15 +25,9 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple);
 
+  registrationsPV.push(registrationPvMaxPayment);
   await seedRegistrationsWithStatus(
     registrationsPV,
-    programIdPV,
-    accessToken,
-    RegistrationStatusEnum.included,
-  );
-
-  await seedRegistrationsWithStatus(
-    [registrationPvMaxPayment],
     programIdPV,
     accessToken,
     RegistrationStatusEnum.included,
@@ -59,28 +53,38 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[34948] Filter registrations by Input number', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
+
   // Act & Assert
-  await test.step('Filter registrations columns by number', async () => {
-    // Filter Reg. column by number
+  await test.step('Filter Reg. # column by number 2', async () => {
     await tableComponent.filterColumnByNumber('Reg. #', 2);
-    registrationName = await registrations.getFirstRegistrationNameFromTable();
+    registrationName =
+      await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jan Janssen');
     await tableComponent.clearAllFilters();
-    // Filter Reg. column by number
+  });
+
+  await test.step('Filter Reg. # column by number 4', async () => {
     await tableComponent.filterColumnByNumber('Reg. #', 4);
-    registrationName = await registrations.getFirstRegistrationNameFromTable();
+    registrationName =
+      await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
     await tableComponent.clearAllFilters();
-    // Filter Number of payments column by number
+  });
+
+  await test.step('Filter Number of payments column by number 1', async () => {
     await tableComponent.filterColumnByNumber('Number of payments', 1);
-    registrationName = await registrations.getFirstRegistrationNameFromTable();
+    registrationName =
+      await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Gemma Houtenbos');
     await tableComponent.clearAllFilters();
-    // Filter Max payments column by number
+  });
+
+  await test.step('Filter Max payments column by number 1', async () => {
     await tableComponent.filterColumnByNumber('Max payments', 1);
-    registrationName = await registrations.getFirstRegistrationNameFromTable();
+    registrationName =
+      await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Arkadiusz Zbuczko');
   });
 });

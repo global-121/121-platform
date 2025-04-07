@@ -45,13 +45,15 @@ test('[34945] Filter registrations by text', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registrations columns by text', async () => {
-    // Filter Name column by text
+  // Act & Assert
+  await test.step('Filter Name column by text', async () => {
     await tableComponent.filterColumnByText('Name', 'Jan Janssen');
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jan Janssen');
     await tableComponent.clearAllFilters();
-    // Filter Phone Number column by text
+  });
+
+  await test.step('Filter Phone Number column by text', async () => {
     await tableComponent.filterColumnByText('Phone Number', '14155235557');
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
