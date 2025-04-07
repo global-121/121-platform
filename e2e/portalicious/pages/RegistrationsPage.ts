@@ -9,6 +9,24 @@ import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
 import { expectedSortedArraysToEqual } from '../utils';
 
+const expectedImportRegistrationsTemplateColumnsPvProject = [
+  'referenceId',
+  'programFinancialServiceProviderConfigurationName',
+  'phoneNumber',
+  'preferredLanguage',
+  'paymentAmountMultiplier',
+  'maxPayments',
+  'scope',
+  'namePartnerOrganization',
+  'fullName',
+  'whatsappPhoneNumber',
+  'addressStreet',
+  'addressHouseNumber',
+  'addressHouseNumberAddition',
+  'addressPostalCode',
+  'addressCity',
+];
+
 const expectedColumnsSelectedRegistrationsExport = [
   'referenceId',
   'id',
@@ -108,6 +126,8 @@ class RegistrationsPage extends BasePage {
   readonly sendMessageDialogPreview: Locator;
   readonly exportButton: Locator;
   readonly proceedButton: Locator;
+  readonly downloadTemplateButton: Locator;
+  readonly importButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -118,6 +138,10 @@ class RegistrationsPage extends BasePage {
     );
     this.exportButton = this.page.getByRole('button', { name: 'Export' });
     this.proceedButton = this.page.getByRole('button', { name: 'Proceed' });
+    this.downloadTemplateButton = this.page.getByRole('button', {
+      name: 'Download the template',
+    });
+    this.importButton = this.page.getByRole('button', { name: 'Import' });
   }
 
   async waitForLoaded(registrationsCount: number) {
@@ -296,6 +320,62 @@ class RegistrationsPage extends BasePage {
   async clickAndSelectExportOption(option: string) {
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
+  }
+
+  async downloadAndValidateTemplate(expectedColumns: string[]) {
+    await this.importButton.click();
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      await this.downloadTemplateButton.click(),
+    ]);
+
+    const downloadDir = path.join(__dirname, '../../downloads');
+    if (!fs.existsSync(downloadDir)) {
+      fs.mkdirSync(downloadDir);
+    }
+
+    const filePath = path.join(downloadDir, download.suggestedFilename());
+    await download.saveAs(filePath);
+
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(sheet, {
+      defval: null,
+      header: 1,
+    }) as unknown[][];
+    // Get header row (first row)
+    const headers = data[0] as string[];
+
+    // Verify that all expected columns are present
+    const missingColumns = expectedColumns.filter(
+      (expectedCol) => !headers.includes(expectedCol),
+    );
+
+    if (missingColumns.length > 0) {
+      throw new Error(
+        `Template validation failed. Missing columns: ${missingColumns.join(', ')}`,
+      );
+    }
+
+    // Verify the template doesn't have extra columns
+    if (headers.length > expectedColumns.length) {
+      const extraColumns = headers.filter(
+        (header) => !expectedColumns.includes(header),
+      );
+      throw new Error(
+        `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
+      );
+    }
+
+    // Verify the template is empty (contains only header row)
+    if (data.length > 1) {
+      throw new Error(
+        `Template should be empty but contains ${data.length - 1} data rows`,
+      );
+    }
+
+    return true;
   }
 
   async assertExportButtonIsHidden() {
@@ -524,9 +604,26 @@ class RegistrationsPage extends BasePage {
     );
   }
 
+  async assertImportTemplateForPvProgram() {
+    await this.downloadAndValidateTemplate(
+      expectedImportRegistrationsTemplateColumnsPvProject,
+    );
+  }
+
   async assertDuplicateColumnValues(expectedValues: string[]) {
     const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
     expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+  }
+
+  async waitForImportProcessToComplete() {
+    // First wait for loading state to appear (import starts)
+    await expect(this.importFileButton).toHaveClass(/p-button-loading/);
+
+    // Then wait for loading state to disappear (import completes)
+    // It is a primeNG component, so we can't use the built-in waitForLoadState method
+    await expect(this.importFileButton).not.toHaveClass(/p-button-loading/, {
+      timeout: 10000,
+    });
   }
 }
 
