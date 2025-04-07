@@ -6,7 +6,7 @@ const angular = require('angular-eslint');
 const eslintPluginComments = require('eslint-plugin-eslint-comments');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
-const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
+// const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
 const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
 const eslintPluginRegexp = require('eslint-plugin-regexp');
 const eslintPluginSimpleSort = require('eslint-plugin-simple-import-sort');
@@ -31,14 +31,14 @@ module.exports = tseslint.config(
       regexp: eslintPluginRegexp,
       'simple-import-sort': eslintPluginSimpleSort,
       'eslint-comments': eslintPluginComments,
+      // '@tanstack/query': eslintPluginQuery,
     },
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.strictTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
       ...angular.configs.tsRecommended,
-      // @ts-ignore-next-line - `configs` DOES exist.
-      ...eslintPluginQuery.configs['flat/recommended'],
+      // eslintPluginQuery.configs.recommended,
       eslintPluginRegexp.configs['flat/recommended'],
       eslintPluginSortClassMembers.configs['flat/recommended'],
       ...eslintPluginTailwind.configs['flat/recommended'],
