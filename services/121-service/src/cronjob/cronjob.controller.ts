@@ -21,14 +21,15 @@ export class CronjobController {
     type: [RunCronjobsResponseDto],
   })
   public async runAllCronjobs(): Promise<RunCronjobsResponseDto[]> {
-    const methods = this.cronjobService.getAllMethodNames();
+    const cronJobMethodNames = this.cronjobService.getAllCronJobMethodNames();
     const responses: RunCronjobsResponseDto[] = [];
-    for (const method of methods) {
-      const result = await this.cronjobService[method]();
+    for (const cronJobMethodName of cronJobMethodNames) {
+      const response =
+        await this.cronjobService[cronJobMethodName](cronJobMethodName);
       responses.push({
-        methodName: method,
-        url: result.url,
-        responseStatus: result.responseStatus,
+        methodName: cronJobMethodName,
+        url: response.url,
+        responseStatus: response.responseStatus,
       });
     }
     return responses;
