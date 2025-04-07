@@ -23,7 +23,7 @@
   "private": true,
   "dependencies": {
     "@nestjs/axios": "^4.0.0",
-    "@nestjs/common": "^11.0.11",
+    "@nestjs/common": "^11.0.13",
     "@nestjs/core": "^11.0.11",
     "@nestjs/platform-express": "^11.0.11",
     "@nestjs/swagger": "^11.0.6",
