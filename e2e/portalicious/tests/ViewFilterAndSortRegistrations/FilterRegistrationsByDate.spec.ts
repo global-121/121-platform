@@ -47,19 +47,22 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registrations columns by date', async () => {
+  await test.step('Filter registration created column by "Equals" date', async () => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
+      range: 'Equals',
     });
     await tableComponent.validateAllRecordsCount(4);
+    await tableComponent.clearAllFilters();
     // Filter by different date
     const diffDay = currentDate.getDate() === 1 ? 2 : 1;
     if (diffDay !== undefined) {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
         day: diffDay,
+        range: 'Equals',
       });
     }
     await registrations.validateRegistrationIsNotPresent();
