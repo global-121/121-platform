@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple);
   // remove assignments of all users except admin again, to create the context for this test
   const accessToken = await getAccessToken();
-  for (let userId = 2; userId <= 9; userId++) {
+  for (let userId = 2; userId <= 10; userId++) {
     await removeProgramAssignment(programId, userId, accessToken);
   }
 
