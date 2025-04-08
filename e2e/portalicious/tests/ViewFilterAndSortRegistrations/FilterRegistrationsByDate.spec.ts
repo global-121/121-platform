@@ -14,7 +14,6 @@ import {
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 // Get current date information
 const currentDate = new Date();
@@ -44,7 +43,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[34947] Filter registrations by Date selection', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
   await test.step('Filter registration created column by "Equals" date', async () => {
@@ -65,7 +63,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
         range: 'Equals',
       });
     }
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });
 
@@ -76,7 +74,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
       day,
       range: 'Less than',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });
 
@@ -87,6 +85,6 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
       day,
       range: 'Greater than',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
   });
 });

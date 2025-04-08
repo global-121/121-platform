@@ -335,6 +335,12 @@ class TableComponent {
       .filter({ hasText: errorMessage });
     await expect(errorElement).toContainText(errorMessage);
   }
+
+  async assertEmptyTableState() {
+    await this.page.waitForTimeout(200);
+    await this.page.waitForSelector('table tbody tr td');
+    await expect(this.page.getByText('No results found')).toBeVisible();
+  }
 }
 
 export default TableComponent;

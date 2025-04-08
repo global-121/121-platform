@@ -222,7 +222,7 @@ class RegistrationsPage extends BasePage {
     expect(statusText).toBe(status);
   }
 
-  async validateRegistrationIsNotPresent() {
+  async assertEmptyTableState() {
     await this.page.waitForTimeout(200);
     await this.page.waitForSelector('table tbody tr td');
     await expect(this.page.getByText('No results found')).toBeVisible();

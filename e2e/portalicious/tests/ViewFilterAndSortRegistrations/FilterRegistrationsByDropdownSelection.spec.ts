@@ -51,7 +51,7 @@ test('[34946] Filter registrations by dropdown selection', async ({ page }) => {
       columnName: 'Status',
       selection: 'Registered',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });
 
