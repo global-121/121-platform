@@ -276,7 +276,7 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": ["name"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "nl"],
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
