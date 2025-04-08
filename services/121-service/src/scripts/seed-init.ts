@@ -106,9 +106,19 @@ export class SeedInit implements InterfaceScript {
         ],
       },
       {
-        role: DefaultUserRole.KoboUser,
+        role: DefaultUserRole.KoboRegistrationUser,
         label: 'Only CREATE registrations',
         permissions: [PermissionEnum.RegistrationCREATE],
+      },
+      {
+        role: DefaultUserRole.KoboValidationUser,
+        label: 'Only UPDATE registrations',
+        permissions: [
+          PermissionEnum.RegistrationAttributeUPDATE,
+          PermissionEnum.RegistrationAttributeFinancialUPDATE,
+          PermissionEnum.RegistrationPersonalUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE
+        ],
       },
       {
         role: DefaultUserRole.CvaManager,
