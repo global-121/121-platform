@@ -4,10 +4,15 @@ import {
   computed,
   inject,
   input,
-  model,
   viewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import {
   injectMutation,
@@ -18,10 +23,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type IgnoreDuplicationFormGroup =
   (typeof IgnoreDuplicationDialogComponent)['prototype']['formGroup'];
@@ -33,11 +35,13 @@ type IgnoreDuplicationFormGroup =
     InputTextModule,
     ConfirmationDialogComponent,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   templateUrl: './ignore-duplication-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
@@ -53,6 +57,7 @@ export class IgnoreDuplicationDialogComponent {
     })(),
     enabled: !!this.registrationReferenceId(),
   }));
+
   readonly duplicatesRegistrationIds = computed(() => {
     if (!this.registrationRegistrationId() || !this.duplicates.isSuccess()) {
       return [];
@@ -65,44 +70,43 @@ export class IgnoreDuplicationDialogComponent {
 
     return registrationIds;
   });
-  readonly ignoreDuplicationDialog =
-    viewChild.required<ConfirmationDialogComponent>('ignoreDuplicationDialog');
-  formGroup!: FormGroup<
-    Record<string, FormControl<boolean | number | string | undefined>>
-  >;
-  readonly updateReason = model<string>('');
+
+  formGroup = new FormGroup({
+    reason: new FormControl('', {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    }),
+  });
+
+  formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
+    this.formGroup,
+    {
+      reason: (control) =>
+        control.errors?.required
+          ? $localize`:@@generic-required-field:This field is required.`
+          : undefined,
+    },
+  );
+
   approveMutation = injectMutation(() => ({
-    mutationFn: async ({ reason }: { reason: string }) => {
-      if (!reason || reason.trim() === '') {
-        throw new Error(
-          $localize`:@@generic-required-field:This field is required.`,
-        );
-      }
-
-      if (!this.registrationRegistrationId() || !this.duplicates.isSuccess()) {
-        return;
-      }
-
-      return this.registrationApiService.ignoreDuplication({
+    mutationFn: ({
+      reason,
+    }: ReturnType<IgnoreDuplicationFormGroup['getRawValue']>) =>
+      this.registrationApiService.ignoreDuplication({
         projectId: this.projectId,
         registrationIds: this.duplicatesRegistrationIds(),
         reason,
-      });
-    },
+      }),
     onSuccess: () => {
-      this.updateReason.set('');
+      this.formGroup.reset();
       return this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
     },
   }));
-  formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
-    this.formGroup,
-    {
-      reason: genericFieldIsRequiredValidationMessage,
-    },
-  );
-
+  readonly ignoreDuplicationDialog =
+    viewChild.required<ConfirmationDialogComponent>('ignoreDuplicationDialog');
   setVisible() {
     this.ignoreDuplicationDialog().askForConfirmation();
   }

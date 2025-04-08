@@ -5,7 +5,7 @@ import {
   input,
   viewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule } from '@angular/forms';
 
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
 import { ConfirmationService } from 'primeng/api';
@@ -42,6 +42,7 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
   readonly headerClass = input('');
   readonly headerIcon = input<string>('pi pi-question');
   readonly proceedLabel = input($localize`:@@generic-proceed:Proceed`);
+  readonly formGroup = input<FormGroup>();
 
   readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 
@@ -55,6 +56,15 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
   }
 
   onProceed() {
+    const formGroup = this.formGroup();
+    if (formGroup) {
+      formGroup.markAllAsTouched();
+      if (!formGroup.valid) {
+        return;
+      }
+    }
+    // merge this.formGroup().getRawValue() with this.mutationData()?
+    // no - just pass in mutationData
     this.mutation().mutate(this.mutationData(), {
       onSuccess: () => {
         this.confirmDialog().onAccept();
