@@ -161,13 +161,15 @@ export class ChangeStatusDialogComponent
 
   messageTemplateKey = injectQuery(() => ({
     queryKey: ['change-status-template-key', this.status(), this.projectId()],
-    queryFn: () => {
+    queryFn: async () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- guaranteed by enabled
       const status = this.status()!;
-      return this.messagingService.getTemplateTypeByRegistrationStatus({
-        status,
-        projectId: this.projectId,
-      });
+      return (
+        (await this.messagingService.getTemplateTypeByRegistrationStatus({
+          status,
+          projectId: this.projectId,
+        })) ?? ''
+      );
     },
     enabled: !!this.status(),
   }));

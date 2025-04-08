@@ -180,7 +180,7 @@ class RegistrationsPage extends BasePage {
 
   async validateMessagePresent(message: string) {
     await this.page.waitForTimeout(200);
-    await expect(this.page.locator('textarea')).toBeDisabled();
+    await expect(this.page.locator('textarea')).toHaveAttribute('readonly');
     const textboxValue = await this.page.$eval(
       'textarea',
       (textarea) => textarea.value,

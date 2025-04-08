@@ -96,11 +96,11 @@ export class MessagingService {
     input: Partial<MessageInputData>;
     projectId: Signal<number | string>;
     previewRegistration?: Registration;
-  }): Promise<string | undefined> {
+  }): Promise<string> {
     const messageText = await this.getMessageText(input, projectId);
 
     if (!messageText) {
-      return;
+      return '';
     }
 
     const placeholders = await this.queryClient.fetchQuery(
