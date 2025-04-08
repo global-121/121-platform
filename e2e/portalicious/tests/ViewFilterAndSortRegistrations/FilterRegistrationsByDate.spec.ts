@@ -66,5 +66,27 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
       });
     }
     await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter registration created column by "Less than" date', async () => {
+    // Filter Registration column by date
+    await tableComponent.filterColumnByDate({
+      columnName: 'Registration created',
+      day,
+      range: 'Less than',
+    });
+    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter registration created column by "Greater than" date', async () => {
+    // Filter Registration column by date
+    await tableComponent.filterColumnByDate({
+      columnName: 'Registration created',
+      day,
+      range: 'Greater than',
+    });
+    await registrations.validateRegistrationIsNotPresent();
   });
 });
