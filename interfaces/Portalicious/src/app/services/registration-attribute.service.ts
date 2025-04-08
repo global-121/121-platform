@@ -138,7 +138,7 @@ export class RegistrationAttributeService {
       case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName:
         return project.programFinancialServiceProviderConfigurations.map(
           (fsp) => ({
-            value: fsp.financialServiceProviderName,
+            value: fsp.name,
             label: this.translatableStringService.translate(fsp.label),
           }),
         );
