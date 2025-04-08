@@ -99,10 +99,16 @@ export class SeedHelper {
         roles: [DefaultUserRole.View],
       },
       {
-        type: 'koboUser',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO,
-        roles: [DefaultUserRole.KoboUser],
+        type: 'koboRegistrationUser',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
+        roles: [DefaultUserRole.KoboRegistrationUser],
+      },
+      {
+        type: 'koboValidationnUser',
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
+        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
+        roles: [DefaultUserRole.KoboValidationUser],
       },
       {
         type: 'cvaManager',
