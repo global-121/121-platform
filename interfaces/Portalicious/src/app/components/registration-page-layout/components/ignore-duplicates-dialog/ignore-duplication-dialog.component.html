@@ -6,9 +6,10 @@
   proceedLabel="Approve"
   i18n-proceedLabel="@@generic-approve"
   [mutation]="approveMutation"
-  [mutationData]="{ reason: updateReason() }"
+  [mutationData]="formGroup.getRawValue()"
+  [formGroup]="formGroup"
 >
-  @let duplicateCount = this.duplicatesRegistrationIds().length;
+  @let duplicateCount = duplicatesRegistrationIds().length;
   <p class="mb-7">
     @if (duplicateCount === 2) {
       <span i18n="@@ignore-duplicates-confirmation-message-first-2_duplicates">
@@ -33,11 +34,12 @@
   <app-form-field-wrapper
     label="Add a reason"
     i18n-label
+    [errorMessage]="formFieldErrors()('reason')"
   >
     <input
       pInputText
+      formControlName="reason"
       type="text"
-      [(ngModel)]="updateReason"
       autocomplete="off"
     />
   </app-form-field-wrapper>
