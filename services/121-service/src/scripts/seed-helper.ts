@@ -100,14 +100,17 @@ export class SeedHelper {
       },
       {
         type: 'koboRegistrationUser',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
+        username:
+          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
+        password:
+          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
         roles: [DefaultUserRole.KoboRegistrationUser],
       },
       {
         type: 'koboValidationnUser',
         username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
+        password:
+          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
         roles: [DefaultUserRole.KoboValidationUser],
       },
       {
