@@ -1,19 +1,19 @@
-// @ts-check
-const globals = require('globals');
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const angular = require('angular-eslint');
-const eslintPluginComments = require('eslint-plugin-eslint-comments');
-const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-const eslintPluginNoRelativePaths = require('eslint-plugin-no-relative-import-paths');
-// const eslintPluginQuery = require('@tanstack/eslint-plugin-query');
-const eslintPluginPerfectionist = require('eslint-plugin-perfectionist');
-const eslintPluginRegexp = require('eslint-plugin-regexp');
-const eslintPluginSimpleSort = require('eslint-plugin-simple-import-sort');
-const eslintPluginSortClassMembers = require('eslint-plugin-sort-class-members');
-const eslintPluginTailwind = require('eslint-plugin-tailwindcss');
+import globals from 'globals';
+import eslint from '@eslint/js';
+import tsEslint from 'typescript-eslint';
+import angularEslint from 'angular-eslint';
+import eslintPluginComments from 'eslint-plugin-eslint-comments';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
+// @ts-ignore-next-line -- TODO: Check correct type definition for eslint-plugin-query in future version
+import pluginQuery from '@tanstack/eslint-plugin-query';
+import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
+import eslintPluginRegexp from 'eslint-plugin-regexp';
+import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
+import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
+import eslintTailwind from 'eslint-plugin-tailwindcss';
 
-module.exports = tseslint.config(
+export default tsEslint.config(
   {
     languageOptions: {
       globals: globals.browser,
@@ -26,25 +26,23 @@ module.exports = tseslint.config(
     files: ['**/*.ts'],
     plugins: {
       'no-relative-import-paths': eslintPluginNoRelativePaths,
-      // @ts-ignore-next-line - `perfectionist` package does have correct shape; maybe not correct type definition.
       perfectionist: eslintPluginPerfectionist,
       regexp: eslintPluginRegexp,
       'simple-import-sort': eslintPluginSimpleSort,
       'eslint-comments': eslintPluginComments,
-      // '@tanstack/query': eslintPluginQuery,
     },
     extends: [
       eslint.configs.recommended,
-      ...tseslint.configs.strictTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
-      ...angular.configs.tsRecommended,
-      // eslintPluginQuery.configs.recommended,
+      ...tsEslint.configs.strictTypeChecked,
+      ...tsEslint.configs.stylisticTypeChecked,
+      ...angularEslint.configs.tsRecommended,
+      ...pluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginSortClassMembers.configs['flat/recommended'],
-      ...eslintPluginTailwind.configs['flat/recommended'],
+      eslintSortClassMembers.configs['flat/recommended'],
+      ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
-    processor: angular.processInlineTemplates,
+    processor: angularEslint.processInlineTemplates,
     rules: {
       '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-extraneous-class': [
@@ -123,9 +121,9 @@ module.exports = tseslint.config(
   {
     files: ['src/app/**/*.html'],
     extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-      ...eslintPluginTailwind.configs['flat/recommended'],
+      ...angularEslint.configs.templateRecommended,
+      ...angularEslint.configs.templateAccessibility,
+      ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     rules: {
@@ -213,6 +211,7 @@ module.exports = tseslint.config(
     extends: [
       eslint.configs.recommended,
       eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
       eslintPluginPrettierRecommended,
     ],
     rules: {
