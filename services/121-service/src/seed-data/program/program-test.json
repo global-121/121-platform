@@ -27,7 +27,7 @@
   "targetNrRegistrations": 250,
   "programRegistrationAttributes": [
     {
-      "name": "name",
+      "name": "fullName",
       "label": {
         "ar": "الاسم",
         "en": "Name",
