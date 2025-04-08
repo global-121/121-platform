@@ -49,7 +49,7 @@ test('[34688] User can view the registration data of registration that has all d
 
   const expectedRegistrationData = {
     Name: 'John Snow',
-    FSP: 'ironBank',
+    FSP: 'Iron Bank',
     'Preferred Language': 'English',
     House: 'Stark',
     'Knows nothing': 'Yes',
@@ -104,7 +104,7 @@ test('[34689] User can view the registration data of registration that has only 
 
   const expectedRegistrationData = {
     Name: '',
-    FSP: 'ironBank',
+    FSP: 'Iron Bank',
     'Preferred Language': 'English',
     House: 'Stark',
     'Knows nothing': '—',
