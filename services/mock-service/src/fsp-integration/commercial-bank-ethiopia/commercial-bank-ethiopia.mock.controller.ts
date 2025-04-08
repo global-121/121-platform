@@ -1,5 +1,9 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Controller, Headers, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
+// ##TODO: Refactor so it only uses one XML parser for both converting to and from XML
+import * as convert from 'xml-js';
+import { parseStringPromise } from 'xml2js';
 
 import { CommercialBankEthiopiaMockService } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.service';
 
@@ -10,17 +14,61 @@ export class CommercialBankEthiopiaMockController {
     private readonly CommercialBankEthiopiaMockService: CommercialBankEthiopiaMockService,
   ) {}
 
-  @ApiOperation({ summary: 'Make SOAP call' })
+  @ApiOperation({ summary: 'Handle SOAP call' })
   @Post('/services')
-  public createOrder(@Param('xsd') xsd: number, @Body() body: any): any {
-    if (xsd === 2) {
-      return this.CommercialBankEthiopiaMockService.postCBEValidation(body);
-    }
-    if (xsd === 4) {
-      return this.CommercialBankEthiopiaMockService.postCBETransfer(body);
-    }
-    if (xsd === 6) {
-      return this.CommercialBankEthiopiaMockService.postCBETransaction(body);
+  public async handleSoapCall(
+    @Headers('soapAction') soapAction: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      // Parse the raw XML body
+      const rawBody = req.body; // Ensure raw body is available
+      const parsedBody = await parseStringPromise(rawBody, {
+        explicitArray: false,
+      });
+
+      // Route the request based on the soapAction
+      let responseObject;
+      if (soapAction.endsWith('xsd=2')) {
+        responseObject =
+          await this.CommercialBankEthiopiaMockService.postCBEValidation(
+            parsedBody,
+          );
+      } else if (soapAction.endsWith('xsd=4')) {
+        responseObject =
+          await this.CommercialBankEthiopiaMockService.postCBETransfer(
+            parsedBody,
+          );
+      } else if (soapAction.endsWith('xsd=6')) {
+        responseObject =
+          await this.CommercialBankEthiopiaMockService.postCBETransaction(
+            parsedBody,
+          );
+      } else {
+        throw new Error(`Unsupported soapAction: ${soapAction}`);
+      }
+
+      // Convert the response object to XML
+      const responseXml = convert.js2xml(responseObject, {
+        compact: true,
+        spaces: 4,
+      });
+
+      // Set the content type and send the response
+      res.set('Content-Type', 'text/xml');
+      res.status(200).send(responseXml);
+    } catch (error) {
+      res.status(500).send(
+        `<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+          <S:Body>
+            <S:Fault>
+              <faultcode>SOAP-ENV:Server</faultcode>
+              <faultstring>${error.message}</faultstring>
+            </S:Fault>
+          </S:Body>
+        </S:Envelope>`,
+      );
     }
   }
 }

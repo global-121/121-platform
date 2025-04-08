@@ -153,15 +153,13 @@ export class CommercialBankEthiopiaMockService {
   }
 
   public async postCBEValidation(payload): Promise<any> {
-    // ##TODO: await waitForRandomDelay(100, 300);
-
     const mockScenario = 'success'; // 'other-failure' / 'no-response' to test the corresponding scenario
 
     // Define the success transaction Status object
     const successTransactionStatus = {
       successIndicator: { _text: 'Success' },
     };
-    // Define the duplicated transaction Status object
+    // Define the other failure transaction Status object
     const otherFailureStatus = {
       successIndicator: { _text: 'T24Error' },
       messages: [{ _text: 'Other Test failure' }],
@@ -176,21 +174,50 @@ export class CommercialBankEthiopiaMockService {
     } else if (mockScenario === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      throw new Error(`Unhandled mock scenario: ${mockScenario}`);
     }
 
+    const bankAccountNumber =
+      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:AccountEnquiry']
+        ?.EACCOUNTCBEREMITANCEType?.enquiryInputCollection?.criteriaValue;
+
+    // Construct the SOAP response in JSON format
     const response = {
-      Status,
-      ['EACCOUNTCBEREMITANCEType']: {
-        ['ns4:gEACCOUNTCBEREMITANCEDetailType']: {
-          ['ns4:mEACCOUNTCBEREMITANCEDetailType']: {
-            ['ns4:ACCOUNTNO']: { _text: String(payload.bankAccountNumber) },
-            ['ns4:CUSTOMERNAME']: { _text: 'ANDUALEM MOHAMMED YIMER' },
-            ['ns4:ACCOUNTSTATUS']: { _text: 'CREDIT ALLOWED' },
-            ['ns4:MOBILENO']: { _text: '+251947940727' },
+      'S:Envelope': {
+        _attributes: {
+          'xmlns:S': 'http://schemas.xmlsoap.org/soap/envelope/',
+        },
+        'S:Body': {
+          'ns10:AccountEnquiryResponse': {
+            _attributes: {
+              'xmlns:ns10': 'http://temenos.com/CBEREMITANCE',
+              'xmlns:ns9':
+                'http://temenos.com/FUNDSTRANSFEROT103SERIALFTHPOUTWARD',
+              'xmlns:ns8': 'http://temenos.com/ESTTLMENTACCBEREMITANCE',
+              'xmlns:ns7': 'http://temenos.com/FUNDSTRANSFERREMITANCELMTS',
+              'xmlns:ns6': 'http://temenos.com/ETXNSTATUSCBEREMITANCE',
+              'xmlns:ns5': 'http://temenos.com/EEXCHRATESCBEREMITANCE',
+              'xmlns:ns4': 'http://temenos.com/EACCOUNTCBEREMITANCE',
+              'xmlns:ns3': 'http://temenos.com/FUNDSTRANSFER',
+              'xmlns:ns2': 'http://temenos.com/FUNDSTRANSFERCBEREMITANCE',
+            },
+            Status,
+            EACCOUNTCBEREMITANCEType: {
+              'ns4:gEACCOUNTCBEREMITANCEDetailType': {
+                'ns4:mEACCOUNTCBEREMITANCEDetailType': {
+                  'ns4:ACCOUNTNO': { _text: bankAccountNumber },
+                  'ns4:CUSTOMERNAME': { _text: 'ANDUALEM MOHAMMED YIMER' },
+                  'ns4:ACCOUNTSTATUS': { _text: 'CREDIT ALLOWED' },
+                  'ns4:MOBILENO': { _text: '+251947940727' },
+                },
+              },
+            },
           },
         },
       },
     };
-    return new Promise((resolve) => resolve(response));
+
+    return response;
   }
 }
