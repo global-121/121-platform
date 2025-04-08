@@ -27,7 +27,7 @@ const expectedAssignedUsers = [
   'finance-manager',
   'finance-officer',
   'kobo+registration_country',
-  'kobo+registration_country',
+  'kobo+validation_country',
   'program-admin',
   'view-no-pii',
   'view-user',
