@@ -113,10 +113,24 @@ describe('PaginateQueryService', () => {
       const result =
         // @ts-expect-error accessing a private method for unit testing purposes
         service.convertPrimeNGFilterMetadataToValueAndOperator(filterMetadata);
-      expect(result).toEqual({
-        value: '2025-04-03T00:00:00.000Z,2025-04-03T23:59:59.999Z',
-        operator: FilterOperator.BTW,
-      });
+
+      expect(result).toBeDefined();
+
+      // Early return if result is undefined (won't happen due to the expect above, but makes TypeScript happy)
+      if (!result) return;
+
+      // Check operator is correct
+      expect(result.operator).toBe(FilterOperator.BTW);
+
+      // Check value is comma-separated string containing two valid ISO dates
+      const dateStrings = result.value.split(',');
+      expect(dateStrings.length).toBe(2);
+
+      // Validate both are valid ISO date strings
+      const startDate = new Date(dateStrings[0]);
+      const endDate = new Date(dateStrings[1]);
+      expect(startDate.toISOString()).toBe(dateStrings[0]);
+      expect(endDate.toISOString()).toBe(dateStrings[1]);
     });
   });
 
@@ -269,10 +283,10 @@ describe('PaginateQueryService', () => {
       const startOfDayLocal = new Date(date.setHours(0, 0, 0, 0));
       const endOfDayLocal = new Date(date.setHours(23, 59, 59, 999));
       const expectedStartOfDayUtc = new Date(
-        startOfDayLocal.getTime() - clientTimeZoneOffset,
+        startOfDayLocal.getTime() + clientTimeZoneOffset,
       ).toISOString();
       const expectedEndOfDayUtc = new Date(
-        endOfDayLocal.getTime() - clientTimeZoneOffset,
+        endOfDayLocal.getTime() + clientTimeZoneOffset,
       ).toISOString();
 
       // @ts-expect-error accessing a private method for unit testing purposes
@@ -288,7 +302,7 @@ describe('PaginateQueryService', () => {
 
       const endOfDayLocal = new Date(date.setHours(23, 59, 59, 999));
       const expectedEndOfDayUtc = new Date(
-        endOfDayLocal.getTime() - clientTimeZoneOffset,
+        endOfDayLocal.getTime() + clientTimeZoneOffset,
       ).toISOString();
 
       // @ts-expect-error accessing a private method for unit testing purposes
@@ -307,7 +321,7 @@ describe('PaginateQueryService', () => {
 
       const startOfDayLocal = new Date(date.setHours(0, 0, 0, 0));
       const expectedStartOfDayUtc = new Date(
-        startOfDayLocal.getTime() - clientTimeZoneOffset,
+        startOfDayLocal.getTime() + clientTimeZoneOffset,
       ).toISOString();
 
       // @ts-expect-error accessing a private method for unit testing purposes

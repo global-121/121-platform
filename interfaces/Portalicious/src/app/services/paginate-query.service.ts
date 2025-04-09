@@ -6,6 +6,7 @@ import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
 import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
+import { localTimeToUtcTime } from '~/utils/local-time-to-utc-time';
 
 export enum FilterOperator {
   BTW = '$btw',
@@ -112,8 +113,6 @@ export class PaginateQueryService {
   }
 
   private getDateFilterValue(date: Date, matchMode?: string): string {
-    const clientTimeZoneOffset = date.getTimezoneOffset() * 60000; // Offset in milliseconds
-
     // Calculate the start and end of the day in the client's local timezone.
     // This defines the filter window based on the user's perception of "day."
     const startOfDayLocal = startOfDay(date);
@@ -122,24 +121,8 @@ export class PaginateQueryService {
     // Convert the start and end of the day from the client's timezone to UTC.
     // This step is necessary because the data is stored in UTC in the backend.
     // By converting to UTC, we ensure that the filter window aligns correctly with the stored data.
-    const startOfDayUtc = new Date(
-      startOfDayLocal.getTime() - clientTimeZoneOffset,
-    );
-    console.log(
-      '🚀 ~ PaginateQueryService ~ getDateFilterValue ~ startOfDayUtc:',
-      startOfDayUtc,
-    );
-    const endOfDayUtc = new Date(
-      endOfDayLocal.getTime() - clientTimeZoneOffset,
-    );
-    console.log(
-      '🚀 ~ PaginateQueryService ~ getDateFilterValue ~ endOfDayUtc:',
-      endOfDayUtc,
-    );
-
-    // Convert to ISO strings
-    const startOfDayUtcIso = startOfDayUtc.toISOString();
-    const endOfDayUtcIso = endOfDayUtc.toISOString();
+    const startOfDayUtcIso = localTimeToUtcTime(startOfDayLocal).toISOString();
+    const endOfDayUtcIso = localTimeToUtcTime(endOfDayLocal).toISOString();
     switch (matchMode) {
       case FilterMatchMode.EQUALS:
         return `${startOfDayUtcIso},${endOfDayUtcIso}`;
