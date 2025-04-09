@@ -154,7 +154,7 @@ export class RegistrationPageLayoutComponent {
             this.registration.data()?.duplicateStatus ===
             DuplicateStatus.duplicate,
           command: () => {
-            this.ignoreDuplicationDialog().setVisible();
+            this.ignoreDuplicationDialog().show();
           },
         },
       ],
