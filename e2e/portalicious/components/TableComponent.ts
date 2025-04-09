@@ -19,6 +19,7 @@ class TableComponent {
   readonly approveButton: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
+  readonly datePickerRangeDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -45,6 +46,10 @@ class TableComponent {
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
+    this.datePickerRangeDropdown = this.page
+      .getByRole('dialog')
+      .getByRole('combobox')
+      .first();
   }
 
   async getCell(row: number, column: number) {
@@ -205,9 +210,11 @@ class TableComponent {
   async filterColumnByDate({
     columnName,
     day,
+    range = 'Date',
   }: {
     columnName: string;
     day: number;
+    range?: string;
   }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
@@ -216,6 +223,10 @@ class TableComponent {
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
 
+    await this.datePickerRangeDropdown.click();
+    await this.page.getByRole('option', { name: range }).click();
+
+    await this.page.locator('input[type="text"]').click();
     await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
 
     await this.applyFiltersButton.click();
@@ -323,6 +334,12 @@ class TableComponent {
       .locator('app-form-error')
       .filter({ hasText: errorMessage });
     await expect(errorElement).toContainText(errorMessage);
+  }
+
+  async assertEmptyTableState() {
+    await this.page.waitForTimeout(200);
+    await this.page.waitForSelector('table tbody tr td');
+    await expect(this.page.getByText('No results found')).toBeVisible();
   }
 }
 
