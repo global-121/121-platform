@@ -100,6 +100,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
       {
         label: $localize`:@@debit-card-number:Card number`,
         value: this.currentCard()?.tokenCode,
+        type: 'text',
       },
       {
         label: $localize`:@@debit-card-status:Card status`,
@@ -165,6 +166,11 @@ export class ProjectRegistrationDebitCardsPageComponent {
         chipVariant,
         chipLabel,
         dataList: [
+          {
+            label: $localize`:@@debit-card-number:Card number`,
+            value: card.tokenCode,
+            type: 'text',
+          },
           {
             label: $localize`:@@debit-card-explanation:Explanation`,
             value: card.explanation,

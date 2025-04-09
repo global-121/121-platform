@@ -41,10 +41,15 @@ export class AxiosCallsService {
   public async getAccessToken(): Promise<string> {
     const login = await this.loginAsAdmin();
     const cookies = login.headers['set-cookie'];
-    const accessToken = cookies
-      .find((cookie: string) => cookie.startsWith(CookieNames.general))
-      .split(';')[0];
-
-    return accessToken;
+    try {
+      const accessToken = cookies
+        .find((cookie: string) => cookie.startsWith(CookieNames.general))
+        .split(';')[0];
+      return accessToken;
+    } catch (error) {
+      throw new Error(
+        `Error while extracting access token from cookies: ${error}`,
+      );
+    }
   }
 }

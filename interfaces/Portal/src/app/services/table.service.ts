@@ -99,9 +99,9 @@ export class TableService {
         frozenLeft: this.platform.width() > 1280,
       },
       {
-        prop: 'registrationCreated',
+        prop: 'created',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.registrationCreated',
+          'page.program.program-people-affected.column.created',
         ),
         ...this.getColumnDefaults(),
         minWidth: this.columnWidthPerType[RegistrationAttributeType.Date],

@@ -17,6 +17,8 @@ class TableComponent {
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
+  readonly calendar: Locator;
+  readonly datePicker: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -41,6 +43,8 @@ class TableComponent {
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.calendar = this.page.getByLabel('Choose Date');
+    this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
   }
 
   async getCell(row: number, column: number) {
@@ -167,6 +171,17 @@ class TableComponent {
     await this.applyFiltersButton.click();
   }
 
+  async filterColumnByNumber(columnName: string, filterNumber: number) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+    await this.page.getByRole('spinbutton').fill(String(filterNumber));
+    await this.applyFiltersButton.click();
+  }
+
   async filterColumnByDropDownSelection({
     columnName,
     selection,
@@ -185,6 +200,25 @@ class TableComponent {
     await this.searchBox.click();
     await this.searchBox.fill(selection);
     await this.page.getByRole('option', { name: selection }).click();
+  }
+
+  async filterColumnByDate({
+    columnName,
+    day,
+  }: {
+    columnName: string;
+    day: number;
+  }) {
+    const filterMenuButton = this.table
+      .getByRole('columnheader', { name: columnName })
+      .getByLabel('Show Filter Menu');
+
+    await filterMenuButton.scrollIntoViewIfNeeded();
+    await filterMenuButton.click();
+
+    await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
+
+    await this.applyFiltersButton.click();
   }
 
   async validateSortingOfColumns(
@@ -250,6 +284,45 @@ class TableComponent {
       await placeholder.fill('Test reason');
     }
     await this.approveButton.click();
+  }
+
+  async validateAllRecordsCount(expectedCount: number) {
+    // Wait for the pagination element to contain the expected count
+    await expect(async () => {
+      const paginationElement = this.table.getByText(
+        /Showing \d+ to \d+ of \d+ records/,
+      );
+      const paginationText = (await paginationElement.textContent()) ?? '';
+      const regex = /Showing \d+ to \d+ of (\d+) records/;
+      const match = regex.exec(paginationText);
+      const actualCount = parseInt(match?.[1] ?? '', 10);
+
+      if (isNaN(actualCount)) {
+        throw new Error(
+          `Could not extract total count from pagination text: ${paginationText}`,
+        );
+      }
+
+      expect(actualCount).toBe(expectedCount);
+    }).toPass({ timeout: 2000 }); // Custome timeout set to 2 seconds
+  }
+
+  async validateLabelInTableByRegistrationName(
+    registrationName: string,
+    label: string,
+  ) {
+    const firstRowText = await this.page
+      .getByRole('row', { name: registrationName })
+      .getByLabel(label)
+      .textContent();
+    expect(firstRowText).toBe(label);
+  }
+
+  async validateErrorMessage(errorMessage: string) {
+    const errorElement = this.page
+      .locator('app-form-error')
+      .filter({ hasText: errorMessage });
+    await expect(errorElement).toContainText(errorMessage);
   }
 }
 

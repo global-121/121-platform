@@ -1,40 +1,44 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import {
+  CustomHttpService,
+  Header,
+} from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 function shouldBeEnabled(envVariable: string | undefined): boolean {
   return !!envVariable && envVariable.toLowerCase() === 'true';
 }
 
+type cronReturn = Promise<
+  | {
+      url: string;
+      responseStatus: HttpStatus;
+    }
+  | false
+>;
+
 @Injectable()
 export class CronjobService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
+  private currentlyRunningCronjobName: string;
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !shouldBeEnabled(
       process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
     ),
   })
-  public async cronCancelByRefposIntersolve(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronCancelByRefposIntersolve(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/cancel`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.post(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/financial-service-providers/intersolve-voucher/cancel`;
+    return await this.callEndpoint(url, 'post', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
@@ -42,20 +46,14 @@ export class CronjobService {
       process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
     ),
   })
-  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronValidateCommercialBankEthiopiaAccountEnquiries(
+    cronJobMethodName,
+  ): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.put(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/financial-service-providers/commercial-bank-ethiopia/account-enquiries`;
+    return await this.callEndpoint(url, 'put', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
@@ -63,20 +61,14 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
     ),
   })
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(
+    cronJobMethodName,
+  ): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/unused-vouchers`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.patch(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/financial-service-providers/intersolve-voucher/unused-vouchers`;
+    return await this.callEndpoint(url, 'patch', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
@@ -84,21 +76,13 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
     ),
   })
-  public async cronRetrieveAndUpdateVisaData(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRetrieveAndUpdateVisaData(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
     const programIdVisa = 3;
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programIdVisa}/financial-service-providers/intersolve-visa`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.patch(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/programs/${programIdVisa}/financial-service-providers/intersolve-visa`;
+    return await this.callEndpoint(url, 'patch', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON, {
@@ -106,59 +90,34 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
     ),
   })
-  public async cronSendWhatsappReminders(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronSendWhatsappReminders(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/send-reminders`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.post(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/financial-service-providers/intersolve-voucher/send-reminders`;
+    return await this.callEndpoint(url, 'post', headers);
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
   @Cron(CronExpression.EVERY_DAY_AT_4AM, {
     disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
   })
-  public async cronDoNedbankReconciliation(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronDoNedbankReconciliation(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/nedbank`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.patch(
-      url,
-      {},
-      headers,
-    );
-
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    const url = `${baseUrl}/financial-service-providers/nedbank`;
+    return await this.callEndpoint(url, 'patch', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
   })
-  public async cronGetDailyExchangeRates(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/exchange-rates`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.put(
-      url,
-      {},
-      headers,
-    );
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+  public async cronGetDailyExchangeRates(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    const url = `${baseUrl}/exchange-rates`;
+    return await this.callEndpoint(url, 'put', headers);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {
@@ -166,19 +125,17 @@ export class CronjobService {
       process.env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
     ),
   })
-  public async cronRemoveDeprecatedImageCodes(): Promise<{
-    url: string;
-    responseStatus: number;
-  }> {
+  public async cronRemoveDeprecatedImageCodes(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
     // Removes image codes older than one day as they're no longer needed after Twilio has downloaded them
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    const url = `${this.axiosCallsService.getBaseUrl()}/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
-    const response: AxiosResponse = await this.httpService.delete(url, headers);
-    return { url, responseStatus: response.status }; // Only used for testing purposes; this method is then called from the controller
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseUrl}/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
+    return await this.callEndpoint(url, 'delete', headers);
   }
 
-  public getAllMethodNames(): string[] {
+  // Used for testing and triggering through Swagger UI.
+  public getAllCronJobMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);
     const methodNames = Object.getOwnPropertyNames(prototype)
       .filter((name) => {
@@ -189,8 +146,57 @@ export class CronjobService {
           name !== 'constructor'
         );
       })
-      // Filter out this method.
-      .filter((name) => name !== 'getAllMethodNames');
+      .filter((name) => name.startsWith('cron'));
     return methodNames;
+  }
+
+  // If not initialized correctly no use running the cronjobs.
+  private async prepareCronJobRun(
+    cronjobName: string,
+  ): Promise<{ baseUrl: string; headers: Header[] }> {
+    this.currentlyRunningCronjobName = cronjobName;
+    let headers: Header[];
+    try {
+      headers = await this.getHeaders();
+    } catch (error) {
+      // We throw and don't catch so we get a 500 and a notification.
+      throw new Error(
+        `While running cronjob "${cronjobName}" an authentication error occurred: ${error.toString()}`,
+      );
+    }
+    // Not a network operation so no try/catch.
+    const baseUrl = await this.axiosCallsService.getBaseUrl();
+    return { baseUrl, headers };
+  }
+
+  // Separate function: easier to test.
+  private async getHeaders(): Promise<Header[]> {
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    return this.axiosCallsService.accesTokenToHeaders(accessToken);
+  }
+
+  // Separate function: easier to test.
+  private async callEndpoint(
+    url: string,
+    method: 'put' | 'patch' | 'post' | 'delete',
+    headers: Header[],
+  ): Promise<cronReturn> {
+    let response: AxiosResponse;
+    try {
+      if (method === 'delete') {
+        response = await this.httpService[method](url, headers);
+      } else {
+        response = await this.httpService[method](url, {}, headers);
+      }
+    } catch (error) {
+      throw new Error(
+        `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request: ${error.toString()}`,
+      );
+    }
+    // We could move this to a separate function, but that makes each cronjob a
+    // bit uglier.
+    this.currentlyRunningCronjobName = '';
+    // Only reason we return something here is because we want to test it.
+    return { url, responseStatus: response.status };
   }
 }

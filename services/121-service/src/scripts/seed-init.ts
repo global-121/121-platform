@@ -106,9 +106,19 @@ export class SeedInit implements InterfaceScript {
         ],
       },
       {
-        role: DefaultUserRole.KoboUser,
+        role: DefaultUserRole.KoboRegistrationUser,
         label: 'Only CREATE registrations',
         permissions: [PermissionEnum.RegistrationCREATE],
+      },
+      {
+        role: DefaultUserRole.KoboValidationUser,
+        label: 'Only UPDATE registrations',
+        permissions: [
+          PermissionEnum.RegistrationAttributeUPDATE,
+          PermissionEnum.RegistrationAttributeFinancialUPDATE,
+          PermissionEnum.RegistrationPersonalUPDATE,
+          PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
+        ],
       },
       {
         role: DefaultUserRole.CvaManager,
@@ -159,7 +169,6 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationNotificationCREATE,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationPersonalForValidationREAD,
-          PermissionEnum.RegistrationPersonalEXPORT,
           PermissionEnum.RegistrationPersonalUPDATE,
           PermissionEnum.RegistrationStatusMarkAsValidatedUPDATE,
           PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
@@ -183,6 +192,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.FspDebitCardUNBLOCK,
           PermissionEnum.RegistrationREAD,
           PermissionEnum.RegistrationPersonalREAD,
+          PermissionEnum.RegistrationPaymentExport,
           PermissionEnum.ActionREAD,
         ],
       },
