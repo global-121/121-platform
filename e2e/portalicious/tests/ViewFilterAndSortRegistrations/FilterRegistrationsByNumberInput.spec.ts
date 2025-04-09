@@ -111,17 +111,19 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     registrationName =
       await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Arkadiusz Zbuczko');
+    await tableComponent.validateAllRecordsCount(1);
   });
 
   await test.step('Filter Max payments with "Greater than" number input', async () => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Max payments',
-      filterNumber: 1,
+      filterNumber: 0,
       filterWithRange: true,
-      range: 'less than',
+      range: 'Greater than',
     });
     registrationName =
       await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Arkadiusz Zbuczko');
+    await tableComponent.validateAllRecordsCount(1);
   });
 });
