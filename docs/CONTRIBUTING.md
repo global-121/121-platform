@@ -71,7 +71,9 @@ Below is a list of other guidelines we try to follow for PRs.
   - We make PRs as small as possible
   - We prioritize reviewing code over writing new code
   - We try to split larger changes/PRs into smaller chunks/refactors that can be merged independently
-  - We try to avoid mixing FE & BE changes in one PR
+  - We try to avoid mixing frontend & backend changes in one PR, whenever possible.
+    - For example, if the backend adds a new endpoint, then the frontend code that uses that new endpoint should be added in a separate PR towards `main`, that is reviewed once the endpoint itself has already been merged to `main`. This is opposed to the approach of creating a feature branch that contains both the backend and the frontend code for this new feature.
+    - As an example of when this is unavoidable: when the backend changes an existing endpoint in a way that breaks the frontend, then the adjustment in the frontend needs included in the same PR.
 - We avoid "feature branches". PRs towards `main` that are a result of different authors are still possible, but
   - We do not call them feature branches
   - They are still owned by a single person, and that person is the PR author
