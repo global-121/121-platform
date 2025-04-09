@@ -58,6 +58,6 @@ test('[34410] Delete registration with status "Paused"', async ({ page }) => {
       columnName: 'Registration Status',
       selection: 'Paused',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
   });
 });

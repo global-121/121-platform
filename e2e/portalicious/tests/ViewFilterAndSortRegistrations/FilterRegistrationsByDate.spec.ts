@@ -14,7 +14,6 @@ import {
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
-import RegistrationsPage from '@121-e2e/portalicious/pages/RegistrationsPage';
 
 // Get current date information
 const currentDate = new Date();
@@ -44,24 +43,48 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[34947] Filter registrations by Date selection', async ({ page }) => {
-  const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registrations columns by date', async () => {
+  await test.step('Filter registration created column by "Equals" date', async () => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
+      filterMode: 'Equals',
     });
     await tableComponent.validateAllRecordsCount(4);
+    await tableComponent.clearAllFilters();
     // Filter by different date
     const diffDay = currentDate.getDate() === 1 ? 2 : 1;
     if (diffDay !== undefined) {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
         day: diffDay,
+        filterMode: 'Equals',
       });
     }
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter registration created column by "Less than" date', async () => {
+    // Filter Registration column by date
+    await tableComponent.filterColumnByDate({
+      columnName: 'Registration created',
+      day,
+      filterMode: 'Less than',
+    });
+    await tableComponent.assertEmptyTableState();
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter registration created column by "Greater than" date', async () => {
+    // Filter Registration column by date
+    await tableComponent.filterColumnByDate({
+      columnName: 'Registration created',
+      day,
+      filterMode: 'Greater than',
+    });
+    await tableComponent.assertEmptyTableState();
   });
 });
