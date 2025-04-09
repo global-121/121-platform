@@ -63,8 +63,6 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
         return;
       }
     }
-    // merge this.formGroup().getRawValue() with this.mutationData()?
-    // no - just pass in mutationData
     this.mutation().mutate(this.mutationData(), {
       onSuccess: () => {
         this.confirmDialog().onAccept();
