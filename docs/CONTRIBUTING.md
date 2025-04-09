@@ -40,30 +40,22 @@ Some additional reading:
 
 - [Commit Often, Perfect Later, Publish Once: Git Best Practices](https://sethrobertson.github.io/GitBestPractices/)
 
-### Updating dependencies
+## Branches
 
-Most (development-)dependencies in this repository are monitored by the GitHub [Dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates) service, to keep them up-to-date.
-The configuration of these updates is in [`.github/dependabot.yml`](../.github/dependabot.yml).  
-Unfortunately most individual dependencies are 'linked' to related dependencies that need to stay 'in sync'.
+We use the convention of using `username/branch-description` to name our branches. This helps reinforce the paradigm outlined in [Submitting changes](#submitting-changes) that one branch has one author.
 
-> [!NOTE]  
-> `Sheetjs` is not monitored by Dependabot. Check the latest version of `Sheetjs`: [![`Sheetjs` latest version](https://img.shields.io/badge/dynamic/xml?url=https%3A%2f%2fgit.sheetjs.com%2fsheetjs%2fsheetjs%2ftags.rss&query=.%2f%2fchannel%2fitem%5B1%5D%2ftitle&logo=microsoftexcel&logoColor=white&label=sheetjs&color=lightgreen)](https://git.sheetjs.com/sheetjs/sheetjs/tags)
+As an example, a branch created by the user `aberonni` that introduces the new feature of ignoring duplicates might be called: `aberonni/ignore-duplicates`.
 
-Interface dependencies:
+This is a guideline, but branch names are not really significant in any way to our process.
 
-To update all Angular and ESLint related dependencies together, run (in each individual interface's directory):
-
-    npm run upgrade:angular
-
-All related changes will be handled by the Angular CLI, but need to be checked afterwards with `lint`, `test` commands and local testing.
-
-## Submitting changes
+## Pull Requests
 
 Please submit changes through [pull requests](http://help.github.com/pull-requests/). When you send a pull request, the description will be pre-populated with a sample description. Please adhere to it as much as possible.
 
 Below is a list of other guidelines we try to follow for PRs.
 
 - Draft PRs should be ignored by other developers (unless explicitly stated by the PR author).
+- Branches should be owned and maintained by one person, and as such a PR always has one owner/author/maintainer
 - The PR author decides when a PR is ready for review.
   - Marking a PR as “ready for review” implies that it can (most likely will) be merged after an approval (unless explicitly stated otherwise by the PR author in the PR description).
   - When there has already been one review/reviewer on a PR, then that same reviewer will by default be expected to perform subsequent reviews on the same PR.
@@ -75,10 +67,25 @@ Below is a list of other guidelines we try to follow for PRs.
   - As an exception to this rule, a reviewer who has just approved a PR can decide to rebase the branch via the GitHub UI if
     - the author has enabled auto-merge and
     - a branch update (without conflicts) is the only thing stopping the auto-merge
-- For substantial changes, we prefer creating a "parent/feature" PR which receives multiple smaller PRs. For the parent PR and all the smaller child PRs, all the general guidelines apply.
-- For PRs towards main
-  - Every PR should contain a reference to a devops task
+- PRs should have "the shortest life possible" and therefore be merged to `main` as quickly as possible, to avoid the overhead of maintenance. As a consequence:
+  - We make PRs as small as possible
+  - We prioritize reviewing code over writing new code
+  - We try to split larger changes/PRs into smaller chunks/refactors that can be merged independently
+  - We try to avoid mixing FE & BE changes in one PR
+- We avoid "feature branches". PRs towards `main` that are a result of different authors are still possible, but
+  - We do not call them feature branches
+  - They are still owned by a single person, and that person is the PR author
+  - The PR author is expected to own all changes and change requests on that PR
+  - That PR towards `main` still needs a full review from someone who has not seen the code before being merged to `main`
+    - For example, if Bob creates a PR towards `main`, and then Jules adds code to that PR via another PR, then someone who isn't Bob nor Jules should review the original PR towards `main`
+- For PRs towards `main`
   - Every PR should have one of the [labels we use for auto-generating release notes](../.github/release.yml)
+  - Every PR title and description should follow the naming conventions outlined in the [Committing section](#committing) above. For example:
+    - A descriptive title that starts with a keyword, eg. `feat: ignore duplicates`
+    - The description should contain a reference to a devops item
+- For PRs that target a branch that isn't `main`
+  - If the target branch is currently in review, then the PR in question stays in draft (and therefore is not merged/reviewed) until the target branch is merged into `main`
+    - This avoids the much dreaded long-lived and difficult-to-review feature branch phenomenon
 
 Some useful reading:
 
