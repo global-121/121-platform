@@ -23,7 +23,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import {
+  generateFieldErrors,
+  genericFieldIsRequiredValidationMessage,
+} from '~/utils/form-validation';
 
 type IgnoreDuplicationFormGroup =
   (typeof IgnoreDuplicationDialogComponent)['prototype']['formGroup'];
@@ -82,10 +85,7 @@ export class IgnoreDuplicationDialogComponent {
   formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
     this.formGroup,
     {
-      reason: (control) =>
-        control.errors?.required
-          ? $localize`:@@generic-required-field:This field is required.`
-          : undefined,
+      reason: genericFieldIsRequiredValidationMessage,
     },
   );
 

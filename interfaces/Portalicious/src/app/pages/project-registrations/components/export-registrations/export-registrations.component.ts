@@ -7,12 +7,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import {
   injectMutation,
@@ -46,7 +41,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonMenuComponent,
     DatePickerModule,
     FloatLabelModule,
-    FormsModule,
+
     ReactiveFormsModule,
     FormFieldWrapperComponent,
   ],
