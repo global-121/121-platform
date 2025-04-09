@@ -45,7 +45,10 @@ import {
 } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import {
+  generateFieldErrors,
+  genericFieldIsRequiredValidationMessage,
+} from '~/utils/form-validation';
 
 type EditPersonalInformationFormGroup =
   (typeof EditPersonalInformationComponent)['prototype']['formGroup'];
@@ -130,10 +133,7 @@ export class EditPersonalInformationComponent
   dialogFormFieldErrors = generateFieldErrors<DialogFormGroup>(
     this.dialogFormGroup,
     {
-      reason: (control) =>
-        control.errors?.required
-          ? $localize`:@@generic-required-field:This field is required.`
-          : undefined,
+      reason: genericFieldIsRequiredValidationMessage,
     },
   );
 
