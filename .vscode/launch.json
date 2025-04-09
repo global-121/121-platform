@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Docker: Attach to Node",
+      "name": "121 Service: Attach to Node in Docker",
       "type": "node",
       "request": "attach",
       "port": 9229,
@@ -13,6 +13,33 @@
         "${workspaceFolder}/node_modules/**/*.js",
         "<node_internals>/**/*.js"
       ],
+      "sourceMaps": true
+    },
+    {
+      "name": "Mock Service: Attach to Node in Docker",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/services/mock-service",
+      "remoteRoot": "/home/node/app",
+      "skipFiles": [
+        "${workspaceFolder}/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "sourceMaps": true
+    },
+    {
+      "name": "Integration Tests: Attach to Node in Docker",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "address": "localhost",
+      "restart": false,
+      "timeout": 30000,
+      "localRoot": "${workspaceFolder}/services/121-service",
+      "remoteRoot": "/home/node/app",
+      "skipFiles": ["<node_internals>/**/*.js", "node_modules/**/*.js"],
       "sourceMaps": true
     }
   ]

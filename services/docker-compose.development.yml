@@ -19,6 +19,7 @@ services:
     ports:
       - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
       - '9229:9229'
+      - '9231:9231'
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
@@ -29,6 +30,7 @@ services:
       target: development
     ports:
       - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
+      - '9230:9230'
     volumes:
       - 'mock_service_node_modules:/home/node/app/node_modules'
       - './mock-service:/home/node/app'
