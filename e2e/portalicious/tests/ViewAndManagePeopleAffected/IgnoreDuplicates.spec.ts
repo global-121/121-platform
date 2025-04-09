@@ -38,7 +38,6 @@ test('[34664] Ignore duplicates', async ({ page }) => {
 
   const duplicateRegistrationA = registrationsPV[1]; // 'Jan Janssen'
   const duplicateRegistrationB = registrationsPV[2]; // 'Joost Herlembach'
-  // const uniqueRegistration = registrationsPV[0]; // 'Gemma Houtenbos'
 
   await test.step('Select program', async () => {
     await homePage.selectProgram(projectTitle);
@@ -66,7 +65,6 @@ test('[34664] Ignore duplicates', async ({ page }) => {
 
     const dialog = await registrationActivityLogPage.dialog;
 
-    // await expect(dialog).toBeVisible();
     await expect(dialog.getByText('Ignore duplication')).toBeVisible();
 
     const editInformationReasonField = await dialog.getByLabel('Add a reason');
