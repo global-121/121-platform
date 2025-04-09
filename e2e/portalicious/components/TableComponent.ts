@@ -19,7 +19,7 @@ class TableComponent {
   readonly approveButton: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
-  readonly datePickerRangeDropdown: Locator;
+  readonly rangeDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -46,7 +46,7 @@ class TableComponent {
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
-    this.datePickerRangeDropdown = this.page
+    this.rangeDropdown = this.page
       .getByRole('dialog')
       .getByRole('combobox')
       .first();
@@ -176,13 +176,27 @@ class TableComponent {
     await this.applyFiltersButton.click();
   }
 
-  async filterColumnByNumber(columnName: string, filterNumber: number) {
+  async filterColumnByNumber({
+    columnName,
+    filterNumber,
+    filterWithRange = false,
+    range,
+  }: {
+    columnName: string;
+    filterNumber: number;
+    filterWithRange?: boolean;
+    range?: string;
+  }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
 
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
+    if (filterWithRange) {
+      await this.rangeDropdown.click();
+      await this.page.getByRole('option', { name: range }).click();
+    }
     await this.page.getByRole('spinbutton').fill(String(filterNumber));
     await this.applyFiltersButton.click();
   }
@@ -223,7 +237,7 @@ class TableComponent {
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
 
-    await this.datePickerRangeDropdown.click();
+    await this.rangeDropdown.click();
     await this.page.getByRole('option', { name: filterMode }).click();
 
     await this.page.locator('input[type="text"]').click();
