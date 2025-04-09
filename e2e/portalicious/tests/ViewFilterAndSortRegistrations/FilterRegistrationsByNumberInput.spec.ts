@@ -68,17 +68,6 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     await tableComponent.clearAllFilters();
   });
 
-  await test.step('Filter Reg. # column by number 4', async () => {
-    await tableComponent.filterColumnByNumber({
-      columnName: 'Reg. #',
-      filterNumber: 4,
-    });
-    registrationName =
-      await registrationsPage.getFirstRegistrationNameFromTable();
-    expect(registrationName).toBe('Jack Strong');
-    await tableComponent.clearAllFilters();
-  });
-
   await test.step('Filter Number of payments column by number 1', async () => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Number of payments',
@@ -108,10 +97,8 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
       filterWithRange: true,
       range: 'less than',
     });
-    registrationName =
-      await registrationsPage.getFirstRegistrationNameFromTable();
-    expect(registrationName).toBe('Arkadiusz Zbuczko');
-    await tableComponent.validateAllRecordsCount(1);
+    await tableComponent.assertEmptyTableState();
+    await tableComponent.clearAllFilters();
   });
 
   await test.step('Filter Max payments with "Greater than" number input', async () => {
@@ -125,5 +112,28 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
       await registrationsPage.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Arkadiusz Zbuczko');
     await tableComponent.validateAllRecordsCount(1);
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter "Reg. #" with "Greater than" number input', async () => {
+    await tableComponent.filterColumnByNumber({
+      columnName: 'Reg. #',
+      filterNumber: 3,
+      filterWithRange: true,
+      range: 'Greater than',
+    });
+    await tableComponent.validateAllRecordsCount(2);
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter "Reg. #" with "Less than" number input', async () => {
+    await tableComponent.filterColumnByNumber({
+      columnName: 'Reg. #',
+      filterNumber: 4,
+      filterWithRange: true,
+      range: 'Less than',
+    });
+    await tableComponent.validateAllRecordsCount(3);
+    await tableComponent.clearAllFilters();
   });
 });
