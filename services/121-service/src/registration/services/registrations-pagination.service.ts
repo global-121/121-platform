@@ -118,6 +118,7 @@ export class RegistrationsPaginationService {
 
     const programRegistrationAttributeRelations =
       await this.programService.getAllRelationProgram(programId);
+    // Phonenumber is already in the registration table so we do not need to filter on it twice
     const relationsWithoutPhoneNumber =
       programRegistrationAttributeRelations.filter(
         (r) => r.name !== DefaultRegistrationDataAttributeNames.phoneNumber,
@@ -125,7 +126,6 @@ export class RegistrationsPaginationService {
     const relationNamesWithoutPhonenumber = relationsWithoutPhoneNumber.map(
       (r) => r.name,
     );
-    // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (query.filter) {

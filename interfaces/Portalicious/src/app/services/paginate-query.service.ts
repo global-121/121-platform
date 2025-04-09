@@ -45,15 +45,15 @@ export abstract class IActionDataHandler<TData> {
   providedIn: 'root',
 })
 export class PaginateQueryService {
-  private convertPrimeNGMatchModeToFilterOperator(
-    matchMode?: FilterMatchMode,
-    isDate?: boolean,
-  ): FilterOperator {
+  private convertPrimeNGMatchModeToFilterOperator({
+    matchMode,
+    isDate,
+  }: { matchMode?: FilterMatchMode; isDate?: boolean } = {}): FilterOperator {
     switch (matchMode) {
       case FilterMatchMode.CONTAINS:
-        return isDate ? FilterOperator.BTW : FilterOperator.ILIKE;
+        return FilterOperator.ILIKE;
       case FilterMatchMode.EQUALS:
-        return FilterOperator.EQ;
+        return isDate ? FilterOperator.BTW : FilterOperator.EQ;
       case FilterMatchMode.IN:
         return FilterOperator.IN;
       case FilterMatchMode.GREATER_THAN:
@@ -79,10 +79,10 @@ export class PaginateQueryService {
     }
 
     const filterValue: unknown = filterObj.value;
-    const operator = this.convertPrimeNGMatchModeToFilterOperator(
-      filterObj.matchMode,
-      filterValue instanceof Date,
-    );
+    const operator = this.convertPrimeNGMatchModeToFilterOperator({
+      matchMode: filterObj.matchMode,
+      isDate: filterValue instanceof Date,
+    });
 
     let filterValueString: string;
 
@@ -112,15 +112,41 @@ export class PaginateQueryService {
   }
 
   private getDateFilterValue(date: Date, matchMode?: string): string {
-    const startOfDayDate = startOfDay(date);
-    const endOfDayDate = endOfDay(date);
+    const clientTimeZoneOffset = date.getTimezoneOffset() * 60000; // Offset in milliseconds
+
+    // Calculate the start and end of the day in the client's local timezone.
+    // This defines the filter window based on the user's perception of "day."
+    const startOfDayLocal = startOfDay(date);
+    const endOfDayLocal = endOfDay(date);
+
+    // Convert the start and end of the day from the client's timezone to UTC.
+    // This step is necessary because the data is stored in UTC in the backend.
+    // By converting to UTC, we ensure that the filter window aligns correctly with the stored data.
+    const startOfDayUtc = new Date(
+      startOfDayLocal.getTime() - clientTimeZoneOffset,
+    );
+    console.log(
+      '🚀 ~ PaginateQueryService ~ getDateFilterValue ~ startOfDayUtc:',
+      startOfDayUtc,
+    );
+    const endOfDayUtc = new Date(
+      endOfDayLocal.getTime() - clientTimeZoneOffset,
+    );
+    console.log(
+      '🚀 ~ PaginateQueryService ~ getDateFilterValue ~ endOfDayUtc:',
+      endOfDayUtc,
+    );
+
+    // Convert to ISO strings
+    const startOfDayUtcIso = startOfDayUtc.toISOString();
+    const endOfDayUtcIso = endOfDayUtc.toISOString();
     switch (matchMode) {
       case FilterMatchMode.EQUALS:
-        return `${startOfDayDate.toISOString()},${endOfDayDate.toISOString()}`;
+        return `${startOfDayUtcIso},${endOfDayUtcIso}`;
       case FilterMatchMode.GREATER_THAN:
-        return startOfDayDate.toISOString();
+        return endOfDayUtcIso;
       case FilterMatchMode.LESS_THAN:
-        return endOfDayDate.toISOString();
+        return startOfDayUtcIso;
       default:
         return date.toISOString();
     }
