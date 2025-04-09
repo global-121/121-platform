@@ -46,25 +46,25 @@ type IgnoreDuplicationFormGroup =
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
   readonly projectId = input.required<string>();
-  readonly registrationReferenceId = input.required<string>();
-  readonly registrationRegistrationId = input.required<string>();
+  readonly referenceId = input.required<string>();
+  readonly registrationId = input.required<string>();
 
   duplicates = injectQuery(() => ({
     ...this.registrationApiService.getDuplicates({
       projectId: this.projectId,
 
-      referenceId: this.registrationReferenceId(),
+      referenceId: this.referenceId(),
     })(),
-    enabled: !!this.registrationReferenceId(),
+    enabled: !!this.referenceId(),
   }));
 
   readonly duplicatesRegistrationIds = computed(() => {
-    if (!this.registrationRegistrationId() || !this.duplicates.isSuccess()) {
+    if (!this.registrationId() || !this.duplicates.isSuccess()) {
       return [];
     }
 
     const registrationIds = [
-      Number(this.registrationRegistrationId()),
+      Number(this.registrationId()),
       ...this.duplicates.data().map((d) => Number(d.registrationId)),
     ];
 
@@ -105,9 +105,10 @@ export class IgnoreDuplicationDialogComponent {
       });
     },
   }));
-  readonly ignoreDuplicationDialog =
-    viewChild.required<ConfirmationDialogComponent>('ignoreDuplicationDialog');
-  setVisible() {
-    this.ignoreDuplicationDialog().askForConfirmation();
+  readonly confirmationDialog = viewChild.required<ConfirmationDialogComponent>(
+    'ignoreDuplicationDialog',
+  );
+  show() {
+    this.confirmationDialog().askForConfirmation();
   }
 }
