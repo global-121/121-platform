@@ -210,11 +210,11 @@ class TableComponent {
   async filterColumnByDate({
     columnName,
     day,
-    range = 'Date',
+    filterMode,
   }: {
     columnName: string;
     day: number;
-    range?: string;
+    filterMode: string;
   }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
@@ -224,7 +224,7 @@ class TableComponent {
     await filterMenuButton.click();
 
     await this.datePickerRangeDropdown.click();
-    await this.page.getByRole('option', { name: range }).click();
+    await this.page.getByRole('option', { name: filterMode }).click();
 
     await this.page.locator('input[type="text"]').click();
     await this.datePicker.getByText(`${day}`, { exact: true }).first().click();

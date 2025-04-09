@@ -50,7 +50,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      range: 'Equals',
+      filterMode: 'Equals',
     });
     await tableComponent.validateAllRecordsCount(4);
     await tableComponent.clearAllFilters();
@@ -60,7 +60,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
         day: diffDay,
-        range: 'Equals',
+        filterMode: 'Equals',
       });
     }
     await tableComponent.assertEmptyTableState();
@@ -72,7 +72,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      range: 'Less than',
+      filterMode: 'Less than',
     });
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
@@ -83,7 +83,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      range: 'Greater than',
+      filterMode: 'Greater than',
     });
     await tableComponent.assertEmptyTableState();
   });
