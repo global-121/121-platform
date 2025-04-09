@@ -118,6 +118,7 @@ export class RegistrationsPaginationService {
 
     const programRegistrationAttributeRelations =
       await this.programService.getAllRelationProgram(programId);
+    // Phonenumber is already in the registration table so we do not need to filter on it twice
     const relationsWithoutPhoneNumber =
       programRegistrationAttributeRelations.filter(
         (r) => r.name !== DefaultRegistrationDataAttributeNames.phoneNumber,
@@ -125,7 +126,6 @@ export class RegistrationsPaginationService {
     const relationNamesWithoutPhonenumber = relationsWithoutPhoneNumber.map(
       (r) => r.name,
     );
-    // Phonenumber is already in the registration table so we do not need to filter on it twice
 
     // Check if the filter contains at least one registration data name
     if (query.filter) {
@@ -437,7 +437,7 @@ export class RegistrationsPaginationService {
             'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
           ).join('');
           queryBuilder.leftJoin('registration.data', uniqueJoinId);
-          queryBuilder = this.applyFilterConditionRegData({
+          queryBuilder = this.applyFilterConditionAttributes({
             queryBuilder,
             filterType: filter.findOperator.type,
             value: filter.findOperator.value,
@@ -458,7 +458,7 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  private applyFilterConditionRegData({
+  private applyFilterConditionAttributes({
     queryBuilder,
     filterType,
     value,

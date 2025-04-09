@@ -26,29 +26,61 @@ describe('PaginateQueryService', () => {
     it('should convert CONTAINS to ILIKE', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator(
-          FilterMatchMode.CONTAINS,
-        ),
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.CONTAINS,
+        }),
       ).toBe(FilterOperator.ILIKE);
     });
 
     it('should convert EQUALS to EQ', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator(FilterMatchMode.EQUALS),
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.EQUALS,
+        }),
       ).toBe(FilterOperator.EQ);
     });
 
     it('should convert IN to IN', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
-        service.convertPrimeNGMatchModeToFilterOperator(FilterMatchMode.IN),
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.IN,
+        }),
       ).toBe(FilterOperator.IN);
+    });
+
+    it('should convert GREATER_THAN to GT', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.GREATER_THAN,
+        }),
+      ).toBe(FilterOperator.GT);
+    });
+
+    it('should convert LESS_THAN to LT', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.LESS_THAN,
+        }),
+      ).toBe(FilterOperator.LT);
+    });
+
+    it('should convert EQUALS to BTW for dates', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.EQUALS,
+          isDate: true,
+        }),
+      ).toBe(FilterOperator.BTW);
     });
 
     it('should default to ILIKE', () => {
       // @ts-expect-error accessing a private method for unit testing purposes
-      expect(service.convertPrimeNGMatchModeToFilterOperator(undefined)).toBe(
+      expect(service.convertPrimeNGMatchModeToFilterOperator({})).toBe(
         FilterOperator.ILIKE,
       );
     });
@@ -71,6 +103,34 @@ describe('PaginateQueryService', () => {
         // @ts-expect-error accessing a private method for unit testing purposes
         service.convertPrimeNGFilterMetadataToValueAndOperator(undefined);
       expect(result).toBeUndefined();
+    });
+
+    it('should handle BETWEEN operator for dates', () => {
+      const filterMetadata: FilterMetadata = {
+        value: new Date('2025-04-03T12:00:00Z'),
+        matchMode: FilterMatchMode.EQUALS,
+      };
+      const result =
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGFilterMetadataToValueAndOperator(filterMetadata);
+
+      expect(result).toBeDefined();
+
+      // Early return if result is undefined (won't happen due to the expect above, but makes TypeScript happy)
+      if (!result) return;
+
+      // Check operator is correct
+      expect(result.operator).toBe(FilterOperator.BTW);
+
+      // Check value is comma-separated string containing two valid ISO dates
+      const dateStrings = result.value.split(',');
+      expect(dateStrings.length).toBe(2);
+
+      // Validate both are valid ISO date strings
+      const startDate = new Date(dateStrings[0]);
+      const endDate = new Date(dateStrings[1]);
+      expect(startDate.toISOString()).toBe(dateStrings[0]);
+      expect(endDate.toISOString()).toBe(dateStrings[1]);
     });
   });
 
@@ -211,6 +271,65 @@ describe('PaginateQueryService', () => {
       const result = service.paginateQueryToHttpParamsObject(query);
       const params = new HttpParams({ fromObject: result });
       expect(params.toString()).toBe('filter.name=$ilike:test1,$ilike:test2');
+    });
+  });
+
+  describe('getDateFilterValue', () => {
+    it('should return start and end of the day of the local timezone converted to UTC for EQUALS match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+
+      // Calculate expected start and end of the day in UTC
+      const clientTimeZoneOffset = date.getTimezoneOffset() * 60000; // Offset in milliseconds
+      const startOfDayLocal = new Date(date.setHours(0, 0, 0, 0));
+      const endOfDayLocal = new Date(date.setHours(23, 59, 59, 999));
+      const expectedStartOfDayUtc = new Date(
+        startOfDayLocal.getTime() + clientTimeZoneOffset,
+      ).toISOString();
+      const expectedEndOfDayUtc = new Date(
+        endOfDayLocal.getTime() + clientTimeZoneOffset,
+      ).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(date, FilterMatchMode.EQUALS);
+      expect(result).toBe(`${expectedStartOfDayUtc},${expectedEndOfDayUtc}`);
+    });
+
+    it('should return start of the day of the local timezone converted to UTC for GREATER_THAN match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+
+      // Calculate expected start of the day in UTC
+      const clientTimeZoneOffset = date.getTimezoneOffset() * 60000; // Offset in milliseconds
+
+      const endOfDayLocal = new Date(date.setHours(23, 59, 59, 999));
+      const expectedEndOfDayUtc = new Date(
+        endOfDayLocal.getTime() + clientTimeZoneOffset,
+      ).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(
+        date,
+        FilterMatchMode.GREATER_THAN,
+      );
+      expect(result).toBe(expectedEndOfDayUtc);
+    });
+
+    it('should return end of the day of the local timezone converted to UTC for LESS_THAN match mode', () => {
+      const date = new Date('2025-04-03T12:00:00Z');
+
+      // Calculate expected end of the day in UTC
+      const clientTimeZoneOffset = date.getTimezoneOffset() * 60000; // Offset in milliseconds
+
+      const startOfDayLocal = new Date(date.setHours(0, 0, 0, 0));
+      const expectedStartOfDayUtc = new Date(
+        startOfDayLocal.getTime() + clientTimeZoneOffset,
+      ).toISOString();
+
+      // @ts-expect-error accessing a private method for unit testing purposes
+      const result = service.getDateFilterValue(
+        date,
+        FilterMatchMode.LESS_THAN,
+      );
+      expect(result).toBe(expectedStartOfDayUtc);
     });
   });
 });

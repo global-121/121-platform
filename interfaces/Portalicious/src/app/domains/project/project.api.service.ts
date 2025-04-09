@@ -35,6 +35,7 @@ const filterableAttributesToIgnore = [
   // Below attributes are already hardcoded in the table columns service
   'programFinancialServiceProviderConfigurationName',
   'fullName',
+  'created',
   'registrationCreatedDate',
 ];
 

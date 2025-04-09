@@ -58,6 +58,6 @@ test('[34409] Delete registration with status "Included"', async ({ page }) => {
       columnName: 'Registration Status',
       selection: 'Included',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
   });
 });

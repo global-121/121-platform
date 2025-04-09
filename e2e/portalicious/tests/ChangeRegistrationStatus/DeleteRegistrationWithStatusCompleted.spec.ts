@@ -69,6 +69,6 @@ test('[34411] Delete registration with status "Completed"', async ({
       columnName: 'Registration Status',
       selection: 'Completed',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
   });
 });

@@ -58,6 +58,6 @@ test('[34412] Delete registration with status "Declined"', async ({ page }) => {
       columnName: 'Registration Status',
       selection: 'Declined',
     });
-    await registrations.validateRegistrationIsNotPresent();
+    await tableComponent.assertEmptyTableState();
   });
 });

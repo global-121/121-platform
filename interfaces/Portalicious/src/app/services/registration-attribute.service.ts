@@ -61,6 +61,7 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.status:
     case GenericRegistrationAttributes.registrationProgramId:
       return RegistrationAttributeTypes.text;
+    case GenericRegistrationAttributes.created:
     case GenericRegistrationAttributes.registrationCreatedDate:
       return RegistrationAttributeTypes.date;
   }
