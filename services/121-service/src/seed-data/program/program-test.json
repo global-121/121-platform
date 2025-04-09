@@ -307,7 +307,7 @@
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "dob", "dragon", "phoneNumber"]
+          "value": ["fullName", "dob", "dragon", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
