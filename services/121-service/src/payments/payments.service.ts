@@ -146,7 +146,12 @@ export class PaymentsService {
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
-      .select(['status', 'COUNT(*) as count', 'SUM(amount) as totalAmount'])
+      .select([
+        'status',
+        'COUNT(*) as count',
+        // rounding indivual transaction amounts to 2 decimal places before summing, in line with current FSPs:
+        'SUM(ROUND(amount::numeric, 2)) as totalAmount',
+      ])
       .from(
         '(' +
           this.transactionScopedRepository
@@ -173,16 +178,25 @@ export class PaymentsService {
       programId,
       payment,
     );
-    const totalAmountPerStatus = statusAggregation.reduce(
-      (acc, row) => {
-        acc[row.status] = {
-          count: (acc[row.status]?.count || 0) + Number(row.count || 0),
-          amount: (acc[row.status]?.amount || 0) + (row.totalamount || 0),
+
+    const totalAmountPerStatus: Record<
+      string,
+      { count: number; amount: number }
+    > = {};
+
+    for (const row of statusAggregation) {
+      const status = row.status;
+
+      if (!totalAmountPerStatus[status]) {
+        totalAmountPerStatus[status] = {
+          count: 0,
+          amount: 0,
         };
-        return acc;
-      },
-      {} as Record<string, { count: number; amount: number }>,
-    );
+      }
+
+      totalAmountPerStatus[status].count = Number(row.count);
+      totalAmountPerStatus[status].amount = Number(row.totalamount);
+    }
 
     return {
       success: totalAmountPerStatus[TransactionStatusEnum.success] || {

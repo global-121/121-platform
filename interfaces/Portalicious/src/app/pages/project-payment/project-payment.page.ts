@@ -168,7 +168,7 @@ export class ProjectPaymentPageComponent {
         totalAmount,
         this.project.data()?.currency ?? 'EUR',
         'symbol-narrow',
-        '1.0-0',
+        '1.2-2',
       ) ?? '0'
     );
   });
