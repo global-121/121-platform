@@ -98,31 +98,27 @@ To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Dock
 
     docker exec -it 121-service  /bin/sh
 
-To start a debugger using Chrome, follow these steps:
+You can use the debugger in Visual Studio Code to set breakpoints and do step-through debugging. This works for the 121 Service, Mock Service and Integration Tests that run via jest. To make this work, the code contains configurations in launch.json, package.json of 121-service and mock-service and docker-compose.development.
 
-1. Add port mapping to the `docker-compose.development.yml` so that internal port 9229 is mapped to external port 9229. Note that all port settings from the main file are overridden.
-2. In the start:dev script in the `package.json` of the 121-service, add `--inspect=0.0.0.0`
-3. Start the services with npm run start:services.
-4. In the code of the 121 Service where you want to break, add a line with debugger;
-5. Check if the application indeed started on a debugger address 0.0.0.0 with `npm run logs:services 121-services`, and see something like: "`Debugger listening on ws://0.0.0.0:9229 02384d3e-4d1f-40ef-b8d5-be3da792fe71`"
-6. Open the Swagger Docs in the Chrome Web Browser: <http://localhost:3000/docs/>
-7. Open the Inspector in Chrome with CTRL-SHIFT-I or right mouse click and select Inspect. Now there should be a green hexagon on the top left of the Inspector window.
-8. Click the green hexagon item in the top left of the Inspector window (Open dedicated DevTools for Node.js).
-9. This opens a new window called DevTools. Leave it open.
-10. In the logs of the 121 Service it should say: Debugger attached.
-11. Use Swagger API to call the endpoint that will run into the code where you set the debugger; statement (see point 4 above.)
-12. The DevTools window now should show your code and Debugger functionality so you can watch variables, step over code, etc.
-13. In the left margin of the code, you can also right mouse click and for example select: continue to here.
-14. If you want to set the theme to dark, go to Settings in DevTools and under Preferences you have Theme, there select Dark. For more info: <https://stackoverflow.com/questions/20777454/google-chrome-customize-developer-tools-theme-color-schema>
+For the 121 Service and Mock Service start the debugger from Visual Studio Code by following these steps:
 
-To start the debugger from Visual Studio Code, follow these steps:
+1. Start the services with npm run start:services.
+2. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
+3. In the dropdown next to the green play button select what you want to debug: 121 Service or Mock Service.
+4. Press the green play button. This attaches the Debugger to the node process in the respective Docker container. You can debug both Services at the same time by attaching both.
+5. Now you can for example set a breakpoint in your code by right mouse clicking to the left of the line number and select Add breakpoint.
 
-1. Probably some steps from above, starting debugger in Chrome, are also needed here, but not sure which. Maybe items 1, and 2.
-2. The contents of launch.json in the root folder of the repository enable the possibility to attach the Debugger in Visual Studio Code to the Node.js process running in the 121-service Docker container.
-3. Start the services with npm run start:services, probably need to do this from a Terminal inside Visual Studio Code.
-4. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
-5. Press the green play icon left besides the "Docker: Attach to Node" text which is selected by default in the dropdown. This attaches the Debugger.
-6. Now you can for example set a breakpoint in your code by right mouse clicking to the left of the line number and select Add breakpoint.
+For the Integration Tests it works a bit differently:
+
+1. Start the services with npm run start:services.
+2. Run the integration tests with the command: docker exec 121-service npm run test:integration:debug (you can add filters like normal)
+3. Open the Run and Debug section in Visual Studio Code by clicking the play arrow with bug icon in the left vertical bar of icons.
+4. In the dropdown next to the green play button select Integration Tests.
+5. Press the green play button. This attaches the Debugger to the jest node process in the 121-service Docker container.
+6. Set a breakpoint in the test code where you want it.
+7. Now press the |> continue button (or press F5) so the code runs until your breakpoint.
+
+Reason that it works differently for Integration Tests: the test start to run automatically immediately after the node process starts, as opposed to the Services that wait for an API request. So therefore the script is set to break immediately after start-up, and you have time to attach the debugger to the jest node process.
 
 ---
 

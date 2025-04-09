@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "121 Service: Attach to Node in Docker",
+      "name": "121 Service",
       "type": "node",
       "request": "attach",
       "port": 9229,
@@ -16,7 +16,7 @@
       "sourceMaps": true
     },
     {
-      "name": "Mock Service: Attach to Node in Docker",
+      "name": "Mock Service",
       "type": "node",
       "request": "attach",
       "port": 9230,
@@ -30,7 +30,7 @@
       "sourceMaps": true
     },
     {
-      "name": "Integration Tests: Attach to Node in Docker",
+      "name": "Integration Tests",
       "type": "node",
       "request": "attach",
       "port": 9231,
