@@ -16,8 +16,8 @@ const expectedAssignedUsers = ['admin@example.org'];
 const expectedAvailablesystemUsers = [
   'program-admin@example.org',
   'view-user@example.org',
-  'kobo+registration_country@121.global',
-  'kobo+validation_country@121.global',
+  'kobo+registration_country@example.org',
+  'kobo+validation_country@example.org',
   'cva-manager@example.org',
   'cva-officer@example.org',
   'finance-manager@example.org',
