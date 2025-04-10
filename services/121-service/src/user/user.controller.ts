@@ -221,11 +221,14 @@ export class UserController {
   public async logout(@Res() res): Promise<UserRO> {
     try {
       const key = this.userService.getInterfaceKeyByHeader();
+      const { sameSite, secure, httpOnly } =
+        this.userService.getCookieSecuritySettings();
+
       res.cookie(key, '', {
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite,
+        secure,
+        httpOnly,
         expires: new Date(Date.now() - 1),
-        httpOnly: true,
       });
       return res.send();
     } catch (error) {
