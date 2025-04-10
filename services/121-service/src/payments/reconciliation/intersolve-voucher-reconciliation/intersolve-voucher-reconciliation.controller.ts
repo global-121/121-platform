@@ -28,7 +28,7 @@ export class IntersolveVoucherReconciliationController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Start a retrieve and update of voucher balances of a program. Can be manually used my admin user if needed',
+      'Start a retrieve and update of voucher balances of a program. Can be manually used by admin user if needed',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

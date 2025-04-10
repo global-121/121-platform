@@ -41,7 +41,7 @@ export class IntersolveVoucherReconciliationService {
         // Query gets all vouher that need to be checked these can be:
         // 1) Vouchers  with null (which have never been checked)
         // 2) Voucher with a balance of not 0 (which could have been used more in the meantime)
-        const q = await this.intersolveVoucherScopedRepository
+        const vouchersToUpdate = await this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')
           .leftJoinAndSelect('voucher.image', 'image')
           .leftJoinAndSelect('image.registration', 'registration')
@@ -51,13 +51,21 @@ export class IntersolveVoucherReconciliationService {
           })
           .andWhere('registration.programId = :programId', {
             programId,
-          });
+          })
+          .getMany();
 
-        const vouchersToUpdate = await q.getMany();
+        if (!vouchersToUpdate.length) {
+          // Probably nothing usefull to do now anymore...
+          // I'm not sure if its better to `break;` or `continue;` here... or to throw an error or do something else?
+          continue;
+        }
+
+        // We could maybe get these credentials OUTSIDE/before of the while-loop... but I'm not sure if its enough to "request-credentials-by-program-id"?
         const credentials =
           await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
             vouchersToUpdate[0].id,
           );
+
         for await (const voucher of vouchersToUpdate) {
           await this.intersolveVoucherService.getAndUpdateBalance(
             voucher,
