@@ -36,6 +36,7 @@
     @for (attribute of attributeList(); track $index) {
       <div class="">
         <app-form-field-wrapper
+          [dataTestId]="'edit-personal-information-' + attribute.name"
           [label]="attribute.label"
           [labelTooltip]="attribute.editInfo"
           [errorMessage]="formFieldErrors()()(attribute.name)"
