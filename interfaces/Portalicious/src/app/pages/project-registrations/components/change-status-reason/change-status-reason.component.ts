@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   input,
   model,
   output,
@@ -15,7 +14,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { REGISTRATION_STATUS_VERB_PROGRESSIVE } from '~/domains/registration/registration.helper';
 
 @Component({
   selector: 'app-change-status-reason',
@@ -38,9 +36,4 @@ export class ChangeStatusReasonComponent {
   readonly reasonValidationErrorMessage = input<string | undefined>();
 
   readonly reasonUpdated = output();
-
-  readonly statusVerbProgressive = computed<string>(() => {
-    const status = this.status();
-    return REGISTRATION_STATUS_VERB_PROGRESSIVE[status];
-  });
 }
