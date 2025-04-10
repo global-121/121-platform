@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
 export class MessageTemplateContentSid1742574202000
   implements MigrationInterface
@@ -71,7 +72,7 @@ export class MessageTemplateContentSid1742574202000
     // Migrate instance that are in mock mode: important for demo and training
     // This will set the contentSid to a mock value related to the language and type
     // It does not take into account the mock message we have for PV and OCW, it seemed not worth the effort
-    if (process.env.MOCK_TWILIO) {
+    if (shouldBeEnabled(process.env.MOCK_TWILIO)) {
       for (const messageTemplate of currentMessageTemplates) {
         const language = messageTemplate.language;
         const type =
