@@ -67,7 +67,9 @@ test('[34664] Ignore duplicates', async ({ page }) => {
 
     await expect(dialog.getByText('Ignore duplication')).toBeVisible();
 
-    const editInformationReasonField = await dialog.getByLabel('Add a reason');
+    const editInformationReasonField = await dialog.getByLabel(
+      'Write a reason for the update',
+    );
     await editInformationReasonField.fill('E2E test');
     await dialog.getByRole('button', { name: 'Approve' }).click();
   });
