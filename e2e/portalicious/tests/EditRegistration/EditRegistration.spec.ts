@@ -81,6 +81,7 @@ test.describe('View available actions for admin', () => {
       option: 'Indonesian',
     });
     await activityLogPage.saveChanges();
+    await activityLogPage.validatePersonalInformationField('Indonesian');
   });
 
   test('[35285] Edit: Text Input fields', async () => {

@@ -65,6 +65,14 @@ class RegistrationActivityLogPage extends RegistrationBasePage {
     await this.page.getByLabel('Preferred Language').fill(option);
     await this.page.getByRole('option', { name: option }).click();
   }
+
+  async validatePersonalInformationField(fieldValue: string) {
+    const field = this.page
+      .getByTestId('data-list-personal-information')
+      .getByText(fieldValue);
+    const fieldText = (await field.innerText()).trim();
+    expect(fieldText).toBe(fieldValue);
+  }
 }
 
 export default RegistrationActivityLogPage;

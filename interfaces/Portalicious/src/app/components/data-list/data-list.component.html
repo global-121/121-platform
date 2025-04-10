@@ -6,6 +6,7 @@
 >
   @for (item of data(); track $index) {
     <p
+      [attr.data-testid]="dataTestId() + '-personal-information'"
       class="border-b border-grey-300 py-4"
       [ngClass]="{
         'col-span-2': item.fullWidth,
