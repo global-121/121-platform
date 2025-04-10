@@ -604,6 +604,18 @@ export class UserService {
     }
   }
 
+  public getCookieSecuritySettings(): {
+    sameSite: 'Strict' | 'Lax' | 'None';
+    secure: boolean;
+    httpOnly: boolean;
+  } {
+    return {
+      sameSite: DEBUG ? 'Lax' : 'None',
+      secure: !DEBUG,
+      httpOnly: true,
+    };
+  }
+
   public async buildUserRO(
     user: UserEntity,
     tokenExpiration?: number,
@@ -660,14 +672,15 @@ export class UserService {
 
   private buildCookieByRequest(token: string): CookieSettingsDto {
     const tokenKey: string = this.getInterfaceKeyByHeader();
+    const { sameSite, secure, httpOnly } = this.getCookieSecuritySettings();
 
     return {
       tokenKey,
       tokenValue: token,
-      sameSite: DEBUG ? 'Lax' : 'None',
-      secure: !DEBUG,
+      sameSite,
+      secure,
+      httpOnly,
       expires: new Date(Date.now() + tokenExpirationDays * 24 * 3600000),
-      httpOnly: true,
     };
   }
 
