@@ -1474,9 +1474,6 @@
       <trans-unit id="3141301060598402455" datatype="html">
         <source>Deleting</source>
       </trans-unit>
-      <trans-unit id="3684525214439355379" datatype="html">
-        <source>Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></source>
-      </trans-unit>
       <trans-unit id="4465385057621611056" datatype="html">
         <source>Validating</source>
       </trans-unit>
@@ -1579,9 +1576,6 @@
       </trans-unit>
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
-      </trans-unit>
-      <trans-unit id="3570735198692940811" datatype="html">
-        <source>Add a reason</source>
       </trans-unit>
       <trans-unit id="ignore-duplication" datatype="html">
         <source>Ignore duplication</source>
