@@ -5,6 +5,16 @@ export const textInputs = [
     textInputValue: 'Red Panda',
   },
   {
+    fieldName: 'WhatsApp Nr.',
+    textInputIdName: 'whatsappPhoneNumber',
+    textInputValue: '5612345678',
+  },
+  {
+    fieldName: 'Phone Number',
+    textInputIdName: 'phoneNumber',
+    textInputValue: '0612345678',
+  },
+  {
     fieldName: 'Address postal code',
     textInputIdName: 'addressPostalCode',
     textInputValue: '1234GH',
