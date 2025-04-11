@@ -1,8 +1,8 @@
-/** @type {import('tailwindcss').Config} */
 import pluginGridAreas from '@savvywombat/tailwindcss-grid-areas';
 import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin';
 
+/** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,ts}'],
   theme: {
@@ -112,7 +112,7 @@ export default {
   },
   plugins: [
     pluginGridAreas,
-    plugin(function ({ matchUtilities, theme }) {
+    plugin(({ matchUtilities, theme }) => {
       // heading utilities
       matchUtilities(
         {
