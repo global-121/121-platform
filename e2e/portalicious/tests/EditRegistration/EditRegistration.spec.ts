@@ -16,9 +16,19 @@ import {
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
+import RegistrationPersonalInformationPage from '@121-e2e/portalicious/pages/RegistrationPersonalInformationPage';
 
-const projectId = 2;
 let registrationId: number;
+
+const textInputs = [
+  { textInputIdName: 'namePartnerOrganization', textInputValue: 'Red Panda' },
+  { textInputIdName: 'addressPostalCode', textInputValue: '1234GH' },
+  { textInputIdName: 'scope', textInputValue: 'amsterdam.west' },
+  { textInputIdName: 'fullName', textInputValue: 'Hovik Karayan' },
+  { textInputIdName: 'addressStreet', textInputValue: 'Parklaan' },
+  { textInputIdName: 'addressHouseNumberAddition', textInputValue: 'DECK' },
+  { textInputIdName: 'addressCity', textInputValue: 'Amsterdam' },
+];
 
 const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -41,7 +51,7 @@ const login = async (page: Page, email?: string, password?: string) => {
 const goToEditPersonalInformationPage = async (page: Page) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
-    `/project/${projectId}/registrations/${registrationId}`,
+    `/project/${programIdPV}/registrations/${registrationId}`,
   );
   await activityLogPage.navigateToPersonalInformation();
 };
@@ -61,8 +71,10 @@ test.describe('View available actions for admin', () => {
   });
 
   test.beforeEach(async () => {
-    const activityLogPage = new RegistrationActivityLogPage(page);
-    await activityLogPage.clickEditInformationButton();
+    const personalInformationPage = new RegistrationPersonalInformationPage(
+      page,
+    );
+    await personalInformationPage.clickEditInformationButton();
   });
 
   test.afterAll(async () => {
@@ -75,18 +87,56 @@ test.describe('View available actions for admin', () => {
   });
 
   test('[35284] Edit: Dropdown Selection fields', async () => {
-    const activityLogPage = new RegistrationActivityLogPage(page);
-    await activityLogPage.selectDropdownOption({
-      dropdownName: 'preferredLanguage',
+    const personalInformationPage = new RegistrationPersonalInformationPage(
+      page,
+    );
+    await personalInformationPage.selectDropdownOption({
+      dropdownIdName: 'preferredLanguage',
       option: 'Indonesian',
     });
-    await activityLogPage.saveChanges();
-    await activityLogPage.validatePersonalInformationField('Indonesian');
+    await personalInformationPage.saveChanges();
+    await personalInformationPage.validatePersonalInformationField(
+      'Indonesian',
+    );
   });
 
   test('[35285] Edit: Text Input fields', async () => {
-    console.log('Edit: Text Input fields');
-    await page.reload();
+    const personalInformationPage = new RegistrationPersonalInformationPage(
+      page,
+    );
+    // Fill all text inputs
+    for (const input of textInputs) {
+      await personalInformationPage.fillTextInput(input);
+    }
+
+    await personalInformationPage.saveChanges();
+
+    // Define validation expectations
+    const validations = [
+      { value: 'Red Panda', count: 1 },
+      { value: '1234GH', count: 1 },
+      { value: 'amsterdam.west', count: 2 },
+      { value: 'Hovik Karayan', count: 2 },
+      { value: 'Parklaan', count: 1 },
+      { value: 'DECK', count: 1 },
+      { value: 'Amsterdam', count: 1 },
+    ];
+
+    // Validate all fields
+    for (const validation of validations) {
+      if (validation.count === 1) {
+        await personalInformationPage.validatePersonalInformationField(
+          validation.value,
+        );
+      } else {
+        await personalInformationPage.validateMultiplePersonalInformationFields(
+          {
+            fieldValue: validation.value,
+            expectedCount: validation.count,
+          },
+        );
+      }
+    }
   });
 
   test('[35286] Edit: Number Input fields', async () => {

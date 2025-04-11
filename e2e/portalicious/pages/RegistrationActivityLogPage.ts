@@ -40,39 +40,6 @@ class RegistrationActivityLogPage extends RegistrationBasePage {
   async navigateToPersonalInformation() {
     await this.personalInformationTab.click();
   }
-
-  async clickEditInformationButton() {
-    await this.editInformationButton.click();
-  }
-
-  async saveChanges() {
-    await this.saveButton.click();
-    await this.page.getByLabel('Write a reason for the update').fill('Test');
-    await this.saveButton.nth(1).click();
-  }
-
-  async selectDropdownOption({
-    dropdownName,
-    option,
-  }: {
-    dropdownName: string;
-    option: string;
-  }) {
-    const dropwdown = this.page
-      .getByTestId(`edit-personal-information-${dropdownName}`)
-      .getByRole('button');
-    await dropwdown.click();
-    await this.page.getByLabel('Preferred Language').fill(option);
-    await this.page.getByRole('option', { name: option }).click();
-  }
-
-  async validatePersonalInformationField(fieldValue: string) {
-    const field = this.page
-      .getByTestId('data-list-personal-information')
-      .getByText(fieldValue);
-    const fieldText = (await field.innerText()).trim();
-    expect(fieldText).toBe(fieldValue);
-  }
 }
 
 export default RegistrationActivityLogPage;
