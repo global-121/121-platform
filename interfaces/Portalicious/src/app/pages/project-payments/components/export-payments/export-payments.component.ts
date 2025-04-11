@@ -138,6 +138,7 @@ export class ExportPaymentsComponent {
       label: $localize`:@@export-payments-unused-vouchers:Unused vouchers`,
       visible:
         projectHasVoucherSupport(this.project.data()) &&
+        this.maxLastPaymentsNumber() > 0 &&
         this.authService.hasPermission({
           projectId: this.projectId(),
           requiredPermission: PermissionEnum.PaymentVoucherExport,
@@ -149,8 +150,8 @@ export class ExportPaymentsComponent {
     {
       label: $localize`:@@export-payments-debit-card-usage:Debit card usage`,
       visible:
-        this.maxLastPaymentsNumber() > 0 &&
         projectHasPhysicalCardSupport(this.project.data()) &&
+        this.maxLastPaymentsNumber() > 0 &&
         this.authService.hasPermission({
           projectId: this.projectId(),
           requiredPermission: PermissionEnum.FspDebitCardEXPORT,
@@ -160,10 +161,4 @@ export class ExportPaymentsComponent {
       },
     },
   ]);
-
-  readonly hasExportOptions = computed(
-    () =>
-      this.exportOptions().some((option) => option.visible) &&
-      (this.payments.data() ?? []).length > 0,
-  );
 }
