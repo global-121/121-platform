@@ -31,16 +31,19 @@ export class CommercialBankEthiopiaMockController {
       // Route the request based on the soapAction
       let responseObject;
       if (soapAction.endsWith('xsd=2')) {
+        // Account Enquiry
         responseObject =
           await this.CommercialBankEthiopiaMockService.postCBEValidation(
             parsedBody,
           );
       } else if (soapAction.endsWith('xsd=4')) {
+        // Credit Transfer
         responseObject =
           await this.CommercialBankEthiopiaMockService.postCBETransfer(
             parsedBody,
           );
       } else if (soapAction.endsWith('xsd=6')) {
+        // Transaction/transfer Status Enquiry
         responseObject =
           await this.CommercialBankEthiopiaMockService.postCBETransaction(
             parsedBody,
