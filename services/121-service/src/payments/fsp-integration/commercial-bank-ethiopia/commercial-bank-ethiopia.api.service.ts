@@ -263,7 +263,7 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      /*
+      /* ## TODO: Remove comment when other methods above are also changed
       const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
         ? await this.commercialBankEthiopiaMock.postCBEValidation(payload)
         : await this.soapService.postCBERequest(

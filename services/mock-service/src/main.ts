@@ -88,9 +88,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  // Add middleware to handle raw XML body
-  app.use(bodyParser.text({ type: 'text/xml' }));
-
+  app.use(bodyParser.text({ type: 'text/xml' })); // Add middleware to handle raw XML body
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
