@@ -14,21 +14,15 @@ import {
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import {
+  numberInputs,
+  textInputs,
+} from '@121-e2e/portalicious/components/PersonalInformationFields';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portalicious/pages/RegistrationPersonalInformationPage';
 
 let registrationId: number;
-
-const textInputs = [
-  { textInputIdName: 'namePartnerOrganization', textInputValue: 'Red Panda' },
-  { textInputIdName: 'addressPostalCode', textInputValue: '1234GH' },
-  { textInputIdName: 'scope', textInputValue: 'amsterdam.west' },
-  { textInputIdName: 'fullName', textInputValue: 'Hovik Karayan' },
-  { textInputIdName: 'addressStreet', textInputValue: 'Parklaan' },
-  { textInputIdName: 'addressHouseNumberAddition', textInputValue: 'DECK' },
-  { textInputIdName: 'addressCity', textInputValue: 'Amsterdam' },
-];
 
 const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -95,9 +89,14 @@ test.describe('View available actions for admin', () => {
       option: 'Indonesian',
     });
     await personalInformationPage.saveChanges();
-    await personalInformationPage.validatePersonalInformationField(
-      'Indonesian',
+    await personalInformationPage.validateToastMessageAndWait(
+      'Personal information edited successfully.',
     );
+    // Validate the selected option
+    await personalInformationPage.validatePersonalInformationField({
+      fieldName: 'Preferred Language',
+      fieldValue: 'Indonesian',
+    });
   });
 
   test('[35285] Edit: Text Input fields', async () => {
@@ -108,31 +107,22 @@ test.describe('View available actions for admin', () => {
     for (const input of textInputs) {
       await personalInformationPage.fillTextInput(input);
     }
-
     await personalInformationPage.saveChanges();
-
-    // Define validation expectations
-    const validations = [
-      { value: 'Red Panda', count: 1 },
-      { value: '1234GH', count: 1 },
-      { value: 'amsterdam.west', count: 2 },
-      { value: 'Hovik Karayan', count: 2 },
-      { value: 'Parklaan', count: 1 },
-      { value: 'DECK', count: 1 },
-      { value: 'Amsterdam', count: 1 },
-    ];
-
-    // Validate all fields
-    for (const validation of validations) {
-      if (validation.count === 1) {
-        await personalInformationPage.validatePersonalInformationField(
-          validation.value,
-        );
+    // Validate all text fields
+    // If count is greater than 1, it means that the field is repeated
+    // in the personal information page and should be validated multiple times eg. Name and Scope
+    for (const validation of textInputs) {
+      if (!validation.count) {
+        await personalInformationPage.validatePersonalInformationField({
+          fieldName: validation.fieldName,
+          fieldValue: validation.textInputValue,
+        });
       } else {
         await personalInformationPage.validateMultiplePersonalInformationFields(
           {
-            fieldValue: validation.value,
-            expectedCount: validation.count,
+            fieldName: validation.fieldName,
+            fieldValue: validation.textInputValue,
+            expectedCount: validation.count!,
           },
         );
       }
@@ -140,7 +130,22 @@ test.describe('View available actions for admin', () => {
   });
 
   test('[35286] Edit: Number Input fields', async () => {
-    console.log('Edit: Number Input fields');
-    await page.reload();
+    const personalInformationPage = new RegistrationPersonalInformationPage(
+      page,
+    );
+    // Fill all number inputs
+    for (const input of numberInputs) {
+      await personalInformationPage.fillNumberInput(input);
+    }
+    await personalInformationPage.saveChanges();
+    // await page.getByTestId('edit-personal-information-whatsappPhoneNumber').getByRole('textbox')
+    // await page.getByTestId('edit-personal-information-phoneNumber').getByRole('textbox')
+    // Validate all number fields
+    for (const validation of numberInputs) {
+      await personalInformationPage.validatePersonalInformationField({
+        fieldName: validation.fieldName,
+        fieldValue: String(validation.numberInputValue),
+      });
+    }
   });
 });
