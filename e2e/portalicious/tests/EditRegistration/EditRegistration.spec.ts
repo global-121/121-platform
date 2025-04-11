@@ -138,8 +138,6 @@ test.describe('View available actions for admin', () => {
       await personalInformationPage.fillNumberInput(input);
     }
     await personalInformationPage.saveChanges();
-    // await page.getByTestId('edit-personal-information-whatsappPhoneNumber').getByRole('textbox')
-    // await page.getByTestId('edit-personal-information-phoneNumber').getByRole('textbox')
     // Validate all number fields
     for (const validation of numberInputs) {
       await personalInformationPage.validatePersonalInformationField({
