@@ -80,28 +80,56 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     const textInput = this.page
       .getByTestId(`edit-personal-information-${textInputIdName}`)
       .getByRole('textbox');
-    await textInput.click();
-    await textInput.fill(textInputValue);
+    if (await textInput.isEnabled()) {
+      await textInput.click();
+      await textInput.fill(textInputValue);
+    }
   }
 
-  async validatePersonalInformationField(fieldValue: string) {
+  async fillNumberInput({
+    numberInputIdName,
+    numberInputValue,
+  }: {
+    numberInputIdName: string;
+    numberInputValue: number;
+  }) {
+    const numberInput = this.page
+      .getByTestId(`edit-personal-information-${numberInputIdName}`)
+      .getByRole('spinbutton');
+    if (await numberInput.isEditable()) {
+      await numberInput.click();
+      await numberInput.fill(String(numberInputValue));
+    }
+  }
+
+  async validatePersonalInformationField({
+    fieldName,
+    fieldValue,
+  }: {
+    fieldName: string;
+    fieldValue: string;
+  }) {
     const field = this.page
-      .getByTestId('data-list-personal-information')
-      .getByText(fieldValue, { exact: true });
+      .locator('p')
+      .filter({ hasText: new RegExp(`^${fieldName}:?\\s`) })
+      .locator('span');
     const fieldText = (await field.innerText()).trim();
     expect(fieldText).toBe(fieldValue);
   }
 
   async validateMultiplePersonalInformationFields({
+    fieldName,
     fieldValue,
     expectedCount,
   }: {
+    fieldName: string;
     fieldValue: string;
     expectedCount: number;
   }) {
     const fields = this.page
-      .getByTestId('data-list-personal-information')
-      .getByText(fieldValue);
+      .locator('p')
+      .filter({ hasText: fieldName })
+      .locator('span');
 
     await expect(fields).toHaveCount(expectedCount);
 
