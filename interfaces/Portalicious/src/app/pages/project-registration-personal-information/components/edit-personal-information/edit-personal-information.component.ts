@@ -6,7 +6,6 @@ import {
   HostListener,
   inject,
   input,
-  model,
   OnDestroy,
   OnInit,
   output,
@@ -46,10 +45,16 @@ import {
 } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import { generateFieldErrors } from '~/utils/form-validation';
+import {
+  generateFieldErrors,
+  genericFieldIsRequiredValidationMessage,
+} from '~/utils/form-validation';
 
 type EditPersonalInformationFormGroup =
   (typeof EditPersonalInformationComponent)['prototype']['formGroup'];
+
+type DialogFormGroup =
+  (typeof EditPersonalInformationComponent)['prototype']['dialogFormGroup'];
 
 @Component({
   selector: 'app-edit-personal-information',
@@ -107,7 +112,6 @@ export class EditPersonalInformationComponent
   readonly changedRegistrationData = signal<
     Record<string, boolean | number | string | undefined>
   >({});
-  readonly updateReason = model<string>();
 
   readonly formFieldErrors = computed(() =>
     generateFieldErrors<EditPersonalInformationFormGroup>(
@@ -117,6 +121,22 @@ export class EditPersonalInformationComponent
       }),
     ),
   );
+
+  dialogFormGroup = new FormGroup({
+    reason: new FormControl('', {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    }),
+  });
+
+  dialogFormFieldErrors = generateFieldErrors<DialogFormGroup>(
+    this.dialogFormGroup,
+    {
+      reason: genericFieldIsRequiredValidationMessage,
+    },
+  );
+
   updateDisabledFields = effect(() => {
     if (!this.project.isSuccess()) {
       return;

@@ -65,6 +65,28 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
+  ignoreDuplication({
+    projectId,
+    registrationIds,
+    reason,
+  }: {
+    projectId: Signal<number | string>;
+    registrationIds: number[];
+    reason: string;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'uniques',
+      ]).join('/'),
+      body: {
+        registrationIds,
+        reason,
+      },
+    });
+  }
+
   patchRegistration({
     projectId,
     referenceId,
