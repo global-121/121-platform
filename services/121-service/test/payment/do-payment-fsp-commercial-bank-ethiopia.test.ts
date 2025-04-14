@@ -76,5 +76,11 @@ describe('Do payment', () => {
         expect(getTransactionsBody.body[0].errorMessage).toBe(null);
       });
     });
+
+    // ## TODO: Add test when there is an error response from CBE API
+
+    // ## TODO: Add test when there is a time-out on CBE API
+
+    // ## TODO: Brainstorm and decide if we want to add more test cases, see Nedbank for examples.
   });
 });
