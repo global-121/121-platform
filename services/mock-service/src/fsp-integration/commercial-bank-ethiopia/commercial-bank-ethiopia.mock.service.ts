@@ -77,7 +77,7 @@ export class CommercialBankEthiopiaMockService {
 
   // Mocks Credit Transfer
   public async postCBETransfer(
-    payment: CommercialBankEthiopiaTransferPayload,
+    _payment: CommercialBankEthiopiaTransferPayload, // ## TODO: Use value from payment in response structure
   ): Promise<any> {
     //##TODO: await waitForRandomDelay(100, 300);
 
@@ -110,95 +110,130 @@ export class CommercialBankEthiopiaMockService {
     };
 
     // Switch between mock scenarios
-    let Status;
+    // # TODO: Are these mock scenarios used anywhere? If so, include Status in the response structure, otherwise remove.
+    let _Status;
     if (mockScenario === 'success') {
-      Status = successTransactionStatus;
+      _Status = successTransactionStatus;
     } else if (mockScenario === 'duplicated') {
-      Status = duplicatedTransactionStatus;
+      _Status = duplicatedTransactionStatus;
     } else if (mockScenario === 'other-failure') {
-      Status = otherFailureStatus;
+      _Status = otherFailureStatus;
     } else if (mockScenario === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const response = {
-      Status,
-      FUNDSTRANSFERType: {
-        FUNDSTRANSFERType: { _text: 'FT21243423L4' },
-        TRANSACTIONTYPE: { _text: 'AC' },
-        DEBITACCTNO: { _text: '1000001046296' },
-        CURRENCYMKTDR: { _text: '1' },
-        DEBITCURRENCY: { _text: 'ETB' },
-        DEBITAMOUNT: { _text: String(payment.debitAmount) },
-        DEBITVALUEDATE: { _text: '20210831' },
-        DEBITTHEIRREF: { _text: String(payment.debitTheirRef) },
-        CREDITACCTNO: { _text: String(payment.creditAcctNo) },
-        CURRENCYMKTCR: { _text: '1' },
-        CREDITCURRENCY: { _text: String(payment.creditCurrency) },
-        CREDITVALUEDATE: { _text: '20210831' },
-        TREASURYRATE: { _text: '44.8261' },
-        PROCESSINGDATE: { _text: '20210831' },
-        gORDERINGCUST: { ORDERINGCUST: { _text: 'ANDI.1' } },
-        CHARGECOMDISPLAY: { _text: 'NO' },
-        COMMISSIONCODE: { _text: 'DEBIT PLUS CHARGES' },
-        CHARGECODE: { _text: 'DEBIT PLUS CHARGES' },
-        BASECURRENCY: { _text: 'USD' },
-        PROFITCENTRECUST: { _text: '1000104000' },
-        RETURNTODEPT: { _text: 'NO' },
-        FEDFUNDS: { _text: 'NO' },
-        POSITIONTYPE: { _text: 'TR' },
-        AMOUNTDEBITED: { _text: 'USD1.00' },
-        AMOUNTCREDITED: { _text: 'ETB44.83' },
-        CUSTOMERRATE: { _text: '44.8261' },
-        gDELIVERYOUTREF: {
-          DELIVERYOUTREF: [
-            { _text: 'D20221011895444018000-900.1.1 DEBIT ADVICE' },
-            { _text: 'D20221011895444018001-910.2.1 CREDIT ADVICE' },
-          ],
+      'S:Envelope': {
+        _attributes: {
+          'xmlns:S': 'http://schemas.xmlsoap.org/soap/envelope/',
         },
-        CREDITCOMPCODE: { _text: 'ET0011234' },
-        DEBITCOMPCODE: { _text: 'ET0010202' },
-        LOCAMTDEBITED: { _text: '44.83' },
-        LOCAMTCREDITED: { _text: '44.83' },
-        CUSTGROUPLEVEL: { _text: '99' },
-        DEBITCUSTOMER: { _text: '1000104000' },
-        CREDITCUSTOMER: { _text: '1025700373' },
-        DRADVICEREQDYN: { _text: 'Y' },
-        CRADVICEREQDYN: { _text: 'Y' },
-        CHARGEDCUSTOMER: { _text: '1000104000' },
-        TOTRECCOMM: { _text: '0' },
-        TOTRECCOMMLCL: { _text: '0' },
-        TOTRECCHG: { _text: '0' },
-        TOTRECCHGLCL: { _text: '0' },
-        RATEFIXING: { _text: 'NO' },
-        TOTRECCHGCRCCY: { _text: '0' },
-        TOTSNDCHGCRCCY: { _text: '0.00' },
-        AUTHDATE: { _text: '20210831' },
-        ROUNDTYPE: { _text: 'NATURAL' },
-        gSTMTNOS: {
-          STMTNOS: [
-            { _text: '200088954440178.00' },
-            { _text: '1-4' },
-            { _text: 'ET0010202' },
-            { _text: '200088954440178.01' },
-            { _text: '1-2' },
-            { _text: 'ET0011234' },
-            { _text: '200088954440178.02' },
-            { _text: '1-2' },
-          ],
+        'S:Body': {
+          'ns10:RMTFundtransferResponse': {
+            _attributes: {
+              'xmlns:ns10': 'http://temenos.com/CBEREMITANCE',
+              'xmlns:ns9':
+                'http://temenos.com/FUNDSTRANSFEROT103SERIALFTHPOUTWARD',
+              'xmlns:ns8': 'http://temenos.com/ESTTLMENTACCBEREMITANCE',
+              'xmlns:ns7': 'http://temenos.com/FUNDSTRANSFERREMITANCELMTS',
+              'xmlns:ns6': 'http://temenos.com/ETXNSTATUSCBEREMITANCE',
+              'xmlns:ns5': 'http://temenos.com/EEXCHRATESCBEREMITANCE',
+              'xmlns:ns4': 'http://temenos.com/EACCOUNTCBEREMITANCE',
+              'xmlns:ns3': 'http://temenos.com/FUNDSTRANSFER',
+              'xmlns:ns2': 'http://temenos.com/FUNDSTRANSFERCBEREMITANCE',
+            },
+            Status: {
+              transactionId: { _text: 'FT21243423L4' },
+              messageId: {},
+              successIndicator: { _text: 'Success' },
+              application: { _text: 'FUNDS.TRANSFER' },
+            },
+            FUNDSTRANSFERType: {
+              _attributes: {
+                id: 'FT21243423L4',
+              },
+              'ns3:TRANSACTIONTYPE': { _text: 'AC' },
+              'ns3:DEBITACCTNO': { _text: '1000001046296' },
+              'ns3:CURRENCYMKTDR': { _text: '1' },
+              'ns3:DEBITCURRENCY': { _text: 'USD' },
+              'ns3:DEBITAMOUNT': { _text: '1.00' },
+              'ns3:DEBITVALUEDATE': { _text: '20210831' },
+              'ns3:DEBITTHEIRREF': { _text: '123450216' },
+              'ns3:CREDITACCTNO': { _text: '1000263499216' },
+              'ns3:CURRENCYMKTCR': { _text: '1' },
+              'ns3:CREDITCURRENCY': { _text: 'ETB' },
+              'ns3:CREDITVALUEDATE': { _text: '20210831' },
+              'ns3:TREASURYRATE': { _text: '44.8261' },
+              'ns3:PROCESSINGDATE': { _text: '20210831' },
+              'ns3:gORDERINGCUST': {
+                'ns3:ORDERINGCUST': { _text: 'ANDI.1' },
+              },
+              'ns3:CHARGECOMDISPLAY': { _text: 'NO' },
+              'ns3:COMMISSIONCODE': { _text: 'DEBIT PLUS CHARGES' },
+              'ns3:CHARGECODE': { _text: 'DEBIT PLUS CHARGES' },
+              'ns3:BASECURRENCY': { _text: 'USD' },
+              'ns3:PROFITCENTRECUST': { _text: '1000104000' },
+              'ns3:RETURNTODEPT': { _text: 'NO' },
+              'ns3:FEDFUNDS': { _text: 'NO' },
+              'ns3:POSITIONTYPE': { _text: 'TR' },
+              'ns3:AMOUNTDEBITED': { _text: 'USD1.00' },
+              'ns3:AMOUNTCREDITED': { _text: 'ETB44.83' },
+              'ns3:CUSTOMERRATE': { _text: '44.8261' },
+              'ns3:gDELIVERYOUTREF': {
+                'ns3:DELIVERYOUTREF': [
+                  { _text: 'D20221011895444018000-900.1.1 DEBIT ADVICE' },
+                  { _text: 'D20221011895444018001-910.2.1 CREDIT ADVICE' },
+                ],
+              },
+              'ns3:CREDITCOMPCODE': { _text: 'ET0011234' },
+              'ns3:DEBITCOMPCODE': { _text: 'ET0010202' },
+              'ns3:LOCAMTDEBITED': { _text: '44.83' },
+              'ns3:LOCAMTCREDITED': { _text: '44.83' },
+              'ns3:CUSTGROUPLEVEL': { _text: '99' },
+              'ns3:DEBITCUSTOMER': { _text: '1000104000' },
+              'ns3:CREDITCUSTOMER': { _text: '1025700373' },
+              'ns3:DRADVICEREQDYN': { _text: 'Y' },
+              'ns3:CRADVICEREQDYN': { _text: 'Y' },
+              'ns3:CHARGEDCUSTOMER': { _text: '1000104000' },
+              'ns3:TOTRECCOMM': { _text: '0' },
+              'ns3:TOTRECCOMMLCL': { _text: '0' },
+              'ns3:TOTRECCHG': { _text: '0' },
+              'ns3:TOTRECCHGLCL': { _text: '0' },
+              'ns3:RATEFIXING': { _text: 'NO' },
+              'ns3:TOTRECCHGCRCCY': { _text: '0' },
+              'ns3:TOTSNDCHGCRCCY': { _text: '0.00' },
+              'ns3:AUTHDATE': { _text: '20210831' },
+              'ns3:ROUNDTYPE': { _text: 'NATURAL' },
+              'ns3:gSTMTNOS': {
+                'ns3:STMTNOS': [
+                  { _text: '200088954440178.00' },
+                  { _text: '1-4' },
+                  { _text: 'ET0010202' },
+                  { _text: '200088954440178.01' },
+                  { _text: '1-2' },
+                  { _text: 'ET0011234' },
+                  { _text: '200088954440178.02' },
+                  { _text: '1-2' },
+                ],
+              },
+              'ns3:CURRNO': { _text: '1' },
+              'ns3:gINPUTTER': {
+                'ns3:INPUTTER': { _text: '89544_ANDI.1__OFS_GCS' },
+              },
+              'ns3:gDATETIME': {
+                'ns3:DATETIME': { _text: '2210111109' },
+              },
+              'ns3:AUTHORISER': { _text: '89544_ANDI.1_OFS_GCS' },
+              'ns3:COCODE': { _text: 'ET0010001' },
+              'ns3:DEPTCODE': { _text: '1' },
+              'ns3:REMNAME': { _text: 'ANDUALE' },
+              'ns3:BENNME': { _text: 'ABIY' },
+            },
+          },
         },
-        CURRNO: { _text: '1' },
-        gINPUTTER: { INPUTTER: { _text: '89544_ANDI.1__OFS_GCS' } },
-        gDATETIME: { DATETIME: { _text: '2210111109' } },
-        AUTHORISER: { _text: '89544_ANDI.1_OFS_GCS' },
-        COCODE: { _text: 'ET0010001' },
-        DEPTCODE: { _text: '1' },
-        REMNAME: { _text: String(payment.remitterName) },
-        BENNME: { _text: String(payment.beneficiaryName) },
       },
     };
-    return new Promise((resolve) => resolve(response));
+    return response;
   }
 
   // Mocks Transaction/transfer Status Enquiry
