@@ -45,12 +45,12 @@ test.beforeEach(async ({ page }) => {
 test('[34947] Filter registrations by Date selection', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter registration created column by "Equals" date', async () => {
+  await test.step('Filter registration created column by "Date is" date', async () => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      filterMode: 'Equals',
+      filterMode: 'Date is',
     });
     await tableComponent.validateAllRecordsCount(4);
     await tableComponent.clearAllFilters();
@@ -60,30 +60,30 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
         day: diffDay,
-        filterMode: 'Equals',
+        filterMode: 'Date is',
       });
     }
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });
 
-  await test.step('Filter registration created column by "Less than" date', async () => {
+  await test.step('Filter registration created column by "Date is before" date', async () => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      filterMode: 'Less than',
+      filterMode: 'Date is before',
     });
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
   });
 
-  await test.step('Filter registration created column by "Greater than" date', async () => {
+  await test.step('Filter registration created column by "Date is after" date', async () => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
       day,
-      filterMode: 'Greater than',
+      filterMode: 'Date is after',
     });
     await tableComponent.assertEmptyTableState();
   });
