@@ -59,16 +59,18 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
 
   async selectDropdownOption({
     dropdownIdName,
+    dropdownLabel,
     option,
   }: {
     dropdownIdName: string;
+    dropdownLabel: string;
     option: string;
   }) {
     const dropwdown = this.page
       .getByTestId(`edit-personal-information-${dropdownIdName}`)
       .getByRole('button');
     await dropwdown.click();
-    await this.page.getByLabel('Preferred Language').fill(option);
+    await this.page.getByLabel(dropdownLabel).fill(option);
     await this.page.getByRole('option', { name: option }).click();
   }
 

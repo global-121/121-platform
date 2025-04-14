@@ -15,6 +15,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import {
+  dropdownInputs,
   numberInputs,
   textInputs,
 } from '@121-e2e/portalicious/helpers/PersonalInformationFields';
@@ -50,7 +51,7 @@ const goToEditPersonalInformationPage = async (page: Page) => {
   await activityLogPage.navigateToPersonalInformation();
 };
 
-test.describe('View available actions for admin', () => {
+test.describe('Edit all the fields in registration Personal Information', () => {
   let page: Page;
 
   test.beforeAll(async ({ browser }) => {
@@ -81,6 +82,7 @@ test.describe('View available actions for admin', () => {
     );
     await personalInformationPage.selectDropdownOption({
       dropdownIdName: 'preferredLanguage',
+      dropdownLabel: dropdownInputs.preferredLanguage.fieldName,
       option: 'Indonesian',
     });
     await personalInformationPage.saveChanges();
@@ -89,7 +91,7 @@ test.describe('View available actions for admin', () => {
     );
     // Validate the selected option
     await personalInformationPage.validatePersonalInformationField({
-      fieldName: 'Preferred Language',
+      fieldName: dropdownInputs.preferredLanguage.fieldName,
       fieldValue: 'Indonesian',
     });
   });
