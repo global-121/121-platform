@@ -9,15 +9,16 @@ on:
   pull_request:
     paths:
       - '.github/workflows/test_mock-service_code.yml'
+      - '.github/actions/build-service/action.yml'
       - 'services/mock-service/**'
   push:
-    paths:
-      - '.github/actions/build-service/action.yml'
-      - '.github/workflows/test_mock-service_code.yml'
-      - 'services/mock-service/**'
     branches:
       - 'release/*'
       - 'hotfix/*'
+    paths:
+      - '.github/workflows/test_mock-service_code.yml'
+      - '.github/actions/build-service/action.yml'
+      - 'services/mock-service/**'
 
 env:
   workingDirectory: 'services/mock-service'
