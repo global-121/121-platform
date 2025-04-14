@@ -146,6 +146,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.RegistrationStatusMarkAsDeclinedUPDATE,
           PermissionEnum.RegistrationStatusIncludedUPDATE,
           PermissionEnum.RegistrationImportTemplateREAD,
+          PermissionEnum.RegistrationDuplicationDELETE,
           PermissionEnum.ActionREAD,
           PermissionEnum.AidWorkerProgramREAD,
           PermissionEnum.AidWorkerProgramUPDATE,

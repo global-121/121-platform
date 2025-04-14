@@ -151,8 +151,9 @@ export class RegistrationPageLayoutComponent {
           label: $localize`:@@ignore-duplication:Ignore duplication`,
           icon: 'pi pi-clone',
           visible:
+            this.canIgnoreDuplication() &&
             this.registration.data()?.duplicateStatus ===
-            DuplicateStatus.duplicate,
+              DuplicateStatus.duplicate,
           command: () => {
             this.ignoreDuplicationDialog().show();
           },
@@ -236,6 +237,13 @@ export class RegistrationPageLayoutComponent {
     this.authService.hasPermission({
       projectId: this.projectId(),
       requiredPermission: PermissionEnum.RegistrationPersonalUPDATE,
+    }),
+  );
+
+  readonly canIgnoreDuplication = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.RegistrationDuplicationDELETE,
     }),
   );
 
