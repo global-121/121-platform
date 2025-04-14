@@ -5,7 +5,6 @@ import angularEslint from 'angular-eslint';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-// @ts-ignore-next-line -- TODO: Check correct type definition for eslint-plugin-query in future version
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
