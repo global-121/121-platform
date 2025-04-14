@@ -1595,6 +1595,15 @@
       <trans-unit id="7732309408488818531" datatype="html">
         <source>Greater than</source>
       </trans-unit>
+      <trans-unit id="2484327586042742796" datatype="html">
+        <source>Date is after</source>
+      </trans-unit>
+      <trans-unit id="2867000227530087117" datatype="html">
+        <source>Date is</source>
+      </trans-unit>
+      <trans-unit id="7017859949445533273" datatype="html">
+        <source>Date is before</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
