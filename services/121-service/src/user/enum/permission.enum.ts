@@ -70,6 +70,9 @@ export enum PermissionEnum {
   // Registration(s) - Import
   RegistrationImportTemplateREAD = 'registration:import-template.read',
 
+  // Registration(s) - Duplication
+  RegistrationDuplicationDELETE = 'registration:duplication.delete',
+
   // Action(s)
   ActionREAD = 'action.read',
   ActionCREATE = 'action.create',
