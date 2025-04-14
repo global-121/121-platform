@@ -52,21 +52,24 @@ describe('Do payment to 1 PA', () => {
         accessToken,
       });
 
-      await waitForPaymentTransactionsToComplete(
+      await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds,
         accessToken,
-        3001,
-        [TransactionStatusEnum.success, TransactionStatusEnum.error],
-      );
+        maxWaitTimeMs: 3001,
+        completeStatusses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
 
       // Assert
-      const getTransactionsBody = await getTransactions(
+      const getTransactionsBody = await getTransactions({
         programId,
-        payment,
-        registrationCbe.referenceId,
+        paymentNr: payment,
+        referenceId: registrationCbe.referenceId,
         accessToken,
-      );
+      });
 
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
       expect(doPaymentResponse.body.applicableCount).toBe(

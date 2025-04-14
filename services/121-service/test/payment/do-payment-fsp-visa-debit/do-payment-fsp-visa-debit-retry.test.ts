@@ -62,14 +62,14 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa,
-    );
+      maxWaitTimeMs: 3001,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa,
+    });
 
     // update PA
     await updateRegistration(
@@ -85,12 +85,12 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -121,14 +121,14 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa,
-    );
+      maxWaitTimeMs: 3001,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa,
+    });
 
     // update PA
     await updateRegistration(
@@ -144,12 +144,12 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     await waitFor(2_000);
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(transactionsResponse.body[0].amount).toBe(
       amountVisa * registrationVisa.paymentAmountMultiplier,
