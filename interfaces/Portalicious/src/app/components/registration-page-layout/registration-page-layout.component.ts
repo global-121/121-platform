@@ -241,9 +241,12 @@ export class RegistrationPageLayoutComponent {
   );
 
   readonly canIgnoreDuplication = computed(() =>
-    this.authService.hasPermission({
+    this.authService.hasAllPermissions({
       projectId: this.projectId(),
-      requiredPermission: PermissionEnum.RegistrationDuplicationDELETE,
+      requiredPermissions: [
+        PermissionEnum.RegistrationPersonalUPDATE,
+        PermissionEnum.RegistrationDuplicationDELETE,
+      ],
     }),
   );
 

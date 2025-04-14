@@ -686,7 +686,10 @@ export class RegistrationsController {
   }
 
   @AuthenticatedUser({
-    permissions: [PermissionEnum.RegistrationPersonalUPDATE],
+    permissions: [
+      PermissionEnum.RegistrationPersonalUPDATE,
+      PermissionEnum.RegistrationDuplicationDELETE,
+    ],
   })
   @ApiOperation({
     summary:
