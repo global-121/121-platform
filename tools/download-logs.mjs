@@ -1,33 +1,30 @@
 /**
- * To use this script, you have to have the azure cli installed and logged in with "az login".
+ * To use this script, you have to have the Azure CLI installed and logged in with "az login".
  * https://aka.ms/azure-cli
  *
  * Also make sure to create an .env file with the relevant environment variables.
  */
-
-import 'dotenv/config';
-
 import { DefaultAzureCredential } from '@azure/identity';
 import { parse } from 'node-html-parser';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const LOGS_FOLDER = path.join(process.cwd(), 'logs');
 const IGNORED_INSTANCES = ['test', 'staging', 'demo', 'training'];
 
-// returns an azure access token that can be used to access protected resources
 async function getAzureAccessToken() {
   const credential = new DefaultAzureCredential();
   return await credential.getToken('https://management.azure.com');
 }
 
-// returns all of the instance ids and their docker logs urls based on the status page
-// TODO: would be nice to use the azure API for this instead, but the documentation is not very clear
+/**
+ * Get all of the instance ids and their Docker-logs urls based on the status page
+ *
+ * TODO: would be nice to use the Azure API for this instead, but the documentation is not very clear
+ */
 async function getInstancesLogsUrls() {
   const response = await fetch('https://status.121.global');
   const data = await response.text();
-
-  // parse html
   const root = parse(data);
 
   // get all instances

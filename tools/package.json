@@ -1,16 +1,14 @@
 {
   "name": "121-platform-tools",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "download-logs": "node download-logs.mjs"
+    "setup": "cp -i .env.example .env",
+    "postinstall": "npm run setup",
+    "check-versions": "node check-versions.mjs",
+    "download-logs": "node --env-file=.env download-logs.mjs"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@azure/identity": "^4.5.0",
-    "dotenv": "^16.4.7",
     "node-html-parser": "^6.1.13"
   }
 }

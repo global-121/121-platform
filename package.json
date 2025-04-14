@@ -7,7 +7,6 @@
   "private": true,
   "scripts": {
     "start": "echo 'See README.md#getting-started \\n\\n'",
-    "demo": "npx npm-run-all --npm-path npm --print-label --parallel start:all open:all",
     "start:all": "npx npm-run-all --npm-path npm --print-label --parallel start:services start:portal",
     "logs:services": "cd services/ && docker compose logs --follow",
     "start:services": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml up --detach --build",
@@ -38,7 +37,8 @@
     "fix:portal": "npm run fix --prefix=interfaces/Portal/",
     "fix:portalicious": "npm run fix --prefix=interfaces/Portalicious/",
     "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:portalicious",
-    "tool:download-logs": "cd tools/ && npm run download-logs",
+    "tool:download-logs": "npm run download-logs --prefix=tools/",
+    "tool:check-versions": "npm run check-versions --prefix=tools/",
     "prepare": "husky"
   },
   "devDependencies": {
