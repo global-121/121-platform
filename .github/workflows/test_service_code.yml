@@ -4,6 +4,8 @@ name: 'Test Service: Code'
 
 on:
   workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
   pull_request:
     paths:
       - '.github/actions/build-service/action.yml'
