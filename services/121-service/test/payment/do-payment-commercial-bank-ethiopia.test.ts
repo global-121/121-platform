@@ -18,6 +18,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationCbe } from '@121-service/test/registrations/pagination/pagination-data';
 
+// ## TODO: Remove this file: I found it after creating the same (but better :D) in /121-service/test/payment/do-payment-fsp-safaricom.test.ts => Apparantly we already had an API test for CBE payments!!! :O
+
 describe('Do payment to 1 PA', () => {
   const programId = 1;
   const payment = 1;
