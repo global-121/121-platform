@@ -112,6 +112,8 @@ export class TableCellOverviewComponent
         return REGISTRATION_STATUS_LABELS[item.attributes.newValue];
       case ActivityTypeEnum.Transaction:
         return;
+      case ActivityTypeEnum.IgnoredDuplicate:
+        return $localize`Duplication ignored with Reg. #${item.attributes.duplicateWithRegistrationProgramId}`;
     }
   });
 

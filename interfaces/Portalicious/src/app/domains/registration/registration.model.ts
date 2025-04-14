@@ -13,6 +13,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { Dto } from '~/utils/dto-type';
+import { IgnoredDuplicateActivity } from '@121-service/src/activities/interfaces/ignored-duplicate-activity.interface';
 
 export type Registration = Dto<MappedPaginatedRegistrationDto> &
   Record<string, unknown>; // The Registration entity has a lot of properties, but they are dynamic based on the program configuration so we don't know them in advance
@@ -31,7 +32,8 @@ export type Activity =
   | Dto<MessageActivity>
   | Dto<NoteActivity>
   | Dto<StatusChangeActivity>
-  | Dto<TransactionActivity>;
+  | Dto<TransactionActivity>
+  | Dto<IgnoredDuplicateActivity>;
 
 export type ActitivitiesResponse = {
   data: Activity[];
