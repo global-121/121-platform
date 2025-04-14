@@ -18,21 +18,21 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.x",
-    "@types/supertest": "^6.0.2",
+    "@types/supertest": "^6.0.3",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.1.1",
+    "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.0.0",
     "prettier": "3.5.3",
     "supertest": "^7.1.0",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "^8.29.1"
   },
   "dependencies": {
-    "@alex_neo/playwright-azure-reporter": "^1.12.0",
+    "@alex_neo/playwright-azure-reporter": "^1.13.1",
     "date-fns": "^4.1.0",
-    "dotenv": "16.4.7",
+    "dotenv": "16.5.0",
     "playwright": "^1.51.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   }
