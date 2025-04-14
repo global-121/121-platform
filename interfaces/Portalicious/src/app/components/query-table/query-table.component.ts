@@ -344,13 +344,21 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   getMatchModeOptions(column: QueryTableColumn<TData>) {
     const type = this.getColumnType(column);
-    if (
-      [QueryTableColumnType.DATE, QueryTableColumnType.NUMERIC].includes(type)
-    ) {
+    if (QueryTableColumnType.NUMERIC === type) {
       return [
         { label: $localize`Equals`, value: FilterMatchMode.EQUALS },
         { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
         { label: $localize`Greater than`, value: FilterMatchMode.GREATER_THAN },
+      ];
+    }
+    if (QueryTableColumnType.DATE === type) {
+      return [
+        { label: $localize`Date is`, value: FilterMatchMode.EQUALS },
+        { label: $localize`Date is before`, value: FilterMatchMode.LESS_THAN },
+        {
+          label: $localize`Date is after`,
+          value: FilterMatchMode.GREATER_THAN,
+        },
       ];
     }
     return undefined;

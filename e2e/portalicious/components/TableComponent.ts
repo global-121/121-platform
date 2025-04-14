@@ -238,7 +238,9 @@ class TableComponent {
     await filterMenuButton.click();
 
     await this.rangeDropdown.click();
-    await this.page.getByRole('option', { name: filterMode }).click();
+    await this.page
+      .getByRole('option', { name: filterMode, exact: true })
+      .click();
 
     await this.page.locator('input[type="text"]').click();
     await this.datePicker.getByText(`${day}`, { exact: true }).first().click();

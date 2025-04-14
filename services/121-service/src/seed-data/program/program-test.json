@@ -27,7 +27,7 @@
   "targetNrRegistrations": 250,
   "programRegistrationAttributes": [
     {
-      "name": "name",
+      "name": "fullName",
       "label": {
         "ar": "الاسم",
         "en": "Name",
@@ -276,7 +276,7 @@
     "fr": "[à propos du programme d'aide]",
     "nl": "[beschrijving van het programma]"
   },
-  "fullnameNamingConvention": ["name"],
+  "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "nl"],
   "tryWhatsAppFirst": true,
   "enableMaxPayments": false,
@@ -307,7 +307,7 @@
       "properties": [
         {
           "name": "columnsToExport",
-          "value": ["name", "dob", "dragon", "phoneNumber"]
+          "value": ["fullName", "dob", "dragon", "phoneNumber"]
         },
         {
           "name": "columnToMatch",
