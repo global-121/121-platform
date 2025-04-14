@@ -106,7 +106,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     }
   }
 
-  async validteRegistrationTitle(registrationTitle: string) {
+  async validateRegistrationTitle(registrationTitle: string) {
     const title = await this.registrationTitle.innerText();
     expect(title).toContain(registrationTitle);
   }

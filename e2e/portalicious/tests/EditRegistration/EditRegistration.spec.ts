@@ -127,7 +127,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
         );
       }
     }
-    await personalInformationPage.validteRegistrationTitle(
+    await personalInformationPage.validateRegistrationTitle(
       textInputs.name.textInputValue,
     );
   });
