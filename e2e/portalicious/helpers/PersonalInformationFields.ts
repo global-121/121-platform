@@ -1,76 +1,62 @@
-export const textInputs = [
-  {
+export const textInputs = {
+  namePartnerOrganization: {
     fieldName: 'Partner Organization',
-    textInputIdName: 'namePartnerOrganization',
     textInputValue: 'Red Panda',
   },
-  {
+  whatsappPhoneNumber: {
     fieldName: 'WhatsApp Nr.',
-    textInputIdName: 'whatsappPhoneNumber',
     textInputValue: '5612345678',
   },
-  {
+  phoneNumber: {
     fieldName: 'Phone Number',
-    textInputIdName: 'phoneNumber',
     textInputValue: '0612345678',
   },
-  {
+  addressPostalCode: {
     fieldName: 'Address postal code',
-    textInputIdName: 'addressPostalCode',
     textInputValue: '1234GH',
   },
-  {
+  scope: {
     fieldName: 'Scope',
-    textInputIdName: 'scope',
     textInputValue: 'amsterdam.west',
     count: 2,
   },
-  {
+  name: {
     fieldName: 'Name',
-    textInputIdName: 'name',
     textInputValue: 'Hovik Karayan',
   },
-  {
+  fullName: {
     fieldName: 'Full Name',
-    textInputIdName: 'fullName',
     textInputValue: 'Hovik Karayan',
   },
-  {
+  addressStreet: {
     fieldName: 'Address street',
-    textInputIdName: 'addressStreet',
     textInputValue: 'Parklaan',
   },
-  {
+  addressHouseNumberAddition: {
     fieldName: 'Address house number addition',
-    textInputIdName: 'addressHouseNumberAddition',
     textInputValue: 'D',
   },
-  {
+  addressCity: {
     fieldName: 'Address city',
-    textInputIdName: 'addressCity',
     textInputValue: 'Amsterdam',
   },
-];
+};
 
-export const numberInputs = [
-  {
+export const numberInputs = {
+  maxPayments: {
     fieldName: 'Max. payments:',
-    numberInputIdName: 'maxPayments',
     numberInputValue: 5,
   },
-  {
+  addressHouseNumber: {
     fieldName: 'Address house number:',
-    numberInputIdName: 'addressHouseNumber',
     numberInputValue: 123,
   },
-  {
+  paymentAmountMultiplier: {
     fieldName: 'Transfer value multiplier:',
-    numberInputIdName: 'paymentAmountMultiplier',
     numberInputValue: 2,
   },
-  {
+  paymentCountRemaining: {
     fieldName: 'Remaining payments:',
-    numberInputIdName: 'paymentCountRemaining',
     numberInputValue: 5,
   },
-];
+};

@@ -17,7 +17,7 @@ import {
 import {
   numberInputs,
   textInputs,
-} from '@121-e2e/portalicious/components/PersonalInformationFields';
+} from '@121-e2e/portalicious/helpers/PersonalInformationFields';
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portalicious/pages/RegistrationActivityLogPage';
 import RegistrationPersonalInformationPage from '@121-e2e/portalicious/pages/RegistrationPersonalInformationPage';
@@ -75,11 +75,6 @@ test.describe('View available actions for admin', () => {
     await page.close();
   });
 
-  test('[35234] Edit: FSP', async () => {
-    console.log('Edit: FSP in different test case');
-    await page.reload();
-  });
-
   test('[35284] Edit: Dropdown Selection fields', async () => {
     const personalInformationPage = new RegistrationPersonalInformationPage(
       page,
@@ -104,29 +99,35 @@ test.describe('View available actions for admin', () => {
       page,
     );
     // Fill all text inputs
-    for (const input of textInputs) {
-      await personalInformationPage.fillTextInput(input);
+    for (const [textInputIdName, data] of Object.entries(textInputs)) {
+      await personalInformationPage.fillTextInput({
+        textInputIdName,
+        textInputValue: data.textInputValue,
+      });
     }
     await personalInformationPage.saveChanges();
     // Validate all text fields
-    // If count is greater than 1, it means that the field is repeated
-    // in the personal information page and should be validated multiple times eg. Name and Scope
-    for (const validation of textInputs) {
-      if (!validation.count) {
+    // If count is included and is greater than 1, it means that the field is repeated
+    // in the personal information page and should be validated multiple times Scope
+    for (const [_textInputIdName, data] of Object.entries(textInputs)) {
+      if (!('count' in data) || data.count === 1) {
         await personalInformationPage.validatePersonalInformationField({
-          fieldName: validation.fieldName,
-          fieldValue: validation.textInputValue,
+          fieldName: data.fieldName,
+          fieldValue: data.textInputValue,
         });
       } else {
         await personalInformationPage.validateMultiplePersonalInformationFields(
           {
-            fieldName: validation.fieldName,
-            fieldValue: validation.textInputValue,
-            expectedCount: validation.count!,
+            fieldName: data.fieldName,
+            fieldValue: data.textInputValue,
+            expectedCount: data.count,
           },
         );
       }
     }
+    await personalInformationPage.validteRegistrationTitle(
+      textInputs.name.textInputValue,
+    );
   });
 
   test('[35286] Edit: Number Input fields', async () => {
@@ -134,15 +135,18 @@ test.describe('View available actions for admin', () => {
       page,
     );
     // Fill all number inputs
-    for (const input of numberInputs) {
-      await personalInformationPage.fillNumberInput(input);
+    for (const [numberInputIdName, data] of Object.entries(numberInputs)) {
+      await personalInformationPage.fillNumberInput({
+        numberInputIdName,
+        numberInputValue: data.numberInputValue,
+      });
     }
     await personalInformationPage.saveChanges();
     // Validate all number fields
-    for (const validation of numberInputs) {
+    for (const [_numberInputIdName, data] of Object.entries(numberInputs)) {
       await personalInformationPage.validatePersonalInformationField({
-        fieldName: validation.fieldName,
-        fieldValue: String(validation.numberInputValue),
+        fieldName: data.fieldName,
+        fieldValue: String(data.numberInputValue),
       });
     }
   });

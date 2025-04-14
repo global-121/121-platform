@@ -8,6 +8,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
   readonly editInformationButton: Locator;
   readonly editInformationReasonField: Locator;
   readonly saveButton: Locator;
+  readonly registrationTitle: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -18,6 +19,7 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
       'Write a reason for the update',
     );
     this.saveButton = this.page.getByRole('button', { name: 'Save' });
+    this.registrationTitle = this.page.getByTestId('registration-title');
   }
 
   async editRegistration({
@@ -100,6 +102,11 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
       await numberInput.click();
       await numberInput.fill(String(numberInputValue));
     }
+  }
+
+  async validteRegistrationTitle(registrationTitle: string) {
+    const title = await this.registrationTitle.innerText();
+    expect(title).toContain(registrationTitle);
   }
 
   async validatePersonalInformationField({
