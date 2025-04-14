@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-import { CommercialBankEthiopiaTransferPayload } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/dtos/commercial-bank-ethiopia-transfer-payload.dto';
-
 @Injectable()
 export class CommercialBankEthiopiaMockService {
   // Mocks Account Enquiry
@@ -77,7 +75,7 @@ export class CommercialBankEthiopiaMockService {
 
   // Mocks Credit Transfer
   public async postCBETransfer(
-    _payment: CommercialBankEthiopiaTransferPayload, // ## TODO: Use value from payment in response structure
+    _payload: string, // ## TODO: Use value from payload in response structure
   ): Promise<any> {
     //##TODO: await waitForRandomDelay(100, 300);
 

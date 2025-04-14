@@ -1,3 +1,4 @@
+// ##TODO: Remove this class if not used in the Mock Service
 export class CommercialBankEthiopiaTransferPayload {
   public debitAmount: number;
   public debitTheirRef: string;

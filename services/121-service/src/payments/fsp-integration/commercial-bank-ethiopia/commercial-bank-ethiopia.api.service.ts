@@ -28,13 +28,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBETransfer(payment)
-        : await this.soapService.postCBERequest({
-            apiUrl: cbeApiUrl,
-            payload,
-            soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
-          });
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
+      });
 
       if (
         responseBody.Status &&
