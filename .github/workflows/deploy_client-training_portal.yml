@@ -26,9 +26,8 @@ jobs:
     env:
       NG_ENV_NAME: ${{ vars.NG_ENV_NAME }}
       NG_ENV_ICON: ${{ vars.NG_ENV_ICON }}
-      # TODO: These locales should come from the environment, but they conflict with the old portal locale format
-      NG_LOCALES: 'ar,en-GB,es,fr,nl'
-      NG_DEFAULT_LOCALE: 'en-GB'
+      NG_LOCALES: ${{ vars.NG_LOCALES }}
+      NG_DEFAULT_LOCALE: ${{ vars.NG_DEFAULT_LOCALE }}
       NG_URL_121_SERVICE_API: ${{ vars.NG_URL_121_SERVICE_API }}
       USE_IN_TWILIO_FLEX_IFRAME: ${{ vars.USE_IN_TWILIO_FLEX_IFRAME }}
       USE_POWERBI_DASHBOARDS: ${{ vars.USE_POWERBI_DASHBOARDS }}
