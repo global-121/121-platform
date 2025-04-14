@@ -229,7 +229,7 @@ export const expectedAttributes = [
 export const registrationWesteros1 = {
   referenceId: 'westeros123456789',
   preferredLanguage: 'en',
-  name: 'John Snow',
+  fullName: 'John Snow',
   dob: '31-08-1990',
   house: 'stark',
   dragon: 1,
@@ -243,7 +243,7 @@ export const registrationWesteros1 = {
 export const registrationWesteros2 = {
   referenceId: 'westeros987654321',
   preferredLanguage: 'en',
-  name: 'Arya Stark',
+  fullName: 'Arya Stark',
   dob: '31-08-1990',
   house: 'stark',
   dragon: 0,
@@ -257,7 +257,7 @@ export const registrationWesteros2 = {
 export const registrationWesteros3 = {
   referenceId: 'westeros987654322',
   preferredLanguage: 'en',
-  name: 'Jaime Lannister',
+  fullName: 'Jaime Lannister',
   dob: '31-08-1990',
   house: 'lannister',
   dragon: 0,
@@ -271,7 +271,7 @@ export const registrationWesteros3 = {
 export const registrationWesteros4 = {
   referenceId: 'westeros123456789',
   preferredLanguage: 'en',
-  name: 'John Snow',
+  fullName: 'John Snow',
   house: 'stark',
   dragon: 1,
   knowsNothing: true,
