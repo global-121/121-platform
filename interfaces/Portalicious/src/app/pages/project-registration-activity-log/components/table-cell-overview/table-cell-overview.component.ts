@@ -8,6 +8,7 @@ import {
   LOCALE_ID,
   viewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
@@ -27,7 +28,10 @@ import {
 import { TableCellComponent } from '~/components/query-table/components/table-cell/table-cell.component';
 import { MESSAGE_CONTENT_TYPE_LABELS } from '~/domains/message/message.helper';
 import { FSPS_WITH_VOUCHER_SUPPORT } from '~/domains/payment/payment.helpers';
-import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
+import {
+  REGISTRATION_STATUS_LABELS,
+  registrationLink,
+} from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
@@ -45,6 +49,7 @@ import { Locale } from '~/utils/locale';
     NgClass,
     ButtonModule,
     RetryTransfersDialogComponent,
+    RouterLink,
   ],
   templateUrl: './table-cell-overview.component.html',
   styles: ``,
@@ -161,6 +166,24 @@ export class TableCellOverviewComponent
       totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
     };
+  });
+
+  readonly isIgnoreDuplicationType = computed(
+    () => this.value().type === ActivityTypeEnum.IgnoredDuplicate,
+  );
+
+  readonly duplicateLink = computed(() => {
+    const item = this.value();
+
+    if (item.type !== ActivityTypeEnum.IgnoredDuplicate) {
+      return;
+    }
+
+    const registrationId = item.attributes.duplicateWithRegistrationId;
+    return registrationLink({
+      projectId: this.context().projectId(),
+      registrationId,
+    });
   });
 
   retryTransfer() {
