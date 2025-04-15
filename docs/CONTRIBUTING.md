@@ -84,7 +84,7 @@ Below is a list of other guidelines we try to follow for PRs.
   - Every PR should have one of the [labels we use for auto-generating release notes](../.github/release.yml)
   - Every PR title and description should follow the naming conventions outlined in the [Committing section](#committing) above. For example:
     - A descriptive title that starts with a keyword, eg. `feat: ignore duplicates`
-    - The description should contain a reference to a devops item
+    - The description should contain a reference to a DevOps-item
 - For PRs that target a branch that isn't `main`
   - If the target branch is currently in review, then the PR in question stays in draft (and therefore is not merged/reviewed) until the target branch is merged into `main`
     - This avoids the much dreaded long-lived and difficult-to-review feature branch phenomenon
