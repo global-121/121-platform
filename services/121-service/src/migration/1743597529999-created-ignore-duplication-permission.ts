@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
-
 export class CreatedIgnoreDuplicationPermission1743597529999
   implements MigrationInterface
 {
@@ -24,11 +22,7 @@ export class CreatedIgnoreDuplicationPermission1743597529999
 
     const permissionId = permissionIdQuery[0].id;
 
-    const rolesToAssign = [
-      DefaultUserRole.CvaManager,
-      DefaultUserRole.Admin,
-      DefaultUserRole.ProgramAdmin,
-    ];
+    const rolesToAssign = ['cva-manager', 'admin', 'program-admin'];
 
     // Loop through each role and assign the permission
     for (const role of rolesToAssign) {
