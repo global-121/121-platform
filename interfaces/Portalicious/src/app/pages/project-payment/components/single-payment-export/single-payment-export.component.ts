@@ -54,9 +54,11 @@ export class SinglePaymentExportComponent {
   readonly fspPaymentListLabel = computed(
     () => $localize`:@@export-fsp-payment-list:Export FSP payment list`,
   );
+
   readonly exportFspPaymentListMutationData = computed(() => ({
     paymentId: this.paymentId().toString(),
   }));
+
   exportFspPaymentListMutation = injectMutation(() => ({
     mutationFn: this.exportService.exportFspInstructions({
       projectId: this.projectId,
@@ -72,11 +74,13 @@ export class SinglePaymentExportComponent {
   readonly paymentReportLabel = computed(
     () => $localize`:@@payment-report:Payment report`,
   );
+
   readonly paymentReportMutationData = computed(() => ({
     type: ExportType.payment,
     minPayment: Number(this.paymentId()),
     maxPayment: Number(this.paymentId()),
   }));
+
   paymentReportMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
       this.projectId,
