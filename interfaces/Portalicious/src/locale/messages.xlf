@@ -1601,6 +1601,9 @@
       <trans-unit id="activity-log-item-type-duplication" datatype="html">
         <source>Duplication</source>
       </trans-unit>
+      <trans-unit id="7220831372983106820" datatype="html">
+        <source>View registration</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
