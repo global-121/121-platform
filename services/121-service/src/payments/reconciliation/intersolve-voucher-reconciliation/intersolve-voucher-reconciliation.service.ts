@@ -54,16 +54,18 @@ export class IntersolveVoucherReconciliationService {
           });
 
         const vouchersToUpdate = await q.getMany();
-        const credentials =
-          await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
-            vouchersToUpdate[0].id,
-          );
-        for await (const voucher of vouchersToUpdate) {
-          await this.intersolveVoucherService.getAndUpdateBalance(
-            voucher,
-            programId,
-            credentials,
-          );
+        if (vouchersToUpdate.length > 0) {
+          const credentials =
+            await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+              vouchersToUpdate[0].id,
+            );
+          for await (const voucher of vouchersToUpdate) {
+            await this.intersolveVoucherService.getAndUpdateBalance(
+              voucher,
+              programId,
+              credentials,
+            );
+          }
         }
         id += 1000;
       }
