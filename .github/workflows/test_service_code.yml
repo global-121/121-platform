@@ -4,19 +4,21 @@ name: 'Test Service: Code'
 
 on:
   workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
   pull_request:
     paths:
-      - '.github/actions/build-service/action.yml'
       - '.github/workflows/test_service_code.yml'
+      - '.github/actions/build-service/action.yml'
       - 'services/121-service/**'
   push:
-    paths:
-      - '.github/actions/build-service/action.yml'
-      - '.github/workflows/test_service_code.yml'
-      - 'services/121-service/**'
     branches:
       - 'release/*'
       - 'hotfix/*'
+    paths:
+      - '.github/workflows/test_service_code.yml'
+      - '.github/actions/build-service/action.yml'
+      - 'services/121-service/**'
 
 env:
   workingDirectory: 'services/121-service/'
