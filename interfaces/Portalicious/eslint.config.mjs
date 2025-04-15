@@ -131,7 +131,6 @@ export default tsEslint.config(
         {
           checkId: false,
           ignoreAttributes: [
-            'app-query-table[localStorageKey]',
             'data-testid',
             'field',
             'img[ngSrc]',
@@ -166,6 +165,8 @@ export default tsEslint.config(
             'app-import-file-dialog[accept]',
             'app-metric-tile[chipIcon]',
             'app-metric-tile[chipVariant]',
+            'app-query-table[localStorageKey]',
+            'app-query-table[initialSortField]',
             'iframe[referrerpolicy]',
             'iframe[loading]',
             'iframe[sandbox]',
