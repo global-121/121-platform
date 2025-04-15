@@ -77,9 +77,8 @@ export class CommercialBankEthiopiaMockService {
   public async postCBETransfer(
     _payload: string, // ## TODO: Use value from payload in response structure
   ): Promise<any> {
-    //##TODO: await waitForRandomDelay(100, 300);
-
-    const mockScenario = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
+    // ##TODO: I think we do not need the following line of code anymore:s
+    // const mockScenario = 'success'; // Set 'success' / 'duplicated' / 'other-failure' / 'no-response' to test the corresponding scenario
 
     // Define the success transaction Status object
     const successTransactionStatus = {
@@ -98,8 +97,8 @@ export class CommercialBankEthiopiaMockService {
         { _text: 'Transaction with number is DUPLICATED Transaction!' },
       ],
     };
-    // Define the duplicated transaction Status object
-    const otherFailureStatus = {
+    // Define the error transaction Status object
+    const errorStatus = {
       transactionId: { _text: 'FT212435G2ZD' },
       messageId: {},
       successIndicator: { _text: 'T24Error' },
@@ -107,20 +106,28 @@ export class CommercialBankEthiopiaMockService {
       messages: [{ _text: 'Other failure' }],
     };
 
-    // Switch between mock scenarios
-    // # TODO: Are these mock scenarios used anywhere? If so, include Status in the response structure, otherwise remove.
-    let _Status;
-    if (mockScenario === 'success') {
-      _Status = successTransactionStatus;
-    } else if (mockScenario === 'duplicated') {
-      _Status = duplicatedTransactionStatus;
-    } else if (mockScenario === 'other-failure') {
-      _Status = otherFailureStatus;
-    } else if (mockScenario === 'no-response') {
+    // Switch between mock scenarios based on Beneficiary Name from the payload
+    const beneficiaryName =
+      _payload['soapenv:Envelope']?.['soapenv:Body']?.[
+        'cber:RMTFundtransfer'
+      ]?.['FUNDSTRANSFERCBEREMITANCEType']?.['fun:BeneficiaryName'];
+
+    let Status;
+    if (beneficiaryName === 'duplicated') {
+      Status = duplicatedTransactionStatus;
+    } else if (beneficiaryName === 'error') {
+      Status = errorStatus;
+    } else if (beneficiaryName === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    } else if (beneficiaryName === 'time-out') {
+      return; // ##TODO: Is this an acceptable way to simulate a timeout? (got it from NedbankMockService)
+    } else {
+      // If no specific mock scenario is provided, use the success scenario
+      Status = successTransactionStatus;
     }
 
+    // ##TODO: Check if we need to use data from the payload in the response structure
     const response = {
       'S:Envelope': {
         _attributes: {
@@ -140,12 +147,7 @@ export class CommercialBankEthiopiaMockService {
               'xmlns:ns3': 'http://temenos.com/FUNDSTRANSFER',
               'xmlns:ns2': 'http://temenos.com/FUNDSTRANSFERCBEREMITANCE',
             },
-            Status: {
-              transactionId: { _text: 'FT21243423L4' },
-              messageId: {},
-              successIndicator: { _text: 'Success' },
-              application: { _text: 'FUNDS.TRANSFER' },
-            },
+            Status,
             FUNDSTRANSFERType: {
               _attributes: {
                 id: 'FT21243423L4',
@@ -235,6 +237,7 @@ export class CommercialBankEthiopiaMockService {
   }
 
   // Mocks Transaction/transfer Status Enquiry
+  // ## TODO: Decide if we want to create an Integration Test that uses this function. If so, then refactor it so it creates the full SOAP message. If not, decide if we want to remove this function, or keep it for manual tests? If yes, then still refactor.
   public async postCBETransaction(payment): Promise<any> {
     // ##TODO: await waitForRandomDelay(100, 300);
 
