@@ -41,19 +41,6 @@ export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
     [RegistrationStatusEnum.deleted]: $localize`Delete`,
   };
 
-export const REGISTRATION_STATUS_VERB_PROGRESSIVE: Record<
-  RegistrationStatusEnum,
-  string
-> = {
-  [RegistrationStatusEnum.registered]: $localize`Registering`,
-  [RegistrationStatusEnum.completed]: $localize`Completing`,
-  [RegistrationStatusEnum.validated]: $localize`Validating`,
-  [RegistrationStatusEnum.included]: $localize`Including`,
-  [RegistrationStatusEnum.paused]: $localize`Pausing`,
-  [RegistrationStatusEnum.declined]: $localize`Declining`,
-  [RegistrationStatusEnum.deleted]: $localize`Deleting`,
-};
-
 export const DUPLICATE_STATUS_LABELS: Record<DuplicateStatus, string> = {
   [DuplicateStatus.duplicate]: $localize`:@@duplicate-status-duplicate:Duplicate`,
   [DuplicateStatus.unique]: $localize`:@@duplicate-status-unique:Unique`,
@@ -89,7 +76,7 @@ export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.Note]: $localize`:@@activity-log-item-type-note:Note`,
   [ActivityTypeEnum.StatusChange]: $localize`:@@activity-log-item-type-status-update:Status update`,
   [ActivityTypeEnum.Transaction]: $localize`:@@activity-log-item-type-transfer:Transfer`,
-  [ActivityTypeEnum.IgnoredDuplicate]: '', // This has been added here to allow the interface to build event though this is not yet implemented
+  [ActivityTypeEnum.IgnoredDuplicate]: $localize`:@@activity-log-item-type-duplication:Duplication`,
 };
 
 export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
@@ -99,7 +86,7 @@ export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.Note]: 'pi pi-pen-to-square',
   [ActivityTypeEnum.StatusChange]: 'pi pi-refresh',
   [ActivityTypeEnum.Transaction]: 'pi pi-money-bill',
-  [ActivityTypeEnum.IgnoredDuplicate]: '', // This has been added here to allow the interface to build event though this is not yet implemented
+  [ActivityTypeEnum.IgnoredDuplicate]: 'pi pi-clone',
 };
 
 export const registrationLink = ({

@@ -209,6 +209,14 @@ export class ActivityLogExpandedRowComponent
 
         return list;
       }
+      case ActivityTypeEnum.IgnoredDuplicate:
+        return [
+          {
+            label: $localize`Update reason`,
+            value: item.attributes.reason,
+            type: 'text',
+          },
+        ];
       default:
         return undefined;
     }

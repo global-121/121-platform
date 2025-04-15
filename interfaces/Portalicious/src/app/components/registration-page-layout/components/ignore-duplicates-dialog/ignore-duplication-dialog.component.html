@@ -1,0 +1,41 @@
+<app-confirmation-dialog
+  #ignoreDuplicationDialog
+  header="Ignore duplication"
+  i18n-header="@@ignore-duplication"
+  headerIcon="pi pi-clone"
+  proceedLabel="Approve"
+  i18n-proceedLabel="@@generic-approve"
+  [mutation]="approveMutation"
+  [mutationData]="formGroup.getRawValue()"
+  [formGroup]="formGroup"
+>
+  @let duplicateCount = duplicatesRegistrationIds().length;
+  <p class="mb-7">
+    @if (duplicateCount === 2) {
+      <span i18n="@@ignore-duplicates-confirmation-message-first-2_duplicates">
+        You're about to mark both registrations as unique.
+      </span>
+    } @else {
+      <span
+        i18n="@@ignore-duplicates-confirmation-message-first-more_duplicates"
+      >
+        You're about to mark {{ duplicateCount }} registrations as unique.
+      </span>
+    }
+    <span i18n="@@ignore-duplicates-confirmation-message-second">
+      This means that they will no longer appear as duplicates of each other.
+    </span>
+  </p>
+  <app-form-field-wrapper
+    label="Write a reason for the update"
+    i18n-label
+    [errorMessage]="formFieldErrors()('reason')"
+  >
+    <input
+      pInputText
+      formControlName="reason"
+      type="text"
+      autocomplete="off"
+    />
+  </app-form-field-wrapper>
+</app-confirmation-dialog>

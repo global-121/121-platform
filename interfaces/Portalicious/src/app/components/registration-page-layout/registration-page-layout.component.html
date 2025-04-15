@@ -90,3 +90,10 @@
   [projectId]="projectId()"
   [registrationId]="registrationId()"
 />
+
+<app-ignore-duplication-dialog
+  #ignoreDuplicationDialog
+  [projectId]="projectId()"
+  [registrationId]="registrationId()"
+  [referenceId]="registration.data()?.referenceId ?? ''"
+/>

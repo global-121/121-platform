@@ -4,11 +4,10 @@ import {
   computed,
   inject,
   input,
-  model,
   signal,
   viewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import {
   injectMutation,
@@ -42,7 +41,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonMenuComponent,
     DatePickerModule,
     FloatLabelModule,
-    FormsModule,
+    ReactiveFormsModule,
     FormFieldWrapperComponent,
   ],
   templateUrl: './export-registrations.component.html',
@@ -78,9 +77,6 @@ export class ExportRegistrationsComponent {
     ActionDataWithPaginateQuery<Registration> | undefined
   >(undefined);
 
-  readonly fromDateExport = model<Date>();
-  readonly toDateExport = model<Date>();
-
   ExportType = ExportType;
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
@@ -90,6 +86,11 @@ export class ExportRegistrationsComponent {
     queryFn: () =>
       this.exportService.getDuplicateCheckAttributes(this.projectId),
   }));
+
+  dataChangesFormGroup = new FormGroup({
+    fromDate: new FormControl<Date | undefined>(undefined, {}),
+    toDate: new FormControl<Date | undefined>(undefined, {}),
+  });
 
   exportRegistrationsMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
@@ -134,8 +135,8 @@ export class ExportRegistrationsComponent {
     {
       label: $localize`:@@export-changes:Status & data changes`,
       command: () => {
-        this.fromDateExport.set(undefined);
-        this.toDateExport.set(undefined);
+        this.dataChangesFormGroup.controls.fromDate.setValue(undefined);
+        this.dataChangesFormGroup.controls.toDate.setValue(undefined);
         this.exportDataChangesDialog().askForConfirmation();
       },
     },

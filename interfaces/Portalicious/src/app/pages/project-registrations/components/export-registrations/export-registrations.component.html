@@ -63,9 +63,10 @@
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
     type: 'pa-data-changes',
-    fromDate: fromDateExport(),
-    toDate: toDateExport(),
+    fromDate: dataChangesFormGroup.getRawValue().fromDate || undefined,
+    toDate: dataChangesFormGroup.getRawValue().toDate || undefined,
   }"
+  [formGroup]="dataChangesFormGroup"
 >
   <p i18n>
     You're about to download an Excel file for all status & data changes.
@@ -84,8 +85,8 @@
       i18n-label
     >
       <p-datepicker
-        [(ngModel)]="fromDateExport"
-        [maxDate]="toDateExport()"
+        formControlName="fromDate"
+        [maxDate]="dataChangesFormGroup.getRawValue().toDate"
         [showClear]="true"
         appendTo="body"
       />
@@ -96,8 +97,8 @@
       i18n-label
     >
       <p-datepicker
-        [(ngModel)]="toDateExport"
-        [minDate]="fromDateExport()"
+        formControlName="toDate"
+        [minDate]="dataChangesFormGroup.getRawValue().fromDate"
         [showClear]="true"
         appendTo="body"
       />

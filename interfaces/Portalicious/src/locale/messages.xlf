@@ -1462,30 +1462,6 @@
       <trans-unit id="7197861278093051814" datatype="html">
         <source>Export debit card usage</source>
       </trans-unit>
-      <trans-unit id="1302184832753381211" datatype="html">
-        <source>Including</source>
-      </trans-unit>
-      <trans-unit id="2218572265318708454" datatype="html">
-        <source>Registering</source>
-      </trans-unit>
-      <trans-unit id="28184998386226894" datatype="html">
-        <source>Pausing</source>
-      </trans-unit>
-      <trans-unit id="3141301060598402455" datatype="html">
-        <source>Deleting</source>
-      </trans-unit>
-      <trans-unit id="3684525214439355379" datatype="html">
-        <source>Add a reason for <x equiv-text="{{ statusVerbProgressive() | lowercase }}" id="INTERPOLATION"/></source>
-      </trans-unit>
-      <trans-unit id="4465385057621611056" datatype="html">
-        <source>Validating</source>
-      </trans-unit>
-      <trans-unit id="5667836214859665218" datatype="html">
-        <source>Declining</source>
-      </trans-unit>
-      <trans-unit id="6152894890425150706" datatype="html">
-        <source>Completing</source>
-      </trans-unit>
       <trans-unit id="6891284064706667841" datatype="html">
         <source>Enter reason</source>
       </trans-unit>
@@ -1580,6 +1556,18 @@
       <trans-unit id="language-switcher-selected" datatype="html">
         <source>Language: <x equiv-text="{{ selectedLanguageLabel() }}" id="INTERPOLATION"/></source>
       </trans-unit>
+      <trans-unit id="ignore-duplication" datatype="html">
+        <source>Ignore duplication</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-2_duplicates" datatype="html">
+        <source>You&apos;re about to mark both registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-first-more_duplicates" datatype="html">
+        <source>You&apos;re about to mark <x equiv-text="{{ duplicateCount }}" id="INTERPOLATION"/> registrations as unique.</source>
+      </trans-unit>
+      <trans-unit id="ignore-duplicates-confirmation-message-second" datatype="html">
+        <source>This means that they will no longer appear as duplicates of each other.</source>
+      </trans-unit>
       <trans-unit id="generic-app-name" datatype="html">
         <source>121 Portal</source>
       </trans-unit>
@@ -1603,6 +1591,15 @@
       </trans-unit>
       <trans-unit id="7017859949445533273" datatype="html">
         <source>Date is before</source>
+      </trans-unit>
+      <trans-unit id="843850389382133020" datatype="html">
+        <source>Duplication ignored with Reg. #<x equiv-text="item.attributes.duplicateWithRegistrationProgramId" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="9163695541488660450" datatype="html">
+        <source>Update reason</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-duplication" datatype="html">
+        <source>Duplication</source>
       </trans-unit>
     </body>
   </file>
