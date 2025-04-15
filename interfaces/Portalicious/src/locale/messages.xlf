@@ -1592,6 +1592,15 @@
       <trans-unit id="7017859949445533273" datatype="html">
         <source>Date is before</source>
       </trans-unit>
+      <trans-unit id="843850389382133020" datatype="html">
+        <source>Duplication ignored with Reg. #<x equiv-text="item.attributes.duplicateWithRegistrationProgramId" id="PH"/></source>
+      </trans-unit>
+      <trans-unit id="9163695541488660450" datatype="html">
+        <source>Update reason</source>
+      </trans-unit>
+      <trans-unit id="activity-log-item-type-duplication" datatype="html">
+        <source>Duplication</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
