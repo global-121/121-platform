@@ -21,13 +21,17 @@
 
   @if (isIgnoreDuplicationType()) {
     <a
-      i18n
       [routerLink]="duplicateLink()"
       class="p-button p-button-rounded p-button-outlined p-button-sm"
       target="_blank"
     >
       <span class="pi-button-icon pi pi-external-link"></span>
-      <span class="p-button-label"> View registration </span>
+      <span
+        class="p-button-label"
+        i18n
+      >
+        View registration
+      </span>
     </a>
   }
 

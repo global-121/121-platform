@@ -179,10 +179,9 @@ export class TableCellOverviewComponent
       return;
     }
 
-    const registrationId = item.attributes.duplicateWithRegistrationId;
     return registrationLink({
       projectId: this.context().projectId(),
-      registrationId,
+      registrationId: item.attributes.duplicateWithRegistrationId,
     });
   });
 

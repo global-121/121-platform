@@ -1601,8 +1601,8 @@
       <trans-unit id="activity-log-item-type-duplication" datatype="html">
         <source>Duplication</source>
       </trans-unit>
-      <trans-unit id="2955977051618705495" datatype="html">
-        <source><x ctype="x-span" equiv-text="&lt;span class=&quot;pi-button-icon pi pi-external-link&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-span_1" equiv-text="&lt;span class=&quot;p-button-label&quot;&gt;" id="START_TAG_SPAN_1"/> View registration <x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+      <trans-unit id="7220831372983106820" datatype="html">
+        <source>View registration</source>
       </trans-unit>
     </body>
   </file>
