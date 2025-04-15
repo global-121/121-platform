@@ -45,7 +45,6 @@ test('[34945] Filter registrations by text', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  // Act & Assert
   await test.step('Filter Name column by text', async () => {
     await tableComponent.filterColumnByText('Name', 'Jan Janssen');
     registrationName = await registrations.getFirstRegistrationNameFromTable();

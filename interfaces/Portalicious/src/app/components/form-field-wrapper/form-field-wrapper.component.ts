@@ -18,4 +18,5 @@ export class FormFieldWrapperComponent {
   readonly labelTooltip = input<string>();
   readonly isRequired = input<boolean>();
   readonly errorMessage = input<false | string>();
+  readonly dataTestId = input<string>();
 }
