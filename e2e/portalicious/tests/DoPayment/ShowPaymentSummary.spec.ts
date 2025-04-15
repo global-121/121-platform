@@ -34,8 +34,8 @@ test('[31971] Show payment summary', async ({ page }) => {
 
   const projectTitle = 'NLRC OCW Program';
   const financialServiceProviders: string[] = [
-    'Visa debit card',
     'Albert Heijn voucher WhatsApp',
+    'Visa debit card',
   ];
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
