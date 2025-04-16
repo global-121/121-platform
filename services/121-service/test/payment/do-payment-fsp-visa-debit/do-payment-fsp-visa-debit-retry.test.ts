@@ -81,7 +81,11 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     );
 
     // retry payment
-    await retryPayment(programIdVisa, paymentNrVisa, accessToken);
+    await retryPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      accessToken,
+    });
     await waitFor(2_000);
 
     // Assert
@@ -140,7 +144,11 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     );
 
     // retry payment
-    await retryPayment(programIdVisa, paymentNrVisa, accessToken);
+    await retryPayment({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      accessToken,
+    });
     await waitFor(2_000);
 
     // Assert

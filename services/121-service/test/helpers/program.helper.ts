@@ -167,11 +167,15 @@ export async function doPaymentForAllPAs({
     });
 }
 
-export async function retryPayment(
-  programId: number,
-  paymentNr: number,
-  accessToken: string,
-): Promise<request.Response> {
+export async function retryPayment({
+  programId,
+  paymentNr,
+  accessToken,
+}: {
+  programId: number;
+  paymentNr: number;
+  accessToken: string;
+}): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])

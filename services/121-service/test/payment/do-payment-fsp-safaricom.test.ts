@@ -218,7 +218,7 @@ describe('Do payment to 1 PA', () => {
       // await waitFor(2_000);
 
       // retry payment
-      await retryPayment(programId, payment, accessToken);
+      await retryPayment({ programId, paymentNr: payment, accessToken });
       await waitFor(2_000);
 
       // Assert

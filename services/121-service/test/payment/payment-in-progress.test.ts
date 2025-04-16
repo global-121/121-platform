@@ -181,11 +181,11 @@ describe('Payment in progress', () => {
       filter: filterAllIncluded,
     });
 
-    const retryPaymentPvResult = await retryPayment(
-      programIdPV,
-      1,
+    const retryPaymentPvResult = await retryPayment({
+      programId: programIdPV,
+      paymentNr: 1,
       accessToken,
-    );
+    });
 
     // Assert
     expect(getProgramPaymentsPvResult.inProgress).toBe(true);
@@ -266,11 +266,11 @@ describe('Payment in progress', () => {
       filter: filterAllIncluded,
     });
     // We expect that retrying the payment fails since the previous payment is still in progress
-    const retryPaymentPvResult = await retryPayment(
-      programIdPV,
-      1,
+    const retryPaymentPvResult = await retryPayment({
+      programId: programIdPV,
+      paymentNr: 1,
       accessToken,
-    );
+    });
 
     // We expect that doing the next payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
     const doPaymentOcwResultPaymentNext = await doPayment({

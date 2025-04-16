@@ -12,7 +12,7 @@ export class CommercialBankEthiopiaMockService {
       successIndicator: { _text: 'Success' },
     };
     // Define the other failure transaction Status object
-    const otherFailureStatus = {
+    const errorStatus = {
       successIndicator: { _text: 'T24Error' },
       messages: [{ _text: 'Other Test failure' }],
     };
@@ -21,8 +21,10 @@ export class CommercialBankEthiopiaMockService {
     let Status;
     if (mockScenario === 'success') {
       Status = successTransactionStatus;
-    } else if (mockScenario === 'other-failure') {
-      Status = otherFailureStatus;
+    } else if (mockScenario === 'error') {
+      Status = errorStatus;
+    } else if (mockScenario === 'time-out') {
+      return;
     } else if (mockScenario === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -237,26 +239,63 @@ export class CommercialBankEthiopiaMockService {
   }
 
   // Mocks Transaction/transfer Status Enquiry
-  // ## TODO: Decide if we want to create an Integration Test that uses this function. If so, then refactor it so it creates the full SOAP message. If not, decide if we want to remove this function, or keep it for manual tests? If yes, then still refactor.
   public async postCBETransaction(payment): Promise<any> {
-    // ##TODO: await waitForRandomDelay(100, 300);
+    // ##TODO: Add mock scenarios for time-out (no response) and error
+
+    const mockScenario = 'success'; // 'other-failure' / 'no-response' to test the corresponding scenario
+
+    // Define the success transaction Status object
+    const successTransactionStatus = {
+      successIndicator: { _text: 'Success' },
+    };
+    // Define the other failure transaction Status object
+    const otherFailureStatus = {
+      successIndicator: { _text: 'T24Error' },
+      messages: [{ _text: 'Other Test failure' }],
+    };
+
+    // ## TODO: Switch mock scenario based on bankAccountNumber in payload
+
+    // Switch between mock scenarios
+    let _Status;
+    if (mockScenario === 'success') {
+      _Status = successTransactionStatus;
+    } else if (mockScenario === 'other-failure') {
+      _Status = otherFailureStatus;
+    } else if (mockScenario === 'no-response') {
+      const errors = 'No response';
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      throw new Error(`Unhandled mock scenario: ${mockScenario}`);
+    }
 
     const response = {
-      Status: {
-        successIndicator: { _text: 'Success' },
-      },
-      ETXNSTATUSCBEREMITANCEType: {
-        gETXNSTATUSCBEREMITANCEDetailType: {
-          mETXNSTATUSCBEREMITANCEDetailType: {
-            SENDERREFERENCE: { _text: String(payment.debitTheirRef) },
-            TXNREFERENCE: { _text: 'FT21243423L4' },
-            TXNAMOUNT: { _text: '' },
-            TXNSTATUS: { _text: '' },
-            CLEAREDBAL: { _text: 0 },
+      'S:Envelope': {
+        _attributes: {
+          'xmlns:S': 'http://schemas.xmlsoap.org/soap/envelope/',
+        },
+        'S:Body': {
+          'ns9:CBERemitanceTransactionStatusResponse': {
+            Status: {
+              successIndicator: { _text: 'Success' },
+            },
+            ETXNSTATUSCBEREMITANCEType: {
+              'ns6:gETXNSTATUSCBEREMITANCEDetailType': {
+                'ns6:mETXNSTATUSCBEREMITANCEDetailType': {
+                  'ns6:SENDERREFERENCE': {
+                    _text: String(payment.debitTheirRef),
+                  },
+                  'ns6:TXNREFERENCE': { _text: 'FT21243J7BTR' },
+                  'ns6:TXNAMOUNT': {},
+                  'ns6:TXNSTATUS': {},
+                  'ns6:CLEAREDBAL': { _text: 0 },
+                },
+              },
+            },
           },
         },
       },
     };
-    return new Promise((resolve) => resolve(response));
+    return response;
   }
 }

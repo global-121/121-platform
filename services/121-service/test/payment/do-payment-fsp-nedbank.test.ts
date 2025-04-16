@@ -413,7 +413,7 @@ describe('Do payment', () => {
           'to make payment work this time',
           accessToken,
         );
-        await retryPayment(programId, payment, accessToken);
+        await retryPayment({ programId, paymentNr: payment, accessToken });
         await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
