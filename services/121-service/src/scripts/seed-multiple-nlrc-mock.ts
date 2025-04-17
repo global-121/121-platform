@@ -11,6 +11,7 @@ import {
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
@@ -30,7 +31,10 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig?: SeedConfigurationDto,
   ): Promise<void> {
-    if (!process.env.MOCK_INTERSOLVE || !process.env.MOCK_TWILIO) {
+    if (
+      !shouldBeEnabled(process.env.MOCK_INTERSOLVE) ||
+      !shouldBeEnabled(process.env.MOCK_TWILIO)
+    ) {
       throw new HttpException(
         `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
         HttpStatus.BAD_REQUEST,
