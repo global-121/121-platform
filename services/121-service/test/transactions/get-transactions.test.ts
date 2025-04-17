@@ -38,12 +38,12 @@ describe('Registrations - [Scoped]', () => {
     // 8 registrations in total are included
     // 4 registrations are in include in program PV
     // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
-    const transactionsResponse = await getTransactions(
-      programIdPV,
-      payment,
-      null,
-      accessTokenScoped,
-    );
+    const transactionsResponse = await getTransactions({
+      programId: programIdPV,
+      paymentNr: payment,
+      referenceId: null,
+      accessToken: accessTokenScoped,
+    });
 
     // Assert
     // Check if the right amount of transactions are created

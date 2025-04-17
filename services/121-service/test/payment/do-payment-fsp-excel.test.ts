@@ -86,13 +86,13 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdWesteros,
-      referenceIdsWesteros,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdWesteros,
+      paymentReferenceIds: referenceIdsWesteros,
       accessToken,
-      10_000,
-      [TransactionStatusEnum.waiting],
-    );
+      maxWaitTimeMs: 10000,
+      completeStatusses: [TransactionStatusEnum.waiting],
+    });
 
     ////////////////////////////
     // Setup Validation program
@@ -120,12 +120,12 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdCbe,
-      refrenceIdsWithValidation,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdCbe,
+      paymentReferenceIds: refrenceIdsWithValidation,
       accessToken,
-      10_000,
-    );
+      maxWaitTimeMs: 10000,
+    });
   });
 
   describe('Export FSP instructions', () => {
@@ -133,12 +133,12 @@ describe('Do payment with Excel FSP', () => {
       // Arrange
 
       // Act
-      const transactionsResponse = await getTransactions(
-        programIdWesteros,
+      const transactionsResponse = await getTransactions({
+        programId: programIdWesteros,
         paymentNr,
-        null,
+        referenceId: null,
         accessToken,
-      );
+      });
 
       const fspInstructionsResponse = await getFspInstructions(
         programIdWesteros,
@@ -223,18 +223,23 @@ describe('Do payment with Excel FSP', () => {
       const importResultRecords = JSON.parse(importResult.text).importResult;
 
       await waitForPaymentTransactionsToComplete(
-        programIdWesteros,
-        referenceIdsWesteros,
-        accessToken,
-        10_000,
-        [TransactionStatusEnum.success, TransactionStatusEnum.error], // Hmm, this is sort of stepping on the feet of the assert already
+        {
+          programId: programIdWesteros,
+          paymentReferenceIds: referenceIdsWesteros,
+          accessToken,
+          maxWaitTimeMs: 10000,
+          completeStatusses: [
+            TransactionStatusEnum.success,
+            TransactionStatusEnum.error,
+          ],
+        }, // Hmm, this is sort of stepping on the feet of the assert already
       );
-      const transactionsResponse = await getTransactions(
-        programIdWesteros,
+      const transactionsResponse = await getTransactions({
+        programId: programIdWesteros,
         paymentNr,
-        null,
+        referenceId: null,
         accessToken,
-      );
+      });
 
       // Assert
       // Check per import record if it is imported or not found

@@ -261,12 +261,12 @@ describe('Manage financial service provider configurations', () => {
       (config) => config.name === name,
     );
 
-    const getTranactions = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationOCW5.referenceId,
+    const getTranactions = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationOCW5.referenceId,
       accessToken,
-    );
+    });
 
     // Assert
     expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);

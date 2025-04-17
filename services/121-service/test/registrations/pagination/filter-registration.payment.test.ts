@@ -69,18 +69,18 @@ describe('Load PA table', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
-      await waitForPaymentTransactionsToComplete(
-        programIdOCW,
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50_000,
-        [
+        maxWaitTimeMs: 50000,
+        completeStatusses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.waiting,
           TransactionStatusEnum.error,
         ],
-        payment1,
-      );
+        payment: payment1,
+      });
       await doPayment({
         programId: programIdOCW,
         paymentNr: payment2,
@@ -88,18 +88,18 @@ describe('Load PA table', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
-      await waitForPaymentTransactionsToComplete(
-        programIdOCW,
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdOCW,
         paymentReferenceIds,
         accessToken,
-        50_000,
-        [
+        maxWaitTimeMs: 50000,
+        completeStatusses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.waiting,
           TransactionStatusEnum.error,
         ],
-        payment2,
-      );
+        payment: payment2,
+      });
     });
 
     it('should filter based on waiting payments', async () => {
@@ -234,18 +234,18 @@ describe('Load PA table', () => {
         referenceIds: [paymentReferenceIds[0]],
         accessToken,
       });
-      await waitForPaymentTransactionsToComplete(
-        programIdOCW,
-        [paymentReferenceIds[0]],
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdOCW,
+        paymentReferenceIds: [paymentReferenceIds[0]],
         accessToken,
-        50_000,
-        [
+        maxWaitTimeMs: 50000,
+        completeStatusses: [
           TransactionStatusEnum.success,
           TransactionStatusEnum.waiting,
           TransactionStatusEnum.error,
         ],
-        payment3,
-      );
+        payment: payment3,
+      });
 
       // Act
       const filter = {

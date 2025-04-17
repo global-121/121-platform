@@ -229,7 +229,9 @@ export class CommercialBankEthiopiaService
       ) {
         bankAccountNumber = data.value;
       } else if ((data.fieldName = 'debitTheirRef')) {
-        debitTheirRefRetry = data.value;
+        debitTheirRefRetry = process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+          ? `${data.value}-duplicate`
+          : data.value;
       }
     });
 

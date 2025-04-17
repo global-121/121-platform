@@ -30,12 +30,12 @@ describe('Mock registrations', () => {
         accessToken,
       });
 
-      const transactionsResponse = await getTransactions(
+      const transactionsResponse = await getTransactions({
         programId,
         paymentNr,
-        null,
+        referenceId: null,
         accessToken,
-      );
+      });
 
       // Assert
       expect(registrationsResponse.body.data.length).toBe(4);

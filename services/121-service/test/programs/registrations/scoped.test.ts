@@ -106,12 +106,12 @@ describe('Registrations - [Scoped]', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
-    const transactionResponse = await getTransactions(
-      PvProgramId,
-      1,
-      null,
+    const transactionResponse = await getTransactions({
+      programId: PvProgramId,
+      paymentNr: 1,
+      referenceId: null,
       accessToken,
-    );
+    });
     const transactions = transactionResponse.body;
 
     const refrenceIdsWithAllowedScope = registrationsPV

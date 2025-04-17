@@ -68,12 +68,12 @@ describe('Load Visa debit cards and details', () => {
     });
 
     // Act
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      referenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: referenceIds,
       accessToken,
-      30_000,
-    );
+      maxWaitTimeMs: 30000,
+    });
     for (const registration of registrations) {
       await issueNewVisaCard(
         programIdVisa,

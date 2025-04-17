@@ -16,7 +16,12 @@ export async function getTransactionsIntersolveVoucher(
   while (attempts <= 10) {
     attempts++;
     getTransactionsBody = (
-      await getTransactions(programId, payment, referenceId, accessToken)
+      await getTransactions({
+        programId,
+        paymentNr: payment,
+        referenceId,
+        accessToken,
+      })
     ).body;
 
     if (

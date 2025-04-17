@@ -581,13 +581,16 @@ export async function seedPaidRegistrations(
 
   const registrationReferenceIds = registrations.map((r) => r.referenceId);
 
-  await waitForPaymentTransactionsToComplete(
+  await waitForPaymentTransactionsToComplete({
     programId,
-    registrationReferenceIds,
+    paymentReferenceIds: registrationReferenceIds,
     accessToken,
-    30_000,
-    [TransactionStatusEnum.success, TransactionStatusEnum.waiting],
-  );
+    maxWaitTimeMs: 30000,
+    completeStatusses: [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.waiting,
+    ],
+  });
 }
 
 export async function seedRegistrations(
