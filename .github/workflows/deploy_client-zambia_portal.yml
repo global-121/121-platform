@@ -46,6 +46,7 @@ jobs:
         id: build
         uses: ./.github/actions/build-interface
         env:
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: ${{ vars.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD }}
           LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:

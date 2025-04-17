@@ -77,7 +77,8 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
-        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: true
+        # Only if NG_DOWNLOAD_TRANSLATIONS_AT_BUILD is explicitly set to 'false', it will be set to 'false'. Otherwise it will be set to 'true'.
+        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: ${{ env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD == 'false' && 'false' || 'true' }}
         LOKALISE_PROJECT_ID: ${{ env.LOKALISE_PROJECT_ID }}
         LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
       run: |
