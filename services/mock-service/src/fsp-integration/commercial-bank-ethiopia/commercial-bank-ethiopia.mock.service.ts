@@ -257,11 +257,11 @@ export class CommercialBankEthiopiaMockService {
     // ## TODO: Switch mock scenario based on bankAccountNumber in payload
 
     // Switch between mock scenarios
-    let _Status;
+    let Status;
     if (mockScenario === 'success') {
-      _Status = successTransactionStatus;
+      Status = successTransactionStatus;
     } else if (mockScenario === 'other-failure') {
-      _Status = otherFailureStatus;
+      Status = otherFailureStatus;
     } else if (mockScenario === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -276,9 +276,7 @@ export class CommercialBankEthiopiaMockService {
         },
         'S:Body': {
           'ns9:CBERemitanceTransactionStatusResponse': {
-            Status: {
-              successIndicator: { _text: 'Success' },
-            },
+            Status,
             ETXNSTATUSCBEREMITANCEType: {
               'ns6:gETXNSTATUSCBEREMITANCEDetailType': {
                 'ns6:mETXNSTATUSCBEREMITANCEDetailType': {
