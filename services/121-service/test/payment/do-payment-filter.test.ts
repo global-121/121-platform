@@ -66,18 +66,18 @@ describe('Do payment with filter', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      includedRefrenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: includedRefrenceIds,
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      null,
+      maxWaitTimeMs: 10000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: null,
       accessToken,
-    );
+    });
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -102,18 +102,18 @@ describe('Do payment with filter', () => {
       filter: { 'filter.status': '$in:included' },
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      includedRefrenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: includedRefrenceIds,
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      null,
+      maxWaitTimeMs: 10000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: null,
       accessToken,
-    );
+    });
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -140,18 +140,18 @@ describe('Do payment with filter', () => {
       },
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      [registrationOCW1.referenceId],
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [registrationOCW1.referenceId],
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      null,
+      maxWaitTimeMs: 10000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: null,
       accessToken,
-    );
+    });
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
@@ -176,18 +176,18 @@ describe('Do payment with filter', () => {
       }, // This combination should only select registrationOCW3 that one is in both filters
     );
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      [registrationOCW3.referenceId],
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      null,
+      maxWaitTimeMs: 10000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: null,
       accessToken,
-    );
+    });
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);
@@ -213,18 +213,18 @@ describe('Do payment with filter', () => {
       }, // This combination should only be applicable to registrationOCW3, registrationOCW4 is filtered but not applicable because it is not included
     );
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
-      [registrationOCW3.referenceId],
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
+      paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      null,
+      maxWaitTimeMs: 10000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: null,
       accessToken,
-    );
+    });
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(1);

@@ -28,13 +28,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBETransfer(payment)
-        : await this.soapService.postCBERequest({
-            apiUrl: cbeApiUrl,
-            payload,
-            soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
-          });
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
+      });
 
       if (
         responseBody.Status &&
@@ -161,13 +159,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBETransaction(payment)
-        : await this.soapService.postCBERequest({
-            apiUrl: cbeApiUrl,
-            payload,
-            soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
-          });
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
+      });
 
       return responseBody;
     } catch (error) {
@@ -263,14 +259,6 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      /* ## TODO: Remove comment when other methods above are also changed
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBEValidation(payload)
-        : await this.soapService.postCBERequest(
-            payload,
-            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=2`,
-          );
-    */
       const responseBody = await this.soapService.postCBERequest({
         apiUrl: cbeApiUrl,
         payload,
