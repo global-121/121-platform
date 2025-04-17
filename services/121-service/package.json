@@ -78,7 +78,7 @@
     "soap": "^1.1.10",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "twilio": "^5.3.6",
+    "twilio": "^5.5.2",
     "typeorm": "npm:@global121/typeorm@1.0.4",
     "typescript": "^5.7.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
