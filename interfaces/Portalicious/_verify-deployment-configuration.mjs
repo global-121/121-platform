@@ -4,8 +4,9 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
+import { doesNotMatch, match, ok } from 'node:assert/strict';
 import test from 'node:test';
-import { ok, match, doesNotMatch } from 'node:assert/strict';
+
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const url = process.argv[2]?.replace('--url=', '');

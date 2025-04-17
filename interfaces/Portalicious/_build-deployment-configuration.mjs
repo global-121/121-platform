@@ -5,6 +5,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 // Set up specifics
@@ -25,8 +26,8 @@ if (!swaConfig.globalHeaders) {
 
 // NOTE: All values in each array are written as template-strings, as the use of single-quotes around some values (i.e. 'self') is mandatory and will affect the working of the HTTP-Header.
 let contentSecurityPolicy = new Map([
-  ['default-src', [`'self'`]],
   ['connect-src', [`'self'`]],
+  ['default-src', [`'self'`]],
   ['frame-ancestors', [`'self'`]],
   ['frame-src', [`blob:`, `'self'`]],
   ['img-src', [`data:`, `'self'`]],

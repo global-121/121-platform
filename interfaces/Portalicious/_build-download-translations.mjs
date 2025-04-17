@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-import { accessSync, constants, writeFileSync } from 'node:fs';
+
 import { LokaliseDownload } from 'lokalise-file-exchange';
+import { accessSync, constants, writeFileSync } from 'node:fs';
+
 import {
+  createMockTranslations,
   getRequiredTranslations,
   getTranslationFilePath,
-  createMockTranslations,
 } from './_translations.utils.mjs';
 
 /**
@@ -20,13 +22,16 @@ if (!process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) {
   console.info('Skipping download of translations. Creating mocks instead.');
   for (const lang of requiredTranslations) {
     const filePath = getTranslationFilePath(lang);
+
     writeFileSync(
       filePath,
       // Use the most minimal, yet valid XLIFF file:
       createMockTranslations(lang),
     );
+
     console.info(`☑️  Mock created: ${filePath}`);
   }
+
   process.exit(0);
 }
 
@@ -44,14 +49,14 @@ const lokaliseDownloader = new LokaliseDownload(
   },
 );
 await lokaliseDownloader.downloadTranslations({
-  processDownloadFileParams: {
-    asyncDownload: true,
-  },
   downloadFileParams: {
-    format: 'xlf',
-    original_filenames: false,
     bundle_structure: 'src/locale/messages.%LANG_ISO%.%FORMAT%',
     export_empty_as: 'skip',
+    format: 'xlf',
+    original_filenames: false,
+  },
+  processDownloadFileParams: {
+    asyncDownload: true,
   },
 });
 console.info(`Download done ✅`);
@@ -61,7 +66,9 @@ console.info(`Download done ✅`);
 console.info(`Verify required translations have been downloaded...`);
 for (const lang of requiredTranslations) {
   const filePath = getTranslationFilePath(lang);
+
   accessSync(filePath, constants.R_OK);
+
   console.info(`✅ Translations downloaded: ${filePath}`);
 }
 

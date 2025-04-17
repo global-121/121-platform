@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { writeFile } from 'fs';
+
 import configFileTemplate from './src/environments/environment.ts.template.mjs';
 
 let targetEnv = 'production';

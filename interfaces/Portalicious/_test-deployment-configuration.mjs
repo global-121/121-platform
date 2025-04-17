@@ -4,9 +4,10 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
-import test from 'node:test';
-import { ok, match, doesNotMatch } from 'node:assert/strict';
+import { doesNotMatch, match, ok } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import test from 'node:test';
+
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const swaConfig = JSON.parse(
