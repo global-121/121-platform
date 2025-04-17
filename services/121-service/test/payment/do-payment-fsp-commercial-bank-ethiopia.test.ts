@@ -259,10 +259,7 @@ describe('Do payment', () => {
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 3001,
-          completeStatusses: [
-            TransactionStatusEnum.success,
-            TransactionStatusEnum.error,
-          ],
+          completeStatusses: [TransactionStatusEnum.success],
         });
 
         const getTransactionsAfterRetryBody = await getTransactions({

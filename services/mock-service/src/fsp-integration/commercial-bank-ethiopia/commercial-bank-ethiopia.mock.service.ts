@@ -106,27 +106,7 @@ export class CommercialBankEthiopiaMockService {
       messages: [{ _text: 'Other failure' }],
     };
 
-    // Switch between mock scenarios based on Beneficiary Name from the payload
-    const beneficiaryName =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:BeneficiaryName'];
-
-    let Status;
-    if (beneficiaryName === 'duplicated') {
-      Status = duplicatedTransactionStatus;
-    } else if (beneficiaryName === 'error') {
-      Status = errorStatus;
-    } else if (beneficiaryName === 'no-response') {
-      const errors = 'No response';
-      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
-    } else if (beneficiaryName === 'time-out') {
-      return; // ##TODO: Is this an acceptable way to simulate a timeout? (got it from NedbankMockService)
-    } else {
-      // If no specific mock scenario is provided, use the success scenario
-      Status = successTransactionStatus;
-    }
-
+    // Extract values from the payload
     const debitAmount =
       payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
         'FUNDSTRANSFERCBEREMITANCEType'
@@ -147,6 +127,27 @@ export class CommercialBankEthiopiaMockService {
       payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
         'FUNDSTRANSFERCBEREMITANCEType'
       ]?.['fun:CREDITVALUEDATE'];
+
+    // Switch between mock scenarios based on Beneficiary Name from the payload
+    const beneficiaryName =
+      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
+        'FUNDSTRANSFERCBEREMITANCEType'
+      ]?.['fun:BeneficiaryName'];
+
+    let Status;
+    if (debitTheirRef.includes('-duplicate')) {
+      Status = duplicatedTransactionStatus;
+    } else if (beneficiaryName === 'error') {
+      Status = errorStatus;
+    } else if (beneficiaryName === 'no-response') {
+      const errors = 'No response';
+      throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    } else if (beneficiaryName === 'time-out') {
+      return; // ##TODO: Is this an acceptable way to simulate a timeout? (got it from NedbankMockService)
+    } else {
+      // If no specific mock scenario is provided, use the success scenario
+      Status = successTransactionStatus;
+    }
 
     const response = {
       'S:Envelope': {
