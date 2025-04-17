@@ -2,6 +2,7 @@
 
 import { writeFile } from 'fs';
 
+import { shouldBeEnabled } from './_env.utils.mjs';
 import configFileTemplate from './src/environments/environment.ts.template.mjs';
 
 let targetEnv = 'production';
@@ -14,7 +15,7 @@ if (process.argv[2] === 'env=development') {
 const targetPath = `./src/environments/environment.${targetEnv}.ts`;
 
 writeFile(targetPath, configFileTemplate, (err) => {
-  if (process.env.DEBUG || process.env.CI) {
+  if (shouldBeEnabled(process.env.DEBUG) || shouldBeEnabled(process.env.CI)) {
     console.log(configFileTemplate);
   }
 
