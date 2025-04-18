@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
@@ -56,5 +57,21 @@ test('[31971] Show payment summary', async ({ page }) => {
       currency: '€',
       paymentAmount: defaultMaxTransferValue,
     });
+  });
+});
+
+test('[31972] Validate empty payment page', async ({ page }) => {
+  const paymentsPage = new PaymentsPage(page);
+
+  const projectTitle = 'NLRC OCW Program';
+
+  await test.step('Navigate to Program payments', async () => {
+    await paymentsPage.selectProgram(projectTitle);
+    await paymentsPage.navigateToProgramPage('Payments');
+  });
+
+  await test.step('Validate empty payment summary', async () => {
+    const isEmpty = await paymentsPage.isPaymentPageEmpty();
+    expect(isEmpty).toBe(true);
   });
 });
