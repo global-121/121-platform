@@ -275,6 +275,17 @@ class PaymentsPage extends BasePage {
     await this.exportButton.click();
     await this.exportFspPaymentListButton.click();
   }
+
+  async isPaymentPageEmpty(): Promise<boolean> {
+    const noPaymentsFoundVisible = await this.page
+      .getByText('No Payments found', { exact: true })
+      .isVisible();
+
+    const noPaymentsForProjectVisible = await this.page
+      .getByText('There are no payments for this project yet.', { exact: true })
+      .isVisible();
+    return noPaymentsFoundVisible && noPaymentsForProjectVisible;
+  }
 }
 
 export default PaymentsPage;
