@@ -4,8 +4,8 @@
  */
 export const parseMatomoConnectionString = (connectionString) => {
   const connection = {
-    id: '',
     api: '',
+    id: '',
     sdk: '',
   };
 

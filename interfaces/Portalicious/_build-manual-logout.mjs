@@ -5,11 +5,11 @@
  */
 
 import {
+  copyFileSync,
   existsSync,
   mkdirSync,
   readFileSync,
   writeFileSync,
-  copyFileSync,
 } from 'fs';
 
 // Set up specifics

@@ -4,8 +4,10 @@
  * See the "Deployment"-section of the interfaces/README.md-file for more information.
  */
 
+import { doesNotMatch, match, ok } from 'node:assert/strict';
 import test from 'node:test';
-import { ok, match, doesNotMatch } from 'node:assert/strict';
+
+import { shouldBeEnabled } from './_env.utils.mjs';
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 const url = process.argv[2]?.replace('--url=', '');
@@ -59,7 +61,7 @@ test('Content-Security-Policy set for Azure Entra SSO', () => {
   const frameSrcCondition =
     /frame-src[^;]* https:\/\/login\.microsoftonline\.com/;
 
-  if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
+  if (shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA)) {
     match(csp, connectSrcCondition);
     match(csp, frameSrcCondition);
   } else {
@@ -72,7 +74,7 @@ test('Content-Security-Policy set for loading as iframe in Twilio Flex', () => {
   const frameAncestorsCondition =
     /frame-ancestors[^;]* https:\/\/flex\.twilio\.com/;
 
-  if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
+  if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
     match(csp, frameAncestorsCondition);
   } else {
     doesNotMatch(csp, frameAncestorsCondition);
@@ -83,8 +85,8 @@ test('Configuration set to control pop-ups for SSO when the Portal is in an ifra
   const openerPolicy = response.headers.get('Cross-Origin-Opener-Policy') ?? '';
 
   if (
-    process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true' &&
-    process.env.USE_SSO_AZURE_ENTRA === 'true'
+    shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME) &&
+    shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA)
   ) {
     match(openerPolicy, /unsafe-none/);
   } else {
@@ -95,7 +97,7 @@ test('Configuration set to control pop-ups for SSO when the Portal is in an ifra
 test('Content-Security-Policy set to load PowerBI dashboard(s) in iframe', () => {
   const frameSrcCondition = /frame-src[^;]* https:\/\/app\.powerbi\.com/;
 
-  if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
+  if (shouldBeEnabled(process.env.USE_POWERBI_DASHBOARDS)) {
     match(csp, frameSrcCondition);
   } else {
     doesNotMatch(csp, frameSrcCondition);

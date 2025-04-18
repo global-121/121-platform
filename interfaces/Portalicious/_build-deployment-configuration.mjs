@@ -5,6 +5,8 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+
+import { shouldBeEnabled } from './_env.utils.mjs';
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
 // Set up specifics
@@ -25,8 +27,8 @@ if (!swaConfig.globalHeaders) {
 
 // NOTE: All values in each array are written as template-strings, as the use of single-quotes around some values (i.e. 'self') is mandatory and will affect the working of the HTTP-Header.
 let contentSecurityPolicy = new Map([
-  ['default-src', [`'self'`]],
   ['connect-src', [`'self'`]],
+  ['default-src', [`'self'`]],
   ['frame-ancestors', [`'self'`]],
   ['frame-src', [`blob:`, `'self'`]],
   ['img-src', [`data:`, `'self'`]],
@@ -58,7 +60,7 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
 }
 
 // Optional: Azure Entra SSO
-if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
+if (shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA)) {
   console.info('✅ Allow use of Azure Entra endpoints and iframe(s)');
 
   let connectSrc = contentSecurityPolicy.get('connect-src') ?? [];
@@ -75,7 +77,7 @@ if (process.env.USE_SSO_AZURE_ENTRA === 'true') {
 }
 
 // Optional: Twilio Flex
-if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
+if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
   console.info('✅ Allow loading the Portal in an iframe on Twilio Flex');
 
   let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
@@ -87,8 +89,8 @@ if (process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true') {
 
 // Depending on: Using "Azure Entra SSO" AND "Twilio Flex"
 if (
-  process.env.USE_SSO_AZURE_ENTRA === 'true' &&
-  process.env.USE_IN_TWILIO_FLEX_IFRAME === 'true'
+  shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
+  shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)
 ) {
   console.info(
     '✅ Allow control of pop-ups for SSO when the Portal is in an iframe on Twilio Flex',
@@ -98,7 +100,7 @@ if (
 }
 
 // Optional: PowerBI Dashboard(s)
-if (process.env.USE_POWERBI_DASHBOARDS === 'true') {
+if (shouldBeEnabled(process.env.USE_POWERBI_DASHBOARDS)) {
   console.info('✅ Allow loading Power BI-dashboards');
 
   let frameSrc = contentSecurityPolicy.get('frame-src') ?? [];
@@ -141,7 +143,7 @@ const contentSecurityPolicyValue = Array.from(contentSecurityPolicy)
   .join(' ; ');
 
 // Set the Content-Security-Policy header-value
-if (process.env.DEBUG) {
+if (shouldBeEnabled(process.env.DEBUG)) {
   console.log(`Content-Security-Policy: "${contentSecurityPolicyValue}"`);
 }
 swaConfig.globalHeaders['Content-Security-Policy'] = contentSecurityPolicyValue;

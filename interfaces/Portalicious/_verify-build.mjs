@@ -3,6 +3,8 @@
 import { match, notEqual } from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+
+import { shouldBeEnabled } from './_env.utils.mjs';
 import {
   createMockTranslations,
   getRequiredTranslations,
@@ -16,7 +18,7 @@ console.log('Required translations: ', requiredTranslations);
 
 test(
   'Translations do not contain mock-value',
-  { skip: !process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD },
+  { skip: !shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) },
   () => {
     requiredTranslations.forEach((lang) => {
       const filePath = getTranslationFilePath(lang);
@@ -34,7 +36,7 @@ test(
 
 test(
   'Translations are downloaded',
-  { skip: !process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD },
+  { skip: !shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD) },
   () => {
     const validTranslations = {
       ar: 'رسالة مخصصة',
