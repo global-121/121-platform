@@ -1604,6 +1604,9 @@
       <trans-unit id="7220831372983106820" datatype="html">
         <source>View registration</source>
       </trans-unit>
+      <trans-unit id="3643986098140143407" datatype="html">
+        <source>Users cannot change their own roles</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -29,6 +29,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -62,6 +63,7 @@ export class AddProjectTeamUserFormComponent {
   private projectApiService = inject(ProjectApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
 
   readonly isEditing = computed(() => !!this.userToEdit());
 
@@ -107,6 +109,14 @@ export class AddProjectTeamUserFormComponent {
       },
     },
   );
+
+  readonly userIsUpdatingItself = computed(() => {
+    const user = this.userToEdit();
+    if (!user) {
+      return false;
+    }
+    return this.authService.user?.username === user.username;
+  });
 
   readonly availableUsersIsLoading = computed(
     () =>
