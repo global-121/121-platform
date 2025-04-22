@@ -75,6 +75,25 @@ describe('Programs / Users / Roles', () => {
     expect(response.body.roles[0].label).toBe(testUserRoles[0].label);
   });
 
+  it('should return an error when a user tries to assign roles to themselves', async () => {
+    // Arrange
+    const selfUserId = 1; // Assuming the logged-in user has ID 1
+    const testRoles = {
+      roles: ['program-admin'],
+      scope: 'test',
+    };
+
+    // Act
+    const response = await getServer()
+      .put(`/programs/${programId}/users/${selfUserId}`)
+      .set('Cookie', [accessToken])
+      .send(testRoles);
+
+    // Assert
+    expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    expect(response.body.message).toMatchSnapshot();
+  });
+
   it('should return user roles after add new role to specific program assignment', async () => {
     // Arrange
     const testUserRoles = fixtureUserRoles;

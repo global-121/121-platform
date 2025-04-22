@@ -52,6 +52,7 @@ import {
   UserRoleResponseDTO,
 } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { throwIfSelfUpdate } from '@121-service/src/user/helpers/throw-if-self-update';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
@@ -361,14 +362,17 @@ export class UserController {
     programId: number,
 
     @Param('userId', ParseIntPipe)
-    userId: number,
+    userIdToUpdate: number,
 
     @Body()
     assignAidworkerToProgram: CreateProgramAssignmentDto,
+
+    @Req() req: ScopedUserRequest,
   ): Promise<AssignmentResponseDTO> {
+    throwIfSelfUpdate(req, userIdToUpdate);
     return await this.userService.assignAidworkerToProgram(
       programId,
-      userId,
+      userIdToUpdate,
       assignAidworkerToProgram,
     );
   }
@@ -392,15 +396,15 @@ export class UserController {
   public async updateAidworkerProgramAssignment(
     @Param('programId', ParseIntPipe)
     programId: number,
-
     @Param('userId', ParseIntPipe)
-    userId: number,
-
+    userIdToUpdate: number,
     @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
+    @Req() req: ScopedUserRequest,
   ): Promise<AssignmentResponseDTO> {
+    throwIfSelfUpdate(req, userIdToUpdate);
     return await this.userService.updateAidworkerProgramAssignment(
       programId,
-      userId,
+      userIdToUpdate,
       assignAidworkerToProgram,
     );
   }
@@ -428,13 +432,16 @@ export class UserController {
     programId: number,
 
     @Param('userId', ParseIntPipe)
-    userId: number,
+    userIdToUpdate: number,
 
+    @Req() req: ScopedUserRequest,
     @Body() deleteProgramAssignment?: DeleteProgramAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
+    throwIfSelfUpdate(req, userIdToUpdate);
+
     return await this.userService.deleteAidworkerRolesOrAssignment({
       programId,
-      userId,
+      userId: userIdToUpdate,
       roleNamesToDelete: deleteProgramAssignment?.rolesToDelete,
     });
   }
