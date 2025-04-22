@@ -162,11 +162,16 @@ export class SoapService {
     let agent;
     try {
       const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH!;
-      const cert = fs.readFileSync(certPath);
-      agent = new https.Agent({
-        ca: cert,
-        rejectUnauthorized: !!certPath ? true : false,
-      });
+      if (certPath) {
+        agent = new https.Agent({
+          ca: fs.readFileSync(certPath),
+          rejectUnauthorized: true,
+        });
+      } else {
+        agent = new https.Agent({
+          rejectUnauthorized: false,
+        });
+      }
     } catch (error) {
       throw error;
     }
