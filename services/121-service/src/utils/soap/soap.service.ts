@@ -165,6 +165,7 @@ export class SoapService {
       const cert = fs.readFileSync(certPath);
       agent = new https.Agent({
         ca: cert,
+        rejectUnauthorized: !!certPath ? true : false,
       });
     } catch (error) {
       throw error;
