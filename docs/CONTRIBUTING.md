@@ -71,15 +71,6 @@ Below is a list of other guidelines we try to follow for PRs.
   - We make PRs as small as possible
   - We prioritize reviewing code over writing new code
   - We try to split larger changes/PRs into smaller chunks/refactors that can be merged independently
-  - We try to avoid mixing frontend & backend changes in one PR, whenever possible.
-    - For example, if the backend adds a new endpoint, then the frontend code that uses that new endpoint should be added in a separate PR towards `main`, that is reviewed once the endpoint itself has already been merged to `main`. This is opposed to the approach of creating a feature branch that contains both the backend and the frontend code for this new feature.
-    - As an example of when this is unavoidable: when the backend changes an existing endpoint in a way that breaks the frontend, then the adjustment in the frontend needs to be included in the same PR.
-- We avoid "feature branches". PRs towards `main` that are a result of different authors are still possible, but
-  - We do not call them feature branches
-  - They are still owned by a single person, and that person is the PR author
-  - The PR author is expected to own all changes and change requests on that PR
-  - That PR towards `main` still needs a full review from someone who has not seen the code before being merged to `main`
-    - For example, if Bob creates a PR towards `main`, and then Jules adds code to that PR via another PR, then someone who isn't Bob nor Jules should review the original PR towards `main`
 - For PRs towards `main`
   - Every PR should have one of the [labels we use for auto-generating release notes](../.github/release.yml)
   - Every PR title and description should follow the naming conventions outlined in the [Committing section](#committing) above. For example:
@@ -87,7 +78,36 @@ Below is a list of other guidelines we try to follow for PRs.
     - The description should contain a reference to a DevOps-item
 - For PRs that target a branch that isn't `main`
   - If the target branch is currently in review, then the PR in question stays in draft (and therefore is not merged/reviewed) until the target branch is merged into `main`
-    - This avoids the much dreaded long-lived and difficult-to-review feature branch phenomenon
+
+### A note on what 121 has historically called "feature branches"
+
+We avoid "feature branches", or in other words, long-lived branches with multiple owners (or without an owner at all).
+PRs towards `main` that are a result of different authors are still possible, but
+
+- We do not call them feature branches
+- They are still owned by a single person, and that person is the PR author
+- The PR author is expected to own all changes and change requests on that PR
+- That PR towards `main` still needs a full review from someone who has not seen the code before being merged to `main`
+  - For example, if Bob creates a PR towards `main`, and then Jules adds code to that PR via another PR, then someone who isn't Bob nor Jules should review the original PR towards `main`
+
+### A note on "what should be in a PR?"
+
+- We try to avoid mixing _multiple responsibilities_ in one PR.
+  For example:
+  - If a new feature requires the back-end to add an endpoint, migrate existing data, the front-end to request data from that new endpoint, check it, remodel it with some new helper-function and repurpose an existing component to show the data. This would be too many responsibilities. It is very unlikely that a single person can review all this in 1 single overview.
+  - Adding a new property to an existing entity in the back-end, showing that data in an existing component in the front-end; would be not too much.
+  - Adding configuration for a lint-rule and all the fixes to the existing code to comply with the rule; This would be the _necessary complexity/full responsibility_ of the PR. (Adding a new feature/component/service/module/migration to these changes would be **not ok**.
+- We try to make changes in a _"non-breaking"_ way.  
+  For example:
+  - Adding a new endpoint to the back-end, that is not used in the front-end right away, will not '_break_' anything.
+  - Removing a button from the front-end, without cleaning-up the used endpoints or removing the related data, will not '_break_' anything.  
+    Making these changes separately will reduce the risk. They can be reviewed more easily. (But they still _do_ require context on both sided of these changes!)
+- We try to avoid mixing frontend & backend changes in one PR, unless this guideines conflicts with the ones above.
+  - For example, if the backend adds a new endpoint, then the frontend code that uses that new endpoint should be added in a separate PR towards `main`, that is reviewed once the endpoint itself has already been merged to `main`.
+  - As an example of when this is unavoidable: when the backend changes an existing endpoint in a way that breaks the frontend, then the adjustment in the frontend needs to be included in the same PR.
+  - In other words, if the change to the 121 Service API is backwards compatible, then the frontend and backend PRs can be seperated. If the 121 Service API change is not backwards compatible, then the PR needs to include both the frontend and backend changes to always have a working product in main.
+
+---
 
 Some useful reading:
 
