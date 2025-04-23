@@ -1,6 +1,7 @@
 // const { webcrypto } = await import('node:crypto');
 const { generateKeyPair } = await import('node:crypto');
 const { constants } = await import('node:crypto');
+import * as rs from 'jsrsasign';
 import { Buffer } from 'node:buffer';
 import { createCipheriv } from 'node:crypto';
 import { publicEncrypt } from 'node:crypto';
@@ -87,8 +88,37 @@ export const encryptRsaPin = (data: string, publicKeyPem: string): string => {
   return encrypted.toString('base64');
 };
 
-//
-//
+export const encryptRsaPinFromDocs = (
+  data: string,
+  public_key: string,
+): string => {
+  /*
+  Full example from docs:
+  var plaintext = 'r';
+  var public_key = "MIIBCgKCAQEA20O377QEiZvPsj*************JB5WDTVjeab";
+
+  var key = KEYUTIL.getKey(public_key);
+  var encrypted = KJUR.crypto.Cipher.encrypt(plaintext, key, "RSA-OAEP");
+
+  // Convert the encrypted data to a base64 string
+  var encryptedBase64 = hextob64(encrypted);
+
+  console.log(encryptedBase64);
+  */
+
+  // console.log('encryptRsaPinFromDocs', { data }, { key });
+  // console.log('🧪🧪🧪🧪');
+
+  const key = rs.KEYUTIL.getKey(public_key);
+  console.log('👨‍🚀👨‍🚀👨‍🚀👨‍🚀 created a key...');
+  console.log(key);
+  const encrypted = rs.KJUR.crypto.Cipher.encrypt(data, key, 'RSA-OAEP');
+  // console.log('👨‍🚀👨‍🚀👨‍🚀👨‍🚀 encrypted stuff...');
+  return encrypted;
+
+  // // Convert the encrypted data to a base64 string
+  // var encryptedBase64 = hextob64(encrypted);
+};
 
 export const decryptRsa = (
   ciphertext: string,

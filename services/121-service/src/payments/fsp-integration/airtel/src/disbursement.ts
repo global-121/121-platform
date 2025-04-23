@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { encryptRsaKeyIv } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { encryptRsaPin } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
+import { encryptRsaPinFromDocs } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { getAccessToken } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { getRsaKey } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { generateRandomBytes } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
@@ -56,12 +56,16 @@ const rsaPublicKeyForPinEncryption = `${process.env.PIN_RSA_ENCRYPTION_PUBLIC_KE
 const rsaPublicKeyForPinEncryptionPem = rsaKeyToPem(
   rsaPublicKeyForPinEncryption,
 );
-// console.log('rsaPublicKeyForPinEncryption', rsaPublicKeyForPinEncryption);
+console.log('rsaPublicKeyForPinEncryption', rsaPublicKeyForPinEncryption);
 // console.log('rsaPublicKeyForPinEncryptionPem', rsaPublicKeyForPinEncryptionPem);
 
 // Do one or the other.
-// pinEncrypted = encryptRsaPin(pin, rsaPublicKeyPem);
-const pinEncrypted = encryptRsaPin(pin, rsaPublicKeyForPinEncryptionPem);
+// const pinEncrypted = encryptRsa(pin, rsaPublicKeyPem);
+// const pinEncrypted = encryptRsaPin(pin, rsaPublicKeyForPinEncryptionPem);
+const pinEncrypted = encryptRsaPinFromDocs(
+  pin,
+  rsaPublicKeyForPinEncryptionPem,
+);
 console.log(pinEncrypted);
 
 example_body.pin = pinEncrypted;
