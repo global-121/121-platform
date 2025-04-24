@@ -258,7 +258,7 @@ export class CreatePaymentComponent {
         label: $localize`Total payment amount`,
         value: this.currencyPipe.transform(
           this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
-          this.project.data()?.currency ?? 'EUR',
+          this.project.data()?.currency,
           'symbol-narrow',
           '1.2-2',
         ),

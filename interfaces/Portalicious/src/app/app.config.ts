@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http';
 import {
   ApplicationConfig,
+  DEFAULT_CURRENCY_CODE,
   LOCALE_ID,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
@@ -74,5 +75,6 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     ...TrackingService.APP_PROVIDERS,
     { provide: TitleStrategy, useClass: CustomPageTitleStrategy },
     { provide: LOCALE_ID, useValue: locale },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'XXX' },
   ],
 });

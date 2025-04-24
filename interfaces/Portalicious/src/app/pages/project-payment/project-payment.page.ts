@@ -166,7 +166,7 @@ export class ProjectPaymentPageComponent {
     return (
       this.currencyPipe.transform(
         totalAmount,
-        this.project.data()?.currency ?? 'EUR',
+        this.project.data()?.currency,
         'symbol-narrow',
         '1.2-2',
       ) ?? '0'
@@ -181,7 +181,7 @@ export class ProjectPaymentPageComponent {
     return (
       this.currencyPipe.transform(
         this.payment.data().success.amount,
-        this.project.data()?.currency ?? 'EUR',
+        this.project.data()?.currency,
         'symbol-narrow',
         '1.0-0',
       ) ?? '0'
@@ -244,7 +244,7 @@ export class ProjectPaymentPageComponent {
         getCellText: (transaction) =>
           this.currencyPipe.transform(
             transaction.amount,
-            this.project.data()?.currency ?? 'EUR',
+            this.project.data()?.currency,
             'symbol-narrow',
             '1.2-2',
           ) ?? '',
