@@ -58,9 +58,13 @@ export class CommercialBankEthiopiaReconciliationController {
     console.info(
       'CronjobService - Started: CBE retrieveAndUpsertAccountEnquiries',
     );
-    await this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiries();
-    console.info(
-      'CronjobService - Complete: CBE retrieveAndUpsertAccountEnquiries',
-    );
+    // Don't wait for the result, as that can cause a timeout on the API
+    void this.commercialBankEthiopiaReconciliationService
+      .retrieveAndUpsertAccountEnquiries()
+      .finally(() => {
+        console.info(
+          'CronjobService - Complete: CBE retrieveAndUpsertAccountEnquiries',
+        );
+      });
   }
 }
