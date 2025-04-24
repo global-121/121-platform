@@ -159,15 +159,22 @@ export class SoapService {
       soapAction,
     };
 
-    let agent;
-    try {
-      const certPath = process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH!;
-      const cert = fs.readFileSync(certPath);
-      agent = new https.Agent({
-        ca: cert,
-      });
-    } catch (error) {
-      throw error;
+    let agent: https.Agent;
+
+    if (!!process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
+      try {
+        const certificate = fs.readFileSync(
+          process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
+        );
+        agent = new https.Agent({
+          ca: certificate,
+        });
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      // If no certificate path is provided, create an agent without certificate (for use with the sandbox CBE-API)
+      agent = new https.Agent();
     }
 
     return soapRequest({
