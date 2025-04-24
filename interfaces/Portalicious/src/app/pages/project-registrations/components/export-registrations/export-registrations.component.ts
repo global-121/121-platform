@@ -81,12 +81,6 @@ export class ExportRegistrationsComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
-  duplicateExportAttributes = injectQuery(() => ({
-    queryKey: [this.projectId()],
-    queryFn: () =>
-      this.exportService.getDuplicateCheckAttributes(this.projectId),
-  }));
-
   dataChangesFormGroup = new FormGroup({
     fromDate: new FormControl<Date | undefined>(undefined, {}),
     toDate: new FormControl<Date | undefined>(undefined, {}),
@@ -124,12 +118,6 @@ export class ExportRegistrationsComponent {
         }
         this.exportSelectedActionData.set(actionData);
         this.exportSelectedDialog().askForConfirmation();
-      },
-    },
-    {
-      label: $localize`:@@export-duplicate:Duplicate registrations`,
-      command: () => {
-        this.exportDuplicatesDialog().askForConfirmation();
       },
     },
     {

@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { uniq, without } from 'lodash';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, FindOperator, In, Not, Repository } from 'typeorm';
+import { Equal, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
@@ -24,19 +23,14 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
-import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import {
-  RegistrationDataOptions,
-  RegistrationDataRelation,
-} from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationDataOptions } from '@121-service/src/registration/dto/registration-data-relation.model';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import { createRegistrationAttributeSubQuery } from '@121-service/src/registration/helpers/create-registration-attribute-sub-query.helper';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -44,7 +38,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
 const userPermissionMapByExportType = {
@@ -53,7 +46,6 @@ const userPermissionMapByExportType = {
   [ExportType.payment]: [PermissionEnum.RegistrationPaymentExport],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
-  [ExportType.duplicates]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.intersolveVisaCardDetails]: [PermissionEnum.FspDebitCardEXPORT],
 };
 
@@ -67,13 +59,10 @@ export class MetricsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
-    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly actionService: ActionsService,
-    private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
-    private readonly registrationDataQueryService: RegistrationDataScopedQueryService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
   ) {}
@@ -154,9 +143,6 @@ export class MetricsService {
       }
       case ExportType.vouchersWithBalance: {
         return this.getVouchersWithBalance(programId);
-      }
-      case ExportType.duplicates: {
-        return this.getDuplicates(programId);
       }
       case ExportType.intersolveVisaCardDetails: {
         return this.createIntersolveVisaBalancesExport(programId);
@@ -441,46 +427,6 @@ export class MetricsService {
     return data;
   }
 
-  private async getRegistrationsFieldsForDuplicates(
-    programId: number,
-    relationOptions: RegistrationDataOptions[],
-    registrationIds: number[],
-  ): Promise<MappedPaginatedRegistrationDto[]> {
-    const query = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .leftJoin(
-        'registration.programFinancialServiceProviderConfiguration',
-        'fspconfig',
-      )
-      .select([
-        `registration."referenceId" AS "referenceId"`,
-        `registration."registrationProgramId" AS "id"`,
-        `registration."registrationStatus" AS status`,
-        `fspconfig."financialServiceProviderName" AS "financialServiceProviderName"`,
-        `fspconfig."label" AS "programFinancialServiceProviderConfigurationLabel"`,
-        'registration."scope" AS scope',
-        `registration."${GenericRegistrationAttributes.phoneNumber}"`,
-      ])
-      .andWhere({ programId })
-      .andWhere(
-        'registration."registrationProgramId" IN (:...registrationIds)',
-        {
-          registrationIds,
-        },
-      )
-      .orderBy('"registration"."registrationProgramId"', 'ASC');
-
-    for (const r of relationOptions) {
-      query.select((subQuery) => {
-        return this.registrationDataQueryService.customDataEntrySubQuery(
-          subQuery,
-          r.relation,
-        );
-      }, r.name);
-    }
-    return await query.getRawMany();
-  }
-
   private async replaceValueWithDropdownLabel(
     rows: Record<string, unknown>[],
     relationOptions: RegistrationDataOptions[],
@@ -540,201 +486,6 @@ export class MetricsService {
 
       return filteredRow;
     });
-  }
-
-  private async getNameRelationsByProgram(
-    programId: number,
-  ): Promise<RegistrationDataOptions[]> {
-    const program = await this.programRepository.findOneOrFail({
-      relations: ['programRegistrationAttributes'],
-      where: {
-        id: Equal(programId),
-      },
-    });
-    const relationOptions: RegistrationDataOptions[] = [];
-    for (const entry of program.programRegistrationAttributes) {
-      if (
-        JSON.parse(JSON.stringify(program.fullnameNamingConvention)).includes(
-          entry.name,
-        )
-      ) {
-        const name = entry.name;
-        const relation: RegistrationDataRelation = {
-          programRegistrationAttributeId: entry.id,
-        };
-
-        relationOptions.push({ name, relation });
-      }
-    }
-    return relationOptions;
-  }
-
-  private async getDuplicates(programId: number): Promise<{
-    fileName: ExportType;
-    data: unknown[];
-  }> {
-    const duplicatesMap = new Map<number, number[]>();
-    const uniqueRegistrationIds = new Set<number>();
-
-    const programRegistrationAttributes =
-      await this.programRegistrationAttributeRepository.find({
-        where: {
-          program: {
-            id: Equal(programId),
-          },
-          duplicateCheck: Equal(true),
-        },
-      });
-    const programRegistrationAttributeIds = programRegistrationAttributes.map(
-      (question) => {
-        return question.id;
-      },
-    );
-
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['programFinancialServiceProviderConfigurations'],
-    });
-
-    const nameRelations = await this.getNameRelationsByProgram(programId);
-    const duplicateRelationOptions = this.getRelationOptionsForDuplicates(
-      programRegistrationAttributes,
-    );
-    const relationOptions = [...nameRelations, ...duplicateRelationOptions];
-
-    const whereOptions: Record<string, FindOperator<unknown>>[] = [];
-    if (programRegistrationAttributeIds.length > 0) {
-      whereOptions.push({
-        programRegistrationAttributeId: In(programRegistrationAttributeIds),
-      });
-    }
-
-    const query = this.registrationDataScopedRepository
-      .createQueryBuilder('registration_data')
-      .select(
-        `array_agg(DISTINCT registration_data."registrationId") AS "duplicateRegistrationIds"`,
-      )
-      .addSelect(
-        `array_agg(DISTINCT registration."registrationProgramId") AS "duplicateRegistrationProgramIds"`,
-      )
-      .innerJoin('registration_data.registration', 'registration')
-      .andWhere(whereOptions)
-      .andWhere('registration.programId = :programId', { programId })
-      .andWhere('registration."registrationStatus" != :status', {
-        status: RegistrationStatusEnum.declined,
-      })
-      .andWhere('registration."registrationStatus" != :deletedStatus', {
-        deletedStatus: RegistrationStatusEnum.deleted,
-      })
-      .having('COUNT(registration_data.value) > 1')
-      .andHaving('COUNT(DISTINCT "registrationId") > 1')
-      .groupBy('registration_data.value');
-
-    const duplicates = await query.getRawMany();
-
-    if (!duplicates || duplicates.length === 0) {
-      return {
-        fileName: ExportType.duplicates,
-        data: [],
-      };
-    }
-
-    for (const duplicateEntry of duplicates) {
-      const {
-        duplicateRegistrationProgramIds,
-      }: {
-        duplicateRegistrationIds: number[];
-        duplicateRegistrationProgramIds: number[];
-      } = duplicateEntry;
-      for (const registrationId of duplicateRegistrationProgramIds) {
-        uniqueRegistrationIds.add(registrationId);
-        const others = without(duplicateRegistrationProgramIds, registrationId);
-        const duplicateMapEntry = duplicatesMap.get(registrationId);
-        if (duplicateMapEntry) {
-          duplicatesMap.set(registrationId, duplicateMapEntry.concat(others));
-        } else {
-          duplicatesMap.set(registrationId, others);
-        }
-      }
-    }
-
-    // TODO: refactor this to use the paginate functionality
-    return this.getRegisrationsForDuplicates(
-      duplicatesMap,
-      uniqueRegistrationIds,
-      relationOptions,
-      program,
-    );
-  }
-
-  private async getRegisrationsForDuplicates(
-    duplicatesMap: Map<number, number[]>,
-    uniqueRegistrationProgramIds: Set<number>,
-    relationOptions: RegistrationDataOptions[],
-    program: ProgramEntity,
-  ): Promise<{
-    fileName: ExportType;
-    data: unknown[];
-  }> {
-    const registrationAndFspId = await this.registrationScopedRepository.find({
-      where: {
-        registrationProgramId: In([
-          ...Array.from(uniqueRegistrationProgramIds),
-        ]),
-        programId: Equal(program.id),
-      },
-      select: [
-        'registrationProgramId',
-        'programFinancialServiceProviderConfigurationId',
-      ],
-    });
-    const registrationIds = registrationAndFspId.map((r) => {
-      return {
-        registrationProgramId: r.registrationProgramId,
-        fspId: r.programFinancialServiceProviderConfigurationId,
-      };
-    });
-
-    const allRegistrations: MappedPaginatedRegistrationDto[] =
-      await this.getRegistrationsFieldsForDuplicates(
-        program.id,
-        relationOptions,
-        registrationIds.map((r) => r.registrationProgramId),
-      );
-
-    const preferredLanguage = 'en';
-
-    const result = allRegistrations.map(
-      (registration: MappedPaginatedRegistrationDto) => {
-        // Ensure registration is of type RegistrationType
-        registration =
-          this.registrationsService.transformRegistrationByNamingConvention(
-            JSON.parse(JSON.stringify(program.fullnameNamingConvention)),
-            registration,
-          );
-
-        // If a mapping exists, get the display name for the preferred language else use the FSP name
-        // TODO: Destructuring object to prevent type errors, should be refactored
-        const {
-          programFinancialServiceProviderConfigurationLabel,
-          ...registrationCopy
-        } = registration;
-        registrationCopy['programFinancialServiceProviderConfigurationLabel'] =
-          programFinancialServiceProviderConfigurationLabel[preferredLanguage];
-
-        return {
-          ...registrationCopy,
-          duplicateWithIds: uniq(duplicatesMap.get(registration['id'])).join(
-            ',',
-          ),
-        };
-      },
-    );
-
-    return {
-      fileName: ExportType.duplicates,
-      data: result,
-    };
   }
 
   private async getPaymentDetailsPayment(
@@ -819,10 +570,7 @@ export class MetricsService {
         generatedUniqueIds.push({ originalName: r.name, newUniqueName: name });
       }
       transactionQuery.select((subQuery) => {
-        return this.registrationDataQueryService.customDataEntrySubQuery(
-          subQuery,
-          r.relation,
-        );
+        return createRegistrationAttributeSubQuery(subQuery, r.relation);
       }, name);
     }
     const rawResult = await transactionQuery.getRawMany();
