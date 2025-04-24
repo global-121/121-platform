@@ -27,6 +27,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -58,6 +59,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
   private readonly registrationApiService = inject(RegistrationApiService);
   private readonly toastService = inject(ToastService);
   private readonly queryClient = inject(QueryClient);
+  private readonly projectApiService = inject(ProjectApiService);
 
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
@@ -81,6 +83,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
     () => (action: 'pause' | 'reissue' | 'unpause') =>
       this.currentCard()?.actions.includes(VisaCardAction[action]),
   );
+
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   readonly convertCentsToMainUnits = (
     value: null | number | undefined,
@@ -113,6 +117,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
           this.walletWithCards.data()?.balance,
         ),
         type: 'currency',
+        currencyCode: this.currencyCode(),
       },
       {
         label: $localize`:@@debit-card-spent-this-month:Spent this month (max. EUR 150)`,
@@ -120,6 +125,7 @@ export class ProjectRegistrationDebitCardsPageComponent {
           this.walletWithCards.data()?.spentThisMonth,
         ),
         type: 'currency',
+        currencyCode: this.currencyCode(),
       },
       {
         label: $localize`:@@debit-card-issued-on:Issued on`,
@@ -232,6 +238,8 @@ export class ProjectRegistrationDebitCardsPageComponent {
       this.invalidateWalletQuery();
     },
   }));
+
+  readonly currencyCode = computed(() => this.project.data()?.currency);
 
   private invalidateWalletQuery() {
     void this.queryClient.invalidateQueries({
