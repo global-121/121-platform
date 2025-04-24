@@ -40,8 +40,23 @@
         target: '@parent',
       }"
       [loading]="roles.isPending()"
+      [disabled]="userIsUpdatingItself()"
     >
     </p-multiSelect>
+    @if (userIsUpdatingItself()) {
+      <ng-container slot="details">
+        <p
+          i18n
+          class="my-2"
+        >
+          Users cannot change their own roles
+        </p>
+        <p
+          i18n
+          class="my-2"
+        ></p>
+      </ng-container>
+    }
   </app-form-field-wrapper>
 
   @if (enableScope()) {

@@ -81,6 +81,14 @@ class ProjectTeam extends BasePage {
     await this.removeUserButton.click();
   }
 
+  async editUser({ userEmail }: { userEmail: string }) {
+    await this.page
+      .getByRole('row', { name: userEmail })
+      .getByRole('button')
+      .click();
+    await this.page.getByLabel('Edit').click();
+  }
+
   async validateScopeColumnIsVisible() {
     await expect(this.scopeColumn).toBeVisible();
   }
