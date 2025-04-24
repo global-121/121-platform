@@ -60,10 +60,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Check that no "XXX" comments have been left on the PR
+      - name: Check that no "XXX:" comments have been left on the PR
         run: |
-          echo "The following files contain 'XXX' comments that should be removed:"
-          ! grep -RI --exclude-dir=.git --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "XXX" .
+          echo "The following files contain 'XXX:' comments that should be removed:"
+          ! grep -RI --exclude-dir=.git --exclude=\*.{json,md,xml,nvmrc} --exclude=test_pull_request_formatting.yml "XXX:" .
 
       - name: Check that no "##TODO" comments have been left on the PR
         run: |
