@@ -5,6 +5,5 @@ export enum ExportType {
   unusedVouchers = 'unused-vouchers',
   vouchersWithBalance = 'vouchers-with-balance',
   toCancelVouchers = 'to-cancel-vouchers',
-  duplicates = 'duplicates',
   intersolveVisaCardDetails = 'intersolve-visa-card-details',
 }

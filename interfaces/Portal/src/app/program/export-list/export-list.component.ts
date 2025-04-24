@@ -162,14 +162,6 @@ export class ExportListComponent implements OnInit, OnChanges, OnDestroy {
           })
         : '';
     }
-    if (this.exportType === ExportType.duplicates) {
-      this.duplicateAttributesProps = {
-        attributes: await this.programsService.getDuplicateCheckAttributes(
-          this.programId,
-        ),
-        timestamp: actionTimestamp,
-      };
-    }
     if (this.exportType === ExportType.paDataChanges) {
       this.datetimeProps = {
         dateFrom: null,

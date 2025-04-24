@@ -17,7 +17,6 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { UserModule } from '@121-service/src/user/user.module';
-import { RegistrationDataScopedQueryService } from '@121-service/src/utils/registration-data-query/registration-data-query.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Module({
@@ -38,7 +37,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   ],
   providers: [
     MetricsService,
-    RegistrationDataScopedQueryService,
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     createScopedRepositoryProvider(TransactionEntity),

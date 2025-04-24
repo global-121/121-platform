@@ -64,8 +64,6 @@ export class ExportRegistrationsComponent {
 
   readonly exportSelectedDialog =
     viewChild.required<ConfirmationDialogComponent>('exportSelectedDialog');
-  readonly exportDuplicatesDialog =
-    viewChild.required<ConfirmationDialogComponent>('exportDuplicatesDialog');
   readonly exportDataChangesDialog =
     viewChild.required<ConfirmationDialogComponent>('exportDataChangesDialog');
   readonly exportAccountVerificationDialog =
@@ -80,12 +78,6 @@ export class ExportRegistrationsComponent {
   ExportType = ExportType;
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
-
-  duplicateExportAttributes = injectQuery(() => ({
-    queryKey: [this.projectId()],
-    queryFn: () =>
-      this.exportService.getDuplicateCheckAttributes(this.projectId),
-  }));
 
   dataChangesFormGroup = new FormGroup({
     fromDate: new FormControl<Date | undefined>(undefined, {}),
@@ -124,12 +116,6 @@ export class ExportRegistrationsComponent {
         }
         this.exportSelectedActionData.set(actionData);
         this.exportSelectedDialog().askForConfirmation();
-      },
-    },
-    {
-      label: $localize`:@@export-duplicate:Duplicate registrations`,
-      command: () => {
-        this.exportDuplicatesDialog().askForConfirmation();
       },
     },
     {

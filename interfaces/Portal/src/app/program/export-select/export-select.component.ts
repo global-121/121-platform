@@ -25,7 +25,6 @@ export class ExportSelectComponent implements AfterViewChecked {
   public options = [
     ExportType.filteredTable,
     ExportType.allRegistrations,
-    ExportType.duplicates,
     ExportType.paDataChanges,
   ];
 

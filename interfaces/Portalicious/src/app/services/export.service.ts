@@ -165,24 +165,6 @@ export class ExportService {
     };
   }
 
-  async getDuplicateCheckAttributes(
-    projectId: Signal<number | string>,
-  ): Promise<string[]> {
-    // TODO: AB#30519 This is a temporary solution until we have a better way to get all project attribute with the `duplicateCheck` flag included.
-    // Ideally we will delete this function and just replace the call to `getDuplicateCheckAttributes` with a call to `getProjectAttributes`.
-    const project = await this.queryClient.fetchQuery(
-      this.projectApiService.getProject(projectId)(),
-    );
-
-    const duplicateCheckAttributes = project.programRegistrationAttributes
-      .filter((attribute) => attribute.duplicateCheck)
-      .map((attribute) => attribute.name);
-
-    return [...new Set(duplicateCheckAttributes)].sort((a, b) =>
-      a.localeCompare(b),
-    );
-  }
-
   exportFspInstructions({
     projectId,
     toastService,
