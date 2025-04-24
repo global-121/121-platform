@@ -41,7 +41,7 @@
                 {{
                   item.value
                     | currency
-                      : item.currencyCode ?? 'EUR'
+                      : item.currencyCode ?? undefined
                       : 'symbol-narrow'
                       : item.currencyFormat
                 }}

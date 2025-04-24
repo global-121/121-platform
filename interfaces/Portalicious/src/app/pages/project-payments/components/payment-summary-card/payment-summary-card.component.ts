@@ -111,7 +111,7 @@ export class PaymentSummaryCardComponent {
       {
         value: this.currencyPipe.transform(
           this.expectedAmount(),
-          this.project.data()?.currency ?? 'EUR',
+          this.project.data()?.currency,
           'symbol-narrow',
           '1.2-2',
         ),
@@ -125,7 +125,7 @@ export class PaymentSummaryCardComponent {
       {
         value: this.currencyPipe.transform(
           this.successAmount(),
-          this.project.data()?.currency ?? 'EUR',
+          this.project.data()?.currency,
           'symbol-narrow',
           '1.2-2',
         ),

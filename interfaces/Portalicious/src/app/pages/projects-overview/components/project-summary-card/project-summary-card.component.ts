@@ -81,7 +81,7 @@ export class ProjectSummaryCardComponent {
       {
         value: this.currencyPipe.transform(
           this.metrics.data()?.totalBudget,
-          this.project.data()?.currency ?? 'EUR',
+          this.project.data()?.currency,
           'symbol-narrow',
           '1.0-0',
         ),
@@ -90,7 +90,7 @@ export class ProjectSummaryCardComponent {
       {
         value: this.currencyPipe.transform(
           this.metrics.data()?.spentMoney,
-          this.project.data()?.currency ?? 'EUR',
+          this.project.data()?.currency,
           'symbol-narrow',
           '1.0-0',
         ),
