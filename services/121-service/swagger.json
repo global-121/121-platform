@@ -831,6 +831,14 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/payments/{paymentId}/transactions",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"

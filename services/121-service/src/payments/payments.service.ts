@@ -21,6 +21,7 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { TransactionResponseDto } from '@121-service/src/payments/dto/transaction-response.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -52,6 +53,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -80,6 +82,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
@@ -1269,5 +1272,55 @@ export class PaymentsService {
     throw new Error(
       `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
     );
+  }
+
+  public async getTransactions({
+    programId,
+    payment,
+  }: {
+    programId: number;
+    payment: number;
+  }): Promise<TransactionResponseDto[]> {
+    const transactions =
+      await this.transactionScopedRepository.getTransactionsForPayment({
+        programId,
+        payment,
+      });
+    if (!transactions || transactions.length === 0) {
+      return [];
+    }
+
+    const fullnameNamingConvention = (
+      await this.programRepository.findOneOrFail({
+        where: { id: Equal(programId) },
+        select: ['fullnameNamingConvention'],
+      })
+    ).fullnameNamingConvention;
+
+    if (!fullnameNamingConvention || fullnameNamingConvention.length === 0) {
+      return transactions;
+    }
+
+    const registrationIds = transactions.map((t) => t.registrationId);
+    const registrationNames =
+      await this.registrationScopedRepository.getFullNamesByRegistrationIds({
+        registrationIds,
+        fullNameNamingConvention: fullnameNamingConvention,
+        programId,
+      });
+
+    // Create a map for faster lookups
+    const nameMap = new Map(
+      registrationNames.map((item) => [item.registrationId, item.name]),
+    );
+
+    const result = transactions.map((transaction) => {
+      return {
+        ...transaction,
+        name: nameMap.get(transaction.registrationId),
+      };
+    });
+
+    return result;
   }
 }

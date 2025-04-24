@@ -30,6 +30,7 @@ import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-paym
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
+import { TransactionResponseDto } from '@121-service/src/payments/dto/transaction-response.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
@@ -244,5 +245,25 @@ export class PaymentsController {
       payment,
       userId,
     );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @ApiOperation({ summary: '[SCOPED] Get all transactions' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved transactions',
+    type: [TransactionResponseDto],
+  })
+  @Get('programs/:programId/payments/:paymentId/transactions')
+  public async getTransactions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+  ): Promise<TransactionResponseDto[]> {
+    return await this.paymentsService.getTransactions({
+      programId,
+      payment: paymentId,
+    });
   }
 }
