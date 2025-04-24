@@ -275,17 +275,15 @@ export class CommercialBankEthiopiaApiService {
         console.error(
           'Failed because of CBE connection error. Please try again later',
         );
-        result.resultDescription =
-          'Failed because of CBE connection error. Please try again later';
+        throw error;
       } else if (error.code === 'ENOENT') {
         console.error(
           'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.',
         );
-        result.resultDescription =
-          'Failed because of ETHIOPIA_CERTIFICATE_PATH file or directory not found.';
+        throw error;
       } else {
         console.error(
-          'CBE API: ValidationStatus - Unknown error occurred:',
+          'CBE API: ValidationStatus - Error occurred:',
           error.response ?? error,
         );
         result.resultDescription = error.response;
