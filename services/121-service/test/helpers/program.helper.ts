@@ -204,10 +204,13 @@ export async function getTransactions({
   referenceId: string | null;
   accessToken: string;
 }): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/transactions`)
-    .set('Cookie', [accessToken])
-    .query({ payment: paymentNr, referenceId });
+  const response = await getServer()
+    .get(`/programs/${programId}/payments/${paymentNr}/transactions`)
+    .set('Cookie', [accessToken]);
+  if (referenceId && response.body && Array.isArray(response.body)) {
+    response.body = response.body.filter((t) => t.referenceId === referenceId);
+  }
+  return response;
 }
 
 export async function getFspInstructions(

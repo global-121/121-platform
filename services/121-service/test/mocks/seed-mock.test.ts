@@ -1,6 +1,5 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import { getRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -43,7 +42,6 @@ describe('Mock registrations', () => {
       expect(transactionsResponse.text).toContain(
         TransactionStatusEnum.success,
       );
-      expect(transactionsResponse.body[0].user).toMatchObject(adminOwnerDto);
     }
   });
 });

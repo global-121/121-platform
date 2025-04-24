@@ -31,7 +31,9 @@ export class TransactionsController {
 
   // TODO: Remove this endpoint when the old portal has been deprecated.
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get all transactions' })
+  @ApiOperation({
+    summary: '[SCOPED] Get all transactions: Only used in the old portal',
+  })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({
     name: 'payment',

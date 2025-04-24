@@ -675,6 +675,7 @@ export class RegistrationsPaginationService {
     orignalSelect: string[];
     fullnameNamingConvention: string[];
   }): T & { name: string } {
+    const name = this.getName(registration, fullnameNamingConvention);
     if (select && select.includes('name')) {
       const differenceOrignalSelect = select.filter(
         (x) => !orignalSelect.includes(x),
@@ -685,7 +686,7 @@ export class RegistrationsPaginationService {
     }
     return {
       ...registration,
-      name: this.getName(registration, fullnameNamingConvention),
+      name,
     };
   }
 
