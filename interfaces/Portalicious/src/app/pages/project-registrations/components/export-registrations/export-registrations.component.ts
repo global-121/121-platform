@@ -64,8 +64,6 @@ export class ExportRegistrationsComponent {
 
   readonly exportSelectedDialog =
     viewChild.required<ConfirmationDialogComponent>('exportSelectedDialog');
-  readonly exportDuplicatesDialog =
-    viewChild.required<ConfirmationDialogComponent>('exportDuplicatesDialog');
   readonly exportDataChangesDialog =
     viewChild.required<ConfirmationDialogComponent>('exportDataChangesDialog');
   readonly exportAccountVerificationDialog =
