@@ -187,6 +187,7 @@ export class ActivityLogExpandedRowComponent
             label: $localize`Amount`,
             value: item.attributes.amount,
             type: 'currency',
+            currencyCode: this.context().currencyCode(),
           },
         ];
 
@@ -195,6 +196,7 @@ export class ActivityLogExpandedRowComponent
             label: $localize`Current balance`,
             value: this.intersolveVoucherBalance.data(),
             type: 'currency',
+            currencyCode: this.context().currencyCode(),
             loading: this.intersolveVoucherBalance.isLoading(),
           });
         }

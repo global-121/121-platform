@@ -18,6 +18,7 @@ import {
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
+import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
@@ -28,6 +29,7 @@ import { TableCellOverviewComponent } from '~/pages/project-registration-activit
 export interface ActivityLogTableCellContext {
   projectId: Signal<string>;
   registrationId: Signal<string>;
+  currencyCode: Signal<string | undefined>;
   referenceId?: string;
 }
 
@@ -49,12 +51,14 @@ export class ProjectRegistrationActivityLogPageComponent {
   readonly registrationId = input.required<string>();
 
   registrationApiService = inject(RegistrationApiService);
+  projectApiService = inject(ProjectApiService);
 
   expandableRowTemplate = ActivityLogExpandedRowComponent;
   readonly tableCellContext = computed<ActivityLogTableCellContext>(() => ({
     projectId: this.projectId,
     registrationId: this.registrationId,
     referenceId: this.registration.data()?.referenceId,
+    currencyCode: this.currencyCode,
   }));
 
   registration = injectQuery(
@@ -70,6 +74,8 @@ export class ProjectRegistrationActivityLogPageComponent {
       this.registrationId,
     ),
   );
+
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
 
   readonly activities = computed(() => this.activityLog.data()?.data ?? []);
 
@@ -120,4 +126,6 @@ export class ProjectRegistrationActivityLogPageComponent {
       options: this.uniqueAuthors(),
     },
   ]);
+
+  readonly currencyCode = computed(() => this.project.data()?.currency);
 }
