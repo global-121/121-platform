@@ -290,7 +290,7 @@ export async function waitForPaymentTransactionsToComplete({
   paymentReferenceIds: string[];
   accessToken: string;
   maxWaitTimeMs: number;
-  completeStatusses: string[];
+  completeStatusses?: string[];
   payment?: number;
 }): Promise<void> {
   const startTime = Date.now();
