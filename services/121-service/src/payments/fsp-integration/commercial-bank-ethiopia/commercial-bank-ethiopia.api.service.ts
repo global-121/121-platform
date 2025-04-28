@@ -5,6 +5,7 @@ import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()
@@ -24,7 +25,9 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+      const responseBody = shouldBeEnabled(
+        process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA,
+      )
         ? await this.commercialBankEthiopiaMock.postCBETransfer(payment)
         : await this.soapService.postCBERequest(
             payload,
@@ -156,7 +159,9 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+      const responseBody = shouldBeEnabled(
+        process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA,
+      )
         ? await this.commercialBankEthiopiaMock.postCBETransaction(payment)
         : await this.soapService.postCBERequest(
             payload,
@@ -257,7 +262,9 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+      const responseBody = shouldBeEnabled(
+        process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA,
+      )
         ? await this.commercialBankEthiopiaMock.postCBEValidation(payload)
         : await this.soapService.postCBERequest(
             payload,
