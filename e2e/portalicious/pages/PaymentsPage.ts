@@ -1,8 +1,34 @@
 import { expect } from '@playwright/test';
+import * as fs from 'fs';
+import path from 'path';
 import { Locator, Page } from 'playwright';
+import * as XLSX from 'xlsx';
 
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
+
+const expectedExportedPaymentsRowCount = 25;
+const expectedExportedPaymentsColumns = [
+  'referenceid',
+  'id',
+  'registrationid',
+  'status',
+  'payment',
+  'timestamp',
+  'registrationstatus',
+  'phonenumber',
+  'paymentamountmultiplier',
+  'amount',
+  'errormessage',
+  'financialserviceprovider',
+  'fullname',
+  'whatsappphonenumber',
+  'addressstreet',
+  'addresshousenumber',
+  'addresshousenumberaddition',
+  'addresspostalcode',
+  'addresscity',
+];
 
 class PaymentsPage extends BasePage {
   readonly page: Page;
@@ -294,6 +320,63 @@ class PaymentsPage extends BasePage {
       .isVisible();
 
     return noPaymentsFoundVisible && noPaymentsForProjectVisible;
+  }
+
+  async exportAndAssertData() {
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.proceedButton.click(),
+    ]);
+
+    const downloadDir = path.join(__dirname, '../../downloads');
+    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+
+    const filePath = path.join(downloadDir, download.suggestedFilename());
+    await download.saveAs(filePath);
+
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(sheet, { defval: null }) as Record<
+      string,
+      unknown
+    >[];
+
+    if (data.length === 0) throw new Error('No data found in the sheet');
+
+    if (data.length !== expectedExportedPaymentsRowCount) {
+      throw new Error(
+        `Row count validation failed. Expected ${expectedExportedPaymentsRowCount} payments, but found ${data.length}`,
+      );
+    }
+
+    const actualColumns = Object.keys(data[0]).map((col) =>
+      col.toLowerCase().trim(),
+    );
+
+    const missingColumns = expectedExportedPaymentsColumns.filter(
+      (col) => !actualColumns.includes(col),
+    );
+
+    const extraColumns = actualColumns.filter(
+      (col) => !expectedExportedPaymentsColumns.includes(col),
+    );
+
+    if (missingColumns.length > 0 || extraColumns.length > 0) {
+      const errorMessage = [
+        'Column validation failed:',
+        missingColumns.length > 0
+          ? `Missing columns: ${missingColumns.join(', ')}`
+          : '',
+        extraColumns.length > 0
+          ? `Extra columns: ${extraColumns.join(', ')}`
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      throw new Error(errorMessage);
+    }
   }
 }
 
