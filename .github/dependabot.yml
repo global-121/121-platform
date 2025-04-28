@@ -32,6 +32,7 @@ updates:
       - dependency-name: 'bwip-js'
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'eslint-plugin-custom-rules' # Local package, no need to check
       - dependency-name: 'jimp'
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
