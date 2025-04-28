@@ -285,8 +285,8 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Scenarios of e2e and integration/API-tests for the whole platform are described in [`Azure Test Plan`](https://dev.azure.com/redcrossnl/121%20Platform/_testPlans/define?planId=27408&suiteId=27409).
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
-  - Unit-tests and API/integration-tests for all services; Run with `npm test` in each `services/*`-folder.
-    See: `121-service/README.md`/[Testing](./services/121-service/README.md#testing) for details.
+  - Unit-tests and API/integration-tests for all services; Run with `npm test` in each `services/*`-folder.  
+    See the README: [121-service / Testing](./services/121-service/README.md#testing) for details.
 
 ### How to use E2E tests and maintain documentation/Test Suites
 
@@ -297,13 +297,13 @@ When new Node.js dependencies are added to a service since it is last build on y
 
 - Is it to test query-magic?
 - Is it to test essential endpoints (FSP integrations) and import/exports/etc?
-- Often used (with different parameters) endpoints: PATCH /registration etc.
+- Often used (with different parameters) endpoints: `PATCH /registration` etc.
 - Is there actual business-logic performed?
 - Not necessary:
   - update single (program) properties?
 - Examples:
-  - import registrations -> change PA-status (with list of refIds) -> export included PAs
-  - update PA attributes: all different content-types + possible values (including edge cases)
+  - import Registrations -> change status (with list of `referenceId`s) -> export included registrations
+  - update Registration-attributes: all different content-types + possible values (including edge cases)
 
 #### Notes
 
@@ -375,7 +375,7 @@ This is how we create and publish a new release of the 121-platform.
   - ⚠️ **Note:**  
     Start with deployment of the "**_Demo_**"-instance.  
     This will **_also_** deploy the Mock-Service to its production-environment.
-  - The "Help a Child" instance should be skipped. They are using an fsp integration we don't support anymore, so we can't roll out new code to their environment.
+  - The "Help a Child" instance should be skipped. They are using an FSP-integration we don't support anymore, so we can't roll out new code to their environment.
 - Send the "Inform stakeholders"-message to Teams in the necessary locations.
 
 ### Patch/Hotfix Checklist
