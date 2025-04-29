@@ -1,7 +1,6 @@
 import { Controller, Headers, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-// ##TODO: Refactor so it only uses one XML parser for both converting to and from XML
 import * as convert from 'xml-js';
 
 import { CommercialBankEthiopiaMockService } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.service';
