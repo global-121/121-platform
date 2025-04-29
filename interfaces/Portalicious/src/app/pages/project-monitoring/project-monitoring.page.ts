@@ -146,12 +146,6 @@ export class ProjectMonitoringPageComponent {
         value: projectData?.distributionFrequency,
       },
       {
-        label: $localize`Duration`,
-        value: projectData?.distributionDuration
-          ? $localize`${projectData.distributionDuration}:count: disbursements`
-          : undefined,
-      },
-      {
         label: $localize`Base transfer value`,
         value: projectData?.fixedTransferValue,
         type: 'currency',

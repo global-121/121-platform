@@ -374,178 +374,15 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/organization",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/organization",
-    "params": [],
-    "returnType": "OrganizationEntity"
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/whatsapp/templates",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/notifications/whatsapp/templates",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/whatsapp/templates/{sessionId}",
-    "params": [
-      "sessionId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/imageCode/{secret}",
-    "params": [
-      "secret"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers/balance",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/intersolve-voucher/cancel",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
-    "params": []
-  },
-  {
-    "method": "delete",
-    "path": "/api/financial-service-providers/intersolve-voucher/deprecated-image-codes",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/transactions",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": [
-      "registrationId",
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.registrationCreatedDate",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "filter.failedPayment",
-      "filter.waitingPayment",
-      "filter.successPayment",
-      "filter.notYetSentPayment",
-      "sortBy",
-      "search",
-      "searchBy",
-      "format",
-      "maxPayment",
-      "minPayment",
-      "toDate",
-      "fromDate",
-      "exportType"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/metrics/to-cancel-vouchers",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/payment-state-sums",
+    "method": "put",
+    "path": "/api/programs/{programId}/kobo",
     "params": [
       "programId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/program-stats-summary",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/registration-status",
+    "path": "/api/programs/{programId}/kobo",
     "params": [
       "programId"
     ]
@@ -820,6 +657,183 @@
     "params": [
       "programId",
       "id"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
+    "params": [
+      "registrationId",
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/organization",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/organization",
+    "params": [],
+    "returnType": "OrganizationEntity"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/whatsapp/templates",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates/{sessionId}",
+    "params": [
+      "sessionId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/imageCode/{secret}",
+    "params": [
+      "secret"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers/balance",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/intersolve-voucher/cancel",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
+    "params": []
+  },
+  {
+    "method": "delete",
+    "path": "/api/financial-service-providers/intersolve-voucher/deprecated-image-codes",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.registrationCreatedDate",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.financialServiceProviderName",
+      "filter.programFinancialServiceProviderConfigurationName",
+      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "filter.failedPayment",
+      "filter.waitingPayment",
+      "filter.successPayment",
+      "filter.notYetSentPayment",
+      "sortBy",
+      "search",
+      "searchBy",
+      "format",
+      "maxPayment",
+      "minPayment",
+      "toDate",
+      "fromDate",
+      "exportType"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/metrics/to-cancel-vouchers",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/payment-state-sums",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/program-stats-summary",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/registration-status",
+    "params": [
+      "programId"
     ]
   },
   {

@@ -24,11 +24,11 @@ class BaseProgramRegistrationAttributeDto {
   @ValidateNested()
   @IsOptional()
   @Type(() => CreateOptionsDto)
-  public readonly options?: QuestionOption[];
+  public options?: QuestionOption[];
 
   @ApiProperty()
   @IsOptional()
-  public readonly scoring?: Record<string, unknown>;
+  public scoring?: Record<string, unknown>;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -42,7 +42,7 @@ class BaseProgramRegistrationAttributeDto {
 
   @ApiProperty({ example: true })
   @IsOptional()
-  public readonly editableInPortal?: boolean;
+  public editableInPortal?: boolean;
 
   @ApiProperty({
     example: [ExportType.allRegistrations, ExportType.included],
@@ -50,7 +50,7 @@ class BaseProgramRegistrationAttributeDto {
   })
   @IsOptional()
   @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
-  public readonly export?: WrapperType<ExportType[]>;
+  public export?: WrapperType<ExportType[]>;
 
   @ApiProperty({
     example: {
@@ -73,7 +73,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   @ApiProperty({})
   @IsNotEmpty()
   @IsString()
-  public readonly name: string;
+  public name: string;
 
   @ApiProperty({
     example: {
@@ -81,7 +81,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
   })
-  public readonly label: LocalizedString;
+  public label: LocalizedString;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.text,
@@ -94,7 +94,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
     RegistrationAttributeTypes.text,
     RegistrationAttributeTypes.date,
   ])
-  public readonly type: WrapperType<RegistrationAttributeTypes>;
+  public type: WrapperType<RegistrationAttributeTypes>;
 
   @ApiProperty({
     example: false,
@@ -102,7 +102,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
   })
   @IsBoolean()
   @IsOptional()
-  public readonly isRequired?: boolean;
+  public isRequired?: boolean;
 }
 
 export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrationAttributeDto {
@@ -114,7 +114,7 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
     required: false,
   })
   @IsOptional()
-  public readonly label?: WrapperType<LocalizedString>;
+  public label?: WrapperType<LocalizedString>;
 
   @ApiProperty({
     example: RegistrationAttributeTypes.numeric,
@@ -129,7 +129,7 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
     RegistrationAttributeTypes.text,
     RegistrationAttributeTypes.date,
   ])
-  public readonly type?: WrapperType<RegistrationAttributeTypes>;
+  public type?: WrapperType<RegistrationAttributeTypes>;
 
   @ApiProperty({
     example: false,
@@ -137,5 +137,5 @@ export class UpdateProgramRegistrationAttributeDto extends BaseProgramRegistrati
   })
   @IsOptional()
   @IsBoolean()
-  public readonly isRequired?: boolean;
+  public isRequired?: boolean;
 }

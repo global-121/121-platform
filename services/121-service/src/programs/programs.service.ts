@@ -7,6 +7,7 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { GetTokenResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
@@ -23,9 +24,13 @@ import {
 import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import {
+  DefaultFullNameNamingConvention,
+  ProgramEntity,
+} from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -120,25 +125,10 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    if (
-      !programData.programRegistrationAttributes ||
-      !programData.fullnameNamingConvention
-    ) {
-      const errors =
-        'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
+    const programAttributeNames = programData.programRegistrationAttributes
+      ? programData.programRegistrationAttributes.map((ca) => ca.name)
+      : [];
 
-    const programAttributeNames = programData.programRegistrationAttributes.map(
-      (ca) => ca.name,
-    );
-
-    for (const name of Object.values(programData.fullnameNamingConvention)) {
-      if (!programAttributeNames.includes(name)) {
-        const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    }
     // Check if programAttributeNames has duplicate values
     const duplicateNames = programAttributeNames.filter(
       (item, index) => programAttributeNames.indexOf(item) !== index,
@@ -159,30 +149,59 @@ export class ProgramService {
 
     await this.validateProgram(programData);
     const program = new ProgramEntity();
-    program.published = programData.published;
-    program.validation = programData.validation;
-    program.location = programData.location;
-    program.ngo = programData.ngo;
-    program.titlePortal = programData.titlePortal;
+    if (programData.published) {
+      program.published = programData.published;
+    }
+    if (programData.validation) {
+      program.validation = programData.validation;
+    }
+    if (programData.location) {
+      program.location = programData.location;
+    }
+    if (programData.titlePortal) {
+      program.titlePortal = programData.titlePortal;
+    }
     program.description = programData.description ?? null;
-    program.startDate = programData.startDate;
-    program.endDate = programData.endDate;
+    if (programData.startDate) {
+      program.startDate = programData.startDate;
+    }
+    if (programData.endDate) {
+      program.endDate = programData.endDate;
+    }
+
     program.currency = programData.currency;
-    program.distributionFrequency = programData.distributionFrequency;
-    program.distributionDuration = programData.distributionDuration;
+    if (programData.distributionFrequency) {
+      program.distributionFrequency = programData.distributionFrequency;
+    }
     program.fixedTransferValue = programData.fixedTransferValue;
     program.paymentAmountMultiplierFormula =
       programData.paymentAmountMultiplierFormula ?? null;
-    program.targetNrRegistrations = programData.targetNrRegistrations;
-    program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
-    program.aboutProgram = programData.aboutProgram;
-    program.fullnameNamingConvention = programData.fullnameNamingConvention;
+
+    program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
+
+    if (programData.tryWhatsAppFirst != null) {
+      program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
+    }
+    if (programData.fullnameNamingConvention) {
+      program.fullnameNamingConvention = programData.fullnameNamingConvention;
+    }
     program.languages = programData.languages;
-    program.enableMaxPayments = programData.enableMaxPayments;
-    program.enableScope = programData.enableScope;
-    program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
+
+    if (programData.enableMaxPayments != null) {
+      program.enableMaxPayments = programData.enableMaxPayments;
+    }
+    if (programData.enableScope != null) {
+      program.enableScope = programData.enableScope;
+    }
+    if (programData.allowEmptyPhoneNumber != null) {
+      program.allowEmptyPhoneNumber = programData.allowEmptyPhoneNumber;
+    }
+
     program.monitoringDashboardUrl = programData.monitoringDashboardUrl ?? null;
     program.budget = programData.budget ?? null;
+
+    const fullnameNamingConvention =
+      programData.fullnameNamingConvention ?? DefaultFullNameNamingConvention;
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -198,7 +217,39 @@ export class ProgramService {
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];
-      for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
+      const programAttributesToStore =
+        programData.programRegistrationAttributes ?? [];
+
+      // Add the default program registration attributes
+      if (
+        !programAttributesToStore.map((ca) => ca.name).includes('phoneNumber')
+      ) {
+        // Add the name to the programAttributes
+        programAttributesToStore.push({
+          name: 'phoneNumber', // TODO use enum value for this?
+          label: {},
+          type: RegistrationAttributeTypes.text,
+          export: [ExportType.allRegistrations, ExportType.included],
+          duplicateCheck: false,
+          isRequired: !!programData.allowEmptyPhoneNumber,
+        });
+      }
+
+      for (const name of Object.values(fullnameNamingConvention)) {
+        if (!programAttributesToStore.map((ca) => ca.name).includes(name)) {
+          // Add the name to the programAttributes
+          programAttributesToStore.push({
+            name,
+            label: {},
+            type: RegistrationAttributeTypes.text,
+            export: [ExportType.allRegistrations, ExportType.included],
+            duplicateCheck: false,
+            isRequired: true,
+          });
+        }
+      }
+
+      for (const programRegistrationAttribute of programAttributesToStore) {
         const attributeReturn =
           await this.createProgramRegistrationAttributeEntity({
             programId: savedProgram.id,
@@ -291,7 +342,6 @@ export class ProgramService {
       endDate: program.endDate ?? undefined,
       currency: program.currency ?? undefined,
       distributionFrequency: program.distributionFrequency ?? undefined,
-      distributionDuration: program.distributionDuration ?? undefined,
       fixedTransferValue: program.fixedTransferValue ?? undefined,
       paymentAmountMultiplierFormula:
         program.paymentAmountMultiplierFormula ?? undefined,
@@ -306,7 +356,6 @@ export class ProgramService {
         ProgramRegistrationAttributeMapper.entitiesToDtos(
           program.programRegistrationAttributes,
         ),
-      aboutProgram: program.aboutProgram ?? undefined,
       fullnameNamingConvention: program.fullnameNamingConvention ?? undefined,
       languages: program.languages,
       enableMaxPayments: program.enableMaxPayments,
@@ -361,7 +410,7 @@ export class ProgramService {
     return ProgramRegistrationAttributeMapper.entityToDto(entity);
   }
 
-  private async createProgramRegistrationAttributeEntity({
+  public async createProgramRegistrationAttributeEntity({
     programId,
     createProgramRegistrationAttributeDto,
     repository,

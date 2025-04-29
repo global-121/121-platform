@@ -561,3 +561,27 @@ export async function removeDeprecatedImageCodes({
     .set('Cookie', [accessToken])
     .send(body);
 }
+
+export async function linkKoboForm(
+  programId: number,
+  linkKoboDto: {
+    koboToken?: string;
+    koboAssetId?: string;
+    koboUrl?: string;
+  },
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/kobo`)
+    .set('Cookie', [accessToken])
+    .send(linkKoboDto);
+}
+
+export async function getKoboIntegration(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/kobo`)
+    .set('Cookie', [accessToken]);
+}
