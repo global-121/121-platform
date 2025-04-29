@@ -173,6 +173,8 @@ export class RegistrationsImportService {
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
+    console.log('Program:', program);
+    console.log('Program:', program.defaultMaxPayments);
     let countImported = 0;
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     const registrations: RegistrationEntity[] = [];
@@ -198,7 +200,8 @@ export class RegistrationsImportService {
           record.paymentAmountMultiplier || 1;
       }
       if (program.enableMaxPayments) {
-        registration.maxPayments = record.maxPayments;
+        registration.maxPayments =
+          record.maxPayments || program.defaultMaxPayments;
       }
       if (program.enableScope) {
         registration.scope = record.scope || '';

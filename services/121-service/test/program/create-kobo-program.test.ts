@@ -36,6 +36,8 @@ describe('Create program which should be edited via kobo later', () => {
       currency: 'MWK',
       languages: [LanguageEnum.en, LanguageEnum.nl],
       fixedTransferValue: 20,
+      enableMaxPayments: true,
+      defaultMaxPayments: 5,
     };
 
     // Act

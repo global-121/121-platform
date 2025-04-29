@@ -179,6 +179,8 @@ export class ProgramService {
 
     program.targetNrRegistrations = programData.targetNrRegistrations ?? null;
 
+    program.defaultMaxPayments = programData.defaultMaxPayments ?? null;
+
     if (programData.tryWhatsAppFirst != null) {
       program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     }
