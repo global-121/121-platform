@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { LinkKoboDto } from '@121-service/src/programs/kobo/dto/link-kobo.dto';
 import { KoboService } from '@121-service/src/programs/kobo/kobo.service';
 
@@ -111,5 +113,31 @@ export class KoboController {
   ) {
     await this.koboService.importKoboDataAsRegistrations(programId);
     return { success: true, message: 'Submissions imported successfully' };
+  }
+
+  @ApiOperation({
+    summary: `Post a new kobo submission [USED BY KOBO]`,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Incoming submission processed successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+  })
+  @ApiBody({
+    type: KoboWebhookIncomingSubmission,
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    example: 1,
+  })
+  @Post(`kobo/webhook`)
+  public async processKoboWebhookCall(
+    @Body() body: KoboWebhookIncomingSubmission,
+  ) {
+    await this.koboService.processKoboWebhookCall(body);
   }
 }

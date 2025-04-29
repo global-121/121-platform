@@ -159,7 +159,6 @@ export class KoboFormValidationService {
     if (!phoneNumberItem) {
       errors.push('Kobo form must contain a phone number item');
     }
-    console.log('🚀 ~ KoboFormValidationService ~ errors:', errors);
 
     return errors;
   }
