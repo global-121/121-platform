@@ -198,7 +198,8 @@ export class RegistrationsImportService {
           record.paymentAmountMultiplier || 1;
       }
       if (program.enableMaxPayments) {
-        registration.maxPayments = record.maxPayments;
+        registration.maxPayments =
+          record.maxPayments != null : record.maxPayments ? program.defaultMaxPayments;
       }
       if (program.enableScope) {
         registration.scope = record.scope || '';

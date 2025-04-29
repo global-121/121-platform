@@ -94,8 +94,8 @@ export class ProgramEntity extends Base121Entity {
   @Column({ default: false })
   public enableMaxPayments: boolean;
 
-  @Column({ nullable: true })
-  public defaultMaxPayments: number;
+  @Column({ nullable: true, type: 'integer' })
+  public defaultMaxPayments: number | null;
 
   @Column({ default: false })
   public enableScope: boolean;

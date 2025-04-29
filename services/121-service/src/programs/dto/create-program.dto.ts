@@ -127,6 +127,11 @@ export class CreateProgramDto {
   @IsOptional()
   public readonly startDate?: Date;
 
+  @ApiProperty({ example: 5 })
+  @IsNumber()
+  @IsOptional()
+  public readonly defaultMaxPayments?: number;
+
   @ApiProperty({ example: '2025-05-23' })
   @IsNotEmpty()
   @IsDateString()
