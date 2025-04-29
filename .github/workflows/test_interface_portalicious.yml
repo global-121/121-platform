@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/test_interface_portalicious.yml'
       - 'interfaces/Portalicious/**'
+      - 'services/121-service/**' # 121-service's code is imported/used
 
 env:
   interfacePath: 'interfaces/Portalicious'
