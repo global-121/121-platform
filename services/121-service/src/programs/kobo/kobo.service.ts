@@ -4,7 +4,8 @@ import { Equal, Repository } from 'typeorm';
 
 import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
 import { KoboApiService } from '@121-service/src/programs/kobo/kobo-api-service';
-import { KoboSurveyService } from '@121-service/src/programs/kobo/kobo-survey.service';
+import { KoboFormService } from '@121-service/src/programs/kobo/kobo-form.service';
+import { KoboFormValidationService } from '@121-service/src/programs/kobo/kobo-form-validation.service';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 
 @Injectable()
@@ -15,13 +16,20 @@ export class KoboService {
   constructor(
     private readonly registrationsService: RegistrationsService,
     private readonly koboApiService: KoboApiService,
-    private readonly koboSurveyService: KoboSurveyService,
+    private readonly koboFormService: KoboFormService,
+    private readonly koboFormValidationService: KoboFormValidationService,
   ) {}
 
   public async getKoboIntegration(programId: number): Promise<KoboEntity> {
-    const koboEntity = await this.koboRepository.findOneOrFail({
+    const koboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
     });
+    if (!koboEntity) {
+      throw new HttpException(
+        'Kobo integration not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return koboEntity;
   }
@@ -48,6 +56,13 @@ export class KoboService {
       koboInformation.versionId,
     );
 
+    if (isNewVersion) {
+      await this.koboFormValidationService.validateKoboForm({
+        koboInformation,
+        programId,
+      });
+    }
+
     await this.upsertKoboEntity({
       assetId: koboAssetId,
       tokenCode: koboToken,
@@ -58,20 +73,15 @@ export class KoboService {
     });
 
     if (isNewVersion) {
-      await this.koboSurveyService.processKoboSurvey(
+      await this.koboFormValidationService.validateKoboForm({
         koboInformation,
         programId,
-      );
+      });
+      await this.koboFormService.processKoboSurvey(koboInformation, programId);
     }
-
-    await this.importKoboDataAsRegistrations(programId);
   }
 
   public async importKoboDataAsRegistrations(programId: number): Promise<void> {
-    console.log(
-      '🚀 ~ KoboService ~ fetchAndLogKoboRegistrations ~ programId:',
-      programId,
-    );
     // Get the kobo entity for this program
     const koboEntity = await this.koboRepository.findOneOrFail({
       where: { programId: Equal(programId) },
@@ -84,19 +94,8 @@ export class KoboService {
         koboEntity.url,
       );
 
-    console.log(
-      `Retrieved ${rawKoboSumissionData.length} registrations for program ${programId}`,
-    );
-    console.log(
-      '🚀 ~ KoboService ~ importKoboDataAsRegistrations ~ registrations:',
-      rawKoboSumissionData,
-    );
     const mappedKoboDataForImport =
       this.mapKoboDataFor121Import(rawKoboSumissionData);
-    console.log(
-      '🚀 ~ KoboService ~ importKoboDataAsRegistrations ~ mappedKoboDataForImport:',
-      mappedKoboDataForImport,
-    );
 
     await this.registrationsService.importRegistrationsFromJson(
       mappedKoboDataForImport,

@@ -43,3 +43,9 @@ export const KOBO_TO_121_TYPE_MAPPING: TypeMapping = {
 export function get121TypeFromKoboType(koboType: string): string {
   return KOBO_TO_121_TYPE_MAPPING[koboType] || 'text'; // Default to 'text' if no mapping exists
 }
+
+export function getKoboTypesFrom121Type(typ: string): string[] {
+  return Object.entries(KOBO_TO_121_TYPE_MAPPING)
+    .filter(([_, value]) => value === typ)
+    .map(([key]) => key);
+}

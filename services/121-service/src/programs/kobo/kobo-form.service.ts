@@ -15,7 +15,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
  * Service responsible for processing Kobo surveys and transforming them into program attributes
  */
 @Injectable()
-export class KoboSurveyService {
+export class KoboFormService {
   constructor(
     private readonly programService: ProgramService,
     @InjectRepository(ProgramRegistrationAttributeEntity)
@@ -36,22 +36,26 @@ export class KoboSurveyService {
     );
 
     for (const item of koboInformation.survey) {
-      await this.createUpdateProgramAttributeFromKoboItem(
+      await this.createUpdateProgramAttributeFromKoboItem({
         item,
         programId,
         optionsPerListName,
-      );
+      });
     }
   }
 
-  public async createUpdateProgramAttributeFromKoboItem(
-    item: KoboSurveyItem,
-    programId: number,
+  public async createUpdateProgramAttributeFromKoboItem({
+    item,
+    programId,
+    optionsPerListName,
+  }: {
+    item: KoboSurveyItem;
+    programId: number;
     optionsPerListName: Record<
       string,
       { option: string; label: LocalizedString }[]
-    >,
-  ): Promise<void> {
+    >;
+  }): Promise<void> {
     const baseType = item.type.split(' ')[0];
 
     const attributeType = KOBO_TO_121_TYPE_MAPPING[baseType];
