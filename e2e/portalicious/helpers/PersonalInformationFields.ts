@@ -44,19 +44,19 @@ export const textInputs = {
 
 export const numberInputs = {
   maxPayments: {
-    fieldName: 'Max. payments:',
+    fieldName: 'Max. payments',
     numberInputValue: 5,
   },
   addressHouseNumber: {
-    fieldName: 'Address house number:',
+    fieldName: 'Address house number',
     numberInputValue: 123,
   },
   paymentAmountMultiplier: {
-    fieldName: 'Transfer value multiplier:',
+    fieldName: 'Transfer value multiplier',
     numberInputValue: 2,
   },
   paymentCountRemaining: {
-    fieldName: 'Remaining payments:',
+    fieldName: 'Remaining payments',
     numberInputValue: 5,
   },
 };

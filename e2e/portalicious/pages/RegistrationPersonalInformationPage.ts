@@ -120,10 +120,10 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
   }) {
     const field = this.page
       .locator('p')
-      .filter({ hasText: new RegExp(`^${fieldName}:?\\s`) })
+      .filter({ hasText: new RegExp(`^${fieldName}:`) })
       .locator('span');
-    const fieldText = (await field.innerText()).trim();
-    expect(fieldText).toBe(fieldValue);
+
+    await expect(field).toHaveText(fieldValue, { useInnerText: true });
   }
 
   async validateMultiplePersonalInformationFields({
@@ -143,9 +143,11 @@ class RegistrationPersonalInformationPage extends RegistrationBasePage {
     await expect(fields).toHaveCount(expectedCount);
 
     const count = await fields.count();
+
     for (let i = 0; i < count; i++) {
-      const fieldText = (await fields.nth(i).innerText()).trim();
-      expect(fieldText).toBe(fieldValue);
+      await expect(fields.nth(i)).toHaveText(fieldValue, {
+        useInnerText: true,
+      });
     }
   }
 }

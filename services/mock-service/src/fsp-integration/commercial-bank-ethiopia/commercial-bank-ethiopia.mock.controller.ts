@@ -1,7 +1,6 @@
 import { Controller, Headers, Post, Req, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-// ##TODO: Refactor so it only uses one XML parser for both converting to and from XML
 import * as convert from 'xml-js';
 
 import { CommercialBankEthiopiaMockService } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.service';
@@ -22,8 +21,7 @@ export class CommercialBankEthiopiaMockController {
     @Res() res: Response,
   ): Promise<void> {
     try {
-      // Parse the raw XML body
-      const rawBody = req.body; // Ensure raw body is available
+      const rawBody = req.body;
       const parsedBody = convert.xml2js(rawBody, {
         compact: true,
         ignoreDeclaration: true,
@@ -32,19 +30,16 @@ export class CommercialBankEthiopiaMockController {
       // Route the request based on the soapAction
       let responseObject;
       if (soapAction.endsWith('xsd=2')) {
-        // Account Enquiry
         responseObject =
           await this.CommercialBankEthiopiaMockService.doAccountEnquiry(
             parsedBody,
           );
       } else if (soapAction.endsWith('xsd=4')) {
-        // Credit Transfer
         responseObject =
           await this.CommercialBankEthiopiaMockService.doTransferCredit(
             parsedBody,
           );
       } else if (soapAction.endsWith('xsd=6')) {
-        // Transaction/transfer Status Enquiry
         responseObject =
           await this.CommercialBankEthiopiaMockService.doTransactionStatusEnquiry(
             parsedBody,
@@ -53,13 +48,11 @@ export class CommercialBankEthiopiaMockController {
         throw new Error(`Unsupported soapAction: ${soapAction}`);
       }
 
-      // Convert the response object to XML
       const responseXml = convert.js2xml(responseObject, {
         compact: true,
         spaces: 4,
       });
 
-      // Set the content type and send the response
       res.set('Content-Type', 'text/xml');
       res.status(200).send(responseXml);
     } catch (error) {
