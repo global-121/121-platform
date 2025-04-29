@@ -234,9 +234,51 @@ describe('Create program which should be edited via kobo later', () => {
     );
     console.log('🚀 ~ it.only ~ linkKoboResponse:', linkKoboResponse.body);
 
+    expect(linkKoboResponse.body).toMatchSnapshot();
+
     expect(linkKoboResponse.status).toBe(HttpStatus.BAD_REQUEST);
 
     // Verify Kobo integration was created successfully
+    const getKoboResponse = await getKoboIntegration(programId, accessToken);
+
+    expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should not allow the linkg of a kobo form when the form is not deployed', async () => {
+    // Arrange
+    const program = {
+      titlePortal: {
+        en: 'Kobo land program with missing form',
+      },
+      currency: 'MWK',
+      languages: [LanguageEnum.en, LanguageEnum.nl],
+      fixedTransferValue: 20,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(program, accessToken);
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    // Assert
+    const programId = createProgramResponse.body.id;
+
+    // Link Kobo form to program
+    const koboLinkDto = {
+      koboToken: process.env.KOBO_TOKEN,
+      koboAssetId: 'FAKE-ASSET-ID',
+      koboUrl: process.env.KOBO_URL,
+    };
+
+    const linkKoboResponse = await linkKoboForm(
+      programId,
+      koboLinkDto,
+      accessToken,
+    );
+    console.log('🚀 ~ it.only ~ linkKoboResponse:', linkKoboResponse.body);
+
+    expect(linkKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
+
+    // Verify Kobo integration was not created
     const getKoboResponse = await getKoboIntegration(programId, accessToken);
 
     expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
