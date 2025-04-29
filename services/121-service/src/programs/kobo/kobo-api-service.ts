@@ -81,7 +81,7 @@ export class KoboApiService {
 
       if (response.status === 404) {
         throw new HttpException(
-          `Kobo information not found for asset: ${assetId}, either this form does not exist or the form is not yet deployed.`,
+          `Kobo information not found for asset: ${assetId}. This form does not exist or is not (yet) deployed.`,
           HttpStatus.NOT_FOUND,
         );
       }
