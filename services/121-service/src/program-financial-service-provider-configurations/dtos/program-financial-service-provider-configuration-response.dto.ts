@@ -23,6 +23,9 @@ export class ProgramFinancialServiceProviderConfigurationResponseDto {
   @ApiProperty({ example: { en: 'FSP display name' } })
   public readonly label: LocalizedString;
 
+  @ApiProperty({ example: false, type: 'boolean' })
+  public readonly isDefault: boolean;
+
   /// Can sometimes be undefined if the financial service provider has been removed from the codebase
   @ApiProperty()
   public readonly financialServiceProvider?: FinancialServiceProviderWithoutConfigProps;

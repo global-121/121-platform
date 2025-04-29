@@ -1,10 +1,11 @@
-import { Column, Entity, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
+import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -12,9 +13,10 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
+export const DefaultFullNameNamingConvention = ['fullName'];
 @Entity('program')
 export class ProgramEntity extends Base121Entity {
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: 'character varying', nullable: true, default: null })
   public location: string | null;
 
   @Column('json', { nullable: true })
@@ -23,20 +25,17 @@ export class ProgramEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
   public ngo: string | null;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'date', nullable: true, default: null })
   public startDate: Date | null;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'date', nullable: true, default: null })
   public endDate: Date | null;
 
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: 'character varying' })
   public currency: string | null;
 
   @Column({ type: 'character varying', nullable: true })
   public distributionFrequency: string | null;
-
-  @Column({ type: 'integer', nullable: true })
-  public distributionDuration: number | null;
 
   @Column({ nullable: true, type: 'real' })
   public fixedTransferValue: number | null;
@@ -50,14 +49,11 @@ export class ProgramEntity extends Base121Entity {
   @Column('json', { nullable: true })
   public description: LocalizedString | null;
 
-  @Column({ default: false })
+  @Column({ default: true })
   public published: boolean;
 
   @Column({ default: true })
   public validation: boolean;
-
-  @Column('json', { nullable: true, default: null })
-  public aboutProgram: LocalizedString | null;
 
   public editableAttributes?: Attribute[];
 
@@ -89,14 +85,17 @@ export class ProgramEntity extends Base121Entity {
 
   // TODO: This can be refactored into 'nameField' so that this can be 1 field name that maps to the 'Name' column in the Portal.
   // This is an array of ProgramRegistrationAttributeEntity names that build up the full name of a PA.
-  @Column('json', { nullable: true })
-  public fullnameNamingConvention: string[] | null;
+  @Column('json', { default: DefaultFullNameNamingConvention })
+  public fullnameNamingConvention: string[];
 
   @Column('json', { default: [] })
   public languages: LanguageEnum[];
 
   @Column({ default: false })
   public enableMaxPayments: boolean;
+
+  @Column({ nullable: true })
+  public defaultMaxPayments: number;
 
   @Column({ default: false })
   public enableScope: boolean;
@@ -123,4 +122,7 @@ export class ProgramEntity extends Base121Entity {
     (messageTemplates) => messageTemplates.program,
   )
   public messageTemplates: Relation<MessageTemplateEntity[]>;
+
+  @OneToOne(() => KoboEntity, (kobo) => kobo.program, { onDelete: 'SET NULL' })
+  public kobo: Relation<KoboEntity>;
 }

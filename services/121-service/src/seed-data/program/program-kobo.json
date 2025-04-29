@@ -1,0 +1,49 @@
+{
+  "published": true,
+  "validation": true,
+  "location": "Kobo land",
+  "ngo": "Yellow Cross",
+  "titlePortal": {
+    "en": "Kobo land program"
+  },
+  "description": {
+    "en": "This program is aimed to help the people understanding the Kobo land."
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "MWK",
+  "distributionFrequency": "month",
+  "distributionDuration": 8,
+  "fixedTransferValue": 10,
+  "paymentAmountMultiplierFormula": "1 + 1 * dragon",
+  "targetNrRegistrations": 250,
+  "programRegistrationAttributes": [],
+  "aboutProgram": {
+    "ar": "[حول برنامج المساعدات]",
+    "en": "[about aid program]",
+    "es": "[sobre el programa de ayuda]",
+    "fr": "[à propos du programme d'aide]",
+    "nl": "[beschrijving van het programma]"
+  },
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["ar", "en", "es", "fr", "nl"],
+  "tryWhatsAppFirst": true,
+  "enableMaxPayments": false,
+  "enableScope": false,
+  "allowEmptyPhoneNumber": false,
+  "programFinancialServiceProviderConfigurations": [
+    {
+      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    }
+  ]
+}

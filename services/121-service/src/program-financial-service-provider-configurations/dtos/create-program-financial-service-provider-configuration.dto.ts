@@ -50,4 +50,13 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
     ],
   })
   public readonly properties?: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
+
+  // ##TODO Proper validation should still be added on this field
+  // If one fsp is default, the others should be updated to not be default
+  // If this is the first fsp config, this should be set to true
+  @ApiProperty({
+    example: false,
+  })
+  @IsOptional()
+  public readonly isDefault?: boolean;
 }

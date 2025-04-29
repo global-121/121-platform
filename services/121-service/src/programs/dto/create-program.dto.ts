@@ -26,7 +26,7 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 // It's not defined inline because typing works more convient here
 const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   {
-    name: 'nameFirst',
+    name: 'fullName',
     type: RegistrationAttributeTypes.text,
     options: undefined,
     export: [ExportType.allRegistrations, ExportType.included],
@@ -34,19 +34,7 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
     showInPeopleAffectedTable: true,
     editableInPortal: false,
     label: {
-      en: 'First Name',
-    },
-  },
-  {
-    name: 'nameLast',
-    type: RegistrationAttributeTypes.text,
-    options: undefined,
-    export: [ExportType.allRegistrations, ExportType.included],
-    scoring: {},
-    showInPeopleAffectedTable: true,
-    editableInPortal: false,
-    label: {
-      en: 'Last Name',
+      en: 'Full Name',
     },
   },
   {
@@ -111,21 +99,19 @@ export class ProgramFinancialServiceProviderDto {
 export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly published: boolean;
+  @IsOptional()
+  public readonly published?: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly validation: boolean;
+  @IsOptional()
+  public readonly validation?: boolean;
 
   @ApiProperty({ example: 'Nederland' })
   @IsNotEmpty()
   @IsString()
-  public readonly location: string;
-
-  @ApiProperty({ example: 'NLRC' })
-  @IsNotEmpty()
-  @IsString()
-  public readonly ngo: string;
+  @IsOptional()
+  public readonly location?: string;
 
   @ApiProperty({ example: { en: 'title' } })
   @IsNotEmpty()
@@ -135,15 +121,17 @@ export class CreateProgramDto {
   @IsOptional()
   public readonly description?: LocalizedString;
 
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2025-05-23' })
   @IsNotEmpty()
   @IsDateString()
-  public readonly startDate: Date;
+  @IsOptional()
+  public readonly startDate?: Date;
 
-  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @ApiProperty({ example: '2025-05-23' })
   @IsNotEmpty()
   @IsDateString()
-  public readonly endDate: Date;
+  @IsOptional()
+  public readonly endDate?: Date;
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
@@ -155,11 +143,8 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
-  public readonly distributionFrequency: string;
-
-  @ApiProperty({ example: 10 })
-  @IsNumber()
-  public readonly distributionDuration: number;
+  @IsOptional()
+  public readonly distributionFrequency?: string;
 
   @ApiProperty({ example: 500 })
   public readonly fixedTransferValue: number;
@@ -171,11 +156,13 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 250 })
   @IsNumber()
-  public readonly targetNrRegistrations: number;
+  @IsOptional()
+  public readonly targetNrRegistrations?: number;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  public readonly tryWhatsAppFirst: boolean;
+  @IsOptional()
+  public readonly tryWhatsAppFirst?: boolean;
 
   @ApiProperty({
     example: exampleAttributes,
@@ -183,20 +170,18 @@ export class CreateProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
+  @IsOptional()
   @Type(() => ProgramRegistrationAttributeDto)
-  public readonly programRegistrationAttributes: ProgramRegistrationAttributeDto[];
-
-  @ApiProperty({ example: { en: 'about program' } })
-  @IsNotEmpty()
-  public readonly aboutProgram: LocalizedString;
+  public readonly programRegistrationAttributes?: ProgramRegistrationAttributeDto[];
 
   @ApiProperty({
-    example: ['nameFirst', 'nameLast'],
+    example: ['fullName'],
     description:
       'Should be array of name-related program-registration-attributes.',
   })
   @IsArray()
-  public readonly fullnameNamingConvention: string[];
+  @IsOptional()
+  public readonly fullnameNamingConvention?: string[];
 
   @ApiProperty({ example: ['en', 'nl'] })
   @IsArray()
@@ -204,15 +189,18 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly enableMaxPayments: boolean;
+  @IsOptional()
+  public readonly enableMaxPayments?: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly enableScope: boolean;
+  @IsOptional()
+  public readonly enableScope?: boolean;
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly allowEmptyPhoneNumber: boolean;
+  @IsOptional()
+  public readonly allowEmptyPhoneNumber?: boolean;
 
   @ApiProperty({ example: 'example.org' })
   @IsOptional()
@@ -222,4 +210,9 @@ export class CreateProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
+
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  @IsNumber()
+  public readonly defaultMaxPayments?: number;
 }
