@@ -57,7 +57,7 @@ await lokaliseDownloader.downloadTranslations({
     original_filenames: false,
   },
   processDownloadFileParams: {
-    asyncDownload: true,
+    asyncDownload: false, // Disabled although recommended by Lokalise. It doesn't work reliable enough.
   },
 });
 console.info(`Download done ✅`);
