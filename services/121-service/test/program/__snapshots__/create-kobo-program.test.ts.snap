@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create program which should be edited via kobo later should not allow linking of kobo form when expected survey items are missing 1`] = `
+[
+  "FSP "Safaricom" required attributes that are missing from the Kobo form: phoneNumber, nationalId",
+  "FSP "Intersolve-visa" required attributes that are missing from the Kobo form: fullName, addressCity, addressHouseNumberAddition, addressPostalCode, addressStreet, phoneNumber",
+  "Kobo form attribute "addressHouseNumber" has incompatible type for FSP integration 'Intersolve-visa': expected one of these: "integer, decimal, range", got "text"",
+  "Kobo form must contain a phone number item",
+  "Kobo form must contain the following name attributes defined in program.fullnameNamingConvention. However the following attributes are missing: fullName",
+  "Kobo form must not contain a matrix item. Found: ["This is matrix question, which we do not support :(",null,null]",
+]
+`;
