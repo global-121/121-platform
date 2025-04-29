@@ -81,18 +81,18 @@ describe('Registrations - [Scoped]', () => {
     });
 
     // Assert
-    await waitForPaymentTransactionsToComplete(
-      PvProgramId,
-      registrationsPvFirst2ReferenceIds,
+    await waitForPaymentTransactionsToComplete({
+      programId: PvProgramId,
+      paymentReferenceIds: registrationsPvFirst2ReferenceIds,
       accessToken,
-      10_000,
-    );
-    const transactionsResponse = await getTransactions(
-      programIdPV,
-      payment,
-      null,
+      maxWaitTimeMs: 10_000,
+    });
+    const transactionsResponse = await getTransactions({
+      programId: programIdPV,
+      paymentNr: payment,
+      referenceId: null,
       accessToken,
-    );
+    });
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(2);
     // Also check if the right amount of transactions are created

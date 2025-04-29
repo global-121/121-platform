@@ -87,12 +87,12 @@ test('[28463] PV: Make Successful payment', async ({ page }) => {
   });
 
   await test.step('Check PA payments and messages', async () => {
-    await waitForPaymentTransactionsToComplete(
-      programIdPV,
-      registrationsPV.map((pa) => pa.referenceId),
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdPV,
+      paymentReferenceIds: registrationsPV.map((pa) => pa.referenceId),
       accessToken,
-      5000,
-    );
+      maxWaitTimeMs: 5000,
+    });
     const registrationsWithVoucher = registrationsPV.filter(
       (r) =>
         r.programFinancialServiceProviderConfigurationName ===

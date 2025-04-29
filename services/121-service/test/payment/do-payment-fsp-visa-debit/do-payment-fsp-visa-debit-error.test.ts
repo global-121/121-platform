@@ -67,21 +67,21 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -113,21 +113,21 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -159,21 +159,21 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -205,21 +205,21 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
     });
 
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -251,13 +251,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
 
     // do payment 2
     const doPaymentResponse = await doPayment({
@@ -267,22 +267,22 @@ describe('Do failing payment with FSP Visa Debit', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa + 1,
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa + 1,
+    });
 
     // Assert
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa + 1,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa + 1,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentResponse.body.applicableCount).toBe(
@@ -360,21 +360,21 @@ describe('Do failing payment with FSP Visa Debit', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
-    await waitForPaymentTransactionsToComplete(
-      programIdVisa,
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdVisa,
       paymentReferenceIds,
       accessToken,
-      3001,
-      Object.values(TransactionStatusEnum),
-      paymentNrVisa,
-    );
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+      payment: paymentNrVisa,
+    });
 
-    const transactionsResponse = await getTransactions(
-      programIdVisa,
-      paymentNrVisa,
-      registrationVisa.referenceId,
+    const transactionsResponse = await getTransactions({
+      programId: programIdVisa,
+      paymentNr: paymentNrVisa,
+      referenceId: registrationVisa.referenceId,
       accessToken,
-    );
+    });
 
     // Assert
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);

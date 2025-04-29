@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { CommercialBankEthiopiaMockService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock';
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-financial-service-provider-configurations/interfaces/username-password.interface';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
+const cbeApiUrl = process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+  ? `${process.env.MOCK_SERVICE_URL}api/fsp/commercial-bank-ethiopia/services` // Mock URL
+  : process.env.COMMERCIAL_BANK_ETHIOPIA_URL;
+
 @Injectable()
 export class CommercialBankEthiopiaApiService {
-  public constructor(
-    private readonly soapService: SoapService,
-    private commercialBankEthiopiaMock: CommercialBankEthiopiaMockService,
-  ) {}
+  public constructor(private readonly soapService: SoapService) {}
 
   public async creditTransfer(
     payment: CommercialBankEthiopiaTransferPayload,
@@ -24,12 +24,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBETransfer(payment)
-        : await this.soapService.postCBERequest(
-            payload,
-            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
-          );
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=4`,
+      });
 
       if (
         responseBody.Status &&
@@ -156,12 +155,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBETransaction(payment)
-        : await this.soapService.postCBERequest(
-            payload,
-            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
-          );
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=6`,
+      });
 
       return responseBody;
     } catch (error) {
@@ -257,12 +255,11 @@ export class CommercialBankEthiopiaApiService {
     );
 
     try {
-      const responseBody = !!process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-        ? await this.commercialBankEthiopiaMock.postCBEValidation(payload)
-        : await this.soapService.postCBERequest(
-            payload,
-            `${process.env.COMMERCIAL_BANK_ETHIOPIA_URL}?xsd=2`,
-          );
+      const responseBody = await this.soapService.postCBERequest({
+        apiUrl: cbeApiUrl,
+        payload,
+        soapAction: `${cbeApiUrl}?xsd=2`,
+      });
 
       return responseBody;
     } catch (error) {

@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaController } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.controller';
-import { CommercialBankEthiopiaMockService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor';
@@ -39,7 +38,6 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     CommercialBankEthiopiaService,
     CommercialBankEthiopiaApiService,
     SoapService,
-    CommercialBankEthiopiaMockService,
     CustomHttpService,
     createScopedRepositoryProvider(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -48,10 +46,6 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     ProgramFinancialServiceProviderConfigurationRepository,
   ],
   controllers: [CommercialBankEthiopiaController],
-  exports: [
-    CommercialBankEthiopiaApiService,
-    CommercialBankEthiopiaMockService,
-    CommercialBankEthiopiaService,
-  ],
+  exports: [CommercialBankEthiopiaApiService, CommercialBankEthiopiaService],
 })
 export class CommercialBankEthiopiaModule {}
