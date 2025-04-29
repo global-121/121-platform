@@ -199,7 +199,7 @@ export class RegistrationsImportService {
       }
       if (program.enableMaxPayments) {
         registration.maxPayments =
-          record.maxPayments || program.defaultMaxPayments;
+          record.maxPayments != null : record.maxPayments ? program.defaultMaxPayments;
       }
       if (program.enableScope) {
         registration.scope = record.scope || '';
