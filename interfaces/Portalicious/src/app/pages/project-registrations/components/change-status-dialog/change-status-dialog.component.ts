@@ -180,9 +180,10 @@ export class ChangeStatusDialogComponent
       if (!status) {
         throw new Error('Status is undefined.');
       }
-      const messageData = this.messagingService.getSendMessageData(
-        this.sendMessageInputData(),
-      );
+
+      const messageData = this.enableSendMessage()
+        ? this.messagingService.getSendMessageData(this.sendMessageInputData())
+        : undefined;
 
       return this.registrationApiService.changeStatus({
         projectId: this.projectId,
