@@ -585,3 +585,12 @@ export async function getKoboIntegration(
     .get(`/programs/${programId}/kobo`)
     .set('Cookie', [accessToken]);
 }
+
+export async function importKoboSubmissions(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/kobo/submissions`)
+    .set('Cookie', [accessToken]);
+}

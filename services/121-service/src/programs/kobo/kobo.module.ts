@@ -6,7 +6,8 @@ import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity
 import { KoboController } from '@121-service/src/programs/kobo/kobo.controller';
 import { KoboService } from '@121-service/src/programs/kobo/kobo.service';
 import { KoboApiService } from '@121-service/src/programs/kobo/kobo-api-service';
-import { KoboSurveyService } from '@121-service/src/programs/kobo/kobo-survey.service';
+import { KoboFormService } from '@121-service/src/programs/kobo/kobo-form.service';
+import { KoboFormValidationService } from '@121-service/src/programs/kobo/kobo-form-validation.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -27,7 +28,8 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
   providers: [
     KoboService,
     KoboApiService,
-    KoboSurveyService,
+    KoboFormService,
+    KoboFormValidationService,
     CustomHttpService,
   ],
   controllers: [KoboController],

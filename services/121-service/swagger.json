@@ -388,6 +388,13 @@
     ]
   },
   {
+    "method": "put",
+    "path": "/api/programs/{programId}/kobo/submissions",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/import",
     "params": [

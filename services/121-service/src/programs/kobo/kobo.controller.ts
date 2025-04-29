@@ -81,4 +81,35 @@ export class KoboController {
   ) {
     return this.koboService.getKoboIntegration(programId);
   }
+
+  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @ApiOperation({
+    summary: `Import Kobo form submissions as registrations`,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Submissions imported successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Error importing submissions',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Kobo integration not found for program',
+  })
+  @ApiParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+    example: 1,
+  })
+  @Put(`programs/:programId/kobo/submissions`)
+  public async importKoboSubmissions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ) {
+    await this.koboService.importKoboDataAsRegistrations(programId);
+    return { success: true, message: 'Submissions imported successfully' };
+  }
 }

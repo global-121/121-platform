@@ -2,7 +2,10 @@
 
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -10,14 +13,53 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
   getKoboIntegration,
   getProgram,
+  importKoboSubmissions,
   linkKoboForm,
   postProgram,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
+import { getRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+
+const createProgramFspConfigurationSafaricomDto: CreateProgramFinancialServiceProviderConfigurationDto =
+  {
+    name: 'Safaricom',
+    label: {
+      en: 'Safaricom label English translation',
+      nl: 'Safaricom label Dutch translation',
+    },
+    isDefault: true,
+    financialServiceProviderName: FinancialServiceProviders.safaricom,
+    properties: [],
+  };
+
+const createProgramFspConfigurationVisaDto: CreateProgramFinancialServiceProviderConfigurationDto =
+  {
+    name: 'Visa',
+    label: {
+      en: 'Visa label English translation',
+      nl: 'Visa label Dutch translation',
+    },
+    isDefault: false,
+    financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+    properties: [
+      {
+        name: FinancialServiceProviderConfigurationProperties.brandCode,
+        value: 'INTERSOLVE_VISA_BRAND_CODE',
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
+        value: 'INTERSOLVE_VISA_COVERLETTER_CODE',
+      },
+      {
+        name: FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+        value: 'INTERSOLVE_VISA_FUNDINGTOKEN_CODE',
+      },
+    ],
+  };
 
 describe('Create program which should be edited via kobo later', () => {
   let accessToken: string;
@@ -71,22 +113,10 @@ describe('Create program which should be edited via kobo later', () => {
     expect(fullNameAttribute.type).toBe('text');
     expect(fullNameAttribute.isRequired).toBe(true);
 
-    const createProgramFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto =
-      {
-        name: 'Safaricom',
-        label: {
-          en: 'Safaricom label English translation',
-          nl: 'Safaricom label Dutch translation',
-        },
-        isDefault: true,
-        financialServiceProviderName: FinancialServiceProviders.safaricom,
-        properties: [],
-      };
-
     const postFspConfigResponse =
       await postProgramFinancialServiceProviderConfiguration({
         programId,
-        body: createProgramFspConfigurationDto,
+        body: createProgramFspConfigurationSafaricomDto,
         accessToken,
       });
 
@@ -94,7 +124,7 @@ describe('Create program which should be edited via kobo later', () => {
 
     // Ensure that missing fsp attributes are added to the program
     const fsp = getFinancialServiceProviderSettingByNameOrThrow(
-      createProgramFspConfigurationDto.financialServiceProviderName,
+      createProgramFspConfigurationSafaricomDto.financialServiceProviderName,
     );
     const fspAttributes = fsp.attributes.map((attribute) => attribute.name);
     const programWithFsp = await getProgram(programId, accessToken);
@@ -139,5 +169,76 @@ describe('Create program which should be edited via kobo later', () => {
     expect(getKoboResponse.body).toHaveProperty('programId', programId);
     expect(getKoboResponse.body).toHaveProperty('versionId');
     expect(getKoboResponse.body).toHaveProperty('id');
+
+    const importResponse = await importKoboSubmissions(programId, accessToken);
+    expect(importResponse.status).toBe(HttpStatus.OK);
+
+    const getRegistrationReponse = await getRegistrations({
+      programId,
+      accessToken,
+    });
+
+    const registrations = getRegistrationReponse.body.data;
+    expect(registrations.length).toBeGreaterThan(0);
+
+    // each registration should have programFinancialServiceProviderConfigurationName as Safaricom
+    registrations.forEach((registration) => {
+      expect(
+        registration.programFinancialServiceProviderConfigurationName,
+      ).toBe('Safaricom');
+    });
+  });
+
+  it('should not allow linking of kobo form when expected survey items are missing', async () => {
+    // Arrange
+    const program = {
+      titlePortal: {
+        en: 'Kobo land program with missing attributes',
+      },
+      currency: 'MWK',
+      languages: [LanguageEnum.en, LanguageEnum.nl],
+      fixedTransferValue: 20,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(program, accessToken);
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    // Assert
+    const programId = createProgramResponse.body.id;
+
+    await postProgramFinancialServiceProviderConfiguration({
+      programId,
+      body: createProgramFspConfigurationSafaricomDto,
+      accessToken,
+    });
+
+    await postProgramFinancialServiceProviderConfiguration({
+      programId,
+      body: createProgramFspConfigurationVisaDto,
+      accessToken,
+    });
+
+    // Link Kobo form to program
+    const koboLinkDto = {
+      koboToken: process.env.KOBO_TOKEN,
+      koboAssetId: process.env.KOBO_ASSET_ID_MISSING_ATTRIBUTES,
+      koboUrl: process.env.KOBO_URL,
+    };
+    console.log('🚀 ~ it ~ koboLinkDto:', koboLinkDto);
+
+    const linkKoboResponse = await linkKoboForm(
+      programId,
+      koboLinkDto,
+      accessToken,
+    );
+    console.log('🚀 ~ it.only ~ linkKoboResponse:', linkKoboResponse.body);
+
+    expect(linkKoboResponse.status).toBe(HttpStatus.BAD_REQUEST);
+
+    // Verify Kobo integration was created successfully
+    const getKoboResponse = await getKoboIntegration(programId, accessToken);
+
+    expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
   });
 });
