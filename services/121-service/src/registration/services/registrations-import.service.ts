@@ -173,8 +173,6 @@ export class RegistrationsImportService {
     program: ProgramEntity,
     userId: number,
   ): Promise<ImportResult> {
-    console.log('Program:', program);
-    console.log('Program:', program.defaultMaxPayments);
     let countImported = 0;
     const dynamicAttributes = await this.getDynamicAttributes(program.id);
     const registrations: RegistrationEntity[] = [];
