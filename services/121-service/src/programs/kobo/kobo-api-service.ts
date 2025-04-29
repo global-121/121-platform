@@ -67,7 +67,7 @@ export class KoboApiService {
     assetId: string,
     baseUrl: string,
   ): Promise<KoboFormResponse> {
-    const apiUrl = `${baseUrl}/api/v2/assets/${assetId}/?format=json`;
+    const apiUrl = `${baseUrl}/api/v2/assets/${assetId}/deployment/?format=json`;
     const headers = [
       {
         name: `Authorization`,
@@ -79,6 +79,12 @@ export class KoboApiService {
       const response = (await this.httpService.get(apiUrl, headers)) as any;
       const responseBody = response.data;
 
+      if (response.status === 404) {
+        throw new HttpException(
+          `Kobo information not found for asset: ${assetId}, either this form does not exist or the form is not yet deployed.`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       if (response.status !== 200) {
         throw new HttpException(
           `Failed to fetch Kobo information: ${responseBody.detail || 'Unknown error'}`,
@@ -94,11 +100,11 @@ export class KoboApiService {
       }
 
       return {
-        survey: responseBody.content.survey || [],
-        choices: responseBody.content.choices || [],
-        languages: responseBody.summary.languages || [],
-        dateDeployed: responseBody.date_deployed,
-        versionId: responseBody.version_id,
+        survey: responseBody.asset.content.survey || [],
+        choices: responseBody.asset.content.choices || [],
+        languages: responseBody.asset.summary.languages || [],
+        dateDeployed: responseBody.asset.date_deployed,
+        versionId: responseBody.asset.version_id,
       };
     } catch (error) {
       if (error instanceof HttpException) {
