@@ -396,6 +396,13 @@
   },
   {
     "method": "post",
+    "path": "/api/kobo/webhook",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
     "path": "/api/programs/{programId}/registrations/import",
     "params": [
       "programId"

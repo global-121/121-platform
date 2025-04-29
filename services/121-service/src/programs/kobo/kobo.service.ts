@@ -2,12 +2,17 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
+import { EXTERNAL_API } from '@121-service/src/config';
+import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
 import { KoboApiService } from '@121-service/src/programs/kobo/kobo-api-service';
 import { KoboFormService } from '@121-service/src/programs/kobo/kobo-form.service';
 import { KoboFormValidationService } from '@121-service/src/programs/kobo/kobo-form-validation.service';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 
+export const KOBO_WEBHOOK_121_ENDPOINT = `${EXTERNAL_API.baseApiUrl}kobo/webhook`;
+
+export const KOBO_WEBHOOK_SUBSET_FIELDS = ['_uuid', '_xform_id_string'];
 @Injectable()
 export class KoboService {
   @InjectRepository(KoboEntity)
@@ -63,6 +68,8 @@ export class KoboService {
       });
     }
 
+    await this.createWebhookIfNotExists({ koboUrl, koboToken, koboAssetId });
+
     await this.upsertKoboEntity({
       assetId: koboAssetId,
       tokenCode: koboToken,
@@ -73,11 +80,132 @@ export class KoboService {
     });
 
     if (isNewVersion) {
-      await this.koboFormValidationService.validateKoboForm({
-        koboInformation,
-        programId,
-      });
       await this.koboFormService.processKoboSurvey(koboInformation, programId);
+    }
+  }
+
+  public async processKoboWebhookCall(
+    koboWebhookIncomingSubmission: KoboWebhookIncomingSubmission,
+  ): Promise<void> {
+    console.log(
+      '🚀 ~ KoboService ~ koboWebhookIncomingSubmission:',
+      koboWebhookIncomingSubmission,
+    );
+
+    const koboEntity = await this.koboRepository.findOne({
+      where: { assetId: Equal(koboWebhookIncomingSubmission._xform_id_string) },
+      select: {
+        programId: true,
+        tokenCode: true,
+        url: true,
+      },
+    });
+    if (!koboEntity) {
+      throw new HttpException(
+        'Kobo integration not found for this program',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const programId = koboEntity.programId;
+
+    const submission = await this.getSubmissionByReference(
+      koboWebhookIncomingSubmission._uuid,
+      koboWebhookIncomingSubmission._xform_id_string,
+      koboEntity.tokenCode,
+      koboEntity.url,
+    );
+
+    const mappedKoboDataForImport = this.mapKoboDataFor121Import([submission]);
+
+    await this.registrationsService.importRegistrationsFromJson(
+      mappedKoboDataForImport,
+      programId,
+      1, // Should use actual user id
+    );
+  }
+
+  private async getSubmissionByReference(
+    submissionUuid: string,
+    koboAssetId: string,
+    koboToken: string,
+    koboUrl: string,
+  ): Promise<Record<string, string>> {
+    const submissions = await this.koboApiService.getKoboSubmissionData({
+      token: koboToken,
+      assetId: koboAssetId,
+      baseUrl: koboUrl,
+      submissionUuid,
+    });
+    // check if submision length is 1 and uuid is same as the one in the webhook
+    if (submissions.length !== 1) {
+      throw new HttpException(
+        `Expected 1 submission but got ${submissions.length}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const submission = submissions[0];
+    if (submission._uuid !== submissionUuid) {
+      throw new HttpException(
+        `Expected submission UUID ${submissionUuid} but got ${submission._uuid}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return submission;
+  }
+
+  private async createWebhookIfNotExists({
+    koboUrl,
+    koboToken,
+    koboAssetId,
+  }: {
+    koboUrl: string;
+    koboToken: string;
+    koboAssetId: string;
+  }): Promise<void> {
+    const existingWebhooks = await this.koboApiService.getExistingKoboWebhooks(
+      koboToken,
+      koboAssetId,
+      koboUrl,
+    );
+    console.log('🚀 ~ KoboService ~ existingWebhooks:', existingWebhooks);
+
+    const existing121Webhooks = existingWebhooks.filter(
+      (webhook) => webhook.endpoint === KOBO_WEBHOOK_121_ENDPOINT,
+    );
+    if (existing121Webhooks.length === 0) {
+      console.log(
+        '🚀 ~ KoboService ~ existing121Webhooks:',
+        existing121Webhooks,
+      );
+      await this.koboApiService.createKoboWebhook(
+        koboToken,
+        koboAssetId,
+        koboUrl,
+      );
+    }
+    if (existingWebhooks.length > 1) {
+      throw new HttpException(
+        `Multiple webhooks found for the same assetId names ${existingWebhooks
+          .map((webhook) => webhook.name)
+          .join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (existingWebhooks.length === 1) {
+      // Check if the existing webhook has the same subset fields
+      const existingWebhook = existingWebhooks[0];
+      const hasSameSubsetFields = KOBO_WEBHOOK_SUBSET_FIELDS.every((field) =>
+        existingWebhook.subset_fields.includes(field),
+      );
+      if (!hasSameSubsetFields) {
+        throw new HttpException(
+          `Existing webhook has different subset fields: ${existingWebhook.subset_fields.join(
+            ', ',
+          )}. Expected: ${KOBO_WEBHOOK_SUBSET_FIELDS.join(', ')}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 
@@ -88,11 +216,11 @@ export class KoboService {
     });
 
     const rawKoboSumissionData =
-      await this.koboApiService.getKoboSubmissionData(
-        koboEntity.tokenCode,
-        koboEntity.assetId,
-        koboEntity.url,
-      );
+      await this.koboApiService.getKoboSubmissionData({
+        token: koboEntity.tokenCode,
+        assetId: koboEntity.assetId,
+        baseUrl: koboEntity.url,
+      });
 
     const mappedKoboDataForImport =
       this.mapKoboDataFor121Import(rawKoboSumissionData);
