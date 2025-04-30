@@ -9,6 +9,7 @@ import {
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -18,6 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { CardWithButtonComponent } from '~/components/card-with-button/card-with-button.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -40,7 +42,9 @@ type IntegrateKoboFormGroup =
     InputTextModule,
     PasswordModule,
     ButtonModule,
+    FormsModule,
     ReactiveFormsModule,
+    ToggleSwitchModule,
   ],
   templateUrl: './integrate-kobo-button.component.html',
   styles: ``,
@@ -55,9 +59,12 @@ export class IntegrateKoboButtonComponent {
 
   readonly dialogVisible = model(false);
   readonly creationErrors = model<string[] | undefined>(undefined);
+  readonly dryRun = model(true);
+  readonly koboFormName = model<string | undefined>(undefined);
+  readonly enableImportRegistrations = model(true);
 
   formGroup = new FormGroup({
-    koboUrl: new FormControl('', {
+    koboUrl: new FormControl('https://kobo.ifrc.org', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
@@ -84,9 +91,29 @@ export class IntegrateKoboButtonComponent {
   );
 
   createKoboIntegrationMutation = injectMutation(() => ({
-    mutationFn: (formData: ReturnType<IntegrateKoboFormGroup['getRawValue']>) =>
-      this.koboApiService.createKoboIntegration(this.projectId, formData),
-    onSuccess: () => {
+    mutationFn: ({
+      dryRun,
+      formData,
+    }: {
+      dryRun: boolean;
+      formData: ReturnType<IntegrateKoboFormGroup['getRawValue']>;
+    }) =>
+      this.koboApiService.createKoboIntegration({
+        projectId: this.projectId,
+        integration: formData,
+        dryRun,
+      }),
+    onSuccess: (koboFormResponse, { dryRun }) => {
+      if (dryRun) {
+        this.dryRun.set(false);
+        this.koboFormName.set(koboFormResponse.name);
+        return;
+      }
+
+      if (this.enableImportRegistrations()) {
+        // XXX: import registrations
+      }
+
       this.formGroup.reset();
       this.toastService.showToast({
         detail: $localize`Kobo form successfully integrated.`,
@@ -97,6 +124,7 @@ export class IntegrateKoboButtonComponent {
     onError: (error) => {
       if (error instanceof HttpErrorResponse && Array.isArray(error.error)) {
         this.creationErrors.set(error.error as string[]);
+        return;
       }
 
       this.toastService.showToast({
@@ -113,6 +141,13 @@ export class IntegrateKoboButtonComponent {
       return;
     }
 
-    this.createKoboIntegrationMutation.mutate(this.formGroup.getRawValue());
+    this.createKoboIntegrationMutation.mutate({
+      dryRun: this.dryRun(),
+      formData: this.formGroup.getRawValue(),
+    });
+  }
+
+  retryIntegration() {
+    this.onFormSubmit();
   }
 }

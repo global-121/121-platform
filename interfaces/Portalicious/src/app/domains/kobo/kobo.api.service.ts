@@ -1,5 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 
+import { KoboLinkFormResponseDto } from '@121-service/src/programs/kobo/dto/kobo-link-form-reponse.dto';
 import { LinkKoboDto } from '@121-service/src/programs/kobo/dto/link-kobo.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -22,29 +23,26 @@ export class KoboApiService extends DomainApiService {
     });
   }
 
-  createKoboIntegration(
-    projectId: Signal<number | string>,
-    integration: Dto<LinkKoboDto>,
-  ) {
-    return this.httpWrapperService.perform121ServiceRequest<undefined>({
+  createKoboIntegration({
+    projectId,
+    integration,
+    dryRun,
+  }: {
+    projectId: Signal<number | string>;
+    integration: Dto<LinkKoboDto>;
+    dryRun: boolean;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<
+      Dto<KoboLinkFormResponseDto>
+    >({
       method: 'POST',
       endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
       body: integration,
+      httpParams: {
+        dryRun,
+      },
     });
   }
-
-  // deleteFinancialServiceProviderConfiguration(
-  //   projectId: Signal<number | string>,
-  //   configurationName: string,
-  // ) {
-  //   return this.httpWrapperService.perform121ServiceRequest<undefined>({
-  //     method: 'DELETE',
-  //     endpoint: this.pathToQueryKey([
-  //       ...BASE_ENDPOINT(projectId),
-  //       configurationName,
-  //     ]).join('/'),
-  //   });
-  // }
 
   public invalidateCache(projectId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
