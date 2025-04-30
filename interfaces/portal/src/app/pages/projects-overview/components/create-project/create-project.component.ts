@@ -108,8 +108,6 @@ export class CreateProjectComponent {
         currency: 'MWK',
         languages: [LanguageEnum.en, LanguageEnum.nl],
         fixedTransferValue: 20,
-        enableMaxPayments: true,
-        defaultMaxPayments: 5,
       });
 
       return paymentResult;
