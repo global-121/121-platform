@@ -572,7 +572,7 @@ export async function linkKoboForm(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .put(`/programs/${programId}/kobo`)
+    .post(`/programs/${programId}/kobo`)
     .set('Cookie', [accessToken])
     .send(linkKoboDto);
 }
@@ -593,4 +593,42 @@ export async function importKoboSubmissions(
   return await getServer()
     .put(`/programs/${programId}/kobo/submissions`)
     .set('Cookie', [accessToken]);
+}
+
+export async function deleteKoboWebhook({
+  assetId,
+  hookId,
+  token,
+  baseUrl,
+}: {
+  assetId: string;
+  hookId: string;
+  token: string;
+  baseUrl: string;
+}): Promise<request.Response> {
+  const apiUrl = `/api/v2/assets/${assetId}/hooks/${hookId}/`;
+
+  const agent = request.agent(baseUrl);
+  return agent
+    .delete(apiUrl)
+    .set('Authorization', `Token ${token}`)
+    .set('Content-Type', 'application/json');
+}
+
+export async function getExistingKoboWebhooks({
+  assetId,
+  token,
+  baseUrl,
+}: {
+  assetId: string;
+  token: string;
+  baseUrl: string;
+}): Promise<request.Response> {
+  const apiUrl = `/api/v2/assets/${assetId}/hooks/`; // Trailing slash is important
+
+  const agent = request.agent(baseUrl);
+  return agent
+    .get(apiUrl)
+    .set('Authorization', `Token ${token}`)
+    .set('Content-Type', 'application/json');
 }

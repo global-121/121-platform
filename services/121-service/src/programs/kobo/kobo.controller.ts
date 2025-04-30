@@ -50,7 +50,7 @@ export class KoboController {
     type: 'integer',
     example: 1,
   })
-  @Put(`programs/:programId/kobo`)
+  @Post(`programs/:programId/kobo`)
   public async createKoboIntegration(
     @Body() linkKoboDto: LinkKoboDto,
     @Param('programId', ParseIntPipe)
@@ -107,11 +107,11 @@ export class KoboController {
     example: 1,
   })
   @Put(`programs/:programId/kobo/submissions`)
-  public async importKoboSubmissions(
+  public async importKoboSubmissionsAsRegistrations(
     @Param('programId', ParseIntPipe)
     programId: number,
   ) {
-    await this.koboService.importKoboDataAsRegistrations(programId);
+    await this.koboService.importKoboSubmissionsAsRegistrations(programId);
     return { success: true, message: 'Submissions imported successfully' };
   }
 

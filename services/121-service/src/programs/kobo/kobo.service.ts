@@ -50,6 +50,8 @@ export class KoboService {
     koboUrl: string;
     programId: number;
   }): Promise<void> {
+    await this.throwIfProgramAlreadyHasKoboIntegration(programId);
+
     const koboInformation = await this.koboApiService.getKoboInformation(
       koboToken,
       koboAssetId,
@@ -70,7 +72,7 @@ export class KoboService {
 
     await this.createWebhookIfNotExists({ koboUrl, koboToken, koboAssetId });
 
-    await this.upsertKoboEntity({
+    await this.createKoboEntity({
       assetId: koboAssetId,
       tokenCode: koboToken,
       programId,
@@ -122,6 +124,20 @@ export class KoboService {
       programId,
       1, // Should use actual user id
     );
+  }
+
+  private async throwIfProgramAlreadyHasKoboIntegration(
+    programId: number,
+  ): Promise<void> {
+    const existingKobo = await this.koboRepository.findOne({
+      where: { programId: Equal(programId) },
+    });
+    if (existingKobo) {
+      throw new HttpException(
+        'Program already has a Kobo integration',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   private async getSubmissionByReference(
@@ -209,7 +225,9 @@ export class KoboService {
     }
   }
 
-  public async importKoboDataAsRegistrations(programId: number): Promise<void> {
+  public async importKoboSubmissionsAsRegistrations(
+    programId: number,
+  ): Promise<void> {
     // Get the kobo entity for this program
     const koboEntity = await this.koboRepository.findOneOrFail({
       where: { programId: Equal(programId) },
@@ -303,7 +321,7 @@ export class KoboService {
     return key;
   }
 
-  private async upsertKoboEntity({
+  private async createKoboEntity({
     assetId,
     tokenCode,
     programId,
@@ -318,47 +336,15 @@ export class KoboService {
     dateDeployed: Date;
     koboUrl: string;
   }): Promise<KoboEntity> {
-    // Check if a Kobo entity already exists for this program
-    const existingKobo = await this.koboRepository.findOne({
-      where: { programId: Equal(programId) },
-    });
+    const koboEntity = new KoboEntity();
+    koboEntity.assetId = assetId;
+    koboEntity.tokenCode = tokenCode;
+    koboEntity.programId = programId;
+    koboEntity.dateDeployed = dateDeployed;
+    koboEntity.versionId = versionId;
+    koboEntity.url = koboUrl;
 
-    if (existingKobo) {
-      if (existingKobo.assetId !== assetId) {
-        throw new HttpException(
-          'Cannot change assetId for an existing program',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      if (existingKobo.tokenCode !== tokenCode) {
-        throw new HttpException(
-          'Cannot change tokenCode for an existing program',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      if (existingKobo.url === koboUrl) {
-        throw new HttpException(
-          'Cannot change koboUrl for an existing program',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      existingKobo.assetId = assetId;
-      existingKobo.tokenCode = tokenCode;
-      existingKobo.versionId = versionId;
-      existingKobo.dateDeployed = dateDeployed;
-
-      return await this.koboRepository.save(existingKobo);
-    } else {
-      const koboEntity = new KoboEntity();
-      koboEntity.assetId = assetId;
-      koboEntity.tokenCode = tokenCode;
-      koboEntity.programId = programId;
-      koboEntity.dateDeployed = dateDeployed;
-      koboEntity.versionId = versionId;
-      koboEntity.url = koboUrl;
-
-      return await this.koboRepository.save(koboEntity);
-    }
+    return await this.koboRepository.save(koboEntity);
   }
 
   private async isNewKoboVersion(
@@ -372,6 +358,8 @@ export class KoboService {
     // It's a new version if:
     // 1. There is no existing Kobo entity for this program
     // 2. The version IDs are different
+
+    // TODO also compore the date deployed
     return !existingKobo || existingKobo.versionId !== newVersionId;
   }
 }

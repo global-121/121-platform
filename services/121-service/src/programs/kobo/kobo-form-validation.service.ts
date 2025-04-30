@@ -157,7 +157,9 @@ export class KoboFormValidationService {
     );
 
     if (!phoneNumberItem) {
-      errors.push('Kobo form must contain a phone number item');
+      errors.push(
+        'Kobo form must contain a question with name phoneNumber (should be a text type and country code should be included)',
+      );
     }
 
     return errors;

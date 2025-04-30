@@ -11,6 +11,8 @@ import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-serv
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import {
+  deleteKoboWebhook,
+  getExistingKoboWebhooks,
   getKoboIntegration,
   getProgram,
   importKoboSubmissions,
@@ -71,6 +73,28 @@ describe('Create program which should be edited via kobo later', () => {
 
   it('should go through program creation flow', async () => {
     // Arrange
+
+    // Delete existing hooks from kobo for convience in this prototype
+
+    const hooksReponse = await getExistingKoboWebhooks({
+      assetId: process.env.KOBO_ASSET_ID!,
+      token: process.env.KOBO_TOKEN!,
+      baseUrl: process.env.KOBO_URL!,
+    });
+
+    const hooks = hooksReponse.body.results;
+    console.log('🚀 ~ it.only ~ hooks:', hooks);
+
+    for (const hook of hooks) {
+      const deleteResult = await deleteKoboWebhook({
+        assetId: process.env.KOBO_ASSET_ID!,
+        hookId: hook.uid,
+        token: process.env.KOBO_TOKEN!,
+        baseUrl: process.env.KOBO_URL!,
+      });
+      expect(deleteResult.status).toBe(HttpStatus.NO_CONTENT);
+    }
+
     const program = {
       titlePortal: {
         en: 'Kobo land program',
@@ -85,12 +109,10 @@ describe('Create program which should be edited via kobo later', () => {
     // Act
     const createProgramResponse = await postProgram(program, accessToken);
     expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
-    console.log('🚀 ~ it ~ createProgramResponse:', createProgramResponse.body);
 
     // Assert
     const programId = createProgramResponse.body.id;
     const getProgramResponse = await getProgram(programId, accessToken);
-    console.log('🚀 ~ it ~ getProgramResponse:', getProgramResponse.body);
     expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
 
     // Check for presence of the automatically created attributes
@@ -152,7 +174,8 @@ describe('Create program which should be edited via kobo later', () => {
     );
     console.log('🚀 ~ it ~ linkKoboResponse:', linkKoboResponse.body);
 
-    expect(linkKoboResponse.status).toBe(HttpStatus.OK);
+    expect(linkKoboResponse.body).toStrictEqual({});
+    expect(linkKoboResponse.status).toBe(HttpStatus.CREATED);
 
     // Verify Kobo integration was created successfully
     const getKoboResponse = await getKoboIntegration(programId, accessToken);
@@ -253,6 +276,7 @@ describe('Create program which should be edited via kobo later', () => {
       currency: 'MWK',
       languages: [LanguageEnum.en, LanguageEnum.nl],
       fixedTransferValue: 20,
+      scopeEnabled: true,
     };
 
     // Act
