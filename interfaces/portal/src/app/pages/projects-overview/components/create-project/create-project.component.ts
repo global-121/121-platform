@@ -27,6 +27,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/fullscreen-spinner.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -61,6 +62,7 @@ export class CreateProjectComponent {
   router = inject(Router);
   projectApiService = inject(ProjectApiService);
   toastService = inject(ToastService);
+  authService = inject(AuthService);
 
   readonly createProjectDialog = viewChild.required<Dialog>(
     'createProjectDialog',
@@ -118,6 +120,7 @@ export class CreateProjectComponent {
       });
 
       await this.projectApiService.invalidateCache();
+      await this.authService.refreshUser();
 
       await this.router.navigate([
         '/',
