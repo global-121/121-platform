@@ -377,7 +377,8 @@
     "method": "post",
     "path": "/api/programs/{programId}/kobo",
     "params": [
-      "programId"
+      "programId",
+      "dryRun"
     ]
   },
   {
@@ -385,7 +386,8 @@
     "path": "/api/programs/{programId}/kobo",
     "params": [
       "programId"
-    ]
+    ],
+    "returnType": "KoboResponseDto"
   },
   {
     "method": "put",

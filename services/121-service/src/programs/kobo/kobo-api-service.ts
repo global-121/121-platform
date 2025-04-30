@@ -28,7 +28,7 @@ const WEBHOOK_NAME = 'Notify 121 on new submission';
 export class KoboApiService {
   constructor(private readonly httpService: CustomHttpService) {}
 
-  public async getKoboSubmissionData({
+  public async getSubmissions({
     token,
     assetId,
     baseUrl,

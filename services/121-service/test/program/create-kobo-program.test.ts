@@ -166,12 +166,23 @@ describe('Create program which should be edited via kobo later', () => {
       koboUrl: process.env.KOBO_URL,
     };
     console.log('🚀 ~ it ~ koboLinkDto:', koboLinkDto);
-
-    const linkKoboResponse = await linkKoboForm(
+    const linkKoboResponseDryRun = await linkKoboForm({
       programId,
-      koboLinkDto,
+      linkKoboDto: koboLinkDto,
       accessToken,
-    );
+      dryRun: true,
+    });
+    console.log('🚀 ~ it ~ linkKoboResponse:', linkKoboResponseDryRun.body);
+
+    expect(linkKoboResponseDryRun.body).toStrictEqual({});
+    expect(linkKoboResponseDryRun.status).toBe(HttpStatus.CREATED);
+
+    const linkKoboResponse = await linkKoboForm({
+      programId,
+      linkKoboDto: koboLinkDto,
+      accessToken,
+      dryRun: false,
+    });
     console.log('🚀 ~ it ~ linkKoboResponse:', linkKoboResponse.body);
 
     expect(linkKoboResponse.body).toStrictEqual({});
@@ -185,15 +196,14 @@ describe('Create program which should be edited via kobo later', () => {
       'assetId',
       koboLinkDto.koboAssetId,
     );
-    expect(getKoboResponse.body).toHaveProperty(
-      'tokenCode',
-      koboLinkDto.koboToken,
-    );
-    expect(getKoboResponse.body).toHaveProperty('programId', programId);
+
     expect(getKoboResponse.body).toHaveProperty('versionId');
-    expect(getKoboResponse.body).toHaveProperty('id');
 
     const importResponse = await importKoboSubmissions(programId, accessToken);
+    expect(importResponse.body).toStrictEqual({
+      message: 'Submissions imported successfully',
+      success: true,
+    });
     expect(importResponse.status).toBe(HttpStatus.OK);
 
     const getRegistrationReponse = await getRegistrations({
@@ -250,11 +260,12 @@ describe('Create program which should be edited via kobo later', () => {
     };
     console.log('🚀 ~ it ~ koboLinkDto:', koboLinkDto);
 
-    const linkKoboResponse = await linkKoboForm(
+    const linkKoboResponse = await linkKoboForm({
       programId,
-      koboLinkDto,
+      linkKoboDto: koboLinkDto,
       accessToken,
-    );
+      dryRun: false,
+    });
     console.log('🚀 ~ it.only ~ linkKoboResponse:', linkKoboResponse.body);
 
     expect(linkKoboResponse.body).toMatchSnapshot();
@@ -267,7 +278,7 @@ describe('Create program which should be edited via kobo later', () => {
     expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should not allow the linkg of a kobo form when the form is not deployed', async () => {
+  it('should not allow the link of a kobo form when the form is not deployed', async () => {
     // Arrange
     const program = {
       titlePortal: {
@@ -293,11 +304,12 @@ describe('Create program which should be edited via kobo later', () => {
       koboUrl: process.env.KOBO_URL,
     };
 
-    const linkKoboResponse = await linkKoboForm(
+    const linkKoboResponse = await linkKoboForm({
       programId,
-      koboLinkDto,
+      linkKoboDto: koboLinkDto,
       accessToken,
-    );
+      dryRun: false,
+    });
     console.log('🚀 ~ it.only ~ linkKoboResponse:', linkKoboResponse.body);
 
     expect(linkKoboResponse.status).toBe(HttpStatus.NOT_FOUND);

@@ -7,18 +7,21 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { KoboResponseDto } from '@121-service/src/programs/kobo/dto/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { LinkKoboDto } from '@121-service/src/programs/kobo/dto/link-kobo.dto';
 import { KoboService } from '@121-service/src/programs/kobo/kobo.service';
@@ -50,13 +53,29 @@ export class KoboController {
     type: 'integer',
     example: 1,
   })
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    type: 'boolean',
+    description: `
+        Only when set explicitly to "true", this will simulate (and NOT actually DO) the action.
+        Instead it will return how many PA this action can be applied to.
+        So no registration statuses will be updated or messages will be sent.
+        `,
+  })
   @Post(`programs/:programId/kobo`)
   public async createKoboIntegration(
     @Body() linkKoboDto: LinkKoboDto,
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Query('dryRun') dryRun = 'false',
   ) {
-    await this.koboService.createKoboIntegration({ ...linkKoboDto, programId });
+    const dryRunBoolean = dryRun === 'true'; // defaults to false
+    await this.koboService.createKoboIntegration({
+      ...linkKoboDto,
+      programId,
+      dryRun: dryRunBoolean,
+    });
   }
 
   @AuthenticatedUser({ isOrganizationAdmin: true })
@@ -66,6 +85,7 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Kobo form link',
+    type: KoboResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
