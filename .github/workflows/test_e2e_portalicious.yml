@@ -98,7 +98,6 @@ jobs:
           path: |
             ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/Portalicious/portalicious-server-logs.txt
-          retention-days: 30
 
       - name: Docker logs
         if: always()
