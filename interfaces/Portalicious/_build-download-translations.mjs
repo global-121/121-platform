@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { LokaliseDownload } from 'lokalise-file-exchange';
-import { accessSync, constants, writeFileSync } from 'node:fs';
+import { accessSync, constants, existsSync, writeFileSync } from 'node:fs';
 
 import { shouldBeEnabled } from './_env.utils.mjs';
 import {
@@ -20,9 +20,15 @@ const requiredTranslations = getRequiredTranslations();
 console.log('Required translations: ', requiredTranslations);
 
 if (!shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD)) {
-  console.info('Skipping download of translations. Creating mocks instead.');
+  console.info('Skipping download of translations.');
+
   for (const lang of requiredTranslations) {
     const filePath = getTranslationFilePath(lang);
+
+    if (existsSync(filePath)) {
+      console.info(`✅ Translations already available: ${filePath}`);
+      continue;
+    }
 
     writeFileSync(
       filePath,
