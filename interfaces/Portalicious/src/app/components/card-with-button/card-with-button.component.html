@@ -1,0 +1,22 @@
+<p-card
+  styleClass="[&_.p-card-content]:flex-end group relative h-full border border-transparent shadow-clickable-cards *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
+>
+  <button
+    (click)="cardClicked.emit()"
+    class="after:absolute after:inset-0 after:block group-focus-within:text-purple group-hover:text-purple"
+  >
+    @if (loading()) {
+      <app-skeleton-inline />
+    } @else {
+      <h2
+        class="line-clamp-2 text-ellipsis"
+        [title]="title()"
+      >
+        {{ title() }}
+      </h2>
+    }
+  </button>
+  <div>
+    <ng-content />
+  </div>
+</p-card>

@@ -1,5 +1,116 @@
 <app-project-settings-page-layout [projectId]="projectId()">
-  <p-card>
-    <h2 i18n>Financial Service Providers</h2>
+  <p-card styleClass="[&_.p-card]:border [&_.p-card]:border-grey-300">
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Financial Service Providerss
+    </h2>
+
+    <p
+      i18n
+      class="mb-6"
+    >
+      Choose an FSP from the FSPs integrated to this instance. You can add
+      multiple FSPs to the same project. If you with the integrate a new FSP,
+      contact the 121 support team or talk to the account manager.
+    </p>
+
+    @if (financialServiceProviderConfigurations.isPending()) {
+      <app-skeleton-inline />
+    } @else if (financialServiceProviderConfigurations.isError()) {
+      <app-form-error
+        [error]="financialServiceProviderConfigurations.failureReason()"
+        i18n-error
+      />
+    } @else if (financialServiceProviderConfigurations.isSuccess()) {
+      @let fspConfigurations = financialServiceProviderConfigurations.data();
+
+      @if (fspConfigurations.length > 0) {
+        <div class="space-y-4">
+          @for (
+            fspConfiguration of fspConfigurations;
+            track fspConfiguration.name
+          ) {
+            <app-financial-service-provider-configuration
+              [projectId]="projectId()"
+              [configuration]="fspConfiguration"
+              class="block"
+            />
+          }
+        </div>
+      }
+
+      @if (!forceAddAnotherFsp() && fspConfigurations.length > 0) {
+        <p-button
+          label="Add another FSP"
+          i18n-label
+          icon="pi pi-plus"
+          (click)="forceAddAnotherFsp.set(true)"
+          outlined
+          rounded
+          styleClass="mt-6"
+        />
+      }
+
+      @if (forceAddAnotherFsp() || fspConfigurations.length === 0) {
+        @if (forceAddAnotherFsp()) {
+          <p
+            i18n
+            class="mb-4 mt-8 font-bold"
+          >
+            Choose another FSP:
+          </p>
+        }
+
+        <div class="space-y-4">
+          @for (fsp of financialServiceProviders; track fsp.name) {
+            @if (!hasFspConfiguration(fsp.name)) {
+              <app-card-with-button
+                [title]="fsp.defaultLabel | translatableString"
+                (cardClicked)="currentlyEditedFsp.set(fsp.name)"
+                class="block"
+              >
+                <ng-container card-content>
+                  <span i18n>Click to integrate</span>
+                </ng-container>
+              </app-card-with-button>
+            }
+          }
+        </div>
+      }
+    }
   </p-card>
 </app-project-settings-page-layout>
+
+@for (fsp of financialServiceProviders; track fsp.name) {
+  <app-form-sidebar
+    [visible]="currentlyEditedFsp() === fsp.name"
+    (visibleChange)="$event === false && currentlyEditedFsp.set(undefined)"
+    [formGroup]="formGroups[fsp.name]"
+    [mutation]="createFinancialServiceProvidersConfiguration"
+    [formTitle]="fsp.defaultLabel | translatableString"
+    submitButtonText="Integrate FSP"
+    i18n-submitButtonText
+  >
+    <p
+      i18n
+      class="mb-4"
+    >
+      For more information about how to integrate this FSP see manual.
+    </p>
+
+    @for (property of fsp.configurationProperties; track property.name) {
+      <app-form-field-wrapper
+        [label]="getPropertyLabel(property)"
+        [errorMessage]="getPropertyErrorMessage(formGroups[fsp.name], property)"
+      >
+        <input
+          pInputText
+          [formControlName]="property.name"
+          autocomplete="off"
+        />
+      </app-form-field-wrapper>
+    }
+  </app-form-sidebar>
+}
