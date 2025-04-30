@@ -1,0 +1,45 @@
+<app-project-settings-page-layout [projectId]="projectId()">
+  <p-card>
+    <h2
+      i18n
+      class="mb-4"
+    >
+      Basic Information
+    </h2>
+
+    <app-form-default
+      [formGroup]="formGroup"
+      submitButtonText="Save changes"
+      i18n-submitButtonText
+      [mutation]="updateProjectMutation"
+    >
+      <app-form-field-wrapper
+        label="*Project name"
+        i18n-label
+        [errorMessage]="formFieldErrors()('name')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="Project name"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Project description"
+        i18n-label
+        [errorMessage]="formFieldErrors()('description')"
+      >
+        <textarea
+          rows="5"
+          pTextarea
+          formControlName="description"
+          autocomplete="off"
+          placeholder="Hint text..."
+          i18n-placeholder
+        ></textarea>
+      </app-form-field-wrapper>
+    </app-form-default>
+  </p-card>
+</app-project-settings-page-layout>

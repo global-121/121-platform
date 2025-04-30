@@ -21,6 +21,11 @@ export enum AppRoutes {
   projectRegistrationPersonalInformation = 'personal-information',
   projectRegistrations = 'registrations',
   projects = 'projects',
+  projectSettings = 'settings',
+  projectSettingsFinancialServiceProviders = 'financial-service-providers',
+  projectSettingsInformation = 'information',
+  projectSettingsLayouts = 'layouts',
+  projectSettingsRegistrationData = 'registration-data',
   projectTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
@@ -126,6 +131,65 @@ export const routes: Routes = [
           ),
         canActivate: [
           projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+        ],
+      },
+      {
+        path: AppRoutes.projectSettings,
+        canActivate: [
+          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+        ],
+        children: [
+          {
+            path: AppRoutes.projectSettingsInformation,
+            title:
+              $localize`:@@page-title-project-settings-information:Project information` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Project settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-information/project-settings-information.page'
+              ).then((x) => x.ProjectSettingsInformationPageComponent),
+          },
+          {
+            path: AppRoutes.projectSettingsFinancialServiceProviders,
+            title:
+              $localize`:@@page-title-project-settings-financial-service-providers:FSPs` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Project settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-financial-service-providers/project-settings-financial-service-providers.page'
+              ).then(
+                (x) => x.ProjectSettingsFinancialServiceProvidersPageComponent,
+              ),
+          },
+          {
+            path: AppRoutes.projectSettingsLayouts,
+            title:
+              $localize`:@@page-title-project-settings-layouts:Layouts` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Project settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-layouts/project-settings-layouts.page'
+              ).then((x) => x.ProjectSettingsLayoutsPageComponent),
+          },
+          {
+            path: AppRoutes.projectSettingsRegistrationData,
+            title:
+              $localize`:@@page-title-project-settings-registration-data:Registration data` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Project settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-registration-data/project-settings-registration-data.page'
+              ).then((x) => x.ProjectSettingsRegistrationDataPageComponent),
+          },
+          {
+            path: ``,
+            pathMatch: 'full',
+            redirectTo: AppRoutes.projectSettingsInformation,
+          },
         ],
       },
       {

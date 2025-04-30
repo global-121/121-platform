@@ -424,12 +424,6 @@
       <trans-unit id="1194881950571757496" datatype="html">
         <source>Payment frequency</source>
       </trans-unit>
-      <trans-unit id="7410432243549869948" datatype="html">
-        <source>Duration</source>
-      </trans-unit>
-      <trans-unit id="3382782841789683257" datatype="html">
-        <source><x equiv-text="projectData.distributionDuration" id="count"/> disbursements</source>
-      </trans-unit>
       <trans-unit id="926636196686296455" datatype="html">
         <source>Base transfer value</source>
       </trans-unit>
@@ -684,21 +678,6 @@
       </trans-unit>
       <trans-unit id="generic-edit" datatype="html">
         <source>Edit</source>
-      </trans-unit>
-      <trans-unit id="add-project-label" datatype="html">
-        <source>Add project</source>
-      </trans-unit>
-      <trans-unit id="1887371025019909976" datatype="html">
-        <source>Kobo Asset ID</source>
-      </trans-unit>
-      <trans-unit id="7750664097458673871" datatype="html">
-        <source>Kobo Token</source>
-      </trans-unit>
-      <trans-unit id="3086090297914662332" datatype="html">
-        <source>No Project-ID returned.</source>
-      </trans-unit>
-      <trans-unit id="2046529380163546074" datatype="html">
-        <source>Project successfully created.</source>
       </trans-unit>
       <trans-unit id="7148904805726439689" datatype="html">
         <source>Target registrations</source>
@@ -1573,6 +1552,75 @@
       </trans-unit>
       <trans-unit id="change-status-default-warning" datatype="html">
         <source>This action can not be applied to registrations you have selected.</source>
+      </trans-unit>
+      <trans-unit id="1419676661357831374" datatype="html">
+        <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="1847878497305424683" datatype="html">
+        <source>*Project name</source>
+      </trans-unit>
+      <trans-unit id="2651912264744301649" datatype="html">
+        <source>Project name</source>
+      </trans-unit>
+      <trans-unit id="3102652680104066178" datatype="html">
+        <source>Project description</source>
+      </trans-unit>
+      <trans-unit id="4637303266875221127" datatype="html">
+        <source>Basic Information</source>
+      </trans-unit>
+      <trans-unit id="4924256195525329757" datatype="html">
+        <source>Explanation to guide users</source>
+      </trans-unit>
+      <trans-unit id="4930506384627295710" datatype="html">
+        <source>Settings</source>
+      </trans-unit>
+      <trans-unit id="5835883977721334687" datatype="html">
+        <source>Project updated successfully.</source>
+      </trans-unit>
+      <trans-unit id="5861462401031465669" datatype="html">
+        <source>Project created.</source>
+      </trans-unit>
+      <trans-unit id="6230534888092191953" datatype="html">
+        <source>Project information</source>
+      </trans-unit>
+      <trans-unit id="6962661808954144239" datatype="html">
+        <source>Project team</source>
+      </trans-unit>
+      <trans-unit id="7000649363168371045" datatype="html">
+        <source>Save changes</source>
+      </trans-unit>
+      <trans-unit id="7307016430178924629" datatype="html">
+        <source>Hint text...</source>
+      </trans-unit>
+      <trans-unit id="7781535031854190943" datatype="html">
+        <source>Registration integration</source>
+      </trans-unit>
+      <trans-unit id="7813754044335831952" datatype="html">
+        <source>Layouts</source>
+      </trans-unit>
+      <trans-unit id="8816083895650555315" datatype="html">
+        <source>Financial Service Providers</source>
+      </trans-unit>
+      <trans-unit id="9038883655806818090" datatype="html">
+        <source>Project settings</source>
+      </trans-unit>
+      <trans-unit id="create-project" datatype="html">
+        <source>Create new project</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings" datatype="html">
+        <source>Project settings</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-financial-service-providers" datatype="html">
+        <source>FSPs</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-information" datatype="html">
+        <source>Project information</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-layouts" datatype="html">
+        <source>Layouts</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-registration-data" datatype="html">
+        <source>Registration data</source>
       </trans-unit>
     </body>
   </file>
