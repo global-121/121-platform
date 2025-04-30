@@ -568,18 +568,29 @@ export async function removeDeprecatedImageCodes({
     .send(body);
 }
 
-export async function linkKoboForm(
-  programId: number,
+export async function linkKoboForm({
+  programId,
+  linkKoboDto,
+  accessToken,
+  dryRun = false,
+}: {
+  programId: number;
   linkKoboDto: {
     koboToken?: string;
     koboAssetId?: string;
     koboUrl?: string;
-  },
-  accessToken: string,
-): Promise<request.Response> {
+  };
+  accessToken: string;
+  dryRun: boolean;
+}): Promise<request.Response> {
+  const queryParams = {};
+
+  queryParams['dryRun'] = dryRun;
+
   return await getServer()
     .post(`/programs/${programId}/kobo`)
     .set('Cookie', [accessToken])
+    .query(queryParams)
     .send(linkKoboDto);
 }
 

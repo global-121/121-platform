@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { KoboResponseDto } from '@121-service/src/programs/kobo/dto/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
 import { KoboApiService } from '@121-service/src/programs/kobo/kobo-api-service';
@@ -25,9 +26,16 @@ export class KoboService {
     private readonly koboFormValidationService: KoboFormValidationService,
   ) {}
 
-  public async getKoboIntegration(programId: number): Promise<KoboEntity> {
+  public async getKoboIntegration(programId: number): Promise<KoboResponseDto> {
     const koboEntity = await this.koboRepository.findOne({
       where: { programId: Equal(programId) },
+      select: {
+        assetId: true,
+        tokenCode: false, // Don't expose the token code
+        url: true,
+        versionId: true,
+        dateDeployed: true,
+      },
     });
     if (!koboEntity) {
       throw new HttpException(
@@ -44,11 +52,13 @@ export class KoboService {
     koboAssetId,
     koboUrl,
     programId,
+    dryRun,
   }: {
     koboToken: string;
     koboAssetId: string;
     koboUrl: string;
     programId: number;
+    dryRun: boolean;
   }): Promise<void> {
     await this.throwIfProgramAlreadyHasKoboIntegration(programId);
 
@@ -58,16 +68,13 @@ export class KoboService {
       koboUrl,
     );
 
-    const isNewVersion = await this.isNewKoboVersion(
+    await this.koboFormValidationService.validateKoboForm({
+      koboInformation,
       programId,
-      koboInformation.versionId,
-    );
+    });
 
-    if (isNewVersion) {
-      await this.koboFormValidationService.validateKoboForm({
-        koboInformation,
-        programId,
-      });
+    if (dryRun) {
+      return;
     }
 
     await this.createWebhookIfNotExists({ koboUrl, koboToken, koboAssetId });
@@ -81,9 +88,7 @@ export class KoboService {
       koboUrl,
     });
 
-    if (isNewVersion) {
-      await this.koboFormService.processKoboSurvey(koboInformation, programId);
-    }
+    await this.koboFormService.processKoboSurvey(koboInformation, programId);
   }
 
   public async processKoboWebhookCall(
@@ -97,7 +102,9 @@ export class KoboService {
     const koboEntity = await this.koboRepository.findOne({
       where: { assetId: Equal(koboWebhookIncomingSubmission._xform_id_string) },
       select: {
+        id: true,
         programId: true,
+        versionId: true,
         tokenCode: true,
         url: true,
       },
@@ -116,6 +123,13 @@ export class KoboService {
       koboEntity.tokenCode,
       koboEntity.url,
     );
+    console.log('🚀 ~ KoboService ~ submission:', submission);
+
+    if (submission.__version__ !== koboEntity.versionId) {
+      await this.updateIfNewDeployedVersion({
+        programId: koboEntity.programId,
+      });
+    }
 
     const mappedKoboDataForImport = this.mapKoboDataFor121Import([submission]);
 
@@ -124,6 +138,43 @@ export class KoboService {
       programId,
       1, // Should use actual user id
     );
+  }
+
+  private async updateIfNewDeployedVersion({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<void> {
+    const existingKoboEntity = await this.koboRepository.findOneOrFail({
+      where: { programId: Equal(programId) },
+      select: {
+        id: true,
+        versionId: true,
+        dateDeployed: true,
+        tokenCode: true,
+        assetId: true,
+        url: true,
+      },
+    });
+    const latestDeployedKoboForm = await this.koboApiService.getKoboInformation(
+      existingKoboEntity.tokenCode,
+      existingKoboEntity.assetId,
+      existingKoboEntity.url,
+    );
+    if (latestDeployedKoboForm.versionId !== existingKoboEntity.versionId) {
+      await this.koboRepository.update(
+        { id: existingKoboEntity.id },
+        {
+          versionId: latestDeployedKoboForm.versionId,
+          dateDeployed: latestDeployedKoboForm.dateDeployed,
+        },
+      );
+
+      await this.koboFormService.processKoboSurvey(
+        latestDeployedKoboForm,
+        programId,
+      );
+    }
   }
 
   private async throwIfProgramAlreadyHasKoboIntegration(
@@ -146,7 +197,7 @@ export class KoboService {
     koboToken: string,
     koboUrl: string,
   ): Promise<Record<string, string>> {
-    const submissions = await this.koboApiService.getKoboSubmissionData({
+    const submissions = await this.koboApiService.getSubmissions({
       token: koboToken,
       assetId: koboAssetId,
       baseUrl: koboUrl,
@@ -233,15 +284,26 @@ export class KoboService {
       where: { programId: Equal(programId) },
     });
 
-    const rawKoboSumissionData =
-      await this.koboApiService.getKoboSubmissionData({
-        token: koboEntity.tokenCode,
-        assetId: koboEntity.assetId,
-        baseUrl: koboEntity.url,
+    const rawKoboSumissions = await this.koboApiService.getSubmissions({
+      token: koboEntity.tokenCode,
+      assetId: koboEntity.assetId,
+      baseUrl: koboEntity.url,
+    });
+
+    if (
+      await this.atleastOneKoboSubmissionHasDifferentVersion(
+        rawKoboSumissions,
+        koboEntity.versionId,
+      )
+    ) {
+      await this.updateIfNewDeployedVersion({
+        programId: koboEntity.programId,
       });
+    }
+    // Check if the kobo submission data is empty
 
     const mappedKoboDataForImport =
-      this.mapKoboDataFor121Import(rawKoboSumissionData);
+      this.mapKoboDataFor121Import(rawKoboSumissions);
 
     await this.registrationsService.importRegistrationsFromJson(
       mappedKoboDataForImport,
@@ -250,6 +312,18 @@ export class KoboService {
     );
 
     return;
+  }
+
+  private async atleastOneKoboSubmissionHasDifferentVersion(
+    koboSubmissions: Record<string, string>[],
+    currentStoredVersion: string,
+  ): Promise<boolean> {
+    for (const submission of koboSubmissions) {
+      if (submission.__version__ !== currentStoredVersion) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private mapKoboDataFor121Import(
@@ -345,21 +419,5 @@ export class KoboService {
     koboEntity.url = koboUrl;
 
     return await this.koboRepository.save(koboEntity);
-  }
-
-  private async isNewKoboVersion(
-    programId: number,
-    newVersionId: string,
-  ): Promise<boolean> {
-    const existingKobo = await this.koboRepository.findOne({
-      where: { programId: Equal(programId) },
-    });
-
-    // It's a new version if:
-    // 1. There is no existing Kobo entity for this program
-    // 2. The version IDs are different
-
-    // TODO also compore the date deployed
-    return !existingKobo || existingKobo.versionId !== newVersionId;
   }
 }
