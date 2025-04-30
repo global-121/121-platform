@@ -99,6 +99,11 @@ jobs:
             ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/Portalicious/portalicious-server-logs.txt
 
+      - name: Portalicious logs
+        if: always()
+        shell: bash
+        run: cat ./interfaces/Portalicious/portalicious-server-logs.txt
+
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
