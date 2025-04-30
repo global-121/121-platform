@@ -1,100 +1,43 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { encryptRsaKeyIv } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { encryptRsaPinFromDocs } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
+import { encryptPin } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { getAccessToken } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { getRsaKey } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { generateRandomBytes } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { encryptAes } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { base64ToBuffer } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { postTransaction } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { rsaKeyToPem } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { generateRandomId } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
+import { postTransaction } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 
-const access_token = await getAccessToken();
-// console.log('Access Token:', access_token);
-
-// Get RSA public key
-const rsaPublicKeyPem = await getRsaKey(access_token);
-// console.log('RSA Public Key:');
-// console.log(rsaPublicKeyPem);
-
-// Generate AES key (256 bits) and IV (128 bits)
-const aesKey = generateRandomBytes(32); // 32 bytes = 256 bits
-const iv = generateRandomBytes(16); // 16 bytes = 128 bits
-
-// Step 2: Base64 encode key and IV
-const aesKeyB64 = aesKey.toString('base64');
-const ivB64 = iv.toString('base64');
-
-// console.log('aesKeyB64:', aesKeyB64);
-// console.log('ivB64:', ivB64);
-const random_id = generateRandomId();
-console.log('random_id:', random_id);
+const API_BASE_URL = `${process.env.API_BASE_URL}`;
+const CLIENT_ID = `${process.env.CLIENT_ID}`;
+const CLIENT_SECRET = `${process.env.CLIENT_SECRET}`;
+const pin = `${process.env.ZAMBIA_DISBURSEMENT_PIN}`;
+const rsaPublicKeyForPinEncryptionV1 = `${process.env.PIN_RSA_ENCRYPTION_PUBLIC_KEY_V1}`;
+// RSA encryption is relatively slow, so only do this encryption once per app-startup.
+const pinEncrypted = encryptPin(pin, rsaPublicKeyForPinEncryptionV1);
 
 const example_body = {
   payee: {
-    msisdn: '7526',
+    msisdn: '978980279', // Should be length 9
     wallet_type: 'NORMAL',
   },
-  reference: random_id,
-  pin: '',
+  reference: generateRandomId(),
+  pin: pinEncrypted,
   transaction: {
-    amount: 1000,
-    id: random_id,
+    amount: 0.01,
+    id: generateRandomId(),
     type: 'B2C',
   },
 };
 
-const pin = `${process.env.ZAMBIA_DISBURSEMENT_PIN}`;
-
-// The docs say: Public key is available in code snippet. Copy it from there.
-// But we also fetched a public RSA key via the API. So we have 2.
-// Not super clear which to use.
-const rsaPublicKeyForPinEncryption = `${process.env.PIN_RSA_ENCRYPTION_PUBLIC_KEY}`;
-const rsaPublicKeyForPinEncryptionPem = rsaKeyToPem(
-  rsaPublicKeyForPinEncryption,
-);
-console.log('rsaPublicKeyForPinEncryption', rsaPublicKeyForPinEncryption);
-// console.log('rsaPublicKeyForPinEncryptionPem', rsaPublicKeyForPinEncryptionPem);
-
-// Do one or the other.
-// const pinEncrypted = encryptRsa(pin, rsaPublicKeyPem);
-// const pinEncrypted = encryptRsaPin(pin, rsaPublicKeyForPinEncryptionPem);
-const pinEncrypted = encryptRsaPinFromDocs(
-  pin,
-  rsaPublicKeyForPinEncryptionPem,
-);
-console.log(pinEncrypted);
-
-example_body.pin = pinEncrypted;
-console.log('example_body');
-console.log(example_body);
-
-const xSignature = encryptAes(
-  example_body,
-  base64ToBuffer(aesKeyB64),
-  base64ToBuffer(ivB64),
-);
-
-// console.log('xSignature');
-// console.log(xSignature);
-
-// Concatenate key:iv
-const keyIvConcat = `${aesKeyB64}:${ivB64}`;
-
-// Encrypt the key:iv using RSA public key
-const xKey = encryptRsaKeyIv(keyIvConcat, rsaPublicKeyPem);
-// console.log('xKey');
-// console.log(xKey);
-
-const result = await postTransaction(
+const access_token = await getAccessToken({
+  url: `${API_BASE_URL}/auth/oauth2/token`,
+  client_id: CLIENT_ID,
+  client_secret: CLIENT_SECRET,
+});
+const result = await postTransaction({
+  url: `${API_BASE_URL}/standard/v1/disbursements/`,
   access_token,
-  xSignature,
-  xKey,
-  example_body,
-);
+  body: example_body,
+});
 
 console.log('result');
 console.log(result);
