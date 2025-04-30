@@ -11,6 +11,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import {
   injectMutation,
@@ -26,6 +27,7 @@ import {
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 
+import { AppRoutes } from '~/app.routes';
 import { CardWithButtonComponent } from '~/components/card-with-button/card-with-button.component';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
@@ -37,6 +39,7 @@ import { FinancialServiceProviderConfigurationApiService } from '~/domains/finan
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { FinancialServiceProviderConfigurationComponent } from '~/pages/project-settings-financial-service-providers/components/financial-service-provider-configuration/financial-service-provider-configuration.component';
 import { TranslatableStringPipe } from '~/pipes/translatable-string.pipe';
+import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { genericFieldIsRequiredValidationMessage } from '~/utils/form-validation';
 
@@ -55,6 +58,7 @@ import { genericFieldIsRequiredValidationMessage } from '~/utils/form-validation
     SkeletonInlineComponent,
     FormErrorComponent,
     FinancialServiceProviderConfigurationComponent,
+    RouterLink,
   ],
   templateUrl: './project-settings-financial-service-providers.page.html',
   styles: ``,
@@ -68,9 +72,11 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
     FinancialServiceProviderConfigurationApiService,
   );
   projectApiService = inject(ProjectApiService);
+  rtlHelper = inject(RtlHelperService);
   toastService = inject(ToastService);
 
   readonly financialServiceProviders = FINANCIAL_SERVICE_PROVIDER_SETTINGS;
+  AppRoutes = AppRoutes;
 
   readonly currentlyEditedFsp = model<FinancialServiceProviders | undefined>(
     undefined,

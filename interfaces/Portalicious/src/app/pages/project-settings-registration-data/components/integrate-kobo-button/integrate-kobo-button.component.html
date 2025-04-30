@@ -1,0 +1,148 @@
+<app-card-with-button
+  title="Kobo toolbox"
+  i18n-title
+  (cardClicked)="dialogVisible.set(true)"
+>
+  <ng-container card-content>
+    <span i18n>Click to integrate</span>
+  </ng-container>
+</app-card-with-button>
+
+@if (creationErrors()) {
+  <p-dialog
+    #dialog
+    [closeOnEscape]="false"
+    styleClass="md:min-w-[46rem]"
+    [visible]="true"
+    (onVisibleChange)="creationErrors.set(undefined)"
+    [modal]="true"
+    [dismissableMask]="true"
+  >
+    <ng-template pTemplate="header">
+      <h3>
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <ng-container i18n>Integration error</ng-container>
+      </h3>
+    </ng-template>
+
+    <p i18n>
+      We couldn't complete the integration due to the following issues in your
+      Kobo form. Please review your form and fix these errors, then try again:
+    </p>
+
+    <ol class="my-6">
+      @for (error of creationErrors(); track $index) {
+        <li>{{ error }}</li>
+      }
+    </ol>
+
+    <p i18n>
+      To learn more about how to integrate Kobo forms see the 121 manual
+    </p>
+    <div class="mt-6 flex justify-end gap-x-2">
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        outlined
+        rounded
+        severity="contrast"
+        [disabled]="createKoboIntegrationMutation.isPending()"
+        (click)="creationErrors.set(undefined); dialogVisible.set(false)"
+      />
+      <p-button
+        label="Try Again"
+        i18n-label
+        rounded
+        [disabled]="createKoboIntegrationMutation.isPending()"
+        [loading]="createKoboIntegrationMutation.isPending()"
+        (click)="onFormSubmit()"
+      />
+    </div>
+  </p-dialog>
+} @else {
+  <p-dialog
+    #dialog
+    [closeOnEscape]="false"
+    styleClass="md:min-w-[46rem]"
+    [(visible)]="dialogVisible"
+    [modal]="true"
+    [dismissableMask]="true"
+  >
+    <ng-template pTemplate="header">
+      <h3>
+        <i class="pi pi-link me-2"></i>
+        <ng-container i18n>Integrate Kobo Toolbox</ng-container>
+      </h3>
+    </ng-template>
+
+    <form
+      class="block w-full"
+      [formGroup]="formGroup"
+      (ngSubmit)="onFormSubmit()"
+      (keydown.control.enter)="onFormSubmit()"
+      (keydown.meta.enter)="onFormSubmit()"
+    >
+      <p
+        i18n
+        class="mb-6"
+      >
+        For more information about how to integrate kobo see manual
+      </p>
+      <app-form-field-wrapper
+        label="Kobo server URL"
+        i18n-label
+        [errorMessage]="formFieldErrors()('koboUrl')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="koboUrl"
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Kobo asset ID"
+        i18n-label
+        [errorMessage]="formFieldErrors()('koboAssetId')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="koboAssetId"
+          autocomplete="one-time-code"
+          class="font-mono"
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Kobo token"
+        i18n-label
+        [errorMessage]="formFieldErrors()('koboToken')"
+      >
+        <p-password
+          formControlName="koboToken"
+          autocomplete="one-time-code"
+          [toggleMask]="true"
+          [feedback]="false"
+        />
+      </app-form-field-wrapper>
+      <div class="mt-6 flex justify-end gap-x-2">
+        <p-button
+          label="Cancel"
+          i18n-label="@@generic-cancel"
+          outlined
+          rounded
+          severity="contrast"
+          [disabled]="createKoboIntegrationMutation.isPending()"
+          (click)="dialogVisible.set(false)"
+        />
+        <p-button
+          label="Continue"
+          i18n-label="@@generic-continue"
+          rounded
+          [disabled]="createKoboIntegrationMutation.isPending()"
+          [loading]="createKoboIntegrationMutation.isPending()"
+          type="submit"
+        />
+      </div>
+    </form>
+  </p-dialog>
+}
