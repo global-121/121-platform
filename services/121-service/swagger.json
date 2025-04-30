@@ -374,7 +374,7 @@
     ]
   },
   {
-    "method": "put",
+    "method": "post",
     "path": "/api/programs/{programId}/kobo",
     "params": [
       "programId"
