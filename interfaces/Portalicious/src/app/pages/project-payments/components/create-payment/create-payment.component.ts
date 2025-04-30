@@ -72,9 +72,9 @@ const queryParamStep = 'create-payment-step';
   providers: [CurrencyPipe, ToastService],
 })
 export class CreatePaymentComponent {
-  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
+  rtlHelper = inject(RtlHelperService);
   currencyPipe = inject(CurrencyPipe);
   downloadService = inject(DownloadService);
   exportService = inject(ExportService);

@@ -1,0 +1,104 @@
+<p-button
+  label="Create new project"
+  i18n-label="@@create-project"
+  rounded
+  outlined
+  icon="pi pi-plus"
+  [iconPos]="rtlHelper.createPosition('start')()"
+  (click)="openDialog()"
+/>
+
+<p-dialog
+  #createProjectDialog
+  [(visible)]="dialogVisible"
+  [draggable]="false"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  [closeOnEscape]="false"
+  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:p-0 [&_.p-dialog-footer]:shadow-payment-stepper"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <i class="pi pi-plus me-2"></i>
+      <ng-container i18n="@@create-project">Create new project</ng-container>
+    </h3>
+  </ng-template>
+  <div class="w-full px-6 lg:px-24">
+    <p-card>
+      <h1 i18n>Project information</h1>
+      <p
+        i18n
+        class="mb-4"
+      >
+        Explanation to guide users
+      </p>
+      <form
+        [formGroup]="formGroup"
+        class="flex flex-col gap-4"
+        (ngSubmit)="createProject()"
+        (keydown.control.enter)="createProject()"
+        (keydown.meta.enter)="createProject()"
+        pFocusTrap
+      >
+        <app-form-field-wrapper
+          label="*Project name"
+          i18n-label
+          [errorMessage]="formFieldErrors()('name')"
+        >
+          <input
+            pInputText
+            type="text"
+            formControlName="name"
+            placeholder="Hint text..."
+            i18n-placeholder
+          />
+        </app-form-field-wrapper>
+        <app-form-field-wrapper
+          label="Project description"
+          i18n-label
+          [errorMessage]="formFieldErrors()('description')"
+        >
+          <textarea
+            rows="5"
+            pTextarea
+            formControlName="description"
+            autocomplete="off"
+            placeholder="Hint text..."
+            i18n-placeholder
+          ></textarea>
+        </app-form-field-wrapper>
+        <app-form-error
+          [error]="
+            createProjectMutation.isError() &&
+            createProjectMutation.failureReason()?.message
+          "
+        />
+      </form>
+    </p-card>
+  </div>
+  <app-fullscreen-spinner [loading]="createProjectMutation.isPending()" />
+  <ng-template pTemplate="footer">
+    <div class="relative w-full">
+      <div class="flex items-center justify-end p-4">
+        <p-button
+          label="Cancel"
+          i18n-label="@@generic-cancel"
+          rounded
+          outlined
+          class="me-auto"
+          severity="contrast"
+          (click)="dialogVisible.set(false)"
+        />
+        <p-button
+          label="Create new project"
+          i18n-label="@@create-project"
+          rounded
+          [loading]="createProjectMutation.isPending()"
+          [disabled]="createProjectMutation.isPending()"
+          (click)="createProject()"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
