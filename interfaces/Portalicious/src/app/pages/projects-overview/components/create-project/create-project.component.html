@@ -25,22 +25,22 @@
     </h3>
   </ng-template>
   <div class="w-full px-6 lg:px-24">
-    <p-card>
-      <h1 i18n>Project information</h1>
-      <p
-        i18n
-        class="mb-4"
-      >
-        Explanation to guide users
-      </p>
-      <form
-        [formGroup]="formGroup"
-        class="flex flex-col gap-4"
-        (ngSubmit)="createProject()"
-        (keydown.control.enter)="createProject()"
-        (keydown.meta.enter)="createProject()"
-        pFocusTrap
-      >
+    <form
+      [formGroup]="formGroup"
+      class="flex flex-col gap-4"
+      (ngSubmit)="createProject()"
+      (keydown.control.enter)="createProject()"
+      (keydown.meta.enter)="createProject()"
+      pFocusTrap
+    >
+      <p-card>
+        <h1 i18n>Project information</h1>
+        <p
+          i18n
+          class="mb-4"
+        >
+          Explanation to guide users
+        </p>
         <app-form-field-wrapper
           label="*Project name"
           i18n-label
@@ -74,8 +74,8 @@
             createProjectMutation.failureReason()?.message
           "
         />
-      </form>
-    </p-card>
+      </p-card>
+    </form>
   </div>
   <app-fullscreen-spinner [loading]="createProjectMutation.isPending()" />
   <ng-template pTemplate="footer">

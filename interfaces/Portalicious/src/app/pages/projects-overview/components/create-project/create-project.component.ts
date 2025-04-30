@@ -20,6 +20,8 @@ import { Dialog, DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+
 import { AppRoutes } from '~/app.routes';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -92,9 +94,20 @@ export class CreateProjectComponent {
     }: ReturnType<CreateProjectFormGroup['getRawValue']>) => {
       console.log(name, description);
 
-      const paymentResult = await this.projectApiService.createProjectFromKobo({
-        token: 'XXX',
-        assetId: 'XXX',
+      const paymentResult = await this.projectApiService.createProject({
+        titlePortal: {
+          // XXX: hardcoding en
+          [LanguageEnum.en]: name,
+        },
+        description: {
+          // XXX: hardcoding en
+          [LanguageEnum.en]: description,
+        },
+        currency: 'MWK',
+        languages: [LanguageEnum.en, LanguageEnum.nl],
+        fixedTransferValue: 20,
+        enableMaxPayments: true,
+        defaultMaxPayments: 5,
       });
 
       return paymentResult;
@@ -106,7 +119,12 @@ export class CreateProjectComponent {
 
       await this.projectApiService.invalidateCache();
 
-      await this.router.navigate(['/', AppRoutes.project, result?.id]);
+      await this.router.navigate([
+        '/',
+        AppRoutes.project,
+        result?.id,
+        AppRoutes.projectSettings,
+      ]);
     },
     onError: (error) => {
       this.toastService.showToast({
