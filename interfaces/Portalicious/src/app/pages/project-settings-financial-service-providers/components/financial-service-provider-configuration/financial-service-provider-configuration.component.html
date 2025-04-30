@@ -15,7 +15,41 @@
     [popup]="true"
     appendTo="body"
   />
-  <span i18n>Click to edit</span>
+
+  <p
+    i18n
+    class="mt-4 font-bold"
+  >
+    FSP notes
+  </p>
+
+  @if (requiredDataColumns().length > 0) {
+    <p
+      i18n
+      class="mb-4"
+    >
+      Your form must include the following required fields in this
+      <b>exact format</b>
+      for this FSP integration in the data column name:
+    </p>
+    <p-table [value]="requiredDataColumns()">
+      <ng-template #header>
+        <tr>
+          <th i18n>Required data column name</th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-column
+      >
+        <tr>
+          <td>{{ column.name }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p i18n>There are no specific fields needed for this integration</p>
+  }
 </p-card>
 
 <app-confirmation-dialog

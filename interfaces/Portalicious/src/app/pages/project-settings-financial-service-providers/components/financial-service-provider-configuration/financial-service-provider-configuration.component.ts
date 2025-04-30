@@ -12,8 +12,10 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MenuModule } from 'primeng/menu';
+import { TableModule } from 'primeng/table';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { getFinancialServiceProviderSettingByName } from '~/domains/financial-service-provider/financial-service-provider.helper';
 import { FinancialServiceProviderConfigurationApiService } from '~/domains/financial-service-provider-configuration/financial-service-provider-configuration.api.service';
 import { FinancialServiceProviderConfiguration } from '~/domains/financial-service-provider-configuration/financial-service-provider-configuration.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -28,6 +30,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     MenuModule,
     ConfirmationDialogComponent,
+    TableModule,
   ],
   templateUrl: './financial-service-provider-configuration.component.html',
   styles: ``,
@@ -92,4 +95,16 @@ export class FinancialServiceProviderConfigurationComponent {
       },
     },
   ]);
+
+  readonly fspSetting = computed(() =>
+    getFinancialServiceProviderSettingByName(
+      this.configuration().financialServiceProviderName,
+    ),
+  );
+
+  readonly requiredDataColumns = computed(
+    () =>
+      this.fspSetting()?.attributes.filter((property) => property.isRequired) ??
+      [],
+  );
 }
