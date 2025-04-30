@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "jsrsasign": "^10.3.0",
     "jsrsasign-util": "^1.0.5"
   }
