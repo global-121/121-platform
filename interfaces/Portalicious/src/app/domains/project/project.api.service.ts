@@ -7,6 +7,7 @@ import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto'
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { UpdateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -173,6 +174,23 @@ export class ProjectApiService extends DomainApiService {
         },
       },
     );
+  }
+
+  // XXX: should be in a separate registration-attribute api.service
+  updateProjectRegistrationAttribute({
+    projectId,
+    programRegistrationAttributeName,
+    attribute,
+  }: {
+    projectId: Signal<number | string>;
+    programRegistrationAttributeName: string;
+    attribute: Dto<UpdateProgramRegistrationAttributeDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}/registration-attributes/${programRegistrationAttributeName}`,
+      body: attribute,
+    });
   }
 
   updateProjectUserAssignment(
