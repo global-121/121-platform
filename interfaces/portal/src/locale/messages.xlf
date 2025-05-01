@@ -1592,14 +1592,8 @@
       <trans-unit id="7307016430178924629" datatype="html">
         <source>Hint text...</source>
       </trans-unit>
-      <trans-unit id="7781535031854190943" datatype="html">
-        <source>Registration integration</source>
-      </trans-unit>
       <trans-unit id="7813754044335831952" datatype="html">
         <source>Layouts</source>
-      </trans-unit>
-      <trans-unit id="8816083895650555315" datatype="html">
-        <source>Financial Service Providers</source>
       </trans-unit>
       <trans-unit id="9038883655806818090" datatype="html">
         <source>Project settings</source>
@@ -1621,6 +1615,204 @@
       </trans-unit>
       <trans-unit id="page-title-project-settings-registration-data" datatype="html">
         <source>Registration data</source>
+      </trans-unit>
+      <trans-unit id="1326702859173088153" datatype="html">
+        <source>De-duplication</source>
+      </trans-unit>
+      <trans-unit id="1368581026075700334" datatype="html">
+        <source><x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-label&quot;&gt;" id="START_TAG_SPAN"/>Continue to Registration data<x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-span_1" equiv-text="&lt;span class=&quot;p-button-icon p-button-icon-right pi pi-arrow-right&quot;&gt;" id="START_TAG_SPAN_1"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+      </trans-unit>
+      <trans-unit id="1555721751742522708" datatype="html">
+        <source>required</source>
+      </trans-unit>
+      <trans-unit id="173881015099071159" datatype="html">
+        <source>Add another FSP</source>
+      </trans-unit>
+      <trans-unit id="1916995782667784441" datatype="html">
+        <source>Import failed</source>
+      </trans-unit>
+      <trans-unit id="2304632129505872052" datatype="html">
+        <source>We couldn’t import the existing registration data from this form right now.</source>
+      </trans-unit>
+      <trans-unit id="2330756841114483977" datatype="html">
+        <source>Choose another FSP:</source>
+      </trans-unit>
+      <trans-unit id="2371108148642786887" datatype="html">
+        <source>For more information about how to integrate this FSP see manual.</source>
+      </trans-unit>
+      <trans-unit id="2776329607620146573" datatype="html">
+        <source>Excel table</source>
+      </trans-unit>
+      <trans-unit id="278254988919897660" datatype="html">
+        <source>You can try again, or cancel this step and use the Import Registration Data feature later in the registration page.</source>
+      </trans-unit>
+      <trans-unit id="3054104681790532369" datatype="html">
+        <source>Kobo toolbox</source>
+      </trans-unit>
+      <trans-unit id="3069764081921374374" datatype="html">
+        <source>Kobo form successfully integrated.</source>
+      </trans-unit>
+      <trans-unit id="3096125963323588142" datatype="html">
+        <source>Integrate Kobo Toolbox</source>
+      </trans-unit>
+      <trans-unit id="3325180562659478330" datatype="html">
+        <source>name</source>
+      </trans-unit>
+      <trans-unit id="3366674803315613002" datatype="html">
+        <source>Column to match</source>
+      </trans-unit>
+      <trans-unit id="3560595744015834305" datatype="html">
+        <source>Update successful.</source>
+      </trans-unit>
+      <trans-unit id="3933760683279649879" datatype="html">
+        <source>Kobo server URL</source>
+      </trans-unit>
+      <trans-unit id="398086617339284927" datatype="html">
+        <source>Kobo submissions imported successfully.</source>
+      </trans-unit>
+      <trans-unit id="4124465588218417294" datatype="html">
+        <source>Kobo asset ID</source>
+      </trans-unit>
+      <trans-unit id="4166774598423340967" datatype="html">
+        <source>optional</source>
+      </trans-unit>
+      <trans-unit id="4575821526015368593" datatype="html">
+        <source>Import existing registration data from this form.</source>
+      </trans-unit>
+      <trans-unit id="4578833766272403833" datatype="html">
+        <source>Cover letter code</source>
+      </trans-unit>
+      <trans-unit id="4725718925572069565" datatype="html">
+        <source>Click to integrate</source>
+      </trans-unit>
+      <trans-unit id="4771770532882776287" datatype="html">
+        <source>Integration error</source>
+      </trans-unit>
+      <trans-unit id="4814285799071780083" datatype="html">
+        <source>Remove</source>
+      </trans-unit>
+      <trans-unit id="4870684362400415992" datatype="html">
+        <source>Duplication fields</source>
+      </trans-unit>
+      <trans-unit id="4958457044114658950" datatype="html">
+        <source>No attributes selected.</source>
+      </trans-unit>
+      <trans-unit id="5248717555542428023" datatype="html">
+        <source>Username</source>
+      </trans-unit>
+      <trans-unit id="5473276629033556345" datatype="html">
+        <source>Funding token code</source>
+      </trans-unit>
+      <trans-unit id="5568900620756681669" datatype="html">
+        <source>Your form must include the following required fields in this <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>exact format<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> for this FSP integration in the data column name:</source>
+      </trans-unit>
+      <trans-unit id="6062854020526523813" datatype="html">
+        <source>Below are the <x equiv-text="{{ projectAttributes.data().length }}" id="INTERPOLATION"/> questions from the integrated Kobo form. Please edit each column name to a shorter version that will be displayed in the data table and on the profile page.</source>
+      </trans-unit>
+      <trans-unit id="6124886965308904831" datatype="html">
+        <source>An error occurred during the update.</source>
+      </trans-unit>
+      <trans-unit id="6505097170055851334" datatype="html">
+        <source>Error while importing Kobo submissions</source>
+      </trans-unit>
+      <trans-unit id="6561381080846651069" datatype="html">
+        <source>We couldn&apos;t complete the integration due to the following issues in your Kobo form. Please review your form and fix these errors, then try again:</source>
+      </trans-unit>
+      <trans-unit id="6667455188919955905" datatype="html">
+        <source>You’re about to link this project with this kobo form:</source>
+      </trans-unit>
+      <trans-unit id="6667753881469228179" datatype="html">
+        <source>Financial Service Providerss</source>
+      </trans-unit>
+      <trans-unit id="6711033592081422255" datatype="html">
+        <source>Question label</source>
+      </trans-unit>
+      <trans-unit id="6927943623949177165" datatype="html">
+        <source>Registration integration</source>
+      </trans-unit>
+      <trans-unit id="6934327342922154604" datatype="html">
+        <source>Choose an FSP from the FSPs integrated to this instance. You can add multiple FSPs to the same project. If you with the integrate a new FSP, contact the 121 support team or talk to the account manager.</source>
+      </trans-unit>
+      <trans-unit id="6962661808954144239" datatype="html">
+        <source>Project team</source>
+      </trans-unit>
+      <trans-unit id="6964415671113324026" datatype="html">
+        <source>FSP notes</source>
+      </trans-unit>
+      <trans-unit id="7014051207286040747" datatype="html">
+        <source>Data column name</source>
+      </trans-unit>
+      <trans-unit id="7022921536845926478" datatype="html">
+        <source>Payment reference prefix</source>
+      </trans-unit>
+      <trans-unit id="7190779898314379984" datatype="html">
+        <source>Kobo token</source>
+      </trans-unit>
+      <trans-unit id="7313006626571837182" datatype="html">
+        <source>There are no specific fields needed for this integration</source>
+      </trans-unit>
+      <trans-unit id="7705041759167938933" datatype="html">
+        <source>FSP integrated successfully.</source>
+      </trans-unit>
+      <trans-unit id="7751381156275025670" datatype="html">
+        <source>For more information about how to integrate kobo see manual</source>
+      </trans-unit>
+      <trans-unit id="8094115796114921772" datatype="html">
+        <source>An error occurred while updating the labels.</source>
+      </trans-unit>
+      <trans-unit id="809774108055144125" datatype="html">
+        <source>Select the fields you would like to use as duplication indicators - if these fields are found to match the registrations will be flagged as duplicates. Note that some FSPs may require specific fields to be unique, check for notes in the FSP page.</source>
+      </trans-unit>
+      <trans-unit id="8153112678957419197" datatype="html">
+        <source>Error while integrating Kobo form</source>
+      </trans-unit>
+      <trans-unit id="8209266927278152647" datatype="html">
+        <source>Link to the form</source>
+      </trans-unit>
+      <trans-unit id="8259134434818825921" datatype="html">
+        <source>To learn more about how to integrate Kobo forms see the 121 manual</source>
+      </trans-unit>
+      <trans-unit id="8270214591182392971" datatype="html">
+        <source>Brand code</source>
+      </trans-unit>
+      <trans-unit id="8609049781453361060" datatype="html">
+        <source>You&apos;re about to remove <x equiv-text="{{ configuration().name | translatableString }}" id="INTERPOLATION"/> FSP from your project. Payments with this FSP will not go through, Registrations with this FSP will not be paid unless changed to an integrated FSP.</source>
+      </trans-unit>
+      <trans-unit id="8646824622312259691" datatype="html">
+        <source>Required data column name</source>
+      </trans-unit>
+      <trans-unit id="865121342901149121" datatype="html">
+        <source>Personal information</source>
+      </trans-unit>
+      <trans-unit id="8679806927601731663" datatype="html">
+        <source>Try Again</source>
+      </trans-unit>
+      <trans-unit id="8820369126945258821" datatype="html">
+        <source>Integrate form</source>
+      </trans-unit>
+      <trans-unit id="9190469470269882637" datatype="html">
+        <source>Integrate FSP</source>
+      </trans-unit>
+      <trans-unit id="9202925211917001608" datatype="html">
+        <source>Columns to export</source>
+      </trans-unit>
+      <trans-unit id="9206135377946716312" datatype="html">
+        <source>Click to import</source>
+      </trans-unit>
+      <trans-unit id="964040539261320237" datatype="html">
+        <source>Select Attributes</source>
+      </trans-unit>
+      <trans-unit id="999293858368779246" datatype="html">
+        <source>Select a registration tool you want to integrate to the project.</source>
+      </trans-unit>
+      <trans-unit id="generic-back" datatype="html">
+        <source>Back</source>
+      </trans-unit>
+      <trans-unit id="generic-continue" datatype="html">
+        <source>Continue</source>
+      </trans-unit>
+      <trans-unit id="remove-fsp" datatype="html">
+        <source>Remove FSP</source>
       </trans-unit>
     </body>
   </file>
