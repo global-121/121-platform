@@ -9,9 +9,6 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 
 const WEBHOOK_NAME = 'Notify 121 on new submission';
 
-/**
- * Service that handles all communication with Kobo API
- */
 @Injectable()
 export class KoboApiService {
   constructor(private readonly httpService: CustomHttpService) {}

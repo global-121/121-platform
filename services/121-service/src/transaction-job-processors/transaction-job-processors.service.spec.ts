@@ -105,7 +105,7 @@ describe('TransactionJobProcessorsService', () => {
 
     jest
       .spyOn(programRepository, 'findByIdOrFail')
-      .mockResolvedValue(mockedProgram as ProgramEntity);
+      .mockResolvedValue(mockedProgram as unknown as ProgramEntity);
 
     jest
       .spyOn(transactionScopedRepository, 'save')
