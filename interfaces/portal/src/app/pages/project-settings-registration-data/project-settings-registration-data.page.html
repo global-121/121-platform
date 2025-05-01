@@ -41,16 +41,7 @@
   </p-card>
 
   @if (koboIntegration.data()) {
-    <p-card class="mt-4 block">
-      <h2
-        i18n
-        class="mb-4"
-      >
-        Registration questions
-      </h2>
-
-      <app-registration-questions-table [projectId]="projectId()" />
-    </p-card>
+    <app-registration-questions-table [projectId]="projectId()" />
 
     <p-card class="mt-4 block">
       <h2

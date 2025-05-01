@@ -2,68 +2,137 @@
   #languageTable
   let-language="language"
 >
-  @let attributes = projectAttributes.data() ?? [];
-  <p-table [value]="attributes">
-    <ng-template #header>
-      <tr>
-        <th i18n>Question</th>
-        <th i18n>Column name</th>
-      </tr>
-    </ng-template>
-    <ng-template
-      #body
-      let-attribute
-    >
-      <tr>
-        <td>{{ attribute.name }}</td>
-        <td>{{ attribute.label[language] }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  @let attributes = sortedAttributes();
+
+  <div [formGroup]="formGroup">
+    <p-table [value]="attributes">
+      <ng-template #header>
+        <tr>
+          <th
+            i18n
+            class="w-1/2"
+          >
+            Data column name
+          </th>
+          <th
+            i18n
+            class="w-1/2"
+          >
+            Question label
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        #body
+        let-attribute
+      >
+        <tr [formGroupName]="attribute.name">
+          <td>{{ attribute.name }}</td>
+          @if (isEditing()) {
+            <td>
+              <input
+                type="text"
+                pInputText
+                [formControlName]="language"
+              />
+            </td>
+          } @else {
+            <td>{{ attribute.label[language] }}</td>
+          }
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </ng-template>
 
-@if (projectAttributes.isSuccess() && project.isSuccess()) {
-  @let languages = project.data().languages;
-
-  <p
+<p-card class="relative mt-4 block">
+  <h2
     i18n
     class="mb-4"
   >
-    Below are the {{ projectAttributes.data().length }} questions from the
-    integrated Kobo form. Please edit each column name to a shorter version that
-    will be displayed in the data table and on the profile page.
-  </p>
+    Personal information
+  </h2>
 
-  @if (languages.length > 1) {
-    <p-tabs [value]="languages[0]">
-      <p-tablist>
-        @for (language of languages; track language) {
-          <p-tab [value]="language">{{ language }}</p-tab>
+  @if (projectAttributes.isSuccess() && project.isSuccess()) {
+    <form
+      [formGroup]="formGroup"
+      (ngSubmit)="saveAttributes()"
+    >
+      <div class="absolute end-4 top-4">
+        @if (!isEditing()) {
+          <p-button
+            text
+            plain
+            icon="pi pi-pencil"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="isEditing.set(true)"
+          />
+        } @else {
+          <p-button
+            label="Cancel"
+            i18n-label="@@generic-cancel"
+            (click)="isEditing.set(false)"
+            icon="pi pi-times"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            outlined
+            rounded
+            severity="contrast"
+            class="me-4"
+          />
+          <p-button
+            type="submit"
+            label="Save"
+            i18n-label="@@generic-save"
+            icon="pi pi-check"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            rounded
+          />
         }
-      </p-tablist>
-      <p-tabpanels>
-        @for (language of languages; track language) {
-          <p-tabpanel [value]="language">
-            <ng-container
-              *ngTemplateOutlet="
-                languageTable;
-                context: {
-                  language,
-                }
-              "
-            ></ng-container>
-          </p-tabpanel>
-        }
-      </p-tabpanels>
-    </p-tabs>
-  } @else {
-    <ng-container
-      *ngTemplateOutlet="
-        languageTable;
-        context: {
-          language: languages[0],
-        }
-      "
-    ></ng-container>
+      </div>
+
+      @let languages = project.data().languages;
+
+      <p
+        i18n
+        class="mb-4"
+      >
+        Below are the {{ projectAttributes.data().length }} questions from the
+        integrated Kobo form. Please edit each column name to a shorter version
+        that will be displayed in the data table and on the profile page.
+      </p>
+
+      @if (languages.length > 1) {
+        <p-tabs [value]="languages[0]">
+          <p-tablist>
+            @for (language of languages; track language) {
+              <p-tab [value]="language">{{ language }}</p-tab>
+            }
+          </p-tablist>
+          <p-tabpanels>
+            @for (language of languages; track language) {
+              <p-tabpanel [value]="language">
+                <ng-container
+                  *ngTemplateOutlet="
+                    languageTable;
+                    context: {
+                      language,
+                    }
+                  "
+                ></ng-container>
+              </p-tabpanel>
+            }
+          </p-tabpanels>
+        </p-tabs>
+      } @else {
+        <ng-container
+          *ngTemplateOutlet="
+            languageTable;
+            context: {
+              language: languages[0],
+            }
+          "
+        ></ng-container>
+      }
+    </form>
   }
-}
+</p-card>
