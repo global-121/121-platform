@@ -61,11 +61,9 @@ jobs:
         env:
           NG_PRODUCTION: true
           NG_URL_121_SERVICE_API: http://localhost:3000/api
-          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: ${{ vars.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD }}
-          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
-          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
+          NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
         run: |
-          npm install
+          npm ci --no-fund --no-audit
           cp .env.example .env
           npm run start:debug-production > portalicious-server-logs.txt 2>&1 &
 
@@ -98,7 +96,11 @@ jobs:
           path: |
             ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/Portalicious/portalicious-server-logs.txt
-          retention-days: 30
+
+      - name: Portalicious logs
+        if: always()
+        shell: bash
+        run: cat ./interfaces/Portalicious/portalicious-server-logs.txt
 
       - name: Docker logs
         if: always()

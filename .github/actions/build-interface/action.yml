@@ -53,6 +53,14 @@ runs:
         cache: 'npm'
         cache-dependency-path: '${{ inputs.interfacePath }}/package-lock.json'
 
+    - name: Set VERSION of build/deployment
+      shell: bash
+      id: build-version
+      run: |
+        echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+        echo "version=$NG_BUILD_VERSION" >> $GITHUB_OUTPUT
+        echo "date=$(/bin/date --utc --iso-8601)" >> $GITHUB_OUTPUT
+
     - name: Install
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
@@ -60,10 +68,27 @@ runs:
         HUSKY: '0'
       run: 'npm ci --no-fund --no-audit'
 
-    - name: Set VERSION of build/deployment
+    - name: Re-use downloaded translations
+      if: inputs.buildType == 'portalicious'
+      uses: actions/cache@v4
+      id: cache_translations
+      env:
+        TRANSLATIONS_SOURCE_FILE: ${{ inputs.interfacePath }}/src/locale/messages.xlf
+      with:
+        path: '${{ inputs.interfacePath }}/src/locale/'
+        key: 'translations-${{ hashFiles(env.TRANSLATIONS_SOURCE_FILE) }}-${{ steps.build-version.outputs.date }}'
+
+    - name: Download translations
+      if: inputs.buildType == 'portalicious' && steps.cache_translations.outputs.cache-hit != 'true'
       shell: bash
+      working-directory: ${{ inputs.interfacePath }}
+      env:
+        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: true
+        LOKALISE_PROJECT_ID: ${{ env.LOKALISE_PROJECT_ID }}
+        LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
       run: |
-        echo "NG_BUILD_VERSION=$(git describe --tags --dirty --broken)" >> $GITHUB_ENV
+        echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
+        npm run build:download-translations
 
     - name: Add environment-specific icon
       if: ${{ inputs.envIcon }} != ''
@@ -77,10 +102,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
-        # Only if NG_DOWNLOAD_TRANSLATIONS_AT_BUILD is explicitly set to 'false', it will be set to 'false'. Otherwise it will be set to 'true'.
-        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: ${{ env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD == 'false' && 'false' || 'true' }}
-        LOKALISE_PROJECT_ID: ${{ env.LOKALISE_PROJECT_ID }}
-        LOKALISE_API_TOKEN: ${{ env.LOKALISE_API_TOKEN }}
+        NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
       run: |
         echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
         npm run build:production
