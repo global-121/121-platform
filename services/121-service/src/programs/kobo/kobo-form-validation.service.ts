@@ -7,8 +7,8 @@ import { FinancialServiceProviders } from '@121-service/src/financial-service-pr
 import { FINANCIAL_SERVICE_PROVIDER_ATTRIBUTE_TYPE_MAPPING } from '@121-service/src/financial-service-providers/financial-service-provider-attributes-type-mapping.const';
 import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { getCleanAttributeNameFromKoboSurveyItem } from '@121-service/src/programs/kobo/helpers/clean-kobo-survey-names';
+import { KoboFormResponse } from '@121-service/src/programs/kobo/interfaces/kobo-form-response';
 import { KoboSurveyItem } from '@121-service/src/programs/kobo/interfaces/kobo-survey-item.interface';
-import { KoboFormResponse } from '@121-service/src/programs/kobo/kobo-api-service';
 import { getKoboTypesFrom121Type } from '@121-service/src/programs/kobo/kobo-to-121-type-mapping.const';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
