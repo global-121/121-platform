@@ -167,9 +167,12 @@ export class IntersolveVoucherController {
   })
   @Post('/financial-service-providers/intersolve-voucher/cancel')
   public async cancelByRefPos(): Promise<void> {
-    console.info('CronjobService - Started: cancelByRefposIntersolve');
-    await this.intersolveVoucherCronService.cancelByRefposIntersolve();
-    console.info('CronjobService - Complete: cancelByRefposIntersolve');
+    console.info('Start: Intersolve-Voucher - cancelByRefPos');
+    void this.intersolveVoucherCronService
+      .cancelByRefposIntersolve()
+      .finally(() => {
+        console.info('Complete: Intersolve-Voucher - cancelByRefPos');
+      });
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -182,9 +185,14 @@ export class IntersolveVoucherController {
   })
   @Post('/financial-service-providers/intersolve-voucher/send-reminders')
   public async sendWhatsappReminders(): Promise<void> {
-    console.info('CronjobService - Started: cronSendWhatsappReminders');
-    await this.intersolveVoucherCronService.sendWhatsappReminders();
-    console.info('CronjobService - Complete: cronSendWhatsappReminders');
+    console.info('Start: Intersolve-Voucher - cronSendWhatsappReminders');
+    void this.intersolveVoucherCronService
+      .sendWhatsappReminders()
+      .finally(() => {
+        console.info(
+          'Complete: Intersolve-Voucher - cronSendWhatsappReminders',
+        );
+      });
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -201,12 +209,14 @@ export class IntersolveVoucherController {
   public async removeDeprecatedImageCodes(
     @Body() body: RemoveDeprecatedImageCodesDto,
   ): Promise<number> {
-    console.info('CronjobService - Started: removeDeprecatedImageCodes');
+    console.info('Start: Intersolve-Voucher - removeDeprecatedImageCodes');
     const numberOfDeleted =
       await this.intersolveVoucherService.removeDeprecatedImageCodes(
         body.mockCurrentDate,
       );
-    console.info('CronjobService - Complete: removeDeprecatedImageCodes');
+    console.info(
+      `Complete: Intersolve-Voucher - removeDeprecatedImageCodes: ${numberOfDeleted} vouchers deleted`,
+    );
     return numberOfDeleted;
   }
 }

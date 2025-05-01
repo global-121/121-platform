@@ -55,16 +55,12 @@ export class CommercialBankEthiopiaReconciliationController {
   })
   @Put('financial-service-providers/commercial-bank-ethiopia/account-enquiries')
   public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
-    console.info(
-      'CronjobService - Started: CBE retrieveAndUpsertAccountEnquiries',
-    );
+    console.info('Start: CBE - retrieveAndUpsertAccountEnquiries');
     // Don't wait for the result, as that can cause a timeout on the API
     void this.commercialBankEthiopiaReconciliationService
       .retrieveAndUpsertAccountEnquiries()
       .finally(() => {
-        console.info(
-          'CronjobService - Complete: CBE retrieveAndUpsertAccountEnquiries',
-        );
+        console.info('Complete: CBE - retrieveAndUpsertAccountEnquiries');
       });
   }
 }

@@ -42,8 +42,13 @@ export class ExchangeRatesController {
   })
   @Put()
   public async retrieveAndStoreAllExchangeRates(): Promise<void> {
-    console.info('CronjobService - Started: retrieveAndStoreAllExchangeRates');
-    await this.exchangeRatesService.retrieveAndStoreAllExchangeRates();
-    console.info('CronjobService - Ended: retrieveAndStoreAllExchangeRates');
+    console.info('Start: Exchange-Rates - retrieveAndStoreAllExchangeRates');
+    void this.exchangeRatesService
+      .retrieveAndStoreAllExchangeRates()
+      .finally(() => {
+        console.info(
+          'Complete: Exchange-Rates - retrieveAndStoreAllExchangeRates',
+        );
+      });
   }
 }
