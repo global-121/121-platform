@@ -1,23 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { KoboChoice } from '@121-service/src/programs/kobo/interfaces/kobo-choice.interface';
-import { KoboSurveyItem } from '@121-service/src/programs/kobo/interfaces/kobo-survey-item.interface';
+import { KoboFormResponse } from '@121-service/src/programs/kobo/dto/kobo-form-response.dto';
 import {
   KOBO_WEBHOOK_121_ENDPOINT,
   KOBO_WEBHOOK_SUBSET_FIELDS,
 } from '@121-service/src/programs/kobo/kobo.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
-
-/**
- * Response from Kobo API containing form definition and metadata
- */
-export interface KoboFormResponse {
-  survey: KoboSurveyItem[];
-  choices: KoboChoice[];
-  languages: string[];
-  dateDeployed: Date;
-  versionId: string;
-}
 
 const WEBHOOK_NAME = 'Notify 121 on new submission';
 
@@ -95,6 +83,7 @@ export class KoboApiService {
       }
 
       return {
+        name: responseBody.asset.name ?? '',
         survey: responseBody.asset.content.survey || [],
         choices: responseBody.asset.content.choices || [],
         languages: responseBody.asset.summary.languages || [],

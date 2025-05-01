@@ -215,9 +215,4 @@ export class CreateProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
-
-  @ApiProperty({ example: 1 })
-  @IsOptional()
-  @IsNumber()
-  public readonly defaultMaxPayments?: number;
 }

@@ -71,7 +71,7 @@ export class KoboController {
     @Query('dryRun') dryRun = 'false',
   ) {
     const dryRunBoolean = dryRun === 'true'; // defaults to false
-    await this.koboService.createKoboIntegration({
+    return this.koboService.createKoboIntegration({
       ...linkKoboDto,
       programId,
       dryRun: dryRunBoolean,
