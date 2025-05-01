@@ -379,7 +379,8 @@
     "params": [
       "programId",
       "dryRun"
-    ]
+    ],
+    "returnType": "KoboLinkFormResponseDto"
   },
   {
     "method": "get",

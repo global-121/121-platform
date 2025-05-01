@@ -20,7 +20,10 @@ import {
   postProgram,
 } from '@121-service/test/helpers/program.helper';
 import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
-import { getRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getRegistrations,
+  importRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -174,7 +177,7 @@ describe('Create program which should be edited via kobo later', () => {
     });
     console.log('🚀 ~ it ~ linkKoboResponse:', linkKoboResponseDryRun.body);
 
-    expect(linkKoboResponseDryRun.body).toStrictEqual({});
+    expect(linkKoboResponseDryRun.body).toHaveProperty('name');
     expect(linkKoboResponseDryRun.status).toBe(HttpStatus.CREATED);
 
     const linkKoboResponse = await linkKoboForm({
@@ -185,7 +188,7 @@ describe('Create program which should be edited via kobo later', () => {
     });
     console.log('🚀 ~ it ~ linkKoboResponse:', linkKoboResponse.body);
 
-    expect(linkKoboResponse.body).toStrictEqual({});
+    expect(linkKoboResponseDryRun.body).toHaveProperty('name');
     expect(linkKoboResponse.status).toBe(HttpStatus.CREATED);
 
     // Verify Kobo integration was created successfully
@@ -318,5 +321,57 @@ describe('Create program which should be edited via kobo later', () => {
     const getKoboResponse = await getKoboIntegration(programId, accessToken);
 
     expect(getKoboResponse.status).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('Should ceate an extra registration attribute when one is missing', async () => {
+    const program = {
+      titlePortal: {
+        en: 'Kobo land program',
+      },
+      currency: 'MWK',
+      languages: [LanguageEnum.en, LanguageEnum.nl],
+      fixedTransferValue: 20,
+      enableMaxPayments: true,
+      defaultMaxPayments: 5,
+    };
+
+    // Act
+    const createProgramResponse = await postProgram(program, accessToken);
+    const programId = createProgramResponse.body.id;
+    await postProgramFinancialServiceProviderConfiguration({
+      programId,
+      body: createProgramFspConfigurationSafaricomDto,
+      accessToken,
+    });
+    const extraProperyName = 'extraProperty';
+    console.log('🚀 ~ it.only ~ extraProperyName:', extraProperyName);
+    const registration = {
+      phoneNumber: '1234567890',
+      nationalId: '2345678',
+      fullName: 'John Doedoe',
+      [extraProperyName]: 'extraValue',
+    };
+
+    const result = await importRegistrations(
+      programId,
+      [registration],
+      accessToken,
+    );
+    console.log(result.body);
+    expect(result.status).toBe(HttpStatus.CREATED);
+
+    const programResponse = await getProgram(programId, accessToken);
+    const { programRegistrationAttributes } = programResponse.body;
+    console.log(
+      '🚀 ~ it.only ~ programRegistrationAttributes:',
+      programRegistrationAttributes,
+    );
+
+    const propExtra = programRegistrationAttributes.find(
+      (attr) => attr.name === extraProperyName,
+    );
+    expect(propExtra).toBeDefined();
+    expect(propExtra.type).toBe('text');
+    expect(propExtra.isRequired).toBe(false);
   });
 });

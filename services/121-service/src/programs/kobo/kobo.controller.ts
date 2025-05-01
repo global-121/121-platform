@@ -21,6 +21,7 @@ import {
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { KoboLinkFormResponseDto } from '@121-service/src/programs/kobo/dto/kobo-link-form-reponse.dto';
 import { KoboResponseDto } from '@121-service/src/programs/kobo/dto/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { LinkKoboDto } from '@121-service/src/programs/kobo/dto/link-kobo.dto';
@@ -39,6 +40,7 @@ export class KoboController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Kobo has been linked',
+    type: KoboLinkFormResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
