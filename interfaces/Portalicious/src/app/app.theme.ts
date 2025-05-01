@@ -207,6 +207,9 @@ const AppTheme = definePreset(Aura, {
           borderColor: colors.grey[700],
         },
       },
+      tabpanel: {
+        padding: '1rem 0',
+      },
     },
     toast: {
       colorScheme: {

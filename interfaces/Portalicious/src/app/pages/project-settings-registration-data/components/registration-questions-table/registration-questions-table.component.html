@@ -1,0 +1,69 @@
+<ng-template
+  #languageTable
+  let-language="language"
+>
+  @let attributes = projectAttributes.data() ?? [];
+  <p-table [value]="attributes">
+    <ng-template #header>
+      <tr>
+        <th i18n>Question</th>
+        <th i18n>Column name</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      #body
+      let-attribute
+    >
+      <tr>
+        <td>{{ attribute.name }}</td>
+        <td>{{ attribute.label[language] }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>
+
+@if (projectAttributes.isSuccess() && project.isSuccess()) {
+  @let languages = project.data().languages;
+
+  <p
+    i18n
+    class="mb-4"
+  >
+    Below are the {{ projectAttributes.data().length }} questions from the
+    integrated Kobo form. Please edit each column name to a shorter version that
+    will be displayed in the data table and on the profile page.
+  </p>
+
+  @if (languages.length > 1) {
+    <p-tabs [value]="languages[0]">
+      <p-tablist>
+        @for (language of languages; track language) {
+          <p-tab [value]="language">{{ language }}</p-tab>
+        }
+      </p-tablist>
+      <p-tabpanels>
+        @for (language of languages; track language) {
+          <p-tabpanel [value]="language">
+            <ng-container
+              *ngTemplateOutlet="
+                languageTable;
+                context: {
+                  language,
+                }
+              "
+            ></ng-container>
+          </p-tabpanel>
+        }
+      </p-tabpanels>
+    </p-tabs>
+  } @else {
+    <ng-container
+      *ngTemplateOutlet="
+        languageTable;
+        context: {
+          language: languages[0],
+        }
+      "
+    ></ng-container>
+  }
+}
