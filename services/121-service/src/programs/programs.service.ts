@@ -31,6 +31,7 @@ import {
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
@@ -549,6 +550,40 @@ export class ProgramService {
       programId,
       userId,
     );
+  }
+
+  public async createProgramAttributesIfNotExists(
+    registrationInput: ValidatedRegistrationInput[],
+    programId: number,
+  ): Promise<void> {
+    const programRegistrationAttributes =
+      await this.programRegistrationAttributeRepository.find({
+        where: { program: { id: Equal(programId) } },
+      });
+    const existingNames = programRegistrationAttributes.map((attr) => {
+      return attr.name;
+    });
+    const namesInRegistrationInput: string[] = [];
+    for (const row of registrationInput) {
+      const keys = Object.keys(row.data);
+      for (const key of keys) {
+        if (!namesInRegistrationInput.includes(key)) {
+          namesInRegistrationInput.push(key);
+        }
+      }
+    }
+
+    for (const name of namesInRegistrationInput) {
+      if (!existingNames.includes(name)) {
+        const newAttribute = new ProgramRegistrationAttributeEntity();
+        newAttribute.name = name;
+        newAttribute.type = RegistrationAttributeTypes.text;
+        newAttribute.label = {};
+        newAttribute.programId = programId;
+        newAttribute.isRequired = false;
+        await this.programRegistrationAttributeRepository.save(newAttribute);
+      }
+    }
   }
 
   public async getFundingWallet(programId: number) {

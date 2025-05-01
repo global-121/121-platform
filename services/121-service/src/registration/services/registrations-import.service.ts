@@ -143,6 +143,11 @@ export class RegistrationsImportService {
       program.id,
       userId,
     );
+    await this.programService.createProgramAttributesIfNotExists(
+      validatedImportRecords,
+      program.id,
+    );
+
     return await this.importValidatedRegistrations(
       validatedImportRecords,
       program,

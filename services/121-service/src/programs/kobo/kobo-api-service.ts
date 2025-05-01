@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { KoboFormResponse } from '@121-service/src/programs/kobo/dto/kobo-form-response.dto';
+import { KoboFormResponse } from '@121-service/src/programs/kobo/interfaces/kobo-form-response';
 import {
   KOBO_WEBHOOK_121_ENDPOINT,
   KOBO_WEBHOOK_SUBSET_FIELDS,
