@@ -14,6 +14,7 @@ import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-i
 import { KoboApiService } from '~/domains/kobo/kobo.api.service';
 import { ImportExcelTableButtonComponent } from '~/pages/project-settings-registration-data/components/import-excel-table-button/import-excel-table-button.component';
 import { IntegrateKoboButtonComponent } from '~/pages/project-settings-registration-data/components/integrate-kobo-button/integrate-kobo-button.component';
+import { RegistrationQuestionsTableComponent } from '~/pages/project-settings-registration-data/components/registration-questions-table/registration-questions-table.component';
 
 @Component({
   selector: 'app-project-settings-registration-data',
@@ -24,6 +25,7 @@ import { IntegrateKoboButtonComponent } from '~/pages/project-settings-registrat
     ImportExcelTableButtonComponent,
     SkeletonInlineComponent,
     CardWithLinkComponent,
+    RegistrationQuestionsTableComponent,
   ],
   templateUrl: './project-settings-registration-data.page.html',
   styles: ``,

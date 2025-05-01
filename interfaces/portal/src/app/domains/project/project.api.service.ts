@@ -140,7 +140,7 @@ export class ProjectApiService extends DomainApiService {
           );
           return {
             ...attribute,
-            label:
+            translatedLabel:
               translatedLabel ??
               (isGenericAttribute(attribute.name)
                 ? ATTRIBUTE_LABELS[attribute.name]
