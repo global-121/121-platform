@@ -40,6 +40,9 @@ export class ProjectSettingsRegistrationDataPageComponent {
 
   koboIntegration = injectQuery(() => ({
     ...this.koboApiService.getKoboIntegration(this.projectId)(),
+    // Without this attribute, any open popups will be closed when the user switches tabs
     retry: false,
+    // Without this attribute, any open popups will be closed when the user switches tabs
+    refetchOnWindowFocus: false,
   }));
 }
