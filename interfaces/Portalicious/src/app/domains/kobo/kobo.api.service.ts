@@ -44,6 +44,16 @@ export class KoboApiService extends DomainApiService {
     });
   }
 
+  importKoboSubmissions({ projectId }: { projectId: Signal<number | string> }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PUT',
+      endpoint: this.pathToQueryKey([
+        ...BASE_ENDPOINT(projectId),
+        'submissions',
+      ]).join('/'),
+    });
+  }
+
   public invalidateCache(projectId: Signal<number | string>): Promise<void> {
     return this.queryClient.invalidateQueries({
       queryKey: this.pathToQueryKey(BASE_ENDPOINT(projectId)),

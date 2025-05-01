@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   model,
@@ -110,16 +111,17 @@ export class IntegrateKoboButtonComponent {
         return;
       }
 
-      if (this.enableImportRegistrations()) {
-        // XXX: import registrations
-      }
-
-      this.formGroup.reset();
       this.toastService.showToast({
         detail: $localize`Kobo form successfully integrated.`,
       });
       void this.koboApiService.invalidateCache(this.projectId);
-      this.dialogVisible.set(false);
+
+      if (this.enableImportRegistrations()) {
+        this.importRegistrationsFromKoboMutation.mutate();
+        return;
+      }
+
+      this.closeDialog();
     },
     onError: (error) => {
       if (error instanceof HttpErrorResponse && Array.isArray(error.error)) {
@@ -133,6 +135,30 @@ export class IntegrateKoboButtonComponent {
       });
     },
   }));
+
+  importRegistrationsFromKoboMutation = injectMutation(() => ({
+    mutationFn: () =>
+      this.koboApiService.importKoboSubmissions({ projectId: this.projectId }),
+    onSuccess: () => {
+      this.toastService.showToast({
+        detail: $localize`Kobo submissions imported successfully.`,
+      });
+      void this.koboApiService.invalidateCache(this.projectId);
+      this.closeDialog();
+    },
+    onError: () => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: $localize`Error while importing Kobo submissions`,
+      });
+    },
+  }));
+
+  readonly isMutating = computed(
+    () =>
+      this.createKoboIntegrationMutation.isPending() ||
+      this.importRegistrationsFromKoboMutation.isPending(),
+  );
 
   onFormSubmit() {
     this.formGroup.markAllAsTouched();
@@ -149,5 +175,10 @@ export class IntegrateKoboButtonComponent {
 
   retryIntegration() {
     this.onFormSubmit();
+  }
+
+  closeDialog() {
+    this.formGroup.reset();
+    this.dialogVisible.set(false);
   }
 }

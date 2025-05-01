@@ -8,17 +8,15 @@
   </ng-container>
 </app-card-with-button>
 
-@if (creationErrors()) {
-  <p-dialog
-    #dialog
-    [closeOnEscape]="false"
-    styleClass="md:min-w-[46rem]"
-    [visible]="true"
-    (onVisibleChange)="creationErrors.set(undefined)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [closable]="false"
-  >
+<p-dialog
+  #dialog
+  [closeOnEscape]="false"
+  styleClass="md:min-w-[46rem]"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+>
+  @if (createKoboIntegrationMutation.isError()) {
     <ng-template pTemplate="header">
       <h3>
         <i class="pi pi-exclamation-triangle me-2"></i>
@@ -47,28 +45,65 @@
         outlined
         rounded
         severity="contrast"
-        [disabled]="createKoboIntegrationMutation.isPending()"
-        (click)="creationErrors.set(undefined); dialogVisible.set(false)"
+        [disabled]="isMutating()"
+        (click)="
+          dialogVisible.set(false);
+          creationErrors.set(undefined);
+          createKoboIntegrationMutation.reset()
+        "
       />
       <p-button
         label="Try Again"
         i18n-label
         rounded
-        [disabled]="createKoboIntegrationMutation.isPending()"
-        [loading]="createKoboIntegrationMutation.isPending()"
+        [disabled]="isMutating()"
+        [loading]="isMutating()"
         (click)="retryIntegration()"
       />
     </div>
-  </p-dialog>
-} @else {
-  <p-dialog
-    #dialog
-    [closeOnEscape]="false"
-    styleClass="md:min-w-[46rem]"
-    [(visible)]="dialogVisible"
-    [modal]="true"
-    [dismissableMask]="true"
-  >
+  } @else if (importRegistrationsFromKoboMutation.isError()) {
+    <ng-template pTemplate="header">
+      <h3>
+        <i class="pi pi-exclamation-triangle me-2"></i>
+        <ng-container i18n>Import failed</ng-container>
+      </h3>
+    </ng-template>
+
+    <div class="space-y-2">
+      <p i18n>
+        We couldn’t import the existing registration data from this form right
+        now.
+      </p>
+      <p i18n>
+        You can try again, or cancel this step and use the Import Registration
+        Data feature later in the registration page.
+      </p>
+      <p i18n>
+        To learn more about how to integrate Kobo forms see the 121 manual
+      </p>
+    </div>
+    <div class="mt-6 flex justify-end gap-x-2">
+      <p-button
+        label="Cancel"
+        i18n-label="@@generic-cancel"
+        outlined
+        rounded
+        severity="contrast"
+        [disabled]="isMutating()"
+        (click)="
+          dialogVisible.set(false); importRegistrationsFromKoboMutation.reset()
+        "
+      />
+      <p-button
+        label="Try Again"
+        i18n-label
+        rounded
+        [disabled]="isMutating()"
+        [loading]="isMutating()"
+        (click)="importRegistrationsFromKoboMutation.mutate()"
+      />
+    </div>
+  } @else {
     <ng-template pTemplate="header">
       <h3>
         <i class="pi pi-link me-2"></i>
@@ -133,15 +168,15 @@
             outlined
             rounded
             severity="contrast"
-            [disabled]="createKoboIntegrationMutation.isPending()"
+            [disabled]="isMutating()"
             (click)="dialogVisible.set(false)"
           />
           <p-button
             label="Continue"
             i18n-label="@@generic-continue"
             rounded
-            [disabled]="createKoboIntegrationMutation.isPending()"
-            [loading]="createKoboIntegrationMutation.isPending()"
+            [disabled]="isMutating()"
+            [loading]="isMutating()"
             type="submit"
           />
         </div>
@@ -170,19 +205,19 @@
             outlined
             rounded
             severity="contrast"
-            [disabled]="createKoboIntegrationMutation.isPending()"
+            [disabled]="isMutating()"
             (click)="dryRun.set(true)"
           />
           <p-button
             label="Integrate form"
             i18n-label
             rounded
-            [disabled]="createKoboIntegrationMutation.isPending()"
-            [loading]="createKoboIntegrationMutation.isPending()"
+            [disabled]="isMutating()"
+            [loading]="isMutating()"
             type="submit"
           />
         </div>
       }
     </form>
-  </p-dialog>
-}
+  }
+</p-dialog>
