@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { KoboFormResponse } from '@121-service/src/programs/kobo/dto/kobo-form-response.dto';
 import { KoboResponseDto } from '@121-service/src/programs/kobo/dto/kobo-response.dto';
 import { KoboWebhookIncomingSubmission } from '@121-service/src/programs/kobo/dto/kobo-webhook-incoming-submission.dto';
 import { KoboEntity } from '@121-service/src/programs/kobo/enitities/kobo.entity';
@@ -59,7 +60,7 @@ export class KoboService {
     koboUrl: string;
     programId: number;
     dryRun: boolean;
-  }): Promise<void> {
+  }): Promise<KoboFormResponse> {
     await this.throwIfProgramAlreadyHasKoboIntegration(programId);
 
     const koboInformation = await this.koboApiService.getKoboInformation(
@@ -74,7 +75,7 @@ export class KoboService {
     });
 
     if (dryRun) {
-      return;
+      return koboInformation;
     }
 
     await this.createWebhookIfNotExists({ koboUrl, koboToken, koboAssetId });
@@ -89,6 +90,8 @@ export class KoboService {
     });
 
     await this.koboFormService.processKoboSurvey(koboInformation, programId);
+
+    return koboInformation;
   }
 
   public async processKoboWebhookCall(
