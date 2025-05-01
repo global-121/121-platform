@@ -116,6 +116,23 @@
       For more information about how to integrate this FSP see manual.
     </p>
 
+    <app-form-field-wrapper
+      label="Display name"
+      i18n-label
+      [errorMessage]="
+        getPropertyErrorMessage(formGroups[fsp.name], {
+          name: 'displayName',
+          isRequired: true,
+        })
+      "
+    >
+      <input
+        pInputText
+        formControlName="displayName"
+        autocomplete="off"
+      />
+    </app-form-field-wrapper>
+
     @for (property of fsp.configurationProperties; track property.name) {
       <app-form-field-wrapper
         [label]="getPropertyLabel(property)"

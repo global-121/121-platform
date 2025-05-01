@@ -87,7 +87,7 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
     (acc, fsp) => ({
       ...acc,
       [fsp.name]: new FormGroup<Record<string, FormControl<string>>>(
-        fsp.configurationProperties.reduce<Record<string, FormControl<string>>>(
+        fsp.configurationProperties.reduce(
           (acc, property) => ({
             ...acc,
             [property.name]: new FormControl('', {
@@ -96,7 +96,13 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
               validators: property.isRequired ? [Validators.required] : [],
             }),
           }),
-          {},
+          {
+            displayName: new FormControl(fsp.defaultLabel.en ?? '', {
+              nonNullable: true,
+              // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+              validators: [Validators.required],
+            }),
+          },
         ),
       ),
     }),
@@ -125,7 +131,9 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
         this.projectId,
         {
           name: fspSettings.name,
-          label: fspSettings.defaultLabel,
+          label: {
+            en: formGroupData.displayName,
+          },
           isDefault: true,
           financialServiceProviderName: fspSettings.name,
           properties: fspSettings.configurationProperties
@@ -180,7 +188,7 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
       name,
       isRequired,
     }: {
-      name: FinancialServiceProviderConfigurationProperties;
+      name: 'displayName' | FinancialServiceProviderConfigurationProperties;
       isRequired: boolean;
     },
   ) {
