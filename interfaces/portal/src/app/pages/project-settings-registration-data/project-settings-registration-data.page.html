@@ -42,21 +42,6 @@
 
   @if (koboIntegration.data()) {
     <app-registration-questions-table [projectId]="projectId()" />
-
-    <p-card class="mt-4 block">
-      <h2
-        i18n
-        class="mb-4"
-      >
-        De-duplication
-      </h2>
-
-      <p i18n>
-        Select the questions you would like to use as duplication indicators.
-        Note that some FSPs may require unique fields.
-      </p>
-
-      <p i18n>Coming soon!</p>
-    </p-card>
+    <app-deduplication-attributes-table [projectId]="projectId()" />
   }
 </app-project-settings-page-layout>
