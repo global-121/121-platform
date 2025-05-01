@@ -64,12 +64,6 @@ Or run them in "headed" mode (you can see the browser)
 npm test -- --headed
 ```
 
-Or, for [Portalicious](../interfaces/Portalicious/)-specific tests:
-
-```shell
-npm run test:portalicious
-```
-
 ### Using the VS Code-extension
 
 Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
@@ -131,7 +125,6 @@ import { seedPaidRegistrations } from '@121-service/test/helpers/registration.he
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 import { test } from '@playwright/test';
-import englishTranslations from '@121-portal/src/assets/i18n/en.json';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -153,7 +146,7 @@ test('[27493] Navigate to programme', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme(NLRCProgram.titlePortal.en);
+    await homePage.navigateToProgramme('NLRC OCW Program');
   });
 });
 ```

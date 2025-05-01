@@ -1,11 +1,6 @@
 # Interfaces on the 121-platform
 
-- [Portal](./Portal/)  
-  Web-app used by the _Humanitarian Organization_ to manage their programs, aid-workers, communication, etc.
-
-  Primary target(s): Laptop/desktop
-
-- [Portal(icious)](./Portalicious/) 🚧
+- [Portal(icious)](./Portalicious/)
   Web-app used by the _Humanitarian Organization_ to manage their programs, aid-workers, communication, etc.
 
   Primary target(s): Laptop/desktop

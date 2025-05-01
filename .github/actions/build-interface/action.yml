@@ -8,35 +8,10 @@ inputs:
   interfacePath:
     description: Location of the interface's code. (relative to the repository-root)
     required: true
-  buildType:
-    description: Which build-command to use.
-    required: false
-    default: 'old-but-still-nice'
   envIcon:
     description: Base-64 encoded version/data-URL of the favicon.ico file.
     required: false
     default: ''
-  envIconPath:
-    description: Path of where the favicon.ico file should be saved.
-    required: false
-    default: 'src/favicon.ico'
-  envContentSecurityPolicyBase:
-    description: Value of a 'baseline' Content-Security-Policy to use. (all non-enviroment-specific) (All lines should end with a ";"!)
-    required: false
-    deprecationMessage: "Use only for the 'old' Portal. Portalicious will use the `build:deployment-configuration`-script."
-    default: >-
-      default-src 'self';
-      object-src 'none';
-      style-src 'self' 'unsafe-inline';
-      upgrade-insecure-requests;
-  envContentSecurityPolicy:
-    description: Value of the environment-specific Content-Security-Policy to __not override__, but __append to__ the base. (All lines should end with a ";"!)
-    required: false
-    deprecationMessage: "Use only for the 'old' Portal. Portalicious will use the `build:deployment-configuration`-script."
-    default: >-
-      connect-src 'self' https://*.121.global https://*.in.applicationinsights.azure.com https://westeurope.livediagnostics.monitor.azure.com https://login.microsoftonline.com;
-      form-action https://*.121.global;
-      frame-src blob: 'self';
 
 outputs:
   build_version:
@@ -69,7 +44,6 @@ runs:
       run: 'npm ci --no-fund --no-audit'
 
     - name: Re-use downloaded translations
-      if: inputs.buildType == 'portalicious'
       uses: actions/cache@v4
       id: cache_translations
       env:
@@ -79,7 +53,7 @@ runs:
         key: 'translations-${{ hashFiles(env.TRANSLATIONS_SOURCE_FILE) }}-${{ steps.build-version.outputs.date }}'
 
     - name: Download translations
-      if: inputs.buildType == 'portalicious' && steps.cache_translations.outputs.cache-hit != 'true'
+      if: steps.cache_translations.outputs.cache-hit != 'true'
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
@@ -95,10 +69,9 @@ runs:
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        echo "${{ inputs.envIcon }}" | sed 's/data:image\/.*;base64,//' | base64 --decode > ${{ inputs.envIconPath }}
+        echo "${{ inputs.envIcon }}" | sed 's/data:image\/.*;base64,//' | base64 --decode > src/assets/favicon.ico
 
-    - name: Build (Portalicious)
-      if: inputs.buildType == 'portalicious'
+    - name: Build Portal
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       env:
@@ -107,34 +80,11 @@ runs:
         echo "\n\n# This file should exist in Node v20, is optional in Node v22\n\n" >> .env
         npm run build:production
 
-    - name: Build (deprecated Portal)
-      if: inputs.buildType == 'old-but-still-nice'
-      shell: bash
-      working-directory: ${{ inputs.interfacePath }}
-      run: 'npm run build:prod'
-      env:
-        NG_PRODUCTION: 'true'
-        NG_ENV_NAME: ${{ env.NG_ENV_NAME }}
-        NG_URL_121_SERVICE_API: ${{ env.NG_URL_121_SERVICE_API }}
-        NG_TWILIO_ERROR_CODES_URL: 'https://www.twilio.com/docs/api/errors'
-        NG_AI_IKEY: ${{ env.NG_AI_IKEY }}
-        NG_AI_ENDPOINT: ${{ env.NG_AI_ENDPOINT }}
-        APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ env.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-
-    - name: Add/Override environment-specific Content-Security-Policy
-      if: inputs.envContentSecurityPolicy != ''
-      shell: bash
-      working-directory: ${{ inputs.interfacePath }}
-      run: |
-        jq --arg csp "$(echo -n "${{ inputs.envContentSecurityPolicyBase }} ${{ inputs.envContentSecurityPolicy }}" | sed "s/'/\\'/g")" '.globalHeaders["Content-Security-Policy"]=$csp' staticwebapp.config.json > staticwebapp.config.override.json
-        mv -f ./staticwebapp.config.override.json ./staticwebapp.config.json
-        cat ./staticwebapp.config.json
-
     - name: Add environment-specific icon in well-known location
       shell: bash
       working-directory: ${{ inputs.interfacePath }}
       run: |
-        cp ${{ inputs.envIconPath }} www/favicon.ico
+        cp src/assets/favicon.ico www/favicon.ico
 
     - name: Add VERSION to deployment
       id: version
