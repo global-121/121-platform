@@ -140,7 +140,7 @@ export class KoboService {
     await this.registrationsService.importRegistrationsFromJson(
       mappedKoboDataForImport,
       programId,
-      1, // Should use actual user id
+      1, // #TODO Should use actual user id
     );
   }
 

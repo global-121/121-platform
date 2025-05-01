@@ -13,6 +13,7 @@ import {
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class UpdateProgramDto {
@@ -123,4 +124,9 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
+
+  @ApiProperty({ example: '2020-05-23T18:25:43.511Z' })
+  @IsArray()
+  @IsOptional()
+  public languages?: LanguageEnum[];
 }

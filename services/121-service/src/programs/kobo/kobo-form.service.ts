@@ -9,6 +9,7 @@ import { KOBO_TO_121_TYPE_MAPPING } from '@121-service/src/programs/kobo/kobo-to
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 /**
@@ -35,19 +36,34 @@ export class KoboFormService {
       koboInformation.languages,
     );
 
+    const iso2Languages = koboInformation.languages.map((lang) =>
+      this.extractIsoCode(lang, 0),
+    );
+
     for (const item of koboInformation.survey) {
       await this.createUpdateProgramAttributeFromKoboItem({
         item,
         programId,
         optionsPerListName,
+        iso2Languages,
       });
     }
+    // Add languages to the languages of the program
+    const program = await this.programService.findProgramOrThrow(programId);
+
+    const combinedLanguages = [
+      ...new Set([...program.languages, ...iso2Languages]),
+    ];
+    await this.programService.updateProgram(programId, {
+      languages: combinedLanguages,
+    });
   }
 
   public async createUpdateProgramAttributeFromKoboItem({
     item,
     programId,
     optionsPerListName,
+    iso2Languages,
   }: {
     item: KoboSurveyItem;
     programId: number;
@@ -55,6 +71,7 @@ export class KoboFormService {
       string,
       { option: string; label: LocalizedString }[]
     >;
+    iso2Languages: LanguageEnum[];
   }): Promise<void> {
     const baseType = item.type.split(' ')[0];
 
@@ -67,7 +84,19 @@ export class KoboFormService {
     // Get the name - if it doesn't exist, use autoname as that is not set by the used in Kobo but automatically generated
     const name = item.name || item.$autoname;
 
-    const label = item.label?.length ? { en: item.label[0] } : { en: name };
+    const label = {};
+    if (!item.label || item.label?.length === 0) {
+      label['en'] = item.name;
+    } else {
+      for (const lang of iso2Languages) {
+        const index = iso2Languages.indexOf(lang);
+        if (index < item.label!.length) {
+          if (item.label![index]) {
+            label[lang] = item.label![index];
+          }
+        }
+      }
+    }
 
     const attributeDto: ProgramRegistrationAttributeDto = {
       name,
@@ -133,9 +162,9 @@ export class KoboFormService {
   private extractIsoCode(
     languageString: string,
     fallbackIndex: number,
-  ): string {
+  ): LanguageEnum {
     const isoMatch = languageString.match(/\(([a-z]{2})\)/i);
-    return isoMatch ? isoMatch[1] : `lang${fallbackIndex}`;
+    return (isoMatch ? isoMatch[1] : `lang${fallbackIndex}`) as LanguageEnum;
   }
 
   private transformChoiceToOption(
