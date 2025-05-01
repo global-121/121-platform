@@ -1814,6 +1814,15 @@
       <trans-unit id="remove-fsp" datatype="html">
         <source>Remove FSP</source>
       </trans-unit>
+      <trans-unit id="2409672154570643758" datatype="html">
+        <source>Display name</source>
+      </trans-unit>
+      <trans-unit id="4151726167516719564" datatype="html">
+        <source>Select 1 or more</source>
+      </trans-unit>
+      <trans-unit id="7799902377740606724" datatype="html">
+        <source>Select 1</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
