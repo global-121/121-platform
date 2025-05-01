@@ -20,6 +20,8 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
 
 import {
   FinancialServiceProviderConfigurationProperties,
@@ -59,6 +61,8 @@ import { genericFieldIsRequiredValidationMessage } from '~/utils/form-validation
     FormErrorComponent,
     FinancialServiceProviderConfigurationComponent,
     RouterLink,
+    MultiSelectModule,
+    SelectModule,
   ],
   templateUrl: './project-settings-financial-service-providers.page.html',
   styles: ``,
@@ -76,6 +80,7 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
   toastService = inject(ToastService);
 
   readonly financialServiceProviders = FINANCIAL_SERVICE_PROVIDER_SETTINGS;
+  FinancialServiceProviders = FinancialServiceProviders;
   AppRoutes = AppRoutes;
 
   readonly currentlyEditedFsp = model<FinancialServiceProviders | undefined>(
@@ -114,6 +119,12 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
       this.projectId,
     ),
   );
+  projectAttributes = injectQuery(
+    this.projectApiService.getProjectAttributes({
+      projectId: this.projectId,
+      includeProgramRegistrationAttributes: true,
+    }),
+  );
 
   createFinancialServiceProvidersConfiguration = injectMutation(() => ({
     mutationFn: async (formGroupData: Record<string, string | undefined>) => {
@@ -130,7 +141,7 @@ export class ProjectSettingsFinancialServiceProvidersPageComponent {
       return this.financialServiceProviderConfigurationApiService.createFinancialServiceProviderConfiguration(
         this.projectId,
         {
-          name: fspSettings.name,
+          name: formGroupData.displayName ?? fspSettings.name,
           label: {
             en: formGroupData.displayName,
           },

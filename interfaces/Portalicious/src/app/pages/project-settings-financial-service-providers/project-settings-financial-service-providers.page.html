@@ -65,7 +65,10 @@
 
         <div class="space-y-4">
           @for (fsp of financialServiceProviders; track fsp.name) {
-            @if (!hasFspConfiguration(fsp.name)) {
+            @if (
+              !hasFspConfiguration(fsp.name) ||
+              fsp.name === FinancialServiceProviders.excel
+            ) {
               <app-card-with-button
                 [title]="fsp.defaultLabel | translatableString"
                 (cardClicked)="currentlyEditedFsp.set(fsp.name)"
@@ -138,11 +141,35 @@
         [label]="getPropertyLabel(property)"
         [errorMessage]="getPropertyErrorMessage(formGroups[fsp.name], property)"
       >
-        <input
-          pInputText
-          [formControlName]="property.name"
-          autocomplete="off"
-        />
+        @if (property.name === 'columnsToExport') {
+          <p-multiselect
+            [options]="projectAttributes.data()"
+            [formControlName]="property.name"
+            [optionLabel]="'name'"
+            [optionValue]="'name'"
+            placeholder="Select 1 or more"
+            i18n-placeholder
+            [filter]="true"
+            [showClear]="false"
+          />
+        } @else if (property.name === 'columnToMatch') {
+          <p-select
+            [options]="projectAttributes.data()"
+            [formControlName]="property.name"
+            [optionLabel]="'name'"
+            [optionValue]="'name'"
+            placeholder="Select 1"
+            i18n-placeholder
+            [filter]="true"
+            [showClear]="false"
+          />
+        } @else {
+          <input
+            pInputText
+            [formControlName]="property.name"
+            autocomplete="off"
+          />
+        }
       </app-form-field-wrapper>
     }
   </app-form-sidebar>
