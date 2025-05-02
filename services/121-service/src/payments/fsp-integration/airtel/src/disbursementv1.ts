@@ -10,21 +10,19 @@ const API_BASE_URL = `${process.env.API_BASE_URL}`;
 const CLIENT_ID = `${process.env.CLIENT_ID}`;
 const CLIENT_SECRET = `${process.env.CLIENT_SECRET}`;
 const pin = `${process.env.ZAMBIA_DISBURSEMENT_PIN}`;
-const rsaPublicKeyForPinEncryptionV1 = `${process.env.PIN_RSA_ENCRYPTION_PUBLIC_KEY_V1}`;
+const rsaPublicKeyForPinEncryption = `${process.env.PIN_RSA_ENCRYPTION_PUBLIC_KEY_V1}`;
 // RSA encryption is relatively slow, so only do this encryption once per app-startup.
-const pinEncrypted = encryptPin(pin, rsaPublicKeyForPinEncryptionV1);
+const pinEncrypted = encryptPin(pin, rsaPublicKeyForPinEncryption);
 
 const example_body = {
   payee: {
     msisdn: '978980279', // Should be length 9
-    wallet_type: 'NORMAL',
   },
   reference: generateRandomId(),
   pin: pinEncrypted,
   transaction: {
     amount: 0.01,
     id: generateRandomId(),
-    type: 'B2C',
   },
 };
 
