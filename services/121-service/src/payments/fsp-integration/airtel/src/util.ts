@@ -89,6 +89,7 @@ export const postTransaction = async ({
 }): Promise<void> => {
   console.log({ url });
   const headers = {
+    Accept: '*/*',
     Authorization: `Bearer ${access_token}`,
     'X-Country': 'ZM',
     'X-Currency': 'ZMW',
