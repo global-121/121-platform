@@ -63,55 +63,6 @@ updates:
         update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
-    directory: '/interfaces/Portal'
-    schedule:
-      interval: monthly
-      day: tuesday
-    open-pull-requests-limit: 0
-    versioning-strategy: increase
-    groups:
-      development:
-        patterns:
-          - '@types/*'
-          - '*eslint*'
-          - '*prettier*'
-        exclude-patterns: ['@angular-eslint/*']
-      AzureMSAL:
-        patterns:
-          - '@azure/msal*'
-    ignore:
-      # Dependencies below are ordered alphabetically!
-      # Most/all Angular-related dependencies are ignored for all versions
-      - dependency-name: '@angular/*'
-      - dependency-name: '@angular-eslint/*'
-      - dependency-name: '@angular-devkit/*'
-      - dependency-name: '@ionic/angular'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@ionic/cli'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@ngx-translate/core'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@ngx-translate/http-loader'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@swimlane/ngx-datatable'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@types/*'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@typescript-eslint/*'
-        update-types: ['version-update:semver-major']
-      - dependency-name: core-js
-      - dependency-name: eslint
-        update-types: ['version-update:semver-major']
-      - dependency-name: karma
-      - dependency-name: tslib
-      - dependency-name: typescript
-        update-types: ['version-update:semver-major']
-      - dependency-name: rxjs
-        update-types:
-          ['version-update:semver-major', 'version-update:semver-minor']
-      - dependency-name: 'zone.js'
-
-  - package-ecosystem: npm
     directory: '/interfaces/Portalicious'
     schedule:
       interval: monthly

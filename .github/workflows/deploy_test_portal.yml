@@ -74,10 +74,7 @@ jobs:
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
         with:
           interfacePath: ${{ env.workingDirectory }}
-          buildType: 'portalicious'
           envIcon: ${{ env.NG_ENV_ICON }}
-          envIconPath: 'src/assets/favicon.ico'
-          envContentSecurityPolicy: '' # Not used for Portalicious, the `build:deployment-configuration`-script is used.
 
       # More information on Static Web App workflow configurations,
       # See: https://aka.ms/swaworkflowconfig
