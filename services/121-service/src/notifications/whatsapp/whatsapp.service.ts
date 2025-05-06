@@ -58,7 +58,7 @@ export class WhatsappService {
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
     userId: number;
-    firstAttempt?: boolean;
+    firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string> {
     const payload = {
       body: contentSid ? undefined : message,
@@ -102,10 +102,8 @@ export class WhatsappService {
     } catch (error) {
       if (error.code == 63021 && mediaUrl && firstAttempt) {
         firstAttempt = false;
-        // This is a bug that occur on twilio side where it sometimes randomly return error 63021 when sending a message with a mediaUrl
-        // We try here to send the message again
-        // This bug is further desrcibed in backlog item 34346
-        // We just retry the message here once
+        // Retry once due to Twilio bug (error 63021) that randomly occurs when sending messages with mediaUrl
+        // Reference: backlog item 34346
         return this.sendWhatsapp({
           message,
           contentSid,
