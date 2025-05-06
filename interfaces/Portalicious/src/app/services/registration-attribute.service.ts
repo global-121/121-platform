@@ -202,7 +202,7 @@ export class RegistrationAttributeService {
     );
 
     return projectAttributes.map((attribute) => {
-      const { isRequired, name, label, pattern, type } = attribute;
+      const { isRequired, name, translatedLabel, pattern, type } = attribute;
       const options = project.programRegistrationAttributes
         .find((a) => a.name === name)
         ?.options?.map((option) => ({
@@ -214,7 +214,7 @@ export class RegistrationAttributeService {
       return {
         isRequired,
         name,
-        label,
+        label: translatedLabel,
         pattern,
         options,
         value,

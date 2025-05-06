@@ -45,14 +45,35 @@ export class ProjectMenuComponent {
       }),
     },
     {
-      label: $localize`:@@page-title-project-team:Team`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectTeam}`,
+      label: $localize`Settings`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectSettings}`,
       styleClass: 'ms-auto',
-      icon: 'pi pi-users',
+      icon: 'pi pi-cog',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
         requiredPermission: PermissionEnum.AidWorkerProgramREAD,
       }),
+      children: [
+        {
+          label: $localize`Project settings`,
+          icon: 'pi pi-cog',
+          routerLink: [
+            '/',
+            AppRoutes.project,
+            this.projectId(),
+            AppRoutes.projectSettings,
+          ],
+        },
+        {
+          label: $localize`Project team`,
+          icon: 'pi pi-users',
+          routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectTeam}`,
+          visible: this.authService.hasPermission({
+            projectId: this.projectId(),
+            requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+          }),
+        },
+      ],
     },
   ]);
 }
