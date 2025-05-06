@@ -2,13 +2,21 @@ import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 
 import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
-function createMockTransaction(id: number, amount: number, status: string) {
+function createMockTransaction(
+  id: number,
+  amount: number,
+  status: TransactionStatusEnum,
+) {
   return {
+    id,
     registrationId: id,
+    registrationStatus: RegistrationStatusEnum.included,
     amount,
     status,
     created: new Date(),
@@ -17,13 +25,13 @@ function createMockTransaction(id: number, amount: number, status: string) {
     registrationProgramId: id + 100,
     referenceId: `REF-${id}`,
     errorMessage: null,
-    programFinancialServiceProviderConfigurationLabel: { en: 'Some FSP Label' },
+    programFinancialServiceProviderConfigurationName: 'Some FSP',
   };
 }
 
 const mockTransactions = [
-  createMockTransaction(101, 100, 'success'),
-  createMockTransaction(102, 200, 'success'),
+  createMockTransaction(101, 100, TransactionStatusEnum.success),
+  createMockTransaction(102, 200, TransactionStatusEnum.success),
 ];
 
 describe('PaymentsService - getTransactions', () => {
