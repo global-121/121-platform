@@ -272,7 +272,7 @@ describe('Manage financial service provider configurations', () => {
     expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(getResultConfig).not.toBeDefined();
     expect(
-      getTranactions.body[0].programFinancialServiceProviderConfigurationLabel,
+      getTranactions.body[0].programFinancialServiceProviderConfigurationName,
     ).toBe(null);
   });
 
