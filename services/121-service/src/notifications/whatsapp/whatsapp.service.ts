@@ -47,6 +47,7 @@ export class WhatsappService {
     messageProcessType,
     existingSidToUpdate,
     userId,
+    firstAttempt = true,
   }: {
     message?: string;
     contentSid?: string;
@@ -57,6 +58,7 @@ export class WhatsappService {
     messageProcessType?: MessageProcessType;
     existingSidToUpdate?: string;
     userId: number;
+    firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
   }): Promise<string> {
     const payload = {
       body: contentSid ? undefined : message,
@@ -98,6 +100,24 @@ export class WhatsappService {
       });
       return messageToStore.sid;
     } catch (error) {
+      if (error.code == 63021 && mediaUrl && firstAttempt) {
+        firstAttempt = false;
+        // Retry once due to Twilio bug (error 63021) that randomly occurs when sending messages with mediaUrl
+        // Reference: backlog item 34346
+        return this.sendWhatsapp({
+          message,
+          contentSid,
+          recipientPhoneNr,
+          mediaUrl,
+          registrationId,
+          messageContentType,
+          messageProcessType,
+          existingSidToUpdate,
+          userId,
+          firstAttempt,
+        });
+      }
+
       await this.storeSendWhatsapp({
         message: {
           accountSid: process.env.TWILIO_SID ?? '',
