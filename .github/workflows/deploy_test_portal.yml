@@ -3,7 +3,7 @@
 name: 'Deploy [test] Interface: Portal'
 
 env:
-  workingDirectory: interfaces/Portalicious
+  workingDirectory: interfaces/portal
 
 permissions:
   actions: read
@@ -24,14 +24,14 @@ on:
       - main
     paths:
       - '.github/workflows/deploy_test_portal.yml'
-      - 'interfaces/Portalicious/**'
+      - 'interfaces/portal/**'
       - '!*.md'
       - '!*.yml'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     paths:
       - '.github/workflows/deploy_test_portal.yml'
-      - 'interfaces/Portalicious/**'
+      - 'interfaces/portal/**'
       - '!*.md'
       - '!*.yml'
 

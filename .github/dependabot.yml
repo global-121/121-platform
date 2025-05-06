@@ -63,7 +63,7 @@ updates:
         update-types: ['version-update:semver-major']
 
   - package-ecosystem: npm
-    directory: '/interfaces/Portalicious'
+    directory: '/interfaces/portal'
     schedule:
       interval: monthly
       day: tuesday

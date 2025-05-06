@@ -3,7 +3,7 @@
 name: 'Deploy [Zambia] Interface: Portal'
 
 env:
-  workingDirectory: interfaces/Portalicious
+  workingDirectory: interfaces/portal
 
 permissions:
   actions: read
