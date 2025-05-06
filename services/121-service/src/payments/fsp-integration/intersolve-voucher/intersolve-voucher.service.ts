@@ -655,7 +655,8 @@ export class IntersolveVoucherService
         await this.intersolveVoucherScopedRepository.findOneOrFail({
           where: { id: Equal(options.intersolveVoucherId) },
         });
-      intersolveVoucher.send = true;
+      intersolveVoucher.send =
+        status === TransactionStatusEnum.success ? true : false;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     }
     const transactionResultDto = await this.createTransactionResult(
