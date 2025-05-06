@@ -6,12 +6,12 @@ import { Repository } from 'typeorm';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   ScopedQueryBuilder,
   ScopedRepository,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class TransactionScopedRepository extends ScopedRepository<TransactionEntity> {
   constructor(
@@ -44,30 +44,34 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     payment: number;
   }): Promise<
     {
+      id: number;
       created: Date;
       updated: Date;
       payment: number;
       registrationProgramId: number;
       referenceId: string;
       registrationId: number;
-      status: string;
+      status: TransactionStatusEnum;
+      registrationStatus: RegistrationStatusEnum;
       amount: number;
       errorMessage: string | null;
-      programFinancialServiceProviderConfigurationLabel: LocalizedString;
+      programFinancialServiceProviderConfigurationName: string;
     }[]
   > {
     const query = this.createQueryBuilder('transaction')
       .select([
+        'transaction.id AS "id"',
         'transaction.created AS "created"',
         'transaction.updated AS "updated"',
         'transaction.payment AS payment',
         'r."registrationProgramId"',
         'r."referenceId"',
         'r."id" as "registrationId"',
+        'r."registrationStatus"',
         'status',
         'amount',
         'transaction.errorMessage as "errorMessage"',
-        'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
+        'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
       ])
       .leftJoin(
         'transaction.programFinancialServiceProviderConfiguration',
