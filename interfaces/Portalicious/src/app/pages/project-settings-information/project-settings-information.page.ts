@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   input,
 } from '@angular/core';
@@ -11,7 +12,10 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
@@ -70,25 +74,41 @@ export class ProjectSettingsInformationPageComponent {
     },
   );
 
+  project = injectQuery(this.projectApiService.getProject(this.projectId));
+
+  updateFormGroup = effect(() => {
+    if (!this.project.isSuccess()) {
+      return;
+    }
+
+    this.formGroup.setValue({
+      name: this.project.data().titlePortal?.en ?? '',
+      description: this.project.data().description?.en ?? '',
+    });
+  });
+
   updateProjectMutation = injectMutation(() => ({
     mutationFn: async ({
       name,
       description,
-    }: ReturnType<ProjectSettingsInformationFormGroup['getRawValue']>) => {
-      console.log(name, description);
-
-      // XXX: do something with the name and description
-
-      return Promise.resolve(name);
-    },
-    onSuccess: async (result) => {
+    }: ReturnType<ProjectSettingsInformationFormGroup['getRawValue']>) =>
+      this.projectApiService.updateProject({
+        projectId: this.projectId,
+        projectPatch: {
+          titlePortal: {
+            en: name,
+          },
+          description: {
+            en: description,
+          },
+        },
+      }),
+    onSuccess: async () => {
       this.toastService.showToast({
         detail: $localize`Project updated successfully.`,
       });
 
       await this.projectApiService.invalidateCache();
-
-      console.log(result);
     },
     onError: (error) => {
       this.toastService.showToast({
