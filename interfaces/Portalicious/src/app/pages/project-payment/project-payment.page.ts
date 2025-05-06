@@ -32,10 +32,11 @@ import {
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
-import { PaymentMetricDetails } from '~/domains/metric/metric.model';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { PaymentAggregate } from '~/domains/payment/payment.model';
+import {
+  PaymentAggregate,
+  PaymentTransaction,
+} from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import {
@@ -85,19 +86,16 @@ export class ProjectPaymentPageComponent {
   private locale = inject(LOCALE_ID);
   private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
-  private metricApiService = inject(MetricApiService);
   private router = inject(Router);
   private toastService = inject(ToastService);
   private translatableStringService = inject(TranslatableStringService);
 
   readonly table =
-    viewChild.required<QueryTableComponent<PaymentMetricDetails, never>>(
-      'table',
-    );
+    viewChild.required<QueryTableComponent<PaymentTransaction, never>>('table');
   readonly retryTransfersDialog =
     viewChild.required<RetryTransfersDialogComponent>('retryTransfersDialog');
 
-  readonly contextMenuSelection = signal<PaymentMetricDetails | undefined>(
+  readonly contextMenuSelection = signal<PaymentTransaction | undefined>(
     undefined,
   );
 
@@ -106,7 +104,10 @@ export class ProjectPaymentPageComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
   payment = injectQuery(() => ({
-    ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
+    ...this.paymentApiService.getPayment({
+      projectId: this.projectId,
+      paymentId: this.paymentId,
+    })(),
     // Refetch the data every second if a payment count !== transactions count
     refetchInterval: this.refetchPayment() ? 1000 : undefined,
     success: (data: PaymentAggregate) => {
@@ -120,9 +121,9 @@ export class ProjectPaymentPageComponent {
   }));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   transactions = injectQuery(
-    this.metricApiService.getPaymentData({
+    this.paymentApiService.getPaymentTransactions({
       projectId: this.projectId,
-      payment: this.paymentId,
+      paymentId: this.paymentId,
     }),
   );
 
@@ -192,11 +193,12 @@ export class ProjectPaymentPageComponent {
     if (!this.project.isSuccess()) {
       return [];
     }
-    const projectPaymentColumns: QueryTableColumn<PaymentMetricDetails>[] = [
+    const projectPaymentColumns: QueryTableColumn<PaymentTransaction>[] = [
       {
-        field: 'id',
+        field: 'registrationProgramId',
         header: $localize`Reg. #`,
-        getCellText: (transaction) => `Reg. #${transaction.id.toString()}`,
+        getCellText: (transaction) =>
+          $localize`Reg. #` + transaction.registrationProgramId.toString(),
         getCellRouterLink: (transaction) =>
           registrationLink({
             projectId: this.projectId(),
@@ -204,7 +206,7 @@ export class ProjectPaymentPageComponent {
           }),
       },
       {
-        field: 'fullName',
+        field: 'registrationName',
         header: $localize`Name`,
         getCellRouterLink: (transaction) =>
           registrationLink({
@@ -250,7 +252,7 @@ export class ProjectPaymentPageComponent {
           ) ?? '',
       },
       {
-        field: 'financialserviceprovider',
+        field: 'programFinancialServiceProviderConfigurationName',
         header: $localize`FSP`,
         type: QueryTableColumnType.MULTISELECT,
         options: this.project
@@ -261,8 +263,13 @@ export class ProjectPaymentPageComponent {
           })),
       },
       {
-        field: 'timestamp',
-        header: $localize`Time and date`,
+        field: 'created',
+        header: $localize`Created`,
+        type: QueryTableColumnType.DATE,
+      },
+      {
+        field: 'updated',
+        header: $localize`Updated`,
         type: QueryTableColumnType.DATE,
       },
     ];

@@ -102,10 +102,11 @@
         (updateContextMenuItem)="contextMenuSelection.set($event)"
         [enableSelection]="true"
         [globalFilterFields]="[
-          'id',
-          'fullName',
+          'registrationProgramId',
+          'registrationName',
+          'status',
           'errorMessage',
-          'financialserviceprovider',
+          'programFinancialServiceProviderConfigurationName',
         ]"
       >
         <div
