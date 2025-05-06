@@ -30,18 +30,10 @@ Clone the repository and run local Docker environment following the general [ins
 
 ### Install E2E-test dependencies
 
-From the repository root-folder, move into this folder: `cd ./e2e/`
-
-Then, in _this_ folder, run:
+From the `./e2e`-folder, run:
 
 ```shell
-npm install
-```
-
-The, install Playwright Browsers(-drivers):
-
-```shell
-npx playwright install
+npm install && npx playwright install
 ```
 
 ### Set necessary Environment-variables
@@ -58,7 +50,7 @@ Run, from the repository-root: `npm run start:services`
 
 The interface(s) need to be run in _production_-mode.
 
-From the Portal/Portalicious-folder, run: `npm run start:debug-production`
+Run, from the repository-root: `npm run start:portalicious:e2e`
 
 ### Using the command-line
 

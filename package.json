@@ -14,6 +14,7 @@
     "start:services:appmap": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml --file=docker-compose.development-appmap.yml up --detach --build",
     "start:portal": "npm start --prefix interfaces/Portal/ -- --port=8888",
     "start:portalicious": "npm start --prefix interfaces/Portalicious/ -- --port=8888",
+    "start:portalicious:e2e": "npm run start:debug-production --prefix interfaces/Portalicious/ -- --port=8088",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:portal",
     "install:services": "cd services/ && docker compose --file=docker-compose.yml build",
     "install:portal": "npm ci --prefix=interfaces/Portal/",
