@@ -37,7 +37,7 @@
     "fix:mock-service": "npm run fix --prefix=services/mock-service",
     "fix:portal": "npm run fix:portalicious",
     "fix:portalicious": "npm run fix --prefix=interfaces/Portalicious/",
-    "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portal fix:portalicious",
+    "fix:all": "npx npm-run-all --npm-path npm --parallel fix:prettier fix:121-service fix:mock-service fix:portalicious",
     "tool:download-logs": "npm run download-logs --prefix=tools/",
     "tool:check-versions": "npm run check-versions --prefix=tools/",
     "prepare": "husky"
