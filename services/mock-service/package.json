@@ -26,7 +26,7 @@
     "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.1.0",
     "@nestjs/platform-express": "^11.1.0",
-    "@nestjs/swagger": "^11.1.6",
+    "@nestjs/swagger": "^11.2.0",
     "@nestjs/testing": "^11.1.0",
     "@types/uuid": "^10.0.0",
     "class-transformer": "^0.5.1",
