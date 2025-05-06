@@ -8,6 +8,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { UpdateProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
+import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import {
@@ -78,6 +79,20 @@ export class ProjectApiService extends DomainApiService {
 
         return project;
       },
+    });
+  }
+
+  updateProject({
+    projectId,
+    projectPatch,
+  }: {
+    projectId: Signal<number | string>;
+    projectPatch: Dto<UpdateProgramDto>;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'PATCH',
+      endpoint: `${BASE_ENDPOINT}/${projectId().toString()}`,
+      body: projectPatch,
     });
   }
 
