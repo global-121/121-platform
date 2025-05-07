@@ -71,6 +71,9 @@ graph LR
   PaymentsModule-->SafaricomModule
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
+  PaymentsModule-->AirtelModule
+  AirtelModule-->RedisModule
+  AirtelModule-->QueuesRegistryModule
   PaymentsModule-->NedbankModule
   PaymentsModule-->OnafriqModule
   OnafriqModule-->RedisModule
@@ -117,6 +120,7 @@ graph LR
   TransactionJobsModule-->RedisModule
   TransactionJobsModule-->IntersolveVisaModule
   TransactionJobsModule-->SafaricomModule
+  TransactionJobsModule-->AirtelModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
   TransactionJobsModule-->OnafriqModule

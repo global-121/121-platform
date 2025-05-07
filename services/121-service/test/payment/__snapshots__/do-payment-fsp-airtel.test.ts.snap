@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Do payment with FSP: Airtel should create a transaction with status error when we do a payment with an invalid phonenumber 1`] = `"Airtel Error: Mobile number entered is incorrect. (DP00900001012)"`;

@@ -66,6 +66,16 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
+    name: SeedScript.airtelProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'program-airtel.json',
+        messageTemplate: messageTemplateGeneric,
+      },
+    ],
+  },
+  {
     name: SeedScript.nedbankProgram,
     organization: 'organization-generic.json',
     programs: [
