@@ -2,13 +2,13 @@
 version: 2
 
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - directory: '/'
+    package-ecosystem: 'github-actions'
     schedule:
       interval: 'monthly'
 
-  - package-ecosystem: npm
-    directory: '/services/121-service'
+  - directory: '/services/121-service'
+    package-ecosystem: npm
     schedule:
       interval: monthly
       day: tuesday
@@ -37,8 +37,8 @@ updates:
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
-  - package-ecosystem: npm
-    directory: '/services/mock-service'
+  - directory: '/services/mock-service'
+    package-ecosystem: npm
     schedule:
       interval: monthly
       day: tuesday
@@ -62,8 +62,8 @@ updates:
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
-  - package-ecosystem: npm
-    directory: '/interfaces/Portalicious'
+  - directory: '/interfaces/Portalicious'
+    package-ecosystem: npm
     schedule:
       interval: monthly
       day: tuesday
@@ -105,8 +105,8 @@ updates:
       - dependency-name: 'primeng'
         update-types: ['version-update:semver-major']
 
-  - package-ecosystem: npm
-    directory: '/e2e'
+  - directory: '/e2e'
+    package-ecosystem: npm
     schedule:
       interval: monthly
       day: tuesday
@@ -121,8 +121,8 @@ updates:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
 
-  - package-ecosystem: npm
-    directory: '/k6'
+  - directory: '/k6'
+    package-ecosystem: npm
     schedule:
       interval: monthly
       day: tuesday
