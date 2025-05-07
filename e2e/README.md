@@ -49,7 +49,7 @@ Run, from the repository-root: `npm run start:services`
 
 The interface(s) need to be run in _production_-mode.
 
-Run, from the repository-root: `npm run start:portalicious:e2e`
+Run, from the repository-root: `npm run start:portal:e2e`
 
 ### Using the command-line
 

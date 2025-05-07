@@ -20,7 +20,7 @@ Static analysis, formatting, code-style, functionality, integration, etc:
 - [![Test: Workflows](https://github.com/global-121/121-platform/actions/workflows/test_workflows.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_workflows.yml)
 - [![Test: Formatting](https://github.com/global-121/121-platform/actions/workflows/test_formatting.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_formatting.yml)
 - [![Test: Code scanning with CodeQL](https://github.com/global-121/121-platform/actions/workflows/test_codeql-analysis.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_codeql-analysis.yml)
-- [![Test Interface: Portalicious](https://github.com/global-121/121-platform/actions/workflows/test_interface_portalicious.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portalicious.yml)
+- [![Test Interface: Portal](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_interface_portal.yml)
 - [![Test Mock-Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_mock-service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_mock-service_code.yml)
 - [![Test Service: Code](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_code.yml)
 - [![Test Service: API Integration](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml/badge.svg)](https://github.com/global-121/121-platform/actions/workflows/test_service_api.yml)
@@ -354,7 +354,7 @@ This is how we create and publish a new release of the 121-platform.
   Check any changes to:
   - `services/.env.example`:  
      If there are, then make any configuration changes to the staging-service(_Or Mock-Service_) in the Azure Portal, relating to new/changed/removed `ENV`-variables, changed default values, etc.
-  - `interfaces/Portalicious/.env.example`  
+  - `interfaces/portal/.env.example`  
      If there are, then make any configuration changes to the ["staging"-environment settings on GitHub](https://github.com/global-121/121-platform/settings/environments/1000830806/edit).
 - Define the [`version`](#glossary)-name for the upcoming release.
 - "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub

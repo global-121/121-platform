@@ -3,7 +3,7 @@
 name: 'Deploy [Eswatini] Interface: Portal'
 
 env:
-  workingDirectory: interfaces/Portalicious
+  workingDirectory: interfaces/portal
 
 permissions:
   actions: read

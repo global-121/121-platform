@@ -23,6 +23,7 @@ yarn-error.log
 
 # Visual Studio Code
 .history/*
+!.vscode/tailwind.json
 
 # Miscellaneous
 /.angular/cache
