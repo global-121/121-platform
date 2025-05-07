@@ -3,7 +3,7 @@
 name: 'Deploy [Help a Child] Interface: Portal'
 
 env:
-  workingDirectory: interfaces/Portal
+  workingDirectory: interfaces/portal
 
 permissions:
   actions: read
