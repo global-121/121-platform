@@ -262,23 +262,23 @@ export class RegistrationAttributeService {
           const projectSpecificAttributes =
             await this.getProjectSpecificAttributes(project, registration);
 
+          const allNameFields = project.fullnameNamingConvention
+            ? this.translatableStringService.commaSeparatedList(
+                project.fullnameNamingConvention.map((namingConvention) =>
+                  this.localizeAttribute({
+                    attributes: projectSpecificAttributes,
+                    attributeName: namingConvention,
+                  }),
+                ),
+                'long',
+              )
+            : '';
+
           return [
             {
               name: 'name',
               label: $localize`:@@registration-full-name:Name`,
-              editInfo:
-                $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ` +
-                (project.fullnameNamingConvention
-                  ? this.translatableStringService.commaSeparatedList(
-                      project.fullnameNamingConvention.map((namingConvention) =>
-                        this.localizeAttribute({
-                          attributes: projectSpecificAttributes,
-                          attributeName: namingConvention,
-                        }),
-                      ),
-                      'long',
-                    )
-                  : ''),
+              editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`,
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
             },

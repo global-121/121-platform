@@ -1229,7 +1229,7 @@
         <source>New FSP</source>
       </trans-unit>
       <trans-unit id="registration-full-name-edit-info" datatype="html">
-        <source>This field is dynamically generated based on the other name fields available below:</source>
+        <source>This field is dynamically generated based on the other name fields available below: <x equiv-text="allNameFields" id="allNameFields"/></source>
       </trans-unit>
       <trans-unit id="1545261806462361427" datatype="html">
         <source>Value does not match the required pattern: <x equiv-text="attribute.pattern" id="PH"/></source>
