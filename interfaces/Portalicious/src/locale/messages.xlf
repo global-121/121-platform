@@ -893,16 +893,10 @@
         <source>I understand this action can not be undone.</source>
       </trans-unit>
       <trans-unit id="change-status-include-warning" datatype="html">
-        <source>The action &quot;Include&quot; can only be applied to registrations that do not have status &quot;Included&quot; and whose “Payments left” is larger than 0. Registrations with 0 payments left will remain with their current status.</source>
-      </trans-unit>
-      <trans-unit id="276843485197819536" datatype="html">
-        <source>Select registrations with the status “included” and try again.</source>
+        <source>The action &quot;Include&quot; can only be applied to registrations that do not have status &quot;Included&quot; and whose “Payments left” is larger than 0.</source>
       </trans-unit>
       <trans-unit id="3302381073867974185" datatype="html">
         <source><x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>This action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/><x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> Are you sure you want to delete these registrations?</source>
-      </trans-unit>
-      <trans-unit id="3523288603730580118" datatype="html">
-        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
       </trans-unit>
       <trans-unit id="3626484707935812949" datatype="html">
         <source>0 selected registrations support this action.</source>
@@ -911,37 +905,22 @@
         <source>Would you like to proceed with <x equiv-text="{{ changeStatusMutation.data()?.applicableCount }}" id="INTERPOLATION"/> registration(s)?</source>
       </trans-unit>
       <trans-unit id="change-status-pause-warning" datatype="html">
-        <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status. Registrations with other statuses will remain with their current status.</source>
-      </trans-unit>
-      <trans-unit id="4547875681494013767" datatype="html">
-        <source>This action can not be applied to the registrations you have selected.</source>
-      </trans-unit>
-      <trans-unit id="change-status-delete-warning" datatype="html">
-        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status. Registrations with “completed” status will remain with their current status.</source>
-      </trans-unit>
-      <trans-unit id="5209857233936409392" datatype="html">
         <source>The action &quot;Pause&quot; can only be applied to registrations with the &quot;Included&quot; status.</source>
       </trans-unit>
-      <trans-unit id="6345542796169013745" datatype="html">
-        <source>Select registrations who&apos;s “Payments left” is larger than 0 and try again.</source>
+      <trans-unit id="change-status-delete-warning" datatype="html">
+        <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
       </trans-unit>
       <trans-unit id="change-status-validate-warning" datatype="html">
-        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status. Registrations with other statuses will remain with their current status.</source>
-      </trans-unit>
-      <trans-unit id="652725573989033199" datatype="html">
         <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status.</source>
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
-        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status. Registrations with the “Completed” status will remain with their current status.</source>
+        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status.</source>
       </trans-unit>
       <trans-unit id="6369488977592373957" datatype="html">
         <source>This means that they will not be included in payments.</source>
       </trans-unit>
       <trans-unit id="generic-warning" datatype="html">
         <source>Warning</source>
-      </trans-unit>
-      <trans-unit id="684272908201420787" datatype="html">
-        <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
       </trans-unit>
       <trans-unit id="561353031255604069" datatype="html">
         <source>There are <x equiv-text="{{ changeStatusMutation.data()?.nonApplicableCount }}" id="INTERPOLATION"/> registration(s) that don&apos;t support this action</source>
@@ -951,18 +930,6 @@
       </trans-unit>
       <trans-unit id="7483364924749111553" datatype="html">
         <source>They will not be included in payments.</source>
-      </trans-unit>
-      <trans-unit id="7582384076029482676" datatype="html">
-        <source>Select registrations with other status and try again.</source>
-      </trans-unit>
-      <trans-unit id="8563473409467586384" datatype="html">
-        <source>Select registrations with another status and try again.</source>
-      </trans-unit>
-      <trans-unit id="8668090925608056170" datatype="html">
-        <source>The action &quot;Include&quot; can only be applied to registrations who&apos;s “Payments left” is larger than 0.</source>
-      </trans-unit>
-      <trans-unit id="8967125351109863286" datatype="html">
-        <source>Select registrations with the status “Registered” and try again.</source>
       </trans-unit>
       <trans-unit id="6828231165009897209" datatype="html">
         <source>You must select this to proceed.</source>
@@ -1597,6 +1564,15 @@
       </trans-unit>
       <trans-unit id="7239750919884229270" datatype="html">
         <source>Updated</source>
+      </trans-unit>
+      <trans-unit id="1850330008029608959" datatype="html">
+        <source>Select registrations that support this action, and try again.</source>
+      </trans-unit>
+      <trans-unit id="8735352957921555136" datatype="html">
+        <source>Registrations that do not support this action will remain in their current status.</source>
+      </trans-unit>
+      <trans-unit id="change-status-default-warning" datatype="html">
+        <source>This action can not be applied to registrations you have selected.</source>
       </trans-unit>
     </body>
   </file>
