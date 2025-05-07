@@ -14,7 +14,7 @@ class ConfirmationDialogComponent {
   async getHeader(): Promise<string> {
     const header = this.dialog.locator('h3');
     await header.waitFor({ state: 'visible' });
-    return (await header.textContent())?.trim() || '';
+    return (await header.textContent())?.trim() ?? '';
   }
 
   async hasIcon(iconClass: string): Promise<boolean> {

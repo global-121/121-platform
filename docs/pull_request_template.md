@@ -1,4 +1,4 @@
-AB#XXXX <!--- Replace this with a reference to a devops issue -->
+AB#XXXX <!--- Replace this with a reference to a DevOps/backlog-issue -->
 
 ## Describe your changes
 
@@ -7,12 +7,12 @@ AB#XXXX <!--- Replace this with a reference to a devops issue -->
 ## Checklist before requesting a code review
 
 - [ ] I have performed a self-review of my code
-- [ ] I have added tests for my changes, or adding tests is unnecessary/irrelevant
-- [ ] I have asked the design team to review these changes, or the changes do not touch the UI/UX
+- [ ] I have added tests for my changes, or: Adding tests is unnecessary/irrelevant
+- [ ] I have asked the design team to review these changes, or: The changes do not touch the UI/UX
 - [ ] I have made sure that all automated checks pass before requesting a review
 - [ ] I do not need any deviation from our PR guidelines
 
-## Portalicious preview deployment
+## Portal preview-deployment
 
 <!--- Do not remove this block. It will be replaced automatically by a GitHub action if a deployment is made -->
 

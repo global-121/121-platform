@@ -56,7 +56,7 @@ jobs:
         run: |
           docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
 
-      - name: Start Portalicious
+      - name: Run Portalicious
         working-directory: ./interfaces/Portalicious
         env:
           NG_PRODUCTION: true
@@ -65,7 +65,7 @@ jobs:
         run: |
           npm ci --no-fund --no-audit
           cp .env.example .env
-          npm run start:debug-production > portalicious-server-logs.txt 2>&1 &
+          npm run start:debug-production > run-portal-logs.txt 2>&1 &
 
       - name: Install 121-Service dependencies
         # This step is necessary because the tests run functions in this folder
@@ -85,9 +85,9 @@ jobs:
       - name: Run E2E-Tests with Playwright
         working-directory: ${{ env.e2eTestsPath }}
         env:
-          BASE_URL_PORTALICIOUS: http://localhost:8088
+          BASE_URL: http://localhost:8088
         run: |
-          npm run test:portalicious
+          npm test
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -95,12 +95,12 @@ jobs:
           name: test-result-artifacts
           path: |
             ${{ env.e2eTestsPath }}/test-results/
-            ./interfaces/Portalicious/portalicious-server-logs.txt
+            ./interfaces/Portalicious/run-portal-logs.txt
 
       - name: Portalicious logs
         if: always()
         shell: bash
-        run: cat ./interfaces/Portalicious/portalicious-server-logs.txt
+        run: cat ./interfaces/Portalicious/run-portal-logs.txt
 
       - name: Docker logs
         if: always()
