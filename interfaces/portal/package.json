@@ -1,5 +1,5 @@
 {
-  "name": "portalicious",
+  "name": "portal",
   "scripts": {
     "ng": "ng",
     "postinstall": "cd ../../services/121-service && npm run install:dependencies-for-portal",

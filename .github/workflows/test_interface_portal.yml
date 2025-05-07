@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test Interface: Portalicious'
+name: 'Test Interface: Portal'
 
 on:
   workflow_dispatch:
@@ -8,12 +8,12 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - '.github/workflows/test_interface_portalicious.yml'
-      - 'interfaces/Portalicious/**'
+      - '.github/workflows/test_interface_portal.yml'
+      - 'interfaces/portal/**'
       - 'services/121-service/**' # 121-service's code is imported/used
 
 env:
-  interfacePath: 'interfaces/Portalicious'
+  interfacePath: 'interfaces/portal'
 
 jobs:
   test:

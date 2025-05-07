@@ -69,7 +69,7 @@ updates:
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
 
-  - directory: '/interfaces/Portalicious'
+  - directory: '/interfaces/portal'
     package-ecosystem: npm
     schedule:
       interval: monthly
