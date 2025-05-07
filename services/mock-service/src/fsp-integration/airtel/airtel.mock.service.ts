@@ -37,6 +37,12 @@ const decryptPinV1 = (encryptedPin: string, privateKey: string): string => {
   return decrypted.toString('utf8');
 };
 
+const getDecimalPlaces = (number: number): number => {
+  const asString = number.toString();
+  if (!asString.includes('.')) return 0;
+  return asString.split('.')[1].length;
+};
+
 @Injectable()
 export class AirtelMockService {
   public async getAccessToken(
@@ -189,7 +195,7 @@ export class AirtelMockService {
     // Superfluous zeroes at end of number are not saved by JavaScript.
     // let a = 1.2000; // a = 1.2
     // So 1.2000 as amount will not trigger this error.
-    const decimalPlaces = amount.toString().split('.')[1].length;
+    const decimalPlaces = getDecimalPlaces(amount);
     if (decimalPlaces > 3) return invalidAmount;
 
     // pin
