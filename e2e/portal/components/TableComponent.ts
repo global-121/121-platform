@@ -17,6 +17,7 @@ class TableComponent {
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
+  readonly continueToPreviewButton: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
   readonly rangeDropdown: Locator;
@@ -46,6 +47,9 @@ class TableComponent {
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.continueToPreviewButton = this.page.getByRole('button', {
+      name: 'Continue to preview',
+    });
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
     this.rangeDropdown = this.page
@@ -320,6 +324,35 @@ class TableComponent {
     if (await placeholder.isVisible()) {
       await placeholder.fill('Test reason');
     }
+    await this.approveButton.click();
+  }
+
+  async fillCustomMessage(message: string) {
+    await this.page.getByLabel('Send a message to').check();
+    await this.page.locator('textarea').click();
+    await this.page.locator('textarea').fill(message);
+  }
+
+  async changeRegistrationStatusWithCustomMessage({
+    status,
+    message,
+  }: {
+    status: string;
+    message: string;
+  }) {
+    const firstCheckbox = this.checkbox.nth(1);
+    const statusButton = this.page.getByRole('button', { name: status });
+    const placeholder = this.page.getByPlaceholder('Enter reason');
+
+    await firstCheckbox.click();
+    await statusButton.click();
+    // Condition for when reason is required
+    if (await placeholder.isVisible()) {
+      await placeholder.fill('Test reason');
+      await this.fillCustomMessage('Test message');
+    }
+    await this.fillCustomMessage(message);
+    await this.continueToPreviewButton.click();
     await this.approveButton.click();
   }
 
