@@ -24,9 +24,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportDetailsQueryParamsDto } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
-import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
-import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
@@ -152,28 +150,6 @@ export class MetricsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
-  @ApiOperation({
-    summary: '[SCOPED] Get payments with state sums by program-id',
-  })
-  @ApiParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Payment state sums to create bar charts to show the number of new vs existing PAs per installmet - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/metrics/payment-state-sums')
-  public async getPaymentsWithStateSums(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<PaymentStateSumDto[]> {
-    return await this.metricsService.getPaymentsWithStateSums(programId);
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
@@ -186,21 +162,5 @@ export class MetricsController {
     programId: number,
   ): Promise<ProgramStats> {
     return await this.metricsService.getProgramStats(programId);
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
-  @ApiParam({ name: 'programId', required: true })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/metrics/registration-status')
-  public async getRegistrationStatusStats(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<RegistrationStatusStats[]> {
-    return await this.metricsService.getRegistrationStatusStats(programId);
   }
 }

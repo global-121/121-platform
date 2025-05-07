@@ -681,18 +681,6 @@ export async function getEvents(
     .send();
 }
 
-export async function getRegistrationEvents(
-  programId: number,
-  registrationId: number,
-): Promise<any> {
-  const accessToken = await getAccessToken();
-
-  return getServer()
-    .get(`/programs/${programId}/registrations/${registrationId}/events`)
-    .set('Cookie', [accessToken])
-    .send();
-}
-
 export async function getImportRegistrationsTemplate(
   programId: number,
 ): Promise<any> {

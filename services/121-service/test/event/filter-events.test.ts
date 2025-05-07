@@ -6,9 +6,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   getEvents,
-  getRegistrationEvents,
   importRegistrations,
-  searchRegistrationByReferenceId,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -36,77 +34,6 @@ describe('Get events', () => {
       [registrationVisa, secondRegistration],
       accessToken,
     );
-  });
-
-  it('should get registration events by registrationId', async () => {
-    // Arrange
-    const reason = 'automated test';
-    const updatePhoneNumberDto = {
-      phoneNumber: updatePhoneNumber,
-    };
-    const updateAdressStreetDto = {
-      addressStreet: 'updated street',
-    };
-    const expectedAttributesObject = {
-      oldValue:
-        registrationVisa[DefaultRegistrationDataAttributeNames.phoneNumber],
-      newValue: updatePhoneNumber,
-      fieldName: DefaultRegistrationDataAttributeNames.phoneNumber,
-      reason,
-    };
-
-    // Act
-
-    // Update a 'regular' question/attribute
-    await updateRegistration(
-      programIdOcw,
-      registrationVisa.referenceId,
-      updatePhoneNumberDto,
-      reason,
-      accessToken,
-    );
-    // Also update an FSP attribute
-    await updateRegistration(
-      programIdOcw,
-      registrationVisa.referenceId,
-      updateAdressStreetDto,
-      reason,
-      accessToken,
-    );
-    await updateRegistration(
-      programIdOcw,
-      secondRegistration.referenceId,
-      updatePhoneNumberDto,
-      reason,
-      accessToken,
-    );
-    const result = await searchRegistrationByReferenceId(
-      registrationVisa.referenceId,
-      programIdOcw,
-      accessToken,
-    );
-    const registration = result.body.data[0];
-
-    const eventsResult = await getRegistrationEvents(
-      programIdOcw,
-      registration.id,
-    );
-
-    // Assert
-    expect(eventsResult.statusCode).toBe(HttpStatus.OK);
-    expect(eventsResult.body.length).toBe(3); // Two data changes and one status change
-    expect(
-      eventsResult.body.some(
-        (event) => event.type === EventEnum.registrationDataChange,
-      ),
-    ).toBe(true);
-    const event = eventsResult.body.find(
-      (event) =>
-        event.type === EventEnum.registrationDataChange &&
-        event.attributes.fieldName ===
-          DefaultRegistrationDataAttributeNames.phoneNumber,
-    );
-    expect(event.attributes).toEqual(expectedAttributesObject);
   });
 
   it('should get program events with date parameters', async () => {

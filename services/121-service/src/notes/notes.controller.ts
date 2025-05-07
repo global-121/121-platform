@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -13,8 +12,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { CreateNoteDto } from '@121-service/src/notes/dto/note.dto';
-import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
+import { CreateNoteDto } from '@121-service/src/notes/dto/create-note.dto';
 import { NotesService } from '@121-service/src/notes/notes.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -61,24 +59,5 @@ export class NoteController {
       userId,
       programId,
     );
-  }
-
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get notes for registration' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Retrieved notes for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-    type: [ResponseNoteDto],
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Get(':programId/registrations/:referenceId/notes')
-  public async retrieveNotes(
-    @Param('programId', ParseIntPipe) programId: number,
-    @Param('referenceId') referenceId: string,
-  ): Promise<ResponseNoteDto[]> {
-    // TODO: REFACTOR: Should return the user as a nested object in the response, see e.g.: GET /api/programs/{programId}/actions
-    return await this.notesService.retrieveNotes(referenceId, programId);
   }
 }
