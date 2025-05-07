@@ -7,6 +7,13 @@ updates:
     schedule:
       interval: 'monthly'
 
+  - directory: '/'
+    package-ecosystem: 'npm'
+    schedule:
+      interval: 'monthly'
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+
   - directory: '/services/121-service'
     package-ecosystem: npm
     schedule:
