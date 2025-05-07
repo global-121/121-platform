@@ -9,7 +9,7 @@ const rsaKeyToPem = (key: string): string => {
   return formattedKey;
 };
 
-export const encryptPin = (data: string, base64PublicKey: string): string => {
+export const encryptPinV1 = (data: string, base64PublicKey: string): string => {
   const publicKey = rsaKeyToPem(base64PublicKey);
   const encrypted = publicEncrypt(
     {
