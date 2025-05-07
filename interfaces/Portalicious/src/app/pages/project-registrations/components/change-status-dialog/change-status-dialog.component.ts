@@ -118,6 +118,22 @@ export class ChangeStatusDialogComponent
     }
     return REGISTRATION_STATUS_VERB[status];
   });
+  readonly changeStatusWarningMessage = computed(() => {
+    switch (this.status()) {
+      case RegistrationStatusEnum.validated:
+        return $localize`:@@change-status-validate-warning:The action "Validate" can only be applied to registrations with the "Registered" status.`;
+      case RegistrationStatusEnum.included:
+        return $localize`:@@change-status-include-warning:The action "Include" can only be applied to registrations that do not have status "Included" and whose “Payments left” is larger than 0.`;
+      case RegistrationStatusEnum.paused:
+        return $localize`:@@change-status-pause-warning:The action "Pause" can only be applied to registrations with the "Included" status.`;
+      case RegistrationStatusEnum.declined:
+        return $localize`:@@change-status-decline-warning:The action "Decline" can not be applied to registrations with the "Declined" or "Completed" status.`;
+      case RegistrationStatusEnum.deleted:
+        return $localize`:@@change-status-delete-warning:The action "Delete" can not be applied to registrations with the "Completed" status.`;
+      default:
+        return $localize`:@@change-status-default-warning:This action can not be applied to registrations you have selected.`;
+    }
+  });
   readonly canSendMessage = computed(() => {
     const status = this.status();
     if (!status) {
