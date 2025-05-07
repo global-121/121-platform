@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 import { publicEncrypt } from 'node:crypto';
 const { constants } = await import('node:crypto');
 
-const rsaKeyToPem = (key: string): string => {
+const rsaPublicKeyToPem = (key: string): string => {
   const formattedKey = `-----BEGIN PUBLIC KEY-----\n${key
     .match(/.{1,64}/g)
     ?.join('\n')}\n-----END PUBLIC KEY-----`;
@@ -10,7 +10,7 @@ const rsaKeyToPem = (key: string): string => {
 };
 
 export const encryptPinV1 = (data: string, base64PublicKey: string): string => {
-  const publicKey = rsaKeyToPem(base64PublicKey);
+  const publicKey = rsaPublicKeyToPem(base64PublicKey);
   const encrypted = publicEncrypt(
     {
       key: publicKey,
