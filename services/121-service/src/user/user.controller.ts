@@ -145,7 +145,7 @@ export class UserController {
     return await this.userService.deleteUserRole(userRoleId);
   }
 
-  @AuthenticatedUser({ isAdmin: true })
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('users')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
