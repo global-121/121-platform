@@ -49,5 +49,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "exclude": ["node_modules", "www"]
+  "exclude": ["node_modules", "www", "coverage"]
 }
