@@ -39,11 +39,17 @@ test('[35840] Change status of registration with custom message', async ({
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act
-  await test.step('Change status of first selected registration to "Declined"', async () => {
+  await test.step('Change status of first selected registration and write a custom message', async () => {
     await tableComponent.changeRegistrationStatusWithCustomMessage({
       status: 'Decline',
       message: 'Test custom message to change the status of registration',
     });
     await registrations.validateToastMessageAndClose(toastMessage);
+  });
+
+  await test.step('Check for custom message', async () => {
+    await registrations.goToRegistrationByName({
+      registrationName: registrationPV5.fullName,
+    });
   });
 });
