@@ -577,3 +577,85 @@ export async function removeDeprecatedImageCodes({
     .set('Cookie', [accessToken])
     .send(body);
 }
+
+export async function linkKoboForm({
+  programId,
+  linkKoboDto,
+  accessToken,
+  dryRun = false,
+}: {
+  programId: number;
+  linkKoboDto: {
+    koboToken?: string;
+    koboAssetId?: string;
+    koboUrl?: string;
+  };
+  accessToken: string;
+  dryRun: boolean;
+}): Promise<request.Response> {
+  const queryParams = {};
+
+  queryParams['dryRun'] = dryRun;
+
+  return await getServer()
+    .post(`/programs/${programId}/kobo`)
+    .set('Cookie', [accessToken])
+    .query(queryParams)
+    .send(linkKoboDto);
+}
+
+export async function getKoboIntegration(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/kobo`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function importKoboSubmissions(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .put(`/programs/${programId}/kobo/submissions`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function deleteKoboWebhook({
+  assetId,
+  hookId,
+  token,
+  baseUrl,
+}: {
+  assetId: string;
+  hookId: string;
+  token: string;
+  baseUrl: string;
+}): Promise<request.Response> {
+  const apiUrl = `/api/v2/assets/${assetId}/hooks/${hookId}/`;
+
+  const agent = request.agent(baseUrl);
+  return agent
+    .delete(apiUrl)
+    .set('Authorization', `Token ${token}`)
+    .set('Content-Type', 'application/json');
+}
+
+export async function getExistingKoboWebhooks({
+  assetId,
+  token,
+  baseUrl,
+}: {
+  assetId: string;
+  token: string;
+  baseUrl: string;
+}): Promise<request.Response> {
+  const apiUrl = `/api/v2/assets/${assetId}/hooks/`; // Trailing slash is important
+
+  const agent = request.agent(baseUrl);
+  return agent
+    .get(apiUrl)
+    .set('Authorization', `Token ${token}`)
+    .set('Content-Type', 'application/json');
+}

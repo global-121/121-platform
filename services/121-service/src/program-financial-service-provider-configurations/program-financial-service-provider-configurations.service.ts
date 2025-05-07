@@ -6,7 +6,11 @@ import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
 } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import {
+  getFinancialServiceProviderConfigurationProperties,
+  getFinancialServiceProviderSettingByNameOrThrow,
+} from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
@@ -16,6 +20,8 @@ import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-financial-service-provider-configurations/entities/program-financial-service-provider-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-financial-service-provider-configurations/mappers/program-financial-service-provider-configuration.mapper';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
@@ -24,6 +30,8 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
   @InjectRepository(ProgramFinancialServiceProviderConfigurationPropertyEntity)
   private readonly programFspConfigurationPropertyRepository: Repository<ProgramFinancialServiceProviderConfigurationPropertyEntity>;
+  @InjectRepository(ProgramRegistrationAttributeEntity)
+  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
 
   public async getByProgramId(
     programId: number,
@@ -82,6 +90,12 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     programId: number,
     programFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto,
   ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
+    await this.createMisingProgramRegistrationAttributes({
+      programId,
+      financialServiceProviderName:
+        programFspConfigurationDto.financialServiceProviderName,
+    });
+
     const newConfigEntity =
       ProgramFinancialServiceProviderConfigurationMapper.mapDtoToEntity(
         programFspConfigurationDto,
@@ -98,6 +112,39 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     return ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
       savedEntity,
     );
+  }
+
+  private async createMisingProgramRegistrationAttributes({
+    programId,
+    financialServiceProviderName,
+  }: {
+    programId: number;
+    financialServiceProviderName: FinancialServiceProviders;
+  }): Promise<void> {
+    const fsp = getFinancialServiceProviderSettingByNameOrThrow(
+      financialServiceProviderName,
+    );
+
+    for (const attribute of fsp.attributes) {
+      const exists = await this.programRegistrationAttributeRepository.findOne({
+        where: {
+          programId: Equal(programId),
+          name: Equal(attribute.name),
+        },
+      });
+
+      if (!exists) {
+        const newAttribute = new ProgramRegistrationAttributeEntity();
+        newAttribute.programId = programId;
+        newAttribute.name = attribute.name;
+        newAttribute.type = RegistrationAttributeTypes.text;
+        newAttribute.isRequired = false; // always false because it is not required for other fsp perse
+        newAttribute.duplicateCheck = false;
+        newAttribute.export = [ExportType.included];
+        newAttribute.label = {};
+        await this.programRegistrationAttributeRepository.save(newAttribute);
+      }
+    }
   }
 
   public async update(

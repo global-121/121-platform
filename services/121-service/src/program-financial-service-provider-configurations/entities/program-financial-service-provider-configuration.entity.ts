@@ -40,6 +40,9 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends Base121E
   @Column('json')
   public label: LocalizedString;
 
+  @Column('boolean', { default: false })
+  public isDefault: boolean;
+
   @OneToMany(
     (_type) => ProgramFinancialServiceProviderConfigurationPropertyEntity,
     (programFinancialServiceProviderConfigurationProperty) =>

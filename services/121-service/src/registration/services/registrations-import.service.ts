@@ -143,6 +143,11 @@ export class RegistrationsImportService {
       program.id,
       userId,
     );
+    await this.programService.createProgramAttributesIfNotExists(
+      validatedImportRecords,
+      program.id,
+    );
+
     return await this.importValidatedRegistrations(
       validatedImportRecords,
       program,
@@ -198,7 +203,10 @@ export class RegistrationsImportService {
           record.paymentAmountMultiplier || 1;
       }
       if (program.enableMaxPayments) {
-        registration.maxPayments = record.maxPayments;
+        registration.maxPayments =
+          record.maxPayments != null
+            ? record.maxPayments
+            : program.defaultMaxPayments;
       }
       if (program.enableScope) {
         registration.scope = record.scope || '';

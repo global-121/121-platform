@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import {
+  FinancialServiceProviderConfigurationProperties,
+  FinancialServiceProviders,
+} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -36,5 +39,8 @@ export class FinancialServiceProviderDto {
       { name: 'columnToMatch', isRequired: true },
     ],
   })
-  readonly configurationProperties: { name: string; isRequired: boolean }[];
+  readonly configurationProperties: {
+    name: FinancialServiceProviderConfigurationProperties;
+    isRequired: boolean;
+  }[];
 }

@@ -82,6 +82,26 @@ export class RegistrationsInputValidator {
       ],
     });
 
+    // Add the default fspconfig to the registrationInputArray if it is not present
+    if (typeOfInput === RegistrationValidationInputType.create) {
+      const defaultFspConfigName =
+        program.programFinancialServiceProviderConfigurations.find(
+          (fspConfig) => fspConfig.isDefault,
+        )?.name;
+      for (const row of registrationInputArray) {
+        if (
+          !row[
+            GenericRegistrationAttributes
+              .programFinancialServiceProviderConfigurationName
+          ]
+        ) {
+          row[
+            GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+          ] = defaultFspConfigName;
+        }
+      }
+    }
+
     const languageMapping = this.createLanguageMapping(
       program.languages as unknown as string[],
     );
@@ -371,6 +391,18 @@ export class RegistrationsInputValidator {
           error,
         };
         errors.push(errorObj);
+      }
+
+      // If data name comes in which is not in the registration attributes, or default attributes, it does not need to be validated
+      // and can be added to the validatedRegistrationInput we will later create new text type registration attributes for text anything goes so no validation is needed
+      const dataKeysToIgnore = [
+        ...Object.keys(validatedRegistrationInput.data),
+        ...Object.keys(GenericRegistrationAttributes),
+      ];
+      for (const key of Object.keys(row)) {
+        if (!dataKeysToIgnore.includes(key) && row[key] != null) {
+          validatedRegistrationInput.data[key] = String(row[key]);
+        }
       }
 
       validatedArray.push(validatedRegistrationInput);

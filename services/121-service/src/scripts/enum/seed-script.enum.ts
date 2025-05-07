@@ -10,4 +10,6 @@ export enum SeedScript {
   safaricomProgram = 'safari-program',
   // excelProgram = 'excel-program',
   nedbankProgram = 'nedbank-program',
+  // Kobo test program
+  koboProgram = 'kobo-program',
 }

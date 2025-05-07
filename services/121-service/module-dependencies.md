@@ -17,6 +17,25 @@ graph LR
   ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
   ProgramModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
+  KoboModule-->ProgramModule
+  KoboModule-->RegistrationsModule
+  RegistrationsModule-->UserModule
+  RegistrationsModule-->LookupModule
+  RegistrationsModule-->ActionsModule
+  RegistrationsModule-->ProgramModule
+  RegistrationsModule-->FinancialServiceProvidersModule
+  RegistrationsModule-->MessageQueuesModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->RegistrationDataModule
+  MessageQueuesModule-->QueuesRegistryModule
+  RegistrationsModule-->IntersolveVisaModule
+  RegistrationsModule-->RegistrationDataModule
+  RegistrationsModule-->RegistrationUtilsModule
+  RegistrationUtilsModule-->RegistrationDataModule
+  RegistrationsModule-->EventsModule
+  EventsModule-->UserModule
+  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  RegistrationsModule-->QueuesRegistryModule
   OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
@@ -24,9 +43,6 @@ graph LR
   WhatsappModule-->MessageTemplateModule
   MessageModule-->SmsModule
   MessageModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
-  MessageQueuesModule-->RegistrationDataModule
-  MessageQueuesModule-->QueuesRegistryModule
   MessageModule-->IntersolveVoucherModule
   IntersolveVoucherModule-->ImageCodeModule
   IntersolveVoucherModule-->UserModule
@@ -36,9 +52,7 @@ graph LR
   TransactionsModule-->MessageQueuesModule
   TransactionsModule-->MessageTemplateModule
   TransactionsModule-->RegistrationUtilsModule
-  RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->EventsModule
-  EventsModule-->UserModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -49,18 +63,6 @@ graph LR
   MessageModule-->ProgramModule
   MetricsModule-->UserModule
   MetricsModule-->RegistrationsModule
-  RegistrationsModule-->UserModule
-  RegistrationsModule-->LookupModule
-  RegistrationsModule-->ActionsModule
-  RegistrationsModule-->ProgramModule
-  RegistrationsModule-->FinancialServiceProvidersModule
-  RegistrationsModule-->MessageQueuesModule
-  RegistrationsModule-->IntersolveVisaModule
-  RegistrationsModule-->RegistrationDataModule
-  RegistrationsModule-->RegistrationUtilsModule
-  RegistrationsModule-->EventsModule
-  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
-  RegistrationsModule-->QueuesRegistryModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule

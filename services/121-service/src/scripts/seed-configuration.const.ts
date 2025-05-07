@@ -89,4 +89,14 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       },
     ],
   },
+  {
+    name: SeedScript.koboProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'program-kobo.json',
+        messageTemplate: messageTemplateGeneric,
+      },
+    ],
+  },
 ];

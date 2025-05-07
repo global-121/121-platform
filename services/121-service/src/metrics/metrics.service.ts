@@ -688,13 +688,8 @@ export class MetricsService {
         programId,
       })
       .getRawOne();
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
-    });
-    const paymentNrSearch = Math.max(
-      totalProcessedPayments.max,
-      program.distributionDuration ?? 0,
-    );
+    const paymentNrSearch = totalProcessedPayments.max;
+
     const paymentsWithStats: PaymentStateSumDto[] = [];
     let i = 1;
     const transactionStepMin = await await this.transactionScopedRepository

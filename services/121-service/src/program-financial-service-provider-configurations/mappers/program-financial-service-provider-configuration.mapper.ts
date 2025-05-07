@@ -33,6 +33,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
       financialServiceProviderName: entity.financialServiceProviderName,
       name: entity.name,
       label: entity.label,
+      isDefault: entity.isDefault,
       financialServiceProvider,
       properties:
         ProgramFinancialServiceProviderConfigurationMapper.mapPropertyEntitiesToDtos(
@@ -51,6 +52,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
     entity.financialServiceProviderName = dto.financialServiceProviderName;
     entity.name = dto.name;
     entity.label = dto.label;
+    entity.isDefault = dto.isDefault ?? false;
     return entity;
   }
 
