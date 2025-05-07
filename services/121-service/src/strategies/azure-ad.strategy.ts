@@ -134,8 +134,7 @@ export class AzureAdStrategy
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     } else if (authParams.isOrganizationAdmin) {
-      const isAdmin = payload.isOrganizationAdmin === true;
-      if (!isAdmin) {
+      if (!user.isOrganizationAdmin) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
     }
