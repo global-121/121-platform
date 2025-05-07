@@ -7,7 +7,7 @@ const envPath = path.resolve(__dirname, '../services/.env');
 dotenv.config({ path: envPath });
 
 export default defineConfig({
-  testDir: './portalicious/tests',
+  testDir: './portal/tests',
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   /* Run tests in files in parallel */
   fullyParallel: false,
