@@ -137,7 +137,7 @@ Install dependencies for the portal, run:
 
 Also, make sure to create an env file for each interface. For example:
 
-    cp interfaces/Portal/.env.example interfaces/Portal/.env
+    cp interfaces/portal/.env.example interfaces/portal/.env
 
 ## Start Interfaces
 

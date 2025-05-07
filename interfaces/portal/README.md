@@ -1,4 +1,4 @@
-# Portal(icious)
+# Portal
 
 The front-end for the _Humanitarian Organization_ web portal, where users can interact with the 121 Platform.
 

@@ -28,9 +28,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31475] [Bug] Portalicious clear all filters does not work', async ({
-  page,
-}) => {
+test('[31475] [Bug] Clear all filters does not work', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
