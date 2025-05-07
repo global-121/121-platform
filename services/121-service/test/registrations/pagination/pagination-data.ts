@@ -395,3 +395,13 @@ export const registrationNedbank = {
 };
 
 export const registrationsNedbank = [registrationNedbank];
+
+export const registrationAirtel = {
+  referenceId: 'registration-airtel-1',
+  phoneNumber: '260978980279',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  programFspConfigurationName: Fsps.airtel,
+  maxPayments: 3,
+  fullName: 'John Airtel Dimsum',
+};
