@@ -96,7 +96,7 @@ export class AirtelMockController {
     @Headers() headers: Record<string, string>,
     // We use type "object" here because we have a bunch of different response bodies.
   ): Promise<AirtelDisbursementV1ResponseSuccessBodyDto | object> {
-    const [http, body] = await this.airtelMockService.transfer(
+    const [http, body] = await this.airtelMockService.disburseV1(
       disburseV1Body,
       headers,
     );
