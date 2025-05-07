@@ -77,7 +77,7 @@ export class AirtelMockService {
     return response;
   }
 
-  public async transfer(
+  public async disburseV1(
     transferDto: AirtelDisbursementV1PayloadDto,
     headers: Record<string, string>,
     // We use type "object" here because we have a bunch of different response bodies.
