@@ -30,6 +30,7 @@
   [selectionMode]="enableSelection() ? 'multiple' : null"
   (selectionChange)="onSelectionChange($event)"
   (selectAllChange)="onSelectAllChange($event)"
+  (onFilter)="resetSelection()"
   [columns]="visibleColumns()"
   [dataKey]="'id'"
   data-testid="query-table"
