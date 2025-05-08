@@ -227,6 +227,10 @@ export class KoboFormValidationService {
             surveyItemKoboType === ''
           )
         ) {
+          if (expectedTypeForFspAttribute === RegistrationAttributeTypes.tel) {
+            expectedSurveyKoboTypes.push('text');
+          }
+
           errors.push(
             `Kobo form attribute "${fspAttribute}" has incompatible type for FSP integration '${fspName}': expected one of these: "${expectedSurveyKoboTypes.join(', ')}", got "${surveyItemKoboType}"`,
           );
