@@ -71,6 +71,7 @@ export class RegistrationsPaginationService {
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<FindAllRegistrationsResultDto> {
+    console.time('getPaginate');
     // Deep clone query here to prevent mutation out of this function
     query = structuredClone(query);
 
@@ -197,7 +198,7 @@ export class RegistrationsPaginationService {
       hasPersonalReadPermission,
       programId,
     });
-
+    console.timeEnd('getPaginate');
     return {
       ...result,
       data,

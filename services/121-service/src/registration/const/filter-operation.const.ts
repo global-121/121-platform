@@ -21,7 +21,7 @@ const dataSearchableColumn = 'data.value';
 const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
   searchableColumns: [dataSearchableColumn],
   ignoreSearchByInQueryParam: true,
-  maxLimit: 40000,
+  maxLimit: 1000000,
   sortableColumns: [
     'id',
     'created',
