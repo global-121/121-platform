@@ -262,7 +262,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     }
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
-    this.selectAll.set(false);
+    this.resetSelection();
   }
 
   readonly globalFilterValue = computed(() => {

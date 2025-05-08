@@ -357,6 +357,32 @@ class TableComponent {
     await this.page.waitForSelector('table tbody tr td');
     await expect(this.page.getByText('No results found')).toBeVisible();
   }
+
+  async selectRowByName(name: string) {
+    await this.page
+      .getByRole('row', { name })
+      .getByRole('checkbox')
+      .first()
+      .click();
+  }
+
+  async getSelectedRowsCount(): Promise<number> {
+    const checkboxes = this.table.locator('tbody tr input[type="checkbox"]');
+    const count = await checkboxes.evaluateAll(
+      (elements) => elements.filter((el) => el.checked).length,
+    );
+    return count;
+  }
+
+  async clearColumnFilter(columnName: string): Promise<void> {
+    const columnHeader = this.table.getByRole('columnheader', {
+      name: columnName,
+    });
+
+    const clearFilterButton = columnHeader.locator('.pi-filter-slash');
+
+    await clearFilterButton.click();
+  }
 }
 
 export default TableComponent;
