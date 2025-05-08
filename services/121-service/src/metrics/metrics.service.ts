@@ -379,7 +379,6 @@ export class MetricsService {
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
-      GenericRegistrationAttributes.registrationCreatedDate,
       GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ] as string[];

@@ -62,7 +62,6 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.registrationProgramId:
       return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.created:
-    case GenericRegistrationAttributes.registrationCreatedDate:
       return RegistrationAttributeTypes.date;
   }
 };

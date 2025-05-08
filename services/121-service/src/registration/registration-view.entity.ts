@@ -37,10 +37,6 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       )
       .orderBy(`registration.registrationProgramId`, 'ASC')
       .addSelect('registration.created', 'created')
-      .addSelect(
-        `TO_CHAR(registration.created,'yyyy-mm-dd')`,
-        'registrationCreatedDate',
-      )
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.programId', 'programId')
@@ -148,11 +144,6 @@ export class RegistrationViewEntity {
 
   @ViewColumn()
   public created: Date;
-
-  // TODO: This can be removed after the old portal is removed
-  // This column is currently a string version of date used for exact match filtering in the old portal
-  @ViewColumn()
-  public registrationCreatedDate: string;
 
   @ViewColumn()
   public referenceId: string;

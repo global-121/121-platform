@@ -20,7 +20,6 @@ export enum GenericRegistrationAttributes {
   scope = 'scope',
   status = 'status',
   registrationProgramId = 'registrationProgramId',
-  registrationCreatedDate = 'registrationCreatedDate',
   inclusionScore = 'inclusionScore',
   created = 'created',
 }
