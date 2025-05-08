@@ -8,11 +8,14 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
+import { IBaseStrategyOption } from 'passport-azure-ad/common';
 
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
+
+const loggingLevel: IBaseStrategyOption['loggingLevel'] = 'error';
 
 const config = {
   credentials: {
@@ -28,7 +31,7 @@ const config = {
     // TODO: Probably should be set to true in production
     validateIssuer: false,
     passReqToCallback: true,
-    loggingLevel: 'error',
+    loggingLevel,
   },
 };
 const EXPOSED_SCOPES = ['User.read']; //provide a scope of your azure AD
