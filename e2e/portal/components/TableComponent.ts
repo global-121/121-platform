@@ -334,26 +334,36 @@ class TableComponent {
     await this.page.locator('textarea').fill(message);
   }
 
-  async changeRegistrationStatusWithCustomMessage({
+  async selectRegistrationByName(name: string) {
+    const registrationName = this.page.locator('tr').filter({ hasText: name });
+    const checkbox = registrationName.locator('input[type="checkbox"]');
+
+    await checkbox.click();
+  }
+
+  async changeRegistrationStatusByNameWithCustomMessage({
+    registrationName,
     status,
     message,
+    customMessage = false,
   }: {
+    registrationName: string;
     status: string;
     message: string;
+    customMessage: boolean;
   }) {
-    const firstCheckbox = this.checkbox.nth(1);
     const statusButton = this.page.getByRole('button', { name: status });
     const placeholder = this.page.getByPlaceholder('Enter reason');
 
-    await firstCheckbox.click();
+    await this.selectRegistrationByName(registrationName);
     await statusButton.click();
     // Condition for when reason is required
-    if (await placeholder.isVisible()) {
+    if (customMessage === true) {
       await placeholder.fill('Test reason');
-      await this.fillCustomMessage('Test message');
+      await this.fillCustomMessage(message);
+      await this.continueToPreviewButton.click();
     }
-    await this.fillCustomMessage(message);
-    await this.continueToPreviewButton.click();
+    await placeholder.fill('Test reason');
     await this.approveButton.click();
   }
 
@@ -442,6 +452,14 @@ class TableComponent {
 
     await messageNotification.getByRole('button').click();
     await expect(notificationText).toHaveText(message);
+  }
+
+  async validatActivityNotPresentByType(notificationType: string) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+
+    await expect(messageNotification).not.toBeVisible();
   }
 }
 
