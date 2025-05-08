@@ -1,21 +1,25 @@
-<p-button
+<app-button-menu
   label="Import"
   i18n-label
-  (click)="dialogVisible.set(true)"
-  icon="pi pi-download"
-  [iconPos]="rtlHelper.createPosition('start')()"
-  outlined
-  rounded
-></p-button>
+  [menuItems]="importOptions()"
+  [icon]="'pi pi-download'"
+  [outlined]="true"
+/>
 
 <app-import-file-dialog
-  [(dialogVisible)]="dialogVisible"
+  [(dialogVisible)]="importNewRegistrationsDialogVisible"
   [mutation]="importRegistrationsMutation"
   accept=".csv,text/csv,text/comma-separated-values,application/csv"
-  header="Import registrations"
+  header="Import new registrations"
   i18n-header
 >
-  <p i18n>The system will create registrations with the status “registered”.</p>
+  <p i18n>
+    The system will create registrations with the status
+    <app-colored-chip
+      [variant]="registeredChipData.chipVariant"
+      [label]="registeredChipData.chipLabel"
+    />.
+  </p>
   <p>
     <ng-container i18n>
       Make sure to match the required format of the template CSV-file.
@@ -28,4 +32,67 @@
     >.
   </p>
   <p i18n>The import takes about 1 minute per 100 records.</p>
+</app-import-file-dialog>
+
+<app-import-file-dialog
+  [(dialogVisible)]="updateExistingRegistrationsDialogVisible"
+  [mutation]="importRegistrationsMutation"
+  accept=".csv,text/csv,text/comma-separated-values,application/csv"
+  header="Update existing registrations"
+  i18n-header
+>
+  <p i18n>
+    You've selected
+    <strong
+      >{{
+        updateSelectedRegistrationsActionData()?.count
+      }}
+      registrations.</strong
+    >
+  </p>
+  <p
+    i18n
+    class="ps-2"
+  >
+    1. Create and export a CSV for the 5 selected registrations, including only
+    the columns that require changes.
+  </p>
+  <div [formGroup]="updateRegistrationsFormGroup">
+    <app-form-field-wrapper
+      label="Select the column(s) you want to make changes in"
+      i18n-label
+      [errorMessage]="updateRegistrationsFormFieldErrors()('fields')"
+    >
+      <div class="flex gap-2">
+        <p-multiSelect
+          [options]="updateRegistrationsFieldOptions()"
+          [optionLabel]="'header'"
+          [optionValue]="'field'"
+          formControlName="fields"
+          placeholder="Select 1 or more columns"
+          i18n-placeholder
+          [showToggleAll]="false"
+          [overlayOptions]="{
+            target: '@parent',
+          }"
+          styleClass="grow"
+        />
+        <p-button
+          i18n
+          (click)="exportCSVForUpdateRegistrations()"
+          label="Export CSV"
+          i18n-label
+          rounded
+          outlined
+          class="shrink-0"
+        />
+      </div>
+    </app-form-field-wrapper>
+  </div>
+  <p
+    i18n
+    class="ps-2"
+  >
+    2. Upload the updated CSV below
+  </p>
 </app-import-file-dialog>
