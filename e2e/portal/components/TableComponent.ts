@@ -18,6 +18,7 @@ class TableComponent {
   readonly checkbox: Locator;
   readonly approveButton: Locator;
   readonly continueToPreviewButton: Locator;
+  readonly sendMessageSwitch: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
   readonly rangeDropdown: Locator;
@@ -50,6 +51,7 @@ class TableComponent {
     this.continueToPreviewButton = this.page.getByRole('button', {
       name: 'Continue to preview',
     });
+    this.sendMessageSwitch = this.page.getByLabel('Send a message to');
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
     this.rangeDropdown = this.page
@@ -328,8 +330,7 @@ class TableComponent {
   }
 
   async fillCustomMessage(message: string) {
-    await this.page.getByLabel('Send a message to').check();
-    await this.page.locator('textarea').click();
+    await this.sendMessageSwitch.check();
     await this.page.locator('textarea').fill(message);
   }
 
@@ -425,6 +426,22 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+  async validateMessageActivityByTypeAndText({
+    notificationType,
+    message,
+  }: {
+    notificationType: string;
+    message: string;
+  }) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+    const notificationText = this.page.locator('tr').filter({
+      hasText: message,
+    });
+
+    await messageNotification.getByRole('button').click();
+    await expect(notificationText).toHaveText(message);
   }
 }
 
