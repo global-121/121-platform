@@ -207,12 +207,12 @@ export class IntersolveVoucherController {
     '/financial-service-providers/intersolve-voucher/deprecated-image-codes',
   )
   public async removeDeprecatedImageCodes(
-    @Body() body: RemoveDeprecatedImageCodesDto,
+    @Body() body?: RemoveDeprecatedImageCodesDto,
   ): Promise<number> {
     console.info('Start: Intersolve-Voucher - removeDeprecatedImageCodes');
     const numberOfDeleted =
       await this.intersolveVoucherService.removeDeprecatedImageCodes(
-        body.mockCurrentDate,
+        body?.mockCurrentDate,
       );
     console.info(
       `Complete: Intersolve-Voucher - removeDeprecatedImageCodes: ${numberOfDeleted} vouchers deleted`,
