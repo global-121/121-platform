@@ -35,8 +35,8 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import {
+  PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewOnlyFilters,
-  PaginateConfigRegistrationViewWithPayments,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import {
@@ -141,10 +141,7 @@ export class RegistrationsController {
     type: 'integer',
   })
   @Get('programs/:programId/registrations')
-  @PaginatedSwaggerDocs(
-    RegistrationViewEntity,
-    PaginateConfigRegistrationViewWithPayments,
-  )
+  @PaginatedSwaggerDocs(RegistrationViewEntity, PaginateConfigRegistrationView)
   public async findAll(
     @Paginate() query: PaginateQuery,
     @Req() req: ScopedUserRequest,
@@ -159,7 +156,7 @@ export class RegistrationsController {
         PermissionEnum.RegistrationPersonalREAD,
       );
 
-    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+    await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
       query,
@@ -321,7 +318,7 @@ export class RegistrationsController {
       }
     }
 
-    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+    await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
       query,
@@ -526,7 +523,7 @@ export class RegistrationsController {
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
-    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+    await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
       query,
@@ -609,7 +606,7 @@ export class RegistrationsController {
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
-    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+    await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
       query,
