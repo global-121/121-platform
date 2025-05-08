@@ -6,7 +6,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
-  registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
@@ -22,7 +21,7 @@ const customMessage =
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
-  await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
+  await seedRegistrations([registrationPV5], programIdPV);
 
   // Login
   const loginPage = new LoginPage(page);
