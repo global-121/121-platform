@@ -20,7 +20,6 @@
   - [Example Test](#example-test)
   - [Best Practices](#best-practices)
   - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
-  - [How to generate Screenshots for the "User Manual"?](#how-to-generate-screenshots-for-the-user-manual)
 
 ---
 
@@ -164,11 +163,3 @@ test('[27493] Navigate to programme', async ({ page }) => {
 - **Test Flakiness**: Use wait methods to handle dynamic content and animations.
 
 For extended documentation see: <https://playwright.dev/docs/getting-started-vscode>
-
-### How to generate Screenshots for the "User Manual"?
-
-- Navigate to e2e > tests > UserManualScreenshots > userManualScreenshots.spec.ts
-- Remove "skip" command from the test
-  `test.skip('Navigates to the portal and takes screenshots', async ({ page }) =>`
-- Run the test with command: `npx playwright test userManualScreenshots/userManualScreenshots.spec.ts --update-snapshots`
-- Push your changes to the branch or create PR to merge them into `main`

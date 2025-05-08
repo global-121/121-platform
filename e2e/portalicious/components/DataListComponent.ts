@@ -13,7 +13,7 @@ class DataListComponent {
     const unParsed = await this.datalist.locator('p').allTextContents();
     const parsed: Record<string, string> = {};
     unParsed.forEach((element) => {
-      if ((element.match(/:/g) || []).length > 1) {
+      if ((element.match(/:/g) ?? []).length > 1) {
         throw new Error(
           "Field or value contains a colon character, please use test data that doesn't.",
         );
