@@ -66,7 +66,7 @@ describe('Registrations - [Scoped]', () => {
       amount: expect.any(Number),
       errorMessage: null,
       name: registrationScopedMiddelburgPv.fullName,
-      programFinancialServiceProviderConfigurationLabel: fspConfig.defaultLabel,
+      programFinancialServiceProviderConfigurationName: fspConfig.name,
     });
 
     // Validate date formats

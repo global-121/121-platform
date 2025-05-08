@@ -246,7 +246,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     expect(transactionsResponse.text).toContain('success');
     expect(
       transactionsResponse.body[0]
-        .programFinancialServiceProviderConfigurationLabel,
-    ).toStrictEqual(newProgramFinancialServiceProviderConfigurationLabel);
+        .programFinancialServiceProviderConfigurationName,
+    ).toStrictEqual(newProgramFinancialServiceProviderConfigurationName);
   });
 });

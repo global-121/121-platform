@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Relation } from 'typeorm';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 export class TransactionResponseDto {
+  @ApiProperty({ example: 1, type: 'number' })
+  public id: number;
   @ApiProperty({
     example: '2023-09-28T08:00:10.363Z',
     type: 'string',
@@ -20,15 +21,21 @@ export class TransactionResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
   public payment: number;
   @ApiProperty({ example: TransactionStatusEnum.success, type: 'string' })
-  public status: string;
+  public status: TransactionStatusEnum;
   @ApiProperty({ example: 25, type: 'number' })
   public amount: number;
   @ApiProperty({ example: 'Something went wrong', type: 'string' })
   public errorMessage: string | null;
   @ApiProperty({ example: 'ironBank' })
-  public programFinancialServiceProviderConfigurationLabel: Relation<LocalizedString>;
+  public programFinancialServiceProviderConfigurationName: string;
   @ApiProperty({ example: 111, type: 'number' })
   public registrationProgramId: number;
+  @ApiProperty({ example: 111, type: 'number' })
+  public registrationId: number;
+  @ApiProperty({ example: RegistrationStatusEnum.included, type: 'string' })
+  public registrationStatus: RegistrationStatusEnum;
+  @ApiProperty({ example: '12345', type: 'string' })
+  public referenceId: string;
   @ApiProperty({ example: 'Juan Garcia' })
   public name?: string;
 }
