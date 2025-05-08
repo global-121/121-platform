@@ -241,28 +241,12 @@ exports[`Create program should post a program: Create program response for progr
           "allowedOperators": [
             "$eq",
             "$null",
-          ],
-          "isInteger": false,
-          "name": "failedPayment",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
             "$gt",
             "$lt",
             "$btw",
           ],
           "isInteger": true,
           "name": "maxPayments",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "notYetSentPayment",
         },
         {
           "allowedOperators": [
@@ -285,22 +269,6 @@ exports[`Create program should post a program: Create program response for progr
           ],
           "isInteger": true,
           "name": "paymentCountRemaining",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "successPayment",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "waitingPayment",
         },
       ],
       "group": "payments",
@@ -794,44 +762,12 @@ exports[`Create program should post a program: Create program response for progr
           "allowedOperators": [
             "$eq",
             "$null",
-          ],
-          "isInteger": false,
-          "name": "failedPayment",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "notYetSentPayment",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
             "$gt",
             "$lt",
             "$btw",
           ],
           "isInteger": true,
           "name": "paymentCount",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "successPayment",
-        },
-        {
-          "allowedOperators": [
-            "$eq",
-            "$null",
-          ],
-          "isInteger": false,
-          "name": "waitingPayment",
         },
       ],
       "group": "payments",

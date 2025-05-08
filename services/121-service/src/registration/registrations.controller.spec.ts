@@ -30,7 +30,7 @@ describe('RegistrationsController', () => {
       .mockResolvedValueOnce(false); // send-message permission check
 
     jest
-      .spyOn(registrationsPaginationService, 'throwIfNoPermissionsForQuery')
+      .spyOn(registrationsPaginationService, 'throwIfNoPersonalReadPermission')
       .mockResolvedValue(); // do not throw
   });
 

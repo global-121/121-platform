@@ -8,7 +8,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/pr
 import {
   AllowedFilterOperatorsNumber,
   AllowedFilterOperatorsString,
-  PaginateConfigRegistrationViewWithPayments,
+  PaginateConfigRegistrationView,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
 import {
@@ -41,13 +41,7 @@ export class ProgramAttributesService {
 
     const paymentGroup = {
       group: 'payments',
-      filters: [
-        'failedPayment',
-        'waitingPayment',
-        'successPayment',
-        'notYetSentPayment',
-        'paymentCount',
-      ],
+      filters: ['paymentCount'],
     };
     if (program.enableMaxPayments) {
       paymentGroup.filters.push('maxPayments');
@@ -75,17 +69,15 @@ export class ProgramAttributesService {
     for (const group of filterableAttributeNames) {
       const filterableAttributesPerGroup: FilterAttributeDto[] = [];
       for (const name of group.filters) {
-        if (
-          PaginateConfigRegistrationViewWithPayments.filterableColumns?.[name]
-        ) {
+        if (PaginateConfigRegistrationView.filterableColumns?.[name]) {
           filterableAttributesPerGroup.push({
             name,
-            allowedOperators: PaginateConfigRegistrationViewWithPayments
-              .filterableColumns[name] as FilterOperator[],
+            allowedOperators: PaginateConfigRegistrationView.filterableColumns[
+              name
+            ] as FilterOperator[],
             isInteger:
-              PaginateConfigRegistrationViewWithPayments.filterableColumns[
-                name
-              ] === AllowedFilterOperatorsNumber,
+              PaginateConfigRegistrationView.filterableColumns[name] ===
+              AllowedFilterOperatorsNumber,
           });
         } else {
           // If no allowed operators are defined than the attribute is

@@ -163,7 +163,7 @@ export class PaymentsController {
   ): Promise<BulkActionResultPaymentDto> {
     const userId = RequestHelper.getUserId(req);
 
-    await this.registrationsPaginateService.throwIfNoPermissionsForQuery(
+    await this.registrationsPaginateService.throwIfNoPersonalReadPermission(
       userId,
       programId,
       query,

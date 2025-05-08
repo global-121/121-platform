@@ -24,7 +24,6 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
   AllowedFilterOperatorsNumber,
-  AllowedFilterOperatorsPayment,
   AllowedFilterOperatorsString,
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
@@ -35,7 +34,6 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { PaymentFilterEnum } from '@121-service/src/registration/enum/payment-filter.enum';
 import {
   DefaultRegistrationDataAttributeNames,
   RegistrationAttributeTypes,
@@ -173,8 +171,6 @@ export class RegistrationsPaginationService {
       paginateConfigCopy.searchableColumns = [];
     }
 
-    queryBuilder = this.addPaymentFilter(queryBuilder, query);
-
     // PaginateConfig.select and PaginateConfig.relations cannot be used in combi with each other
     // That's why we wrote some manual code to do the selection
     const result = await paginate<RegistrationViewEntity>(
@@ -261,23 +257,6 @@ export class RegistrationsPaginationService {
     );
   }
 
-  public async throwIfNoPermissionsForQuery(
-    userId: number,
-    programId: number,
-    paginateQuery: PaginateQuery,
-  ): Promise<void> {
-    await this.throwIfNoTransactionReadPermission(
-      userId,
-      programId,
-      paginateQuery,
-    );
-    await this.throwIfNoPersonalReadPermission(
-      userId,
-      programId,
-      paginateQuery,
-    );
-  }
-
   private addSearchToQueryBuilder(
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     search: string,
@@ -289,33 +268,7 @@ export class RegistrationsPaginationService {
     return queryBuilder;
   }
 
-  private async throwIfNoTransactionReadPermission(
-    userId: number,
-    programId: number,
-    paginateQuery: PaginateQuery,
-  ): Promise<void> {
-    const hasTransactionRead = await this.userHasPermissionForProgram(
-      userId,
-      programId,
-      PermissionEnum.PaymentTransactionREAD,
-    );
-    if (!hasTransactionRead && paginateQuery.filter) {
-      for (const filterKey of Object.keys(paginateQuery.filter)) {
-        if (Object.values(PaymentFilterEnum).includes(filterKey as any)) {
-          throw new HttpException(
-            `You do not have permission ${
-              PermissionEnum.PaymentTransactionREAD
-            }. Not allowed to use filter parameters ${Object.values(
-              PaymentFilterEnum,
-            ).join(', ')}`,
-            HttpStatus.FORBIDDEN,
-          );
-        }
-      }
-    }
-  }
-
-  private async throwIfNoPersonalReadPermission(
+  public async throwIfNoPersonalReadPermission(
     userId: number,
     programId: number,
     paginateQuery: PaginateQuery,
@@ -699,92 +652,6 @@ export class RegistrationsPaginationService {
       fullnameConcat.push(registrationRow[nameColumn]);
     }
     return fullnameConcat.join(' ');
-  }
-
-  private addPaymentFilter(
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    paginateQuery: PaginateQuery,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const filterableColumns: Record<string, FilterOperator[]> = {};
-    for (const key of Object.keys(PaymentFilterEnum)) {
-      filterableColumns[key] = AllowedFilterOperatorsPayment;
-    }
-
-    const parsedFilter = parseFilter(paginateQuery, filterableColumns);
-    const filterOptions = [
-      {
-        key: PaymentFilterEnum.successPayment,
-        alias: 'latestTransactionsSuccess',
-        status: TransactionStatusEnum.success,
-      },
-      {
-        key: PaymentFilterEnum.failedPayment,
-        alias: 'latestTransactionsFailed',
-        status: TransactionStatusEnum.error,
-      },
-      {
-        key: PaymentFilterEnum.waitingPayment,
-        alias: 'latestTransactionsWaiting',
-        status: TransactionStatusEnum.waiting,
-      },
-      {
-        key: PaymentFilterEnum.notYetSentPayment,
-        alias: 'latestTransactionsNull',
-        status: null,
-      },
-    ];
-
-    for (const option of filterOptions) {
-      if (
-        paginateQuery.filter &&
-        Object.keys(parsedFilter).includes(option.key)
-      ) {
-        for (const filter of parsedFilter[option.key]) {
-          const paymentNumber = filter.findOperator.value;
-          // if payment number is numeric, add the filter
-          if (!isNaN(Number(paymentNumber))) {
-            queryBuilder = this.addPaymentFilterJoin({
-              queryBuilder,
-              alias: option.alias,
-              status: option.status,
-              paymentNumber,
-            });
-          }
-        }
-      }
-    }
-    return queryBuilder;
-  }
-
-  private addPaymentFilterJoin({
-    queryBuilder,
-    alias,
-    status,
-    paymentNumber,
-  }: {
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    alias: string;
-    status: TransactionStatusEnum | null;
-    paymentNumber: string;
-  }): ScopedQueryBuilder<RegistrationViewEntity> {
-    const paymentNumberKey = `${alias}PaymentNumber`;
-    const statusKey = `${alias}Status`;
-    queryBuilder.leftJoin(
-      'registration.latestTransactions',
-      alias,
-      `"${alias}"."payment" = :${paymentNumberKey}`,
-      { [paymentNumberKey]: paymentNumber },
-    );
-    if (status) {
-      queryBuilder
-        .innerJoin(`${alias}.transaction`, `transaction${alias}`)
-        .andWhere(`"transaction${alias}"."status" = :${statusKey}`, {
-          [statusKey]: status,
-        });
-    } else {
-      queryBuilder.andWhere(`"${alias}"."id" IS NULL`);
-    }
-    return queryBuilder;
   }
 
   public getQueryBuilderForFspInstructions({
