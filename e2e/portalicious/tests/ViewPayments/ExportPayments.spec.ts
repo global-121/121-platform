@@ -1,7 +1,6 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-// import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -11,6 +10,28 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 
 import LoginPage from '@121-e2e/portalicious/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portalicious/pages/PaymentsPage';
+
+const expectedExportedPaymentsColumns = [
+  'referenceid',
+  'id',
+  'registrationid',
+  'status',
+  'payment',
+  'timestamp',
+  'registrationstatus',
+  'phonenumber',
+  'paymentamountmultiplier',
+  'amount',
+  'errormessage',
+  'financialserviceprovider',
+  'fullname',
+  'whatsappphonenumber',
+  'addressstreet',
+  'addresshousenumber',
+  'addresshousenumberaddition',
+  'addresspostalcode',
+  'addresscity',
+];
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -29,7 +50,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[] ExtractFivePayments', async ({ page }) => {
+test('[35621] ExportFivePayments', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
@@ -55,6 +76,9 @@ test('[] ExtractFivePayments', async ({ page }) => {
       option: 'Export last 5 payment(s)',
     });
 
-    await paymentsPage.exportAndAssertData();
+    await paymentsPage.exportAndAssertData({
+      expectedColumns: expectedExportedPaymentsColumns,
+      expectedRowCount: 25,
+    });
   });
 });

@@ -7,29 +7,6 @@ import * as XLSX from 'xlsx';
 import TableComponent from '@121-e2e/portalicious/components/TableComponent';
 import BasePage from '@121-e2e/portalicious/pages/BasePage';
 
-const expectedExportedPaymentsRowCount = 25;
-const expectedExportedPaymentsColumns = [
-  'referenceid',
-  'id',
-  'registrationid',
-  'status',
-  'payment',
-  'timestamp',
-  'registrationstatus',
-  'phonenumber',
-  'paymentamountmultiplier',
-  'amount',
-  'errormessage',
-  'financialserviceprovider',
-  'fullname',
-  'whatsappphonenumber',
-  'addressstreet',
-  'addresshousenumber',
-  'addresshousenumberaddition',
-  'addresspostalcode',
-  'addresscity',
-];
-
 class PaymentsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
@@ -322,7 +299,13 @@ class PaymentsPage extends BasePage {
     return noPaymentsFoundVisible && noPaymentsForProjectVisible;
   }
 
-  async exportAndAssertData() {
+  async exportAndAssertData({
+    expectedColumns,
+    expectedRowCount,
+  }: {
+    expectedColumns: string[];
+    expectedRowCount: number;
+  }) {
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       this.proceedButton.click(),
@@ -344,9 +327,9 @@ class PaymentsPage extends BasePage {
 
     if (data.length === 0) throw new Error('No data found in the sheet');
 
-    if (data.length !== expectedExportedPaymentsRowCount) {
+    if (data.length !== expectedRowCount) {
       throw new Error(
-        `Row count validation failed. Expected ${expectedExportedPaymentsRowCount} payments, but found ${data.length}`,
+        `Row count validation failed. Expected ${expectedRowCount} payments, but found ${data.length}`,
       );
     }
 
@@ -354,12 +337,12 @@ class PaymentsPage extends BasePage {
       col.toLowerCase().trim(),
     );
 
-    const missingColumns = expectedExportedPaymentsColumns.filter(
+    const missingColumns = expectedColumns.filter(
       (col) => !actualColumns.includes(col),
     );
 
     const extraColumns = actualColumns.filter(
-      (col) => !expectedExportedPaymentsColumns.includes(col),
+      (col) => !expectedColumns.includes(col),
     );
 
     if (missingColumns.length > 0 || extraColumns.length > 0) {
