@@ -63,7 +63,7 @@
     "bull": "^4.16.4",
     "bwip-js": "^2.0.11",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
+    "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "csv-parser": "^3.2.0",
     "easy-soap-request": "^5.6.1",
