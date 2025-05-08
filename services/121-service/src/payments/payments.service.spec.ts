@@ -25,7 +25,7 @@ function createMockTransaction(
     registrationProgramId: id + 100,
     referenceId: `REF-${id}`,
     errorMessage: null,
-    programFinancialServiceProviderConfigurationName: 'Some FSP',
+    programFinancialServiceProviderConfigurationName: 'someFsp',
   };
 }
 
