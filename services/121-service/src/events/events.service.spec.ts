@@ -61,7 +61,6 @@ function getViewRegistration(): RegistrationViewEntity {
     status: RegistrationStatusEnum.registered,
     programId: 3,
     registrationCreated: '2024-02-19T14:21:11.163Z',
-    registrationCreatedDate: '2024-02-19',
     referenceId: '7e9bdf2118b3fb4ece93b6458815ab86',
     phoneNumber: '46631834076',
     preferredLanguage: LanguageEnum.en,

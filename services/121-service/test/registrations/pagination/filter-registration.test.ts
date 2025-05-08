@@ -109,10 +109,6 @@ describe('Load PA table', () => {
           filterValue: '63e6286',
           expectedReferenceIds: [registrationOCW1.referenceId],
         },
-        registrationCreatedDate: {
-          filterValue: '2', // Should find all registration as they were create between 2000 and 2999
-          expectedReferenceIds: allReferenceIds,
-        },
         phoneNumber: {
           filterValue: '14155235555',
           expectedReferenceIds: [registrationOCW4.referenceId],

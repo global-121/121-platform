@@ -1559,9 +1559,6 @@
       <trans-unit id="generic-app-name" datatype="html">
         <source>121 Portal</source>
       </trans-unit>
-      <trans-unit id="attribute-label-registrationCreatedDate" datatype="html">
-        <source>Deprecated</source>
-      </trans-unit>
       <trans-unit id="5995604223909447366" datatype="html">
         <source>Less than</source>
       </trans-unit>

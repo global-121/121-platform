@@ -25,7 +25,6 @@ const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
   sortableColumns: [
     'id',
     'created',
-    'registrationCreatedDate',
     'status',
     'referenceId',
     'phoneNumber',
@@ -47,7 +46,6 @@ const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEntity> = {
     referenceId: AllowedFilterOperatorsString,
     status: AllowedFilterOperatorsString,
     id: AllowedFilterOperatorsNumber,
-    registrationCreatedDate: AllowedFilterOperatorsString,
     created: AllowedFilterOperatorsNumber,
     phoneNumber: AllowedFilterOperatorsString,
     preferredLanguage: AllowedFilterOperatorsString,

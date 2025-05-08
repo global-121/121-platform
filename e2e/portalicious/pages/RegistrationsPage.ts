@@ -35,7 +35,6 @@ const expectedColumnsSelectedRegistrationsExport = [
   'preferredLanguage',
   'paymentAmountMultiplier',
   'paymentCount',
-  'registrationCreatedDate',
   'programFinancialServiceProviderConfigurationLabel',
   'scope',
   'namePartnerOrganization',
