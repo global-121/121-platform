@@ -1,4 +1,4 @@
-import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
@@ -57,7 +57,7 @@ describe('send arbitrary messages to set of registrations', () => {
       minimumNumberOfMessagesPerReferenceId: 2,
     });
 
-    const messageHistories: MessageHistoryDto[][] = [];
+    const messageHistories: MessageActivity[][] = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
         programIdOCW,
@@ -74,9 +74,9 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
     expect(messageHistoryPa1.length).toBe(2);
-    expect(messageHistoryPa1[0].status).toBeDefined();
+    expect(messageHistoryPa1[0].attributes.status).toBeDefined();
     expect(messageHistoryPa2.length).toBe(0);
-    expect(messageHistoryPa1[0].body).toEqual(message);
+    expect(messageHistoryPa1[0].attributes.body).toEqual(message);
   });
 
   it('should send messages to PAs selected with a combination of filters', async () => {
@@ -143,7 +143,7 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(messageHistory2.length).toBe(0);
     expect(messageHistory3.length).toBe(2);
     expect(messageHistory4.length).toBe(2);
-    expect(messageHistory3[0].body).toEqual(message);
-    expect(messageHistory4[0].body).toEqual(message);
+    expect(messageHistory3[0].attributes.body).toEqual(message);
+    expect(messageHistory4[0].attributes.body).toEqual(message);
   });
 });

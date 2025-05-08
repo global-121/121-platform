@@ -3,20 +3,25 @@
 exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesfully pay-out 1`] = `
 [
   {
-    "body": "",
-    "contentType": "payment-instructions",
-    "errorCode": null,
-    "mediaUrl": "http://localhost:3000/api/programs/2/financial-service-providers/intersolve-voucher/instructions/",
-    "status": "read",
-    "to": "whatsapp:+14155238886",
-    "type": "whatsapp",
+    "attributes": {
+      "body": "",
+      "contentType": "payment-instructions",
+      "errorCode": null,
+      "mediaUrl": "http://localhost:3000/api/programs/2/financial-service-providers/intersolve-voucher/instructions/",
+      "notificationType": "whatsapp",
+      "status": "read",
+      "to": "whatsapp:+14155238886",
+    },
+    "id": "message0",
+    "type": "message",
     "user": {
       "id": 1,
       "username": "admin@example.org",
     },
   },
   {
-    "body": "This is a message from the Red Cross.
+    "attributes": {
+      "body": "This is a message from the Red Cross.
 
 With this message you will receive:
 1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.
@@ -32,19 +37,23 @@ You don’t have to spend everything at once. So keep the vouchers and re-use th
 You will receive your Albert Heijn voucher every week on Tuesday. When we end the support you will receive a message from us, explaining you when and why we end the support.
 
 Do you have questions? Send us a message on WhatsApp: https://wa.me/3197010286964",
-    "contentType": "payment-voucher",
-    "errorCode": null,
-    "mediaUrl": "http://localhost:3000/api/notifications/imageCode/secret",
-    "status": "read",
-    "to": "whatsapp:+14155238886",
-    "type": "whatsapp",
+      "contentType": "payment-voucher",
+      "errorCode": null,
+      "mediaUrl": "http://localhost:3000/api/notifications/imageCode/secret",
+      "notificationType": "whatsapp",
+      "status": "read",
+      "to": "whatsapp:+14155238886",
+    },
+    "id": "message1",
+    "type": "message",
     "user": {
       "id": 1,
       "username": "admin@example.org",
     },
   },
   {
-    "body": "This is a message from the Red Cross.
+    "attributes": {
+      "body": "This is a message from the Red Cross.
 
 Your Albert Heijn supermarket voucher is ready to be sent.
 
@@ -52,12 +61,15 @@ Please reply “yes” to this message in order to receive:
 1. This week's voucher.
 2. Any previous vouchers you haven't received yet.
 ",
-    "contentType": "payment-templated",
-    "errorCode": null,
-    "mediaUrl": null,
-    "status": "read",
-    "to": "whatsapp:+14155238886",
-    "type": "whatsapp",
+      "contentType": "payment-templated",
+      "errorCode": null,
+      "mediaUrl": null,
+      "notificationType": "whatsapp",
+      "status": "read",
+      "to": "whatsapp:+14155238886",
+    },
+    "id": "message2",
+    "type": "message",
     "user": {
       "id": 1,
       "username": "admin@example.org",

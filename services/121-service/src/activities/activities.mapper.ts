@@ -13,7 +13,7 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
@@ -26,7 +26,7 @@ export class ActivitiesMapper {
     availableTypes,
   }: {
     transactions: GetAuditedTransactionDto[];
-    messages: TwilioMessageEntity[];
+    messages: MessageByRegistrationId[];
     notes: NoteEntity[];
     events: EventEntity[];
     availableTypes: ActivityTypeEnum[];
@@ -137,7 +137,7 @@ export class ActivitiesMapper {
     }));
   }
   private static mapMessagesToActivity(
-    messages: TwilioMessageEntity[],
+    messages: MessageByRegistrationId[],
   ): MessageActivity[] {
     return messages.map((message, index) => ({
       id: `${ActivityTypeEnum.Message}${index}`,
@@ -148,13 +148,13 @@ export class ActivitiesMapper {
       created: message.created,
       type: ActivityTypeEnum.Message,
       attributes: {
-        from: message.from,
         to: message.to,
         body: message.body,
         status: message.status,
         mediaUrl: message.mediaUrl,
         contentType: message.contentType,
         errorCode: message.errorCode,
+        notificationType: message.type,
       },
     }));
   }

@@ -49,7 +49,7 @@ import {
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-id.dto';
+import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';

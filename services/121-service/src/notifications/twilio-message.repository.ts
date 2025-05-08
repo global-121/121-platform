@@ -6,7 +6,6 @@ import { Equal, Repository } from 'typeorm';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { UserEntity } from '@121-service/src/user/user.entity';
 
 export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessageEntity> {
   constructor(
@@ -63,14 +62,27 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
   }
 
   async getManyByRegistrationId(registrationId: number) {
-    const result: (TwilioMessageEntity & { user: UserEntity })[] =
-      await this.find({
-        where: {
-          registration: { id: Equal(registrationId) },
+    const result = await this.find({
+      where: {
+        registration: { id: Equal(registrationId) },
+      },
+      relations: ['user'],
+      order: { dateCreated: 'DESC' },
+      select: {
+        userId: true,
+        user: {
+          username: true,
         },
-        relations: ['user'],
-        order: { dateCreated: 'DESC' },
-      });
+        created: true,
+        to: true,
+        body: true,
+        status: true,
+        type: true,
+        mediaUrl: true,
+        contentType: true,
+        errorCode: true,
+      },
+    });
 
     if (result.length === 1 && result[0].created === null) {
       return [];

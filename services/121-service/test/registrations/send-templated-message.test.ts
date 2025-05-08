@@ -88,7 +88,7 @@ describe('Sending templated message', () => {
         'namePartnerOrganization',
       );
 
-      expect(messageHistory[0].body).toEqual(processedTemplate);
+      expect(messageHistory[0].attributes.body).toEqual(processedTemplate);
     });
 
     it('throw error if messageTemplateKey AND message are defined', async () => {
@@ -146,7 +146,7 @@ describe('Sending templated message', () => {
         'namePartnerOrganization',
       );
 
-      expect(messageHistory[0].body).toEqual(processedTemplate);
+      expect(messageHistory[0].attributes.body).toEqual(processedTemplate);
     });
 
     it('throw error if messageTemplateKey AND message are defined', async () => {

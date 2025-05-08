@@ -6,8 +6,8 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
+import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -34,7 +34,7 @@ export class ActivitiesService {
     const availableTypes: ActivityTypeEnum[] = [];
 
     let transactions: GetAuditedTransactionDto[] = [];
-    let messages: TwilioMessageEntity[] = [];
+    let messages: MessageByRegistrationId[] = [];
     let events: EventEntity[] = [];
     let notes: NoteEntity[] = [];
 

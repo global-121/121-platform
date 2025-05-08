@@ -1,5 +1,7 @@
 import * as request from 'supertest';
 
+import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -532,15 +534,30 @@ export function unblockVisaCard(
     .send({});
 }
 
-export function getMessageHistory(
+export async function getMessageHistory(
   programId: number,
   referenceId: string,
   accessToken: string,
-): Promise<request.Response> {
-  return getServer()
-    .get(`/programs/${programId}/registrations/${referenceId}/messages`)
-    .set('Cookie', [accessToken])
-    .send();
+): Promise<{ body: MessageActivity[] }> {
+  const registrationId = await getRegistrationIdByReferenceId({
+    programId,
+    referenceId,
+    accessToken,
+  });
+
+  const activities = await getActivities({
+    programId,
+    registrationId,
+    accessToken,
+  });
+
+  const messages = activities.body.data.filter(
+    (activity) => activity.type === ActivityTypeEnum.Message,
+  );
+
+  return {
+    body: messages,
+  };
 }
 
 export async function getMessageHistoryUntilX(
@@ -548,7 +565,7 @@ export async function getMessageHistoryUntilX(
   referenceId: string,
   accessToken: string,
   x: number,
-): Promise<request.Response> {
+): Promise<{ body: MessageActivity[] }> {
   const response = await getMessageHistory(programId, referenceId, accessToken);
 
   if (Array.isArray(response.body) && response.body.length >= x) {

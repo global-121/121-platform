@@ -27,7 +27,6 @@ import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto'
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
 import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
 import {
   AdditionalAttributes,
@@ -811,53 +810,6 @@ export class RegistrationsService {
       throw new Error(error);
     }
     return newFspConfig.id;
-  }
-
-  public async getMessageHistoryRegistration(
-    referenceId: string,
-  ): Promise<MessageHistoryDto[]> {
-    const messageHistoryArray = await this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .select([
-        'twilioMessage.dateCreated as created',
-        'twilioMessage.from as from',
-        'twilioMessage.to as to',
-        'twilioMessage.body as body',
-        'twilioMessage.status as status',
-        'twilioMessage.type as type',
-        'twilioMessage.mediaUrl as "mediaUrl"',
-        'twilioMessage.contentType as "contentType"',
-        'twilioMessage.errorCode as "errorCode"',
-        'user.id as "userId"',
-        'user.username as "username"',
-      ])
-      .leftJoin('registration.twilioMessages', 'twilioMessage')
-      .leftJoin('twilioMessage.user', 'user')
-      .andWhere('registration.referenceId = :referenceId', {
-        referenceId,
-      })
-      .orderBy('twilioMessage.dateCreated', 'DESC')
-      .getRawMany();
-
-    if (
-      messageHistoryArray.length === 1 &&
-      messageHistoryArray[0].created === null
-    ) {
-      return [];
-    }
-
-    const result = messageHistoryArray.map((row) => {
-      const { userId, username, ...rest } = row;
-      return {
-        ...rest,
-        user: {
-          id: userId,
-          username,
-        },
-      };
-    });
-
-    return result;
   }
 
   public async getDuplicates(
