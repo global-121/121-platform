@@ -48,8 +48,6 @@ import { DeleteRegistrationsDto } from '@121-service/src/registration/dto/delete
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { MessageHistoryDto } from '@121-service/src/registration/dto/message-history.dto';
-import { ReferenceIdDto } from '@121-service/src/registration/dto/reference-id.dto';
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
@@ -633,28 +631,6 @@ export class RegistrationsController {
       throw new HttpException(result, HttpStatus.OK);
     }
     return result;
-  }
-
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({
-    permissions: [PermissionEnum.RegistrationNotificationREAD],
-  })
-  @ApiOperation({
-    summary: '[SCOPED] Get message history for one registration',
-  })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Message history retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/registrations/:referenceId/messages')
-  public async getMessageHistoryRegistration(
-    @Param() params: ReferenceIdDto,
-  ): Promise<MessageHistoryDto[]> {
-    return await this.registrationsService.getMessageHistoryRegistration(
-      params.referenceId,
-    );
   }
 
   @ApiTags('programs/registrations')

@@ -78,7 +78,7 @@ describe('Issue new Visa debit card', () => {
       VisaCard121Status.Substituted,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(
+    expect(lastMessage.attributes.body).toBe(
       messageTemplateNlrcOcw?.reissueVisaCard?.message?.en,
     );
   });
@@ -154,7 +154,7 @@ describe('Issue new Visa debit card', () => {
     );
 
     const lastMessageAttempt1 = messageReponseAttempt1.body[0];
-    expect(lastMessageAttempt1.body).not.toBe(
+    expect(lastMessageAttempt1.attributes.body).not.toBe(
       messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
     );
 
@@ -170,7 +170,7 @@ describe('Issue new Visa debit card', () => {
       VisaCard121Status.Substituted,
     );
     const lastMessageAttempt2 = messageReponseAttempt2.body[0];
-    expect(lastMessageAttempt2.body).toBe(
+    expect(lastMessageAttempt2.attributes.body).toBe(
       messageTemplateNlrcPv?.reissueVisaCard?.message?.en,
     );
   });

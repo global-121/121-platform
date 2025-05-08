@@ -699,14 +699,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/messages",
-    "params": [
-      "referenceId",
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/duplicates",
     "params": [
       "referenceId",

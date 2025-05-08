@@ -278,8 +278,10 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
-    expect(messagesHistoryPa1.text).toContain(
-      `€${expectedCalculatedAmountPa1}`,
+    expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
+      ]),
     );
 
     const expectedCalculatedAmountPa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
@@ -288,8 +290,10 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
-    expect(messagesHistoryPa2.text).toContain(
-      `€${expectedCalculatedAmountPa2}`,
+    expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
+      ]),
     );
 
     // should be able to payout the full amount

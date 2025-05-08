@@ -66,7 +66,7 @@ describe('(Un)Block visa debit card', () => {
       VisaCard121Status.Paused,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(
+    expect(lastMessage.attributes.body).toBe(
       messageTemplateNlrcOcw.pauseVisaCard?.message?.en,
     );
   });
@@ -113,7 +113,7 @@ describe('(Un)Block visa debit card', () => {
       VisaCard121Status.Blocked,
     );
     const lastMessage = messageReponse.body[0];
-    expect(lastMessage.body).toBe(
+    expect(lastMessage.attributes.body).toBe(
       messageTemplateNlrcOcw?.unpauseVisaCard?.message?.en,
     );
   });

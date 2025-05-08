@@ -110,20 +110,16 @@ describe('Do payment to 1 PA', () => {
         const createdDate = new Date(message.created);
         expect(createdDate.toString()).not.toBe('Invalid Date');
 
-        // Validate the from field
-        expect(typeof message.from).toBe('string');
-        expect(message.from).not.toBe('');
-
         // Remove the "created" and "from" fields from the messages
+        // @ts-expect-error don't care about deleting non-optional properties
         delete message.created;
-        delete message.from;
 
-        if (message.mediaUrl?.includes('imageCode')) {
+        if (message.attributes.mediaUrl?.includes('imageCode')) {
           const [mediaUrlPath, mediaUrlSecret] =
-            message.mediaUrl.split('imageCode/');
+            message.attributes.mediaUrl.split('imageCode/');
           imageCodeSecret = mediaUrlSecret;
           // Override the actual mediaUrl with a fixed value to avoid snapshot mismatches
-          message.mediaUrl = mediaUrlPath + 'imageCode/secret';
+          message.attributes.mediaUrl = mediaUrlPath + 'imageCode/secret';
         }
       });
 

@@ -91,6 +91,6 @@ describe('Send custom message with placeholders', () => {
       String(registrationAh.paymentCountRemaining),
     );
 
-    expect(messageHistory[0].body).toEqual(processedMessage);
+    expect(messageHistory[0].attributes.body).toEqual(processedMessage);
   });
 });

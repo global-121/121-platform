@@ -1,4 +1,5 @@
 import * as request from 'supertest';
+import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 
 import { DEBUG } from '@121-service/src/config';
 import {
@@ -20,13 +21,6 @@ import {
   getRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
-
-enum MessageStatus {
-  sent = 'sent',
-  delivered = 'delivered',
-  failed = 'failed',
-  read = 'read',
-}
 
 export async function postProgram(
   program: CreateProgramDto,
@@ -390,21 +384,21 @@ export async function waitForMessagesToComplete({
           referenceId,
           accessToken,
         );
-        return { referenceId, messageHistory: response.body as any[] };
+        return { referenceId, messageHistory: response.body };
       }),
     );
 
     const messageHistoriesWithoutMinimumMessages = messageHistories.filter(
       ({ messageHistory }) => {
         const messagesWithValidStatus = messageHistory.filter((m) => {
-          const validStatuses = [MessageStatus.read, MessageStatus.failed];
+          const validStatuses: MessageStatus[] = ['read', 'failed'];
 
-          if (m.type === 'sms') {
-            validStatuses.push(MessageStatus.sent);
+          if (m.attributes.notificationType === 'sms') {
+            validStatuses.push('sent');
           }
 
           // wait for messages actually being on a final status, given that's also something we check for in the test
-          return validStatuses.includes(m.status);
+          return validStatuses.includes(m.attributes.status);
         });
 
         return (
@@ -438,9 +432,12 @@ export async function waitForMessagesToComplete({
           accessToken,
         );
         console.log('Message History for ', referenceId);
-        // remove body to make for better console output
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        console.table(response.body.map(({ body, ...m }) => ({ ...m })));
+        console.table(
+          response.body.map(({ ...m }) => ({
+            ...m,
+            status: m.attributes.status,
+          })),
+        );
       }
     }
     throw new Error(`Timeout waiting for messages to be sent`);
