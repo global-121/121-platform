@@ -65,7 +65,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
-    "csv-parser": "^3.0.0",
+    "csv-parser": "^3.2.0",
     "easy-soap-request": "^5.6.1",
     "jimp": "^0.22.12",
     "jsonwebtoken": "^9.0.2",
