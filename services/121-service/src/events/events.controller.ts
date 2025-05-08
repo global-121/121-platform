@@ -97,36 +97,4 @@ export class EventsController {
     }
     res.send(result);
   }
-
-  // We can later extend these permissions to different types when we get more types of events
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationPersonalREAD] })
-  @ApiOperation({ summary: 'Get list of events for a specific registrationId' })
-  @ApiParam({
-    name: 'registrationId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Returned list of events for given registrationId.',
-    type: [GetEventDto],
-  })
-  @ApiTags('programs/registrations')
-  @Get('programs/:programId/registrations/:registrationId/events')
-  public async getEventsByRegistrationId(
-    @Param('registrationId', ParseIntPipe) registrationId: number,
-    @Param('programId', ParseIntPipe) programId: number,
-  ): Promise<GetEventDto[]> {
-    return await this.eventService.getEventsAsJson({
-      programId,
-      searchOptions: {
-        registrationId,
-      },
-    });
-  }
 }

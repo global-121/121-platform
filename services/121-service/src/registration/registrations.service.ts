@@ -1008,18 +1008,6 @@ export class RegistrationsService {
     });
   }
 
-  public async getReferenceId(
-    programId: number,
-    paId: number,
-  ): Promise<RegistrationEntity | null> {
-    return await this.registrationScopedRepository.findOne({
-      where: {
-        programId: Equal(programId),
-        registrationProgramId: Equal(paId),
-      },
-    });
-  }
-
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     referenceId: string,
     programId: number,

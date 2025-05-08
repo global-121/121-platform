@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { ResponseNoteDto } from '@121-service/src/notes/dto/response-note.dto';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
@@ -38,28 +37,5 @@ export class NotesService {
     note.text = text;
 
     await this.noteScopedRepository.save(note);
-  }
-
-  public async retrieveNotes(
-    referenceId: string,
-    programId: number,
-  ): Promise<ResponseNoteDto[]> {
-    const qb = this.noteScopedRepository
-      .createQueryBuilder('note')
-      .innerJoin('note.registration', 'registration')
-      .innerJoinAndSelect('note.user', 'user')
-      .andWhere('registration.referenceId = :referenceId', { referenceId })
-      .andWhere('registration.programId = :programId', { programId })
-      .select([
-        'note.id as id',
-        'note.text as text',
-        'note.registrationId as registrationId',
-        'note.userId as userId',
-        'note.created as created',
-        'user.username AS username',
-      ])
-      .orderBy('note.created', 'DESC');
-    const notes = await qb.getRawMany();
-    return notes;
   }
 }

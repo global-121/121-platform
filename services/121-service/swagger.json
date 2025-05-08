@@ -477,14 +477,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/events",
-    "params": [
-      "registrationId",
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
     "params": [
       "programId",
@@ -531,21 +523,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/payment-state-sums",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/metrics/program-stats-summary",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/registration-status",
     "params": [
       "programId"
     ]
@@ -763,14 +741,6 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/referenceid/{paId}",
-    "params": [
-      "paId",
-      "programId"
-    ]
-  },
-  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards",
     "params": [
@@ -934,14 +904,6 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
     "params": [
       "programId",

@@ -481,16 +481,6 @@ export async function postNote(
     .send({ text });
 }
 
-export async function getNotes(
-  referenceId: string,
-  programId: number,
-  accessToken: string,
-): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/registrations/${referenceId}/notes`)
-    .set('Cookie', [accessToken]);
-}
-
 export async function postMessageTemplate(
   programId: number,
   body: CreateMessageTemplateDto,

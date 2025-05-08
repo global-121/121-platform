@@ -2,7 +2,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getNotes, postNote } from '@121-service/test/helpers/program.helper';
+import { postNote } from '@121-service/test/helpers/program.helper';
 import { importRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -33,26 +33,5 @@ describe('Notes', () => {
 
     // Assert
     expect(postNoteResponse.statusCode).toBe(HttpStatus.CREATED);
-  });
-
-  it('should get a note', async () => {
-    await postNote(
-      registrationOCW1.referenceId,
-      noteText,
-      programId,
-      accessToken,
-    );
-
-    // Act
-    const getNoteResponse = await getNotes(
-      registrationOCW1.referenceId,
-      programId,
-      accessToken,
-    );
-
-    // Assert
-    expect(getNoteResponse.statusCode).toBe(HttpStatus.OK);
-    expect(getNoteResponse.body.length).toBe(1);
-    expect(getNoteResponse.body[0].text).toBe(noteText);
   });
 });

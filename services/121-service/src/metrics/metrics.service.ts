@@ -7,9 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
-import { PaymentStateSumDto } from '@121-service/src/metrics/dto/payment-state-sum.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
-import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { RowType } from '@121-service/src/metrics/dto/rolo-type.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
@@ -18,7 +16,6 @@ import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integr
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -678,97 +675,6 @@ export class MetricsService {
     return fields;
   }
 
-  public async getPaymentsWithStateSums(
-    programId: number,
-  ): Promise<PaymentStateSumDto[]> {
-    const totalProcessedPayments = await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .select('MAX(transaction.payment)')
-      .andWhere('transaction."programId" = :programId', {
-        programId,
-      })
-      .getRawOne();
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
-    });
-    const paymentNrSearch = Math.max(
-      totalProcessedPayments.max,
-      program.distributionDuration ?? 0,
-    );
-    const paymentsWithStats: PaymentStateSumDto[] = [];
-    let i = 1;
-    const transactionStepMin = await await this.transactionScopedRepository
-      .createQueryBuilder('transaction')
-      .select('MIN(transaction.transactionStep)')
-      .andWhere('transaction."programId" = :programId', {
-        programId,
-      })
-      .getRawOne();
-    while (i <= paymentNrSearch) {
-      const result = await this.getOnePaymentWithStateSum(
-        programId,
-        i,
-        transactionStepMin.min,
-      );
-      paymentsWithStats.push(result);
-      i++;
-    }
-    return paymentsWithStats;
-  }
-
-  public async getOnePaymentWithStateSum(
-    programId: number,
-    payment: number,
-    transactionStepOfInterest: number,
-  ): Promise<PaymentStateSumDto> {
-    const currentPaymentRegistrationsAndCount =
-      await this.transactionScopedRepository.findAndCount({
-        where: {
-          program: { id: Equal(programId) },
-          status: Equal(TransactionStatusEnum.success),
-          payment: Equal(payment),
-          transactionStep: Equal(transactionStepOfInterest),
-        },
-        relations: ['registration'],
-      });
-    const currentPaymentRegistrations = currentPaymentRegistrationsAndCount[0];
-    const currentPaymentCount = currentPaymentRegistrationsAndCount[1];
-    const currentPaymentRegistrationsIds = currentPaymentRegistrations.map(
-      ({ registration }) => registration.id,
-    );
-    let preExistingPa: number;
-    if (currentPaymentCount > 0) {
-      preExistingPa = await this.transactionScopedRepository
-        .createQueryBuilder('transaction')
-        .leftJoin('transaction.registration', 'registration')
-        .andWhere('transaction.registration.id IN (:...registrationIds)', {
-          registrationIds: currentPaymentRegistrationsIds,
-        })
-        .andWhere('transaction.payment = :payment', {
-          payment: payment - 1,
-        })
-        .andWhere('transaction.status = :status', {
-          status: TransactionStatusEnum.success,
-        })
-        .andWhere('transaction.transactionStep = :transactionStep', {
-          transactionStep: transactionStepOfInterest,
-        })
-        .andWhere('transaction.programId = :programId', {
-          programId,
-        })
-        .getCount();
-    } else {
-      preExistingPa = 0;
-    }
-    return {
-      id: payment,
-      values: {
-        'pre-existing': preExistingPa,
-        new: currentPaymentCount - preExistingPa,
-      },
-    };
-  }
-
   public async getProgramStats(programId: number): Promise<ProgramStats> {
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
@@ -870,19 +776,5 @@ export class MetricsService {
       previousRegistrationProgramId = cardRawData.paId;
     }
     return exportCardDetailsArray;
-  }
-
-  public async getRegistrationStatusStats(
-    programId: number,
-  ): Promise<RegistrationStatusStats[]> {
-    const query = this.registrationScopedRepository
-      .createQueryBuilder('registration')
-      .select(`registration."registrationStatus" AS status`)
-      .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
-      .andWhere({ programId })
-      .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
-      .groupBy(`registration."registrationStatus"`);
-    const res = await query.getRawMany<RegistrationStatusStats>();
-    return res;
   }
 }

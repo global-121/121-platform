@@ -712,30 +712,6 @@ export class RegistrationsController {
     });
   }
 
-  @ApiTags('programs/registrations')
-  @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get Person Affected referenceId' })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'paId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'ReferenceId retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
-  })
-  @Get('programs/:programId/registrations/referenceid/:paId')
-  public async getReferenceId(
-    @Param() params: { programId: number; paId: number },
-  ): Promise<RegistrationEntity | null> {
-    if (isNaN(params.paId)) {
-      throw new HttpException('paId is not a number', HttpStatus.BAD_REQUEST);
-    }
-
-    return await this.registrationsService.getReferenceId(
-      params.programId,
-      params.paId,
-    );
-  }
-
   // Re-issue card: this is placed in registrationscontroller because it also sends messages and searches by referenceId
   @ApiTags('financial-service-providers/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
