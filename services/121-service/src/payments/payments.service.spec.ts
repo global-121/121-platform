@@ -10,12 +10,12 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 function createMockTransaction(
-  id: number,
+  registrationId: number,
   amount: number,
   status: TransactionStatusEnum,
 ): GetTransactionResponseDto {
   return {
-    id,
+    id: registrationId,
     created: new Date(),
     updated: new Date(),
     payment: 1,
@@ -23,10 +23,10 @@ function createMockTransaction(
     amount,
     errorMessage: null,
     programFinancialServiceProviderConfigurationName: 'someFsp',
-    registrationProgramId: id + 100,
-    registrationId: id,
+    registrationProgramId: registrationId + 100,
+    registrationId,
     registrationStatus: RegistrationStatusEnum.included,
-    registrationReferenceId: `REF-${id}`,
+    referenceId: `REF-${registrationId}`,
     registrationName: undefined,
   };
 }

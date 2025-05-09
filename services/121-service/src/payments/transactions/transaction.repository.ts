@@ -36,6 +36,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
   }
 
+  // TODO: This method should be moved to the payment repository, however we do not have this yet as there is no payment entity
   public async getTransactionsForPayment({
     programId,
     payment,
@@ -49,7 +50,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       updated: Date;
       payment: number;
       registrationProgramId: number;
-      registrationReferenceId: string;
+      referenceId: string;
       registrationId: number;
       status: TransactionStatusEnum;
       registrationStatus: RegistrationStatusEnum;
@@ -65,7 +66,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.updated AS "updated"',
         'transaction.payment AS payment',
         'r."registrationProgramId"',
-        'r."referenceId" as "registrationReferenceId"',
+        'r."referenceId" as "referenceId"',
         'r."id" as "registrationId"',
         'r."registrationStatus"',
         'status',
