@@ -29,23 +29,6 @@ export class DownloadService {
     });
   }
 
-  async downloadUnknownArrayToCSV({
-    file,
-    filename,
-  }: {
-    file: unknown[];
-    filename: string;
-  }) {
-    const { utils: XLSXUtils } = await import('~/utils/xlsx-wrapper');
-    const worksheet = XLSXUtils.json_to_sheet(file);
-    const csvContents = XLSXUtils.sheet_to_csv(worksheet);
-
-    this.downloadFile({
-      file: new Blob([csvContents], { type: 'text/csv' }),
-      filename: `${filename}.csv`,
-    });
-  }
-
   async downloadArrayToXlsx({
     data,
     fileName,
@@ -61,6 +44,6 @@ export class DownloadService {
       Sheets: { data: worksheet },
       SheetNames: ['data'],
     };
-    writeXLSX(workbook, ExportService.toExportFileName(fileName));
+    writeXLSX(workbook, ExportService.toExportFileName(fileName, 'xlsx'));
   }
 }

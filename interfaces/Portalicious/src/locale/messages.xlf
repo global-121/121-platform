@@ -787,9 +787,6 @@
       <trans-unit id="4452017686076766931" datatype="html">
         <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="5701571628417198513" datatype="html">
-        <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
-      </trans-unit>
       <trans-unit id="export" datatype="html">
         <source>Export</source>
       </trans-unit>
@@ -1591,6 +1588,15 @@
       </trans-unit>
       <trans-unit id="3643986098140143407" datatype="html">
         <source>Users cannot change their own roles</source>
+      </trans-unit>
+      <trans-unit id="1534253075269092462" datatype="html">
+        <source>Format:</source>
+      </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x equiv-text="{{ format }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="7042900205243073135" datatype="html">
+        <source>You&apos;re about to download a file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registration(s).</source>
       </trans-unit>
     </body>
   </file>
