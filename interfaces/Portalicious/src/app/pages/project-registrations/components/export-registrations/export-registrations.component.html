@@ -15,12 +15,37 @@
   [mutationData]="{
     type: ExportType.allRegistrations,
     paginateQuery: exportSelectedActionData()?.query,
+    format: exportRegistrationsFormGroup.getRawValue().format,
   }"
+  [formGroup]="exportRegistrationsFormGroup"
 >
   <p i18n>
-    You're about to download an Excel file for
-    {{ exportSelectedActionData()?.count }} selected registrations.
+    You're about to download a file for
+    {{ exportSelectedActionData()?.count }} selected registration(s).
   </p>
+
+  <strong
+    i18n
+    class="my-2 inline-block"
+    >Format:</strong
+  >
+  <div class="mb-4 flex flex-wrap gap-4">
+    @for (format of ['xlsx', 'csv']; track $index) {
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+      <label class="flex cursor-pointer items-center">
+        <p-radioButton
+          [value]="format"
+          formControlName="format"
+        />
+        <span
+          class="ms-2 uppercase"
+          i18n
+          >{{ format }}</span
+        >
+      </label>
+    }
+  </div>
+
   <app-latest-export-date
     [projectId]="projectId()"
     [exportType]="ExportType.allRegistrations"

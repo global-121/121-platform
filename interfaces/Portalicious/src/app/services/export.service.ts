@@ -24,9 +24,9 @@ import { addDaysToDate, dateToIsoString } from '~/utils/date';
   providedIn: 'root',
 })
 export class ExportService {
-  static toExportFileName(excelFileName: string): string {
+  static toExportFileName(excelFileName: string, extension: string): string {
     const date = new Date();
-    return `${excelFileName}-${date.toISOString().slice(0, 10)}.xlsx`;
+    return `${excelFileName}-${date.toISOString().slice(0, 10)}.${extension}`;
   }
 
   private queryClient = inject(QueryClient);
@@ -44,6 +44,7 @@ export class ExportService {
     toDate,
     minPayment,
     maxPayment,
+    format,
   }: {
     type: 'pa-data-changes' | ExportType;
     paginateQuery?: PaginateQuery;
@@ -51,6 +52,7 @@ export class ExportService {
     toDate?: Date;
     minPayment?: number;
     maxPayment?: number;
+    format: 'csv' | 'xlsx';
   }) {
     if (type !== ExportType.allRegistrations && paginateQuery) {
       throw new Error(
@@ -59,7 +61,7 @@ export class ExportService {
     }
 
     const exportParams: HttpParamsOptions['fromObject'] = {
-      format: 'xlsx',
+      format: format === 'csv' ? 'json' : format,
     };
 
     if (fromDate) {
@@ -106,6 +108,7 @@ export class ExportService {
       toDate,
       minPayment,
       maxPayment,
+      format = 'xlsx',
     }: {
       type: 'pa-data-changes' | ExportType;
       paginateQuery?: PaginateQuery;
@@ -113,6 +116,7 @@ export class ExportService {
       toDate?: Date;
       minPayment?: number;
       maxPayment?: number;
+      format?: 'csv' | 'xlsx';
     }) => {
       toastService.showToast({
         summary: $localize`Exporting`,
@@ -121,6 +125,13 @@ export class ExportService {
         showSpinner: true,
       });
 
+      // XXX: check which formats are supported for each type
+      if (format !== 'xlsx' && type !== ExportType.allRegistrations) {
+        throw new Error(
+          `Export format ${format} is not supported for type: ${type}`,
+        );
+      }
+
       const params = this.generateExportParams({
         type,
         paginateQuery,
@@ -128,6 +139,7 @@ export class ExportService {
         toDate,
         minPayment,
         maxPayment,
+        format,
       });
 
       try {
@@ -150,7 +162,7 @@ export class ExportService {
           );
         }
 
-        const filename = ExportService.toExportFileName(type);
+        const filename = ExportService.toExportFileName(type, format);
 
         return { exportResult, filename };
       } catch (error) {
