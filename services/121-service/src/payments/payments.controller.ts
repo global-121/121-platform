@@ -248,7 +248,7 @@ export class PaymentsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get all transactions' })
+  @ApiOperation({ summary: '[SCOPED] Get all transactions for this payment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
