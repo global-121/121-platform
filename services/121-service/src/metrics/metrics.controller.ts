@@ -29,7 +29,7 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
-import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
+import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -50,7 +50,7 @@ export class MetricsController {
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
   @ApiOperation({
-    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allRegistrations}`,
+    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allRegistrations}. If no "select" is provided, then the default export columns will be returned.`,
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -92,7 +92,7 @@ export class MetricsController {
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
     RegistrationViewEntity,
-    PaginateConfigRegistrationViewOnlyFilters,
+    PaginateConfigRegistrationWithoutSort,
   )
   public async getExportList(
     @Param('programId', ParseIntPipe)
