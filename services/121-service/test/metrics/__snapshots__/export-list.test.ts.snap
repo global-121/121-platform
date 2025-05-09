@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Metric export list should support using "select" to retrieve a specific subset of columns 1`] = `
+[
+  {
+    "fullName": "Juliet Marsh",
+    "phoneNumber": "15005550112",
+    "referenceId": "reference-id-scoped-middelburg-pv",
+  },
+  {
+    "fullName": "Jane Doe",
+    "phoneNumber": "15005550111",
+    "referenceId": "reference-id-scoped-goes-pv",
+  },
+  {
+    "fullName": "Sam Winters",
+    "phoneNumber": "15005550121",
+    "referenceId": "reference-id-scoped-utrecht-pv",
+  },
+  {
+    "fullName": "Nick Brouwers",
+    "phoneNumber": "15005550200",
+    "referenceId": "reference-id-not-scoped-pv",
+  },
+]
+`;
