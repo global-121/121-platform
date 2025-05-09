@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 
+import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
@@ -12,20 +13,21 @@ function createMockTransaction(
   id: number,
   amount: number,
   status: TransactionStatusEnum,
-) {
+): GetTransactionResponseDto {
   return {
     id,
-    registrationId: id,
-    registrationStatus: RegistrationStatusEnum.included,
-    amount,
-    status,
     created: new Date(),
     updated: new Date(),
     payment: 1,
-    registrationProgramId: id + 100,
-    referenceId: `REF-${id}`,
+    status,
+    amount,
     errorMessage: null,
     programFinancialServiceProviderConfigurationName: 'someFsp',
+    registrationProgramId: id + 100,
+    registrationId: id,
+    registrationStatus: RegistrationStatusEnum.included,
+    registrationReferenceId: `REF-${id}`,
+    registrationName: undefined,
   };
 }
 
@@ -80,8 +82,8 @@ describe('PaymentsService - getTransactions', () => {
 
     // Assert
     expect(result).toEqual([
-      { ...mockTransactions[0], name: 'John Doe' },
-      { ...mockTransactions[1], name: 'Jane Smith' },
+      { ...mockTransactions[0], registrationName: 'John Doe' },
+      { ...mockTransactions[1], registrationName: 'Jane Smith' },
     ]);
   });
 

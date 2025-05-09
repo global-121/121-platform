@@ -49,7 +49,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       updated: Date;
       payment: number;
       registrationProgramId: number;
-      referenceId: string;
+      registrationReferenceId: string;
       registrationId: number;
       status: TransactionStatusEnum;
       registrationStatus: RegistrationStatusEnum;
@@ -65,7 +65,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.updated AS "updated"',
         'transaction.payment AS payment',
         'r."registrationProgramId"',
-        'r."referenceId"',
+        'r."referenceId" as "registrationReferenceId"',
         'r."id" as "registrationId"',
         'r."registrationStatus"',
         'status',
