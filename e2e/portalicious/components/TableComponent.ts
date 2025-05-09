@@ -17,6 +17,8 @@ class TableComponent {
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
+  readonly continueToPreviewButton: Locator;
+  readonly sendMessageSwitch: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
   readonly rangeDropdown: Locator;
@@ -44,6 +46,10 @@ class TableComponent {
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.continueToPreviewButton = this.page.getByRole('button', {
+      name: 'Continue to preview',
+    });
+    this.sendMessageSwitch = this.page.getByLabel('Send a message to');
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
     this.rangeDropdown = this.page
@@ -313,6 +319,53 @@ class TableComponent {
     await this.approveButton.click();
   }
 
+  async fillCustomMessage(message: string) {
+    await this.sendMessageSwitch.check();
+    await this.page.locator('textarea').fill(message);
+  }
+
+  async selectRegistrationByName(name: string) {
+    const registrationName = this.page.locator('tr').filter({ hasText: name });
+    const checkbox = registrationName.locator('input[type="checkbox"]');
+
+    await checkbox.click();
+  }
+
+  async changeRegistrationStatusByNameWithMessage({
+    registrationName,
+    status,
+    message,
+    customMessage = false,
+    templateMessage = false,
+  }: {
+    registrationName: string;
+    status: string;
+    message?: string;
+    customMessage?: boolean;
+    templateMessage?: boolean;
+  }) {
+    const statusButton = this.page.getByRole('button', { name: status });
+    const placeholder = this.page.getByPlaceholder('Enter reason');
+
+    await this.selectRegistrationByName(registrationName);
+    await statusButton.click();
+    // Condition for when reason is required
+    if (templateMessage === true) {
+      await this.sendMessageSwitch.check();
+      await this.approveButton.click();
+    } else if (customMessage === true) {
+      await placeholder.fill('Test reason');
+      await this.fillCustomMessage(message ?? '');
+      await this.continueToPreviewButton.click();
+      await this.approveButton.click();
+    } else {
+      if (await placeholder.isVisible()) {
+        await placeholder.fill('Test reason');
+      }
+      await this.approveButton.click();
+    }
+  }
+
   async validateAllRecordsCount(expectedCount: number) {
     // Wait for the pagination element to contain the expected count
     await expect(async () => {
@@ -382,6 +435,32 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+  }
+
+  async validateMessageActivityByTypeAndText({
+    notificationType,
+    message,
+  }: {
+    notificationType: string;
+    message: string;
+  }) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+    const notificationText = this.page.locator('tr').filter({
+      hasText: message,
+    });
+
+    await messageNotification.getByRole('button').click();
+    await expect(notificationText).toHaveText(message);
+  }
+
+  async validateActivityNotPresentByType(notificationType: string) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+
+    await expect(messageNotification).not.toBeVisible();
   }
 }
 
