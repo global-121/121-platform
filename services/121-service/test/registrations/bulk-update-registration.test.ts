@@ -1,6 +1,5 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   bulkUpdateRegistrationsCSV,
   importRegistrationsCSV,
@@ -45,24 +44,20 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
   it('Should bulk update and validate changed records', async () => {
     const registrationDataThatWillChangePa1 = {
-      phoneNumber: '14155238880',
       fullName: 'updated name1',
       addressStreet: 'newStreet1',
       addressHouseNumber: '2',
       addressHouseNumberAddition: null,
       preferredLanguage: 'ar',
       paymentAmountMultiplier: 2,
-      whatsappPhoneNumber: '14155238880',
     };
     const registrationDataThatWillChangePa2 = {
-      phoneNumber: '14155238881',
       fullName: 'updated name 2',
       addressStreet: 'newStreet2',
       addressHouseNumber: '3',
       addressHouseNumberAddition: 'updated',
       preferredLanguage: 'nl',
       paymentAmountMultiplier: 3,
-      whatsappPhoneNumber: '14155238881',
     };
 
     // Registration before patch
@@ -214,97 +209,6 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       registrationDataThatWillChangePa2,
     );
 
-    expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
-    expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
-  });
-
-  it('Should bulk update if phoneNumber column is empty and program is configured as allowing empty phone number', async () => {
-    const registrationDataThatWillChangePa1 = {
-      fullName: 'updated name1',
-      addressStreet: 'newStreet1',
-      addressHouseNumber: '2',
-      addressHouseNumberAddition: null,
-      preferredLanguage: 'ar',
-      paymentAmountMultiplier: 2,
-      phoneNumber: '14155238880',
-    };
-    const registrationDataThatWillChangePa2 = {
-      fullName: 'updated name 2',
-      addressStreet: 'newStreet2',
-      addressHouseNumber: '3',
-      addressHouseNumberAddition: 'updated',
-      preferredLanguage: 'nl',
-      paymentAmountMultiplier: 3,
-      phoneNumber: null,
-    };
-    await patchProgram(
-      programIdOcw,
-      { allowEmptyPhoneNumber: true },
-      accessToken,
-    );
-
-    // Registration before patch
-    const searchByReferenceIdBeforePatchPa1 =
-      await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-        programIdOcw,
-        accessToken,
-      );
-    const pa1BeforePatch = searchByReferenceIdBeforePatchPa1.body.data[0];
-
-    const searchByReferenceIdBeforePatchPa2 =
-      await searchRegistrationByReferenceId(
-        '17dc9451-1273-484c-b2e8-ae21b51a96ab',
-        programIdOcw,
-        accessToken,
-      );
-    const pa2BeforePatch = searchByReferenceIdBeforePatchPa2.body.data[0];
-
-    // Act
-    const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
-      programIdOcw,
-      './test-registration-data/test-registrations-patch-OCW-without-phoneNumber-column.csv',
-      accessToken,
-      'test-reason',
-    );
-    expect(bulkUpdateResult.statusCode).toBe(200);
-
-    await waitFor(2000);
-
-    const searchByReferenceIdAfterPatchPa1 =
-      await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
-        programIdOcw,
-        accessToken,
-      );
-    const pa1AfterPatch = searchByReferenceIdAfterPatchPa1.body.data[0];
-
-    const searchByReferenceIdAfterPatchPa2 =
-      await searchRegistrationByReferenceId(
-        '17dc9451-1273-484c-b2e8-ae21b51a96ab',
-        programIdOcw,
-        accessToken,
-      );
-    const pa2AfterPatch = searchByReferenceIdAfterPatchPa2.body.data[0];
-
-    // Assert
-    // Explicit assertions for pa1 using patch data
-    expect(pa1AfterPatch).toMatchObject(registrationDataThatWillChangePa1);
-
-    // Explicit assertions for pa2 using patch data
-    expect(pa2AfterPatch).toMatchObject(registrationDataThatWillChangePa2);
-
-    const dataThatStaysTheSamePa1 = filterUnchangedProperties(
-      pa1BeforePatch,
-      registrationDataThatWillChangePa1,
-    );
-
-    const dataThatStaysTheSamePa2 = filterUnchangedProperties(
-      pa2BeforePatch,
-      registrationDataThatWillChangePa2,
-    );
-
-    // Ensure unchanged fields remain the same
     expect(pa1AfterPatch).toMatchObject(dataThatStaysTheSamePa1);
     expect(pa2AfterPatch).toMatchObject(dataThatStaysTheSamePa2);
   });

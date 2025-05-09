@@ -194,7 +194,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -239,7 +238,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
@@ -265,7 +263,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
@@ -290,7 +287,6 @@ describe('RegistrationsInputValidator', () => {
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
           validateExistingReferenceId: false,
-          validatePhoneNumberLookup: false,
           validateUniqueReferenceId: false,
         },
       }),
@@ -320,7 +316,6 @@ describe('RegistrationsInputValidator', () => {
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
           validateExistingReferenceId: true,
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
         },
       }),
@@ -349,7 +344,6 @@ describe('RegistrationsInputValidator', () => {
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
         validateExistingReferenceId: true,
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
       },
     });
@@ -392,7 +386,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -430,7 +423,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -441,5 +433,44 @@ describe('RegistrationsInputValidator', () => {
       },
     };
     expect(result[0]).toEqual(expectedResult);
+  });
+
+  it('should reject bulk updates containing telephone attributes', async () => {
+    const csvArray = [
+      {
+        referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        phoneNumber: '14155238880',
+        whatsappPhoneNumber: '14155238880',
+      },
+    ];
+
+    const validationPromise = validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.bulkUpdate,
+      validationConfig: {
+        validateUniqueReferenceId: false,
+        validateExistingReferenceId: true,
+      },
+    });
+
+    await expect(validationPromise).rejects.toThrow(HttpException);
+    await expect(validationPromise).rejects.toMatchObject({
+      response: expect.arrayContaining([
+        {
+          lineNumber: 1,
+          column: DefaultRegistrationDataAttributeNames.phoneNumber,
+          value: '14155238880',
+          error: `Attribute ${DefaultRegistrationDataAttributeNames.phoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
+        },
+        {
+          lineNumber: 1,
+          column: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+          value: '14155238880',
+          error: `Attribute ${FinancialServiceProviderAttributes.whatsappPhoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
+        },
+      ]),
+    });
   });
 });

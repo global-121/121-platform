@@ -55,7 +55,12 @@ export class RegistrationsInputValidator {
       string,
       MappedPaginatedRegistrationDto
     >();
-    if (typeOfInput === RegistrationValidationInputType.update) {
+    if (
+      [
+        RegistrationValidationInputType.update,
+        RegistrationValidationInputType.bulkUpdate,
+      ].includes(typeOfInput)
+    ) {
       originalRegistrationsMap = await this.getOriginalRegistrationsOrThrow(
         registrationInputArray,
         programId,
@@ -89,10 +94,12 @@ export class RegistrationsInputValidator {
     const validatedArray: any = [];
 
     for (const [i, row] of registrationInputArray.entries()) {
-      const originalRegistration =
-        typeOfInput === RegistrationValidationInputType.update
-          ? originalRegistrationsMap.get(row.referenceId as string)
-          : undefined;
+      const originalRegistration = [
+        RegistrationValidationInputType.update,
+        RegistrationValidationInputType.bulkUpdate,
+      ].includes(typeOfInput)
+        ? originalRegistrationsMap.get(row.referenceId as string)
+        : undefined;
 
       const validatedRegistrationInput: ValidatedRegistrationInput = {
         data: {},
@@ -251,7 +258,10 @@ export class RegistrationsInputValidator {
         program.programRegistrationAttributes.map(async (att) => {
           // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
           if (
-            typeOfInput === RegistrationValidationInputType.update &&
+            [
+              RegistrationValidationInputType.update,
+              RegistrationValidationInputType.bulkUpdate,
+            ].includes(typeOfInput) &&
             row[att.name] === undefined
           ) {
             return;
@@ -269,13 +279,21 @@ export class RegistrationsInputValidator {
           }
 
           if (att.type === RegistrationAttributeTypes.tel) {
+            if (RegistrationValidationInputType.bulkUpdate === typeOfInput) {
+              errors.push({
+                lineNumber: i + 1,
+                column: att.name,
+                value: row[att.name],
+                error: `Attribute ${att.name} is of type tel (telephone number) and cannot be updated in bulk`,
+              });
+            }
             /*
              * ==================================================================
              * If an attribute is a phone number, validate it using Twilio lookup
              * ==================================================================
              */
 
-            if (row[att.name] && validationConfig.validatePhoneNumberLookup) {
+            if (row[att.name] && validationConfig) {
               const { errorObj, sanitized } =
                 await this.validateLookupPhoneNumber({
                   value: row[att.name],
@@ -435,7 +453,10 @@ export class RegistrationsInputValidator {
   }): ValidateRegistrationErrorObject | undefined {
     // The registration is being patched, and the programFinancialServiceProviderConfigurationName is not being updated so the validation can be skipped
     if (
-      typeOfInput === RegistrationValidationInputType.update &&
+      [
+        RegistrationValidationInputType.update,
+        RegistrationValidationInputType.bulkUpdate,
+      ].includes(typeOfInput) &&
       (programFinancialServiceProviderConfigurationName == null ||
         programFinancialServiceProviderConfigurationName === '')
     ) {
@@ -508,7 +529,10 @@ export class RegistrationsInputValidator {
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
     if (
-      typeOfInput === RegistrationValidationInputType.update &&
+      [
+        RegistrationValidationInputType.update,
+        RegistrationValidationInputType.bulkUpdate,
+      ].includes(typeOfInput) &&
       !preferredLanguage === undefined
     ) {
       return;
@@ -605,7 +629,10 @@ export class RegistrationsInputValidator {
 
     // If scopeOfInput is null, return true for bulkUpdate, false otherwise
     if (scopeOfInput == null) {
-      return typeOfInput === RegistrationValidationInputType.update;
+      return [
+        RegistrationValidationInputType.update,
+        RegistrationValidationInputType.bulkUpdate,
+      ].includes(typeOfInput);
     }
 
     // Check if scopeOfInput starts with userScope

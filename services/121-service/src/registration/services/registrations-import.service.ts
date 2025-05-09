@@ -407,7 +407,6 @@ export class RegistrationsImportService {
     userId: number,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
-      validatePhoneNumberLookup: true,
       validateUniqueReferenceId: true,
       validateExistingReferenceId: true,
     };
@@ -428,7 +427,6 @@ export class RegistrationsImportService {
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
       validateExistingReferenceId: false,
-      validatePhoneNumberLookup: false,
       validateUniqueReferenceId: false,
     };
     const result = await this.registrationsInputValidator.validateAndCleanInput(
@@ -436,7 +434,7 @@ export class RegistrationsImportService {
         registrationInputArray: csvArray,
         programId,
         userId,
-        typeOfInput: RegistrationValidationInputType.update,
+        typeOfInput: RegistrationValidationInputType.bulkUpdate,
         validationConfig,
       },
     );
