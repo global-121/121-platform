@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-export class TransactionResponseDto {
+export class GetTransactionResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
   public id: number;
   @ApiProperty({
@@ -35,7 +35,7 @@ export class TransactionResponseDto {
   @ApiProperty({ example: RegistrationStatusEnum.included, type: 'string' })
   public registrationStatus: RegistrationStatusEnum;
   @ApiProperty({ example: '12345', type: 'string' })
-  public referenceId: string;
+  public registrationReferenceId: string;
   @ApiProperty({ example: 'Juan Garcia' })
-  public name?: string;
+  public registrationName?: string;
 }

@@ -61,11 +61,11 @@ describe('Registrations - [Scoped]', () => {
       payment,
       registrationProgramId: expect.any(Number),
       referenceId: registrationScopedMiddelburgPv.referenceId,
-      registrationId: expect.any(Number),
+      registrationReferenceId: expect.any(Number),
       status: TransactionStatusEnum.success,
       amount: expect.any(Number),
       errorMessage: null,
-      name: registrationScopedMiddelburgPv.fullName,
+      registrationName: registrationScopedMiddelburgPv.fullName,
       programFinancialServiceProviderConfigurationName: fspConfig.name,
     });
 

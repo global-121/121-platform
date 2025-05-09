@@ -17,11 +17,11 @@ import {
 } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
-import { TransactionResponseDto } from '@121-service/src/payments/dto/transaction-response.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -1280,7 +1280,7 @@ export class PaymentsService {
   }: {
     programId: number;
     payment: number;
-  }): Promise<TransactionResponseDto[]> {
+  }): Promise<GetTransactionResponseDto[]> {
     const transactions =
       await this.transactionScopedRepository.getTransactionsForPayment({
         programId,
@@ -1317,7 +1317,7 @@ export class PaymentsService {
     const result = transactions.map((transaction) => {
       return {
         ...transaction,
-        name: nameMap.get(transaction.registrationId),
+        registrationName: nameMap.get(transaction.registrationId),
       };
     });
 
