@@ -7,6 +7,7 @@ import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchang
 import { ExchangeRatesController } from '@121-service/src/exchange-rates/exchange-rates.controller';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { UserModule } from '@121-service/src/user/user.module';
 
@@ -16,7 +17,12 @@ import { UserModule } from '@121-service/src/user/user.module';
     UserModule,
     HttpModule,
   ],
-  providers: [ExchangeRatesService, CustomHttpService, ExchangeRatesApiService],
+  providers: [
+    ExchangeRatesService,
+    CustomHttpService,
+    AzureLogService,
+    ExchangeRatesApiService,
+  ],
   controllers: [ExchangeRatesController],
   exports: [ExchangeRatesService, ExchangeRatesApiService],
 })

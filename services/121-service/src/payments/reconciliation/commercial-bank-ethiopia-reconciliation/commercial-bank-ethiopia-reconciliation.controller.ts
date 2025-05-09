@@ -11,6 +11,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/commercial-bank-ethiopia')
@@ -18,6 +19,7 @@ import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/pa
 export class CommercialBankEthiopiaReconciliationController {
   public constructor(
     private commercialBankEthiopiaReconciliationService: CommercialBankEthiopiaReconciliationService,
+    private azureLogService: AzureLogService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -64,6 +66,7 @@ export class CommercialBankEthiopiaReconciliationController {
           'Error: CBE - retrieveAndUpsertAccountEnquiries',
           error.toString(),
         );
+        this.azureLogService.logError(error, true);
       })
       .finally(() => {
         console.info('Complete: CBE - retrieveAndUpsertAccountEnquiries');
