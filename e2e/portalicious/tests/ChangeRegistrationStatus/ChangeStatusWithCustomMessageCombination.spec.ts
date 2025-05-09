@@ -104,7 +104,7 @@ test.describe('Change status of registration with and without custom message', (
       await registrations.goToRegistrationByName({
         registrationName: registrationPV6.fullName,
       });
-      await tableComponent.validatActivityNotPresentByType('Custom message');
+      await tableComponent.validateActivityNotPresentByType('Custom message');
     });
   });
 });
