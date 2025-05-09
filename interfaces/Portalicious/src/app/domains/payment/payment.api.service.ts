@@ -12,6 +12,7 @@ import {
   Payment,
   PaymentAggregate,
   PaymentStatus,
+  PaymentTransaction,
 } from '~/domains/payment/payment.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
 import { Dto } from '~/utils/dto-type';
@@ -32,12 +33,32 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getPayment(
-    projectId: Signal<number | string | undefined>,
-    paymentId: Signal<number | string | undefined>,
-  ) {
+  getPayment({
+    projectId,
+    paymentId,
+  }: {
+    projectId: Signal<number | string | undefined>;
+    paymentId: Signal<number | string | undefined>;
+  }) {
     return this.generateQueryOptions<PaymentAggregate>({
       path: [...BASE_ENDPOINT(projectId as Signal<number | string>), paymentId],
+      enabled: () => !!projectId() && !!paymentId(),
+    });
+  }
+
+  getPaymentTransactions({
+    projectId,
+    paymentId,
+  }: {
+    projectId: Signal<number | string | undefined>;
+    paymentId: Signal<number | string | undefined>;
+  }) {
+    return this.generateQueryOptions<PaymentTransaction[]>({
+      path: [
+        ...BASE_ENDPOINT(projectId as Signal<number | string>),
+        paymentId,
+        'transactions',
+      ],
       enabled: () => !!projectId() && !!paymentId(),
     });
   }
