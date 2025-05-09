@@ -15,6 +15,7 @@ import {
   PaymentTransaction,
 } from '~/domains/payment/payment.model';
 import { PaginateQuery } from '~/services/paginate-query.service';
+import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
@@ -140,7 +141,7 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  importReconciliationData({
+  async importReconciliationData({
     projectId,
     paymentId,
     file,
@@ -152,7 +153,9 @@ export class PaymentApiService extends DomainApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.httpWrapperService.perform121ServiceRequest<Dto<ImportResult>>({
+    const response = await this.httpWrapperService.perform121ServiceRequest<
+      Dto<ImportResult>
+    >({
       method: 'POST',
       endpoint: this.pathToQueryKey([
         ...BASE_ENDPOINT(projectId),
@@ -162,6 +165,17 @@ export class PaymentApiService extends DomainApiService {
       body: formData,
       isUpload: true,
     });
+
+    let blobResult: Blob | undefined;
+
+    if (response.importResult) {
+      blobResult = unknownArrayToCsvBlob(response.importResult);
+    }
+
+    return {
+      ...response,
+      blobResult,
+    };
   }
 
   public invalidateCache(
