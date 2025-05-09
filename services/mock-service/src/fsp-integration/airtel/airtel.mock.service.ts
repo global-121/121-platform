@@ -12,7 +12,7 @@ import {
 export const AirtelAuthToken = 'FjE953LG40P0hdehYEiSkUd0hGWshyFf';
 // PIN we use during testing.
 const PIN_TESTING = '1234';
-// A keypair we use during testing.
+// A 1024 keypair we use during testing.
 const _pinEncryptionV1PublicKey =
   'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4Fqi/qpxIJMwtqrHS1KdKucZtKB2+Qn5H5U77TEnv7MPSQBY13DTGnuxP7DGCVf2GXgC/8g5VC8uage3wzzEkd1KN8UJqBil1U01qksqTFip6hJHvgdb/gBSH+HJOipF64UFrxs4ygoYL4wQJpbIC4LHxBEIxwuzrJKm0jSQhdwIDAQAB';
 const pinEncryptionV1PrivateKey =
