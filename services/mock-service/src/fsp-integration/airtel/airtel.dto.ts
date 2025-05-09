@@ -2,20 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { v4 as uuid } from 'uuid';
 
 export class AirtelAuthenticateBodyDto {
-  @ApiProperty({ example: uuid(), type: 'string' })
+  @ApiProperty({ example: uuid() })
   public client_id: string;
-  @ApiProperty({ example: uuid(), type: 'string' })
+  @ApiProperty({ example: uuid() })
   public client_secret: string;
-  @ApiProperty({ example: 'client_credentials', type: 'string' })
+  @ApiProperty({ example: 'client_credentials' })
   public grant_type: string;
 }
 
 export class AirtelAuthenticateResponseBodySuccessDto {
-  // @ApiProperty({ example: 'FjE953LG40P0hdehYEiSkUd0hGWshyFf', type: 'string' })
   public access_token: string;
-  // @ApiProperty({ example: 180, type: 'number' })
   public expires_in: number;
-  // @ApiProperty({ example: 'bearer', type: 'string' })
   public token_type: string;
 }
 
@@ -25,27 +22,24 @@ export class AirtelAuthenticateResponseBodyFailDto {
 }
 
 class AirtelDisbursementV1PayloadPayeeDto {
-  @ApiProperty({ example: '123456789', type: 'string' })
-  public readonly msisdn: string;
+  @ApiProperty({ example: '123456789' })
+  public msisdn: string;
 }
 
 class AirtelDisbursementV1PayloadTransactionDto {
-  @ApiProperty({ example: 0.1, type: 'number' })
-  public readonly amount: number;
-  @ApiProperty({ example: uuid(), type: 'string' })
-  public readonly id: string;
+  @ApiProperty({ example: 0.1 })
+  public amount: number;
+  @ApiProperty({ example: uuid() })
+  public id: string;
 }
 
 export class AirtelDisbursementV1PayloadDto {
   @ApiProperty()
   public payee: AirtelDisbursementV1PayloadPayeeDto;
-  @ApiProperty({
-    example: uuid(),
-    type: 'string',
-  })
-  @ApiProperty({ example: uuid(), type: 'string' })
+  @ApiProperty({ example: uuid() })
+  @ApiProperty({ example: uuid() })
   public reference: string;
-  @ApiProperty({ example: 'not-really-encrypted', type: 'string' })
+  @ApiProperty({ example: 'not-really-encrypted' })
   public pin: string;
   @ApiProperty()
   public transaction: AirtelDisbursementV1PayloadTransactionDto;
@@ -53,7 +47,7 @@ export class AirtelDisbursementV1PayloadDto {
 
 class AirtelDisbursementV1ResponseSuccessBodyDataTransactionDto {
   //
-  @ApiProperty({ example: 'CI250506.1824.H00006', type: 'string' })
+  @ApiProperty({ example: 'CI250506.1824.H00006' })
   public reference_id: string;
 }
 
