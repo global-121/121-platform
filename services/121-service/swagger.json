@@ -457,15 +457,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/transactions",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
     "path": "/api/programs/{programId}/events",
     "params": [
       "programId",

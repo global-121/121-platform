@@ -5,7 +5,6 @@ import { FinancialServiceProviderIntegrationType } from '@121-service/src/financ
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 
 export class TransactionReturnDto {
   @ApiProperty({
@@ -38,11 +37,6 @@ export class TransactionReturnDto {
     type: 'string',
   })
   public fspIntegrationType: string;
-}
-
-export class AuditedTransactionReturnDto extends TransactionReturnDto {
-  @ApiProperty({ type: () => UserOwnerDto })
-  public user: UserOwnerDto;
 }
 
 class CountAmountDto {

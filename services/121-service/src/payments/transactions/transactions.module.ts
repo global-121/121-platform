@@ -11,7 +11,6 @@ import { LatestTransactionEntity } from '@121-service/src/payments/transactions/
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionsController } from '@121-service/src/payments/transactions/transactions.controller';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
@@ -43,7 +42,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(TransactionEntity),
     LatestTransactionRepository,
   ],
-  controllers: [TransactionsController],
   exports: [
     TransactionsService,
     TransactionScopedRepository,

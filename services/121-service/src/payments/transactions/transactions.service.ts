@@ -15,10 +15,7 @@ import {
   TransactionNotificationObject,
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
-import {
-  AuditedTransactionReturnDto,
-  TransactionReturnDto,
-} from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -51,30 +48,6 @@ export class TransactionsService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly eventsService: EventsService,
   ) {}
-
-  public async getAuditedTransactions(
-    programId: number,
-    payment?: number,
-    referenceId?: string,
-  ): Promise<AuditedTransactionReturnDto[]> {
-    const query = this.transactionScopedRepository
-      .getLastTransactionsQuery({ programId, payment, referenceId })
-      .leftJoin('transaction.user', 'user')
-      .addSelect('user.id', 'userId')
-      .addSelect('user.username', 'username');
-    const rawResult = await query.getRawMany();
-    const result = rawResult.map((row) => {
-      const { userId, username, ...rest } = row;
-      return {
-        ...rest,
-        user: {
-          id: userId,
-          username,
-        },
-      };
-    });
-    return result;
-  }
 
   public async getLastTransactions(
     programId: number,
