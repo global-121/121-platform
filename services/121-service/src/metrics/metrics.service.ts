@@ -253,16 +253,17 @@ export class MetricsService {
 
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'] ?? null;
+      delete row['registrationProgramId'];
 
-      const preferredLanguage = 'en';
-      row['programFinancialServiceProviderConfigurationLabel'] =
+      if (
         typeof row['programFinancialServiceProviderConfigurationLabel'] ===
         'object'
-          ? ((row['programFinancialServiceProviderConfigurationLabel']?.[
-              preferredLanguage
-            ] as string | undefined) ?? '')
-          : (row['programFinancialServiceProviderConfigurationLabel'] ?? '');
-      delete row['registrationProgramId'];
+      ) {
+        const preferredLanguage = 'en';
+        row['programFinancialServiceProviderConfigurationLabel'] = row[
+          'programFinancialServiceProviderConfigurationLabel'
+        ]?.[preferredLanguage] as string | undefined;
+      }
     }
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
