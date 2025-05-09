@@ -60,7 +60,10 @@ export class CommercialBankEthiopiaReconciliationController {
     void this.commercialBankEthiopiaReconciliationService
       .retrieveAndUpsertAccountEnquiries()
       .catch((error) => {
-        console.error('Error: CBE - retrieveAndUpsertAccountEnquiries', error.toString());
+        console.error(
+          'Error: CBE - retrieveAndUpsertAccountEnquiries',
+          error.toString(),
+        );
       })
       .finally(() => {
         console.info('Complete: CBE - retrieveAndUpsertAccountEnquiries');
