@@ -28,6 +28,12 @@ export class IntersolveVisaReconciliationController {
     console.info('Start: Intersolve-Visa - retrieveAndUpdateAllCards');
     void this.intersolveVisaReconciliationService
       .retrieveAndUpdateAllWalletsAndCards()
+      .catch((error) => {
+        console.error(
+          'Error: Intersolve-Visa - retrieveAndUpdateAllCards',
+          error,
+        );
+      })
       .finally(() => {
         console.info('Complete: Intersolve-Visa - retrieveAndUpdateAllCards');
       });

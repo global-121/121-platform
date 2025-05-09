@@ -45,6 +45,12 @@ export class ExchangeRatesController {
     console.info('Start: Exchange-Rates - retrieveAndStoreAllExchangeRates');
     void this.exchangeRatesService
       .retrieveAndStoreAllExchangeRates()
+      .catch((error) => {
+        console.error(
+          'Error: Exchange-Rates - retrieveAndStoreAllExchangeRates',
+          error,
+        );
+      })
       .finally(() => {
         console.info(
           'Complete: Exchange-Rates - retrieveAndStoreAllExchangeRates',
