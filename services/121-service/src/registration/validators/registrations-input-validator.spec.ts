@@ -15,6 +15,7 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -112,6 +113,7 @@ describe('RegistrationsInputValidator', () => {
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
   let userService: UserService;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -167,6 +169,9 @@ describe('RegistrationsInputValidator', () => {
     userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
     mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
+    registrationsPaginationService = module.get<RegistrationsPaginationService>(
+      RegistrationsPaginationService,
+    );
   });
 
   it('should validate and clean registrations input without errors', async () => {
@@ -436,9 +441,22 @@ describe('RegistrationsInputValidator', () => {
   });
 
   it('should reject bulk updates containing telephone attributes', async () => {
+    const referenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
+    const mockRegistration = {
+      referenceId,
+      programFinancialServiceProviderConfigurationName: 'Excel',
+    } as unknown as RegistrationViewEntity;
+
+    jest
+      .spyOn(
+        registrationsPaginationService,
+        'getRegistrationViewsByReferenceIds',
+      )
+      .mockResolvedValueOnce([mockRegistration]);
+
     const csvArray = [
       {
-        referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId,
         phoneNumber: '14155238880',
         whatsappPhoneNumber: '14155238880',
       },
@@ -450,7 +468,7 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.bulkUpdate,
       validationConfig: {
-        validateUniqueReferenceId: false,
+        validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
     });
