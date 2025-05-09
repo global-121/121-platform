@@ -15,6 +15,7 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -112,6 +113,7 @@ describe('RegistrationsInputValidator', () => {
   let mockProgramRepository: Partial<Repository<ProgramEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
   let userService: UserService;
+  let registrationsPaginationService: RegistrationsPaginationService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -167,6 +169,9 @@ describe('RegistrationsInputValidator', () => {
     userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
     mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
+    registrationsPaginationService = module.get<RegistrationsPaginationService>(
+      RegistrationsPaginationService,
+    );
   });
 
   it('should validate and clean registrations input without errors', async () => {
@@ -194,7 +199,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -239,7 +243,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
@@ -265,7 +268,6 @@ describe('RegistrationsInputValidator', () => {
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
           validateExistingReferenceId: true,
         },
@@ -290,7 +292,6 @@ describe('RegistrationsInputValidator', () => {
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
           validateExistingReferenceId: false,
-          validatePhoneNumberLookup: false,
           validateUniqueReferenceId: false,
         },
       }),
@@ -320,7 +321,6 @@ describe('RegistrationsInputValidator', () => {
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
           validateExistingReferenceId: true,
-          validatePhoneNumberLookup: true,
           validateUniqueReferenceId: true,
         },
       }),
@@ -349,7 +349,6 @@ describe('RegistrationsInputValidator', () => {
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
         validateExistingReferenceId: true,
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
       },
     });
@@ -392,7 +391,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -430,7 +428,6 @@ describe('RegistrationsInputValidator', () => {
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
-        validatePhoneNumberLookup: true,
         validateUniqueReferenceId: true,
         validateExistingReferenceId: true,
       },
@@ -441,5 +438,57 @@ describe('RegistrationsInputValidator', () => {
       },
     };
     expect(result[0]).toEqual(expectedResult);
+  });
+
+  it('should reject bulk updates containing telephone attributes', async () => {
+    const referenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
+    const mockRegistration = {
+      referenceId,
+      programFinancialServiceProviderConfigurationName: 'Excel',
+    } as unknown as RegistrationViewEntity;
+
+    jest
+      .spyOn(
+        registrationsPaginationService,
+        'getRegistrationViewsByReferenceIds',
+      )
+      .mockResolvedValueOnce([mockRegistration]);
+
+    const csvArray = [
+      {
+        referenceId,
+        phoneNumber: '14155238880',
+        whatsappPhoneNumber: '14155238880',
+      },
+    ];
+
+    const validationPromise = validator.validateAndCleanInput({
+      registrationInputArray: csvArray,
+      programId,
+      userId,
+      typeOfInput: RegistrationValidationInputType.bulkUpdate,
+      validationConfig: {
+        validateUniqueReferenceId: true,
+        validateExistingReferenceId: true,
+      },
+    });
+
+    await expect(validationPromise).rejects.toThrow(HttpException);
+    await expect(validationPromise).rejects.toMatchObject({
+      response: expect.arrayContaining([
+        {
+          lineNumber: 1,
+          column: DefaultRegistrationDataAttributeNames.phoneNumber,
+          value: '14155238880',
+          error: `Attribute ${DefaultRegistrationDataAttributeNames.phoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
+        },
+        {
+          lineNumber: 1,
+          column: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+          value: '14155238880',
+          error: `Attribute ${FinancialServiceProviderAttributes.whatsappPhoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
+        },
+      ]),
+    });
   });
 });

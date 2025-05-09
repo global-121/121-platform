@@ -386,7 +386,6 @@ export class RegistrationsService {
     userId: number;
   }): Promise<MappedPaginatedRegistrationDto | undefined> {
     const validationConfig: ValidationRegistrationConfig = {
-      validatePhoneNumberLookup: true,
       validateUniqueReferenceId: false,
       validateExistingReferenceId: false,
     };
