@@ -1,3 +1,5 @@
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -8,6 +10,7 @@ import {
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
+  getAccessToken,
   getAccessTokenScoped,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
@@ -27,6 +30,47 @@ describe('Registrations - [Scoped]', () => {
     await resetDB(SeedScript.nlrcMultiple);
     await seedPaidRegistrations(registrationsOCW, OcwProgramId);
     await seedPaidRegistrations(registrationsPV, PvProgramId);
+  });
+
+  it('should return transactions with all expected fields and correct data types', async () => {
+    // Arrange
+    const accessToken = await getAccessToken();
+    const fspConfig = getFinancialServiceProviderSettingByNameOrThrow(
+      registrationScopedMiddelburgPv.programFinancialServiceProviderConfigurationName,
+    );
+
+    // Act
+    const transactionsResponse = await getTransactions({
+      programId: programIdPV,
+      paymentNr: payment,
+      referenceId: null,
+      accessToken,
+    });
+
+    // Assert
+    expect(transactionsResponse.body.length).toBe(registrationsPV.length);
+
+    const transaction1 = transactionsResponse.body.find(
+      (t) => t.referenceId === registrationScopedMiddelburgPv.referenceId,
+    );
+
+    // Check that all expected fields exist with correct types
+    expect(transaction1).toMatchObject({
+      created: expect.any(String),
+      updated: expect.any(String),
+      payment,
+      registrationProgramId: expect.any(Number),
+      referenceId: registrationScopedMiddelburgPv.referenceId,
+      status: TransactionStatusEnum.success,
+      amount: expect.any(Number),
+      errorMessage: null,
+      registrationName: registrationScopedMiddelburgPv.fullName,
+      programFinancialServiceProviderConfigurationName: fspConfig.name,
+    });
+
+    // Validate date formats
+    expect(new Date(transaction1.created).toISOString()).toBeTruthy();
+    expect(new Date(transaction1.updated).toISOString()).toBeTruthy();
   });
 
   it('should get all transactions within the scope of the requesting user', async () => {

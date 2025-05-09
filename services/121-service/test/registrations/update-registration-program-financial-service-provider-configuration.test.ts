@@ -177,12 +177,15 @@ describe('Update program financial servce provider configuration of PA', () => {
 
     const newProgramFinancialServiceProviderConfigurationName =
       'VoucherNumberTwo';
+    const newProgramFinancialServiceProviderConfigurationLabel = {
+      en: 'Voucher number 2',
+    };
     const fspConfigBody: CreateProgramFinancialServiceProviderConfigurationDto =
       {
         name: newProgramFinancialServiceProviderConfigurationName,
         financialServiceProviderName:
           FinancialServiceProviders.intersolveVoucherWhatsapp,
-        label: { en: 'Voucher number 2' },
+        label: newProgramFinancialServiceProviderConfigurationLabel,
         properties: [
           {
             name: FinancialServiceProviderConfigurationProperties.password,
@@ -244,9 +247,6 @@ describe('Update program financial servce provider configuration of PA', () => {
     expect(
       transactionsResponse.body[0]
         .programFinancialServiceProviderConfigurationName,
-    ).toBe(newProgramFinancialServiceProviderConfigurationName);
-    expect(transactionsResponse.body[0].financialServiceProviderName).toBe(
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
-    );
+    ).toStrictEqual(newProgramFinancialServiceProviderConfigurationName);
   });
 });

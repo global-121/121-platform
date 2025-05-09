@@ -9,7 +9,6 @@ import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
   doPayment,
   exportList,
@@ -142,7 +141,6 @@ describe('Do payment', () => {
           TransactionStatusEnum.waiting,
         );
         expect(transactionBeforeCronJob.errorMessage).toBe(null);
-        expect(transactionBeforeCronJob.user).toMatchObject(adminOwnerDto);
         expect(transactionAfterCronJob.status).toBe(
           TransactionStatusEnum.success,
         );

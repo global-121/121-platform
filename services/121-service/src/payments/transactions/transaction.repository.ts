@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   ScopedQueryBuilder,
   ScopedRepository,
@@ -33,6 +34,58 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .addSelect('user.id', 'userId')
       .addSelect('user.username', 'username');
     return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
+  }
+
+  // TODO: This method should be moved to the payment repository, however we do not have this yet as there is no payment entity
+  public async getTransactionsForPayment({
+    programId,
+    payment,
+  }: {
+    programId: number;
+    payment: number;
+  }): Promise<
+    {
+      id: number;
+      created: Date;
+      updated: Date;
+      payment: number;
+      registrationProgramId: number;
+      referenceId: string;
+      registrationId: number;
+      status: TransactionStatusEnum;
+      registrationStatus: RegistrationStatusEnum;
+      amount: number;
+      errorMessage: string | null;
+      programFinancialServiceProviderConfigurationName: string;
+    }[]
+  > {
+    const query = this.createQueryBuilder('transaction')
+      .select([
+        'transaction.id AS "id"',
+        'transaction.created AS "created"',
+        'transaction.updated AS "updated"',
+        'transaction.payment AS payment',
+        'r."registrationProgramId"',
+        'r."referenceId" as "referenceId"',
+        'r."id" as "registrationId"',
+        'r."registrationStatus"',
+        'status',
+        'amount',
+        'transaction.errorMessage as "errorMessage"',
+        'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
+      ])
+      .leftJoin(
+        'transaction.programFinancialServiceProviderConfiguration',
+        'fspconfig',
+      )
+      .leftJoin('transaction.registration', 'r')
+      .innerJoin('transaction.latestTransaction', 'lt')
+      .andWhere('transaction."programId" = :programId', {
+        programId,
+      })
+      .andWhere('transaction.payment = :payment', { payment });
+
+    return query.getRawMany();
   }
 
   // Make this private when all 'querying code' has been moved to this repository

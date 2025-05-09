@@ -28,6 +28,7 @@ import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.d
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
+import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -244,5 +245,25 @@ export class PaymentsController {
       payment,
       userId,
     );
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @ApiOperation({ summary: '[SCOPED] Get all transactions for this payment' })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retrieved transactions',
+    type: [GetTransactionResponseDto],
+  })
+  @Get('programs/:programId/payments/:paymentId/transactions')
+  public async getTransactions(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('paymentId', ParseIntPipe) paymentId: number,
+  ): Promise<GetTransactionResponseDto[]> {
+    return await this.paymentsService.getTransactions({
+      programId,
+      payment: paymentId,
+    });
   }
 }

@@ -17,6 +17,7 @@ import {
 } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
+import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
@@ -52,6 +53,7 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -80,6 +82,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
+    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
@@ -1269,5 +1272,55 @@ export class PaymentsService {
     throw new Error(
       `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
     );
+  }
+
+  public async getTransactions({
+    programId,
+    payment,
+  }: {
+    programId: number;
+    payment: number;
+  }): Promise<GetTransactionResponseDto[]> {
+    const transactions =
+      await this.transactionScopedRepository.getTransactionsForPayment({
+        programId,
+        payment,
+      });
+    if (!transactions || transactions.length === 0) {
+      return [];
+    }
+
+    const fullnameNamingConvention = (
+      await this.programRepository.findOneOrFail({
+        where: { id: Equal(programId) },
+        select: ['fullnameNamingConvention'],
+      })
+    ).fullnameNamingConvention;
+
+    if (!fullnameNamingConvention || fullnameNamingConvention.length === 0) {
+      return transactions;
+    }
+
+    const registrationIds = transactions.map((t) => t.registrationId);
+    const registrationNames =
+      await this.registrationScopedRepository.getFullNamesByRegistrationIds({
+        registrationIds,
+        fullNameNamingConvention: fullnameNamingConvention,
+        programId,
+      });
+
+    // Create a map for faster lookups
+    const nameMap = new Map(
+      registrationNames.map((item) => [item.registrationId, item.name]),
+    );
+
+    const result = transactions.map((transaction) => {
+      return {
+        ...transaction,
+        registrationName: nameMap.get(transaction.registrationId),
+      };
+    });
+
+    return result;
   }
 }

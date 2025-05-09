@@ -5,7 +5,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
 import {
   doPayment,
@@ -87,7 +86,6 @@ describe('Do payment to 1 PA', () => {
       );
       expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
-      expect(getTransactionsBody[0].user).toMatchObject(adminOwnerDto);
 
       await waitForMessagesToComplete({
         programId,

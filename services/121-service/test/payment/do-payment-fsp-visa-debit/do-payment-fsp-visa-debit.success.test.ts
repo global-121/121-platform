@@ -10,7 +10,6 @@ import {
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { adminOwnerDto } from '@121-service/test/fixtures/user-owner';
 import {
   doPayment,
   getTransactions,
@@ -88,7 +87,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
-    expect(transactionsResponse.body[0].user).toMatchObject(adminOwnerDto);
   });
 
   it('should successfully load balance Visa Debit', async () => {
