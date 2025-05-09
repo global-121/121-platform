@@ -61,7 +61,6 @@ describe('Registrations - [Scoped]', () => {
       payment,
       registrationProgramId: expect.any(Number),
       referenceId: registrationScopedMiddelburgPv.referenceId,
-      referenceId: expect.any(Number),
       status: TransactionStatusEnum.success,
       amount: expect.any(Number),
       errorMessage: null,
