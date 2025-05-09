@@ -341,16 +341,18 @@ class TableComponent {
     await checkbox.click();
   }
 
-  async changeRegistrationStatusByNameWithCustomMessage({
+  async changeRegistrationStatusByNameWithMessage({
     registrationName,
     status,
     message,
     customMessage = false,
+    templateMessage = false,
   }: {
     registrationName: string;
     status: string;
-    message: string;
-    customMessage: boolean;
+    message?: string;
+    customMessage?: boolean;
+    templateMessage?: boolean;
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const placeholder = this.page.getByPlaceholder('Enter reason');
@@ -358,13 +360,20 @@ class TableComponent {
     await this.selectRegistrationByName(registrationName);
     await statusButton.click();
     // Condition for when reason is required
-    if (customMessage === true) {
+    if (templateMessage === true) {
+      await this.sendMessageSwitch.check();
+      await this.approveButton.click();
+    } else if (customMessage === true) {
       await placeholder.fill('Test reason');
-      await this.fillCustomMessage(message);
+      await this.fillCustomMessage(message ?? '');
       await this.continueToPreviewButton.click();
+      await this.approveButton.click();
+    } else {
+      if (await placeholder.isVisible()) {
+        await placeholder.fill('Test reason');
+      }
+      await this.approveButton.click();
     }
-    await placeholder.fill('Test reason');
-    await this.approveButton.click();
   }
 
   async validateAllRecordsCount(expectedCount: number) {
