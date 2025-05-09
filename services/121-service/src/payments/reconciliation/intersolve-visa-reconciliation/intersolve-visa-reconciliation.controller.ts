@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IntersolveVisaReconciliationService } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.service';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('financial-service-providers/intersolve-visa')
@@ -11,6 +12,7 @@ import { IntersolveVisaReconciliationService } from '@121-service/src/payments/r
 export class IntersolveVisaReconciliationController {
   public constructor(
     private intersolveVisaReconciliationService: IntersolveVisaReconciliationService,
+    private azureLogService: AzureLogService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -33,6 +35,7 @@ export class IntersolveVisaReconciliationController {
           'Error: Intersolve-Visa - retrieveAndUpdateAllCards',
           error,
         );
+        this.azureLogService.logError(error, true);
       })
       .finally(() => {
         console.info('Complete: Intersolve-Visa - retrieveAndUpdateAllCards');
