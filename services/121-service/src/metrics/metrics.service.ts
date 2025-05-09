@@ -106,11 +106,12 @@ export class MetricsService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        return this.getAllPeopleAffectedList(
+        return this.getAllPeopleAffectedList({
           programId,
-          paginationQuery.filter,
-          paginationQuery.search,
-        );
+          filter: paginationQuery.filter,
+          search: paginationQuery.search,
+          select: paginationQuery.select,
+        });
       }
       case ExportType.included: {
         return this.getInclusionList(programId);
@@ -152,18 +153,24 @@ export class MetricsService {
     }
   }
 
-  private async getAllPeopleAffectedList(
-    programId: number,
-    filter?: PaginationFilter,
-    search?: string,
-  ): Promise<FileDto> {
-    const data = await this.getRegistrationsList(
+  private async getAllPeopleAffectedList({
+    programId,
+    filter,
+    search,
+    select,
+  }: {
+    programId: number;
+    filter?: PaginationFilter;
+    search?: string;
+    select?: string[];
+  }): Promise<FileDto> {
+    const data = await this.getRegistrationsList({
       programId,
-      ExportType.allRegistrations,
-      undefined,
+      exportType: ExportType.allRegistrations,
       filter,
       search,
-    );
+      select,
+    });
     const response = {
       fileName: ExportType.allRegistrations,
       data,
@@ -172,11 +179,11 @@ export class MetricsService {
   }
 
   private async getInclusionList(programId: number): Promise<FileDto> {
-    const data = await this.getRegistrationsList(
+    const data = await this.getRegistrationsList({
       programId,
-      ExportType.included,
-      RegistrationStatusEnum.included,
-    );
+      exportType: ExportType.included,
+      filter: { status: RegistrationStatusEnum.included },
+    });
     const response = {
       fileName: 'inclusion-list',
       data,
@@ -217,27 +224,31 @@ export class MetricsService {
     return fileInput;
   }
 
-  private async getRegistrationsList(
-    programId: number,
-    exportType: ExportType,
-    registrationStatus?: RegistrationStatusEnum,
-    filter?: PaginationFilter,
-    search?: string,
-  ): Promise<object[]> {
-    if (registrationStatus) {
-      filter = { status: registrationStatus };
-    }
+  private async getRegistrationsList({
+    programId,
+    exportType,
+    filter,
+    search,
+    select,
+  }: {
+    programId: number;
+    exportType: ExportType;
+    filter?: PaginationFilter;
+    search?: string;
+    select?: string[];
+  }): Promise<object[]> {
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
       exportType,
     );
-    const rows: RowType[] = (await this.getRegistrationsGenericFields(
+    const rows: RowType[] = (await this.getRegistrationsGenericFields({
       programId,
       relationOptions,
       exportType,
       filter,
       search,
-    )) as RowType[];
+      select,
+    })) as RowType[];
 
     for await (const row of rows) {
       row['id'] = row['registrationProgramId'] ?? null;
@@ -351,13 +362,21 @@ export class MetricsService {
     return response;
   }
 
-  private async getRegistrationsGenericFields(
-    programId: number,
-    relationOptions: RegistrationDataOptions[],
-    exportType?: ExportType,
-    filter?: PaginationFilter,
-    search?: string,
-  ): Promise<object[]> {
+  private async getRegistrationsGenericFields({
+    programId,
+    relationOptions,
+    exportType,
+    filter,
+    search,
+    select,
+  }: {
+    programId: number;
+    relationOptions: RegistrationDataOptions[];
+    exportType?: ExportType;
+    filter?: PaginationFilter;
+    search?: string;
+    select?: string[];
+  }): Promise<object[]> {
     // Create an empty scoped querybuilder object
     let queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
@@ -372,6 +391,40 @@ export class MetricsService {
       );
     }
 
+    if (!select) {
+      select = await this.getDefaultSelectForExportRegistrations({
+        programId,
+        relationOptions,
+      });
+    }
+
+    const chunkSize = 10000;
+    const paginateQuery = {
+      path: 'registration',
+      filter,
+      limit: chunkSize,
+      page: 1,
+      select,
+      search,
+    };
+
+    const data =
+      await this.registrationsPaginationsService.getRegistrationsChunked(
+        programId,
+        paginateQuery,
+        chunkSize,
+        queryBuilder,
+      );
+    return data;
+  }
+
+  private async getDefaultSelectForExportRegistrations({
+    programId,
+    relationOptions,
+  }: {
+    programId: number;
+    relationOptions: RegistrationDataOptions[];
+  }): Promise<string[]> {
     const defaultSelect = [
       GenericRegistrationAttributes.referenceId,
       GenericRegistrationAttributes.registrationProgramId,
@@ -394,7 +447,6 @@ export class MetricsService {
     if (program.enableScope) {
       defaultSelect.push(GenericRegistrationAttributes.scope);
     }
-
     const registrationDataNamesProgram = relationOptions
       .map((r) => r.name)
       .filter(
@@ -403,24 +455,7 @@ export class MetricsService {
           r !== DefaultRegistrationDataAttributeNames.phoneNumber,
       );
 
-    const chunkSize = 10000;
-    const paginateQuery = {
-      path: 'registration',
-      filter,
-      limit: chunkSize,
-      page: 1,
-      select: defaultSelect.concat(registrationDataNamesProgram),
-      search,
-    };
-
-    const data =
-      await this.registrationsPaginationsService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        chunkSize,
-        queryBuilder,
-      );
-    return data;
+    return defaultSelect.concat(registrationDataNamesProgram);
   }
 
   private async replaceValueWithDropdownLabel(
