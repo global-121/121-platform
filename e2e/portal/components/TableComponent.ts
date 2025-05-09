@@ -436,6 +436,8 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+  }
+
   async validateMessageActivityByTypeAndText({
     notificationType,
     message,
@@ -454,7 +456,7 @@ class TableComponent {
     await expect(notificationText).toHaveText(message);
   }
 
-  async validatActivityNotPresentByType(notificationType: string) {
+  async validateActivityNotPresentByType(notificationType: string) {
     const messageNotification = this.page
       .locator('tr')
       .filter({ hasText: notificationType });

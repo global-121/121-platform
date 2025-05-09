@@ -94,7 +94,7 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
       await registrations.goToRegistrationByName({
         registrationName: registrationPV6.fullName,
       });
-      await tableComponent.validatActivityNotPresentByType('Custom message');
+      await tableComponent.validateActivityNotPresentByType('Custom message');
     });
   });
 });
