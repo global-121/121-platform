@@ -5,6 +5,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { ProjectMetrics } from '~/domains/metric/metric.model';
+import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
@@ -31,6 +32,14 @@ export class MetricApiService extends DomainApiService {
     type: ExportType;
     params: HttpParamsOptions['fromObject'];
   }) {
+    if (params?.format === 'json') {
+      return this.generateQueryOptions<unknown[], Blob>({
+        path: [...BASE_ENDPOINT(projectId), 'export-list', type],
+        params,
+        processResponse: unknownArrayToCsvBlob,
+      });
+    }
+
     return this.generateQueryOptions<Blob>({
       path: [...BASE_ENDPOINT(projectId), 'export-list', type],
       params,
