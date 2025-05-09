@@ -35,7 +35,7 @@ export class GetTransactionResponseDto {
   @ApiProperty({ example: RegistrationStatusEnum.included, type: 'string' })
   public registrationStatus: RegistrationStatusEnum;
   @ApiProperty({ example: '12345', type: 'string' })
-  public registrationReferenceId: string;
+  public referenceId: string;
   @ApiProperty({ example: 'Juan Garcia' })
   public registrationName?: string;
 }

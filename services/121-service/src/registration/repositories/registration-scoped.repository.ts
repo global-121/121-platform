@@ -369,7 +369,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
 
     // For each naming convention part, fetch the corresponding name data
     for (const attributeName of fullNameNamingConvention) {
-      const nameData = await this.getAttributeValuesByIdsAndName({
+      const nameData = await this.getAttributeValues({
         registrationIds,
         attributeName,
         programId,
@@ -402,7 +402,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     });
   }
 
-  private async getAttributeValuesByIdsAndName({
+  private async getAttributeValues({
     registrationIds,
     attributeName,
     programId,
