@@ -59,6 +59,12 @@ export class CommercialBankEthiopiaReconciliationController {
     // Don't wait for the result, as that can cause a timeout on the API
     void this.commercialBankEthiopiaReconciliationService
       .retrieveAndUpsertAccountEnquiries()
+      .catch((error) => {
+        console.error(
+          'Error: CBE - retrieveAndUpsertAccountEnquiries',
+          error.toString(),
+        );
+      })
       .finally(() => {
         console.info('Complete: CBE - retrieveAndUpsertAccountEnquiries');
       });

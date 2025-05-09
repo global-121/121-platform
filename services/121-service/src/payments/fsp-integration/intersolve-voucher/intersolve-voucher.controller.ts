@@ -170,6 +170,12 @@ export class IntersolveVoucherController {
     console.info('Start: Intersolve-Voucher - cancelByRefPos');
     void this.intersolveVoucherCronService
       .cancelByRefposIntersolve()
+      .catch((error) => {
+        console.error(
+          'Error: Intersolve-Voucher - cancelByRefPos',
+          error.toString(),
+        );
+      })
       .finally(() => {
         console.info('Complete: Intersolve-Voucher - cancelByRefPos');
       });
@@ -188,6 +194,12 @@ export class IntersolveVoucherController {
     console.info('Start: Intersolve-Voucher - cronSendWhatsappReminders');
     void this.intersolveVoucherCronService
       .sendWhatsappReminders()
+      .catch((error) => {
+        console.error(
+          'Error: Intersolve-Voucher - cronSendWhatsappReminders',
+          error.toString(),
+        );
+      })
       .finally(() => {
         console.info(
           'Complete: Intersolve-Voucher - cronSendWhatsappReminders',
