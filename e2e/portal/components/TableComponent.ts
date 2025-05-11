@@ -295,40 +295,6 @@ class TableComponent {
     ).toBeVisible();
   }
 
-  async changeStatusOfRegistrationInTable(status: string) {
-    const firstCheckbox = this.checkbox.nth(1);
-    const statusButton = this.page.getByRole('button', { name: status });
-    const placeholder = this.page.getByPlaceholder('Enter reason');
-    const deleteLabel = this.page.getByLabel(
-      'I understand this action can not be undone',
-    );
-
-    await firstCheckbox.click();
-    await statusButton.click();
-    // Condition for when checkbox is required
-    if (await deleteLabel.isVisible()) {
-      await deleteLabel.click();
-    }
-    // Condition for when reason is required
-    if (await placeholder.isVisible()) {
-      await placeholder.fill('Test reason');
-    }
-    await this.approveButton.click();
-  }
-
-  async changeStatusOfAllRegistrationsInTable(status: string) {
-    const statusButton = this.table.getByRole('button', { name: status });
-    const placeholder = this.table.getByPlaceholder('Enter reason');
-
-    await this.selectAll();
-    await statusButton.click();
-    // Condition for when reason is required
-    if (await placeholder.isVisible()) {
-      await placeholder.fill('Test reason');
-    }
-    await this.approveButton.click();
-  }
-
   async fillCustomMessage(message: string) {
     await this.sendMessageSwitch.check();
     await this.page.locator('textarea').fill(message);
@@ -341,7 +307,7 @@ class TableComponent {
     await checkbox.click();
   }
 
-  async changeRegistrationStatusByNameWithMessage({
+  async changeRegistrationStatusByNameWithOptions({
     registrationName,
     status,
     message,
@@ -356,9 +322,18 @@ class TableComponent {
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const placeholder = this.page.getByPlaceholder('Enter reason');
+    const deleteLabel = this.page.getByLabel(
+      'I understand this action can not be undone',
+    );
 
     await this.selectRegistrationByName(registrationName);
     await statusButton.click();
+
+    // Check for delete confirmation
+    if (await deleteLabel.isVisible()) {
+      await deleteLabel.click();
+    }
+
     // Condition for when reason is required
     if (templateMessage === true) {
       await this.sendMessageSwitch.check();

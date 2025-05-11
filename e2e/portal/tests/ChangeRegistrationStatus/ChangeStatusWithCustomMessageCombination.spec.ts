@@ -69,7 +69,7 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     await test.step('Change status of first selected registration and write a custom message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithMessage({
+      await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
         status: 'Decline',
         message: customMessage,
@@ -94,7 +94,7 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
     const tableComponent = new TableComponent(page);
     // Act
     await test.step('Change status of first selected registration and write a custom message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithMessage({
+      await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Decline',
         message: customMessage,

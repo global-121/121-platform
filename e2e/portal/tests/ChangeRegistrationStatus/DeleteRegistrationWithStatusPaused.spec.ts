@@ -49,7 +49,10 @@ test('[34410] Delete registration with status "Paused"', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Delete registration with status "Paused"', async () => {
-    await tableComponent.changeStatusOfRegistrationInTable('Delete');
+    await tableComponent.changeRegistrationStatusByNameWithOptions({
+      registrationName: registrationPV5.fullName,
+      status: 'Delete',
+    });
     await registrations.validateToastMessageAndClose(toastMessage);
   });
   // Assert
