@@ -75,7 +75,7 @@ test.describe('Change status of registration with and without templated message'
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     await test.step('Change status of first selected registration and send templated message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithMessage({
+      await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
         status: 'Include',
         templateMessage: true,
@@ -99,7 +99,7 @@ test.describe('Change status of registration with and without templated message'
     const tableComponent = new TableComponent(page);
     // Act
     await test.step('Change status of first selected registration and write a templated message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithMessage({
+      await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Include',
       });
