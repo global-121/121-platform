@@ -4,10 +4,7 @@ import { Injectable, Signal } from '@angular/core';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import {
-  PaymentMetricDetails,
-  ProjectMetrics,
-} from '~/domains/metric/metric.model';
+import { ProjectMetrics } from '~/domains/metric/metric.model';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
@@ -38,27 +35,6 @@ export class MetricApiService extends DomainApiService {
       path: [...BASE_ENDPOINT(projectId), 'export-list', type],
       params,
       responseAsBlob: true,
-    });
-  }
-
-  // Temporarily used while we wait for a paginated "get transactions" endpoint
-  getPaymentData({
-    projectId,
-    payment,
-  }: {
-    projectId: Signal<number | string>;
-    payment: Signal<number | string>;
-  }) {
-    return this.generateQueryOptions<
-      { data: PaymentMetricDetails[] },
-      PaymentMetricDetails[]
-    >({
-      path: [...BASE_ENDPOINT(projectId), 'export-list', ExportType.payment],
-      params: {
-        minPayment: payment,
-        maxPayment: payment,
-      },
-      processResponse: (response) => response.data,
     });
   }
 

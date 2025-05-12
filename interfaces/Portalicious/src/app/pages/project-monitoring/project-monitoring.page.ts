@@ -64,10 +64,10 @@ export class ProjectMonitoringPageComponent {
     enabled: !!this.project.data()?.id,
   }));
   latestPayment = injectQuery(() => ({
-    ...this.paymentApiService.getPayment(
-      this.projectId,
-      this.latestPaymentNumber,
-    )(),
+    ...this.paymentApiService.getPayment({
+      projectId: this.projectId,
+      paymentId: this.latestPaymentNumber,
+    })(),
     enabled: () => !!this.latestPaymentNumber(),
   }));
 

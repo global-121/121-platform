@@ -49,7 +49,10 @@ export class PaymentSummaryCardComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
   metrics = injectQuery(() => ({
-    ...this.paymentApiService.getPayment(this.projectId, this.paymentId)(),
+    ...this.paymentApiService.getPayment({
+      projectId: this.projectId,
+      paymentId: this.paymentId,
+    })(),
     // Refetch the data every second if this is the latest payment, and a payment is in progress
     refetchInterval:
       this.isLatestPayment() &&

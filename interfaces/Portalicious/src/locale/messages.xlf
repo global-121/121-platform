@@ -1592,6 +1592,12 @@
       <trans-unit id="3643986098140143407" datatype="html">
         <source>Users cannot change their own roles</source>
       </trans-unit>
+      <trans-unit id="4207916966377787111" datatype="html">
+        <source>Created</source>
+      </trans-unit>
+      <trans-unit id="7239750919884229270" datatype="html">
+        <source>Updated</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
