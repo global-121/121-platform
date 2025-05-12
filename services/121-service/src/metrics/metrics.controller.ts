@@ -25,6 +25,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { ExportDetailsQueryParamsDto } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
@@ -162,5 +163,22 @@ export class MetricsController {
     programId: number,
   ): Promise<ProgramStats> {
     return await this.metricsService.getProgramStats(programId);
+  }
+
+  // This endpoint is only used by the k6 tests, not by frontend.
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
+  @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+  })
+  @Get('programs/:programId/metrics/registration-status')
+  public async getRegistrationStatusStats(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<RegistrationStatusStats[]> {
+    return await this.metricsService.getRegistrationStatusStats(programId);
   }
 }

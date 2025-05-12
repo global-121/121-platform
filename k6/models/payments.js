@@ -16,6 +16,7 @@ export default class paymentsModel {
         'Content-Type': 'application/json',
       },
     };
+    // TODO: this fails 1/10 times
     const res = http.post(url, payload, params);
     return res;
   }
