@@ -70,6 +70,10 @@ export class IntersolveVoucherReconciliationController {
         );
       })
       .catch((error) => {
+        console.error(
+          'Error: Intersolve-Voucher - cronRetrieveAndUpdatedUnusedIntersolveVouchers',
+          error,
+        );
         this.azureLogService.logError(error, true);
       });
   }

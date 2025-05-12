@@ -7,6 +7,7 @@ import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exc
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('exchange-rates')
@@ -14,6 +15,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 export class ExchangeRatesController {
   public constructor(
     private readonly exchangeRatesService: ExchangeRatesService,
+    private readonly azureLogService: AzureLogService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -50,6 +52,7 @@ export class ExchangeRatesController {
           'Error: Exchange-Rates - retrieveAndStoreAllExchangeRates',
           error,
         );
+        this.azureLogService.logError(error, true);
       })
       .finally(() => {
         console.info(

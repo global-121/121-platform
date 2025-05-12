@@ -33,6 +33,7 @@ import { RemoveDeprecatedImageCodesDto } from '@121-service/src/payments/fsp-int
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
+import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -42,6 +43,7 @@ export class IntersolveVoucherController {
   public constructor(
     private intersolveVoucherService: IntersolveVoucherService,
     private intersolveVoucherCronService: IntersolveVoucherCronService,
+    private azureLogService: AzureLogService,
   ) {}
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentVoucherREAD] })
@@ -175,6 +177,7 @@ export class IntersolveVoucherController {
           'Error: Intersolve-Voucher - cancelByRefPos',
           error.toString(),
         );
+        this.azureLogService.logError(error, true);
       })
       .finally(() => {
         console.info('Complete: Intersolve-Voucher - cancelByRefPos');
@@ -199,6 +202,7 @@ export class IntersolveVoucherController {
           'Error: Intersolve-Voucher - cronSendWhatsappReminders',
           error.toString(),
         );
+        this.azureLogService.logError(error, true);
       })
       .finally(() => {
         console.info(
