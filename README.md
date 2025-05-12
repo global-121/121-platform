@@ -115,9 +115,8 @@ To start all services, after setup, from the root of this repository, run:
 
     npm run start:services
 
-This will run Docker Compose in "attached" mode. The logs for all containers
-will be output to stdout. To stop all services press <button>Ctrl</button> +
-<button>c</button>.
+This will run Docker Compose in "attached" mode. The logs for all containers will be output to `stdout`.  
+To stop all services press <kbd>⌃ Control</kbd> + <kbd>C</kbd>.
 
 To see the status/logs of all/a specific Docker-container(s), run: (Where `<container-name>` is optional; See container-names in [`docker-compose.yml`](services/docker-compose.yml)).
 
