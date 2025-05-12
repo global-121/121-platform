@@ -339,7 +339,10 @@ class TableComponent {
       await this.sendMessageSwitch.check();
       await this.approveButton.click();
     } else if (customMessage === true) {
-      await placeholder.fill('Test reason');
+      // Only fill reason field if it's visible
+      if (await placeholder.isVisible()) {
+        await placeholder.fill('Test reason');
+      }
       await this.fillCustomMessage(message ?? '');
       await this.continueToPreviewButton.click();
       await this.approveButton.click();
