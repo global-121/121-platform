@@ -524,6 +524,13 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/registration-status",
+    "params": [
+      "programId"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/import",
     "params": [

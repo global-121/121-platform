@@ -8,6 +8,7 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { RowType } from '@121-service/src/metrics/dto/rolo-type.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
@@ -775,5 +776,19 @@ export class MetricsService {
       previousRegistrationProgramId = cardRawData.paId;
     }
     return exportCardDetailsArray;
+  }
+
+  public async getRegistrationStatusStats(
+    programId: number,
+  ): Promise<RegistrationStatusStats[]> {
+    const query = this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .select(`registration."registrationStatus" AS status`)
+      .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
+      .andWhere({ programId })
+      .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
+      .groupBy(`registration."registrationStatus"`);
+    const res = await query.getRawMany<RegistrationStatusStats>();
+    return res;
   }
 }
