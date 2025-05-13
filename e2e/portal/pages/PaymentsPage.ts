@@ -1,6 +1,4 @@
 import { expect } from '@playwright/test';
-import * as fs from 'fs';
-import path from 'path';
 import { Locator, Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
@@ -306,16 +304,7 @@ class PaymentsPage extends BasePage {
     expectedColumns: string[];
     expectedRowCount: number;
   }) {
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      this.proceedButton.click(),
-    ]);
-
-    const downloadDir = path.join(__dirname, '../../downloads');
-    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
-
-    const filePath = path.join(downloadDir, download.suggestedFilename());
-    await download.saveAs(filePath);
+    const filePath = await this.downloadFile(this.proceedButton.click());
 
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];

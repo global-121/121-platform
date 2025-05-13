@@ -1,4 +1,6 @@
 import { expect } from '@playwright/test';
+import fs from 'fs';
+import path from 'path';
 import { Locator, Page } from 'playwright';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
@@ -137,6 +139,29 @@ class BasePage {
     const defaultLanguage = 'en-GB';
     path = `${defaultLanguage}${path}`;
     await this.page.goto(path);
+  }
+
+  /**
+   * Downloads a file triggered by a specific action on the page.
+   *
+   * @param {Promise<unknown>} triggerDownloadPromise - A promise representing the action that triggers the download
+   * (e.g., a button click). This promise should not be awaited before calling this function.
+   * @returns {Promise<string>} - A promise that resolves to the file path where the downloaded file is saved.
+   * @throws {Error} - Throws an error if the download event fails or if there are issues saving the file.
+   */
+  async downloadFile(triggerDownloadPromise: Promise<unknown>) {
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      triggerDownloadPromise,
+    ]);
+
+    const downloadDir = path.join(process.cwd(), 'downloads');
+    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
+
+    const filePath = path.join(downloadDir, download.suggestedFilename());
+    await download.saveAs(filePath);
+
+    return filePath;
   }
 }
 

@@ -38,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[29358] Export People Affected list', async ({ page }) => {
+test('[29358] Export Selected Registrations', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
