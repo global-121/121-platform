@@ -14,9 +14,9 @@ on:
       - 'services/**'
       - '!services/**.test.ts'
       - '!services/**.spec.ts'
-      - 'interfaces/Portalicious/**'
-      - '!interfaces/Portalicious/**.test.ts'
-      - '!interfaces/Portalicious/**.spec.ts'
+      - 'interfaces/portal/**'
+      - '!interfaces/portal/**.test.ts'
+      - '!interfaces/portal/**.spec.ts'
       - '!**.md'
 
 env:
@@ -57,7 +57,7 @@ jobs:
           docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
 
       - name: Run Portal
-        working-directory: ./interfaces/Portalicious
+        working-directory: ./interfaces/portal
         env:
           NG_PRODUCTION: true
           NG_URL_121_SERVICE_API: http://localhost:3000/api
@@ -95,12 +95,12 @@ jobs:
           name: test-result-artifacts
           path: |
             ${{ env.e2eTestsPath }}/test-results/
-            ./interfaces/Portalicious/run-portal-logs.txt
+            ./interfaces/portal/run-portal-logs.txt
 
       - name: Portal logs
         if: always()
         shell: bash
-        run: cat ./interfaces/Portalicious/run-portal-logs.txt
+        run: cat ./interfaces/portal/run-portal-logs.txt
 
       - name: Docker logs
         if: always()
