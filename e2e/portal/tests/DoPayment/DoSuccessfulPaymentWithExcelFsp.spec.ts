@@ -73,7 +73,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/2/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

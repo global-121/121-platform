@@ -21,6 +21,7 @@ export function createExpectedValueObject(
 export const programIdPV = 2;
 export const programIdOCW = 3;
 export const programIdWesteros = 2;
+export const programIdSafaricom = 1;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',

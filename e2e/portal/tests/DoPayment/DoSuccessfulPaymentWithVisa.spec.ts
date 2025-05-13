@@ -58,7 +58,7 @@ test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessage('Payment created.');
+    await paymentsPage.validateToastMessageAndWait('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.

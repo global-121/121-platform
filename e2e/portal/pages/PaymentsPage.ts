@@ -131,18 +131,30 @@ class PaymentsPage extends BasePage {
     expect(viewPaymentTitle).toContain(date);
   }
 
+  async validateNumericValue(
+    elementText: string | null,
+    expectedValue: number,
+  ) {
+    if (!elementText) throw new Error('Element text is null');
+    const extractedValue = elementText.replace(/[^0-9.]/g, '');
+    const expectedValueStr = expectedValue.toString().replace(/[^0-9.]/g, '');
+    expect(extractedValue).toContain(expectedValueStr);
+  }
+
   async validatePaymentCard({
     date,
     registrationsNumber,
     paymentAmount,
     successfulTransfers,
     failedTransfers,
+    currency = '€',
   }: {
     date: string;
     registrationsNumber: number;
     paymentAmount: number;
     successfulTransfers: number;
     failedTransfers: number;
+    currency?: string;
   }) {
     const paymentTitle = await this.paymentTitle.textContent();
     const includedRegistrationsElement = await this.paymentSummaryMetrics
@@ -157,16 +169,22 @@ class PaymentsPage extends BasePage {
     const failedTransfersElement = await this.paymentSummaryMetrics
       .filter({ hasText: 'Failed transfers' })
       .textContent();
-
+    // Validate payment title
     expect(paymentTitle).toContain(date);
+    // Validate included registrations
     expect(includedRegistrationsElement).toContain(
       registrationsNumber.toString(),
     );
-    expect(totalAmountElement).toContain(paymentAmount.toString());
-    expect(successfulTransfersElement).toContain(
-      successfulTransfers.toString(),
+    // Validate payment amount and currency
+    await this.validateNumericValue(totalAmountElement, paymentAmount);
+    expect(totalAmountElement).toContain(currency);
+    // Validate successful transfers
+    await this.validateNumericValue(
+      successfulTransfersElement,
+      successfulTransfers,
     );
-    expect(failedTransfersElement).toContain(failedTransfers.toString());
+    // Validate failed transfers
+    await this.validateNumericValue(failedTransfersElement, failedTransfers);
   }
 
   async openPaymentByDate({ date }: { date: string }) {
@@ -202,6 +220,7 @@ class PaymentsPage extends BasePage {
       );
     }
   }
+
   async selectPaymentExportOption({ option }: { option: string }) {
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();

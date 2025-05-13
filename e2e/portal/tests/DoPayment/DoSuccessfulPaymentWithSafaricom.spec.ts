@@ -2,26 +2,26 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import KRCSProgram from '@121-service/src/seed-data/program/program-safaricom.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
-  registrationsVoucher,
+  programIdSafaricom,
+  registrationsSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.safaricomProgram);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsVoucher,
-    programIdPV,
+    registrationsSafaricom,
+    programIdSafaricom,
     accessToken,
   );
 
@@ -34,14 +34,17 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
+test('[36009] Do successful payment for Safaricom fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
-  const numberOfPas = registrationsVoucher.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
-    return output + pa.paymentAmountMultiplier * defaultTransferValue;
-  }, 0);
+  const projectTitle = KRCSProgram.titlePortal.en;
+  const numberOfPas = registrationsSafaricom.length;
+  const defaultTransferValue = KRCSProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsSafaricom.reduce(
+    (output, pa) => {
+      return output + pa.paymentAmountMultiplier * defaultTransferValue;
+    },
+    0,
+  );
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -55,7 +58,9 @@ test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(
+        `/en-GB/project/${programIdSafaricom}/payments/1`,
+      ),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -72,6 +77,7 @@ test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
+      currency: KRCSProgram.currency,
     });
     // DO NOT MAKE IT A RULE!!!
     // Only in this case we need to reload the page to get the updated data of the successful payments.
@@ -83,6 +89,7 @@ test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
+      currency: KRCSProgram.currency,
     });
   });
 });
