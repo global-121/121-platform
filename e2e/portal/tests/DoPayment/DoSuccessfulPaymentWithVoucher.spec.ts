@@ -2,15 +2,15 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  registrationsOCW,
+  programIdPV,
+  registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
@@ -19,7 +19,11 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
+  await seedIncludedRegistrations(
+    registrationsVoucher,
+    programIdPV,
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -30,12 +34,12 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31970] Do successful payment', async ({ page }) => {
+test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
-  const numberOfPas = registrationsOCW.length;
+  const numberOfPas = registrationsVoucher.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
+  const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -51,7 +55,7 @@ test('[31970] Do successful payment', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
