@@ -46,6 +46,7 @@ export const getAccessToken = async ({
     });
 
     if (!response.ok) {
+      console.log(response);
       const errorDetails = await response.text();
       throw new Error(
         `Failed to fetch access token: ${response.status} ${response.statusText} - ${errorDetails}`,
