@@ -264,7 +264,7 @@ describe('Manage financial service provider configurations', () => {
     const getTranactions = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationOCW5.referenceId,
+      registrationReferenceId: registrationOCW5.referenceId,
       accessToken,
     });
 

@@ -109,7 +109,7 @@ describe('Registrations - [Scoped]', () => {
     const transactionResponse = await getTransactions({
       programId: PvProgramId,
       paymentNr: 1,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     const transactions = transactionResponse.body;

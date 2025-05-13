@@ -43,7 +43,7 @@ describe('Registrations - [Scoped]', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
       paymentNr: payment,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
 
@@ -85,7 +85,7 @@ describe('Registrations - [Scoped]', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
       paymentNr: payment,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken: accessTokenScoped,
     });
 

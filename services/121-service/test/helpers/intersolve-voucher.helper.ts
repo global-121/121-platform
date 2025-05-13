@@ -19,7 +19,7 @@ export async function getTransactionsIntersolveVoucher(
       await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId,
+        registrationReferenceId: referenceId,
         accessToken,
       })
     ).body;

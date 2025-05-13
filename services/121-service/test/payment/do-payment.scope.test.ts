@@ -90,7 +90,7 @@ describe('Registrations - [Scoped]', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
       paymentNr: payment,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);

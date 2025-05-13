@@ -32,7 +32,7 @@ describe('Mock registrations', () => {
       const transactionsResponse = await getTransactions({
         programId,
         paymentNr,
-        referenceId: null,
+        registrationReferenceId: null,
         accessToken,
       });
 

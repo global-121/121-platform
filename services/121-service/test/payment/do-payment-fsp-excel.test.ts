@@ -136,7 +136,7 @@ describe('Do payment with Excel FSP', () => {
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
         paymentNr,
-        referenceId: null,
+        registrationReferenceId: null,
         accessToken,
       });
 
@@ -237,7 +237,7 @@ describe('Do payment with Excel FSP', () => {
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
         paymentNr,
-        referenceId: null,
+        registrationReferenceId: null,
         accessToken,
       });
 

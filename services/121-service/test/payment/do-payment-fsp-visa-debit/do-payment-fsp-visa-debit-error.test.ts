@@ -79,7 +79,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -125,7 +125,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -171,7 +171,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -217,7 +217,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -280,7 +280,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa + 1,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -372,7 +372,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 

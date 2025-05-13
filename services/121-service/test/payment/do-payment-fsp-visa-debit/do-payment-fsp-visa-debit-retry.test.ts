@@ -92,7 +92,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -155,7 +155,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
