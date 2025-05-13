@@ -20,11 +20,11 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       attributes: [],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
-          isRequired: false,
+          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+          isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
           isRequired: true,
         },
       ],
