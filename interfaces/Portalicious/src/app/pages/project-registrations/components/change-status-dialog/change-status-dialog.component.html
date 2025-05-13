@@ -135,59 +135,16 @@
     {{ changeStatusMutation.data()?.nonApplicableCount }}
     registration(s) that don't support this action</b
   >
-  @switch (status()) {
-    @case (RegistrationStatusEnum.validated) {
-      <p
-        i18n="@@change-status-validate-warning"
-        class="pt-2"
-      >
-        The action "Validate" can only be applied to registrations with the
-        "Registered" status. Registrations with other statuses will remain with
-        their current status.
-      </p>
-    }
-    @case (RegistrationStatusEnum.included) {
-      <p
-        i18n="@@change-status-include-warning"
-        class="pt-2"
-      >
-        The action "Include" can only be applied to registrations that do not
-        have status "Included" and whose “Payments left” is larger than 0.
-        Registrations with 0 payments left will remain with their current
-        status.
-      </p>
-    }
-    @case (RegistrationStatusEnum.paused) {
-      <p
-        i18n="@@change-status-pause-warning"
-        class="pt-2"
-      >
-        The action "Pause" can only be applied to registrations with the
-        "Included" status. Registrations with other statuses will remain with
-        their current status.
-      </p>
-    }
-    @case (RegistrationStatusEnum.declined) {
-      <p
-        i18n="@@change-status-decline-warning"
-        class="pt-2"
-      >
-        The action "Decline" can not be applied to registrations with the
-        "Declined" or "Completed" status. Registrations with the “Completed”
-        status will remain with their current status.
-      </p>
-    }
-    @case (RegistrationStatusEnum.deleted) {
-      <p
-        i18n="@@change-status-delete-warning"
-        class="pt-2"
-      >
-        The action "Delete" can not be applied to registrations with the
-        "Completed" status. Registrations with “completed” status will remain
-        with their current status.
-      </p>
-    }
-  }
+  <p class="pt-2">
+    {{ changeStatusWarningMessage() }}
+  </p>
+  <p
+    class="pt-2"
+    i18n
+  >
+    Registrations that do not support this action will remain in their current
+    status.
+  </p>
   <p
     i18n
     class="pt-2"
@@ -211,98 +168,15 @@
     </h3>
   </ng-template>
   <b i18n>0 selected registrations support this action. </b>
-  @switch (status()) {
-    @case (RegistrationStatusEnum.validated) {
-      <p
-        i18n
-        class="pt-2"
-      >
-        The action "Validate" can only be applied to registrations with the
-        "Registered" status.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations with the status “Registered” and try again.
-      </p>
-    }
-    @case (RegistrationStatusEnum.included) {
-      <p
-        i18n
-        class="pt-2"
-      >
-        The action "Include" can only be applied to registrations who's
-        “Payments left” is larger than 0.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations who's “Payments left” is larger than 0 and try
-        again.
-      </p>
-    }
-    @case (RegistrationStatusEnum.paused) {
-      <p
-        i18n
-        class="pt-2"
-      >
-        The action "Pause" can only be applied to registrations with the
-        "Included" status.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations with the status “included” and try again.
-      </p>
-    }
-    @case (RegistrationStatusEnum.declined) {
-      <p
-        i18n
-        class="pt-2"
-      >
-        The action "Decline" can not be applied to registrations with the
-        "Completed" status.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations with other status and try again.
-      </p>
-    }
-    @case (RegistrationStatusEnum.deleted) {
-      <p
-        i18n
-        class="pt-2"
-      >
-        The action "Delete" can not be applied to registrations with the
-        "Completed" status.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations with other status and try again.
-      </p>
-    }
-    @default {
-      <p
-        i18n
-        class="pt-2"
-      >
-        This action can not be applied to the registrations you have selected.
-      </p>
-      <p
-        i18n
-        class="pt-2"
-      >
-        Select registrations with another status and try again.
-      </p>
-    }
-  }
+  <p class="pt-2">
+    {{ changeStatusWarningMessage() }}
+  </p>
+  <p
+    i18n
+    class="pt-2"
+  >
+    Select registrations that support this action, and try again.
+  </p>
   <div class="mt-6 flex justify-end gap-x-2">
     <p-button
       label="Cancel"
