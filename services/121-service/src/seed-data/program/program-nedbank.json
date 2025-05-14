@@ -12,6 +12,7 @@
   "startDate": "2021-01-11T12:00:00Z",
   "endDate": "2022-12-31T12:00:00Z",
   "currency": "ZAR",
+  "currencySymbol": "R",
   "distributionFrequency": "week",
   "distributionDuration": 90,
   "fixedTransferValue": 100,
