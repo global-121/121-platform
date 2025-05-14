@@ -137,8 +137,8 @@ class PaymentsPage extends BasePage {
   ) {
     if (!elementText) throw new Error('Element text is null');
     const extractedValue = elementText.replace(/[^0-9.]/g, '');
-    const expectedValueStr = expectedValue.toString().replace(/[^0-9.]/g, '');
-    expect(extractedValue).toContain(expectedValueStr);
+    const actualNumber = parseFloat(extractedValue);
+    expect(actualNumber).toBeCloseTo(expectedValue, 2);
   }
 
   async validatePaymentCard({
