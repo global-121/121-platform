@@ -51,7 +51,9 @@ describe('Registrations - [Scoped]', () => {
     expect(transactionsResponse.body.length).toBe(registrationsPV.length);
 
     const transaction1 = transactionsResponse.body.find(
-      (t) => t.referenceId === registrationScopedMiddelburgPv.referenceId,
+      (t) =>
+        t.registrationReferenceId ===
+        registrationScopedMiddelburgPv.referenceId,
     );
 
     // Check that all expected fields exist with correct types
@@ -60,7 +62,7 @@ describe('Registrations - [Scoped]', () => {
       updated: expect.any(String),
       payment,
       registrationProgramId: expect.any(Number),
-      referenceId: registrationScopedMiddelburgPv.referenceId,
+      registrationReferenceId: registrationScopedMiddelburgPv.referenceId,
       status: TransactionStatusEnum.success,
       amount: expect.any(Number),
       errorMessage: null,
@@ -95,7 +97,7 @@ describe('Registrations - [Scoped]', () => {
 
     // Also check if the right referenceIds are in the transactions
     const referenceIdsTransactions = transactionsResponse.body.map(
-      (t) => t.referenceId,
+      (t) => t.registrationReferenceId,
     );
     const registrationsZeelandReferenceIds = [
       registrationScopedGoesPv.referenceId,

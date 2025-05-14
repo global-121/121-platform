@@ -119,7 +119,7 @@ describe('Registrations - [Scoped]', () => {
       .map((r) => r.referenceId);
 
     const referenceIdsFromTransactions = transactions.map(
-      (transaction) => transaction.referenceId,
+      (transaction) => transaction.registrationReferenceId,
     );
 
     // Sort both arrays

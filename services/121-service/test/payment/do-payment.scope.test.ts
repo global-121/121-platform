@@ -98,7 +98,7 @@ describe('Registrations - [Scoped]', () => {
     // Also check if the right amount of transactions are created
     expect(transactionsResponse.body.length).toBe(2);
     const referenceIdsTransactions = transactionsResponse.body.map(
-      (t) => t.referenceId,
+      (t) => t.registrationReferenceId,
     );
 
     // Also check if the right referenceIds are in the transactions
