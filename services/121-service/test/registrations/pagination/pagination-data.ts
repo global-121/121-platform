@@ -23,6 +23,7 @@ export const programIdOCW = 3;
 export const programIdWesteros = 2;
 export const programIdSafaricom = 1;
 export const programIdNedbank = 1;
+export const programIdCbe = 1;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
@@ -310,6 +311,8 @@ export const registrationCbe = {
   gender: 'male',
   bankAccountNumber: '407951684723597',
 };
+
+export const registrationsCbe = [registrationCbe];
 
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',

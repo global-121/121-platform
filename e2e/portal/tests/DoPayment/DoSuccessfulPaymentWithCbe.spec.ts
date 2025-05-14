@@ -2,29 +2,24 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NedbankProgram from '@121-service/src/seed-data/program/program-nedbank.json';
+import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
-  runCronJobDoNedbankReconciliation,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdNedbank,
-  registrationsNedbank,
+  programIdCbe,
+  registrationsCbe,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nedbankProgram);
+  await resetDB(SeedScript.cbeProgram);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsNedbank,
-    programIdNedbank,
-    accessToken,
-  );
+  await seedIncludedRegistrations(registrationsCbe, programIdCbe, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -35,12 +30,12 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
+test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NedbankProgram.titlePortal.en;
-  const numberOfPas = registrationsNedbank.length;
-  const defaultTransferValue = NedbankProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
+  const projectTitle = CbeProgram.titlePortal.en;
+  const numberOfPas = registrationsCbe.length;
+  const defaultTransferValue = CbeProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsCbe.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -56,10 +51,8 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdNedbank}/payments/1`),
+      url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
     );
-    // Run CRON job to process payment
-    await runCronJobDoNedbankReconciliation();
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
@@ -75,7 +68,7 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
-      currency: NedbankProgram.currencySymbol,
+      currency: CbeProgram.currency,
     });
     // DO NOT MAKE IT A RULE!!!
     // Only in this case we need to reload the page to get the updated data of the successful payments.
@@ -87,7 +80,7 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
-      currency: NedbankProgram.currencySymbol,
+      currency: CbeProgram.currency,
     });
   });
 });
