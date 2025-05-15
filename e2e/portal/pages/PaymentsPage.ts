@@ -75,7 +75,7 @@ class PaymentsPage extends BasePage {
   }
 
   async selectAllRegistrations() {
-    await this.table.selectAllCheckbox();
+    await this.table.selectAll();
   }
 
   async validatePaymentSummary({
@@ -275,7 +275,7 @@ class PaymentsPage extends BasePage {
       selection: 'Failed',
     });
 
-    await this.table.selectAllCheckbox();
+    await this.table.selectAll();
 
     await this.retryFailedTransfersButton.click();
 
