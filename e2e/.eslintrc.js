@@ -70,6 +70,7 @@ module.exports = {
         ],
         'simple-import-sort/exports': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       },
     },
   ],

@@ -1,6 +1,4 @@
 import { expect, Locator } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
 import { Page } from 'playwright';
 import * as XLSX from 'xlsx';
 
@@ -85,39 +83,39 @@ const expectedColumnsExportExcelFspPaymentList = [
   'addressCity',
 ];
 
-interface ExportPaAssertionData {
+type ExportRegistrationsAssertionData = {
   status: string;
   id: number;
   paymentAmountMultiplier: number;
   preferredLanguage: string;
   programFinancialServiceProviderConfigurationLabel: string;
   whatsappPhoneNumber?: string;
-}
+};
 
-interface ExportStatusAndDataChangesData {
+type ExportStatusAndDataChangesAssertionData = {
   referenceId: string;
   changedBy: string;
   type: string;
   newValue: string;
   oldValue: string;
   reason: string;
-}
+};
 
-interface ExportDuplicateRegistrationsData {
+type ExportDuplicateRegistrationsAssertionData = {
   id: number;
   status: string;
   programFinancialServiceProviderConfigurationLabel: string;
   name: string;
   duplicateWithIds: string;
-}
+};
 
-interface ExportExcelFspData {
+type ExportExcelFspAssertionData = {
   amount: number;
   fullName: string;
   addressStreet: string;
   addressHouseNumber: string;
   addressPostalCode: string;
-}
+};
 
 class RegistrationsPage extends BasePage {
   readonly page: Page;
@@ -323,21 +321,15 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async downloadAndValidateTemplate(expectedColumns: string[]) {
-    await this.importButton.click();
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      await this.downloadTemplateButton.click(),
-    ]);
-
-    const downloadDir = path.join(__dirname, '../../downloads');
-    if (!fs.existsSync(downloadDir)) {
-      fs.mkdirSync(downloadDir);
-    }
-
-    const filePath = path.join(downloadDir, download.suggestedFilename());
-    await download.saveAs(filePath);
-
+  async validateCSV({
+    expectedColumns,
+    filePath,
+    expectedDataLength,
+  }: {
+    expectedColumns?: string[];
+    expectedDataLength: number;
+    filePath: string;
+  }) {
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
@@ -348,33 +340,48 @@ class RegistrationsPage extends BasePage {
     // Get header row (first row)
     const headers = data[0] as string[];
 
-    // Verify that all expected columns are present
-    const missingColumns = expectedColumns.filter(
-      (expectedCol) => !headers.includes(expectedCol),
+    if (expectedColumns) {
+      // Verify that all expected columns are present
+      const missingColumns = expectedColumns.filter(
+        (expectedCol) => !headers.includes(expectedCol),
+      );
+
+      if (missingColumns.length > 0) {
+        throw new Error(
+          `Template validation failed. Missing columns: ${missingColumns.join(', ')}`,
+        );
+      }
+
+      // Verify the template doesn't have extra columns
+      if (headers.length > expectedColumns.length) {
+        const extraColumns = headers.filter(
+          (header) => !expectedColumns.includes(header),
+        );
+        throw new Error(
+          `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
+        );
+      }
+    } else {
+      expect(headers).toMatchSnapshot();
+    }
+
+    expect(data.length - 1).toEqual(expectedDataLength);
+
+    return true;
+  }
+
+  async downloadAndValidateTemplate(expectedColumns: string[]) {
+    await this.importButton.click();
+
+    const filePath = await this.downloadFile(
+      this.downloadTemplateButton.click(),
     );
 
-    if (missingColumns.length > 0) {
-      throw new Error(
-        `Template validation failed. Missing columns: ${missingColumns.join(', ')}`,
-      );
-    }
-
-    // Verify the template doesn't have extra columns
-    if (headers.length > expectedColumns.length) {
-      const extraColumns = headers.filter(
-        (header) => !expectedColumns.includes(header),
-      );
-      throw new Error(
-        `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
-      );
-    }
-
-    // Verify the template is empty (contains only header row)
-    if (data.length > 1) {
-      throw new Error(
-        `Template should be empty but contains ${data.length - 1} data rows`,
-      );
-    }
+    await this.validateCSV({
+      expectedColumns,
+      expectedDataLength: 0, // Verify the template is empty (contains only header row)
+      filePath,
+    });
 
     return true;
   }
@@ -387,24 +394,22 @@ class RegistrationsPage extends BasePage {
     await this.proceedButton.click();
   }
 
-  async exportAndAssertData(
-    expectedColumns: string[],
-    assertionData: Record<string, unknown>,
-    registrationIndex: number,
-    filterContext?: string,
-    validateMinRowCount?: { condition: boolean; minRowCount: number },
-    validateExactRowCount?: { condition: boolean; rowCount: number },
-  ) {
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      this.clickProceedToExport(),
-    ]);
-
-    const downloadDir = path.join(__dirname, '../../downloads');
-    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir);
-
-    const filePath = path.join(downloadDir, download.suggestedFilename());
-    await download.saveAs(filePath);
+  async exportAndAssertData({
+    expectedColumns,
+    assertionData,
+    registrationIndex,
+    filterContext,
+    validateMinRowCount,
+    validateExactRowCount,
+  }: {
+    expectedColumns: string[];
+    assertionData: Record<string, unknown>;
+    registrationIndex: number;
+    filterContext?: string;
+    validateMinRowCount?: { condition: boolean; minRowCount: number };
+    validateExactRowCount?: { condition: boolean; rowCount: number };
+  }) {
+    const filePath = await this.downloadFile(this.clickProceedToExport());
 
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -496,113 +501,55 @@ class RegistrationsPage extends BasePage {
 
   async exportAndAssertSelectedRegistrations(
     registrationIndex: number,
-    {
-      status,
-      id,
-      paymentAmountMultiplier,
-      preferredLanguage,
-      programFinancialServiceProviderConfigurationLabel,
-    }: ExportPaAssertionData,
+    assertionData: ExportRegistrationsAssertionData,
     validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
-    const assertionData = {
-      status,
-      id,
-      paymentAmountMultiplier,
-      preferredLanguage,
-      programFinancialServiceProviderConfigurationLabel,
-    };
-    await this.exportAndAssertData(
-      expectedColumnsSelectedRegistrationsExport,
+    await this.exportAndAssertData({
+      expectedColumns: expectedColumnsSelectedRegistrationsExport,
       assertionData,
       registrationIndex,
-      undefined,
       validateMinRowCount,
-    );
+    });
   }
 
   async exportAndAssertStatusAndDataChanges(
     registrationIndex: number,
-    {
-      referenceId,
-      changedBy,
-      type,
-      newValue,
-      oldValue,
-      reason,
-    }: ExportStatusAndDataChangesData,
+    assertionData: ExportStatusAndDataChangesAssertionData,
     validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
-    const assertionData = {
-      referenceId,
-      changedBy,
-      type,
-      newValue,
-      oldValue,
-      reason,
-    };
-    await this.exportAndAssertData(
-      expectedColumnsStatusAndDataChangesExport,
+    await this.exportAndAssertData({
+      expectedColumns: expectedColumnsStatusAndDataChangesExport,
       assertionData,
       registrationIndex,
-      referenceId,
+      filterContext: assertionData.referenceId,
       validateMinRowCount,
-    );
+    });
   }
 
   async exportAndAssertDuplicates(
     registrationIndex: number,
-    {
-      id,
-      status,
-      programFinancialServiceProviderConfigurationLabel,
-      name,
-      duplicateWithIds,
-    }: ExportDuplicateRegistrationsData,
+    assertionData: ExportDuplicateRegistrationsAssertionData,
     validateMinRowCount?: { condition: boolean; minRowCount: number },
   ) {
-    const assertionData = {
-      id,
-      status,
-      programFinancialServiceProviderConfigurationLabel,
-      name,
-      duplicateWithIds,
-    };
-    await this.exportAndAssertData(
-      expectedColumnsDuplicateRegistrationsExport,
+    await this.exportAndAssertData({
+      expectedColumns: expectedColumnsDuplicateRegistrationsExport,
       assertionData,
       registrationIndex,
-      undefined,
       validateMinRowCount,
-    );
+    });
   }
 
   async exportAndAssertExcelFspList(
     registrationIndex: number,
-    {
-      amount,
-      fullName,
-      addressStreet,
-      addressHouseNumber,
-      addressPostalCode,
-    }: ExportExcelFspData,
+    assertionData: ExportExcelFspAssertionData,
     validateExactRowCount?: { condition: boolean; rowCount: number },
   ) {
-    const assertionData = {
-      amount,
-      fullName,
-      addressStreet,
-      addressHouseNumber,
-      addressPostalCode,
-    };
-    await this.exportAndAssertData(
-      expectedColumnsExportExcelFspPaymentList,
+    await this.exportAndAssertData({
+      expectedColumns: expectedColumnsExportExcelFspPaymentList,
       assertionData,
       registrationIndex,
-      undefined,
-      undefined,
       validateExactRowCount,
-    );
+    });
   }
 
   async assertImportTemplateForPvProgram() {
