@@ -72,6 +72,11 @@ async function main() {
 
       await Promise.all(
         logInfoArray.map(async (logInfo) => {
+          // Skip the non-app log files
+          if (!logInfo.machineName.endsWith('_default')) {
+            return false;
+          }
+
           // download the actual log file
           const dockerLogsResponse = await fetch(logInfo.href, {
             headers: {
