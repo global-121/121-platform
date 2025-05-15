@@ -1,121 +1,10 @@
 import { expect, Locator } from '@playwright/test';
 import { Page } from 'playwright';
-import * as XLSX from 'xlsx';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 
 import { expectedSortedArraysToEqual } from '../utils';
-
-const expectedImportRegistrationsTemplateColumnsPvProject = [
-  'referenceId',
-  'programFinancialServiceProviderConfigurationName',
-  'phoneNumber',
-  'preferredLanguage',
-  'paymentAmountMultiplier',
-  'maxPayments',
-  'scope',
-  'namePartnerOrganization',
-  'fullName',
-  'whatsappPhoneNumber',
-  'addressStreet',
-  'addressHouseNumber',
-  'addressHouseNumberAddition',
-  'addressPostalCode',
-  'addressCity',
-];
-
-const expectedColumnsSelectedRegistrationsExport = [
-  'referenceId',
-  'id',
-  'status',
-  'phoneNumber',
-  'preferredLanguage',
-  'paymentAmountMultiplier',
-  'paymentCount',
-  'programFinancialServiceProviderConfigurationLabel',
-  'scope',
-  'namePartnerOrganization',
-  'fullName',
-  'whatsappPhoneNumber',
-  'addressStreet',
-  'addressHouseNumber',
-  'addressHouseNumberAddition',
-  'addressPostalCode',
-  'addressCity',
-];
-
-const expectedColumnsStatusAndDataChangesExport = [
-  'paId',
-  'referenceId',
-  'changedAt',
-  'changedBy',
-  'type',
-  'newValue',
-  'oldValue',
-  'reason',
-];
-
-const expectedColumnsDuplicateRegistrationsExport = [
-  'referenceId',
-  'id',
-  'status',
-  'financialServiceProviderName',
-  'programFinancialServiceProviderConfigurationLabel',
-  'scope',
-  'phoneNumber',
-  'whatsappPhoneNumber',
-  'name',
-  'duplicateWithIds',
-];
-
-const expectedColumnsExportExcelFspPaymentList = [
-  'referenceId',
-  'amount',
-  'namePartnerOrganization',
-  'fullName',
-  'phoneNumber',
-  'whatsappPhoneNumber',
-  'addressStreet',
-  'addressHouseNumber',
-  'addressHouseNumberAddition',
-  'addressPostalCode',
-  'addressCity',
-];
-
-type ExportRegistrationsAssertionData = {
-  status: string;
-  id: number;
-  paymentAmountMultiplier: number;
-  preferredLanguage: string;
-  programFinancialServiceProviderConfigurationLabel: string;
-  whatsappPhoneNumber?: string;
-};
-
-type ExportStatusAndDataChangesAssertionData = {
-  referenceId: string;
-  changedBy: string;
-  type: string;
-  newValue: string;
-  oldValue: string;
-  reason: string;
-};
-
-type ExportDuplicateRegistrationsAssertionData = {
-  id: number;
-  status: string;
-  programFinancialServiceProviderConfigurationLabel: string;
-  name: string;
-  duplicateWithIds: string;
-};
-
-type ExportExcelFspAssertionData = {
-  amount: number;
-  fullName: string;
-  addressStreet: string;
-  addressHouseNumber: string;
-  addressPostalCode: string;
-};
 
 class RegistrationsPage extends BasePage {
   readonly page: Page;
@@ -321,71 +210,6 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
-  async validateCSV({
-    expectedColumns,
-    filePath,
-    expectedDataLength,
-  }: {
-    expectedColumns?: string[];
-    expectedDataLength: number;
-    filePath: string;
-  }) {
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, {
-      defval: null,
-      header: 1,
-    }) as unknown[][];
-    // Get header row (first row)
-    const headers = data[0] as string[];
-
-    if (expectedColumns) {
-      // Verify that all expected columns are present
-      const missingColumns = expectedColumns.filter(
-        (expectedCol) => !headers.includes(expectedCol),
-      );
-
-      if (missingColumns.length > 0) {
-        throw new Error(
-          `Template validation failed. Missing columns: ${missingColumns.join(', ')}`,
-        );
-      }
-
-      // Verify the template doesn't have extra columns
-      if (headers.length > expectedColumns.length) {
-        const extraColumns = headers.filter(
-          (header) => !expectedColumns.includes(header),
-        );
-        throw new Error(
-          `Template validation failed. Found unexpected columns: ${extraColumns.join(', ')}`,
-        );
-      }
-    } else {
-      expect(headers).toMatchSnapshot();
-    }
-
-    expect(data.length - 1).toEqual(expectedDataLength);
-
-    return true;
-  }
-
-  async downloadAndValidateTemplate(expectedColumns: string[]) {
-    await this.importButton.click();
-
-    const filePath = await this.downloadFile(
-      this.downloadTemplateButton.click(),
-    );
-
-    await this.validateCSV({
-      expectedColumns,
-      expectedDataLength: 0, // Verify the template is empty (contains only header row)
-      filePath,
-    });
-
-    return true;
-  }
-
   async assertExportButtonIsHidden() {
     await expect(this.exportButton).toBeHidden();
   }
@@ -395,167 +219,40 @@ class RegistrationsPage extends BasePage {
   }
 
   async exportAndAssertData({
-    expectedColumns,
-    assertionData,
-    registrationIndex,
-    filterContext,
-    validateMinRowCount,
-    validateExactRowCount,
+    minRowCount,
+    exactRowCount,
+    excludedColumns,
+    orderOfDataIsImportant,
   }: {
-    expectedColumns: string[];
-    assertionData: Record<string, unknown>;
-    registrationIndex: number;
-    filterContext?: string;
-    validateMinRowCount?: { condition: boolean; minRowCount: number };
-    validateExactRowCount?: { condition: boolean; rowCount: number };
-  }) {
+    minRowCount?: number;
+    exactRowCount?: number;
+    excludedColumns?: string[];
+    orderOfDataIsImportant?: boolean;
+  } = {}) {
     const filePath = await this.downloadFile(this.clickProceedToExport());
-
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: null }) as Record<
-      string,
-      unknown
-    >[];
-
-    if (data.length === 0) throw new Error('No data found in the sheet');
-
-    if (validateMinRowCount?.condition) {
-      if (data.length <= validateMinRowCount.minRowCount) {
-        throw new Error(
-          `Row count validation failed. Expected more than ${validateMinRowCount.minRowCount} rows, but found ${data.length}.`,
-        );
-      }
-    }
-
-    if (validateExactRowCount?.condition) {
-      if (data.length !== validateExactRowCount.rowCount) {
-        throw new Error(
-          `Row count validation failed. Expected ${validateExactRowCount.rowCount} rows, but found ${data.length}.`,
-        );
-      }
-    }
-
-    const rowToAssert = filterContext
-      ? data.find((row) =>
-          Object.values(row).some((value) =>
-            value?.toString().includes(filterContext),
-          ),
-        )
-      : data[registrationIndex];
-
-    if (!rowToAssert) throw new Error('No data found to assert');
-
-    const actualColumns = Object.keys(rowToAssert).map((col) =>
-      col.toLowerCase().trim(),
-    );
-    const normalizedExpectedColumns = expectedColumns.map((col) =>
-      col.toLowerCase().trim(),
-    );
-
-    const missingColumns = normalizedExpectedColumns.filter(
-      (col) => !actualColumns.includes(col),
-    );
-    const extraColumns = actualColumns.filter(
-      (col) => !normalizedExpectedColumns.includes(col),
-    );
-
-    if (missingColumns.length > 0 || extraColumns.length > 0) {
-      const errorMessage = [
-        'Column validation failed:',
-        missingColumns.length > 0
-          ? `Missing columns: ${missingColumns.join(', ')}`
-          : '',
-        extraColumns.length > 0
-          ? `Extra columns: ${extraColumns.join(', ')}`
-          : '',
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-      throw new Error(errorMessage);
-    }
-
-    const mappedAssertionData = Object.keys(assertionData).reduce(
-      (acc, key) => {
-        const mappedKey = key.toLowerCase().trim();
-        acc[mappedKey] = assertionData[key];
-        return acc;
-      },
-      {} as Record<string, unknown>,
-    );
-
-    const normalizedRowToAssert = Object.keys(rowToAssert).reduce(
-      (acc, key) => {
-        acc[key.toLowerCase().trim()] = rowToAssert[key];
-        return acc;
-      },
-      {} as Record<string, unknown>,
-    );
-
-    Object.entries(mappedAssertionData).forEach(([key, value]) => {
-      expect(normalizedRowToAssert[key]).toBe(value);
-    });
-  }
-
-  async exportAndAssertSelectedRegistrations(
-    registrationIndex: number,
-    assertionData: ExportRegistrationsAssertionData,
-    validateMinRowCount?: { condition: boolean; minRowCount: number },
-  ) {
-    await this.exportAndAssertData({
-      expectedColumns: expectedColumnsSelectedRegistrationsExport,
-      assertionData,
-      registrationIndex,
-      validateMinRowCount,
-    });
-  }
-
-  async exportAndAssertStatusAndDataChanges(
-    registrationIndex: number,
-    assertionData: ExportStatusAndDataChangesAssertionData,
-    validateMinRowCount?: { condition: boolean; minRowCount: number },
-  ) {
-    await this.exportAndAssertData({
-      expectedColumns: expectedColumnsStatusAndDataChangesExport,
-      assertionData,
-      registrationIndex,
-      filterContext: assertionData.referenceId,
-      validateMinRowCount,
-    });
-  }
-
-  async exportAndAssertDuplicates(
-    registrationIndex: number,
-    assertionData: ExportDuplicateRegistrationsAssertionData,
-    validateMinRowCount?: { condition: boolean; minRowCount: number },
-  ) {
-    await this.exportAndAssertData({
-      expectedColumns: expectedColumnsDuplicateRegistrationsExport,
-      assertionData,
-      registrationIndex,
-      validateMinRowCount,
-    });
-  }
-
-  async exportAndAssertExcelFspList(
-    registrationIndex: number,
-    assertionData: ExportExcelFspAssertionData,
-    validateExactRowCount?: { condition: boolean; rowCount: number },
-  ) {
-    await this.exportAndAssertData({
-      expectedColumns: expectedColumnsExportExcelFspPaymentList,
-      assertionData,
-      registrationIndex,
-      validateExactRowCount,
+    await this.validateExportedFile({
+      filePath,
+      minRowCount,
+      expectedRowCount: exactRowCount,
+      format: 'xlsx',
+      excludedColumns,
+      orderOfDataIsImportant,
     });
   }
 
   async assertImportTemplateForPvProgram() {
-    await this.downloadAndValidateTemplate(
-      expectedImportRegistrationsTemplateColumnsPvProject,
+    await this.importButton.click();
+
+    const filePath = await this.downloadFile(
+      this.downloadTemplateButton.click(),
     );
+
+    await this.validateExportedFile({
+      filePath,
+      // Verify the template is empty (contains only header row)
+      expectedRowCount: 0,
+      format: 'csv',
+    });
   }
 
   async assertDuplicateColumnValues(expectedValues: string[]) {

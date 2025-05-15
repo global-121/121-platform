@@ -70,7 +70,7 @@ test('[31215] Move PA(s) from status "Completed" to "Declined"', async ({
 
   await test.step('Change status of registration to "Declined"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable('Decline');
-    await registrations.validateToastMessageAndWait(toastMessage);
+    await registrations.validateToastMessageAndClose(toastMessage);
   });
   // Assert
   await test.step('Validate status change', async () => {

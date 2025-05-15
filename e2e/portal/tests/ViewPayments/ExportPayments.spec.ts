@@ -11,28 +11,6 @@ import { registrationsOCW } from '@121-service/test/registrations/pagination/pag
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
-const expectedExportedPaymentsColumns = [
-  'referenceid',
-  'id',
-  'registrationid',
-  'status',
-  'payment',
-  'timestamp',
-  'registrationstatus',
-  'phonenumber',
-  'paymentamountmultiplier',
-  'amount',
-  'errormessage',
-  'financialserviceprovider',
-  'fullname',
-  'whatsappphonenumber',
-  'addressstreet',
-  'addresshousenumber',
-  'addresshousenumberaddition',
-  'addresspostalcode',
-  'addresscity',
-];
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
@@ -64,6 +42,7 @@ test('[35621] ExportFivePayments', async ({ page }) => {
       await paymentsPage.createPayment();
       await paymentsPage.startPayment();
       await paymentsPage.navigateToProgramPage('Payments');
+      await paymentsPage.dismissToast();
     }
   });
 
@@ -77,8 +56,8 @@ test('[35621] ExportFivePayments', async ({ page }) => {
     });
 
     await paymentsPage.exportAndAssertData({
-      expectedColumns: expectedExportedPaymentsColumns,
       expectedRowCount: 25,
+      excludedColumns: ['timestamp'],
     });
   });
 });

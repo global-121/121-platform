@@ -18,13 +18,6 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-// Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
-const fullName = registrationsPvExcel[2].fullName;
-const addressStreet = registrationsPvExcel[2].addressStreet;
-const addressHouseNumber = registrationsPvExcel[2].addressHouseNumber;
-const addressPostalCode = registrationsPvExcel[2].addressPostalCode;
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -85,16 +78,8 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     // Start download of the payment instructions file
     await paymentsPage.exportFspPaymentList();
     // Assert excel fsp list it should only include the failed transactions that were retried and are now in status pending
-    await registrationsPage.exportAndAssertExcelFspList(
-      0,
-      {
-        amount,
-        fullName,
-        addressStreet,
-        addressHouseNumber,
-        addressPostalCode,
-      },
-      { condition: true, rowCount: 2 },
-    );
+    await registrationsPage.exportAndAssertData({
+      exactRowCount: 2,
+    });
   });
 });

@@ -42,8 +42,13 @@ export class EventsMapper {
   private static createAttributesObject(
     attributes: EventAttributeEntity[],
   ): Record<string, EventAttributeEntity['value']> {
+    // sort attribute to make sure the order is always the same
+    // this is important for testing purposes but also not bad as a feature
+    const attributesSorted = [...attributes].sort((a, b) =>
+      a.key.localeCompare(b.key),
+    );
     const attributesObject: Record<string, EventAttributeEntity['value']> = {};
-    for (const attribute of attributes) {
+    for (const attribute of attributesSorted) {
       if (attribute.value !== null) {
         attributesObject[attribute.key] = attribute.value;
       }

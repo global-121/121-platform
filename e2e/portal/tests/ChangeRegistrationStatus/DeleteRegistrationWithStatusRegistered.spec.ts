@@ -52,7 +52,7 @@ test('[34408] Delete registration with status "Registered"', async ({
   // Act
   await test.step('Delete registration with status "Registered"', async () => {
     await tableComponent.changeStatusOfRegistrationInTable('Delete');
-    await registrations.validateToastMessageAndWait(toastMessage);
+    await registrations.validateToastMessageAndClose(toastMessage);
   });
   // Assert
   await test.step('Validate registration was deleted succesfully', async () => {

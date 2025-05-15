@@ -1,0 +1,2 @@
+paId,referenceId,changedBy,type,newValue,oldValue,reason
+1,44e62864557597e0d,admin@example.org,registrationStatusChange,included,registered,default reason

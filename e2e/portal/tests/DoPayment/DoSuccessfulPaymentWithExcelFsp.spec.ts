@@ -19,10 +19,6 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Export Excel FSP payment list
 const amount = NLRCProgramPV.fixedTransferValue;
-const fullName = registrationsPvExcel[0].fullName;
-const addressStreet = registrationsPvExcel[0].addressStreet;
-const addressHouseNumber = registrationsPvExcel[0].addressHouseNumber;
-const addressPostalCode = registrationsPvExcel[0].addressPostalCode;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -89,16 +85,8 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentsPage.selectPaymentExportOption({
       option: 'Export FSP payment list',
     });
-    await registrationsPage.exportAndAssertExcelFspList(
-      0,
-      {
-        amount,
-        fullName,
-        addressStreet,
-        addressHouseNumber,
-        addressPostalCode,
-      },
-      { condition: true, rowCount: 4 },
-    );
+    await registrationsPage.exportAndAssertData({
+      exactRowCount: 4,
+    });
   });
 });

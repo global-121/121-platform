@@ -17,13 +17,6 @@ import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-// Export selected registrations
-const status = 'included';
-const id = 1;
-const paymentAmountMultiplier = 1;
-const preferredLanguage = 'en';
-const fspDisplayName = 'Visa debit card';
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -41,7 +34,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -50,18 +43,14 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
   });
 
   await test.step('Export list and validate XLSX file downloaded', async () => {
-    await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption('Selected registrations');
-    await registrations.exportAndAssertSelectedRegistrations(
-      0,
-      {
-        id,
-        status,
-        paymentAmountMultiplier,
-        preferredLanguage,
-        programFinancialServiceProviderConfigurationLabel: fspDisplayName,
-      },
-      { condition: true, minRowCount: 15000 },
+    await registrationsPage.selectAllRegistrations();
+    await registrationsPage.clickAndSelectExportOption(
+      'Selected registrations',
     );
+    await registrationsPage.exportAndAssertData({
+      minRowCount: 15000,
+      orderOfDataIsImportant: true,
+      excludedColumns: ['phoneNumber', 'whatsappPhoneNumber'],
+    });
   });
 });
