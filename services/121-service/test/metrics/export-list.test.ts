@@ -167,6 +167,27 @@ describe('Metric export list', () => {
     );
   });
 
+  it('should support using "select" to retrieve a specific subset of columns', async () => {
+    // Arrange
+    accessToken = await getAccessToken(); // gets admin access token
+
+    // Act
+    const getRegistrationsResponse = await getServer()
+      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .set('Cookie', [accessToken])
+      .query({
+        select: 'referenceId,fullName,phoneNumber',
+      })
+      .send();
+
+    // Assert
+    const data = getRegistrationsResponse.body.data;
+    expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
+    expect(data.length).toBe(4);
+
+    expect(data).toMatchSnapshot();
+  });
+
   it('should export in excel format', async () => {
     // Arrange
     const testScope = DebugScope.Zeeland;
