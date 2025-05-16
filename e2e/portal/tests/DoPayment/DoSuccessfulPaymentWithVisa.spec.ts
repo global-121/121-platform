@@ -58,7 +58,7 @@ test('[31970] Do successful payment for Visa fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessageAndWait('Payment created.');
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({

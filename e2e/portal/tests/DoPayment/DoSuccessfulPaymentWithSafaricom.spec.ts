@@ -67,7 +67,7 @@ test('[36009] Do successful payment for Safaricom fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessageAndWait('Payment created.');
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({
