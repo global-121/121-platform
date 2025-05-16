@@ -2,24 +2,29 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NedbankProgram from '@121-service/src/seed-data/program/program-nedbank.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
+  runCronJobDoNedbankReconciliation,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  registrationsOCW,
+  programIdNedbank,
+  registrationsNedbank,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nedbankProgram);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
+  await seedIncludedRegistrations(
+    registrationsNedbank,
+    programIdNedbank,
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
@@ -30,12 +35,12 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31970] Do successful payment', async ({ page }) => {
+test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
-  const numberOfPas = registrationsOCW.length;
-  const defaultTransferValue = NLRCProgram.fixedTransferValue;
-  const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
+  const projectTitle = NedbankProgram.titlePortal.en;
+  const numberOfPas = registrationsNedbank.length;
+  const defaultTransferValue = NedbankProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsNedbank.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -51,34 +56,29 @@ test('[31970] Do successful payment', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+      url.pathname.startsWith(`/en-GB/project/${programIdNedbank}/payments/1`),
     );
+    // Run CRON job to process payment
+    await runCronJobDoNedbankReconciliation();
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessage('Payment created.');
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
+    // In case of Nedbank, we need to wait for the payment to be processed
+    // before we can validate the payment card
+    // This way we can avoid reloading the page
+    await page.waitForTimeout(1000);
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
-    // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
-    });
-    // DO NOT MAKE IT A RULE!!!
-    // Only in this case we need to reload the page to get the updated data of the successful payments.
-    // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-    await page.reload();
-    await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
-      paymentAmount: defaultMaxTransferValue,
-      registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
+      currency: NedbankProgram.currencySymbol,
     });
   });
 });

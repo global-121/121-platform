@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -10,21 +10,17 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationsPvExcel,
+  registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
-
-// Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
-    registrationsPvExcel,
+    registrationsVoucher,
     programIdPV,
     accessToken,
   );
@@ -38,18 +34,14 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[31972] Do payment for excel fsp', async ({ page }) => {
+test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
-
-  const projectTitle = NLRCProgramPV.titlePortal.en;
-  const numberOfPas = registrationsPvExcel.length;
-  const defaultTransferValue = amount;
-  const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
+  const projectTitle = NLRCProgram.titlePortal.en;
+  const numberOfPas = registrationsVoucher.length;
+  const defaultTransferValue = NLRCProgram.fixedTransferValue;
+  const defaultMaxTransferValue = registrationsVoucher.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const financialServiceProviders: string[] = ['Excel Payment Instructions'];
-
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
   await test.step('Navigate to Program payments', async () => {
@@ -58,18 +50,8 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Create payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.validateExcelFspInstructions();
-  });
-
   await test.step('Do payment', async () => {
-    await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
-      registrationsNumber: numberOfPas,
-      currency: '€',
-      paymentAmount: defaultMaxTransferValue,
-    });
+    await paymentsPage.createPayment();
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -77,16 +59,18 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Download payment instructions', async () => {
-    await paymentsPage.openPaymentByDate({ date: lastPaymentDate });
-    await paymentsPage.selectPaymentExportOption({
-      option: 'Export FSP payment list',
-    });
-    await registrationsPage.exportAndAssertData({
-      exactRowCount: 4,
+  await test.step('Validate payment card', async () => {
+    await page.waitForTimeout(1000);
+    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.waitForPaymentToComplete();
+    await paymentsPage.validatePaymentCard({
+      date: lastPaymentDate,
+      paymentAmount: defaultMaxTransferValue,
+      registrationsNumber: numberOfPas,
+      successfulTransfers: defaultMaxTransferValue,
+      failedTransfers: 0,
     });
   });
 });

@@ -21,6 +21,9 @@ export function createExpectedValueObject(
 export const programIdPV = 2;
 export const programIdOCW = 3;
 export const programIdWesteros = 2;
+export const programIdSafaricom = 1;
+export const programIdNedbank = 1;
+export const programIdCbe = 1;
 
 export const registrationOCW1 = {
   referenceId: '63e62864557597e0d',
@@ -121,6 +124,13 @@ export const registrationsOCW = [
   registrationOCW5,
 ];
 
+export const registrationsVisa = [
+  registrationOCW1,
+  registrationOCW2,
+  registrationOCW3,
+  registrationOCW4,
+];
+
 export const registrationPV5 = {
   referenceId: '44e62864557597e0d',
   preferredLanguage: LanguageEnum.nl,
@@ -198,6 +208,8 @@ export const registrationsPV = [
   registrationPV7,
   registrationPV8,
 ];
+
+export const registrationsVoucher = [registrationPV5, registrationPV6];
 
 export const registrationPvScoped = {
   referenceId: '434e62869242497e1e',
@@ -300,6 +312,8 @@ export const registrationCbe = {
   bankAccountNumber: '407951684723597',
 };
 
+export const registrationsCbe = [registrationCbe];
+
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
   programFinancialServiceProviderConfigurationName:
@@ -397,3 +411,5 @@ export const registrationNedbank = {
   maxPayments: 3,
   fullName: 'nedbank pa',
 };
+
+export const registrationsNedbank = [registrationNedbank];
