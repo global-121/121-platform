@@ -86,7 +86,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
       option: 'Indonesian',
     });
     await personalInformationPage.saveChanges();
-    await personalInformationPage.validateToastMessageAndWait(
+    await personalInformationPage.validateToastMessageAndClose(
       'Personal information edited successfully.',
     );
     // Validate the selected option

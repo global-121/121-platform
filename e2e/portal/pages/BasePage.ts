@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 import { Locator, Page } from 'playwright';
+import * as XLSX from 'xlsx';
 
 import { PrimeNGDropdown } from '@121-e2e/portal/components/PrimeNGDropdown';
 
@@ -89,12 +90,17 @@ class BasePage {
     });
   }
 
-  // Some data is already updated when the toast message is shown so to speed the test up we can validate the toast message
-  // And wait for 1 second to make sure the data is updated without waiting for the toast to disappear after 6 seconds
-  async validateToastMessageAndWait(message: string) {
+  // To speed tests up we can validate the toast message and close it
+  // without waiting for the toast to disappear after 6 seconds
+  async validateToastMessageAndClose(message: string) {
     await expect(this.toast).toBeVisible();
     expect(await this.toast.textContent()).toContain(message);
-    await this.page.waitForTimeout(1000);
+    await this.dismissToast();
+  }
+
+  async dismissToast() {
+    await this.toast.getByRole('button').click();
+    await expect(this.toast).toBeHidden();
   }
 
   async validateFormError({ errorText }: { errorText: string }) {
@@ -162,6 +168,72 @@ class BasePage {
     await download.saveAs(filePath);
 
     return filePath;
+  }
+
+  async validateExportedFile({
+    filePath,
+    minRowCount,
+    expectedRowCount,
+    format,
+    orderOfDataIsImportant = false,
+    excludedColumns = [],
+  }: {
+    filePath: string;
+    minRowCount?: number;
+    expectedRowCount?: number;
+    format: 'xlsx' | 'csv';
+    orderOfDataIsImportant?: boolean;
+    excludedColumns?: string[];
+  }) {
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // convert to csv format for easier snapshotting
+    const csvSheet = XLSX.utils.sheet_to_csv(sheet);
+
+    // remove the first row (header) from the data
+    const [headerRow, ...data] = csvSheet.split('\n');
+
+    if (!!minRowCount) {
+      expect(data.length).toBeGreaterThanOrEqual(minRowCount);
+    }
+
+    if (!!expectedRowCount) {
+      expect(data.length).toEqual(expectedRowCount);
+    }
+
+    let dataToValidate: string | undefined = data[0];
+
+    if (!orderOfDataIsImportant) {
+      // sort the data to make the snapshot more stable
+      dataToValidate = data.sort((a, b) => a.localeCompare(b))[0];
+    }
+
+    const headerCells = headerRow.split(',');
+    const dataCells = dataToValidate?.split(',') ?? [];
+
+    // remove excluded columns from the header and data
+    excludedColumns.forEach((column) => {
+      const index = headerCells.indexOf(column);
+      if (index > -1) {
+        headerCells.splice(index, 1);
+        dataCells.splice(index, 1);
+      } else {
+        throw new Error(
+          `Column to exclude "${column}" not found in header row`,
+        );
+      }
+    });
+
+    let snapshotContent = headerCells.join(',');
+
+    if (data.length > 0) {
+      snapshotContent += '\n' + dataCells.join(',');
+    }
+
+    // make sure we have the expected columns, and also validate the first row of data
+    expect(snapshotContent).toMatchSnapshot(`exported-${format}.csv`);
   }
 }
 

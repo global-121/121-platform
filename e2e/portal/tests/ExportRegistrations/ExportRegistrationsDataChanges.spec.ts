@@ -16,13 +16,6 @@ import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-// Export status & data changes
-const changedBy = 'admin@example.org';
-const type = 'registrationStatusChange';
-const newValue = 'included';
-const oldValue = 'registered';
-const reason = 'default reason';
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -39,7 +32,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[29337] Export all People Affected data changes', async ({ page }) => {
   const basePage = new BasePage(page);
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -48,15 +41,10 @@ test('[29337] Export all People Affected data changes', async ({ page }) => {
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
-    await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption('Status & data changes');
-    await registrations.exportAndAssertStatusAndDataChanges(0, {
-      referenceId: registrationsPV[0].referenceId, // Assert only the first registration
-      changedBy,
-      type,
-      newValue,
-      oldValue,
-      reason,
+    await registrationsPage.selectAllRegistrations();
+    await registrationsPage.clickAndSelectExportOption('Status & data changes');
+    await registrationsPage.exportAndAssertData({
+      excludedColumns: ['changedAt'],
     });
   });
 });

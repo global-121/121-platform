@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
-import * as XLSX from 'xlsx';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
@@ -298,57 +297,19 @@ class PaymentsPage extends BasePage {
   }
 
   async exportAndAssertData({
-    expectedColumns,
     expectedRowCount,
+    excludedColumns,
   }: {
-    expectedColumns: string[];
     expectedRowCount: number;
+    excludedColumns?: string[];
   }) {
     const filePath = await this.downloadFile(this.proceedButton.click());
-
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: null }) as Record<
-      string,
-      unknown
-    >[];
-
-    if (data.length === 0) throw new Error('No data found in the sheet');
-
-    if (data.length !== expectedRowCount) {
-      throw new Error(
-        `Row count validation failed. Expected ${expectedRowCount} payments, but found ${data.length}`,
-      );
-    }
-
-    const actualColumns = Object.keys(data[0]).map((col) =>
-      col.toLowerCase().trim(),
-    );
-
-    const missingColumns = expectedColumns.filter(
-      (col) => !actualColumns.includes(col),
-    );
-
-    const extraColumns = actualColumns.filter(
-      (col) => !expectedColumns.includes(col),
-    );
-
-    if (missingColumns.length > 0 || extraColumns.length > 0) {
-      const errorMessage = [
-        'Column validation failed:',
-        missingColumns.length > 0
-          ? `Missing columns: ${missingColumns.join(', ')}`
-          : '',
-        extraColumns.length > 0
-          ? `Extra columns: ${extraColumns.join(', ')}`
-          : '',
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-      throw new Error(errorMessage);
-    }
+    await this.validateExportedFile({
+      filePath,
+      expectedRowCount,
+      format: 'xlsx',
+      excludedColumns,
+    });
   }
 }
 

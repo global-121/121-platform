@@ -37,7 +37,7 @@ test('[29368] Successfully import registrations', async ({ page }) => {
 
   await test.step('Import registrations to PV program successfully', async () => {
     await registrationsPage.importRegistrations(registrationsDataFilePath);
-    await registrationsPage.validateToastMessageAndWait(
+    await registrationsPage.validateToastMessageAndClose(
       'Registration(s) imported successfully',
     );
   });

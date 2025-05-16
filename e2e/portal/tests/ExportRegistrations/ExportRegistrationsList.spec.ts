@@ -16,14 +16,6 @@ import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-// Export selected registrations
-const status = 'included';
-const id = 1;
-const paymentAmountMultiplier = 1;
-const preferredLanguage = 'nl';
-const programFinancialServiceProviderConfigurationLabel =
-  'Albert Heijn voucher WhatsApp';
-
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
@@ -40,7 +32,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[29358] Export Selected Registrations', async ({ page }) => {
   const basePage = new BasePage(page);
-  const registrations = new RegistrationsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -49,14 +41,10 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
-    await registrations.selectAllRegistrations();
-    await registrations.clickAndSelectExportOption('Selected registrations');
-    await registrations.exportAndAssertSelectedRegistrations(0, {
-      id,
-      status,
-      paymentAmountMultiplier,
-      preferredLanguage,
-      programFinancialServiceProviderConfigurationLabel,
-    });
+    await registrationsPage.selectAllRegistrations();
+    await registrationsPage.clickAndSelectExportOption(
+      'Selected registrations',
+    );
+    await registrationsPage.exportAndAssertData();
   });
 });
