@@ -69,22 +69,10 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
-    await paymentsPage.validateToastMessageAndWait('Payment created.');
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
-    await paymentsPage.validatePaymentCard({
-      date: lastPaymentDate,
-      paymentAmount: defaultMaxTransferValue,
-      registrationsNumber: numberOfPas,
-      successfulTransfers: 0,
-      failedTransfers: numberOfPas,
-      currency: KRCSProgram.currency,
-    });
-    // DO NOT MAKE IT A RULE!!!
-    // Only in this case we need to reload the page to get the updated data of the successful payments.
-    // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-    await page.reload();
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
