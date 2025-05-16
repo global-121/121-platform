@@ -1,0 +1,96 @@
+<app-import-file-dialog
+  [(dialogVisible)]="dialogVisible"
+  [mutation]="updateRegistrationsMutation"
+  [additionalFormGroups]="[updateRegistrationsFormGroup]"
+  accept=".csv,text/csv,text/comma-separated-values,application/csv"
+  header="Update existing registrations"
+  i18n-header
+>
+  <ng-container pre-file-input>
+    <p i18n>
+      You've selected
+      <strong>{{ actionData()?.count }} registrations.</strong>
+    </p>
+    <p
+      i18n
+      class="ps-2"
+    >
+      1. Create and export a CSV for the 5 selected registrations, including
+      only the columns that require changes.
+    </p>
+    <div [formGroup]="downloadCSVFormGroup">
+      <app-form-field-wrapper
+        label="Select the column(s) you want to make changes in"
+        i18n-label
+        [errorMessage]="downloadCSVFormFieldErrors()('fields')"
+      >
+        <div class="flex gap-2">
+          <p-multiSelect
+            [options]="updateRegistrationsFieldOptions()"
+            [optionLabel]="'label'"
+            [optionValue]="'value'"
+            formControlName="fields"
+            placeholder="Select 1 or more columns"
+            i18n-placeholder
+            [showToggleAll]="false"
+            [overlayOptions]="{
+              target: '@parent',
+            }"
+            styleClass="grow"
+          />
+          <p-button
+            i18n
+            (click)="exportCSVForUpdateRegistrations()"
+            label="Export CSV"
+            i18n-label
+            rounded
+            outlined
+            class="shrink-0"
+          />
+        </div>
+      </app-form-field-wrapper>
+    </div>
+    <p
+      i18n
+      class="ps-2"
+    >
+      2. Upload the updated CSV below
+    </p>
+  </ng-container>
+  <ng-container post-file-input>
+    <p
+      i18n
+      class="ps-2"
+    >
+      3. Please add a reason for the update
+    </p>
+    <div [formGroup]="updateRegistrationsFormGroup">
+      <app-form-field-wrapper
+        label="Write a reason for the update"
+        i18n-label
+        [errorMessage]="updateRegistrationsFormFieldErrors()('reason')"
+      >
+        <input
+          type="text"
+          formControlName="reason"
+          pInputText
+          placeholder="Enter reason"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+    </div>
+    <p>
+      <ng-container i18n>Learn more in the </ng-container>
+      <a
+        href="https://manual.121.global/"
+        target="_blank"
+        title="Opens in a new window"
+        i18n-title="@@generic-opens-in-new-window"
+        class="p-button p-button-link"
+      >
+        <ng-container i18n>manual</ng-container>
+        <span class="p-button-icon pi pi-external-link ms-0 text-sm"></span>
+      </a>
+    </p>
+  </ng-container>
+</app-import-file-dialog>
