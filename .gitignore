@@ -14,3 +14,6 @@ node_modules
 *.tsbuildinfo
 
 **/.DS_Store
+
+# created by e2e tests when ran via VSCode extension
+downloads

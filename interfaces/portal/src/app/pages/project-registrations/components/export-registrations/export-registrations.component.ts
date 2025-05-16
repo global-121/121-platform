@@ -16,6 +16,7 @@ import {
 import { MenuItem } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -43,6 +44,7 @@ import { ToastService } from '~/services/toast.service';
     FloatLabelModule,
     ReactiveFormsModule,
     FormFieldWrapperComponent,
+    RadioButtonModule,
   ],
   templateUrl: './export-registrations.component.html',
   styles: ``,
@@ -78,6 +80,12 @@ export class ExportRegistrationsComponent {
   ExportType = ExportType;
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
+
+  exportRegistrationsFormGroup = new FormGroup({
+    format: new FormControl<'csv' | 'xlsx'>('xlsx', {
+      nonNullable: true,
+    }),
+  });
 
   dataChangesFormGroup = new FormGroup({
     fromDate: new FormControl<Date | undefined>(undefined, {}),

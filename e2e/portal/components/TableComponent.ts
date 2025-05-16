@@ -8,7 +8,7 @@ class TableComponent {
   readonly tableLoading: Locator;
   readonly tableRows: Locator;
   readonly tableHeader: Locator;
-  readonly selectAllRegistrationsCheckbox: Locator;
+  readonly selectAllRowsCheckbox: Locator;
   readonly globalSearchOpenerButton: Locator;
   readonly globalSearchInput: Locator;
   readonly clearAllFiltersButton: Locator;
@@ -29,9 +29,11 @@ class TableComponent {
     this.tableLoading = this.table.getByTestId('query-table-loading');
     this.tableRows = this.table.locator('tbody tr');
     this.tableHeader = this.table.locator('thead tr');
-    this.selectAllRegistrationsCheckbox = this.table.getByRole('cell', {
-      name: 'All items unselected',
-    });
+    this.selectAllRowsCheckbox = this.table
+      .getByRole('cell', {
+        name: 'All items unselected',
+      })
+      .getByRole('checkbox');
     this.globalSearchOpenerButton = this.table.getByTitle('Filter by keyword');
     this.globalSearchInput = this.table.getByPlaceholder('Filter by keyword');
     this.clearAllFiltersButton = this.table.getByRole('button', {
@@ -56,8 +58,9 @@ class TableComponent {
     return this.tableRows.nth(row).locator('td').nth(column);
   }
 
-  async selectAllCheckbox() {
-    await this.selectAllRegistrationsCheckbox.click();
+  async selectAll() {
+    await expect(this.selectAllRowsCheckbox).not.toBeChecked();
+    await this.selectAllRowsCheckbox.click();
   }
 
   async expandAllRows() {
@@ -304,7 +307,7 @@ class TableComponent {
     const statusButton = this.table.getByRole('button', { name: status });
     const placeholder = this.table.getByPlaceholder('Enter reason');
 
-    await this.selectAllCheckbox();
+    await this.selectAll();
     await statusButton.click();
     // Condition for when reason is required
     if (await placeholder.isVisible()) {

@@ -39,7 +39,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async selectAllRegistrations() {
-    await this.table.selectAllCheckbox();
+    await this.table.selectAll();
   }
 
   async selectCustomMessage() {
@@ -223,18 +223,24 @@ class RegistrationsPage extends BasePage {
     exactRowCount,
     excludedColumns,
     orderOfDataIsImportant,
+    format = 'xlsx',
   }: {
     minRowCount?: number;
     exactRowCount?: number;
     excludedColumns?: string[];
     orderOfDataIsImportant?: boolean;
+    format?: 'xlsx' | 'csv';
   } = {}) {
+    if (format === 'csv') {
+      await this.page.getByLabel('CSV').click();
+    }
+
     const filePath = await this.downloadFile(this.clickProceedToExport());
     await this.validateExportedFile({
       filePath,
       minRowCount,
       expectedRowCount: exactRowCount,
-      format: 'xlsx',
+      format,
       excludedColumns,
       orderOfDataIsImportant,
     });

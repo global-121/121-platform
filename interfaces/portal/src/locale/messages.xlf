@@ -787,9 +787,6 @@
       <trans-unit id="4452017686076766931" datatype="html">
         <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
       </trans-unit>
-      <trans-unit id="5701571628417198513" datatype="html">
-        <source>You&apos;re about to download an Excel file for <x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registrations.</source>
-      </trans-unit>
       <trans-unit id="export" datatype="html">
         <source>Export</source>
       </trans-unit>
@@ -1573,6 +1570,15 @@
       </trans-unit>
       <trans-unit id="change-status-default-warning" datatype="html">
         <source>This action can not be applied to registrations you have selected.</source>
+      </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x equiv-text="{{ format }}" id="INTERPOLATION"/></source>
+      </trans-unit>
+      <trans-unit id="5472961902515478637" datatype="html">
+        <source>You&apos;re about to download a file for <x ctype="x-strong" equiv-text="&lt;strong &gt;" id="START_TAG_STRONG"/><x equiv-text="{{ exportSelectedActionData()?.count }}" id="INTERPOLATION"/> selected registration(s)<x ctype="x-strong" equiv-text="&lt;/strong &gt;" id="CLOSE_TAG_STRONG"/>.</source>
+      </trans-unit>
+      <trans-unit id="8937810540139894558" datatype="html">
+        <source>Select export format:</source>
       </trans-unit>
     </body>
   </file>

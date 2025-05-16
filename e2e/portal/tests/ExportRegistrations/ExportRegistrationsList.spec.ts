@@ -47,4 +47,14 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
     );
     await registrationsPage.exportAndAssertData();
   });
+
+  await test.step('Export list and validate CSV files downloaded', async () => {
+    await registrationsPage.dismissToast();
+    await registrationsPage.clickAndSelectExportOption(
+      'Selected registrations',
+    );
+    await registrationsPage.exportAndAssertData({
+      format: 'csv',
+    });
+  });
 });
