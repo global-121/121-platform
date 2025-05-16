@@ -190,19 +190,25 @@ export async function getProgramPaymentsStatus(
 export async function getTransactions({
   programId,
   paymentNr,
-  referenceId,
+  registrationReferenceId,
   accessToken,
 }: {
   programId: number;
   paymentNr: number;
-  referenceId: string | null;
+  registrationReferenceId: string | null;
   accessToken: string;
 }): Promise<request.Response> {
   const response = await getServer()
     .get(`/programs/${programId}/payments/${paymentNr}/transactions`)
     .set('Cookie', [accessToken]);
-  if (referenceId && response.body && Array.isArray(response.body)) {
-    response.body = response.body.filter((t) => t.referenceId === referenceId);
+  if (
+    registrationReferenceId &&
+    response.body &&
+    Array.isArray(response.body)
+  ) {
+    response.body = response.body.filter(
+      (t) => t.registrationReferenceId === registrationReferenceId,
+    );
   }
   return response;
 }
@@ -298,14 +304,14 @@ export async function waitForPaymentTransactionsToComplete({
     const paymentTransactions = await getTransactions({
       programId,
       paymentNr: payment,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
 
     // Check if all transactions have a "complete" status
     allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
       const transaction = paymentTransactions.body.find(
-        (txn) => txn.referenceId === referenceId,
+        (txn) => txn.registrationReferenceId === referenceId,
       );
       return transaction && completeStatusses.includes(transaction.status);
     });

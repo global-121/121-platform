@@ -88,7 +88,7 @@ describe('Do payment', () => {
         const getTransactionsBeforeCronjob = await getTransactions({
           programId,
           paymentNr: payment,
-          referenceId: registrationNedbank.referenceId,
+          registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
         const transactionBeforeCronJob = getTransactionsBeforeCronjob.body[0];
@@ -109,7 +109,7 @@ describe('Do payment', () => {
         const getTransactionsAfterCronjob = await getTransactions({
           programId,
           paymentNr: payment,
-          referenceId: registrationNedbank.referenceId,
+          registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
         const transactionAfterCronJob = getTransactionsAfterCronjob.body[0];
@@ -190,7 +190,7 @@ describe('Do payment', () => {
           await getTransactions({
             programId,
             paymentNr: payment,
-            referenceId: registrationFailDebitorAccount.referenceId,
+            registrationReferenceId: registrationFailDebitorAccount.referenceId,
             accessToken,
           })
         ).body;
@@ -234,7 +234,7 @@ describe('Do payment', () => {
           await getTransactions({
             programId,
             paymentNr: payment,
-            referenceId: registrationNedbank.referenceId,
+            registrationReferenceId: registrationNedbank.referenceId,
             accessToken,
           })
         ).body;
@@ -284,7 +284,7 @@ describe('Do payment', () => {
           await getTransactions({
             programId,
             paymentNr: payment,
-            referenceId: registrationFailPhoneNumber.referenceId,
+            registrationReferenceId: registrationFailPhoneNumber.referenceId,
             accessToken,
           })
         ).body;

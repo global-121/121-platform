@@ -100,7 +100,7 @@ describe('Do payment to 1 PA', () => {
       const getTransactionsBody = await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId: registrationSafaricom.referenceId,
+        registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
 
@@ -154,7 +154,7 @@ describe('Do payment to 1 PA', () => {
       const getTransactionsBody = await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId: registrationSafaricom.referenceId,
+        registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
 
@@ -225,7 +225,7 @@ describe('Do payment to 1 PA', () => {
       const getTransactionsBody = await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId: registrationSafaricom.referenceId,
+        registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
 
@@ -280,7 +280,7 @@ describe('Do payment to 1 PA', () => {
       const getTransactionsBody = await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId: registrationSafaricom.referenceId,
+        registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
 

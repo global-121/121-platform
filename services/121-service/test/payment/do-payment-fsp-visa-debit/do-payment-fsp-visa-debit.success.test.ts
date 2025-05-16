@@ -78,7 +78,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -142,7 +142,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa + 1,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -233,7 +233,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const transactionsResponse1 = await getTransactions({
       programId: programIdVisa,
       paymentNr: testPaymentNumber,
-      referenceId: registrationVisa.referenceId,
+      registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
@@ -248,7 +248,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const transactionsResponse2 = await getTransactions({
       programId: programIdVisa,
       paymentNr: testPaymentNumber,
-      referenceId: registrationOCW2.referenceId,
+      registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
     const messagesHistoryPa2 = await getMessageHistoryUntilX(
@@ -260,13 +260,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const transactionsResponse3 = await getTransactions({
       programId: programIdVisa,
       paymentNr: testPaymentNumber,
-      referenceId: registrationOCW3.referenceId,
+      registrationReferenceId: registrationOCW3.referenceId,
       accessToken,
     });
     const transactionsResponse4 = await getTransactions({
       programId: programIdVisa,
       paymentNr: testPaymentNumber,
-      referenceId: registrationOCW4.referenceId,
+      registrationReferenceId: registrationOCW4.referenceId,
       accessToken,
     });
 

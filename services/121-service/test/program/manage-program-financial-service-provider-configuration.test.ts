@@ -264,7 +264,7 @@ describe('Manage financial service provider configurations', () => {
     const getTranactions = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: registrationOCW5.referenceId,
+      registrationReferenceId: registrationOCW5.referenceId,
       accessToken,
     });
 
@@ -304,6 +304,7 @@ describe('Manage financial service provider configurations', () => {
     const getResultConfig = getResult.body.find(
       (config) => config.name === createProgramFspConfigurationDto.name,
     );
+
     // Assert
     expect(result.statusCode).toBe(HttpStatus.CREATED);
     const propertyNamesResult = result.body.map((property) => property.name);
@@ -320,7 +321,7 @@ describe('Manage financial service provider configurations', () => {
       expect(!isNaN(date.getTime())).toBeTruthy();
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
-    expect(getResultConfig?.properties).toEqual(result.body);
+    expect(getResultConfig?.properties.sort()).toEqual(result.body.sort());
   });
 
   it('should patch a property of an existing program financial service provider configuration', async () => {

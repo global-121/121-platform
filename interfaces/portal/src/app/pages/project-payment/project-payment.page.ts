@@ -353,7 +353,7 @@ export class ProjectPaymentPageComponent {
     const actionData = this.table().getActionData({
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuSelection(),
-      fieldForFilter: 'referenceId',
+      fieldForFilter: 'registrationReferenceId',
       noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
     });
 
@@ -369,7 +369,7 @@ export class ProjectPaymentPageComponent {
     }
 
     const referenceIds = selection.map(
-      (transaction) => transaction.referenceId,
+      (transaction) => transaction.registrationReferenceId,
     );
 
     this.retryTransfersDialog().retryFailedTransfers({

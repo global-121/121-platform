@@ -136,7 +136,7 @@ describe('Do payment with Excel FSP', () => {
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
         paymentNr,
-        referenceId: null,
+        registrationReferenceId: null,
         accessToken,
       });
 
@@ -237,7 +237,7 @@ describe('Do payment with Excel FSP', () => {
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
         paymentNr,
-        referenceId: null,
+        registrationReferenceId: null,
         accessToken,
       });
 
@@ -255,7 +255,7 @@ describe('Do payment with Excel FSP', () => {
       // Check for updated transaction if the status matches the imported status
       for (const transaction of transactionsResponse.body) {
         const registration = registrationsWesteros.find(
-          (r) => r.referenceId === transaction.referenceId,
+          (r) => r.referenceId === transaction.registrationReferenceId,
         )!;
         expect(registration).toBeDefined();
         const importRecord = reconciliationData.find(

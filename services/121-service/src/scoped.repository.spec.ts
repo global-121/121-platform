@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TestBed } from '@automock/jest';
 
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
