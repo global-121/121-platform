@@ -98,12 +98,6 @@ class BasePage {
     await this.dismissToast();
   }
 
-  async validateToastMessageWithTimeout(message: string, timeout: number) {
-    await expect(this.toast).toBeVisible();
-    expect(await this.toast.textContent()).toContain(message);
-    await this.page.waitForTimeout(timeout);
-  }
-
   async dismissToast() {
     await this.toast.getByRole('button').click();
     await expect(this.toast).toBeHidden();
