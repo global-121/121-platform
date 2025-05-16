@@ -35,6 +35,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -231,7 +232,9 @@ export class CommercialBankEthiopiaService
       } else if ((data.fieldName = 'debitTheirRef')) {
         // This is a test code which is used in mock mode to simulate a transfer credit that is duplicated
         // The mock service checks if the debitTheirRef starts with 'duplicate-' and if so, will simulate a duplicate transfer flow
-        debitTheirRefRetry = process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA
+        debitTheirRefRetry = shouldBeEnabled(
+          process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA,
+        )
           ? `duplicate-${data.value}`
           : data.value;
       }

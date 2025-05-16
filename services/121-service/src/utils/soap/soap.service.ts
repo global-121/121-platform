@@ -5,6 +5,7 @@ import https from 'https';
 import * as convert from 'xml-js';
 
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { shouldBeEnabled } from '@121-service/src/utils/env-variable.helpers';
 
 @Injectable()
 export class SoapService {
@@ -167,8 +168,9 @@ export class SoapService {
     };
 
     // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
-    let agent;
-    if (process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA) {
+    let agent: https.Agent;
+
+    if (shouldBeEnabled(process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA)) {
       // Mock enabled
       agent = new https.Agent();
     } else {
@@ -189,6 +191,7 @@ export class SoapService {
         agent = new https.Agent();
       }
     }
+
     return soapRequest({
       headers,
       url: apiUrl,
