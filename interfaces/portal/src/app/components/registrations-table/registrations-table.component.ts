@@ -111,15 +111,19 @@ export class RegistrationsTableComponent {
 
   public getActionData({
     triggeredFromContextMenu = false,
+    allowEmptySelection = false,
   }: {
     triggeredFromContextMenu?: boolean;
+    allowEmptySelection?: boolean;
   } = {}) {
     return this.table().getActionData({
       triggeredFromContextMenu,
       contextMenuItem: this.contextMenuRegistration(),
       fieldForFilter: 'referenceId',
       currentPaginateQuery: this.registrationsPaginateQuery(),
-      noSelectionToastMessage: $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
+      noSelectionToastMessage: allowEmptySelection
+        ? undefined
+        : $localize`:@@no-registrations-selected:Select one or more registrations and try again.`,
     });
   }
 

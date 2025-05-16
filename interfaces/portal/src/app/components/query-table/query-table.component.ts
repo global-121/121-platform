@@ -445,7 +445,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     contextMenuItem,
   }: {
     fieldForFilter: keyof TData & string;
-    noSelectionToastMessage: string;
+    noSelectionToastMessage?: string;
     currentPaginateQuery?: PaginateQuery;
     triggeredFromContextMenu?: boolean;
     contextMenuItem?: TData;
@@ -471,10 +471,12 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
         }
         selection = [contextMenuItem];
       } else {
-        this.toastService.showToast({
-          severity: 'error',
-          detail: noSelectionToastMessage,
-        });
+        if (noSelectionToastMessage) {
+          this.toastService.showToast({
+            severity: 'error',
+            detail: noSelectionToastMessage,
+          });
+        }
         return;
       }
     }
