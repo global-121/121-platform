@@ -51,6 +51,7 @@ export class ImportFileDialogComponent {
   readonly accept = input.required<string>();
   readonly header = input.required<string>();
   readonly dialogVisible = model<boolean>(false);
+  readonly additionalFormGroups = input<FormGroup[]>([]);
 
   formGroup = new FormGroup({
     file: new FormControl<File | null>(null, {
@@ -87,8 +88,14 @@ export class ImportFileDialogComponent {
 
   onFormSubmit(): void {
     this.formGroup.markAllAsTouched();
+    this.additionalFormGroups().forEach((formGroup) => {
+      formGroup.markAllAsTouched();
+    });
 
-    if (!this.formGroup.valid) {
+    if (
+      !this.formGroup.valid ||
+      this.additionalFormGroups().some((formGroup) => !formGroup.valid)
+    ) {
       return;
     }
 

@@ -7,7 +7,7 @@ export class FileImportService {
   public async validateCsv(
     csvFile: Express.Multer.File,
     maxRecords?: number,
-  ): Promise<object[]> {
+  ): Promise<Record<string, string | number | boolean | undefined>[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -32,11 +32,15 @@ export class FileImportService {
     return importRecords;
   }
 
-  private async csvBufferToArray(buffer, separator): Promise<object[]> {
+  private async csvBufferToArray(
+    buffer,
+    separator,
+  ): Promise<Record<string, string | number | boolean | undefined>[]> {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
-    const parsedData: object[] = [];
+    const parsedData: Record<string, string | number | boolean | undefined>[] =
+      [];
     return await new Promise((resolve, reject): void => {
       stream
         .pipe(csv({ separator }))

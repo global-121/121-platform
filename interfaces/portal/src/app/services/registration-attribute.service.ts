@@ -34,7 +34,7 @@ import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-const nonEditableAttributes = [
+export const nonEditableAttributes = [
   'inclusionScore',
   'name',
   'paymentCountRemaining',
@@ -56,13 +56,14 @@ const getGenericAttributeType = (
       return RegistrationAttributeTypes.dropdown;
     case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel:
     case GenericRegistrationAttributes.referenceId:
-    case GenericRegistrationAttributes.phoneNumber:
     case GenericRegistrationAttributes.scope:
     case GenericRegistrationAttributes.status:
     case GenericRegistrationAttributes.registrationProgramId:
       return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.created:
       return RegistrationAttributeTypes.date;
+    case GenericRegistrationAttributes.phoneNumber:
+      return RegistrationAttributeTypes.tel;
   }
 };
 
