@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { ExchangeRatesMockModule } from '@mock-service/src/exchange-rates/exchange-rates-mock.module';
+import { AirtelMockModule } from '@mock-service/src/fsp-integration/airtel/airtel.mock.module';
 import { CommercialBankEthiopiaMockModule } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.mock.module';
 import { IntersolveVisaMockModule } from '@mock-service/src/fsp-integration/intersolve-visa/intersolve-visa.mock.module';
 import { NedbankMockModule } from '@mock-service/src/fsp-integration/nedbank/nedbank.mock.module';
@@ -14,6 +15,7 @@ import { TwilioModule } from '@mock-service/src/twilio/twilio.module';
     InstanceModule,
     TwilioModule,
     SafaricomMockModule,
+    AirtelMockModule,
     ResetModule,
     IntersolveVisaMockModule,
     ExchangeRatesMockModule,
