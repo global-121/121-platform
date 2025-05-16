@@ -65,14 +65,11 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card', async () => {
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
     // In case of Nedbank, we need to wait for the payment to be processed
     // before we can validate the payment card
-    // Therefore it is better not to close the toast message immediately
     // This way we can avoid reloading the page
-    await paymentsPage.validateToastMessageWithTimeout(
-      'Payment created.',
-      1000,
-    );
+    await page.waitForTimeout(1000);
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({

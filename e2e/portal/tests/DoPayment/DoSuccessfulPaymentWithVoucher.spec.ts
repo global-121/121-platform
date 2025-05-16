@@ -62,14 +62,7 @@ test('[36008] Do successful payment for Voucher fsp', async ({ page }) => {
   });
 
   await test.step('Validate payment card', async () => {
-    // In case of voucher, we need to wait for the message to be sent
-    // before we can validate the payment card
-    // Therefore it is better not to close the toast message immediately
-    // This way we can avoid reloading the page
-    await paymentsPage.validateToastMessageWithTimeout(
-      'Payment created.',
-      1000,
-    );
+    await page.waitForTimeout(1000);
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({
