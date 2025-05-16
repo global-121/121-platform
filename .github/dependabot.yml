@@ -111,6 +111,8 @@ updates:
         versions: ['^10.x'] # See: https://www.npmjs.com/package/ngx-filesize
       - dependency-name: 'primeng'
         update-types: ['version-update:semver-major']
+      - dependency-name: 'tailwindcss' # TODO: AB#33547
+        versions: ['^4.x']
 
   - directory: '/e2e'
     package-ecosystem: npm
