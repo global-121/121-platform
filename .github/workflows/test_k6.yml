@@ -47,7 +47,7 @@ jobs:
       - name: Install k6 dependencies
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          npm ci --omit=optional --no-fund --no-audit
+          npm ci --omit=optional
 
       - name: Lint k6 tests
         working-directory: ${{ env.k6TestsPath }}

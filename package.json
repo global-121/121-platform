@@ -16,7 +16,7 @@
     "start:portal:e2e": "npm run start:debug-production --prefix interfaces/portal/ -- --port=8088",
     "install:all": "npx npm-run-all --npm-path npm --print-label --sequential install:services install:portal",
     "install:services": "cd services/ && docker compose --file=docker-compose.yml build",
-    "install:portal": "npm ci --no-fund --no-audit --prefix=interfaces/portal/",
+    "install:portal": "npm ci --prefix=interfaces/portal/",
     "code:all": "code ./ && npx npm-run-all --npm-path npm --parallel code:121-service code:mock-service code:portal",
     "code:portal": "code ./interfaces/portal/",
     "code:121-service": "code ./services/121-service/",

@@ -31,7 +31,7 @@ jobs:
 
       - name: Install
         working-directory: ${{ env.interfacePath }}
-        run: 'npm ci --no-fund --no-audit'
+        run: 'npm ci'
 
       - name: 'Test: Types'
         working-directory: ${{ env.interfacePath }}
