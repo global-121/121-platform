@@ -24,7 +24,7 @@ const login = async ({
 }) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
-  await loginPage.login(email ?? '', password);
+  await loginPage.login(email, password);
 };
 
 const navigateToPaymentsPage = async (paymentsPage: PaymentsPage) => {
