@@ -22,6 +22,7 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -62,6 +63,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -90,6 +92,7 @@ export class PaymentsService {
     // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly safaricomService: SafaricomService,
+    private readonly airtelService: AirtelService,
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
     private readonly nedbankService: NedbankService,
@@ -114,6 +117,7 @@ export class PaymentsService {
       // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
       [FinancialServiceProviders.intersolveVisa]: [this.intersolveVisaService],
       [FinancialServiceProviders.safaricom]: [this.safaricomService],
+      [FinancialServiceProviders.airtel]: [this.airtelService],
       [FinancialServiceProviders.commercialBankEthiopia]: [
         this.commercialBankEthiopiaService,
       ],
@@ -707,6 +711,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviders.airtel) {
+          return await this.createAndAddNedbankTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         if (fsp === FinancialServiceProviders.nedbank) {
           return await this.createAndAddNedbankTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
@@ -899,6 +920,33 @@ export class PaymentsService {
     await this.transactionQueuesService.addSafaricomTransactionJobs(
       safaricomTransferJobs,
     );
+  }
+
+  /**
+   * Creates and adds Airtel transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Airtel. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddAirtelTransactionJobs({
+    _referenceIdsAndTransactionAmounts: _referenceIdsTransactionAmounts,
+    _programId,
+    _userId,
+    _paymentNumber,
+    _isRetry,
+  }: {
+    _referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    _programId: number;
+    _userId: number;
+    _paymentNumber: number;
+    _isRetry: boolean;
+  }): Promise<void> {
+    // WIP
+    // Some code to make linter happy.
+    let _a: AirtelTransactionJobDto;
   }
 
   /**

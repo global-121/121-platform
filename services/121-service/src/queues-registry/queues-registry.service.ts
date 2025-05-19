@@ -26,6 +26,8 @@ export class QueuesRegistryService implements OnModuleInit {
     public transactionJobCommercialBankEthiopiaQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.safaricom)
     public transactionJobSafaricomQueue: Queue,
+    @InjectQueue(TransactionJobQueueNames.airtel)
+    public transactionJobAirtelQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.nedbank)
     public transactionJobNedbankQueue: Queue,
 

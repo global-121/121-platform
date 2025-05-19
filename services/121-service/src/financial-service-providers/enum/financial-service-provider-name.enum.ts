@@ -3,6 +3,7 @@ export enum FinancialServiceProviders {
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
   safaricom = 'Safaricom',
+  airtel = 'Airtel',
   commercialBankEthiopia = 'Commercial-bank-ethiopia',
   excel = 'Excel',
   deprecatedJumbo = 'Intersolve-jumbo-physical',

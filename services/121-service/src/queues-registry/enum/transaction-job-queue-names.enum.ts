@@ -4,5 +4,6 @@ export enum TransactionJobQueueNames {
   intersolveVoucher = 'intersolveVoucher-transaction-jobs',
   commercialBankEthiopia = 'commercialBankEthiopia-transaction-jobs',
   safaricom = 'safaricom-transaction-jobs',
+  airtel = 'airtel-transaction-jobs',
   nedbank = 'nedbank-transaction-jobs',
 }

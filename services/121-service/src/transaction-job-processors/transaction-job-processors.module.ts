@@ -4,6 +4,7 @@ import { EventsModule } from '@121-service/src/events/events.module';
 import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
+import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
@@ -22,6 +23,8 @@ import { TransactionJobProcessorsService } from '@121-service/src/transaction-jo
     RedisModule,
     IntersolveVisaModule,
     SafaricomModule,
+    // ## TODO: do we really need to import AirtelModule here? Test if we can do without.
+    AirtelModule,
     NedbankModule,
     ProgramFinancialServiceProviderConfigurationsModule,
     RegistrationsModule,

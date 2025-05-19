@@ -667,6 +667,7 @@ export class MetricsService {
     }[] = [];
 
     for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
+      // ## TODO: Add Airtel if needed. Check with product manager/CVA-IM.
       if (
         fspConfig.financialServiceProviderName ===
         FinancialServiceProviders.safaricom
