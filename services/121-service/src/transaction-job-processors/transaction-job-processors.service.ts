@@ -9,6 +9,8 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -31,6 +33,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -54,11 +57,13 @@ export class TransactionJobProcessorsService {
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly safaricomService: SafaricomService,
+    private readonly airtelService: AirtelService,
     private readonly nedbankService: NedbankService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
+    private readonly airtelDisbursementScopedRepository: AirtelDisbursementScopedRepository,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
@@ -274,6 +279,13 @@ export class TransactionJobProcessorsService {
     // 4. No messages sent for safaricom
 
     // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+  }
+
+  public async processAirtelTransactionJob(
+    _transactionJob: AirtelTransactionJobDto,
+  ): Promise<void> {
+    // Some code to make linter happy
+    const _a = 1;
   }
 
   public async processNedbankTransactionJob(
