@@ -60,7 +60,7 @@ test('Registration table should clear row selections when filter criteria change
   });
 
   await test.step('should clear all rows selection when applying a filter', async () => {
-    await tableComponent.selectAllCheckbox();
+    await tableComponent.selectAll();
     expect(await tableComponent.getSelectedRowsCount()).toBe(4);
     await tableComponent.filterColumnByText('Name', 'Jan');
     expect(await tableComponent.getSelectedRowsCount()).toBe(0);
