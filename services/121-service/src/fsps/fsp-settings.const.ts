@@ -144,6 +144,21 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       configurationProperties: [],
     },
     {
+      name: FinancialServiceProviders.airtel,
+      integrationType: FinancialServiceProviderIntegrationType.api,
+      defaultLabel: {
+        en: 'Airtel',
+      },
+      notifyOnTransaction: false,
+      attributes: [
+        {
+          name: FinancialServiceProviderAttributes.phoneNumber,
+          isRequired: true,
+        },
+      ],
+      configurationProperties: [],
+    },
+    {
       name: FinancialServiceProviders.commercialBankEthiopia,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
