@@ -79,47 +79,109 @@ export const generateRandomId = (length = 40): string => {
   return result;
 };
 
-export const postTransaction = async ({
+const printSeparator = (char = '-', length = 20): void => {
+  const separator = char.repeat(length);
+  console.log(separator);
+};
+
+export const createRequest = ({
+  method = 'GET',
   url,
   access_token,
-  body,
+  body = null,
 }: {
+  method?: string;
   url: string;
   access_token: string;
-  body: object;
-}): Promise<void> => {
-  console.log({ url });
+  body: object | null;
+}) => {
   const headers = {
     Accept: '*/*',
     Authorization: `Bearer ${access_token}`,
     'X-Country': 'ZM',
     'X-Currency': 'ZMW',
-    'Content-Type': 'application/json',
   };
-  console.log({ headers });
-  console.log({ body });
 
-  let responseData;
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+  if (body) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  return {
+    method,
+    url,
+    headers,
+    body,
+  };
+};
+
+export const printRequest = ({ method, url, headers, body }) => {
+  printSeparator();
+  console.log('Request:');
+  console.log(`Method: ${method}`);
+  console.log(`URL: ${url}`);
+  console.log('Headers:', headers);
+  if (body) {
+    console.log('Body:', body);
+  }
+  printSeparator();
+};
+
+export const printResponse = async (response) => {
+  printSeparator();
+  console.log('Response:');
+  console.log('Status:', response.status);
+  // console.log('Headers:', response.headers);
+  console.log('Body: ', await response.json());
+  printSeparator();
+};
+
+export const generateCurl = ({ url, method, headers, body }: any): string => {
+  let curlCommand = `curl -X ${method} "${url}"`;
+  if (headers) {
+    Object.entries(headers).forEach(([key, value]) => {
+      curlCommand += ` -H "${key}: ${value}"`;
     });
+  }
+  if (body) {
+    curlCommand += ` -d '${JSON.stringify(body)}'`;
+  }
+  return curlCommand;
+};
+
+export const sendRequest = async ({
+  method,
+  url,
+  headers,
+  body,
+}: {
+  method: string;
+  url: string;
+  headers: object | null;
+  body: object;
+}): Promise<Response> => {
+  let response;
+  const options: Record<string, any> = {
+    method,
+  };
+
+  if (headers) {
+    options.headers = headers;
+  }
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+  try {
+    response = await fetch(url, options);
 
     if (!response.ok) {
       const errorDetails = await response.text();
       throw new Error(
-        `Failed to post transaction: ${response.status} ${response.statusText} - ${errorDetails}`,
+        `Got an error: ${response.status} ${response.statusText} - ${errorDetails}`,
       );
     }
-    responseData = await response.json();
   } catch (error) {
-    console.error(
-      'Error posting transaction:',
-      error instanceof Error ? error.message : error,
-    );
+    console.error('Error :', error instanceof Error ? error.message : error);
     throw error;
   }
-  return responseData;
+  return response;
 };

@@ -1,9 +1,15 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import {
+  createRequest,
+  printRequest,
+  printResponse,
+  sendRequest,
+} from '@121-service/src/payments/fsp-integration/airtel/src/util';
+import { generateCurl } from '@121-service/src/payments/fsp-integration/airtel/src/util';
 import { getAccessToken } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { generateRandomId } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
-import { postTransaction } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 import { encryptPinV1 } from '@121-service/src/payments/fsp-integration/airtel/src/util.ts';
 
 const API_BASE_URL = `${process.env.API_BASE_URL}`;
@@ -38,11 +44,18 @@ const access_token = await getAccessToken({
   client_id: CLIENT_ID,
   client_secret: CLIENT_SECRET,
 });
-const result = await postTransaction({
+
+const request = createRequest({
+  method: 'POST',
   url: `${API_BASE_URL}/standard/v2/disbursements/`,
   access_token,
   body: example_body,
 });
 
-console.log('result');
-console.log(result);
+printRequest(request);
+
+console.log(generateCurl(request));
+
+const response = await sendRequest(request);
+
+await printResponse(response);
