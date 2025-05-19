@@ -1,5 +1,4 @@
-import { Page, test } from '@playwright/test';
-import { expect } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
