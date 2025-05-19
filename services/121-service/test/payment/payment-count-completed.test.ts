@@ -79,7 +79,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       const getTransactionsRes = await getTransactions({
         programId,
         paymentNr: payment,
-        referenceId: registrationAh.referenceId,
+        registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });
       const getTransactionsBody = getTransactionsRes.body;

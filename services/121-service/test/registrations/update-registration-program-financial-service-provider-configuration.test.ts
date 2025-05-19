@@ -234,7 +234,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdPv,
       paymentNr: payment,
-      referenceId: registrationPvScoped.referenceId,
+      registrationReferenceId: registrationPvScoped.referenceId,
       accessToken,
     });
 

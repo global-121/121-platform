@@ -109,7 +109,7 @@ describe('Registrations - [Scoped]', () => {
     const transactionResponse = await getTransactions({
       programId: PvProgramId,
       paymentNr: 1,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     const transactions = transactionResponse.body;
@@ -119,7 +119,7 @@ describe('Registrations - [Scoped]', () => {
       .map((r) => r.referenceId);
 
     const referenceIdsFromTransactions = transactions.map(
-      (transaction) => transaction.referenceId,
+      (transaction) => transaction.registrationReferenceId,
     );
 
     // Sort both arrays

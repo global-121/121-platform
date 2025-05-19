@@ -26,7 +26,7 @@ function createMockTransaction(
     registrationProgramId: registrationId + 100,
     registrationId,
     registrationStatus: RegistrationStatusEnum.included,
-    referenceId: `REF-${registrationId}`,
+    registrationReferenceId: `REF-${registrationId}`,
     registrationName: undefined,
   };
 }

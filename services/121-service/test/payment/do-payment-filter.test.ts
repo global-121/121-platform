@@ -75,7 +75,7 @@ describe('Do payment with filter', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     // Assert
@@ -111,7 +111,7 @@ describe('Do payment with filter', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     // Assert
@@ -149,7 +149,7 @@ describe('Do payment with filter', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     // Assert
@@ -185,7 +185,7 @@ describe('Do payment with filter', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     // Assert
@@ -222,7 +222,7 @@ describe('Do payment with filter', () => {
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
       paymentNr: paymentNrVisa,
-      referenceId: null,
+      registrationReferenceId: null,
       accessToken,
     });
     // Assert
