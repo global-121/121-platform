@@ -662,6 +662,7 @@ export class MetricsService {
     }[] = [];
 
     for (const fspConfig of program.programFspConfigurations) {
+      // ## TODO: Add Airtel if needed. Check with product manager/CVA-IM.
       if (fspConfig.fspName === Fsps.safaricom) {
         fields = [
           ...fields,
