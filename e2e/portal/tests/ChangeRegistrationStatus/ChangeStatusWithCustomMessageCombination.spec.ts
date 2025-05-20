@@ -72,6 +72,7 @@ test.describe('Change status of registration with and without templated message'
         message: customMessage,
         customMessage: true,
       });
+      await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
     });
 
@@ -97,6 +98,7 @@ test.describe('Change status of registration with and without templated message'
         message: customMessage,
         customMessage: false,
       });
+      await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
     });
 

@@ -80,6 +80,7 @@ test.describe('Change status of registration with and without templated message'
         status: 'Include',
         templateMessage: true,
       });
+      await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
     });
 
@@ -103,6 +104,7 @@ test.describe('Change status of registration with and without templated message'
         registrationName: registrationPV6.fullName,
         status: 'Include',
       });
+      await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
     });
 
