@@ -112,11 +112,18 @@ class TableComponent {
   }
 
   async getSortingTypeOfColumn(columnName: string) {
-    const sortingType = await this.table
-      .getByRole('columnheader', { name: columnName })
+    const columnHeader = await this.page.getByRole('columnheader', {
+      name: columnName,
+    });
+
+    const sortColumnHeader = await this.table
+      .locator('th')
+      .filter({
+        has: columnHeader,
+      })
       .getAttribute('aria-sort');
 
-    return sortingType;
+    return sortColumnHeader;
   }
 
   async sortAndValidateColumnByName(columnName: string) {

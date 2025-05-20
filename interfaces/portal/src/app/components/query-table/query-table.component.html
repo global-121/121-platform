@@ -100,7 +100,10 @@
         @let matchModeOptions = getMatchModeOptions(column);
 
         <th [pSortableColumn]="columnSortField">
-          <div class="flex items-center text-nowrap">
+          <div
+            class="flex items-center text-nowrap"
+            role="columnheader"
+          >
             <ng-container>{{ column.header }}</ng-container>
 
             @if (columnSortField) {
