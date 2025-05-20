@@ -34,12 +34,6 @@ import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-const nonEditableAttributes = [
-  'inclusionScore',
-  'name',
-  'paymentCountRemaining',
-];
-
 const getGenericAttributeType = (
   attributeName: GenericRegistrationAttributes,
 ): RegistrationAttributeTypes => {
@@ -56,13 +50,14 @@ const getGenericAttributeType = (
       return RegistrationAttributeTypes.dropdown;
     case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel:
     case GenericRegistrationAttributes.referenceId:
-    case GenericRegistrationAttributes.phoneNumber:
     case GenericRegistrationAttributes.scope:
     case GenericRegistrationAttributes.status:
     case GenericRegistrationAttributes.registrationProgramId:
       return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.created:
       return RegistrationAttributeTypes.date;
+    case GenericRegistrationAttributes.phoneNumber:
+      return RegistrationAttributeTypes.tel;
   }
 };
 
@@ -70,7 +65,8 @@ export interface NormalizedRegistrationAttribute {
   name: GenericRegistrationAttributes | string;
   label: LocalizedString | string;
   editInfo?: string;
-  isRequired?: boolean;
+  isRequired: boolean;
+  isEditable: boolean;
   pattern?: string;
   type: RegistrationAttributeTypes;
   value: unknown;
@@ -94,14 +90,12 @@ export class RegistrationAttributeService {
   );
 
   private hasPermissionsRequiredToEditAttribute({
-    attribute,
+    attributeName,
     projectId,
   }: {
-    attribute: NormalizedRegistrationAttribute;
-    projectId: string;
+    attributeName: string;
+    projectId: number | string;
   }) {
-    const attributeName = attribute.name;
-
     let requiredPermission = PermissionEnum.RegistrationPersonalUPDATE;
 
     if (isGenericAttribute(attributeName)) {
@@ -122,6 +116,28 @@ export class RegistrationAttributeService {
       projectId,
       requiredPermission,
     });
+  }
+
+  private isEditableAttribute({
+    attributeName,
+    project,
+  }: {
+    attributeName: string;
+    project: Project;
+  }) {
+    const nonEditableAttributes = ['inclusionScore', 'paymentCountRemaining'];
+
+    if (project.paymentAmountMultiplierFormula) {
+      nonEditableAttributes.push('paymentAmountMultiplier');
+    }
+
+    return (
+      !nonEditableAttributes.includes(attributeName) &&
+      this.hasPermissionsRequiredToEditAttribute({
+        attributeName,
+        projectId: project.id,
+      })
+    );
   }
 
   private getGenericAttributeOptions(
@@ -184,6 +200,13 @@ export class RegistrationAttributeService {
         options,
         value,
         type,
+        isEditable: this.isEditableAttribute({
+          attributeName,
+          project,
+        }),
+        isRequired:
+          attributeName === GenericRegistrationAttributes.phoneNumber &&
+          !project.allowEmptyPhoneNumber,
       };
     });
   }
@@ -211,13 +234,17 @@ export class RegistrationAttributeService {
       const value: unknown = registration?.[name];
 
       return {
-        isRequired,
+        isRequired: isRequired ?? false,
         name,
         label,
         pattern,
         options,
         value,
         type,
+        isEditable: this.isEditableAttribute({
+          attributeName: attribute.name,
+          project,
+        }),
       };
     });
   }
@@ -231,7 +258,7 @@ export class RegistrationAttributeService {
     return () => {
       const { projectId, registrationId } = context();
 
-      return queryOptions({
+      return queryOptions<NormalizedRegistrationAttribute[]>({
         queryKey: [
           'registrationAttributes',
           projectId(),
@@ -281,6 +308,8 @@ export class RegistrationAttributeService {
               editInfo: $localize`:@@registration-full-name-edit-info:This field is dynamically generated based on the other name fields available below: ${allNameFields}:allNameFields:`,
               value: registration?.name,
               type: RegistrationAttributeTypes.text,
+              isEditable: false,
+              isRequired: false,
             },
             ...genericAttributes,
             ...projectSpecificAttributes.filter(
@@ -326,24 +355,15 @@ export class RegistrationAttributeService {
 
   private personalInformationAttributeToFormControl({
     attribute,
-    projectId,
   }: {
     attribute: NormalizedRegistrationAttribute;
-    projectId: string;
   }) {
     const isRequired = attribute.isRequired;
-
-    const hasRequiredPermissions = this.hasPermissionsRequiredToEditAttribute({
-      attribute,
-      projectId,
-    });
 
     return new FormControl(
       {
         value: attribute.value ?? null,
-        disabled:
-          nonEditableAttributes.includes(attribute.name) ||
-          !hasRequiredPermissions,
+        disabled: !attribute.isEditable,
       },
       {
         validators: [
@@ -358,10 +378,8 @@ export class RegistrationAttributeService {
 
   attributesToFormGroup({
     attributes,
-    projectId,
   }: {
     attributes: NormalizedRegistrationAttribute[];
-    projectId: string;
   }) {
     return new FormGroup(
       attributes.reduce(
@@ -369,7 +387,6 @@ export class RegistrationAttributeService {
           ...acc,
           [attribute.name]: this.personalInformationAttributeToFormControl({
             attribute,
-            projectId,
           }),
         }),
         {},
