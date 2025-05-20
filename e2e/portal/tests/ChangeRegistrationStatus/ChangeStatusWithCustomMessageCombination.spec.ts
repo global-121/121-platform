@@ -33,7 +33,15 @@ const login = async (page: Page, email?: string, password?: string) => {
 
 const navigateToRegistrationsAndResetFilters = async (page: Page) => {
   const registrations = new RegistrationsPage(page);
-  const tableComponent = new TableComponent(page);
+
+  await registrations.navigateToProgramPage('Registrations');
+  // Checkboxes are still selected after navigating back to registrations page
+  // Thus reload of the page let's validateif this is correct behavior
+  await page.reload();
+};
+
+test.describe('Change status of registration with and without templated message', () => {
+  let page: Page;
 
   test.beforeAll(async ({ browser }) => {
     await reset();
@@ -43,17 +51,6 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
     );
-  });
-  
-  // Act
-  await test.step('Change status of first selected registration and write a custom message', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithMessage({
-      registrationName: registrationPV5.fullName,
-      status: 'Decline',
-      customMessage: true,
-      message: customMessage,
-    });
-    await registrations.validateToastMessageAndClose(toastMessage);
   });
 
   test.afterEach(async () => {
