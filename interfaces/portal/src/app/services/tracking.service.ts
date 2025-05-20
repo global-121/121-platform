@@ -28,11 +28,13 @@ export class TrackingService {
             siteId: MATOMO_CONNECTION_INFO.id,
             trackerUrl: MATOMO_CONNECTION_INFO.api,
             trackerUrlSuffix: '', // Should be included in `connectionInfo.api` used as `trackerUrl`
-
             scriptUrl: MATOMO_CONNECTION_INFO.sdk,
-            enableJSErrorTracking: true,
-            requireConsent: 'none',
+            acceptDoNotTrack: true, // Prevent unnecessary requests to the Matomo API
+            requireConsent: 'none', // Will change with AB#33767
             runOutsideAngularZone: true,
+            enableJSErrorTracking: false, // We use ApplicationInsights for this
+            enableLinkTracking: 'enable-pseudo', // Enable tracking of right/middle-clicks
+            trackAppInitialLoad: false,
           },
           withRouter({
             exclude: [new RegExp(AppRoutes.authCallback)],
