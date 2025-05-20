@@ -15,7 +15,7 @@
     "test": "npm run lint && npm run typecheck && echo 'No tests available' && exit 0",
     "build": "nest build --path=tsconfig.json",
     "start": "GLOBAL_121_VERSION=$(test -f \"VERSION.txt\" && cat VERSION.txt || echo $GLOBAL_121_VERSION)  node dist/main.js",
-    "prestart:dev": "npm install --no-fund --no-audit",
+    "prestart:dev": "npm install",
     "start:dev": "nest start --require=tsconfig-paths/register --builder=swc --watch --path=tsconfig.json --debug=0.0.0.0:9230",
     "typecheck": "tsc --noEmit",
     "typecheck:dev": "tsc --noEmit --watch"

@@ -40,7 +40,7 @@ jobs:
 
       - name: Install
         working-directory: ${{ env.workingDirectory }}
-        run: 'npm ci --omit=optional --no-fund --no-audit'
+        run: 'npm ci --omit=optional'
 
       - name: Lint
         working-directory: ${{ env.workingDirectory }}

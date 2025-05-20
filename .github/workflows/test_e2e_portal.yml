@@ -41,7 +41,7 @@ jobs:
       - name: Install E2E-Tests code-dependencies
         working-directory: ${{ env.e2eTestsPath }}
         run: |
-          npm ci --no-fund --no-audit
+          npm ci
 
       - name: Lint E2E-Tests code
         working-directory: ${{ env.e2eTestsPath }}
@@ -63,7 +63,7 @@ jobs:
           NG_URL_121_SERVICE_API: http://localhost:3000/api
           NG_DOWNLOAD_TRANSLATIONS_AT_BUILD: false
         run: |
-          npm ci --no-fund --no-audit
+          npm ci
           cp .env.example .env
           npm run start:debug-production > run-portal-logs.txt 2>&1 &
 
