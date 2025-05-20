@@ -24,7 +24,6 @@ const example_body = {
   payee: {
     currency: 'ZMW',
     msisdn: '978980279', // Should be length 9
-    name: 'John Doe',
   },
   reference: generateRandomId(),
   pin: pinEncrypted,
