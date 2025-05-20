@@ -45,28 +45,33 @@ if (!shouldBeEnabled(process.env.NG_DOWNLOAD_TRANSLATIONS_AT_BUILD)) {
 /////////////////////////////////////////////////////////////////////////////
 
 // Download translations for all languages
-console.info(`Downloading all translations...`);
-const lokaliseDownloader = new LokaliseDownload(
-  {
-    apiKey: process.env.LOKALISE_API_TOKEN,
-    enableCompression: true,
-  },
-  {
-    projectId: process.env.LOKALISE_PROJECT_ID ?? '',
-  },
-);
-await lokaliseDownloader.downloadTranslations({
-  downloadFileParams: {
-    bundle_structure: 'src/locale/messages.%LANG_ISO%.%FORMAT%',
-    export_empty_as: 'skip',
-    format: 'xlf',
-    original_filenames: false,
-  },
-  processDownloadFileParams: {
-    asyncDownload: false, // Disabled although recommended by Lokalise. It doesn't work reliable enough.
-  },
-});
-console.info(`Download done ✅`);
+try {
+  console.info(`Downloading all translations...`);
+  const lokaliseDownloader = new LokaliseDownload(
+    {
+      apiKey: process.env.LOKALISE_API_TOKEN,
+      enableCompression: true,
+    },
+    {
+      projectId: process.env.LOKALISE_PROJECT_ID ?? '',
+    },
+  );
+  await lokaliseDownloader.downloadTranslations({
+    downloadFileParams: {
+      bundle_structure: 'src/locale/messages.%LANG_ISO%.%FORMAT%',
+      export_empty_as: 'skip',
+      format: 'xlf',
+      original_filenames: false,
+    },
+    processDownloadFileParams: {
+      asyncDownload: false, // Disabled although recommended by Lokalise. It doesn't work reliable enough.
+    },
+  });
+  console.info(`Download done ✅`);
+} catch (error) {
+  console.error(`Error downloading translations!`, error);
+  process.exit(1);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 
