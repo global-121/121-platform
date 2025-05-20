@@ -104,6 +104,12 @@ export class SinglePaymentExportComponent {
       visible:
         this.canExportPaymentInstructions() && this.hasExportFileIntegration(),
       command: () => {
+        // TODO: Track-Event?
+        // this.trackingService.trackEvent({
+        //   category: TrackingCategory.export,
+        //   action: TrackingAction.clickMenuOption,
+        //   name: 'FSP-Payment-List',
+        // });
         this.exportFspPaymentListDialog().askForConfirmation();
       },
     },
@@ -118,6 +124,12 @@ export class SinglePaymentExportComponent {
         ],
       }),
       command: () => {
+        // TODO: Track-Event?
+        // this.trackingService.trackEvent({
+        //   category: TrackingCategory.export,
+        //   action: TrackingAction.clickMenuOption,
+        //   name: 'Payment-Report',
+        // });
         this.paymentReportDialog().askForConfirmation();
       },
     },
