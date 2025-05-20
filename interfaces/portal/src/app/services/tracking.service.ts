@@ -8,6 +8,60 @@ import { PrivacyCopyNoTrackingComponent } from '~/components/privacy/privacy-cop
 import { PrivacyCopyTrackingComponent } from '~/components/privacy/privacy-copy-tracking.component';
 import { environment } from '~environment';
 
+/**
+ * Matomo tracking Category-names.
+ *
+ * These are used to group events in "user goal focused"-groups.
+ *
+ * Naming convention:
+ * For the keys:
+ * - Follow the "camelCase" code-conventions
+ * - Use singular nouns...
+ *
+ * For the values:
+ * - Use "Title Case" (i.e. "Export")
+ * - Use "human readable" values (but be concise.)
+ *
+ */
+const enum TrackingCategory {
+  activityLog = 'Activity Log',
+  export = 'Export',
+  filterRegistrations = 'Filter Registrations',
+  import = 'Import',
+  navigation = 'Navigation',
+  registration = 'Registration',
+  registrationDetailsForm = 'Registration Details Edit-form',
+}
+
+/**
+ * Matomo tracking Action-names.
+ *
+ * These are used to describe the action that was performed.
+ *
+ * Naming convention:
+ * - Use am active verb prefix; i.e. "submit", "click", "open", "select", etc.
+ * - Use "human readable" values (but be concise.)
+ */
+const enum TrackingAction {
+  // TODO: WIP! - Maybe generic verbs could be enough? (in combination with specific Categories and Names?)
+  _change = 'change',
+  _click = 'click',
+  _close = 'close',
+  _dismiss = 'dismiss',
+  _focus = 'focus',
+  _input = 'input',
+  _open = 'open',
+  _select = 'select',
+  _submit = 'submit',
+  _toggle = 'toggle',
+  // Or 'action'-namespaced?
+  clickMenuOption = 'click: Menu Option',
+  clickProceed = 'click: Proceed',
+  // Or 'feature'-namespaced?
+  menuClose = 'Menu: Open',
+  menuOpen = 'Menu: Close',
+}
+
 const MATOMO_CONNECTION_INFO = parseMatomoConnectionString(
   environment.matomo_connection_string,
 );
@@ -49,12 +103,40 @@ export class TrackingService {
       : PrivacyCopyNoTrackingComponent;
   }
 
-  // TODO: AB#33807 - implement and use this function
-  public trackEvent() {
+  /**
+   * @param name - Prefer the use of specific `enum`-values. Prevent use of PII/Registration-specific data!
+   *
+   * @example Using only the `name`-property
+   * ```ts
+   * this.trackingService.trackEvent({
+   *   category: TrackingCategory.export,
+   *   action: TrackingAction.clickMenuOption,
+   *   name: 'Export to PDF',
+   * });
+   * ```
+   * @example Using a numeric value for the `value`-property
+   * ```ts
+   * this.trackingService.trackEvent({
+   *  category: TrackingCategory.filterRegistrations,
+   *  action: TrackingAction.inputFreeText,
+   *  name: 'Nr. of Results',
+   *  value: apiResponse.results.length,
+   * });
+   * ```
+   *
+   */
+  public trackEvent(event: {
+    category: TrackingCategory;
+    action: TrackingAction;
+    name?: string;
+    value?: number;
+  }): void {
     if (!IS_MATOMO_ENABLED()) {
       return;
     }
 
-    // track event to matomo
+    console.log('event: ', event);
+    //
+    // TODO: ...
   }
 }
