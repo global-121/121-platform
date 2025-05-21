@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   HostListener,
   inject,
   input,
@@ -35,7 +34,6 @@ import { Subscription } from 'rxjs';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
@@ -85,12 +83,10 @@ export class EditPersonalInformationComponent
   readonly cancelEditing = output();
   readonly registrationUpdated = output<Registration>();
 
-  readonly projectApiService = inject(ProjectApiService);
   readonly registrationApiService = inject(RegistrationApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
   readonly toastService = inject(ToastService);
 
-  project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
     this.registrationApiService.getRegistrationById(
       this.projectId,
@@ -137,31 +133,10 @@ export class EditPersonalInformationComponent
     },
   );
 
-  updateDisabledFields = effect(() => {
-    if (!this.project.isSuccess()) {
-      return;
-    }
-
-    if (this.project.data().paymentAmountMultiplierFormula) {
-      try {
-        this.formGroup.controls.paymentAmountMultiplier.disable();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    if (!this.project.data().allowEmptyPhoneNumber) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        this.formGroup.controls.phoneNumber.addValidators(Validators.required);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  });
   readonly hasChanges = computed(
     () => Object.keys(this.changedRegistrationData()).length > 0,
   );
+
   patchRegistrationMutation = injectMutation(() => ({
     mutationFn: ({
       referenceId,
@@ -205,10 +180,10 @@ export class EditPersonalInformationComponent
       this.registrationUpdated.emit(patchedRegistration);
     },
   }));
+
   ngOnInit() {
     this.formGroup = this.registrationAttributeService.attributesToFormGroup({
       attributes: this.attributeList(),
-      projectId: this.projectId(),
     });
 
     this.formGroupChangesSubscription = this.formGroup.valueChanges.subscribe(
