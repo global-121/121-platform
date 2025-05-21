@@ -44,7 +44,10 @@ const createFivePayments = async (paymentsPage: PaymentsPage) => {
   }
 };
 
-test.beforeEach(async ({ page }) => {
+let page: Page;
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
   await resetDB(SeedScript.nlrcMultiple);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
@@ -65,7 +68,7 @@ test.beforeEach(async ({ page }) => {
   await createFivePayments(paymentsPage);
 });
 
-test('[35621] ExportFivePayments', async ({ page }) => {
+test('[35621] ExportFivePayments', async () => {
   const paymentsPage = new PaymentsPage(page);
 
   await test.step('Validate export payment button', async () => {
@@ -84,7 +87,7 @@ test('[35621] ExportFivePayments', async ({ page }) => {
   });
 });
 
-test('[36125] View available actions for admin', async ({ page }) => {
+test('[36125] View available actions for admin', async () => {
   const paymentsPage = new PaymentsPage(page);
 
   await test.step('Validate export options', async () => {
@@ -97,9 +100,7 @@ test('[36125] View available actions for admin', async ({ page }) => {
   });
 });
 
-test('[36126] View available actions for a "view only" user', async ({
-  page,
-}) => {
+test('[36126] View available actions for a "view only" user', async () => {
   const homePage = new HomePage(page);
   await homePage.selectAccountOption('Logout');
 
