@@ -55,12 +55,10 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
     );
     // Assert payment overview page by payment date/ title
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    // Wait before next steps starts so the payment is created
-    await page.waitForTimeout(2000);
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessageAndClose('Payment created.');
+    await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({
