@@ -310,9 +310,10 @@ class TableComponent {
   async changeRegistrationStatusByNameWithOptions({
     registrationName,
     status,
-    message,
-    customMessage = false,
-    templateMessage = false,
+    sendMessage,
+    sendCustomMessage = false,
+    sendTemplatedMessage = false,
+    customMessage,
   }: {
     registrationName: string;
     status: string;
@@ -335,18 +336,19 @@ class TableComponent {
       await deleteLabel.click();
     }
 
-    // Condition for when reason is required
-    if (templateMessage === true) {
-      await this.sendMessageSwitch.check();
-      await this.approveButton.click();
-    } else if (customMessage === true) {
-      // Only fill reason field if it's visible
-      if (await reasonField.isVisible()) {
-        await reasonField.fill('Test reason');
+    if (sendMessage === true) {
+      if (sendTemplatedMessage === true) {
+        await this.sendMessageSwitch.check();
+        await this.approveButton.click();
+      } else if (sendCustomMessage === true) {
+        // Only fill reason field if it's visible
+        if (await reasonField.isVisible()) {
+          await reasonField.fill('Test reason');
+        }
+        await this.fillCustomMessage(customMessage ?? '');
+        await this.continueToPreviewButton.click();
+        await this.approveButton.click();
       }
-      await this.fillCustomMessage(message ?? '');
-      await this.continueToPreviewButton.click();
-      await this.approveButton.click();
     } else {
       if (await reasonField.isVisible()) {
         await reasonField.fill('Test reason');
