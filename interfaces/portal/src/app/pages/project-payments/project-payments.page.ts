@@ -67,6 +67,4 @@ export class ProjectPaymentsPageComponent {
       requiredPermission: PermissionEnum.PaymentCREATE,
     }),
   );
-
-  readonly computed;
 }
