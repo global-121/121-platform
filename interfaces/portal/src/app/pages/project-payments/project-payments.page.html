@@ -16,7 +16,10 @@
   </div>
 
   @if (paymentStatus.data()?.inProgress) {
-    <app-top-page-banner color="orange">
+    <app-top-page-banner
+      color="orange"
+      data-testid="payment-in-progress-banner"
+    >
       <span class="pi pi-spinner me-2 animate-spin self-center text-xl"></span>
       <strong
         class="me-1"
