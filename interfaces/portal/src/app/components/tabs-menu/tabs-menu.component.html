@@ -2,16 +2,41 @@
   <p-tablist>
     @for (tab of menuItems(); track tab.routerLink) {
       @if (tab.visible === undefined || tab.visible) {
-        <p-tab
-          [value]="tab.routerLink"
-          [routerLink]="tab.routerLink"
-          [routerLinkActive]="['p-tab-active']"
-          [class]="tab.styleClass"
-          queryParamsHandling="merge"
-        >
-          <i [class]="tab.icon"></i>
-          <span>{{ tab.label }}</span>
-        </p-tab>
+        @if (tab.children) {
+          <p-tab
+            [value]="tab.routerLink"
+            [class]="tab.styleClass"
+            (click)="menu.toggle($event)"
+            queryParamsHandling="merge"
+          >
+            <i [class]="tab.icon"></i>
+            <span>{{ tab.label }}</span>
+          </p-tab>
+          <p-menu
+            #menu
+            [model]="tab.children"
+            [popup]="true"
+            (onShow)="menuOpen.set(true)"
+            (onHide)="menuOpen.set(false)"
+            [appendTo]="'body'"
+            styleClass="mt-0"
+          >
+            <ng-template pTemplate="start">
+              <ng-content select="[menu-start]"></ng-content>
+            </ng-template>
+          </p-menu>
+        } @else {
+          <p-tab
+            [value]="tab.routerLink"
+            [routerLink]="tab.routerLink"
+            [routerLinkActive]="['p-tab-active']"
+            [class]="tab.styleClass"
+            queryParamsHandling="merge"
+          >
+            <i [class]="tab.icon"></i>
+            <span>{{ tab.label }}</span>
+          </p-tab>
+        }
       }
     }
   </p-tablist>

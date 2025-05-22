@@ -4,16 +4,7 @@
 >
   <div header-actions>
     @if (canCreateProjects) {
-      <p-button
-        label="Add project"
-        i18n-label="@@add-project-label"
-        outlined
-        rounded
-        icon="pi pi-plus"
-        [iconPos]="rtlHelper.createPosition('start')()"
-        (click)="formVisible.set(true)"
-      />
-      <app-create-project-form [(formVisible)]="formVisible" />
+      <app-create-project />
     }
   </div>
 

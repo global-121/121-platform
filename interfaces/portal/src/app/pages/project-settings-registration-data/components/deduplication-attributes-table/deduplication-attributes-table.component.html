@@ -1,0 +1,92 @@
+<p-card class="relative mt-4 block">
+  <h2
+    i18n
+    class="mb-4"
+  >
+    De-duplication
+  </h2>
+
+  @if (project.isSuccess()) {
+    <form
+      [formGroup]="formGroup"
+      (ngSubmit)="updateAttributesMutation.mutate()"
+    >
+      <div class="absolute end-4 top-4">
+        @if (!isEditing()) {
+          <p-button
+            text
+            plain
+            icon="pi pi-pencil"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="isEditing.set(true)"
+          />
+        } @else {
+          <p-button
+            label="Cancel"
+            i18n-label="@@generic-cancel"
+            (click)="isEditing.set(false)"
+            icon="pi pi-times"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            outlined
+            rounded
+            severity="contrast"
+            class="me-4"
+          />
+          <p-button
+            type="submit"
+            label="Save"
+            i18n-label="@@generic-save"
+            icon="pi pi-check"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            rounded
+          />
+        }
+      </div>
+
+      <p
+        i18n
+        class="mb-4"
+      >
+        Select the fields you would like to use as duplication indicators - if
+        these fields are found to match the registrations will be flagged as
+        duplicates. Note that some FSPs may require specific fields to be
+        unique, check for notes in the FSP page.
+      </p>
+
+      <p-table [value]="isEditing() ? [] : duplicateCheckAttributes()">
+        <ng-template #header>
+          <tr>
+            <th i18n>Duplication fields</th>
+          </tr>
+        </ng-template>
+        <ng-template
+          #body
+          let-attribute
+        >
+          <tr>
+            <td>{{ attribute.name }}</td>
+          </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+          <tr>
+            @if (!isEditing()) {
+              <td i18n>No attributes selected.</td>
+            }
+          </tr>
+        </ng-template>
+      </p-table>
+
+      @if (isEditing()) {
+        <p-multiselect
+          [options]="project.data().programRegistrationAttributes"
+          formControlName="deduplicationAttributes"
+          optionLabel="name"
+          i18n-optionLabel
+          placeholder="Select Attributes"
+          i18n-placeholder
+          styleClass="mt-4 w-full"
+        />
+      }
+    </form>
+  }
+</p-card>
