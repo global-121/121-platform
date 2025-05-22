@@ -19,6 +19,7 @@
 - [Writing Tests](#writing-tests)
   - [Example Test](#example-test)
   - [Best Practices](#best-practices)
+    - [Performance best practices](#performance-best-practices)
   - [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
 
 ---
@@ -155,6 +156,42 @@ test('[27493] Navigate to programme', async ({ page }) => {
 - **Keep Tests Independent**: Each test should be able to run independently of others.
 - **Use Meaningful Names**: Name your page objects and methods clearly to reflect their purpose.
 - **Avoid Hardcoding**: Use variables and configuration files (like translation file) to manage test data.
+
+#### Performance best practices
+
+E2E tests can get quite slow so it's important to re-use state as much as practical. If you're writing a bunch of tests and they (can) rely on the same application state and don't change that state you should write your test code in the following way for the sake of performance.
+
+- group your tests (either by file or otherwise)
+- arrange/prepare the application state, this can be a step that takes a lot of time
+- make sure this arrange/prepare step happens **only once** for this group (see example below)
+- write the tests in this group so they reuse the prepared application state and **don't** change it
+
+An example:
+
+```typescript
+let page: Page;
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+  // Do slow/expensive setup here
+  expensiveSetup(page);
+});
+
+test('foo === foo', async () => {
+  // Reuse the page object instantiated in beforeAll
+  expect(page.foo).toBe('foo');
+});
+
+test('qux === qux', async () => {
+  // Reuse the page object instantiated in beforeAll
+  expect(page.qux).toBe('qux');
+});
+
+test('bar === bar', async () => {
+  // Reuse the page object instantiated in beforeAll
+  expect(page.bar).toBe('bar');
+});
+```
 
 ### Common Issues and Troubleshooting
 
