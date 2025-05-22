@@ -61,9 +61,9 @@ test('Open registration in new tab and verify new tab', async ({ page }) => {
   await test.step('Verify new tab is opened', async () => {
     await page.waitForTimeout(2000); //waitForNavigation and waitForLoadState do not work in this case
 
-    const pages = await page.context().pages();
+    const pages = page.context().pages();
 
-    await expect(pages).toHaveLength(2);
+    expect(pages).toHaveLength(2);
 
     expect(await pages[1].title()).toEqual(
       'Activity log | Registration details | 121 Portal',
