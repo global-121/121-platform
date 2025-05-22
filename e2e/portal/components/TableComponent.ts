@@ -316,9 +316,10 @@ class TableComponent {
   }: {
     registrationName: string;
     status: string;
-    message?: string;
-    customMessage?: boolean;
-    templateMessage?: boolean;
+    sendMessage: boolean;
+    sendCustomMessage?: boolean;
+    sendTemplatedMessage?: boolean;
+    customMessage?: string;
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const reasonField = this.page.getByPlaceholder('Enter reason');
