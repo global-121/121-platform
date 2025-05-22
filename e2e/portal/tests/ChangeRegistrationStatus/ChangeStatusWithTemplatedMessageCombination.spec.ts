@@ -78,7 +78,8 @@ test.describe('Change status of registration with and without templated message'
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
         status: 'Include',
-        templateMessage: true,
+        sendMessage: true,
+        sendTemplatedMessage: true,
       });
       await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
@@ -99,10 +100,11 @@ test.describe('Change status of registration with and without templated message'
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     // Act
-    await test.step('Change status of first selected registration and write a templated message', async () => {
+    await test.step('Change status of first selected registration without templated message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Include',
+        sendMessage: false,
       });
       await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);

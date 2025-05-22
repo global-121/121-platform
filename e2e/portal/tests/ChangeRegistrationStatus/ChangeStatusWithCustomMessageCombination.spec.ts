@@ -69,8 +69,9 @@ test.describe('Change status of registration with and without templated message'
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
         status: 'Decline',
-        message: customMessage,
-        customMessage: true,
+        sendMessage: true,
+        sendCustomMessage: true,
+        customMessage,
       });
       await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
@@ -95,8 +96,7 @@ test.describe('Change status of registration with and without templated message'
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Decline',
-        message: customMessage,
-        customMessage: false,
+        sendMessage: false,
       });
       await page.waitForTimeout(1000);
       await registrations.validateToastMessageAndClose(toastMessage);
