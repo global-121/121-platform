@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,13 +10,19 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { registrationLink } from '~/domains/registration/registration.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
   selector: 'app-registration-duplicates-banner',
-  imports: [SvgIconComponent, RouterLink, TooltipModule, NgClass],
+  imports: [
+    SvgIconComponent,
+    RouterLink,
+    TooltipModule,
+    TopPageBannerComponent,
+  ],
   templateUrl: './registration-duplicates-banner.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

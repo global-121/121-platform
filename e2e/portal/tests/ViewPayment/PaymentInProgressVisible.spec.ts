@@ -36,7 +36,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[32296] Show in progress chip when payment is in progress', async ({
+test('[32296] Show in progress banner and chip when payment is in progress', async ({
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
@@ -63,5 +63,10 @@ test('[32296] Show in progress chip when payment is in progress', async ({
   await test.step('Validate payemnt in progress in Payment overview', async () => {
     await paymentsPage.validateToastMessage('Payment created.');
     await paymentsPage.validateInProgressChipIsPresent();
+  });
+
+  await test.step('Validate payemnt in progress in Payments page', async () => {
+    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.validateInProgressBannerIsPresent();
   });
 });

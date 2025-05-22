@@ -14,13 +14,6 @@
       @if (isLatestPayment()) {
         @if (paymentStatus.isPending()) {
           <app-skeleton-inline width="8rem" />
-        } @else if (paymentStatus.data()?.inProgress) {
-          <app-colored-chip
-            variant="orange"
-            label="In progress"
-            i18n-label
-            [icon]="'pi pi-spinner animate-spin'"
-          ></app-colored-chip>
         }
       }
     </div>

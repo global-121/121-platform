@@ -126,6 +126,14 @@ class PaymentsPage extends BasePage {
     await expect(inProgressChip).toBeVisible();
   }
 
+  async validateInProgressBannerIsPresent() {
+    const inProgressBanner = this.page.getByTestId(
+      'payment-in-progress-banner',
+    );
+
+    await expect(inProgressBanner).toBeVisible();
+  }
+
   async validatePaymentsDetailsPageByDate(date: string) {
     const viewPaymentTitle = await this.viewPaymentTitle.textContent();
     expect(viewPaymentTitle).toContain(date);
