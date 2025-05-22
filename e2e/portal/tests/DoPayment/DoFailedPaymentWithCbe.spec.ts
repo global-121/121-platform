@@ -18,6 +18,8 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.cbeProgram);
+  // Full name is set to 'error' to create a failed payment
+  registrationsCbe[0].fullName = 'error';
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsCbe, programIdCbe, accessToken);
 
@@ -30,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
+test('[36101] Do failed payment for Cbe fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = CbeProgram.titlePortal.en;
   const numberOfPas = registrationsCbe.length;
@@ -57,16 +59,16 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
     await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessage('Payment created.');
+  await test.step('Validate payment card with failed payment data', async () => {
+    await paymentsPage.validateToastMessageAndClose('Payment created.');
     await paymentsPage.navigateToProgramPage('Payments');
     await paymentsPage.waitForPaymentToComplete();
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,
       registrationsNumber: numberOfPas,
-      successfulTransfers: defaultMaxTransferValue,
-      failedTransfers: 0,
+      successfulTransfers: 0,
+      failedTransfers: numberOfPas,
       currency: CbeProgram.currency,
     });
   });
