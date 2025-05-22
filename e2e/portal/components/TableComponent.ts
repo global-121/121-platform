@@ -300,7 +300,7 @@ class TableComponent {
     await this.page.locator('textarea').fill(message);
   }
 
-  async selectRegistrationByName(name: string) {
+  async selectRowByTextContent(name: string) {
     const registrationName = this.page.locator('tr').filter({ hasText: name });
     const checkbox = registrationName.locator('input[type="checkbox"]');
 
@@ -321,12 +321,12 @@ class TableComponent {
     templateMessage?: boolean;
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
-    const placeholder = this.page.getByPlaceholder('Enter reason');
+    const reasonField = this.page.getByPlaceholder('Enter reason');
     const deleteLabel = this.page.getByLabel(
       'I understand this action can not be undone',
     );
 
-    await this.selectRegistrationByName(registrationName);
+    await this.selectRowByTextContent(registrationName);
     await statusButton.click();
 
     // Check for delete confirmation
@@ -340,15 +340,15 @@ class TableComponent {
       await this.approveButton.click();
     } else if (customMessage === true) {
       // Only fill reason field if it's visible
-      if (await placeholder.isVisible()) {
-        await placeholder.fill('Test reason');
+      if (await reasonField.isVisible()) {
+        await reasonField.fill('Test reason');
       }
       await this.fillCustomMessage(message ?? '');
       await this.continueToPreviewButton.click();
       await this.approveButton.click();
     } else {
-      if (await placeholder.isVisible()) {
-        await placeholder.fill('Test reason');
+      if (await reasonField.isVisible()) {
+        await reasonField.fill('Test reason');
       }
       await this.approveButton.click();
     }
