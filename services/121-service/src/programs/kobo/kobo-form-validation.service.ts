@@ -221,6 +221,14 @@ export class KoboFormValidationService {
           expectedTypeForFspAttribute,
         );
 
+        // Add 'text' as valid type for tel
+        if (
+          expectedTypeForFspAttribute === RegistrationAttributeTypes.tel &&
+          !expectedSurveyKoboTypes.includes('text')
+        ) {
+          expectedSurveyKoboTypes.push('text');
+        }
+
         if (
           !(
             expectedSurveyKoboTypes.includes(surveyItemKoboType) ||
