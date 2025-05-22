@@ -118,10 +118,18 @@ class PaymentsPage extends BasePage {
     await inProgressChip.waitFor({ state: 'hidden' });
   }
 
+  async validateInProgressChipIsPresent() {
+    const inProgressChip = this.page
+      .locator('app-colored-chip')
+      .getByLabel('In progress');
+
+    await expect(inProgressChip).toBeVisible();
+  }
+
   async validateInProgressBannerIsPresent() {
-    const inProgressBanner = this.page
-      .locator('payment-in-progress-banner')
-      .getByLabel('Payment in progress');
+    const inProgressBanner = this.page.getByTestId(
+      'payment-in-progress-banner',
+    );
 
     await expect(inProgressBanner).toBeVisible();
   }
