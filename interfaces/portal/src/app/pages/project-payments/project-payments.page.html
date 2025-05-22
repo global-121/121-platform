@@ -15,6 +15,23 @@
     }
   </div>
 
+  @if (paymentStatus.data()?.inProgress) {
+    <app-top-page-banner color="orange">
+      <span class="pi pi-spinner me-2 animate-spin self-center text-xl"></span>
+      <strong
+        class="me-1"
+        i18n
+        >Payment in progress</strong
+      >
+      <strong class="me-1">-</strong>
+      <span
+        i18n
+        class="text-black"
+        >please wait before creating a new payment.</span
+      >
+    </app-top-page-banner>
+  }
+
   <app-card-grid
     [empty]="paymentsSorted()?.length === 0"
     emptyTitle="No Payments found"
