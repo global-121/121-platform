@@ -5,6 +5,7 @@ module.exports = {
       files: ['*.js'],
       extends: [
         'eslint:recommended',
+        'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
         'plugin:prettier/recommended',
       ],
@@ -15,7 +16,10 @@ module.exports = {
         sourceType: 'script',
         ecmaVersion: 2022,
       },
-      rules: {},
+      rules: {
+        'eslint-comments/no-unused-disable': 'error',
+        'eslint-comments/require-description': 'error',
+      },
     },
     {
       files: ['*.ts', '*.tsx'],
@@ -24,6 +28,7 @@ module.exports = {
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/stylistic',
+        'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
@@ -54,6 +59,8 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'eslint-comments/no-unused-disable': 'error',
+        'eslint-comments/require-description': 'error',
         'object-shorthand': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below

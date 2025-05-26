@@ -19,13 +19,9 @@ import {
   SWAGGER_CUSTOM_CSS,
 } from '@mock-service/src/config';
 
-/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
-  namespace NodeJS {
-    interface Global {
-      queueCallbacks: Record<string, string>;
-    }
-  }
+  // eslint-disable-next-line no-var -- To define the global queue-collection without namespace, we need to define it using `var`. See: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-typescript-eslintno-namespace-andor-no-var-rules-about-declaring-global-variables
+  var queueCallbacks: Record<string, string>;
 }
 
 global.queueCallbacks = {};
