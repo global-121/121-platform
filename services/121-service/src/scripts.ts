@@ -44,6 +44,7 @@ function confirmRun(scriptName): any {
     process.stdin.pause();
     if (result !== 'y') {
       console.log('Operation aborted.');
+      // eslint-disable-next-line n/no-process-exit -- User-initiated exit
       process.exit();
       return;
     } else {
