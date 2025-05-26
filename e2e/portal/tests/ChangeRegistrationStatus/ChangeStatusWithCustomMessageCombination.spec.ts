@@ -83,7 +83,6 @@ test.describe('Change status of registration with and without templated message'
       });
       await tableComponent.validateMessageActivityByTypeAndText({
         notificationType: 'Custom message',
-        message: customMessage,
       });
     });
   });

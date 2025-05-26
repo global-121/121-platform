@@ -430,20 +430,18 @@ class TableComponent {
 
   async validateMessageActivityByTypeAndText({
     notificationType,
-    message,
   }: {
     notificationType: string;
-    message: string;
   }) {
     const messageNotification = this.page
       .locator('tr')
       .filter({ hasText: notificationType });
-    const notificationText = this.page.locator('tr').filter({
-      hasText: message,
-    });
+    const notificationText = this.page.locator('app-activity-log-expanded-row');
 
     await messageNotification.getByRole('button').click();
-    await expect(notificationText).toHaveText(message);
+    const messageText = await notificationText.textContent();
+    // Check message content with snapshot
+    expect(messageText).toMatchSnapshot();
   }
 
   async validateActivityNotPresentByType(notificationType: string) {

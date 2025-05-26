@@ -15,17 +15,6 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const toastMessage =
   'The status of 1 registration(s) is being changed to "Included" successfully. The status change can take up to a minute to process.';
-const templateMessage = `Dit is een bericht van het Rode Kruis.
-
-Bedankt voor je inschrijving. Je ontvangt vanaf nu elke dinsdag een Albert Heijn waardebon via WhatsApp. Je ontvangt de waardebonnen zo lang je op de lijst staat van .
-
-Het Rode Kruis kan je ook informatie geven over bijvoorbeeld medische hulp, voedsel of veiligheid. Kijk op onze website:
-
-https://helpfulinformation.redcross.nl/
-
-of stel je vraag via WhatsApp:
-
-https://wa.me/3197010286964`;
 // Arrange
 const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -91,7 +80,6 @@ test.describe('Change status of registration with and without templated message'
       });
       await tableComponent.validateMessageActivityByTypeAndText({
         notificationType: 'Inclusion',
-        message: templateMessage,
       });
     });
   });
