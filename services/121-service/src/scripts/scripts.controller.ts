@@ -167,6 +167,7 @@ export class ScriptsController {
     }
 
     console.log('Service is being killed...');
-    process.exit(1); // Exit with a non-zero status code to indicate an error
+    // eslint-disable-next-line n/no-process-exit -- Exiting the app is the literal purpose of this method/endpoint
+    process.exit(1);
   }
 }
