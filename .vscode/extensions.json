@@ -27,6 +27,7 @@
     "redhat.vscode-yaml",
     "sburg.vscode-javascript-booster",
     "sysoev.vscode-open-in-github",
+    "timonwong.shellcheck",
     "tombonnike.vscode-status-bar-format-toggle",
     "whtouche.vscode-js-console-utils"
   ]
