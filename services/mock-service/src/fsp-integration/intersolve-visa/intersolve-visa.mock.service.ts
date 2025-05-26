@@ -256,8 +256,7 @@ export class IntersolveVisaMockService {
       res.status = HttpStatus.NOT_FOUND;
       res.statusText = 'NOT_FOUND';
     }
-    // must match \"([+]){1}([1-9]){1}([0-9]){5,14}\
-    const mobileNumberRegex = new RegExp('^([+]){1}([1-9]){1}([0-9]){5,14}$');
+    const mobileNumberRegex = /^\+[1-9]\d{5,14}$/;
     if (!mobileNumberRegex.test(mobileNumber)) {
       res.data.success = false;
       res.data.errors = [];

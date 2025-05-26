@@ -7,6 +7,7 @@ module.exports = {
         'eslint:recommended',
         'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
+        'plugin:regexp/recommended',
         'plugin:prettier/recommended',
       ],
       env: {
@@ -24,12 +25,13 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
-      plugins: ['no-relative-import-paths', 'simple-import-sort'],
+      plugins: ['no-relative-import-paths', 'regexp', 'simple-import-sort'],
       extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/stylistic',
         'plugin:eslint-comments/recommended',
         'plugin:n/recommended',
+        'plugin:regexp/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
       parserOptions: {
