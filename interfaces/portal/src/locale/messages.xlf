@@ -1580,6 +1580,12 @@
       <trans-unit id="8937810540139894558" datatype="html">
         <source>Select export format:</source>
       </trans-unit>
+      <trans-unit id="5567795196823052308" datatype="html">
+        <source>please wait before creating a new payment.</source>
+      </trans-unit>
+      <trans-unit id="6350305312750969481" datatype="html">
+        <source>Payment in progress</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

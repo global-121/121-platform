@@ -12,8 +12,6 @@ import { injectQuery } from '@tanstack/angular-query-experimental';
 
 import { CardSummaryMetricsContainerComponent } from '~/components/card-summary-metrics-container/card-summary-metrics-container.component';
 import { CardWithLinkComponent } from '~/components/card-with-link/card-with-link.component';
-import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
-import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { paymentLink } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -21,12 +19,7 @@ import { Locale } from '~/utils/locale';
 
 @Component({
   selector: 'app-payment-summary-card',
-  imports: [
-    SkeletonInlineComponent,
-    ColoredChipComponent,
-    CardWithLinkComponent,
-    CardSummaryMetricsContainerComponent,
-  ],
+  imports: [CardWithLinkComponent, CardSummaryMetricsContainerComponent],
   providers: [CurrencyPipe, DecimalPipe],
   templateUrl: './payment-summary-card.component.html',
   styles: ``,
@@ -60,9 +53,6 @@ export class PaymentSummaryCardComponent {
         ? 1000
         : undefined,
   }));
-  paymentInProgress = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
-  );
 
   readonly isLatestPayment = computed(() => this.cardIndex() === 0);
 

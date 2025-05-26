@@ -9,20 +9,4 @@
       [summaryMetrics]="summaryMetrics()"
     ></app-card-summary-metrics-container>
   </ng-container>
-  <ng-container card-footer>
-    <div class="min-h-8 text-end">
-      @if (isLatestPayment()) {
-        @if (paymentStatus.isPending()) {
-          <app-skeleton-inline width="8rem" />
-        } @else if (paymentStatus.data()?.inProgress) {
-          <app-colored-chip
-            variant="orange"
-            label="In progress"
-            i18n-label
-            [icon]="'pi pi-spinner animate-spin'"
-          ></app-colored-chip>
-        }
-      }
-    </div>
-  </ng-container>
 </app-card-with-link>

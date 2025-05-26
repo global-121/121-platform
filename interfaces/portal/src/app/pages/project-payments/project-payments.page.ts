@@ -12,6 +12,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardGridComponent } from '~/components/card-grid/card-grid.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { TopPageBannerComponent } from '~/components/top-page-banner/top-page-banner.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { CreatePaymentComponent } from '~/pages/project-payments/components/create-payment/create-payment.component';
 import { ExportPaymentsComponent } from '~/pages/project-payments/components/export-payments/export-payments.component';
@@ -26,6 +27,7 @@ import { AuthService } from '~/services/auth.service';
     ExportPaymentsComponent,
     CardGridComponent,
     CreatePaymentComponent,
+    TopPageBannerComponent,
   ],
   templateUrl: './project-payments.page.html',
   styles: ``,
@@ -39,6 +41,10 @@ export class ProjectPaymentsPageComponent {
   private paymentApiService = inject(PaymentApiService);
 
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
+
+  readonly paymentStatus = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
 
   readonly paymentsSorted = computed(() =>
     this.payments.data()?.sort((a, b) => b.payment - a.payment),
