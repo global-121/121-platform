@@ -59,9 +59,10 @@ module.exports = {
         // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
         'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        'n/no-extraneous-import': [0], // Managed by TypeScript
         'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
         'n/no-missing-require': [0], // Disabled to allow for path-aliases via tsconfig.json/below
-        'n/no-extraneous-import': [0], // Managed by TypeScript
+        'n/no-process-env': 'error',
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
