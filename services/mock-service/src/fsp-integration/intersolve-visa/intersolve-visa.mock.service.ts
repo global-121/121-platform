@@ -106,7 +106,7 @@ export class IntersolveVisaMockService {
     response.data.data.token.balances = [
       {
         quantity: {
-          assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+          assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
           value: 0,
           reserved: 0,
         },
@@ -284,7 +284,7 @@ export class IntersolveVisaMockService {
           balances: [
             {
               quantity: {
-                assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+                assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
                 value: 0,
                 reserved: 0,
               },
@@ -321,7 +321,7 @@ export class IntersolveVisaMockService {
           balances: [
             {
               quantity: {
-                assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+                assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
                 value: 0, // return 0 because unload is only used to unload complete amount when re-issuing
                 reserved: 0,
               },
@@ -359,7 +359,7 @@ export class IntersolveVisaMockService {
         balances: [
           {
             quantity: {
-              assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+              assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
               value: currentBalance,
               reserved: 0,
             },
@@ -426,7 +426,7 @@ export class IntersolveVisaMockService {
         {
           id: 1,
           quantity: {
-            assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
             value: -300, // Reservations are negative and in cents
           },
           createdAt: new Date(
@@ -451,7 +451,7 @@ export class IntersolveVisaMockService {
         {
           id: 1,
           quantity: {
-            assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
             value: 300,
           },
           createdAt: new Date(
@@ -488,7 +488,7 @@ export class IntersolveVisaMockService {
         {
           id: 1,
           quantity: {
-            assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+            assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
             value: -spentAmount,
           },
           createdAt: new Date(
@@ -515,7 +515,7 @@ export class IntersolveVisaMockService {
       response.data.data!.push({
         id: 1,
         quantity: {
-          assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+          assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
           value: -300,
         },
         createdAt: new Date(
@@ -568,7 +568,7 @@ export class IntersolveVisaMockService {
         balances: [
           {
             quantity: {
-              assetCode: env.INTERSOLVE_VISA_ASSET_CODE ?? '',
+              assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
               value: 2500,
               reserved: 0,
             },

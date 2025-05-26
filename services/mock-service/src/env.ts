@@ -20,7 +20,7 @@ export const env = createEnv({
     EXTERNAL_121_SERVICE_URL: z.url().endsWith('/'),
 
     // FSP-specific configuration:
-    INTERSOLVE_VISA_ASSET_CODE: z.string().optional(),
+    INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
   },
 
   // We don't use client-side env variables in the same way as in the services
