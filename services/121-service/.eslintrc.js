@@ -23,6 +23,7 @@ module.exports = {
         // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
         // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
+        'plugin:n/recommended',
         'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
@@ -58,6 +59,9 @@ module.exports = {
         // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
         'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        'n/no-extraneous-import': [0], // Managed by TypeScript
+        'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
+        'n/no-missing-require': [0], // Disabled to allow for path-aliases via tsconfig.json/below
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
