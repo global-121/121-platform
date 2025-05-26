@@ -1,7 +1,6 @@
 import { env } from '@mock-service/src/env';
 
 export const DEVELOPMENT = env.NODE_ENV === 'development';
-export const PORT = DEVELOPMENT ? env.PORT_MOCK_SERVICE : 8080;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
