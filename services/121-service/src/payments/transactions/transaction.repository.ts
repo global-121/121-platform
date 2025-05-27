@@ -107,6 +107,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
         'transaction.created AS "paymentDate"',
+        'transaction.updated AS updated',
         'transaction.payment AS payment',
         'r."referenceId"',
         'status',

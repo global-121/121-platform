@@ -13,6 +13,12 @@ export class TransactionReturnDto {
     format: 'date-time',
   })
   public paymentDate: Date;
+  @ApiProperty({
+    example: '2023-09-28T08:00:10.363Z',
+    type: 'string',
+    format: 'date-time',
+  })
+  public updated: Date;
   @ApiProperty({ example: 2, type: 'number' })
   public payment: number;
   @ApiProperty({ example: '2982g82bdsf89sdsd', type: 'string' })
