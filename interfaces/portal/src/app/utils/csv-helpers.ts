@@ -3,8 +3,8 @@ import Papa from 'papaparse';
 export const unknownArrayToCsvBlob = (data: unknown[]): Blob => {
   // We need to account for not all objects having the same attributes.
   const columns = new Set<string>();
-  if (typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
-    data.data.forEach((item) => {
+  if (Array.isArray(data)) {
+    data.forEach((item) => {
       if (typeof item === 'object' && item !== null) {
         Object.keys(item as Record<string, unknown>).forEach((key) => {
           columns.add(key);

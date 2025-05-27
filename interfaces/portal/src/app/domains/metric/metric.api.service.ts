@@ -1,11 +1,13 @@
 import { HttpParamsOptions } from '@angular/common/http';
 import { Injectable, Signal } from '@angular/core';
 
+import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
 import { ProjectMetrics } from '~/domains/metric/metric.model';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
+import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
@@ -33,10 +35,10 @@ export class MetricApiService extends DomainApiService {
     params: HttpParamsOptions['fromObject'];
   }) {
     if (params?.format === 'json') {
-      return this.generateQueryOptions<unknown[], Blob>({
+      return this.generateQueryOptions<Dto<FileDto>, Blob>({
         path: [...BASE_ENDPOINT(projectId), 'export-list', type],
         params,
-        processResponse: unknownArrayToCsvBlob,
+        processResponse: (response) => unknownArrayToCsvBlob(response.data),
       });
     }
 
