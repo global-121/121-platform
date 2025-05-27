@@ -243,7 +243,7 @@ class TableComponent {
     filterMode,
   }: {
     columnName: string;
-    day: number;
+    day: string;
     filterMode: string;
   }) {
     const filterMenuButton = this.table
@@ -259,7 +259,7 @@ class TableComponent {
       .click();
 
     await this.page.locator('input[type="text"]').click();
-    await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
+    await this.page.locator(`[data-date="${day}"]`).click();
 
     await this.applyFiltersButton.click();
   }
