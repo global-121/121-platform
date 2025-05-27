@@ -1,10 +1,7 @@
-export const DEBUG = !['production', 'test'].includes(process.env.NODE_ENV!);
-export const PORT = process.env.PORT_121_SERVICE!;
+import { env } from '@121-service/src/env';
 
-const rootUrl =
-  process.env.NODE_ENV === 'development'
-    ? `http://localhost:${PORT}/`
-    : process.env.EXTERNAL_121_SERVICE_URL!;
+export const DEBUG = !['production', 'test'].includes(env.NODE_ENV!);
+export const PORT = env.PORT_121_SERVICE!;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
@@ -36,7 +33,7 @@ export const SWAGGER_CUSTOM_CSS = `
 export const SWAGGER_CUSTOM_JS = `
 const loc = window.location;
 const currentUrl = loc.origin + '/';
-const envUrl = '${rootUrl}';
+const envUrl = '${env.EXTERNAL_121_SERVICE_URL}';
 if (currentUrl !== envUrl ) {
   loc.replace(loc.href.replace(currentUrl,envUrl));
 }
@@ -53,16 +50,14 @@ export const API_PATHS = {
   imageCode: 'notifications/imageCode/',
   voucherInstructions: 'fsps/intersolve-voucher/instructions/',
 };
-const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
+const rootApi = `${env.EXTERNAL_121_SERVICE_URL}api`;
 export const EXTERNAL_API = {
-  baseApiUrl,
-  root: rootUrl,
-  rootApi: `${rootUrl}api`,
-  smsStatus: baseApiUrl + API_PATHS.smsStatus,
-  whatsAppStatus: baseApiUrl + API_PATHS.whatsAppStatus,
-  whatsAppStatusTemplateTest: baseApiUrl + API_PATHS.whatsAppStatusTemplateTest,
-  whatsAppIncoming: baseApiUrl + API_PATHS.whatsAppIncoming,
-  imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
+  rootApi,
+  smsStatus: `${rootApi}/${API_PATHS.smsStatus}`,
+  whatsAppStatus: `${rootApi}/${API_PATHS.whatsAppStatus}`,
+  whatsAppStatusTemplateTest: `${rootApi}/${API_PATHS.whatsAppStatusTemplateTest}`,
+  whatsAppIncoming: `${rootApi}/${API_PATHS.whatsAppIncoming}`,
+  imageCodeUrl: `${rootApi}/${API_PATHS.imageCode}`,
 };
 
 // Configure Public Twilio Setttings:
