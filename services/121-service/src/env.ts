@@ -20,10 +20,10 @@ export const env = createEnv({
 
     EXTERNAL_121_SERVICE_URL: z.url().endsWith('/'),
 
-    GENERIC_THROTTLING_TTL: z.coerce.number().optional(),
-    GENERIC_THROTTLING_LIMIT: z.coerce.number().optional(),
-    HIGH_THROTTLING_TTL: z.coerce.number().optional(),
-    HIGH_THROTTLING_LIMIT: z.coerce.number().optional(),
+    GENERIC_THROTTLING_LIMIT: z.coerce.number().optional().default(3_000),
+    GENERIC_THROTTLING_TTL: z.coerce.number().optional().default(60),
+    HIGH_THROTTLING_LIMIT: z.coerce.number().optional().default(30),
+    HIGH_THROTTLING_TTL: z.coerce.number().optional().default(60),
 
     // Database
     POSTGRES_HOST: z.string(),
