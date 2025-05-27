@@ -40,7 +40,9 @@ function checkAndFail(response, checks) {
 }
 
 function isServiceUp() {
-  const response = http.get('http://localhost:3000/api/health/health'); // Replace with your health check endpoint
+  const response = http.get(
+    `${process.env.EXTERNAL_121_SERVICE_URL}api/health/health`,
+  );
   return response.status === 200;
 }
 
