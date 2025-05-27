@@ -27,7 +27,7 @@ export const env = createEnv({
 
     // Database
     POSTGRES_HOST: z.string(),
-    POSTGRES_PORT: z.coerce.number(),
+    POSTGRES_PORT: z.coerce.number().default(5432),
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
     POSTGRES_DBNAME: z.string(),
