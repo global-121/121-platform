@@ -180,7 +180,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Create properties for a Program Financial Service Provider Configuration. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+    summary: `Create properties for a Program Financial Service Provider Configuration. See ${EXTERNAL_API.rootApi}/financial-service-providers for allowed properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -232,7 +232,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Update a single property for a Program Financial Service Provider Configuration.. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+    summary: `Update a single property for a Program Financial Service Provider Configuration.. See ${EXTERNAL_API.rootApi}/financial-service-providers for allowed properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -284,7 +284,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Delete a single Program Financial Service Provider Configuration property. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for required properties per financial service provider.`,
+    summary: `Delete a single Program Financial Service Provider Configuration property. See ${EXTERNAL_API.rootApi}/financial-service-providers for required properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
