@@ -11,7 +11,7 @@ export const env = createEnv({
     // Environment/Instance specifics
     ENV_NAME: z.string().optional(),
     ENV_ICON: z.url().or(z.string().startsWith('data:')).optional(),
-    NODE_ENV: z.enum(['development', 'production']),
+    NODE_ENV: z.enum(['test', 'production', 'development']),
     GLOBAL_121_VERSION: z.string().optional(),
 
     // API set up
