@@ -1,0 +1,95 @@
+<app-import-file-dialog
+  [(dialogVisible)]="dialogVisible"
+  [mutation]="updateRegistrationsMutation"
+  [additionalFormGroups]="[updateRegistrationsFormGroup]"
+  accept=".csv,text/csv,text/comma-separated-values,application/csv"
+  header="Update selected registrations"
+  i18n-header
+>
+  <ng-container pre-file-input>
+    <p>
+      <ng-container i18n
+        >Learn more about updating selected registrations in the
+      </ng-container>
+      <a
+        href="https://manual.121.global/"
+        target="_blank"
+        title="Opens in a new window"
+        i18n-title="@@generic-opens-in-new-window"
+        class="p-button p-button-link"
+      >
+        <ng-container i18n>manual</ng-container>
+        <span class="p-button-icon pi pi-external-link ms-0 text-sm"></span>
+      </a>
+    </p>
+    <div [formGroup]="exportCSVFormGroup">
+      <app-form-field-wrapper
+        [label]="stepOneLabel()"
+        [errorMessage]="exportCSVFormFieldErrors()('fields')"
+      >
+        <div class="flex gap-2">
+          <p-multiSelect
+            [options]="csvExportFieldsOptions()"
+            [optionLabel]="'label'"
+            [optionValue]="'value'"
+            formControlName="fields"
+            placeholder="Select 1 or more columns"
+            i18n-placeholder
+            [showToggleAll]="false"
+            [overlayOptions]="{
+              target: '@parent',
+            }"
+            styleClass="grow"
+          />
+          <p-button
+            i18n
+            (click)="exportCSVForUpdateRegistrations()"
+            label="Export CSV"
+            i18n-label
+            rounded
+            outlined
+            class="shrink-0"
+          />
+        </div>
+      </app-form-field-wrapper>
+    </div>
+    <p
+      i18n
+      class="!-mb-1 font-bold"
+    >
+      Upload the updated CSV below
+    </p>
+  </ng-container>
+  <ng-container post-file-input>
+    <div [formGroup]="updateRegistrationsFormGroup">
+      <app-form-field-wrapper
+        label="Write a reason for the update"
+        i18n-label
+        [errorMessage]="updateRegistrationsFormFieldErrors()('reason')"
+      >
+        <input
+          type="text"
+          formControlName="reason"
+          pInputText
+          placeholder="Enter reason"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+      <label class="mt-6 flex gap-2">
+        <p-checkbox
+          formControlName="confirmAction"
+          [binary]="true"
+        />
+        <ng-container i18n
+          >I understand that all registrations included in this file will be
+          updated, overriding existing registration data, and that this action
+          can not be undone.</ng-container
+        >
+      </label>
+      <app-form-error
+        [error]="updateRegistrationsFormFieldErrors()('confirmAction')"
+      />
+    </div>
+  </ng-container>
+</app-import-file-dialog>

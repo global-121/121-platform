@@ -24,9 +24,9 @@ import { addDaysToDate, dateToIsoString } from '~/utils/date';
   providedIn: 'root',
 })
 export class ExportService {
-  static toExportFileName(excelFileName: string, extension: string): string {
+  static toExportFileName(filename: string, extension: string): string {
     const date = new Date();
-    return `${excelFileName}-${date.toISOString().slice(0, 10)}.${extension}`;
+    return `${filename}-${date.toISOString().slice(0, 10)}.${extension}`;
   }
 
   private queryClient = inject(QueryClient);
@@ -109,6 +109,7 @@ export class ExportService {
       minPayment,
       maxPayment,
       format = 'xlsx',
+      filename,
     }: {
       type: 'pa-data-changes' | ExportType;
       paginateQuery?: PaginateQuery;
@@ -117,6 +118,7 @@ export class ExportService {
       minPayment?: number;
       maxPayment?: number;
       format?: 'csv' | 'xlsx';
+      filename?: string;
     }) => {
       toastService.showToast({
         summary: $localize`Exporting`,
@@ -161,9 +163,12 @@ export class ExportService {
           );
         }
 
-        const filename = ExportService.toExportFileName(type, format);
+        const outputFilename = ExportService.toExportFileName(
+          filename ?? type,
+          format,
+        );
 
-        return { exportResult, filename };
+        return { exportResult, filename: outputFilename };
       } catch (error) {
         if (
           error instanceof HttpErrorResponse &&

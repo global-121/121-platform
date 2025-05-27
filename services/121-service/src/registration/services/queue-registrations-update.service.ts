@@ -14,7 +14,7 @@ export class QueueRegistrationUpdateService {
   ) {}
 
   public async addRegistrationUpdateToQueue(
-    job: RegistrationsUpdateJobDto,
+    job: Omit<RegistrationsUpdateJobDto, 'request'>,
   ): Promise<void> {
     // UsedId has to be defined, else there would have been an auth error
     if (!this.request.user || !this.request.user.id) {
@@ -23,13 +23,15 @@ export class QueueRegistrationUpdateService {
       );
     }
 
-    job.request = {
-      userId: this.request.user.id,
-      scope: this.request.user.scope,
-    };
     await this.queuesService.updateRegistrationQueue.add(
       ProcessNameRegistration.update,
-      job,
+      {
+        ...job,
+        request: {
+          userId: this.request.user.id,
+          scope: this.request.user.scope,
+        },
+      },
     );
   }
 }
