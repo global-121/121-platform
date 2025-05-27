@@ -19,11 +19,11 @@ import {
   APP_TITLE,
   APP_VERSION,
   DEBUG,
-  EXTERNAL_API,
   PORT,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
@@ -161,7 +161,9 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(EXTERNAL_API.root)
+    .addServer(
+      DEBUG ? `http://localhost:${PORT}/` : env.EXTERNAL_121_SERVICE_URL,
+    )
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {

@@ -544,7 +544,7 @@ export class MessageIncomingService {
           message: '',
           messageContentType: MessageContentType.paymentInstructions,
           messageProcessType: MessageProcessType.whatsappVoucherInstructions,
-          mediaUrl: `${EXTERNAL_API.baseApiUrl}programs/${program.id}/${API_PATHS.voucherInstructions}`,
+          mediaUrl: `${EXTERNAL_API.rootApi}/programs/${program.id}/${API_PATHS.voucherInstructions}`,
           userId: intersolveVouchersPerPa[0].userId,
         });
       }
