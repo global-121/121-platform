@@ -12,33 +12,38 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
+import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
+import { getChipDataByRegistrationStatus } from '~/components/colored-chip/colored-chip.helper';
 import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DownloadService } from '~/services/download.service';
-import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
   selector: 'app-import-registrations',
-  imports: [ButtonModule, ImportFileDialogComponent],
+  imports: [ButtonModule, ImportFileDialogComponent, ColoredChipComponent],
   providers: [ToastService],
   templateUrl: './import-registrations.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImportRegistrationsComponent {
-  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
+  readonly dialogVisible = model<boolean>(false);
 
   private queryClient = inject(QueryClient);
   private downloadService = inject(DownloadService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  readonly dialogVisible = model<boolean>(false);
+  readonly registeredChipData = getChipDataByRegistrationStatus(
+    RegistrationStatusEnum.registered,
+  );
 
   downloadImportRegistrationsTemplateMutation = injectMutation(() => ({
     mutationFn: () =>
@@ -75,7 +80,7 @@ export class ImportRegistrationsComponent {
       });
       this.dialogVisible.set(false);
       this.toastService.showToast({
-        summary: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,
+        detail: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,
       });
     },
   }));

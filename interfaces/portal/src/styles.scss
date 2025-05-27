@@ -145,6 +145,10 @@ svg-icon svg {
           @apply no-underline;
         }
       }
+
+      p & {
+        @apply text-blue-500;
+      }
     }
 
     &.p-button-outlined {

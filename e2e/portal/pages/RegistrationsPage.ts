@@ -1,4 +1,5 @@
 import { expect, Locator } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'fs';
 import { Page } from 'playwright';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
@@ -14,6 +15,9 @@ class RegistrationsPage extends BasePage {
   readonly proceedButton: Locator;
   readonly downloadTemplateButton: Locator;
   readonly importButton: Locator;
+  readonly importFileButton: Locator;
+  readonly exportCSVFieldsDropdown: Locator;
+  readonly exportCSVButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -28,6 +32,15 @@ class RegistrationsPage extends BasePage {
       name: 'Download the template',
     });
     this.importButton = this.page.getByRole('button', { name: 'Import' });
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
+    });
+    this.exportCSVFieldsDropdown = this.page.getByPlaceholder(
+      'Select 1 or more columns',
+    );
+    this.exportCSVButton = this.page.getByRole('button', {
+      name: 'Export CSV',
+    });
   }
 
   async waitForLoaded(registrationsCount: number) {
@@ -205,6 +218,11 @@ class RegistrationsPage extends BasePage {
     }
   }
 
+  async clickAndSelectImportOption(option: string) {
+    await this.importButton.click();
+    await this.page.getByRole('menuitem', { name: option }).click();
+  }
+
   async clickAndSelectExportOption(option: string) {
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
@@ -216,6 +234,69 @@ class RegistrationsPage extends BasePage {
 
   async clickProceedToExport() {
     await this.proceedButton.click();
+  }
+
+  async importRegistrations(filePath: string) {
+    await this.clickAndSelectImportOption('Import new registrations');
+    await this.chooseAndUploadFile(filePath);
+    await this.importFileButton.click();
+  }
+
+  async exportMassUpdateCSV({
+    expectedRowCount,
+    columns,
+  }: {
+    expectedRowCount: number;
+    columns: string[];
+  }) {
+    await this.exportCSVFieldsDropdown.click();
+    for (const column of columns) {
+      await this.page.getByRole('option', { name: column }).click();
+    }
+    const filePath = await this.downloadFile(this.exportCSVButton.click());
+    await this.validateToastMessageAndClose('Exporting');
+    await this.validateExportedFile({
+      filePath,
+      expectedRowCount,
+      format: 'csv',
+    });
+    return filePath;
+  }
+
+  async massUpdateRegistrations({
+    expectedRowCount,
+    columns,
+    reason,
+    transformCSVFunction,
+  }: {
+    expectedRowCount: number;
+    columns: string[];
+    reason: string;
+    transformCSVFunction: (csv: string) => string;
+  }) {
+    const downloadedCSVFilePath = await this.exportMassUpdateCSV({
+      expectedRowCount,
+      columns,
+    });
+
+    const csv = readFileSync(downloadedCSVFilePath, 'utf-8');
+    const updatedCSV = transformCSVFunction(csv);
+    const updatedCSVFilePath = downloadedCSVFilePath.replace(
+      '.csv',
+      '-updated.csv',
+    );
+
+    writeFileSync(updatedCSVFilePath, updatedCSV, 'utf-8');
+
+    await this.chooseAndUploadFile(updatedCSVFilePath);
+    await this.page.getByPlaceholder('Enter reason').fill(reason);
+    await this.page
+      .getByLabel(
+        'I understand that all registrations included in this file will be updated, overriding existing registration data, and that this action can not be undone.',
+      )
+      .check();
+
+    await this.importFileButton.click();
   }
 
   async exportAndAssertData({
@@ -247,7 +328,7 @@ class RegistrationsPage extends BasePage {
   }
 
   async assertImportTemplateForPvProgram() {
-    await this.importButton.click();
+    await this.clickAndSelectImportOption('Import new registrations');
 
     const filePath = await this.downloadFile(
       this.downloadTemplateButton.click(),
