@@ -74,13 +74,13 @@ export const TWILIO_SANDBOX_WHATSAPP_NUMBER = '+14155238886';
 // ---------------------------------------------------------------------------
 export const THROTTLING_LIMIT_GENERIC = {
   default: {
-    limit: Number(process.env.GENERIC_THROTTLING_LIMIT ?? '3000'),
-    ttl: Number(process.env.GENERIC_THROTTLING_TTL ?? '60') * 1_000, // TTL needs to be in milliseconds
+    limit: env.GENERIC_THROTTLING_LIMIT,
+    ttl: env.GENERIC_THROTTLING_TTL * 1_000, // TTL needs to be in milliseconds
   },
 };
 export const THROTTLING_LIMIT_HIGH = {
   default: {
-    limit: Number(process.env.HIGH_THROTTLING_LIMIT ?? '30'),
-    ttl: Number(process.env.HIGH_THROTTLING_TTL ?? '60') * 1_000, // TTL needs to be in milliseconds
+    limit: env.HIGH_THROTTLING_LIMIT,
+    ttl: env.HIGH_THROTTLING_TTL * 1_000, // TTL needs to be in milliseconds
   },
 };
