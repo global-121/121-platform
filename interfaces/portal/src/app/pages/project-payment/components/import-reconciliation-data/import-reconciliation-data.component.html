@@ -17,34 +17,36 @@
     header="Import reconciliation data"
     i18n-header
   >
-    <p>
-      <ng-container i18n>
-        Import the file sent by the FSP to see the transfer status of the
-        registrations included in this payment.
-      </ng-container>
-      <p-button
-        i18n="@@download-template"
-        [link]="true"
-        (click)="downloadReconciliationTemplatesMutation.mutate()"
-        >Download the template</p-button
-      >
-    </p>
-    <p i18n>
-      Make sure to upload the correct file as this will override the current
-      file.
-    </p>
-    <p>
-      <span
-        i18n
-        class="me-1"
-      >
-        The status column in the file should contain one of the following
-        values:
-      </span>
-      <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
-      <span class="font-mono">success</span>,
-      <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
-      <span class="font-mono">error</span>
-    </p>
+    <ng-container pre-file-input>
+      <p>
+        <ng-container i18n>
+          Import the file sent by the FSP to see the transfer status of the
+          registrations included in this payment.
+        </ng-container>
+        <p-button
+          i18n="@@download-template"
+          [link]="true"
+          (click)="downloadReconciliationTemplatesMutation.mutate()"
+          >Download the template</p-button
+        >
+      </p>
+      <p i18n>
+        Make sure to upload the correct file as this will override the current
+        file.
+      </p>
+      <p>
+        <span
+          i18n
+          class="me-1"
+        >
+          The status column in the file should contain one of the following
+          values:
+        </span>
+        <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
+        <span class="font-mono">success</span>,
+        <!-- eslint-disable-next-line @angular-eslint/template/i18n -->
+        <span class="font-mono">error</span>
+      </p>
+    </ng-container>
   </app-import-file-dialog>
 }

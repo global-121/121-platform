@@ -140,6 +140,27 @@ export class RegistrationApiService extends DomainApiService {
     });
   }
 
+  updateRegistrations({
+    projectId,
+    file,
+    reason,
+  }: {
+    projectId: Signal<number | string>;
+    file: File;
+    reason: string;
+  }) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('reason', reason);
+
+    return this.httpWrapperService.perform121ServiceRequest<unknown>({
+      method: 'PATCH',
+      endpoint: this.pathToQueryKey([...BASE_ENDPOINT(projectId)]).join('/'),
+      body: formData,
+      isUpload: true,
+    });
+  }
+
   sendMessage({
     projectId,
     paginateQuery,
