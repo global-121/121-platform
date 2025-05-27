@@ -139,13 +139,13 @@ async function bootstrap(): Promise<void> {
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
 
-  if (!!process.env.REDIRECT_PORTAL_URL_HOST) {
+  if (!!env.REDIRECT_PORTAL_URL_HOST) {
     expressInstance.get(`/`, (__req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST!);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST!);
     });
     expressInstance.get(`/portal*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST + newPath);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST + newPath);
     });
   }
 
@@ -227,7 +227,7 @@ async function bootstrap(): Promise<void> {
 
 void bootstrap();
 
-if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
+if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(env.APPLICATIONINSIGHTS_CONNECTION_STRING);
   appInsights.start();
 }

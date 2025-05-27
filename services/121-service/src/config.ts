@@ -5,11 +5,11 @@ export const PORT = env.PORT_121_SERVICE!;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
-export const APP_VERSION = process.env.GLOBAL_121_VERSION!;
+export const APP_VERSION = env.GLOBAL_121_VERSION!;
 
 let appTitle = '121-service';
-if (process.env.ENV_NAME) {
-  appTitle += ` [${process.env.ENV_NAME}]`;
+if (env.ENV_NAME) {
+  appTitle += ` [${env.ENV_NAME}]`;
 }
 if (DEBUG) {
   appTitle = 'Squagger ' + appTitle;
@@ -19,9 +19,9 @@ export const APP_TITLE = appTitle;
 let headerStyle = '#171e50';
 let favIconUrl = '';
 
-if (process.env.ENV_ICON) {
-  favIconUrl = process.env.ENV_ICON;
-  headerStyle = `url("${process.env.ENV_ICON}")`;
+if (env.ENV_ICON) {
+  favIconUrl = env.ENV_ICON;
+  headerStyle = `url("${env.ENV_ICON}")`;
 }
 
 export const APP_FAVICON = favIconUrl;
