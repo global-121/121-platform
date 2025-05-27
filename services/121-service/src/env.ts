@@ -26,10 +26,10 @@ export const env = createEnv({
           'In local development, make sure to use the Docker-hostname, i.e: `http://121-service:3000/`',
       }),
 
-    GENERIC_THROTTLING_TTL: z.coerce.number().optional(),
-    GENERIC_THROTTLING_LIMIT: z.coerce.number().optional(),
-    HIGH_THROTTLING_TTL: z.coerce.number().optional(),
-    HIGH_THROTTLING_LIMIT: z.coerce.number().optional(),
+    GENERIC_THROTTLING_LIMIT: z.coerce.number().optional().default(3_000),
+    GENERIC_THROTTLING_TTL: z.coerce.number().optional().default(60),
+    HIGH_THROTTLING_LIMIT: z.coerce.number().optional().default(30),
+    HIGH_THROTTLING_TTL: z.coerce.number().optional().default(60),
 
     // Database
     POSTGRES_HOST: z.string(),
