@@ -1,4 +1,5 @@
 import { createEnv } from '@t3-oss/env-core';
+import { v4 as createUuid } from 'uuid';
 import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
@@ -40,7 +41,7 @@ export const env = createEnv({
     // Data management
     RESET_SECRET: z.string().min(8),
     SECRETS_121_SERVICE_SECRET: z.string().min(8),
-    UUID_NAMESPACE: z.uuidv4().optional(),
+    UUID_NAMESPACE: z.uuidv4().optional().default(createUuid()),
 
     // Access management
     USE_SSO_AZURE_ENTRA: z.stringbool().default(false),
