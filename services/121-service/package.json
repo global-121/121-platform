@@ -92,6 +92,7 @@
     "twilio": "^5.5.2",
     "typeorm": "npm:@global121/typeorm@1.0.4",
     "typescript": "^5.7.2",
+    "uuid": "^11.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "xml-js": "^1.6.11",
     "zod": "^3.25.71"
