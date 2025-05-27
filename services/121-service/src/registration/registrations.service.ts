@@ -643,6 +643,7 @@ export class RegistrationsService {
         FinancialServiceProviderAttributes.addressHouseNumberAddition,
         FinancialServiceProviderAttributes.addressPostalCode,
         FinancialServiceProviderAttributes.addressCity,
+        FinancialServiceProviderAttributes.addressCountry,
         FinancialServiceProviderAttributes.phoneNumber,
       ];
       const registrationData =
@@ -675,6 +676,7 @@ export class RegistrationsService {
             mappedRegistrationData[`addressHouseNumberAddition`],
           addressPostalCode: mappedRegistrationData[`addressPostalCode`],
           addressCity: mappedRegistrationData[`addressCity`],
+          addressCountry: mappedRegistrationData[`addressCountry`],
           phoneNumber: mappedRegistrationData[`phoneNumber`],
         },
       });
@@ -1113,6 +1115,10 @@ export class RegistrationsService {
           addressCity:
             mappedRegistrationData[
               FinancialServiceProviderAttributes.addressCity
+            ],
+          addressCountry:
+            mappedRegistrationData[
+              FinancialServiceProviderAttributes.addressCountry
             ],
           phoneNumber:
             mappedRegistrationData[

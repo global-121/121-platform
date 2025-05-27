@@ -99,7 +99,7 @@ export class IntersolveVisaApiService {
             addressLine1: this.createAddressString(contactInformation),
             city: contactInformation.addressCity,
             postalCode: contactInformation.addressPostalCode,
-            country: 'NL',
+            country: 'NL', // In ISO 3166-1 alpha-2 format
           },
         ],
         phoneNumbers: [
@@ -395,13 +395,13 @@ export class IntersolveVisaApiService {
       cardAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD',
+        country: 'NLD', // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD',
+        country: 'NLD', // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinStatus: 'D',
@@ -527,6 +527,7 @@ export class IntersolveVisaApiService {
     addressHouseNumberAddition,
     addressPostalCode,
     addressCity,
+    addressCountry,
   }: {
     holderId: string;
     addressStreet: string;
@@ -534,6 +535,7 @@ export class IntersolveVisaApiService {
     addressHouseNumberAddition: string | undefined;
     addressPostalCode: string;
     addressCity: string;
+    addressCountry: string; // In ISO 3166-1 alpha-3 format
   }): Promise<void> {
     // Create the request
     const requestBody = {
@@ -543,7 +545,7 @@ export class IntersolveVisaApiService {
       }`,
       city: addressCity,
       postalCode: addressPostalCode,
-      country: 'NL',
+      country: addressCountry, // In ISO 3166-1 alpha-2 format ## TODO: Convert to ISO 3166-1 alpha-2 format!
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
