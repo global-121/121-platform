@@ -119,6 +119,16 @@
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressCountry",
+      "label": {
+        "en": "Address country"
+      },
+      "export": ["all-registrations", "included"],
+      "type": "text",
+      "pattern": ".+",
+      "showInPeopleAffectedTable": false
     }
   ],
   "aboutProgram": {
