@@ -70,6 +70,8 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     await paymentsPage.importReconciliationData(reconciliationData);
   });
 
+  // ## TODO: this process downloads a file, assert that that happens and the content is correct
+
   await test.step('Retry payment, Export FSP payment data and assert file', async () => {
     await paymentsPage.validateRetryFailedTransfersButtonToBeVisible();
     // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked

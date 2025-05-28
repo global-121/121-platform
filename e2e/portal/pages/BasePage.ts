@@ -226,14 +226,14 @@ class BasePage {
       }
     });
 
-    let snapshotContent = headerCells.join(',');
+    let normalizedDownloadedFile = headerCells.join(',');
 
     if (data.length > 0) {
-      snapshotContent += '\n' + dataCells.join(',');
+      normalizedDownloadedFile += '\n' + dataCells.join(',');
     }
 
     // make sure we have the expected columns, and also validate the first row of data
-    expect(snapshotContent).toMatchSnapshot(`exported-${format}.csv`);
+    expect(normalizedDownloadedFile).toMatchSnapshot(`exported-${format}.csv`);
   }
 }
 
