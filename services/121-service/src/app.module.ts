@@ -13,6 +13,7 @@ import { AuthModule } from '@121-service/src/auth/auth.module';
 import { THROTTLING_LIMIT_GENERIC } from '@121-service/src/config';
 import { CronjobModule } from '@121-service/src/cronjob/cronjob.module';
 import { EmailsModule } from '@121-service/src/emails/emails.module';
+import { env } from '@121-service/src/env';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
 import { HealthModule } from '@121-service/src/health/health.module';
 import { MetricsModule } from '@121-service/src/metrics/metrics.module';
@@ -67,12 +68,12 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     ]),
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_HOST,
-        port: Number(process.env.REDIS_PORT),
-        password: process.env.REDIS_PASSWORD,
-        tls: process.env.REDIS_PASSWORD ? {} : undefined, // This enables SSL
+        host: env.REDIS_HOST,
+        port: env.REDIS_PORT,
+        password: env.REDIS_PASSWORD,
+        tls: env.REDIS_HOST === '121-redis' ? undefined : {}, // No SSL for local development
       },
-      prefix: process.env.REDIS_PREFIX,
+      prefix: env.REDIS_PREFIX,
       defaultJobOptions: {
         removeOnComplete: true,
       },
