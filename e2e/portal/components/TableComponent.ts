@@ -17,6 +17,8 @@ class TableComponent {
   readonly searchBox: Locator;
   readonly checkbox: Locator;
   readonly approveButton: Locator;
+  readonly continueToPreviewButton: Locator;
+  readonly sendMessageSwitch: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
   readonly rangeDropdown: Locator;
@@ -46,6 +48,10 @@ class TableComponent {
     this.searchBox = this.page.getByRole('searchbox');
     this.checkbox = this.page.getByRole('checkbox');
     this.approveButton = this.page.getByRole('button', { name: 'Approve' });
+    this.continueToPreviewButton = this.page.getByRole('button', {
+      name: 'Continue to preview',
+    });
+    this.sendMessageSwitch = this.page.getByLabel('Send a message to');
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
     this.rangeDropdown = this.page
@@ -237,7 +243,7 @@ class TableComponent {
     filterMode,
   }: {
     columnName: string;
-    day: number;
+    day: string;
     filterMode: string;
   }) {
     const filterMenuButton = this.table
@@ -253,7 +259,7 @@ class TableComponent {
       .click();
 
     await this.page.locator('input[type="text"]').click();
-    await this.datePicker.getByText(`${day}`, { exact: true }).first().click();
+    await this.page.locator(`[data-date="${day}"]`).click();
 
     await this.applyFiltersButton.click();
   }
@@ -289,38 +295,66 @@ class TableComponent {
     ).toBeVisible();
   }
 
-  async changeStatusOfRegistrationInTable(status: string) {
-    const firstCheckbox = this.checkbox.nth(1);
+  async fillCustomMessage(message: string) {
+    await this.sendMessageSwitch.check();
+    await this.page.locator('textarea').fill(message);
+  }
+
+  async selectRowByTextContent(name: string) {
+    const registrationName = this.page.locator('tr').filter({ hasText: name });
+    const checkbox = registrationName.locator('input[type="checkbox"]');
+
+    await checkbox.click();
+  }
+
+  async changeRegistrationStatusByNameWithOptions({
+    registrationName,
+    status,
+    sendMessage,
+    sendCustomMessage = false,
+    sendTemplatedMessage = false,
+    customMessage,
+  }: {
+    registrationName: string;
+    status: string;
+    sendMessage: boolean;
+    sendCustomMessage?: boolean;
+    sendTemplatedMessage?: boolean;
+    customMessage?: string;
+  }) {
     const statusButton = this.page.getByRole('button', { name: status });
-    const placeholder = this.page.getByPlaceholder('Enter reason');
+    const reasonField = this.page.getByPlaceholder('Enter reason');
     const deleteLabel = this.page.getByLabel(
       'I understand this action can not be undone',
     );
 
-    await firstCheckbox.click();
+    await this.selectRowByTextContent(registrationName);
     await statusButton.click();
-    // Condition for when checkbox is required
+
+    // Check for delete confirmation
     if (await deleteLabel.isVisible()) {
       await deleteLabel.click();
     }
-    // Condition for when reason is required
-    if (await placeholder.isVisible()) {
-      await placeholder.fill('Test reason');
-    }
-    await this.approveButton.click();
-  }
 
-  async changeStatusOfAllRegistrationsInTable(status: string) {
-    const statusButton = this.table.getByRole('button', { name: status });
-    const placeholder = this.table.getByPlaceholder('Enter reason');
-
-    await this.selectAll();
-    await statusButton.click();
-    // Condition for when reason is required
-    if (await placeholder.isVisible()) {
-      await placeholder.fill('Test reason');
+    if (sendMessage === true) {
+      if (sendTemplatedMessage === true) {
+        await this.sendMessageSwitch.check();
+        await this.approveButton.click();
+      } else if (sendCustomMessage === true) {
+        // Only fill reason field if it's visible
+        if (await reasonField.isVisible()) {
+          await reasonField.fill('Test reason');
+        }
+        await this.fillCustomMessage(customMessage ?? '');
+        await this.continueToPreviewButton.click();
+        await this.approveButton.click();
+      }
+    } else {
+      if (await reasonField.isVisible()) {
+        await reasonField.fill('Test reason');
+      }
+      await this.approveButton.click();
     }
-    await this.approveButton.click();
   }
 
   async validateAllRecordsCount(expectedCount: number) {
@@ -392,6 +426,30 @@ class TableComponent {
     const clearFilterButton = columnHeader.locator('.pi-filter-slash');
 
     await clearFilterButton.click();
+  }
+
+  async validateMessageActivityByTypeAndText({
+    notificationType,
+  }: {
+    notificationType: string;
+  }) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+    const notificationText = this.page.locator('app-activity-log-expanded-row');
+
+    await messageNotification.getByRole('button').click();
+    const messageText = await notificationText.textContent();
+    // Check message content with snapshot
+    expect(messageText).toMatchSnapshot();
+  }
+
+  async validateActivityNotPresentByType(notificationType: string) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+
+    await expect(messageNotification).not.toBeVisible();
   }
 }
 

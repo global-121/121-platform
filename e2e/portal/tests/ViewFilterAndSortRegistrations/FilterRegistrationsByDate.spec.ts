@@ -18,6 +18,9 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 // Get current date information
 const currentDate = new Date();
 const day = currentDate.getDate();
+const month = currentDate.getMonth();
+const year = currentDate.getFullYear();
+const formattedDate = `${year}-${month}-${day}`;
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -49,17 +52,20 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
-      day,
+      day: formattedDate,
       filterMode: 'Date is',
     });
     await tableComponent.validateAllRecordsCount(4);
     await tableComponent.clearAllFilters();
     // Filter by different date
-    const diffDay = currentDate.getDate() === 1 ? 2 : 1;
-    if (diffDay !== undefined) {
+    const diffDayNum = currentDate.getDate() === 1 ? 2 : 1;
+    const diffDate = new Date(currentDate);
+    diffDate.setDate(diffDayNum);
+    const diffFormattedDate = `${diffDate.getFullYear()}-${diffDate.getMonth()}-${diffDayNum}`;
+    if (diffFormattedDate !== undefined) {
       await tableComponent.filterColumnByDate({
         columnName: 'Registration created',
-        day: diffDay,
+        day: diffFormattedDate,
         filterMode: 'Date is',
       });
     }
@@ -71,7 +77,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
-      day,
+      day: formattedDate,
       filterMode: 'Date is before',
     });
     await tableComponent.assertEmptyTableState();
@@ -82,7 +88,7 @@ test('[34947] Filter registrations by Date selection', async ({ page }) => {
     // Filter Registration column by date
     await tableComponent.filterColumnByDate({
       columnName: 'Registration created',
-      day,
+      day: formattedDate,
       filterMode: 'Date is after',
     });
     await tableComponent.assertEmptyTableState();

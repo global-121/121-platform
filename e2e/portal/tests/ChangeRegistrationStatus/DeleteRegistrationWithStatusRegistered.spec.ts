@@ -51,7 +51,10 @@ test('[34408] Delete registration with status "Registered"', async ({
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Delete registration with status "Registered"', async () => {
-    await tableComponent.changeStatusOfRegistrationInTable('Delete');
+    await tableComponent.changeRegistrationStatusByNameWithOptions({
+      registrationName: registrationPV5.fullName,
+      status: 'Delete',
+    });
     await registrations.validateToastMessageAndClose(toastMessage);
   });
   // Assert
