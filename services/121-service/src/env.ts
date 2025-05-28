@@ -33,10 +33,13 @@ export const env = createEnv({
     POSTGRES_DBNAME: z.string(),
 
     // Queue/Redis
-    REDIS_HOST: z.string(),
-    REDIS_PORT: z.coerce.number(),
+    REDIS_HOST: z.string().default('121-redis'),
+    REDIS_PORT: z.coerce.number().default(6379),
     REDIS_PASSWORD: z.string().optional(),
-    REDIS_PREFIX: z.string().optional(),
+    REDIS_PREFIX: z
+      .string()
+      .regex(/[\w.-]*/)
+      .optional(),
 
     // Data management
     RESET_SECRET: z.string().min(8),
