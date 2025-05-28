@@ -82,7 +82,7 @@ test('[35621] ExportFivePayments', async () => {
 
     await paymentsPage.exportAndAssertData({
       expectedRowCount: 25,
-      excludedColumns: ['timestamp'],
+      excludedColumns: ['created', 'updated'],
     });
   });
 });

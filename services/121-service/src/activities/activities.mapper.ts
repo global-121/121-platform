@@ -127,6 +127,7 @@ export class ActivitiesMapper {
         status: transaction.status,
         amount: transaction.amount,
         paymentDate: transaction.paymentDate,
+        updatedDate: transaction.updated,
         financialServiceProviderName: transaction.financialServiceProviderName,
         financialServiceProviderConfigurationLabel:
           transaction.programFinancialServiceProviderConfigurationLabel,

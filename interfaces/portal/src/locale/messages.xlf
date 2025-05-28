@@ -451,9 +451,6 @@
       <trans-unit id="1467059276438662086" datatype="html">
         <source>New status</source>
       </trans-unit>
-      <trans-unit id="8691920320483720007" datatype="html">
-        <source>Received</source>
-      </trans-unit>
       <trans-unit id="3488602326654044677" datatype="html">
         <source>Approved by</source>
       </trans-unit>
@@ -489,9 +486,6 @@
       </trans-unit>
       <trans-unit id="1256134236732654436" datatype="html">
         <source>Done by</source>
-      </trans-unit>
-      <trans-unit id="5581642292282365168" datatype="html">
-        <source>Time and date</source>
       </trans-unit>
       <trans-unit id="debit-card-actions-pause-card" datatype="html">
         <source>Pause card</source>
@@ -1585,6 +1579,15 @@
       </trans-unit>
       <trans-unit id="6350305312750969481" datatype="html">
         <source>Payment in progress</source>
+      </trans-unit>
+      <trans-unit id="2470208422835223699" datatype="html">
+        <source>Go to payment page</source>
+      </trans-unit>
+      <trans-unit id="7393140533575161595" datatype="html">
+        <source>Transfer status updated</source>
+      </trans-unit>
+      <trans-unit id="3153802600204818440" datatype="html">
+        <source>Date and time</source>
       </trans-unit>
     </body>
   </file>

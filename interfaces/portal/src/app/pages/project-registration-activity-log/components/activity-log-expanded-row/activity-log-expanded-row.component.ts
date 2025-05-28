@@ -158,11 +158,7 @@ export class ActivityLogExpandedRowComponent
         const list: DataListItem[] = [
           {
             label: $localize`Payment`,
-            value:
-              new DatePipe(this.locale).transform(
-                item.attributes.paymentDate,
-                'short',
-              ) ?? '',
+            value: $localize`Go to payment page`,
             type: 'text',
             routerLink: paymentLink({
               projectId: this.context().projectId(),
@@ -170,14 +166,18 @@ export class ActivityLogExpandedRowComponent
             }),
           },
           {
-            label: $localize`Received`,
-            value: item.attributes.paymentDate,
-            type: 'date',
+            label: $localize`Transfer status updated`,
+            value:
+              new DatePipe(this.locale).transform(
+                item.attributes.updatedDate,
+                'short',
+              ) ?? '',
+            type: 'text',
           },
           {
             label: $localize`Approved by`,
             chipLabel: item.user.username,
-            chipVariant: 'grey',
+            chipVariant: 'blue',
           },
           {
             label: $localize`FSP`,

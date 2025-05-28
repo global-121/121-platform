@@ -11,6 +11,7 @@ export interface TransactionActivity extends BaseActivity {
     status: TransactionStatusEnum;
     amount: number;
     paymentDate: Date;
+    updatedDate: Date;
     financialServiceProviderName: FinancialServiceProviders;
     financialServiceProviderConfigurationLabel: LocalizedString;
     financialServiceProviderConfigurationName: string;

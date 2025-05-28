@@ -113,17 +113,17 @@ export class ProjectRegistrationActivityLogPageComponent {
       component: TableCellOverviewComponent,
     },
     {
-      field: 'created',
-      header: $localize`Time and date`,
-      type: QueryTableColumnType.DATE,
-    },
-    {
       // TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
       // @ts-expect-error the typing of query-table does not support "leaves" but the functionality does
       field: 'user.username',
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: this.uniqueAuthors(),
+    },
+    {
+      field: 'created',
+      header: $localize`Date and time`,
+      type: QueryTableColumnType.DATE,
     },
   ]);
 
