@@ -77,6 +77,30 @@ export class IntersolveVisaMockService {
     ) {
       res.data.data.id = lastName;
     }
+
+    // Shortcut: country code must be ISO 3166-1 alpha-2 format, but just checking if it's a string and with two uppercase letters.
+    // Shortcut: it returns both errors, even if country is of length 2.
+    if (
+      typeof dto.contactInfo.addresses.country !== 'string' ||
+      !/^[A-Z]{2}$/.test(dto.contactInfo.addresses.country)
+    ) {
+      res.data.success = false;
+      res.data.errors.push({
+        code: 'INVALID_PARAMETERS',
+        field: 'ContactInfo.Addresses[0].Country',
+        description:
+          "The field Country must be a string or array type with a maximum length of '2'.",
+      });
+      res.data.errors.push({
+        code: 'INVALID_PARAMETERS',
+        field: 'ContactInfo.Addresses[0].Country',
+        description:
+          "Value for 'Country' is not in the ISO 3166-1 list of countries.",
+      });
+      res.status = HttpStatus.BAD_REQUEST;
+      res.statusText = 'Bad Request';
+    }
+
     return res;
   }
 
@@ -235,10 +259,17 @@ export class IntersolveVisaMockService {
     return res;
   }
 
-  public createDebitCardMock(
-    lastName: string | null,
-    mobileNumber: string | null,
-  ): IntersolveVisaMockResponseDto {
+  public createDebitCardMock({
+    lastName,
+    mobileNumber,
+    cardCountry,
+    _pinCountry,
+  }: {
+    lastName: string | null;
+    mobileNumber: string | null;
+    cardCountry: string | null;
+    _pinCountry: string | null;
+  }): IntersolveVisaMockResponseDto {
     const res: IntersolveVisaMockResponseDto = {
       status: HttpStatus.OK,
       statusText: 'OK',
@@ -268,6 +299,28 @@ export class IntersolveVisaMockService {
       res.status = HttpStatus.BAD_REQUEST;
       res.statusText = 'BAD_REQUEST';
     }
+    // Shortcut: country code must be ISO 3166-1 alpha-3 format, but Intersolve's API just checks on minimum length 3, so we just mock that here.
+    // ##TODO: Change below copy-pasted code when clarified if unexpected response body (not following Swagger spec) is expected or not.
+    // ##TODO: If this is indeed a bug and Intersolve will not fix it: check above phone number response body, as that will probably then also not be what Intersolve's API returns.
+    // ##TODO: Do the checks for cardCountry and pinCountry!
+    if (typeof cardCountry !== 'string' || !/^[A-Z]{2}$/.test(cardCountry)) {
+      res.data.success = false;
+      res.data.errors.push({
+        code: 'INVALID_PARAMETERS',
+        field: 'ContactInfo.Addresses[0].Country',
+        description:
+          "The field Country must be a string or array type with a maximum length of '2'.",
+      });
+      res.data.errors.push({
+        code: 'INVALID_PARAMETERS',
+        field: 'ContactInfo.Addresses[0].Country',
+        description:
+          "Value for 'Country' is not in the ISO 3166-1 list of countries.",
+      });
+      res.status = HttpStatus.BAD_REQUEST;
+      res.statusText = 'Bad Request';
+    }
+
     return res;
   }
 
@@ -633,6 +686,35 @@ export class IntersolveVisaMockService {
         };
       }
     }
+    // Shortcut: country code must be ISO 3166-1 alpha-2 format, but just checking if it's a string and with two uppercase letters.
+    // Shortcut: it returns both errors, even if country is of length 2.
+    if (
+      typeof payload.country !== 'string' ||
+      !/^[A-Z]{2}$/.test(payload.country)
+    ) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'INVALID_PARAMETERS',
+              field: 'ContactInfo.Addresses[0].Country',
+              description:
+                "The field Country must be a string or array type with a maximum length of '2'.",
+            },
+            {
+              code: 'INVALID_PARAMETERS',
+              field: 'ContactInfo.Addresses[0].Country',
+              description:
+                "Value for 'Country' is not in the ISO 3166-1 list of countries.",
+            },
+          ],
+        },
+      };
+    }
+
     return {
       status: HttpStatus.OK,
       statusText: 'OK',

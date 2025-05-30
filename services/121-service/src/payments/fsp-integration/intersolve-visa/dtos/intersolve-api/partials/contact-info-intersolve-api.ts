@@ -7,7 +7,7 @@ export interface ContactInfoIntersolveApi {
     readonly city: string;
     readonly region?: string;
     readonly postalCode: string;
-    readonly country: string;
+    readonly country: string; // In ISO 3166-1 alpha-2 format
   }[];
   readonly emailAddresses?: TypeValueIntersolveApi[];
   readonly phoneNumbers: TypeValueIntersolveApi[];

@@ -249,6 +249,7 @@ export class IntersolveVisaService
             contactInformation.addressHouseNumberAddition,
           addressPostalCode: contactInformation.addressPostalCode,
           addressCity: contactInformation.addressCity,
+          addressCountry: contactInformation.addressCountry,
           phoneNumber: contactInformation.phoneNumber,
         },
         estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100,
@@ -416,6 +417,7 @@ export class IntersolveVisaService
           contactInformation.addressHouseNumberAddition,
         addressPostalCode: contactInformation.addressPostalCode,
         addressCity: contactInformation.addressCity,
+        addressCountry: contactInformation.addressCountry,
         phoneNumber: contactInformation.phoneNumber,
       },
       coverLetterCode,
@@ -606,6 +608,7 @@ export class IntersolveVisaService
           input.contactInformation.addressHouseNumberAddition,
         addressPostalCode: input.contactInformation.addressPostalCode,
         addressCity: input.contactInformation.addressCity,
+        addressCountry: input.contactInformation.addressCountry,
         phoneNumber: input.contactInformation.phoneNumber,
       },
       coverLetterCode: input.coverLetterCode,
@@ -777,6 +780,7 @@ export class IntersolveVisaService
       addressHouseNumberAddition: contactInformation.addressHouseNumberAddition,
       addressPostalCode: contactInformation.addressPostalCode,
       addressCity: contactInformation.addressCity,
+      addressCountry: contactInformation.addressCountry,
     });
   }
 
