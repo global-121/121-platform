@@ -20,7 +20,7 @@ export default {
       current: 'currentColor',
       purple: {
         DEFAULT: '#4F22D7',
-        50: '#F3F0FF',
+        50: '#F8F6FF',
         100: '#EEEBFF',
         300: '#D0C0FF',
         500: '#AD92FE',
