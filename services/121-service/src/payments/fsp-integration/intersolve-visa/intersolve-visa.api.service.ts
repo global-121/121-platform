@@ -99,7 +99,7 @@ export class IntersolveVisaApiService {
             addressLine1: this.createAddressString(contactInformation),
             city: contactInformation.addressCity,
             postalCode: contactInformation.addressPostalCode,
-            country: 'NL', // In ISO 3166-1 alpha-2 format
+            country: 'NL', // In ISO 3166-1 alpha-2 format ##TODO: Convert to ISO 3166-1 alpha-2 format!
           },
         ],
         phoneNumbers: [
@@ -395,13 +395,13 @@ export class IntersolveVisaApiService {
       cardAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD', // In ISO 3166-1 alpha-3 format
+        country: contactInformation.addressCountry, // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD', // In ISO 3166-1 alpha-3 format
+        country: contactInformation.addressCountry, // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinStatus: 'D',
