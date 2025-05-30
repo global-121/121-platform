@@ -99,7 +99,9 @@ export class IntersolveVisaApiService {
             addressLine1: this.createAddressString(contactInformation),
             city: contactInformation.addressCity,
             postalCode: contactInformation.addressPostalCode,
-            country: 'NL', // In ISO 3166-1 alpha-2 format ##TODO: Convert to ISO 3166-1 alpha-2 format!
+            country: this.convertCountryISO3166Alpha3ToAlpha2(
+              contactInformation.addressCountry,
+            ), // In ISO 3166-1 alpha-2 format
           },
         ],
         phoneNumbers: [
@@ -127,6 +129,20 @@ export class IntersolveVisaApiService {
       holderId: createCustomerResponseDto.data.data.id,
     };
     return createCustomerResultDto;
+  }
+
+  // ##TODO: Continue implementation. Do we want to support more/all countries? Is there a better way than if statements?
+  private convertCountryISO3166Alpha3ToAlpha2(countryCode: string): string {
+    if (countryCode === 'NLD') {
+      return 'NL';
+    }
+    if (countryCode === 'BEL') {
+      return 'BE';
+    }
+    if (countryCode === 'DEU') {
+      return 'DE';
+    }
+    return 'bla';
   }
 
   public async issueToken({
@@ -545,7 +561,7 @@ export class IntersolveVisaApiService {
       }`,
       city: addressCity,
       postalCode: addressPostalCode,
-      country: addressCountry, // In ISO 3166-1 alpha-2 format ## TODO: Convert to ISO 3166-1 alpha-2 format!
+      country: this.convertCountryISO3166Alpha3ToAlpha2(addressCountry), // In ISO 3166-1 alpha-2 format
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
