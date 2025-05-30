@@ -7,6 +7,7 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -39,6 +40,18 @@ export class TransactionQueuesService {
       const job = await this.queuesService.transactionJobSafaricomQueue.add(
         JobNames.default,
         safaricomTransactionJob,
+      );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
+  }
+
+  public async addAirtelTransactionJobs(
+    airtelTransactionJobs: AirtelTransactionJobDto[],
+  ): Promise<void> {
+    for (const airtelTransactionJob of airtelTransactionJobs) {
+      const job = await this.queuesService.transactionJobAirtelQueue.add(
+        JobNames.default,
+        airtelTransactionJob,
       );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }

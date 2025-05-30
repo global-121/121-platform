@@ -51,6 +51,7 @@ const indirectRelationConfig: EntityRelations = {
     'intersolveVisaCustomer',
     'registration',
   ],
+  //## TODO: do we need Airtel here
   IntersolveVisaParentWalletEntity: ['intersolveVisaCustomer', 'registration'],
   SafaricomTransferEntity: ['transaction', 'registration'],
   IntersolveVoucherEntity: ['image', 'registration'],
