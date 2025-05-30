@@ -65,7 +65,7 @@ test('[33855] Validate that "Duplicate" banner is displayed in overview of dupli
 
   await test.step('Verify link to duplicate works', async () => {
     const duplicateBLink =
-      await registrationActivityLogPage.duplicatesBanner.getByRole('link', {
+      registrationActivityLogPage.duplicatesBanner.getByRole('link', {
         name: duplicateRegistrationB.fullName,
       });
 
