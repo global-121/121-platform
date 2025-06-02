@@ -39,11 +39,6 @@ jobs:
         run: |
           cp ./services/.env.example services/.env
 
-      - name: Run Services with Docker
-        working-directory: ./services
-        run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
-
       - name: Install k6 dependencies
         working-directory: ${{ env.k6TestsPath }}
         run: |
@@ -58,7 +53,7 @@ jobs:
         run: |
           curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
-      - name: Run all k6 tests
+      - name: Run (some) k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: |
           ./run-all-tests.sh tests/retryFailedJobsOnStartupDuringQueueProcessing.js tests/findDuplicates100kRegistrations.js

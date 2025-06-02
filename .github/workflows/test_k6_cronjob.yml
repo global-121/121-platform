@@ -5,8 +5,8 @@ name: 'Test: k6 cronjob'
 
 on:
   schedule:
-    # See: https://crontab.guru/#42_1_*_*_*
-    - cron: '42 1 * * *'
+    # See: https://crontab.guru/#42_1_*_*_1-5
+    - cron: '42 1 * * 1-5'
   workflow_dispatch:
 
 env:
