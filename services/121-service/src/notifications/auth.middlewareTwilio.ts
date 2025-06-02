@@ -28,6 +28,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       );
     }
 
+    // TODO: Should we use helper to check for `""`-value?
     if (!process.env.TWILIO_AUTHTOKEN) {
       throw new Error('Twilio auth token not found');
     }
