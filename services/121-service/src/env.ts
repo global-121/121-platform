@@ -18,13 +18,7 @@ export const env = createEnv({
     PORT_121_SERVICE: z.coerce.number(),
     PORT_MOCK_SERVICE: z.coerce.number(),
 
-    EXTERNAL_121_SERVICE_URL: z
-      .url()
-      .endsWith('/')
-      .refine((value) => !value.startsWith('http://localhost:'), {
-        error:
-          'In local development, make sure to use the Docker-hostname, i.e: `http://121-service:3000/`',
-      }),
+    EXTERNAL_121_SERVICE_URL: z.url().endsWith('/'),
 
     GENERIC_THROTTLING_LIMIT: z.coerce.number().optional().default(3_000),
     GENERIC_THROTTLING_TTL: z.coerce.number().optional().default(60),
