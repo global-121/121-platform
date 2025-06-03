@@ -39,6 +39,7 @@ export const registrationOCW1 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  addressCountry: 'NLD',
 };
 
 export const registrationOCW2 = {
@@ -55,6 +56,7 @@ export const registrationOCW2 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '2345AB',
   addressCity: 'AnotherCity',
+  addressCountry: 'NLD',
 };
 
 export const registrationOCW3 = {
@@ -71,6 +73,7 @@ export const registrationOCW3 = {
   addressHouseNumberAddition: 'B',
   addressPostalCode: '3456CD',
   addressCity: 'DifferentCity',
+  addressCountry: 'NLD',
 };
 
 export const registrationOCW4 = {
@@ -87,6 +90,7 @@ export const registrationOCW4 = {
   addressHouseNumberAddition: 'C',
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
+  addressCountry: 'NLD',
 };
 
 export const registrationOCW5 = {
@@ -114,6 +118,7 @@ export const registrationOCW6Fail = {
   addressHouseNumberAddition: 'C',
   addressPostalCode: '4567DE',
   addressCity: 'AnotherCity',
+  addressCountry: 'NLD',
 };
 
 export const registrationsOCW = [
@@ -167,6 +172,7 @@ export const registrationPV7 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  addressCountry: 'NLD',
 };
 
 export const registrationPV8 = {
@@ -183,6 +189,7 @@ export const registrationPV8 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  addressCountry: 'NLD',
 };
 
 export const registrationPvMaxPayment = {
@@ -199,6 +206,7 @@ export const registrationPvMaxPayment = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  addressCountry: 'NLD',
   maxPayments: 1,
 };
 

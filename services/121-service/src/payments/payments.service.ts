@@ -827,6 +827,10 @@ export class PaymentsService {
               ],
             addressCity:
               registrationView[FinancialServiceProviderAttributes.addressCity],
+            addressCountry:
+              registrationView[
+                FinancialServiceProviderAttributes.addressCountry
+              ],
             phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },

@@ -65,6 +65,10 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
           name: FinancialServiceProviderAttributes.phoneNumber,
           isRequired: true,
         },
+        {
+          name: FinancialServiceProviderAttributes.addressCountry,
+          isRequired: true,
+        },
       ],
       configurationProperties: [
         {
