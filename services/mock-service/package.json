@@ -21,10 +21,6 @@
     "typecheck:dev": "tsc --noEmit --watch"
   },
   "private": true,
-  "engines": {
-    "npm": ">=10.0.0",
-    "node": ">=20.0.0"
-  },
   "dependencies": {
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.1.2",
@@ -32,14 +28,12 @@
     "@nestjs/platform-express": "^11.1.2",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/testing": "^11.1.2",
-    "@t3-oss/env-core": "^0.13.4",
     "@types/uuid": "^10.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "tsconfig-paths": "^4.2.0",
     "uuid": "^11.1.0",
-    "xml-js": "^1.6.11",
-    "zod": "^3.25.13"
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.7",
@@ -51,11 +45,8 @@
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-n": "^17.18.0",
     "eslint-plugin-no-relative-import-paths": "^1.6.1",
     "eslint-plugin-prettier": "^5.4.1",
-    "eslint-plugin-regexp": "^2.7.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "3.5.3"
   }
