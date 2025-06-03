@@ -1,31 +1,29 @@
-<p-button
-  label="Import"
-  i18n-label
-  (click)="dialogVisible.set(true)"
-  icon="pi pi-download"
-  [iconPos]="rtlHelper.createPosition('start')()"
-  outlined
-  rounded
-></p-button>
-
 <app-import-file-dialog
   [(dialogVisible)]="dialogVisible"
   [mutation]="importRegistrationsMutation"
   accept=".csv,text/csv,text/comma-separated-values,application/csv"
-  header="Import registrations"
+  header="Import new registrations"
   i18n-header
 >
-  <p i18n>The system will create registrations with the status “registered”.</p>
-  <p>
-    <ng-container i18n>
-      Make sure to match the required format of the template CSV-file.
-    </ng-container>
-    <p-button
-      i18n="@@download-template"
-      [link]="true"
-      (click)="downloadImportRegistrationsTemplateMutation.mutate()"
-      >Download the template</p-button
-    >.
-  </p>
-  <p i18n>The import takes about 1 minute per 100 records.</p>
+  <ng-container pre-file-input>
+    <p i18n>
+      The system will create registrations with the status
+      <app-colored-chip
+        [variant]="registeredChipData.chipVariant"
+        [label]="registeredChipData.chipLabel"
+      />.
+    </p>
+    <p>
+      <ng-container i18n>
+        Make sure to match the required format of the template CSV-file.
+      </ng-container>
+      <p-button
+        i18n="@@download-template"
+        [link]="true"
+        (click)="downloadImportRegistrationsTemplateMutation.mutate()"
+        >Download the template</p-button
+      >.
+    </p>
+    <p i18n>The import takes about 1 minute per 100 records.</p>
+  </ng-container>
 </app-import-file-dialog>

@@ -25,7 +25,7 @@ export class DownloadService {
 
     this.downloadFile({
       file: new Blob([csvContents], { type: 'text/csv' }),
-      filename: `${filename}.csv`,
+      filename: ExportService.toExportFileName(filename, 'csv'),
     });
   }
 
