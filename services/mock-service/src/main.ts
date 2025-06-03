@@ -15,13 +15,17 @@ import {
   APP_TITLE,
   APP_VERSION,
   DEVELOPMENT,
+  PORT,
   SWAGGER_CUSTOM_CSS,
 } from '@mock-service/src/config';
-import { env } from '@mock-service/src/env';
 
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
-  // eslint-disable-next-line no-var -- To define the global queue-collection without namespace, we need to define it using `var`. See: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-typescript-eslintno-namespace-andor-no-var-rules-about-declaring-global-variables
-  var queueCallbacks: Record<string, string>;
+  namespace NodeJS {
+    interface Global {
+      queueCallbacks: Record<string, string>;
+    }
+  }
 }
 
 global.queueCallbacks = {};
@@ -91,8 +95,6 @@ async function bootstrap(): Promise<void> {
       extended: true,
     }),
   );
-  await app.listen(
-    DEVELOPMENT && env.PORT_MOCK_SERVICE ? env.PORT_MOCK_SERVICE : 8080,
-  );
+  await app.listen(PORT);
 }
 void bootstrap();
