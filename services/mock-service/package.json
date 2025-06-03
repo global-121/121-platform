@@ -9,6 +9,7 @@
     "directory": "services/mock-service"
   },
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint \"src/**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/swcrc",
+  "$schema": "https://swc.rs/schema.json",
   "sourceMaps": true,
   "jsc": {
     "parser": {
@@ -18,9 +18,11 @@
     "externalHelpers": false,
     "keepClassNames": true
   },
+  "isModule": false,
   "module": {
-    "type": "commonjs",
+    "type": "nodenext",
     "strict": true,
+    "importInterop": "node",
     "noInterop": false
   },
   "minify": false
