@@ -18,10 +18,11 @@
     "externalHelpers": false,
     "keepClassNames": true
   },
-  "isModule": "unknown",
+  "isModule": false,
   "module": {
     "type": "nodenext",
     "strict": true,
+    "importInterop": "node",
     "noInterop": false
   },
   "minify": false

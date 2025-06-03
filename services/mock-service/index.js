@@ -1,2 +1,2 @@
-require('ts-node/register');
-require('./src/main');
+import 'ts-node/register';
+import './src/main';
