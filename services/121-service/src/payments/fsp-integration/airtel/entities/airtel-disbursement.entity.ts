@@ -1,10 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 
 @Entity('airtel_disbursement')
 export class AirtelDisbursementEntity extends Base121Entity {
+  @Index()
   @Column({ unique: true })
   // The idempotency key for the disbursement.
   public airtelTransactionId: string;

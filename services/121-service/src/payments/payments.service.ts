@@ -947,6 +947,47 @@ export class PaymentsService {
     // WIP
     // Some code to make linter happy.
     let _a: AirtelTransactionJobDto;
+
+    const airtelAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+      FinancialServiceProviders.airtel,
+    ).attributes;
+    const airtelAttributeNames = airtelAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      airtelAttributeNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const airtelTransferJobs: AirtelTransactionJobDto[] = registrationViews.map(
+      (registrationView): AirtelTransactionJobDto => {
+        return {
+          programId,
+          paymentNumber,
+          referenceId: registrationView.referenceId,
+          programFinancialServiceProviderConfigurationId:
+            registrationView.programFinancialServiceProviderConfigurationId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+          phoneNumber:
+            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
+        };
+      },
+    );
+    await this.transactionQueuesService.addAirtelTransactionJobs(
+      airtelTransferJobs,
+    );
   }
 
   /**
