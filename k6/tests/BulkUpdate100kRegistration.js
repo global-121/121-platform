@@ -10,7 +10,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 15; // '17' leads to 131k registrations
+const duplicateNumber = 16; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 
@@ -45,7 +45,7 @@ export default function () {
 
   // edit registrations - change preferredLanguage from nl to ar and convert to CSV
   const responseObj = JSON.parse(exportRegistrations.body);
-  const registrations = responseObj.data;
+  const registrations = responseObj.data.slice(0, 100000); // take only 100k registrations
   for (const registration of registrations) {
     if (registration.preferredLanguage === 'nl') {
       registration.preferredLanguage = 'ar'; // change to Arabic
@@ -53,11 +53,23 @@ export default function () {
   }
   const csvFile = registrationsModel.jsonToCsv(registrations);
 
-  // batch update registrations and check if it takes less than X minutes
-  registrationsModel.bulkUpdateRegistrationsCSV(programId, csvFile);
-  // TODO: check if the bulk update was successful by the time it takes to process
-
-  // Ask for a guidance where to find the progres of updating registrations
+  // batch update registrations and check if it takes less than X ms
+  const bulkUpdate = registrationsModel.bulkUpdateRegistrationsCSV(
+    programId,
+    csvFile,
+  );
+  console.log(`Bulk update status was ${bulkUpdate.status}`);
+  console.log(`Bulk update status was ${bulkUpdate.body}`);
+  console.log(`Bulk update time was ${bulkUpdate.timings.duration}ms`);
+  checkAndFail(bulkUpdate, {
+    'bulk update registrations status is 200': (r) => r.status === 200,
+    'bulk update time is less than 15714ms': (r) => {
+      if (r.timings.duration >= 15714) {
+        console.log(`Bulk update time was ${r.timings.duration}ms`);
+      }
+      return r.timings.duration < 15714;
+    },
+  });
 
   sleep(1);
 }
