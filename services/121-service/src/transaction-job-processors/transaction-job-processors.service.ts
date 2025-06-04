@@ -10,6 +10,8 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
+import { AirtelDisbursementOrEnquiryResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -271,10 +273,303 @@ export class TransactionJobProcessorsService {
   }
 
   public async processAirtelTransactionJob(
-    _transactionJob: AirtelTransactionJobDto,
+    transactionJob: AirtelTransactionJobDto,
   ): Promise<void> {
-    // Some code to make linter happy
-    const _a = 1;
+    // ## TODO: Not sure if creating a bunch of utility/helper functions inside of this function are an OK pattern.
+
+    const getCountryAndCurrencyCodes = async (programId) => {
+      const program = await this.programRepository.findOneByOrFail({
+        id: programId,
+      });
+      // Default to this as we don't save country code currently.
+      const countryCode = 'ZM';
+      const currencyCode = 'ZMW';
+      if (!currencyCode) {
+        throw new Error(
+          `Program ${program.id} does not have a valid currency code, current value: ${currencyCode}`,
+        );
+      }
+      if (!countryCode) {
+        throw new Error(
+          `Program ${program.id} does not have a valid country code, current value: ${countryCode}`,
+        );
+      }
+      return {
+        countryCode,
+        currencyCode,
+      };
+    };
+
+    const getPreviousDisbursementResult = async (
+      transactionJob,
+    ): Promise<{
+      result: AirtelDisbursementOrEnquiryResultEnum;
+      message: string;
+    }> => {
+      // 1. get key
+      const previous =
+        await this.airtelDisbursementScopedRepository.getDisbursement({
+          programId: transactionJob.programId,
+          registrationReferenceId: transactionJob.referenceId,
+          paymentNumber: transactionJob.paymentNumber,
+        });
+      const idempotencyKey = previous ? previous.airtelTransactionId : null;
+
+      // This can happen when the job was attempted but failed before the disbursement entity (including idempotency key) was persisted.
+      // That can also happen when it's not the first time we try to disburse.
+      if (!idempotencyKey) {
+        // Strictly speaking not what we get back from Airtel, but functionally equivalent.
+        return {
+          result: AirtelDisbursementOrEnquiryResultEnum.not_found,
+          message: '',
+        };
+      }
+
+      const { countryCode, currencyCode } = await getCountryAndCurrencyCodes(
+        transactionJob.programId,
+      );
+
+      // 2. enquiry
+      const enquiryResult = await this.airtelService.doEnquiry({
+        idempotencyKey,
+        countryCode,
+        currencyCode,
+      });
+      return {
+        result: enquiryResult.result,
+        message: enquiryResult.message,
+      };
+    };
+
+    const deletePreviousDisbursement = async (
+      transactionJob: AirtelTransactionJobDto,
+    ): Promise<void> => {
+      // We need to be able to do this without an idempotency key because it might not have been saved.
+      await this.airtelDisbursementScopedRepository.deleteDisbursement({
+        programId: transactionJob.programId,
+        registrationReferenceId: transactionJob.referenceId,
+        paymentNumber: transactionJob.paymentNumber,
+      });
+    };
+
+    const doDisbursement = async (
+      transactionJob,
+      failedTransactionsCount,
+    ): Promise<{
+      result: AirtelDisbursementOrEnquiryResultEnum;
+      message: string;
+    }> => {
+      // Necessary order: (1) create disbursement object with idempotency key and persist it, (2) do disbursement.
+      // This order prevents duplicate disbursements and guarantees we can find disbursements that were received by Airtel.
+      // ## TODO: implement
+
+      // 1. Create disbursement object with idempotency key and persist it.
+      const airtelTransactionId = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
+      await this.airtelDisbursementScopedRepository.storeDisbursement({
+        airtelTransactionId,
+        registrationReferenceId: transactionJob.referenceId,
+        paymentNumber: transactionJob.paymentNumber,
+      });
+
+      // 2. Do disbursement.
+      const phoneNumber = transactionJob.phoneNumber;
+      const amount = transactionJob.transactionAmount;
+      const { countryCode, currencyCode } = await getCountryAndCurrencyCodes(
+        transactionJob.programId,
+      );
+      // ## TODO: actually pass result
+      return this.airtelService.doDisbursement({
+        airtelTransactionId,
+        phoneNumber,
+        currencyCode,
+        countryCode,
+        amount,
+      });
+    };
+
+    // ✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️
+    // Actual start of processing
+    /*
+      If any of these steps fail we throw so the transaction fails and a new job is created.
+      We *explicitly* don't work around the following problems, if any of this happens we just fail the transaction. If need be we can always later introduce retries.
+      - database problems
+        - data that should have been saved but can't be found
+      - network problems
+        - slow response
+        - no response (timeout)
+      - Airtel API problems
+        - endpoints generating unparseable responses
+        - disbursements that are on pending indefinitely
+    */
+    // Transaction objects need registrations; if this fails we don't create a failed transaction.
+    // That's also the case for the other job processors.
+    // Should we account for that?
+    // For now we assume this always works.
+
+    // 1. Prepare.
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
+
+    // Helper functions
+    const createCreateTransaction = (
+      (processorsService: TransactionJobProcessorsService) =>
+      (
+        registration: RegistrationEntity,
+        transactionJob: AirtelTransactionJobDto,
+        status: TransactionStatusEnum,
+      ) =>
+      async (errorMessage?: string) => {
+        // Here is where the actual work starts.
+        const programId = transactionJob.programId;
+
+        const resultTransaction = await processorsService.createTransaction({
+          amount: transactionJob.transactionAmount,
+          registration,
+          programFinancialServiceProviderConfigurationId:
+            transactionJob.programFinancialServiceProviderConfigurationId,
+          programId,
+          paymentNumber: transactionJob.paymentNumber,
+          userId: transactionJob.userId,
+          status,
+          errorMessage,
+        });
+        // ## TODO: Not sure if this actually *does something*.
+        const oldRegistration = structuredClone(registration);
+
+        await processorsService.latestTransactionRepository.insertOrUpdateFromTransaction(
+          resultTransaction,
+        );
+
+        if (!transactionJob.isRetry) {
+          await processorsService.updatePaymentCountAndStatusInRegistration(
+            registration,
+            programId,
+          );
+          // Added this check to avoid a bit of processing time if the status is the same
+          if (
+            oldRegistration.registrationStatus !==
+            registration.registrationStatus
+          ) {
+            await processorsService.eventsService.createFromRegistrationViews(
+              {
+                id: oldRegistration.id,
+                status: oldRegistration.registrationStatus ?? undefined,
+              },
+              {
+                id: registration.id,
+                status: registration.registrationStatus ?? undefined,
+              },
+              {
+                explicitRegistrationPropertyNames: ['status'],
+              },
+            );
+          }
+        }
+      }
+    )(this);
+
+    const createSuccessTransaction = () =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.success,
+      )();
+    const createWaitingTransaction = () =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.waiting,
+      )();
+    // Always needs a message
+    const createErrorTransaction = (errorMessage: string) =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.error,
+      )(errorMessage);
+
+    const failedTransactionsCount =
+      await this.transactionScopedRepository.count({
+        where: {
+          registrationId: Equal(registration.id),
+          payment: Equal(transactionJob.paymentNumber),
+          status: Equal(TransactionStatusEnum.error),
+        },
+      });
+
+    // will contain the result of the previous disbursement or the new one.
+    let disbursementResult:
+      | AirtelDisbursementResponseWithMessageDto
+      | undefined = undefined;
+
+    // 2. Get previous result or do fresh disbursement.
+    if (transactionJob.isRetry) {
+      try {
+        disbursementResult =
+          await getPreviousDisbursementResult(transactionJob);
+      } catch (error) {
+        return await createErrorTransaction(error?.message);
+      }
+      if (
+        disbursementResult?.result ===
+        AirtelDisbursementOrEnquiryResultEnum.not_found
+      ) {
+        // ## TODO: log this?
+        await deletePreviousDisbursement(transactionJob);
+        // From here on out we can treat this transactionJob as a new job.
+      }
+    }
+
+    // Happens when: (1) we have a new job or (2) we don't have a previous result,
+    if (!disbursementResult) {
+      try {
+        disbursementResult = await doDisbursement(
+          transactionJob,
+          failedTransactionsCount,
+        );
+      } catch (error) {
+        return await createErrorTransaction(error?.message);
+      }
+    }
+
+    // 3. Process the result of the previous disbursement or the new one.
+    // Use a function with a switch and a type to ensure we handle all cases.
+    const getAction: (
+      result: AirtelDisbursementOrEnquiryResultEnum,
+    ) => () => Promise<void> = (result) => {
+      switch (result) {
+        case AirtelDisbursementOrEnquiryResultEnum.success:
+          return async () => {
+            await createSuccessTransaction();
+          };
+        case AirtelDisbursementOrEnquiryResultEnum.processing:
+          return async () => {
+            await createWaitingTransaction();
+          };
+        case AirtelDisbursementOrEnquiryResultEnum.fail:
+          return async () => {
+            await createErrorTransaction(
+              `Airtel disbursement failed with error: ${disbursementResult.message}`,
+            );
+          };
+        case AirtelDisbursementOrEnquiryResultEnum.unfamiliar_response_code:
+          return async () => {
+            await createErrorTransaction(
+              `Airtel disbursement failed with an unfamiliar response code: ${disbursementResult.message}`,
+            );
+          };
+        case AirtelDisbursementOrEnquiryResultEnum.not_found:
+          return async () => {
+            // Should never happen.
+            await createErrorTransaction(
+              "Unexpectedly got a 'not found' result.",
+            );
+          };
+        // Explicitly no default.
+      }
+    };
+    await getAction(disbursementResult.result)();
   }
 
   public async processNedbankTransactionJob(
