@@ -59,7 +59,11 @@ export class AzureAdStrategy
   }
 
   async validate(request: any, payload: any): Promise<any> {
-    if (!payload) {
+    if (
+      !payload ||
+      !(!!payload.unique_name || !!payload.preferred_username) ||
+      !payload.exp
+    ) {
       throw new UnauthorizedException();
     }
 
