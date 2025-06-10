@@ -10,9 +10,10 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 15; // '17' leads to 131k registrations for now only '15' is used
+const duplicateNumber = 15; // '17' leads to 131k registrations for now only '15' is used for 32k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
+const MAX_BULK_UPDATE_DURATION_MS = 15714; // 15.714 seconds approx. duration for 100k registrations
 
 const failedChecks = new Counter('failed_checks');
 
@@ -32,7 +33,6 @@ export default function () {
   registrationsModel.importRegistrations(programId, registrationPV);
   // Duplicate registration to be more then 100k
   resetPage.duplicateRegistrations(duplicateNumber);
-
   // export registrations
   const exportRegistrations = registrationsModel.exportRegistrations(
     programId,
@@ -52,22 +52,18 @@ export default function () {
     }
   }
   const csvFile = registrationsModel.jsonToCsv(registrations);
-
   // batch update registrations and check if it takes less than X ms
   const bulkUpdate = registrationsModel.bulkUpdateRegistrationsCSV(
     programId,
     csvFile,
   );
-  console.log(`Bulk update status was ${bulkUpdate.status}`);
-  console.log(`Bulk update status was ${bulkUpdate.body}`);
-  console.log(`Bulk update time was ${bulkUpdate.timings.duration}ms`);
   checkAndFail(bulkUpdate, {
     'bulk update registrations status is 200': (r) => r.status === 200,
     'bulk update time is less than 15714ms': (r) => {
       if (r.timings.duration >= 15714) {
         console.log(`Bulk update time was ${r.timings.duration}ms`);
       }
-      return r.timings.duration < 15714;
+      return r.timings.duration < MAX_BULK_UPDATE_DURATION_MS;
     },
   });
 
