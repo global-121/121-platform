@@ -10,7 +10,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 16; // '17' leads to 131k registrations
+const duplicateNumber = 15; // '17' leads to 131k registrations for now only '15' is used
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 
@@ -45,7 +45,7 @@ export default function () {
 
   // edit registrations - change preferredLanguage from nl to ar and convert to CSV
   const responseObj = JSON.parse(exportRegistrations.body);
-  const registrations = responseObj.data.slice(0, 100000); // take only 100k registrations
+  const registrations = responseObj.data.slice(0, 100000); // take up to 100k registrations
   for (const registration of registrations) {
     if (registration.preferredLanguage === 'nl') {
       registration.preferredLanguage = 'ar'; // change to Arabic
