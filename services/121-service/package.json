@@ -19,6 +19,7 @@
     "start:dev:windows": "nodemon --config nodemon.json --legacy-watch --watch src --ext ts,js,json --exec 'npm run start:dev:nest:windows'",
     "start:dev:nest:windows": "nest start --require=tsconfig-paths/register --debug=0.0.0.0:9229 --path=tsconfig.json",
     "prestart:dev": "npm install --no-save",
+    "prestart:dev:windows": "npm install --no-save",
     "seed:dev": "ts-node --require=tsconfig-paths/register src/scripts seed-dev",
     "test": "echo 'No automated tests. Run `npm run test:integration:all` to run API-tests locally. Run `npm run test:unit:all` to run unit-tests locally.' && exit 0",
     "test:unit:all": "jest --runInBand --config=./jest.unit.config.js",

@@ -6,7 +6,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
   name = 'ProgramRegistrationAttributeRefactor1729605362361';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.time('Migration');
+    // console.time('Migration');
     await this.createNewTablesAndViews(queryRunner);
 
     await this.migrateFspConig(queryRunner);
@@ -19,7 +19,7 @@ export class ProgramRegistrationAttributeRefactor1729605362361
     await this.adjustPermissions(queryRunner);
 
     await this.dropOldTablesAndViews(queryRunner);
-    console.timeEnd('Migration');
+    // console.timeEnd('Migration');
     // throw new Error('You shall not pass! Use this to prevent the migration from passing');
   }
   private async createNewTablesAndViews(
