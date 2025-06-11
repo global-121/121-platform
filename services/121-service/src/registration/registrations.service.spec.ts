@@ -7,7 +7,7 @@ import { EventsService } from '@121-service/src/events/events.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-financial-service-provider-configurations.repository';
+import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
