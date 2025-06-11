@@ -1,9 +1,9 @@
 import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-financial-service-provider-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
-import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-financial-service-provider-configuration-response.dto';
+import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 

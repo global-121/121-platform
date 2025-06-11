@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
-import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';
+import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 type FinancialServiceProviderWithoutConfigProps = Omit<
