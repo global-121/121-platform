@@ -168,7 +168,10 @@ export class RegistrationsController {
     );
   }
 
-  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @AuthenticatedUser({
+    isOrganizationAdmin: true,
+    permissions: [PermissionEnum.RegistrationBulkUPDATE],
+  })
   @ApiTags('programs/registrations')
   @ApiOperation({
     summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows. We do not support updating phone numbers or referenceId.`,

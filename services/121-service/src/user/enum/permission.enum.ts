@@ -73,6 +73,9 @@ export enum PermissionEnum {
   // Registration(s) - Duplication
   RegistrationDuplicationDELETE = 'registration:duplication.delete',
 
+  // Registrations - bulk
+  RegistrationBulkUPDATE = 'registration:bulk.update',
+
   // Action(s)
   ActionREAD = 'action.read',
   ActionCREATE = 'action.create',
