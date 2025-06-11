@@ -1,4 +1,4 @@
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 
 import { getFinancialServiceProviderSettingByName } from '~/domains/financial-service-provider/financial-service-provider.helper';
 import {

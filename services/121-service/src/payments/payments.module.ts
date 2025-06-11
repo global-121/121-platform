@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
-import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
@@ -31,6 +30,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { FinancialServiceProvidersModule } from '../fsps/fsp.module';
 
 @Module({
   imports: [

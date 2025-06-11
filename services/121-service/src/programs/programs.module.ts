@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
-import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { KoboConnectModule } from '@121-service/src/kobo-connect/kobo-connect.module';
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -18,6 +17,7 @@ import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { UserModule } from '@121-service/src/user/user.module';
+import { FinancialServiceProvidersModule } from '../fsps/fsp.module';
 
 @Module({
   imports: [
