@@ -169,7 +169,6 @@ export class RegistrationsController {
   }
 
   @AuthenticatedUser({
-    isOrganizationAdmin: true,
     permissions: [PermissionEnum.RegistrationBulkUPDATE],
   })
   @ApiTags('programs/registrations')
