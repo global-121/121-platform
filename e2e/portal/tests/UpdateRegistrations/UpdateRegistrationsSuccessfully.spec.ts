@@ -31,7 +31,9 @@ test.beforeEach(async ({ page }) => {
 
 const newName = 'Michael Scarn';
 
-test('Mass Update Registrations Successfully', async ({ page }) => {
+test('[36349] Data should be updated according to selected columns and registrations', async ({
+  page,
+}) => {
   const registrationsPage = new RegistrationsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
