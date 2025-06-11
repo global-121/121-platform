@@ -43,7 +43,7 @@ test('Mass Update Registrations Successfully', async ({ page }) => {
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectImportOption(
-      'Update existing registrations',
+      'Update selected registrations',
     );
   });
 
