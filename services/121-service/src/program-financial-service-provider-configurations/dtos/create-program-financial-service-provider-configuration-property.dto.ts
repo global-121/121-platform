@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class CreateProgramFinancialServiceProviderConfigurationPropertyDto {

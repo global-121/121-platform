@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
+import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
 @Injectable()
 export class FinancialServiceProvidersService {

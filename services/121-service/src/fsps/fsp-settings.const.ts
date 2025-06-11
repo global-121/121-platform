@@ -1,10 +1,10 @@
-import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
+import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
+} from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 
 // Attributes are the programRegistrationAttributes that are required for a regisration to have a program financial service provider configuration with the financial service provider
 // Configuration properties are the program finacial service configuration properties that are required for the financial service provider to be able to send a payment

@@ -5,8 +5,8 @@ import { Equal, In, Repository } from 'typeorm';
 import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+} from '@121-service/src/fsps/enums/fsp-name.enum';
+import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/program-financial-service-provider-configuration-property-response.dto';

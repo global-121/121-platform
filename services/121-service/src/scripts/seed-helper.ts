@@ -8,9 +8,9 @@ import { DEBUG } from '@121-service/src/config';
 import {
   FinancialServiceProviderConfigurationProperties,
   FinancialServiceProviders,
-} from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/financial-service-providers/financial-service-providers-settings.const';
+} from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
+import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';

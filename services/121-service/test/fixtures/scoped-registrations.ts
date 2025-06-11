@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';

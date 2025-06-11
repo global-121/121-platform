@@ -1,4 +1,4 @@
-import { FinancialServiceProviderAttributes } from '@121-service/src/financial-service-providers/enum/financial-service-provider-attributes.enum';
+import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getRegistrations,
