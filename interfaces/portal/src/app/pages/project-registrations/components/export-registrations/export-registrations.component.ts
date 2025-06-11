@@ -18,7 +18,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 

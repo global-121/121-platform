@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FinancialServiceProvidersModule } from '@121-service/src/financial-service-providers/financial-service-provider.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
@@ -45,6 +44,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { FinancialServiceProvidersModule } from '../fsps/fsp.module';
 
 @Module({
   imports: [
