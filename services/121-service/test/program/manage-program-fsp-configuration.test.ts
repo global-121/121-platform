@@ -22,7 +22,7 @@ import {
   patchProgramFinancialServiceProviderConfigurationProperty,
   postProgramFinancialServiceProviderConfiguration,
   postProgramFinancialServiceProviderConfigurationProperties,
-} from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
+} from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   deleteRegistrations,

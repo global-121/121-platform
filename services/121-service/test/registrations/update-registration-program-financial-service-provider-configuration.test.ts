@@ -14,7 +14,7 @@ import {
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-financial-service-provider-configuration.helper';
+import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   importRegistrations,
   seedIncludedRegistrations,
