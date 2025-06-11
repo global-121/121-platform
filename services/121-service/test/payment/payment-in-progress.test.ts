@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {

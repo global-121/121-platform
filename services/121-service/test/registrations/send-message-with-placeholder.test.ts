@@ -1,5 +1,5 @@
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/financial-service-providers/financial-service-provider-settings.helpers';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Relation } from 'typeorm';
 
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/enum/financial-service-provider-integration-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 

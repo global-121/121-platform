@@ -10,7 +10,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
