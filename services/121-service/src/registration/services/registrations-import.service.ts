@@ -72,18 +72,17 @@ export class RegistrationsImportService {
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 
     // Prepare the job array to push to the queue
-    const updateJobs: RegistrationUpdateJobDto[] = bulkUpdateRecords.map(
-      (record) => {
-        const referenceId = record['referenceId'];
+    const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] =
+      bulkUpdateRecords.map((record) => {
+        const referenceId = record['referenceId'] as string;
         delete record['referenceId'];
         return {
           referenceId,
           data: record,
           programId,
           reason,
-        } as RegistrationUpdateJobDto;
-      },
-    );
+        };
+      });
 
     // Call to redis as concurrent operations in a batch
     for (let start = 0; start < updateJobs.length; start += BATCH_SIZE) {

@@ -18,8 +18,6 @@ class BasePage {
   readonly toast: Locator;
   readonly chooseFileButton: Locator;
   readonly dialog: Locator;
-  readonly importButton: Locator;
-  readonly importFileButton: Locator;
   readonly ignoreDuplicationDialog: Locator;
 
   constructor(page: Page) {
@@ -40,10 +38,6 @@ class BasePage {
       name: 'Choose file',
     });
     this.dialog = this.page.getByRole('alertdialog');
-    this.importButton = this.page.getByRole('button', { name: 'Import' });
-    this.importFileButton = this.page.getByRole('button', {
-      name: 'Import file',
-    });
     this.ignoreDuplicationDialog = this.page.getByTestId(
       'ignore-duplication-dialog',
     );
@@ -128,12 +122,6 @@ class BasePage {
     await this.page.getByRole('button', { name: 'Add project' }).click();
   }
 
-  async importRegistrations(filePath: string) {
-    await this.importButton.click();
-    await this.chooseAndUploadFile(filePath);
-    await this.importFileButton.click();
-  }
-
   async chooseAndUploadFile(filePath: string) {
     const fileChooserPromise = this.page.waitForEvent('filechooser');
     await this.chooseFileButton.click();
@@ -145,6 +133,13 @@ class BasePage {
     const defaultLanguage = 'en-GB';
     path = `${defaultLanguage}${path}`;
     await this.page.goto(path);
+  }
+
+  async validateErrorMessage(errorMessage: string) {
+    const errorElement = this.page
+      .locator('app-form-error')
+      .filter({ hasText: errorMessage });
+    await expect(errorElement).toContainText(errorMessage);
   }
 
   /**

@@ -943,14 +943,8 @@
       <trans-unit id="3142649024295180156" datatype="html">
         <source>Choose file</source>
       </trans-unit>
-      <trans-unit id="4680756702302858333" datatype="html">
-        <source>Import registrations</source>
-      </trans-unit>
       <trans-unit id="5248644489024163464" datatype="html">
         <source>Import file</source>
-      </trans-unit>
-      <trans-unit id="5842006292473012174" datatype="html">
-        <source>The system will create registrations with the status “registered”.</source>
       </trans-unit>
       <trans-unit id="import-registrations-success" datatype="html">
         <source>Registration(s) imported successfully.</source>
@@ -1588,6 +1582,42 @@
       </trans-unit>
       <trans-unit id="3153802600204818440" datatype="html">
         <source>Date and time</source>
+      </trans-unit>
+      <trans-unit id="167372960166760979" datatype="html">
+        <source>manual</source>
+      </trans-unit>
+      <trans-unit id="2840088863087373358" datatype="html">
+        <source>Updating registration(s)</source>
+      </trans-unit>
+      <trans-unit id="3206588778935189186" datatype="html">
+        <source>Upload the updated CSV below</source>
+      </trans-unit>
+      <trans-unit id="3660397065427183189" datatype="html">
+        <source>Select 1 or more columns</source>
+      </trans-unit>
+      <trans-unit id="3746595944026204370" datatype="html">
+        <source>Learn more about updating selected registrations in the</source>
+      </trans-unit>
+      <trans-unit id="4377773974394044597" datatype="html">
+        <source>Export a CSV for the <x equiv-text="this.actionData()?.count" id="PH"/> selected registration(s). Select the columns you want to update.</source>
+      </trans-unit>
+      <trans-unit id="5158177792461436439" datatype="html">
+        <source>Export CSV</source>
+      </trans-unit>
+      <trans-unit id="5417768503150506511" datatype="html">
+        <source>Update selected registrations</source>
+      </trans-unit>
+      <trans-unit id="5685760925247156053" datatype="html">
+        <source>This might take a few minutes. Closing this notification will not cancel the update.</source>
+      </trans-unit>
+      <trans-unit id="707140688369393962" datatype="html">
+        <source>I understand that all registrations included in this file will be updated, overriding existing registration data, and that this action can not be undone.</source>
+      </trans-unit>
+      <trans-unit id="7239655394341675860" datatype="html">
+        <source>Import new registrations</source>
+      </trans-unit>
+      <trans-unit id="863719556168006669" datatype="html">
+        <source>The system will create registrations with the status <x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="START_TAG_APP_COLORED_CHIP"/><x ctype="x-app_colored_chip" equiv-text="&lt;app-colored-chip [variant]=&quot;registeredChipData.chipVariant&quot; [label]=&quot;registeredChipData.chipLabel&quot; /&gt;" id="CLOSE_TAG_APP_COLORED_CHIP"/>.</source>
       </trans-unit>
     </body>
   </file>
