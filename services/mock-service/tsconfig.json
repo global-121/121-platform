@@ -7,10 +7,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
+    "strict": false, // TODO: AB#28804
+    "noImplicitAny": false, // TODO: AB#28419
     "moduleResolution": "bundler",
     "declaration": false,
-    "noImplicitAny": false,
     "removeComments": true,
     "noLib": false,
     "emitDecoratorMetadata": true,
