@@ -129,6 +129,7 @@ export class TransactionJobProcessorsService {
             addressHouseNumberAddition: input.addressHouseNumberAddition,
             addressPostalCode: input.addressPostalCode!,
             addressCity: input.addressCity!,
+            addressCountry: input.addressCountry!,
             phoneNumber: input.phoneNumber!,
           },
           transferAmountInMajorUnit,

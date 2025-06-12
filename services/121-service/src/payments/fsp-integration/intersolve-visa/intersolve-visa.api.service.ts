@@ -99,7 +99,9 @@ export class IntersolveVisaApiService {
             addressLine1: this.createAddressString(contactInformation),
             city: contactInformation.addressCity,
             postalCode: contactInformation.addressPostalCode,
-            country: 'NL',
+            country: this.convertCountryISO3166Alpha3ToAlpha2(
+              contactInformation.addressCountry,
+            ), // In ISO 3166-1 alpha-2 format
           },
         ],
         phoneNumbers: [
@@ -127,6 +129,20 @@ export class IntersolveVisaApiService {
       holderId: createCustomerResponseDto.data.data.id,
     };
     return createCustomerResultDto;
+  }
+
+  // ##TODO: Continue implementation. Do we want to support more/all countries? Is there a better way than if statements?
+  private convertCountryISO3166Alpha3ToAlpha2(countryCode: string): string {
+    if (countryCode === 'NLD') {
+      return 'NL';
+    }
+    if (countryCode === 'BEL') {
+      return 'BE';
+    }
+    if (countryCode === 'DEU') {
+      return 'DE';
+    }
+    return 'bla';
   }
 
   public async issueToken({
@@ -395,13 +411,13 @@ export class IntersolveVisaApiService {
       cardAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD',
+        country: contactInformation.addressCountry, // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinAddress: {
         address1: this.createAddressString(contactInformation),
         city: contactInformation.addressCity,
-        country: 'NLD',
+        country: contactInformation.addressCountry, // In ISO 3166-1 alpha-3 format
         postalCode: contactInformation.addressPostalCode,
       },
       pinStatus: 'D',
@@ -527,6 +543,7 @@ export class IntersolveVisaApiService {
     addressHouseNumberAddition,
     addressPostalCode,
     addressCity,
+    addressCountry,
   }: {
     holderId: string;
     addressStreet: string;
@@ -534,6 +551,7 @@ export class IntersolveVisaApiService {
     addressHouseNumberAddition: string | undefined;
     addressPostalCode: string;
     addressCity: string;
+    addressCountry: string; // In ISO 3166-1 alpha-3 format
   }): Promise<void> {
     // Create the request
     const requestBody = {
@@ -543,7 +561,7 @@ export class IntersolveVisaApiService {
       }`,
       city: addressCity,
       postalCode: addressPostalCode,
-      country: 'NL',
+      country: this.convertCountryISO3166Alpha3ToAlpha2(addressCountry), // In ISO 3166-1 alpha-2 format
     };
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
