@@ -1,6 +1,10 @@
 import { TestBed } from '@automock/jest';
 import { Equal, UpdateResult } from 'typeorm';
 
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
+import { AirtelDisbursementOrEnquiryResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
+import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -16,6 +20,7 @@ import { ProgramRepository } from '@121-service/src/programs/repositories/progra
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
@@ -56,6 +61,7 @@ const mockedProgram = {
 describe('TransactionJobProcessorsService', () => {
   let safaricomService: SafaricomService;
   let nedbankService: NedbankService;
+  let airtelService: AirtelService;
   let transactionJobProcessorsService: TransactionJobProcessorsService;
 
   let programRepository: ProgramRepository;
@@ -63,6 +69,7 @@ describe('TransactionJobProcessorsService', () => {
   let latestTransactionRepository: LatestTransactionRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
+  let airtelDisbursementScopedRepository: AirtelDisbursementScopedRepository;
   let programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository;
 
   beforeEach(async () => {
@@ -74,6 +81,7 @@ describe('TransactionJobProcessorsService', () => {
 
     safaricomService = unitRef.get<SafaricomService>(SafaricomService);
     nedbankService = unitRef.get<NedbankService>(NedbankService);
+    airtelService = unitRef.get<AirtelService>(AirtelService);
 
     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
     registrationScopedRepository = unitRef.get<RegistrationScopedRepository>(
@@ -152,6 +160,82 @@ describe('TransactionJobProcessorsService', () => {
           mockedSafaricomTransactionJob.originatorConversationId,
       }),
     );
+  });
+
+  describe('Airtel transaction job processing', () => {
+    const mockedAirtelTransactionJob: AirtelTransactionJobDto = {
+      programId: 7,
+      programFinancialServiceProviderConfigurationId: 1,
+      paymentNumber: 7,
+      referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
+      transactionAmount: 27,
+      isRetry: false,
+      userId: 1,
+      bulkSize: 10,
+      phoneNumber: '123456789',
+    };
+
+    const mockedDoDisbursementReturn: AirtelDisbursementResponseWithMessageDto =
+      {
+        result: AirtelDisbursementOrEnquiryResultEnum.success,
+        message: 'Disbursement successful',
+      };
+
+    it('should process Airtel transaction job successfully', async () => {
+      jest
+        .spyOn(
+          programFinancialServiceProviderConfigurationRepository,
+          'getPropertyValueByName',
+        )
+        .mockResolvedValue('ref#1');
+
+      jest
+        .spyOn(airtelService, 'doDisbursement')
+        .mockResolvedValueOnce(mockedDoDisbursementReturn);
+
+      jest
+        .spyOn(airtelDisbursementScopedRepository, 'storeDisbursement')
+        .mockResolvedValueOnce(undefined);
+
+      await transactionJobProcessorsService.processAirtelTransactionJob(
+        mockedAirtelTransactionJob,
+      );
+
+      expect(
+        registrationScopedRepository.getByReferenceId,
+      ).toHaveBeenCalledWith({
+        referenceId: mockedAirtelTransactionJob.referenceId,
+      });
+      expect(transactionScopedRepository.count).toHaveBeenCalledWith({
+        where: {
+          registrationId: Equal(mockedRegistration.id),
+          payment: Equal(mockedAirtelTransactionJob.paymentNumber),
+          status: Equal(TransactionStatusEnum.error),
+        },
+      });
+      expect(airtelService.doDisbursement).toHaveBeenCalledWith({
+        idempotencyKey: 'foo',
+        phoneNumber: mockedAirtelTransactionJob.phoneNumber,
+        currencyCode: 'foo',
+        countryCode: 'foo',
+        transferAmount: mockedAirtelTransactionJob.transactionAmount,
+      });
+
+      expect(
+        airtelDisbursementScopedRepository.storeDisbursement,
+      ).toHaveBeenCalledWith({
+        transactionId: mockedTransactionId,
+        orderCreateReference: expect.any(String),
+        paymentReference: expect.any(String),
+      });
+      expect(transactionScopedRepository.save).toHaveBeenCalledWith(
+        // TODO: is this correct?
+        expect.objectContaining({
+          payment: mockedAirtelTransactionJob.paymentNumber,
+          status: TransactionStatusEnum.success,
+        }),
+      );
+    });
   });
 
   describe('Nedbank transaction job processing', () => {
