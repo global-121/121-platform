@@ -3,7 +3,11 @@ module.exports = {
   overrides: [
     {
       files: ['*.js'],
-      extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+      extends: [
+        'eslint:recommended',
+        'plugin:n/recommended',
+        'plugin:prettier/recommended',
+      ],
       env: {
         node: true,
       },
@@ -61,7 +65,6 @@ module.exports = {
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'n/no-extraneous-import': [0], // Managed by TypeScript
         'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
-        'n/no-missing-require': [0], // Disabled to allow for path-aliases via tsconfig.json/below
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
