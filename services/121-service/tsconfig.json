@@ -1,19 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": ["es2022"],
+    "lib": ["ES2022"],
     "module": "preserve",
-    "target": "es2022",
+    "target": "ES2022",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28804
-    "strictPropertyInitialization": false,
-    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/28419
-    "noImplicitAny": false,
-    // TODO: https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/27718
-    "useUnknownInCatchVariables": false,
+    "strictPropertyInitialization": false, // TODO: AB#28804
+    "noImplicitAny": false, // TODO: AB#28419
+    "useUnknownInCatchVariables": false, // TODO: AB#27718
     "moduleResolution": "bundler",
     "declaration": false,
     "removeComments": true,
