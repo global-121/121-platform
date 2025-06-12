@@ -29,7 +29,7 @@
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.1.2",
     "@nestjs/core": "^11.1.2",
-    "@nestjs/platform-express": "^11.1.2",
+    "@nestjs/platform-express": "^11.1.3",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/testing": "^11.1.2",
     "@t3-oss/env-core": "^0.13.4",
