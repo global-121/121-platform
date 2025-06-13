@@ -430,7 +430,12 @@ export async function waitForRegistrationChanges(
           accessToken,
         );
         const registration = result.body.data[0];
-        return registration && isMatch(registration, expectedPatch);
+        // Filter out null values. Because if you remove a field from a registration it will not be returned from the api
+        const filteredPatch = Object.entries(expectedPatch)
+          .filter(([_, value]) => value !== null)
+          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+
+        return registration && isMatch(registration, filteredPatch);
       }),
     );
 
