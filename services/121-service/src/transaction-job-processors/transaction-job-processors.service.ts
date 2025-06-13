@@ -512,7 +512,7 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
+    transaction.programFspConfigurationId =
       programFinancialServiceProviderConfigurationId;
     transaction.programId = programId;
     transaction.payment = paymentNumber;

@@ -18,7 +18,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
@@ -151,10 +151,8 @@ export class ExportRegistrationsComponent {
   readonly isCBEProject = computed(() =>
     this.project
       .data()
-      ?.programFinancialServiceProviderConfigurations.some(
-        (fsp) =>
-          fsp.financialServiceProviderName ===
-          FinancialServiceProviders.commercialBankEthiopia,
+      ?.programFspConfigurations.some(
+        (fsp) => fsp.fspName === Fsps.commercialBankEthiopia,
       ),
   );
 }

@@ -24,13 +24,11 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
       configurationProperties: _configurationProperties,
       defaultLabel: _defaultLabel,
       ...financialServiceProvider
-    } = getFinancialServiceProviderSettingByNameOrThrow(
-      entity.financialServiceProviderName,
-    );
+    } = getFinancialServiceProviderSettingByNameOrThrow(entity.fspName);
 
     const dto: ProgramFinancialServiceProviderConfigurationResponseDto = {
       programId: entity.programId,
-      financialServiceProviderName: entity.financialServiceProviderName,
+      financialServiceProviderName: entity.fspName,
       name: entity.name,
       label: entity.label,
       financialServiceProvider,
@@ -48,7 +46,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   ): ProgramFspConfigurationEntity {
     const entity = new ProgramFspConfigurationEntity();
     entity.programId = programId;
-    entity.financialServiceProviderName = dto.financialServiceProviderName;
+    entity.fspName = dto.financialServiceProviderName;
     entity.name = dto.name;
     entity.label = dto.label;
     return entity;
@@ -94,7 +92,7 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   ): ProgramFspConfigurationPropertyEntity {
     const entity = new ProgramFspConfigurationPropertyEntity();
     entity.name = dto.name;
-    entity.programFinancialServiceProviderConfigurationId =
+    entity.programFspConfigurationId =
       programFinancialServiceProviderConfigurationId;
     // Later we can add a switch case and a type for each property if there are more non-string properties
     entity.value =

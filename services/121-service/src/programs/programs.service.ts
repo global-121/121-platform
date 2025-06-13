@@ -93,7 +93,7 @@ export class ProgramService {
 
     program['financialServiceProviderConfigurations'] =
       ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
-        program.programFinancialServiceProviderConfigurations,
+        program.programFspConfigurations,
       );
     const outputProgram: FoundProgramDto = program;
 
@@ -297,7 +297,7 @@ export class ProgramService {
         program.paymentAmountMultiplierFormula ?? undefined,
       financialServiceProviderConfigurations:
         ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
-          program.programFinancialServiceProviderConfigurations,
+          program.programFspConfigurations,
         ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,

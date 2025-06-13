@@ -15,7 +15,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       // Arrange
       const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName = Fsps.intersolveVisa;
+      testEntity.fspName = Fsps.intersolveVisa;
       testEntity.name = 'Intersolve Visa';
       testEntity.label = { en: 'Visa Debit Card' };
       testEntity.properties = [
@@ -37,15 +37,13 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Assert
       expect(result.programId).toBe(testEntity.programId);
-      expect(result.financialServiceProviderName).toBe(
-        testEntity.financialServiceProviderName,
-      );
+      expect(result.financialServiceProviderName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
 
       const expectedFinancialServiceProvider =
         FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-          (fsp) => fsp.name === testEntity.financialServiceProviderName,
+          (fsp) => fsp.name === testEntity.fspName,
         )!;
       // Remove unnecessary properties from the financialServiceProvider object
       const {
@@ -70,7 +68,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       // Arrange
       const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName = Fsps.safaricom;
+      testEntity.fspName = Fsps.safaricom;
       testEntity.name = 'Safaricom M-Pesa';
       testEntity.label = { en: 'Safaricom' };
       testEntity.properties = [];
@@ -83,14 +81,12 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Assert
       expect(result.programId).toBe(testEntity.programId);
-      expect(result.financialServiceProviderName).toBe(
-        testEntity.financialServiceProviderName,
-      );
+      expect(result.financialServiceProviderName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
       const expectedFinancialServiceProvider =
         FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-          (fsp) => fsp.name === testEntity.financialServiceProviderName,
+          (fsp) => fsp.name === testEntity.fspName,
         )!;
       // Remove unnecessary properties from the financialServiceProvider object
       const {
@@ -124,9 +120,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Assert
       expect(entity.programId).toBe(programId);
-      expect(entity.financialServiceProviderName).toBe(
-        dto.financialServiceProviderName,
-      );
+      expect(entity.fspName).toBe(dto.financialServiceProviderName);
       expect(entity.name).toBe(dto.name);
       expect(entity.label).toEqual(dto.label);
     });
@@ -151,7 +145,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       const entity = entities[0];
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
+      expect(entity.programFspConfigurationId).toBe(
         programFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(dto.value);
@@ -176,7 +170,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
+      expect(entity.programFspConfigurationId).toBe(
         programFinancialServiceProviderConfigurationId,
       );
       expect(entity.value).toBe(JSON.stringify(dto.value)); // Expect value to be JSON string

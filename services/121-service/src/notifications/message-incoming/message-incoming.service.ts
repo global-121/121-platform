@@ -302,11 +302,10 @@ export class MessageIncomingService {
         relations: ['programFinancialServiceProviderConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
-        program.programFinancialServiceProviderConfigurations.find((config) => {
-          return (config.financialServiceProviderName =
-            Fsps.intersolveVoucherWhatsapp);
+        program.programFspConfigurations.find((config) => {
+          return (config.fspName = Fsps.intersolveVoucherWhatsapp);
         })!;
-      tryWhatsapp.registration.programFinancialServiceProviderConfigurationId =
+      tryWhatsapp.registration.programFspConfigurationId =
         fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,

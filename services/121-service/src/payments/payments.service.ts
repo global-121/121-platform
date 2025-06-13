@@ -362,7 +362,7 @@ export class PaymentsService {
 
     const requiredConfigurations =
       getFinancialServiceProviderConfigurationRequiredProperties(
-        config.financialServiceProviderName,
+        config.fspName,
       );
     // Early return for FSP that don't have required configurations
     if (!requiredConfigurations) {
@@ -375,7 +375,7 @@ export class PaymentsService {
       );
       if (!foundConfig) {
         errorMessages.push(
-          `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
+          `Missing required configuration ${requiredConfiguration} for FSP ${config.fspName}`,
         );
       }
     }
@@ -1186,8 +1186,7 @@ export class PaymentsService {
           programFinancialServiceProviderConfigurationName:
             fspConfigEntity.name,
           programFinancialServiceProviderConfigurationId: fspConfigEntity.id,
-          financialServiceProviderName:
-            fspConfigEntity.financialServiceProviderName,
+          financialServiceProviderName: fspConfigEntity.fspName,
         });
       // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
       allFspInstructions.push(fspInstructions);

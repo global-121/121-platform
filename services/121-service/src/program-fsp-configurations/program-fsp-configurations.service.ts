@@ -128,7 +128,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         propertyNames: updateProgramFspConfigurationDto.properties.map(
           (p) => p.name,
         ),
-        financialServiceProviderName: config.financialServiceProviderName,
+        financialServiceProviderName: config.fspName,
       });
     }
 
@@ -197,7 +197,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
     await this.validateAllowedPropertyNames({
       propertyNames: inputProperties.map((p) => p.name),
-      financialServiceProviderName: config.financialServiceProviderName,
+      financialServiceProviderName: config.fspName,
     });
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
@@ -363,9 +363,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   ): Promise<ProgramFspConfigurationPropertyEntity[]> {
     // delete all properties
     await this.programFspConfigurationPropertyRepository.delete({
-      programFinancialServiceProviderConfigurationId: Equal(
-        programFspConfigurationId,
-      ),
+      programFspConfigurationId: Equal(programFspConfigurationId),
     });
     // create new properties
     return await this.createPropertyEntities(

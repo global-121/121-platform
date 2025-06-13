@@ -21,14 +21,14 @@ const mockProgramFspConfigPropertyEntity =
 mockProgramFspConfigPropertyEntity.id = 1;
 mockProgramFspConfigPropertyEntity.name = FspConfigurationProperties.brandCode;
 mockProgramFspConfigPropertyEntity.value = '123';
-mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId = 1;
+mockProgramFspConfigPropertyEntity.programFspConfigurationId = 1;
 
 const configName = 'Config 1';
 const mockProgramFspConfigEntity = new ProgramFspConfigurationEntity();
 mockProgramFspConfigEntity.id = 1;
 mockProgramFspConfigEntity.name = configName;
 mockProgramFspConfigEntity.programId = 1;
-mockProgramFspConfigEntity.financialServiceProviderName = Fsps.intersolveVisa;
+mockProgramFspConfigEntity.fspName = Fsps.intersolveVisa;
 mockProgramFspConfigEntity.label = { en: 'Test Label' };
 mockProgramFspConfigEntity.properties = [mockProgramFspConfigPropertyEntity];
 mockProgramFspConfigEntity.registrations = [];
@@ -267,8 +267,8 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       expect(
         mockProgramFspConfigurationPropertyRepository.delete,
       ).toHaveBeenCalledWith({
-        programFinancialServiceProviderConfigurationId: Equal(
-          mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: Equal(
+          mockProgramFspConfigPropertyEntity.programFspConfigurationId,
         ),
       });
       expect(mockProgramFspConfigurationRepository.save).toHaveBeenCalled();

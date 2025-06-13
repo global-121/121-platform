@@ -679,7 +679,7 @@ export class IntersolveVoucherService
       if (userFspConfigIdObject) {
         userId = userFspConfigIdObject.userId;
         programFinancialServiceProviderConfigurationId =
-          userFspConfigIdObject.programFinancialServiceProviderConfigurationId;
+          userFspConfigIdObject.programFspConfigurationId;
       }
     }
 
@@ -713,14 +713,14 @@ export class IntersolveVoucherService
   ) {
     const transaction: null | {
       userId: number;
-      programFinancialServiceProviderConfigurationId: number;
+      programFspConfigurationId: number;
     } = await this.transactionRepository.findOne({
       where: {
         registrationId: Equal(registrationId),
         payment: Equal(payment),
       },
       order: { created: 'DESC' },
-      select: ['userId', 'programFinancialServiceProviderConfigurationId'],
+      select: ['userId', 'programFspConfigurationId'],
     });
     return transaction;
   }
@@ -749,9 +749,7 @@ export class IntersolveVoucherService
       transactionResult.messageSid = messageSid;
     }
 
-    const fspNameOfRegistration =
-      registration.programFinancialServiceProviderConfiguration
-        .financialServiceProviderName;
+    const fspNameOfRegistration = registration.programFspConfiguration.fspName;
     if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1

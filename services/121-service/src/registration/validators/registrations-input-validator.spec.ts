@@ -305,8 +305,7 @@ describe('RegistrationsInputValidator', () => {
         maxPayments: '5',
         nameFirst: 'Test',
         nameLast: 'Test',
-        programFinancialServiceProviderConfigurationName:
-          Fsps.intersolveVoucherWhatsapp,
+        programFspName: Fsps.intersolveVoucherWhatsapp,
         whatsappPhoneNumber: '1234567890',
         scope: 'country',
       },

@@ -590,11 +590,8 @@ export class RegistrationsService {
       }
     }
 
-    if (
-      attribute ===
-      AdditionalAttributes.programFinancialServiceProviderConfigurationName
-    ) {
-      registration.programFinancialServiceProviderConfigurationId =
+    if (attribute === AdditionalAttributes.programFspConfigurationName) {
+      registration.programFspConfigurationId =
         await this.getChosenFspConfigurationId({
           registration,
           newFspConfigurationName: String(value),
@@ -1005,12 +1002,11 @@ export class RegistrationsService {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
-      relations: ['programFinancialServiceProviderConfiguration'],
+      relations: ['programFspConfiguration'],
     });
     if (
-      !registration.programFinancialServiceProviderConfigurationId ||
-      registration.programFinancialServiceProviderConfiguration
-        ?.financialServiceProviderName !== Fsps.intersolveVisa
+      !registration.programFspConfigurationId ||
+      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
     ) {
       throw new HttpException(
         `This registration is not associated with the Intersolve Visa financial service provider.`,
@@ -1022,7 +1018,7 @@ export class RegistrationsService {
       await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
-            registration.programFinancialServiceProviderConfigurationId,
+            registration.programFspConfigurationId,
           names: [
             FspConfigurationProperties.brandCode,
             FspConfigurationProperties.coverLetterCode,
