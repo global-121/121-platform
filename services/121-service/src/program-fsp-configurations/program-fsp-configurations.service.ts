@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -13,17 +13,17 @@ import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from 
 import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 @Injectable()
 export class ProgramFinancialServiceProviderConfigurationsService {
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-  private readonly programFspConfigurationRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>;
-  @InjectRepository(ProgramFinancialServiceProviderConfigurationPropertyEntity)
-  private readonly programFspConfigurationPropertyRepository: Repository<ProgramFinancialServiceProviderConfigurationPropertyEntity>;
+  @InjectRepository(ProgramFspConfigurationEntity)
+  private readonly programFspConfigurationRepository: Repository<ProgramFspConfigurationEntity>;
+  @InjectRepository(ProgramFspConfigurationPropertyEntity)
+  private readonly programFspConfigurationPropertyRepository: Repository<ProgramFspConfigurationPropertyEntity>;
 
   public async getByProgramId(
     programId: number,
@@ -128,7 +128,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
         propertyNames: updateProgramFspConfigurationDto.properties.map(
           (p) => p.name,
         ),
-        financialServiceProviderName: config.financialServiceProviderName,
+        financialServiceProviderName: config.fspName,
       });
     }
 
@@ -197,7 +197,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     );
     await this.validateAllowedPropertyNames({
       propertyNames: inputProperties.map((p) => p.name),
-      financialServiceProviderName: config.financialServiceProviderName,
+      financialServiceProviderName: config.fspName,
     });
     await this.validateNoDuplicateExistingProperties({
       propertyNames: inputProperties.map((p) => p.name),
@@ -217,7 +217,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
     financialServiceProviderName,
   }: {
     propertyNames: string[];
-    financialServiceProviderName: FinancialServiceProviders;
+    financialServiceProviderName: Fsps;
   }): Promise<void> {
     const configPropertiesOfFsp =
       getFinancialServiceProviderConfigurationProperties(
@@ -291,7 +291,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   }: {
     programId: number;
     name: string;
-    propertyName: FinancialServiceProviderConfigurationProperties;
+    propertyName: FspConfigurationProperties;
     property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
   }): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     const config = await this.getProgramFspConfigurationOrThrow(
@@ -327,7 +327,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   }: {
     programId: number;
     name: string;
-    propertyName: FinancialServiceProviderConfigurationProperties;
+    propertyName: FspConfigurationProperties;
   }): Promise<void> {
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
@@ -346,7 +346,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private async createPropertyEntities(
     programFspConfigurationId: number,
     inputProperties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
-  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyEntity[]> {
+  ): Promise<ProgramFspConfigurationPropertyEntity[]> {
     const propertiesToSave =
       ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
         inputProperties,
@@ -360,12 +360,10 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private async overwriteProperties(
     programFspConfigurationId: number,
     properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
-  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyEntity[]> {
+  ): Promise<ProgramFspConfigurationPropertyEntity[]> {
     // delete all properties
     await this.programFspConfigurationPropertyRepository.delete({
-      programFinancialServiceProviderConfigurationId: Equal(
-        programFspConfigurationId,
-      ),
+      programFspConfigurationId: Equal(programFspConfigurationId),
     });
     // create new properties
     return await this.createPropertyEntities(
@@ -386,7 +384,7 @@ export class ProgramFinancialServiceProviderConfigurationsService {
   private async getProgramFspConfigurationOrThrow(
     programId: number,
     name: string,
-  ): Promise<ProgramFinancialServiceProviderConfigurationEntity> {
+  ): Promise<ProgramFspConfigurationEntity> {
     const config = await this.programFspConfigurationRepository.findOne({
       where: {
         name: Equal(name),
@@ -404,8 +402,8 @@ export class ProgramFinancialServiceProviderConfigurationsService {
 
   private async getProgramFspConfigurationPropertyOrThrow(
     programFspConfigurationId: number,
-    propertyName: FinancialServiceProviderConfigurationProperties,
-  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyEntity> {
+    propertyName: FspConfigurationProperties,
+  ): Promise<ProgramFspConfigurationPropertyEntity> {
     const property =
       await this.programFspConfigurationPropertyRepository.findOne({
         where: {

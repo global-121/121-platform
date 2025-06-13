@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -23,7 +23,7 @@ describe('Send custom message with placeholders', () => {
     fullName: 'John Smith',
     phoneNumber: '14155238886',
     programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviders.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+      Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
     maxPayments: 2,
     paymentCountRemaining: 2,
@@ -76,7 +76,7 @@ describe('Send custom message with placeholders', () => {
     );
     const labelInPreferredLanguage =
       getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVoucherPaper,
+        Fsps.intersolveVoucherPaper,
       ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
       new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),

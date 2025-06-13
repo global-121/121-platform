@@ -29,7 +29,7 @@ import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-inte
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
@@ -76,15 +76,15 @@ export class RegistrationEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  @ManyToOne((_type) => ProgramFinancialServiceProviderConfigurationEntity, {
+  @ManyToOne((_type) => ProgramFspConfigurationEntity, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({
-    name: 'programFinancialServiceProviderConfigurationId',
+    name: 'programFspConfigurationId',
   })
-  public programFinancialServiceProviderConfiguration: ProgramFinancialServiceProviderConfigurationEntity;
+  public programFspConfiguration: ProgramFspConfigurationEntity;
   @Column({ type: 'integer', nullable: true })
-  public programFinancialServiceProviderConfigurationId: number;
+  public programFspConfigurationId: number;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()

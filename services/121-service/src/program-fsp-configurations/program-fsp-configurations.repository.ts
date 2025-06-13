@@ -2,16 +2,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
-export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProgramFinancialServiceProviderConfigurationEntity> {
+export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProgramFspConfigurationEntity> {
   constructor(
-    @InjectRepository(ProgramFinancialServiceProviderConfigurationEntity)
-    private baseRepository: Repository<ProgramFinancialServiceProviderConfigurationEntity>,
+    @InjectRepository(ProgramFspConfigurationEntity)
+    private baseRepository: Repository<ProgramFspConfigurationEntity>,
   ) {
     super(
       baseRepository.target,
@@ -25,8 +25,8 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     financialServiceProviderName,
   }: {
     programId: number;
-    financialServiceProviderName: FinancialServiceProviders;
-  }): Promise<ProgramFinancialServiceProviderConfigurationEntity[]> {
+    financialServiceProviderName: Fsps;
+  }): Promise<ProgramFspConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
         programId: Equal(programId),
@@ -43,12 +43,10 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
       programFinancialServiceProviderConfigurationId,
     );
     const propertyUsername = properties.find(
-      (c) =>
-        c.name === FinancialServiceProviderConfigurationProperties.username,
+      (c) => c.name === FspConfigurationProperties.username,
     );
     const propertyPassword = properties.find(
-      (c) =>
-        c.name === FinancialServiceProviderConfigurationProperties.password,
+      (c) => c.name === FspConfigurationProperties.password,
     );
 
     const response: UsernamePasswordInterface = {
@@ -97,7 +95,7 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     name,
   }: {
     programFinancialServiceProviderConfigurationId: number;
-    name: FinancialServiceProviderConfigurationProperties;
+    name: FspConfigurationProperties;
   }) {
     const configuration = await this.baseRepository
       .createQueryBuilder('configuration')

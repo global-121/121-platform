@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Relation } from 'typeorm';
 
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -32,8 +32,8 @@ export class TransactionReturnDto {
   @ApiProperty()
   public customData: any;
   // FinancialServiceProviderName is used in the frontend to determine whether a transaction has a voucher
-  @ApiProperty({ example: FinancialServiceProviders.excel })
-  public financialServiceProviderName: Relation<FinancialServiceProviders>;
+  @ApiProperty({ example: Fsps.excel })
+  public financialServiceProviderName: Relation<Fsps>;
   @ApiProperty({ example: 'ironBank' })
   public programFinancialServiceProviderConfigurationLabel: Relation<LocalizedString>;
   @ApiProperty({ example: { en: 'Iron bank' }, type: 'string' })

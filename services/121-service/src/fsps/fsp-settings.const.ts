@@ -1,7 +1,7 @@
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
@@ -11,7 +11,7 @@ import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/f
 export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] =
   [
     {
-      name: FinancialServiceProviders.excel,
+      name: Fsps.excel,
       integrationType: FinancialServiceProviderIntegrationType.csv,
       defaultLabel: {
         en: 'Excel Payment Instructions',
@@ -20,17 +20,17 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       attributes: [],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
+          name: FspConfigurationProperties.columnsToExport,
           isRequired: false,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+          name: FspConfigurationProperties.columnToMatch,
           isRequired: true,
         },
       ],
     },
     {
-      name: FinancialServiceProviders.intersolveVisa,
+      name: Fsps.intersolveVisa,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Visa debit card',
@@ -68,21 +68,21 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       ],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.brandCode,
           isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
+          name: FspConfigurationProperties.coverLetterCode,
           isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+          name: FspConfigurationProperties.fundingTokenCode,
           isRequired: true,
         },
       ],
     },
     {
-      name: FinancialServiceProviders.intersolveVoucherWhatsapp,
+      name: Fsps.intersolveVoucherWhatsapp,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Albert Heijn voucher WhatsApp',
@@ -96,17 +96,17 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       ],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.password,
+          name: FspConfigurationProperties.password,
           isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.username,
+          name: FspConfigurationProperties.username,
           isRequired: true,
         },
       ],
     },
     {
-      name: FinancialServiceProviders.intersolveVoucherPaper,
+      name: Fsps.intersolveVoucherPaper,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Albert Heijn voucher paper',
@@ -115,17 +115,17 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       attributes: [],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.password,
+          name: FspConfigurationProperties.password,
           isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.username,
+          name: FspConfigurationProperties.username,
           isRequired: true,
         },
       ],
     },
     {
-      name: FinancialServiceProviders.safaricom,
+      name: Fsps.safaricom,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Safaricom',
@@ -144,7 +144,7 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       configurationProperties: [],
     },
     {
-      name: FinancialServiceProviders.commercialBankEthiopia,
+      name: Fsps.commercialBankEthiopia,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Commercial Bank of Ethiopia',
@@ -158,17 +158,17 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       ],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.password,
+          name: FspConfigurationProperties.password,
           isRequired: true,
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.username,
+          name: FspConfigurationProperties.username,
           isRequired: true,
         },
       ],
     },
     {
-      name: FinancialServiceProviders.nedbank,
+      name: Fsps.nedbank,
       integrationType: FinancialServiceProviderIntegrationType.api,
       defaultLabel: {
         en: 'Nedbank',
@@ -182,7 +182,7 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
       ],
       configurationProperties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          name: FspConfigurationProperties.paymentReferencePrefix,
           isRequired: true,
         },
       ],

@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
@@ -16,7 +16,7 @@ export function getFinancialServiceProviderSettingByNameOrThrow(
 }
 
 export function getFinancialServiceProviderConfigurationProperties(
-  financialServiceProviderName: FinancialServiceProviders,
+  financialServiceProviderName: Fsps,
 ): string[] {
   const foundFsp = getFinancialServiceProviderSettingByNameOrThrow(
     financialServiceProviderName,
@@ -25,7 +25,7 @@ export function getFinancialServiceProviderConfigurationProperties(
 }
 
 export function getFinancialServiceProviderConfigurationRequiredProperties(
-  financialServiceProviderName: FinancialServiceProviders,
+  financialServiceProviderName: Fsps,
 ): string[] {
   const foundFsp = getFinancialServiceProviderSettingByNameOrThrow(
     financialServiceProviderName,

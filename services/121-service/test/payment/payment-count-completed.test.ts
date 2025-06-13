@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -35,7 +35,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     nameLast: 'Smith',
     phoneNumber: '14155238886',
     programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+      Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
     maxPayments: 1,
   };

@@ -4,41 +4,38 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 
 const programId = 1;
 const mockProgramFspConfigPropertyEntity =
-  new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+  new ProgramFspConfigurationPropertyEntity();
 mockProgramFspConfigPropertyEntity.id = 1;
-mockProgramFspConfigPropertyEntity.name =
-  FinancialServiceProviderConfigurationProperties.brandCode;
+mockProgramFspConfigPropertyEntity.name = FspConfigurationProperties.brandCode;
 mockProgramFspConfigPropertyEntity.value = '123';
-mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId = 1;
+mockProgramFspConfigPropertyEntity.programFspConfigurationId = 1;
 
 const configName = 'Config 1';
-const mockProgramFspConfigEntity =
-  new ProgramFinancialServiceProviderConfigurationEntity();
+const mockProgramFspConfigEntity = new ProgramFspConfigurationEntity();
 mockProgramFspConfigEntity.id = 1;
 mockProgramFspConfigEntity.name = configName;
 mockProgramFspConfigEntity.programId = 1;
-mockProgramFspConfigEntity.financialServiceProviderName =
-  FinancialServiceProviders.intersolveVisa;
+mockProgramFspConfigEntity.fspName = Fsps.intersolveVisa;
 mockProgramFspConfigEntity.label = { en: 'Test Label' };
 mockProgramFspConfigEntity.properties = [mockProgramFspConfigPropertyEntity];
 mockProgramFspConfigEntity.registrations = [];
 
 const validPropertyDto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
   {
-    name: FinancialServiceProviderConfigurationProperties.brandCode,
+    name: FspConfigurationProperties.brandCode,
     value: '123',
   };
 
@@ -112,15 +109,11 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       providers: [
         ProgramFinancialServiceProviderConfigurationsService,
         {
-          provide: getRepositoryToken(
-            ProgramFinancialServiceProviderConfigurationEntity,
-          ),
+          provide: getRepositoryToken(ProgramFspConfigurationEntity),
           useValue: mockProgramFspConfigurationRepository,
         },
         {
-          provide: getRepositoryToken(
-            ProgramFinancialServiceProviderConfigurationPropertyEntity,
-          ),
+          provide: getRepositoryToken(ProgramFspConfigurationPropertyEntity),
           useValue: mockProgramFspConfigurationPropertyRepository,
         },
         {
@@ -152,11 +145,11 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   describe('validateAndCreate', () => {
     const createDto: CreateProgramFinancialServiceProviderConfigurationDto = {
       name: 'Test Configuration',
-      financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+      financialServiceProviderName: Fsps.intersolveVisa,
       label: { en: 'Test Label' },
       properties: [
         {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.brandCode,
           value: '123',
         },
       ],
@@ -218,7 +211,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         ...createDto,
         properties: [
           {
-            name: FinancialServiceProviderConfigurationProperties.password,
+            name: FspConfigurationProperties.password,
             value: '123',
           },
         ],
@@ -236,11 +229,11 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
         ...createDto,
         properties: [
           {
-            name: FinancialServiceProviderConfigurationProperties.brandCode,
+            name: FspConfigurationProperties.brandCode,
             value: '123',
           },
           {
-            name: FinancialServiceProviderConfigurationProperties.brandCode,
+            name: FspConfigurationProperties.brandCode,
             value: 'again another brandcode',
           },
         ],
@@ -274,8 +267,8 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       expect(
         mockProgramFspConfigurationPropertyRepository.delete,
       ).toHaveBeenCalledWith({
-        programFinancialServiceProviderConfigurationId: Equal(
-          mockProgramFspConfigPropertyEntity.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: Equal(
+          mockProgramFspConfigPropertyEntity.programFspConfigurationId,
         ),
       });
       expect(mockProgramFspConfigurationRepository.save).toHaveBeenCalled();
@@ -371,8 +364,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   });
 
   describe('updateProperty', () => {
-    const propertyName =
-      FinancialServiceProviderConfigurationProperties.brandCode;
+    const propertyName = FspConfigurationProperties.brandCode;
     const updatedValue = 'UpdatedValue';
     const updatedPropertyDto = { value: updatedValue };
 
@@ -426,8 +418,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   });
 
   describe('deleteProperty', () => {
-    const propertyName =
-      FinancialServiceProviderConfigurationProperties.brandCode;
+    const propertyName = FspConfigurationProperties.brandCode;
 
     beforeEach(() => {
       jest.clearAllMocks();

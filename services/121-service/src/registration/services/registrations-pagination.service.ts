@@ -18,7 +18,7 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -665,7 +665,7 @@ export class RegistrationsPaginationService {
     programId: number;
     payment: number;
     programFinancialServiceProviderConfigurationId?: number;
-    financialServiceProviderName?: FinancialServiceProviders;
+    financialServiceProviderName?: Fsps;
     status?: TransactionStatusEnum;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.registrationViewScopedRepository

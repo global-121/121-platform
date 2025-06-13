@@ -1,16 +1,14 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 
 import { AppRoutes } from '~/app.routes';
 import { Payment } from '~/domains/payment/payment.model';
 
 export const FSPS_WITH_VOUCHER_SUPPORT = [
-  FinancialServiceProviders.intersolveVoucherPaper,
-  FinancialServiceProviders.intersolveVoucherWhatsapp,
+  Fsps.intersolveVoucherPaper,
+  Fsps.intersolveVoucherWhatsapp,
 ];
 
-export const FSPS_WITH_PHYSICAL_CARD_SUPPORT = [
-  FinancialServiceProviders.intersolveVisa,
-];
+export const FSPS_WITH_PHYSICAL_CARD_SUPPORT = [Fsps.intersolveVisa];
 
 export const getNextPaymentId = (payments: Payment[]): number => {
   if (payments.length === 0) {
