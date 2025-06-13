@@ -6,8 +6,9 @@ export class RenameFinancialServiceProviderToFsp1749809825697
   name = 'RenameFinancialServiceProviderToFsp1749809825697';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // ## TODO: I was able to get to a successful migration after generating the migration scripts 3 times. See below. Do we want to refactor these queries into 1 "clean" set?
     /////////////////////////////////////////////
-    // Thi is the first auto-generated migration, with edits so that DROP TABLE and CREATE TABLE are changed into ALTER TABLE RENAME
+    // This is the first auto-generated migration, with edits so that DROP TABLE and CREATE TABLE are changed into ALTER TABLE RENAME
     ////////////////////////////////////////////
     // Drop view
     await queryRunner.query(
