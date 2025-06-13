@@ -395,17 +395,6 @@ describe('Update attribute of PA', () => {
       accessToken,
     );
 
-    await waitForRegistrationChanges(
-      [
-        {
-          referenceId: registrationPvScoped.referenceId,
-          expectedPatch: dataUpdateToEmpty,
-        },
-      ],
-      programIdPv,
-      accessToken,
-    );
-
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
     const result = await searchRegistrationByReferenceId(
