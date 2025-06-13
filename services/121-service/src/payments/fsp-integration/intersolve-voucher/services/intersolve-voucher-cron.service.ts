@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Equal, Repository } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -64,9 +64,7 @@ export class IntersolveVoucherCronService {
     // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
     const configId = await this.programFspConfigurationRepository.findOne({
       where: {
-        financialServiceProviderName: Equal(
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
-        ),
+        financialServiceProviderName: Equal(Fsps.intersolveVoucherWhatsapp),
       },
       select: ['id'],
     });

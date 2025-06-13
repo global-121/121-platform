@@ -18,7 +18,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
@@ -270,7 +270,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('name')
     name: string,
     @Param('propertyName')
-    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
+    propertyName: WrapperType<FspConfigurationProperties>,
   ): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
     return await this.programFinancialServiceProviderConfigurationsService.updateProperty(
       {
@@ -321,7 +321,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     @Param('name')
     name: string,
     @Param('propertyName')
-    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
+    propertyName: WrapperType<FspConfigurationProperties>,
   ): Promise<void> {
     await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
       {

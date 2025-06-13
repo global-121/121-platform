@@ -1,35 +1,33 @@
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 
 describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
   describe('mapEntitytoDto', () => {
     it('should correctly map ProgramFinancialServiceProviderConfigurationEntity to ProgramFinancialServiceProviderConfigurationResponseDto', () => {
       // Arrange
-      const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
+      const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName =
-        FinancialServiceProviders.intersolveVisa;
+      testEntity.financialServiceProviderName = Fsps.intersolveVisa;
       testEntity.name = 'Intersolve Visa';
       testEntity.label = { en: 'Visa Debit Card' };
       testEntity.properties = [
         {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.brandCode,
           updated: new Date('2023-01-01'),
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
+          name: FspConfigurationProperties.coverLetterCode,
           updated: new Date('2023-02-01'),
         },
-      ] as ProgramFinancialServiceProviderConfigurationPropertyEntity[];
+      ] as ProgramFspConfigurationPropertyEntity[];
 
       // Act
       const result =
@@ -70,11 +68,9 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
     it('should handle an entity with no properties', () => {
       // Arrange
-      const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
+      const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName =
-        FinancialServiceProviders.safaricom;
+      testEntity.financialServiceProviderName = Fsps.safaricom;
       testEntity.name = 'Safaricom M-Pesa';
       testEntity.label = { en: 'Safaricom' };
       testEntity.properties = [];
@@ -114,7 +110,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       // Arrange
       const programId = 1;
       const dto: CreateProgramFinancialServiceProviderConfigurationDto = {
-        financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+        financialServiceProviderName: Fsps.intersolveVisa,
         name: 'Intersolve Visa in program 1',
         label: { en: 'Visa Debit Card' },
       };
@@ -141,7 +137,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       // Arrange
       const dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
         {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.brandCode,
           value: 'brand123',
         };
       const programFinancialServiceProviderConfigurationId = 1;
@@ -165,7 +161,7 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
       // Arrange
       const dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
         {
-          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
+          name: FspConfigurationProperties.columnsToExport,
           value: ['column1', 'column2', 'column3'],
         };
       const programFinancialServiceProviderConfigurationId = 2;

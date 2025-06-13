@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -51,7 +51,7 @@ export class ExcelService
     for (const paPayment of paPaymentList) {
       const paTransactionResultDto = new PaTransactionResultDto();
       paTransactionResultDto.calculatedAmount = paPayment.transactionAmount;
-      paTransactionResultDto.fspName = FinancialServiceProviders.excel;
+      paTransactionResultDto.fspName = Fsps.excel;
       paTransactionResultDto.referenceId = paPayment.referenceId;
       paTransactionResultDto.status = TransactionStatusEnum.waiting;
 
@@ -76,7 +76,7 @@ export class ExcelService
     );
 
     const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.fspName = FinancialServiceProviders.excel;
+    fspTransactionResult.fspName = Fsps.excel;
     fspTransactionResult.paList = transactionResultObjectList.map(
       (transactionResultObject) =>
         transactionResultObject.paTransactionResultDto,
@@ -136,7 +136,7 @@ export class ExcelService
       await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
           programFinancialServiceProviderConfigurationId,
-          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
+          name: FspConfigurationProperties.columnsToExport,
         },
       );
 
@@ -145,7 +145,7 @@ export class ExcelService
       if (!Array.isArray(columnsToExportConfig)) {
         throw new HttpException(
           {
-            errors: `FinancialServiceProviderConfigurationProperty ${FinancialServiceProviderConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
+            errors: `FinancialServiceProviderConfigurationProperty ${FspConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
           },
           HttpStatus.NOT_FOUND,
         );
@@ -223,7 +223,7 @@ export class ExcelService
       await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
         {
           programFinancialServiceProviderConfigurationId,
-          name: FinancialServiceProviderConfigurationProperties.columnToMatch,
+          name: FspConfigurationProperties.columnToMatch,
         },
       );
     if (!matchColumn) {

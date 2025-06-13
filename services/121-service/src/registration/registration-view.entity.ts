@@ -10,7 +10,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
@@ -50,10 +50,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
         'fspconfig."id"',
         'programFinancialServiceProviderConfigurationId',
       )
-      .addSelect(
-        'fspconfig."financialServiceProviderName"',
-        'financialServiceProviderName',
-      )
+      .addSelect('fspconfig."fspName"', 'financialServiceProviderName')
       .addSelect(
         'fspconfig.label',
         'programFinancialServiceProviderConfigurationLabel',
@@ -70,10 +67,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
-      .leftJoin(
-        'registration.programFinancialServiceProviderConfiguration',
-        'fspconfig',
-      )
+      .leftJoin('registration.programFspConfiguration', 'fspconfig')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
       .addSelect(
@@ -161,7 +155,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProviderName?: FinancialServiceProviders;
+  public financialServiceProviderName?: Fsps;
 
   @ViewColumn()
   public programFinancialServiceProviderConfigurationId: number;

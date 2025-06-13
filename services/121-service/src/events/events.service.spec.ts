@@ -5,7 +5,7 @@ import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -66,7 +66,7 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+    financialServiceProviderName: Fsps.intersolveVisa,
     programFinancialServiceProviderConfigurationName: 'Intersolve-Visa',
     programFinancialServiceProviderConfigurationLabel: {
       en: 'Visa debit card',
@@ -227,7 +227,7 @@ describe('EventsService', () => {
 
     // Changes that should not be logged
     newViewRegistration.programFinancialServiceProviderConfigurationName =
-      FinancialServiceProviders.intersolveVoucherWhatsapp;
+      Fsps.intersolveVoucherWhatsapp;
 
     // Act
     await eventsService.createFromRegistrationViews(

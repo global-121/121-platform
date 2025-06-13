@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 interface RegistrationWithFspName extends RegistrationEntity {
@@ -31,8 +31,7 @@ export const registrationOCW1 = {
   paymentAmountMultiplier: 1,
   fullName: 'John Smith',
   phoneNumber: '14155236666',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155238886',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -47,8 +46,7 @@ export const registrationOCW2 = {
   paymentAmountMultiplier: 1,
   fullName: 'Anna Hello',
   phoneNumber: '14155237775',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155237775',
   addressStreet: 'Teststeeg',
   addressHouseNumber: '2',
@@ -63,8 +61,7 @@ export const registrationOCW3 = {
   paymentAmountMultiplier: 2,
   fullName: 'Sophia Johnson',
   phoneNumber: '14155236666',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155236666',
   addressStreet: 'DifferentStreet',
   addressHouseNumber: '3',
@@ -79,8 +76,7 @@ export const registrationOCW4 = {
   paymentAmountMultiplier: 3,
   fullName: 'Luiz Garcia',
   phoneNumber: '14155235555',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
@@ -96,7 +92,7 @@ export const registrationOCW5 = {
   fullName: 'Lars Larsson',
   phoneNumber: '14155235556',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherWhatsapp,
+    Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235556',
 };
 
@@ -106,8 +102,7 @@ export const registrationOCW6Fail = {
   paymentAmountMultiplier: 3,
   fullName: 'Test mock-fail-create-customer',
   phoneNumber: '14155235555',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155235555',
   addressStreet: 'AnotherStreet',
   addressHouseNumber: '4',
@@ -138,7 +133,7 @@ export const registrationPV5 = {
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherWhatsapp,
+    Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
 };
 
@@ -149,7 +144,7 @@ export const registrationPV6 = {
   fullName: 'Jan Janssen',
   phoneNumber: '14155235551',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherWhatsapp,
+    Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235551',
 };
 
@@ -159,8 +154,7 @@ export const registrationPV7 = {
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
   phoneNumber: '14155235551',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155235551',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -175,8 +169,7 @@ export const registrationPV8 = {
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
   phoneNumber: '14155235557',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155235557',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -191,8 +184,7 @@ export const registrationPvMaxPayment = {
   paymentAmountMultiplier: 1,
   fullName: 'Arkadiusz Zbuczko',
   phoneNumber: '14155235559',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
   whatsappPhoneNumber: '14155235559',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -218,7 +210,7 @@ export const registrationPvScoped = {
   fullName: 'Freya Midgard',
   phoneNumber: '14155235554',
   programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherWhatsapp,
+    Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235554',
   scope: 'utrecht',
 };
@@ -302,8 +294,7 @@ export const registrationCbe = {
   phoneNumber: '14155238886',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.commercialBankEthiopia,
+  programFinancialServiceProviderConfigurationName: Fsps.commercialBankEthiopia,
   maxPayments: 3,
   fullName: 'ANDUALEM MOHAMMED YIMER',
   idNumber: '39231855170',
@@ -316,8 +307,7 @@ export const registrationsCbe = [registrationCbe];
 
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.safaricom,
+  programFinancialServiceProviderConfigurationName: Fsps.safaricom,
   phoneNumber: '254708374149',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
@@ -336,8 +326,7 @@ export const registrationPvExcel1 = {
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235551',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
+  programFinancialServiceProviderConfigurationName: Fsps.excel,
   whatsappPhoneNumber: '14155235551',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -352,8 +341,7 @@ export const registrationPvExcel2 = {
   paymentAmountMultiplier: 1,
   fullName: 'Jan Janssen',
   phoneNumber: '14155235552',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
+  programFinancialServiceProviderConfigurationName: Fsps.excel,
   whatsappPhoneNumber: '14155235552',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -368,8 +356,7 @@ export const registrationPvExcel3 = {
   paymentAmountMultiplier: 1,
   fullName: 'Joost Herlembach',
   phoneNumber: '14155235553',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
+  programFinancialServiceProviderConfigurationName: Fsps.excel,
   whatsappPhoneNumber: '14155235553',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -384,8 +371,7 @@ export const registrationPvExcel4 = {
   paymentAmountMultiplier: 1,
   fullName: 'Jack Strong',
   phoneNumber: '14155235557',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.excel,
+  programFinancialServiceProviderConfigurationName: Fsps.excel,
   whatsappPhoneNumber: '14155235557',
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
@@ -406,8 +392,7 @@ export const registrationNedbank = {
   phoneNumber: '27000000000',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.nedbank,
+  programFinancialServiceProviderConfigurationName: Fsps.nedbank,
   maxPayments: 3,
   fullName: 'nedbank pa',
 };

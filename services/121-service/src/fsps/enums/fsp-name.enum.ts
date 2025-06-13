@@ -1,4 +1,4 @@
-export enum FinancialServiceProviders {
+export enum Fsps {
   intersolveVoucherWhatsapp = 'Intersolve-voucher-whatsapp',
   intersolveVoucherPaper = 'Intersolve-voucher-paper',
   intersolveVisa = 'Intersolve-visa',
@@ -9,7 +9,7 @@ export enum FinancialServiceProviders {
   nedbank = 'Nedbank',
 }
 
-export enum FinancialServiceProviderConfigurationProperties {
+export enum FspConfigurationProperties {
   password = 'password',
   username = 'username',
   columnsToExport = 'columnsToExport',

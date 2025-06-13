@@ -6,16 +6,16 @@ import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
@@ -286,16 +286,15 @@ export class SeedHelper {
 
   private createProgramFspConfiguration(
     fspConfigFromJson: {
-      financialServiceProvider: FinancialServiceProviders;
+      financialServiceProvider: Fsps;
       properties: { name: string; value: string }[] | undefined;
       name?: string;
       label: LocalizedString;
     },
     financialServiceProviderObject: FinancialServiceProviderDto,
     programId: number,
-  ): ProgramFinancialServiceProviderConfigurationEntity {
-    const fspConfigEntity =
-      new ProgramFinancialServiceProviderConfigurationEntity();
+  ): ProgramFspConfigurationEntity {
+    const fspConfigEntity = new ProgramFspConfigurationEntity();
     fspConfigEntity.financialServiceProviderName =
       fspConfigFromJson.financialServiceProvider;
     fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
@@ -314,8 +313,8 @@ export class SeedHelper {
 
   private createProgramFspConfigurationProperties(
     propertiesFromJSON: { name: string; value: string }[],
-  ): ProgramFinancialServiceProviderConfigurationPropertyEntity[] {
-    const fspConfigPropertyEntities: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
+  ): ProgramFspConfigurationPropertyEntity[] {
+    const fspConfigPropertyEntities: ProgramFspConfigurationPropertyEntity[] =
       [];
 
     for (const property of propertiesFromJSON) {
@@ -324,9 +323,9 @@ export class SeedHelper {
         fspConfigPropertyValue = process.env[property.value] || property.value;
       }
       const fspConfigPropertyEntity =
-        new ProgramFinancialServiceProviderConfigurationPropertyEntity();
+        new ProgramFspConfigurationPropertyEntity();
       fspConfigPropertyEntity.name =
-        property.name as FinancialServiceProviderConfigurationProperties;
+        property.name as FspConfigurationProperties;
       fspConfigPropertyEntity.value = fspConfigPropertyValue;
       fspConfigPropertyEntities.push(fspConfigPropertyEntity);
     }

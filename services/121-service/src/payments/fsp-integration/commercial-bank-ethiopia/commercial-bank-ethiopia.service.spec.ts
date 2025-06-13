@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
@@ -21,8 +21,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
     programFinancialServiceProviderConfigurationId: 1,
-    financialServiceProviderName:
-      FinancialServiceProviders.commercialBankEthiopia,
+    financialServiceProviderName: Fsps.commercialBankEthiopia,
     bulkSize: 1,
     userId,
   },
@@ -73,11 +72,11 @@ describe('CommercialBankEthiopiaService', () => {
   it('should add payment to queue', async () => {
     const dbQueryResult = [
       {
-        name: FinancialServiceProviderConfigurationProperties.username,
+        name: FspConfigurationProperties.username,
         value: '1234',
       },
       {
-        name: FinancialServiceProviderConfigurationProperties.password,
+        name: FspConfigurationProperties.password,
         value: '1234',
       },
     ];

@@ -4,13 +4,13 @@ import { DataSource, Equal, QueryFailedError, Repository } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetTokenResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/get-token-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
@@ -506,8 +506,7 @@ export class ProgramService {
       await this.programFinancialServiceProviderConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
         {
           programId,
-          financialServiceProviderName:
-            FinancialServiceProviders.intersolveVisa,
+          financialServiceProviderName: Fsps.intersolveVisa,
         },
       );
     if (!programFspConfigurations) {
@@ -518,16 +517,13 @@ export class ProgramService {
     }
 
     // add all properties to a single array
-    const properties: ProgramFinancialServiceProviderConfigurationPropertyEntity[] =
-      [];
+    const properties: ProgramFspConfigurationPropertyEntity[] = [];
     for (const programFspConfiguration of programFspConfigurations) {
       properties.push(...programFspConfiguration.properties);
     }
 
     const fundingTokenConfigurationProperties = properties.filter(
-      (config) =>
-        config.name ===
-        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+      (config) => config.name === FspConfigurationProperties.fundingTokenCode,
     );
     if (
       !fundingTokenConfigurationProperties ||
@@ -542,10 +538,7 @@ export class ProgramService {
     // loop over all properties and return all wallets as an array
     const wallets: GetTokenResult[] = [];
     for (const property of properties) {
-      if (
-        property.name ===
-        FinancialServiceProviderConfigurationProperties.fundingTokenCode
-      ) {
+      if (property.name === FspConfigurationProperties.fundingTokenCode) {
         const wallet = await this.intersolveVisaService.getWallet(
           property.value as string,
         );

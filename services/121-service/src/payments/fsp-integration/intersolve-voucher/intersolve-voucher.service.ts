@@ -5,7 +5,7 @@ import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
 import { DEBUG } from '@121-service/src/config';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -752,10 +752,7 @@ export class IntersolveVoucherService
     const fspNameOfRegistration =
       registration.programFinancialServiceProviderConfiguration
         .financialServiceProviderName;
-    if (
-      fspNameOfRegistration ===
-      FinancialServiceProviders.intersolveVoucherWhatsapp
-    ) {
+    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
           ? IntersolveVoucherPayoutStatus.InitialMessage
@@ -764,18 +761,11 @@ export class IntersolveVoucherService
 
     transactionResult.status = status;
 
-    if (
-      fspNameOfRegistration ===
-      FinancialServiceProviders.intersolveVoucherWhatsapp
-    ) {
-      transactionResult.fspName =
-        FinancialServiceProviders.intersolveVoucherWhatsapp;
+    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
+      transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
     }
-    if (
-      fspNameOfRegistration === FinancialServiceProviders.intersolveVoucherPaper
-    ) {
-      transactionResult.fspName =
-        FinancialServiceProviders.intersolveVoucherPaper;
+    if (fspNameOfRegistration === Fsps.intersolveVoucherPaper) {
+      transactionResult.fspName = Fsps.intersolveVoucherPaper;
     }
     return transactionResult;
   }

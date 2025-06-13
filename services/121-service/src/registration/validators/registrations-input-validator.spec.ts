@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -96,12 +96,11 @@ const program = {
   enableScope: true,
   programFinancialServiceProviderConfigurations: [
     {
-      financialServiceProviderName:
-        FinancialServiceProviders.intersolveVoucherWhatsapp,
+      financialServiceProviderName: Fsps.intersolveVoucherWhatsapp,
       name: 'Intersolve-voucher-whatsapp',
     },
     {
-      financialServiceProviderName: FinancialServiceProviders.excel,
+      financialServiceProviderName: Fsps.excel,
       name: 'Excel',
     },
   ],
@@ -187,7 +186,7 @@ describe('RegistrationsInputValidator', () => {
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
         programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+          Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
         house: 'stark',
       },
@@ -212,7 +211,7 @@ describe('RegistrationsInputValidator', () => {
     );
     expect(result[0]).toHaveProperty(
       'programFinancialServiceProviderConfigurationName',
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+      Fsps.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
     expect(result[0]).toHaveProperty('preferredLanguage', 'en');
@@ -231,7 +230,7 @@ describe('RegistrationsInputValidator', () => {
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
         programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+          Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -254,7 +253,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+          Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -279,7 +278,7 @@ describe('RegistrationsInputValidator', () => {
     const csvArray = [
       {
         programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+          Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -307,7 +306,7 @@ describe('RegistrationsInputValidator', () => {
         nameFirst: 'Test',
         nameLast: 'Test',
         programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+          Fsps.intersolveVoucherWhatsapp,
         whatsappPhoneNumber: '1234567890',
         scope: 'country',
       },
@@ -378,8 +377,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: '',
         addressHouseNumber: '',
         addressHouseNumberAddition: '',
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.excel,
+        programFinancialServiceProviderConfigurationName: Fsps.excel,
         scope: '',
         house: '',
       },

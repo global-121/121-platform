@@ -5,7 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
@@ -447,7 +447,7 @@ export class RegistrationsInputValidator {
     typeOfInput,
   }: {
     programFinancialServiceProviderConfigurationName: InputAttributeType;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFinancialServiceProviderConfigurations: ProgramFspConfigurationEntity[];
     i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
@@ -775,7 +775,7 @@ export class RegistrationsInputValidator {
   }: {
     row: object;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFinancialServiceProviderConfigurations: ProgramFspConfigurationEntity[];
     i: number;
   }): ValidateRegistrationErrorObject[] {
     // Decide which required attributes to check
@@ -854,7 +854,7 @@ export class RegistrationsInputValidator {
 
   private getRequiredAttributesForFsp(
     programFinancialServiceProviderConfigurationName: string,
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+    programFinancialServiceProviderConfigurations: ProgramFspConfigurationEntity[],
   ): string[] {
     const fspName = programFinancialServiceProviderConfigurations.find(
       (programFspConfig) =>

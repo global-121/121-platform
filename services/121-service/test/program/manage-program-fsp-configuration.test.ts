@@ -2,8 +2,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
@@ -40,8 +40,7 @@ import { registrationOCW5 } from '@121-service/test/registrations/pagination/pag
 const seededFspConfigVoucher =
   programOCW.programFinancialServiceProviderConfigurations.find(
     (fspConfig) =>
-      fspConfig.financialServiceProvider ===
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+      fspConfig.financialServiceProvider === Fsps.intersolveVoucherWhatsapp,
   )!;
 
 const createProgramFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto =
@@ -52,15 +51,14 @@ const createProgramFspConfigurationDto: CreateProgramFinancialServiceProviderCon
       nl: 'Intersolve Voucher WhatsApp label Dutch translation',
       es: 'Intersolve Voucher WhatsApp label Spanish translation',
     },
-    financialServiceProviderName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+    financialServiceProviderName: Fsps.intersolveVoucherWhatsapp,
     properties: [
       {
-        name: FinancialServiceProviderConfigurationProperties.username,
+        name: FspConfigurationProperties.username,
         value: 'user123',
       },
       {
-        name: FinancialServiceProviderConfigurationProperties.password,
+        name: FspConfigurationProperties.password,
         value: 'password123',
       },
     ],
@@ -128,7 +126,7 @@ describe('Manage financial service provider configurations', () => {
         },
         properties: [
           {
-            name: FinancialServiceProviderConfigurationProperties.username,
+            name: FspConfigurationProperties.username,
             value: 'user1234',
           },
         ],
@@ -343,16 +341,14 @@ describe('Manage financial service provider configurations', () => {
           config.name === seededFspConfigVoucher.financialServiceProvider,
       )!
       .properties.find(
-        (property) =>
-          property.name ===
-          FinancialServiceProviderConfigurationProperties.username,
+        (property) => property.name === FspConfigurationProperties.username,
       );
 
     const patchResult =
       await patchProgramFinancialServiceProviderConfigurationProperty({
         programId: programIdVisa,
         configName: seededFspConfigVoucher.financialServiceProvider,
-        propertyName: FinancialServiceProviderConfigurationProperties.username,
+        propertyName: FspConfigurationProperties.username,
         body: updatedPropertyDto,
         accessToken,
       });
@@ -368,9 +364,7 @@ describe('Manage financial service provider configurations', () => {
           config.name === seededFspConfigVoucher.financialServiceProvider,
       )!
       .properties.find(
-        (property) =>
-          property.name ===
-          FinancialServiceProviderConfigurationProperties.username,
+        (property) => property.name === FspConfigurationProperties.username,
       );
 
     // Assert
@@ -391,7 +385,7 @@ describe('Manage financial service provider configurations', () => {
       await deleteProgramFinancialServiceProviderConfigurationProperty({
         programId: programIdVisa,
         configName: seededFspConfigVoucher.financialServiceProvider,
-        propertyName: FinancialServiceProviderConfigurationProperties.username,
+        propertyName: FspConfigurationProperties.username,
         accessToken,
       });
 
@@ -406,9 +400,7 @@ describe('Manage financial service provider configurations', () => {
     );
 
     const usernamePropertyAfter = config?.properties.find(
-      (property) =>
-        property.name ===
-        FinancialServiceProviderConfigurationProperties.username,
+      (property) => property.name === FspConfigurationProperties.username,
     );
 
     // Assert
