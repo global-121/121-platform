@@ -12,6 +12,7 @@ import {
   importRegistrations,
   searchRegistrationByReferenceId,
   updateRegistration,
+  waitForRegistrationChanges,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -88,6 +89,16 @@ describe('Update attribute of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
+      programIdPv,
+      accessToken,
+    );
+    await waitForRegistrationChanges(
+      [
+        {
+          referenceId: registrationPvScoped.referenceId,
+          expectedPatch: dataUpdateSucces,
+        },
+      ],
       programIdPv,
       accessToken,
     );
@@ -228,6 +239,16 @@ describe('Update attribute of PA', () => {
       registrationPvScoped.referenceId,
       updateDto,
       reason,
+      accessToken,
+    );
+    await waitForRegistrationChanges(
+      [
+        {
+          referenceId: registrationPvScoped.referenceId,
+          expectedPatch: updateDto,
+        },
+      ],
+      programIdPv,
       accessToken,
     );
     const getRegistrationResult = await searchRegistrationByReferenceId(
@@ -371,6 +392,17 @@ describe('Update attribute of PA', () => {
       registrationWesteros1.referenceId,
       dataUpdateToEmpty,
       reason,
+      accessToken,
+    );
+
+    await waitForRegistrationChanges(
+      [
+        {
+          referenceId: registrationPvScoped.referenceId,
+          expectedPatch: dataUpdateToEmpty,
+        },
+      ],
+      programIdPv,
       accessToken,
     );
 
