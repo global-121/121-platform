@@ -9,17 +9,17 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 
-@Unique('programFinancialServiceProviderConfigurationPropertyUnique', [
-  'programFinancialServiceProviderConfigurationId',
+@Unique('programFspConfigurationPropertyUnique', [
+  'programFspConfigurationId',
   'name',
 ])
-@Entity('program_financial_service_provider_configuration_property')
-export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends Base121Entity {
+@Entity('program_fsp_configuration_property')
+export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   @Column({ type: 'character varying' })
-  public name: FinancialServiceProviderConfigurationProperties;
+  public name: FspConfigurationProperties;
 
   @Column({
     type: 'varchar',
@@ -48,13 +48,12 @@ export class ProgramFinancialServiceProviderConfigurationPropertyEntity extends 
   public value: string | string[] | Record<string, string>;
 
   @ManyToOne(
-    (_type) => ProgramFinancialServiceProviderConfigurationEntity,
-    (programFinancialServiceProviderConfiguration) =>
-      programFinancialServiceProviderConfiguration.properties,
+    (_type) => ProgramFspConfigurationEntity,
+    (programFspConfiguration) => programFspConfiguration.properties,
     { cascade: true, onDelete: 'CASCADE' },
   )
-  @JoinColumn({ name: 'programFinancialServiceProviderConfigurationId' })
-  public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
+  @JoinColumn({ name: 'programFspConfigurationId' })
+  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
   @Column()
-  public programFinancialServiceProviderConfigurationId: number;
+  public programFspConfigurationId: number;
 }

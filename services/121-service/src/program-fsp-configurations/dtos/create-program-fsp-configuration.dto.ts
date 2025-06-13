@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -31,12 +31,12 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
   public readonly label: LocalizedString;
 
   @ApiProperty({
-    enum: FinancialServiceProviders,
-    example: FinancialServiceProviders.intersolveVoucherWhatsapp,
+    enum: Fsps,
+    example: Fsps.intersolveVoucherWhatsapp,
   })
   @IsNotEmpty()
-  @IsEnum(FinancialServiceProviders)
-  public readonly financialServiceProviderName: FinancialServiceProviders;
+  @IsEnum(Fsps)
+  public readonly financialServiceProviderName: Fsps;
 
   @IsArray()
   @ValidateNested()

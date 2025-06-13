@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -183,16 +183,15 @@ describe('Update program financial servce provider configuration of PA', () => {
     const fspConfigBody: CreateProgramFinancialServiceProviderConfigurationDto =
       {
         name: newProgramFinancialServiceProviderConfigurationName,
-        financialServiceProviderName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        financialServiceProviderName: Fsps.intersolveVoucherWhatsapp,
         label: newProgramFinancialServiceProviderConfigurationLabel,
         properties: [
           {
-            name: FinancialServiceProviderConfigurationProperties.password,
+            name: FspConfigurationProperties.password,
             value: 'password',
           },
           {
-            name: FinancialServiceProviderConfigurationProperties.username,
+            name: FspConfigurationProperties.username,
             value: 'username',
           },
         ],

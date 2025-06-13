@@ -5,7 +5,7 @@ import { Equal, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
@@ -659,7 +659,7 @@ export class MetricsService {
   > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
     });
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
@@ -667,11 +667,8 @@ export class MetricsService {
       alias: string;
     }[] = [];
 
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.safaricom
-      ) {
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.safaricom) {
         fields = [
           ...fields,
           ...[
@@ -683,10 +680,7 @@ export class MetricsService {
           ],
         ];
       }
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.nedbank
-      ) {
+      if (fspConfig.fspName === Fsps.nedbank) {
         fields = [
           ...fields,
           ...[

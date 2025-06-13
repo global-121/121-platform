@@ -10,7 +10,7 @@ import {
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -54,18 +54,17 @@ export class TransactionEntity extends Base121AuditedEntity {
   public transactionStep: number;
 
   @ManyToOne(
-    (_type) => ProgramFinancialServiceProviderConfigurationEntity,
-    (programFinancialServiceProviderConfiguration) =>
-      programFinancialServiceProviderConfiguration.transactions,
+    (_type) => ProgramFspConfigurationEntity,
+    (programFspConfiguration) => programFspConfiguration.transactions,
     { onDelete: 'SET NULL' },
   )
   @JoinColumn({
-    name: 'programFinancialServiceProviderConfigurationId',
+    name: 'programFspConfigurationId',
   })
-  public programFinancialServiceProviderConfiguration: Relation<ProgramFinancialServiceProviderConfigurationEntity>;
+  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
   @Index()
   @Column({ type: 'int', nullable: true })
-  public programFinancialServiceProviderConfigurationId: number;
+  public programFspConfigurationId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,

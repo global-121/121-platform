@@ -5,7 +5,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
@@ -81,10 +81,7 @@ export class RegistrationsInputValidator {
 
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: [
-        'programFinancialServiceProviderConfigurations',
-        'programRegistrationAttributes',
-      ],
+      relations: ['programFspConfigurations', 'programRegistrationAttributes'],
     });
 
     const languageMapping = this.createLanguageMapping(
@@ -211,36 +208,27 @@ export class RegistrationsInputValidator {
        * =============================================
        */
       const errorObjFspConfig = this.validateProgramFspConfigurationName({
-        programFinancialServiceProviderConfigurationName:
-          row[
-            AdditionalAttributes
-              .programFinancialServiceProviderConfigurationName
-          ],
-        programFinancialServiceProviderConfigurations:
-          program.programFinancialServiceProviderConfigurations,
+        programFspConfigurationName:
+          row[AdditionalAttributes.programFspConfigurationName],
+        programFspConfigurations: program.programFspConfigurations,
         i,
         typeOfInput,
       });
       if (errorObjFspConfig) {
         errors.push(errorObjFspConfig);
       } else if (
-        row[
-          AdditionalAttributes.programFinancialServiceProviderConfigurationName
-        ] as string
+        row[AdditionalAttributes.programFspConfigurationName] as string
       ) {
         validatedRegistrationInput[
-          AdditionalAttributes.programFinancialServiceProviderConfigurationName
-        ] = row[
-          AdditionalAttributes.programFinancialServiceProviderConfigurationName
-        ] as string;
+          AdditionalAttributes.programFspConfigurationName
+        ] = row[AdditionalAttributes.programFspConfigurationName] as string;
       }
 
       const errorObjsFspRequiredAttributes = this.validateFspRequiredAttributes(
         {
           row,
           originalRegistration,
-          programFinancialServiceProviderConfigurations:
-            program.programFinancialServiceProviderConfigurations,
+          programFspConfigurations: program.programFspConfigurations,
           i,
         },
       );
@@ -441,41 +429,38 @@ export class RegistrationsInputValidator {
   }
 
   private validateProgramFspConfigurationName({
-    programFinancialServiceProviderConfigurationName,
-    programFinancialServiceProviderConfigurations,
+    programFspConfigurationName: programFspName,
+    programFspConfigurations: programFspConfigurations,
     i,
     typeOfInput,
   }: {
-    programFinancialServiceProviderConfigurationName: InputAttributeType;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFspConfigurationName: InputAttributeType;
+    programFspConfigurations: ProgramFspConfigurationEntity[];
     i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
-    // The registration is being patched, and the programFinancialServiceProviderConfigurationName is not being updated so the validation can be skipped
+    // The registration is being patched, and the programFspConfigurationName is not being updated so the validation can be skipped
     if (
       [
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
       ].includes(typeOfInput) &&
-      (programFinancialServiceProviderConfigurationName == null ||
-        programFinancialServiceProviderConfigurationName === '')
+      (programFspName == null || programFspName === '')
     ) {
       return;
     }
 
     if (
-      !programFinancialServiceProviderConfigurationName ||
-      !programFinancialServiceProviderConfigurations.some(
-        (fspConfig) =>
-          fspConfig.name === programFinancialServiceProviderConfigurationName,
+      !programFspName ||
+      !programFspConfigurations.some(
+        (fspConfig) => fspConfig.name === programFspName,
       )
     ) {
       return {
         lineNumber: i,
-        value: programFinancialServiceProviderConfigurationName,
-        column:
-          AdditionalAttributes.programFinancialServiceProviderConfigurationName,
-        error: `FinancialServiceProviderConfigurationName ${programFinancialServiceProviderConfigurationName} not found in program. Allowed values: ${programFinancialServiceProviderConfigurations
+        value: programFspName,
+        column: AdditionalAttributes.programFspConfigurationName,
+        error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
           .map((fspConfig) => fspConfig.name)
           .join(', ')}`,
       };
@@ -770,12 +755,12 @@ export class RegistrationsInputValidator {
   private validateFspRequiredAttributes({
     row,
     originalRegistration,
-    programFinancialServiceProviderConfigurations,
+    programFspConfigurations: programFspConfigurations,
     i,
   }: {
     row: object;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[];
+    programFspConfigurations: ProgramFspConfigurationEntity[];
     i: number;
   }): ValidateRegistrationErrorObject[] {
     // Decide which required attributes to check
@@ -796,7 +781,7 @@ export class RegistrationsInputValidator {
 
     const requiredAttributes = this.getRequiredAttributesForFsp(
       relevantFspConfigName,
-      programFinancialServiceProviderConfigurations,
+      programFspConfigurations,
     );
     const errors: ValidateRegistrationErrorObject[] = [];
     for (const attribute of requiredAttributes) {
@@ -853,14 +838,13 @@ export class RegistrationsInputValidator {
   }
 
   private getRequiredAttributesForFsp(
-    programFinancialServiceProviderConfigurationName: string,
-    programFinancialServiceProviderConfigurations: ProgramFinancialServiceProviderConfigurationEntity[],
+    programFspConfigurationName: string,
+    programFspConfigurations: ProgramFspConfigurationEntity[],
   ): string[] {
-    const fspName = programFinancialServiceProviderConfigurations.find(
+    const fspName = programFspConfigurations.find(
       (programFspConfig) =>
-        programFspConfig.name ===
-        programFinancialServiceProviderConfigurationName,
-    )?.financialServiceProviderName;
+        programFspConfig.name === programFspConfigurationName,
+    )?.fspName;
     const foundFsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
       (fsp) => fsp.name === fspName,
     );

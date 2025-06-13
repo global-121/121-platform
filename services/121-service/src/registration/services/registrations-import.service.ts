@@ -213,7 +213,7 @@ export class RegistrationsImportService {
         }
       }
 
-      registration.programFinancialServiceProviderConfiguration =
+      registration.programFspConfiguration =
         programFinancialServiceProviderConfigurations[
           record.programFinancialServiceProviderConfigurationName!
         ];
