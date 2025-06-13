@@ -6,6 +6,13 @@ export class RenameFinancialServiceProviderToFsp1749809825697
   name = 'RenameFinancialServiceProviderToFsp1749809825697';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Drop view
+    await queryRunner.query(
+      `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
+      ['VIEW', 'registration_view', '121-service'],
+    );
+    await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
+
     // Drop constraints and indexes
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d8a56a1864ef40e1551833430bb"`,
