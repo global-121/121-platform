@@ -1,8 +1,8 @@
 import { Controller, Get, HttpStatus, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { FinancialServiceProviderDto } from '@121-service/src/financial-service-providers/financial-service-provider.dto';
-import { FinancialServiceProvidersService } from '@121-service/src/financial-service-providers/financial-service-provider.service';
+import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
+import { FinancialServiceProvidersService } from '@121-service/src/fsps/fsp.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 

@@ -11,8 +11,8 @@ import {
 } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-import { FinancialServiceProviders } from '@121-service/src/financial-service-providers/enum/financial-service-provider-name.enum';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-financial-service-provider-configurations/dtos/create-program-financial-service-provider-configuration-property.dto';
+import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class CreateProgramFinancialServiceProviderConfigurationDto {

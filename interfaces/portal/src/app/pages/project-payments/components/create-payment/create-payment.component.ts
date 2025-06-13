@@ -23,7 +23,7 @@ import { CardModule } from 'primeng/card';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/financial-service-providers/financial-service-provider-integration-type.enum';
+import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { BulkActionResultPaymentDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
