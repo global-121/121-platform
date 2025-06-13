@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { v4 as uuid } from 'uuid';
 
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class CreateProgramFinancialServiceProviderConfigurationPropertyDto {
   @ApiProperty({
-    example: FinancialServiceProviderConfigurationProperties.username,
+    example: FspConfigurationProperties.username,
   })
   @IsNotEmpty()
-  @IsEnum(FinancialServiceProviderConfigurationProperties)
-  public readonly name: WrapperType<FinancialServiceProviderConfigurationProperties>;
+  @IsEnum(FspConfigurationProperties)
+  public readonly name: WrapperType<FspConfigurationProperties>;
 
   @ApiProperty({
     example: `password-${uuid()}`,
