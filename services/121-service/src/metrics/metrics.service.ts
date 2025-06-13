@@ -659,7 +659,7 @@ export class MetricsService {
   > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
     });
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
@@ -667,8 +667,8 @@ export class MetricsService {
       alias: string;
     }[] = [];
 
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (fspConfig.financialServiceProviderName === Fsps.safaricom) {
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.safaricom) {
         fields = [
           ...fields,
           ...[
@@ -680,7 +680,7 @@ export class MetricsService {
           ],
         ];
       }
-      if (fspConfig.financialServiceProviderName === Fsps.nedbank) {
+      if (fspConfig.fspName === Fsps.nedbank) {
         fields = [
           ...fields,
           ...[

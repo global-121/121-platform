@@ -259,7 +259,7 @@ export class SeedHelper {
     });
     const fspConfigArrayFromJson =
       programFromJSON.programFinancialServiceProviderConfigurations;
-    foundProgram.programFinancialServiceProviderConfigurations = [];
+    foundProgram.programFspConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
       const financialServiceProviderObject =
@@ -295,8 +295,7 @@ export class SeedHelper {
     programId: number,
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();
-    fspConfigEntity.financialServiceProviderName =
-      fspConfigFromJson.financialServiceProvider;
+    fspConfigEntity.fspName = fspConfigFromJson.financialServiceProvider;
     fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
       fspConfigFromJson.properties ?? [],
     );

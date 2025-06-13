@@ -42,13 +42,13 @@ export class ExcelRecociliationService {
     const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
-        programFinancialServiceProviderConfigurations: {
-          financialServiceProviderName: Equal(Fsps.excel),
+        programFspConfigurations: {
+          fspName: Equal(Fsps.excel),
         },
       },
       relations: ['programFinancialServiceProviderConfigurations'],
       order: {
-        programFinancialServiceProviderConfigurations: {
+        programFspConfigurations: {
           name: 'ASC',
         },
       },
@@ -62,7 +62,7 @@ export class ExcelRecociliationService {
     }
 
     const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
+    for (const fspConfig of programWithExcelFspConfigs.programFspConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
@@ -95,8 +95,8 @@ export class ExcelRecociliationService {
       relations: ['programFinancialServiceProviderConfigurations'],
     });
     const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (fspConfig.financialServiceProviderName === Fsps.excel) {
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
     }

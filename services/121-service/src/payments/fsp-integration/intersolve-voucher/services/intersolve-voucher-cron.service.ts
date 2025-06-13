@@ -64,7 +64,7 @@ export class IntersolveVoucherCronService {
     // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
     const configId = await this.programFspConfigurationRepository.findOne({
       where: {
-        financialServiceProviderName: Equal(Fsps.intersolveVoucherWhatsapp),
+        fspName: Equal(Fsps.intersolveVoucherWhatsapp),
       },
       select: ['id'],
     });
