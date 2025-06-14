@@ -18,7 +18,7 @@
     [formGroup]="formGroup"
     (ngSubmit)="onFormSubmit()"
   >
-    <ng-content></ng-content>
+    <ng-content select="[pre-file-input]"></ng-content>
     <div>
       <app-file-upload-control
         formControlName="file"
@@ -49,6 +49,7 @@
         }
       </div>
     }
+    <ng-content select="[post-file-input]"></ng-content>
     <div class="flex justify-end gap-3 pt-2">
       <p-button
         label="Cancel"
