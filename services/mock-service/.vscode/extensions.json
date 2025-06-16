@@ -1,6 +1,22 @@
 {
   "recommendations": [
     // Sorted alphabetically:
-    "danlevett.regex-robin"
+    "ban.spellright",
+    "bierner.markdown-mermaid",
+    "danlevett.regex-robin",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "dotiful.dotfiles-syntax-highlighting",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "esbenp.prettier-vscode",
+    "mechatroner.rainbow-csv",
+    "meganrogge.template-string-converter",
+    "mikestead.dotenv",
+    "redhat.vscode-yaml",
+    "sburg.vscode-javascript-booster",
+    "sysoev.vscode-open-in-github",
+    "tombonnike.vscode-status-bar-format-toggle",
+    "whtouche.vscode-js-console-utils"
   ]
 }

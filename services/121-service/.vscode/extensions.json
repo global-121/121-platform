@@ -1,18 +1,22 @@
 {
   "recommendations": [
-    "editorconfig.editorconfig",
-    "mikestead.dotenv",
-    "danlevett.regex-robin",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "tombonnike.vscode-status-bar-format-toggle",
-    "whtouche.vscode-js-console-utils",
-    "sburg.vscode-javascript-booster",
-    "meganrogge.template-string-converter",
-    "redhat.vscode-yaml",
-    "sysoev.vscode-open-in-github",
-    "davidanson.vscode-markdownlint",
+    // Sorted alphabetically:
+    "ban.spellright",
     "bierner.markdown-mermaid",
-    "mechatroner.rainbow-csv"
+    "danlevett.regex-robin",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "dotiful.dotfiles-syntax-highlighting",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "esbenp.prettier-vscode",
+    "mechatroner.rainbow-csv",
+    "meganrogge.template-string-converter",
+    "mikestead.dotenv",
+    "redhat.vscode-yaml",
+    "sburg.vscode-javascript-booster",
+    "sysoev.vscode-open-in-github",
+    "tombonnike.vscode-status-bar-format-toggle",
+    "whtouche.vscode-js-console-utils"
   ]
 }
