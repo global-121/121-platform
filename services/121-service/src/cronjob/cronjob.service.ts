@@ -3,15 +3,12 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
+import { env } from '@121-service/src/env';
 import {
   CustomHttpService,
   Header,
 } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
-
-function shouldBeEnabled(envVariable: string | undefined): boolean {
-  return !!envVariable && envVariable.toLowerCase() === 'true';
-}
 
 type cronReturn = Promise<
   | {
@@ -28,9 +25,7 @@ export class CronjobService {
   private currentlyRunningCronjobName: string;
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
-    ),
+    disabled: !env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
   })
   public async cronCancelByRefposIntersolve(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
@@ -42,9 +37,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
-    ),
+    disabled: !env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
   })
   public async cronValidateCommercialBankEthiopiaAccountEnquiries(
     cronJobMethodName,
@@ -57,9 +50,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_3AM, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
-    ),
+    disabled: !env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
   })
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(
     cronJobMethodName,
@@ -72,9 +63,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
-    ),
+    disabled: !env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
   })
   public async cronRetrieveAndUpdateVisaData(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
@@ -86,9 +75,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_NOON, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
-    ),
+    disabled: !env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
   })
   public async cronSendWhatsappReminders(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
@@ -100,7 +87,7 @@ export class CronjobService {
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
   @Cron(CronExpression.EVERY_DAY_AT_4AM, {
-    disabled: !shouldBeEnabled(process.env.CRON_NEDBANK_VOUCHERS),
+    disabled: !env.CRON_NEDBANK_VOUCHERS,
   })
   public async cronDoNedbankReconciliation(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
@@ -111,7 +98,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM, {
-    disabled: !shouldBeEnabled(process.env.CRON_GET_DAILY_EXCHANGE_RATES),
+    disabled: !env.CRON_GET_DAILY_EXCHANGE_RATES,
   })
   public async cronGetDailyExchangeRates(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
@@ -121,9 +108,7 @@ export class CronjobService {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {
-    disabled: !shouldBeEnabled(
-      process.env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
-    ),
+    disabled: !env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
   })
   public async cronRemoveDeprecatedImageCodes(cronJobMethodName): cronReturn {
     const { baseUrl, headers } =
