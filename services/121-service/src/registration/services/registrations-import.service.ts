@@ -33,7 +33,7 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
-const MASS_UPDATE_ROW_LIMIT = 100000;
+const MASS_UPDATE_ROW_LIMIT = 50_000;
 
 @Injectable()
 export class RegistrationsImportService {
