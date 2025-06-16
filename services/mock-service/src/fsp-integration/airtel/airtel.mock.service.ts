@@ -9,6 +9,7 @@ import { AirtelDisbursementV2RequestDto } from '@mock-service/src/fsp-integratio
 
 enum AirtelMockPhoneNumber {
   failDuplicateTransactionId = '000000001',
+  invalidMobileNumber = '000000002',
 }
 
 export const AirtelAuthToken = 'FjE953LG40P0hdehYEiSkUd0hGWshyFf';
@@ -216,7 +217,6 @@ export class AirtelMockService {
       AirtelMockPhoneNumber.failDuplicateTransactionId ===
       transferDto.payee.msisdn
     ) {
-      // This is a special phone number we use to test the duplicate transaction ID error.
       return [
         200,
         {
@@ -226,6 +226,23 @@ export class AirtelMockService {
             success: false,
             result_code: '521050',
             message: 'Duplicate exttRID',
+          },
+        },
+      ];
+    }
+
+    if (
+      AirtelMockPhoneNumber.invalidMobileNumber === transferDto.payee.msisdn
+    ) {
+      return [
+        200,
+        {
+          status: {
+            response_code: 'DP00900001012',
+            code: '400',
+            success: false,
+            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
+            message: 'Mobile number entered is incorrect.',
           },
         },
       ];
