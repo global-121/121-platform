@@ -27,7 +27,8 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@121-service/*": ["./*"]
+      "@121-service/*": ["./*"],
+      "typeorm/*": ["./node_modules/typeorm/*"] // Add explicit location of custom TypeORM fork
     }
   },
   "watchOptions": {
