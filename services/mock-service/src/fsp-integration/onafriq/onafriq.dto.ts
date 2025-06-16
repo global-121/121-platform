@@ -59,20 +59,18 @@ export class OnafriqCallServicePayload {
 }
 
 export class OnafriqCallServiceResponseBodyDto {
-  public data: {
-    totalTxSent: number;
-    noTxAccepted: number;
-    noTxRejected: number;
-    details: {
-      transResponse: {
-        thirdPartyId: string;
-        status: {
-          code: string;
-          message: string;
-          messageDetail?: string;
-        };
-      }[];
-    };
-    timestamp: string; // e.g. "2019-12-18 07:50:26.771"
+  totalTxSent: number;
+  noTxAccepted: number;
+  noTxRejected: number;
+  details: {
+    transResponse: {
+      thirdPartyId: string;
+      status: {
+        code: string;
+        message: string;
+        messageDetail?: string;
+      };
+    }[];
   };
+  timestamp: string; // e.g. "2019-12-18 07:50:26.771"
 }
