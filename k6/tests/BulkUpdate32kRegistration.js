@@ -10,7 +10,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 15; // '17' leads to 131k registrations for now only '15' is used for 32k registrations
+const duplicateNumber = 15; // '15' leads to 32k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 const MAX_BULK_UPDATE_DURATION_MS = 15714; // 15.714 seconds approx. duration for 100k registrations
@@ -31,7 +31,7 @@ export default function () {
   loginPage.login();
   // Upload registration
   registrationsModel.importRegistrations(programId, registrationPV);
-  // Duplicate registration to be more then 100k
+  // Duplicate registration to be 32k
   resetPage.duplicateRegistrations(duplicateNumber);
   // export registrations
   const exportRegistrations = registrationsModel.exportRegistrations(
@@ -43,13 +43,10 @@ export default function () {
     'export registrations has data': (r) => r.body.length > 0,
   });
 
-  // edit registrations - change preferredLanguage from nl to ar and convert to CSV
   const responseObj = JSON.parse(exportRegistrations.body);
-  const registrations = responseObj.data.slice(0, 100000); // take up to 100k registrations
+  const registrations = responseObj.data;
   for (const registration of registrations) {
-    if (registration.preferredLanguage === 'nl') {
-      registration.preferredLanguage = 'ar'; // change to Arabic
-    }
+    registration.preferredLanguage = 'ar'; // change to Arabic
   }
   const csvFile = registrationsModel.jsonToCsv(registrations);
   // batch update registrations and check if it takes less than X ms
