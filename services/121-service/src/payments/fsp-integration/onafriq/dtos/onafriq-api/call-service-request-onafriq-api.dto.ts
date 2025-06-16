@@ -2,7 +2,7 @@ export interface CallServiceRequestOnafriqApiDto {
   readonly corporateCode: string;
   readonly password: string;
   readonly mfsSign: string;
-  readonly batchId: number;
+  readonly batchId: string;
   readonly requestBody: {
     readonly instructionType: {
       readonly destAcctType: number; // 1 for Mobile Money, 2 for Bank Account
