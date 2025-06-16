@@ -1,9 +1,9 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   bulkUpdateRegistrationsCSV,
   importRegistrationsCSV,
   searchRegistrationByReferenceId,
+  waitForBulkRegistrationChanges,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -85,7 +85,21 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       'test-reason',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
-    await waitFor(2000);
+
+    await waitForBulkRegistrationChanges(
+      [
+        {
+          referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+          expectedPatch: registrationDataThatWillChangePa1,
+        },
+        {
+          referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+          expectedPatch: registrationDataThatWillChangePa2,
+        },
+      ],
+      programIdOcw,
+      accessToken,
+    );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
@@ -171,7 +185,21 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       'test-reason',
     );
     expect(bulkUpdateResult.statusCode).toBe(200);
-    await waitFor(2000);
+
+    await waitForBulkRegistrationChanges(
+      [
+        {
+          referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+          expectedPatch: registrationDataThatWillChangePa1,
+        },
+        {
+          referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+          expectedPatch: registrationDataThatWillChangePa2,
+        },
+      ],
+      programIdOcw,
+      accessToken,
+    );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(

@@ -1,3 +1,4 @@
+import { isMatch } from 'lodash';
 import * as request from 'supertest';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
@@ -406,6 +407,47 @@ export async function waitForStatusChangeToComplete(
     }
     await waitFor(200);
   }
+}
+
+// It's only useful to call this function on bulk updates, because single updates happen synchronously
+export async function waitForBulkRegistrationChanges(
+  expectedChanges: {
+    referenceId: string;
+    expectedPatch: Record<string, any>;
+  }[],
+  programId: number,
+  accessToken: string,
+  maxWaitTimeMs = 10000,
+  pollIntervalMs = 500,
+): Promise<void> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < maxWaitTimeMs) {
+    const allMatch = await Promise.all(
+      expectedChanges.map(async ({ referenceId, expectedPatch }) => {
+        const result = await searchRegistrationByReferenceId(
+          referenceId,
+          programId,
+          accessToken,
+        );
+        const registration = result.body.data[0];
+        // Filter out null values. Because if you remove a field from a registration it will not be returned from the api
+        const filteredPatch = Object.entries(expectedPatch)
+          .filter(([_, value]) => value !== null)
+          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+
+        return registration && isMatch(registration, filteredPatch);
+      }),
+    );
+
+    if (allMatch.every(Boolean)) {
+      return;
+    }
+
+    await waitFor(pollIntervalMs);
+  }
+
+  throw new Error('Timed out waiting for registration changes');
 }
 
 export function sendMessage(
