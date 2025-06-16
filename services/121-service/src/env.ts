@@ -100,10 +100,7 @@ export const env = createEnv({
     CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
 
     // Interface(s) configuration
-    REDIRECT_PORTAL_URL_HOST: z
-      .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+    REDIRECT_PORTAL_URL_HOST: z.url().refine((value) => !value.endsWith('/')), // TODO: Rename to better reflect other uses.
 
     // Third-party: Azure ApplicationInsights
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
