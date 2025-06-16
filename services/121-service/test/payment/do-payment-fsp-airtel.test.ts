@@ -1,5 +1,12 @@
+import { HttpStatus } from '@nestjs/common';
+
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import {
+  doPayment,
+  getTransactions,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -21,7 +28,7 @@ describe('Do payment', () => {
     });
 
     describe('when create order API call gives a valid response', () => {
-      it('should succesfully do a payment', async () => {
+      it('should successfully do a payment', async () => {
         // Arrange
         const paymentReferenceIds = [registrationAirtel.referenceId];
         await seedIncludedRegistrations(
@@ -31,7 +38,7 @@ describe('Do payment', () => {
         );
 
         // Act
-        const _doPaymentResponse = await doPayment({
+        const doPaymentResponse = await doPayment({
           programId,
           paymentNr: payment,
           amount,
@@ -39,82 +46,99 @@ describe('Do payment', () => {
           accessToken,
         });
 
-        // await waitForPaymentTransactionsToComplete({
-        //   programId,
-        //   paymentReferenceIds,
-        //   accessToken,
-        //   maxWaitTimeMs: 30_000,
-        //   completeStatusses: [
-        //     TransactionStatusEnum.success,
-        //     TransactionStatusEnum.error,
-        //     TransactionStatusEnum.waiting,
-        //   ],
-        // });
+        await waitForPaymentTransactionsToComplete({
+          programId,
+          paymentReferenceIds,
+          accessToken,
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
+            TransactionStatusEnum.success,
+            TransactionStatusEnum.error,
+            TransactionStatusEnum.waiting,
+          ],
+        });
+        const getTransactionsResult = await getTransactions({
+          programId,
+          paymentNr: payment,
+          registrationReferenceId: registrationAirtel.referenceId,
+          accessToken,
+        });
+        const transaction = getTransactionsResult.body[0];
 
-        // const getTransactionsBeforeCronjob = await getTransactions({
-        //   programId,
-        //   paymentNr: payment,
-        //   registrationReferenceId: registrationAirtel.referenceId,
-        //   accessToken,
-        // });
-        // const transactionBeforeCronJob = getTransactionsBeforeCronjob.body[0];
+        // Assert
+        expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+        expect(doPaymentResponse.body.applicableCount).toBe(
+          paymentReferenceIds.length,
+        );
+        expect(doPaymentResponse.body.totalFilterCount).toBe(
+          paymentReferenceIds.length,
+        );
+        expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
+        expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
+          registrationAirtel.paymentAmountMultiplier,
+        );
+        expect(transaction.errorMessage).toBe(null);
+        expect(transaction.status).toBe(TransactionStatusEnum.success);
+      });
 
-        // // Cronjob should update the status of the transaction
-        // await runCronJobDoNedbankReconciliation();
-        // await waitForPaymentTransactionsToComplete({
-        //   programId,
-        //   paymentReferenceIds,
-        //   accessToken,
-        //   maxWaitTimeMs: 6_000,
-        //   completeStatusses: [
-        //     TransactionStatusEnum.success,
-        //     TransactionStatusEnum.error,
-        //   ],
-        // });
+      it('should correctly handle duplicate Airtel transactionId', async () => {
+        // Arrange
+        const registrationAirtelDuplicateTransactionId = {
+          ...registrationAirtel,
+          phoneNumber: '260000000001',
+        };
+        const paymentReferenceIds = [
+          registrationAirtelDuplicateTransactionId.referenceId,
+        ];
+        await seedIncludedRegistrations(
+          [registrationAirtelDuplicateTransactionId],
+          programId,
+          accessToken,
+        );
 
-        // const getTransactionsAfterCronjob = await getTransactions({
-        //   programId,
-        //   paymentNr: payment,
-        //   registrationReferenceId: registrationAirtel.referenceId,
-        //   accessToken,
-        // });
-        // const transactionAfterCronJob = getTransactionsAfterCronjob.body[0];
+        // Act
+        const doPaymentResponse = await doPayment({
+          programId,
+          paymentNr: payment,
+          amount,
+          referenceIds: paymentReferenceIds,
+          accessToken,
+        });
 
-        // const exportPaymentResponse = await exportList({
-        //   programId,
-        //   exportType: ExportType.payment,
-        //   accessToken,
-        //   options: {
-        //     minPayment: 0,
-        //     maxPayment: 1,
-        //   },
-        // });
-        // const exportPayment = exportPaymentResponse.body.data[0];
+        await waitForPaymentTransactionsToComplete({
+          programId,
+          paymentReferenceIds,
+          accessToken,
+          maxWaitTimeMs: 30_000,
+          completeStatusses: [
+            TransactionStatusEnum.success,
+            TransactionStatusEnum.error,
+            TransactionStatusEnum.waiting,
+          ],
+        });
+        const getTransactionsResult = await getTransactions({
+          programId,
+          paymentNr: payment,
+          registrationReferenceId:
+            registrationAirtelDuplicateTransactionId.referenceId,
+          accessToken,
+        });
+        const transaction = getTransactionsResult.body[0];
 
-        // // Assert
-        // expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-        // expect(doPaymentResponse.body.applicableCount).toBe(
-        //   paymentReferenceIds.length,
-        // );
-        // expect(doPaymentResponse.body.totalFilterCount).toBe(
-        //   paymentReferenceIds.length,
-        // );
-        // expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
-        // expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
-        //   registrationAirtel.paymentAmountMultiplier,
-        // );
-        // expect(transactionBeforeCronJob.status).toBe(
-        //   TransactionStatusEnum.waiting,
-        // );
-        // expect(transactionBeforeCronJob.errorMessage).toBe(null);
-        // expect(transactionAfterCronJob.status).toBe(
-        //   TransactionStatusEnum.success,
-        // );
-        // expect(exportPayment.nedbankVoucherStatus).toBe(
-        //   NedbankVoucherStatus.REDEEMED,
-        // );
-        // expect(exportPayment.nedbankOrderCreateReference).toBeDefined();
-        // expect(exportPayment.nedbankPaymentReference).toMatchSnapshot();
+        // Assert
+        expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+        expect(doPaymentResponse.body.applicableCount).toBe(
+          paymentReferenceIds.length,
+        );
+        expect(doPaymentResponse.body.totalFilterCount).toBe(
+          paymentReferenceIds.length,
+        );
+        expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
+        expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
+          registrationAirtelDuplicateTransactionId.paymentAmountMultiplier,
+        );
+        expect(transaction.errorMessage).toBe(null);
+        expect(transaction.status).toBe(TransactionStatusEnum.success);
       });
     });
   });

@@ -29,6 +29,7 @@ const getBooleanEnvDefaultToFalse = (envVar: string): boolean => {
   return true;
 };
 
+// ##TODO: We should refactor the use of Headers in the custom HTTP service and than this function can be removed.
 const headersToPojo = (headers: Headers) => {
   const headersArray: { name: string; value: string }[] = [];
   headers.forEach((value, key) => {
@@ -73,99 +74,6 @@ export class AirtelApiService {
       'standard/v2/disbursements/',
       airtelApiBaseUrl,
     );
-    this.airtelEnquiryV2URL.searchParams.append('transactionType', 'B2C');
-  }
-
-  private addAuthHeaders(headers: Headers): Headers {
-    if (!this.tokenSet || !this.tokenSet.access_token) {
-      throw new Error('No access token available for Airtel API requests');
-    }
-    // Check if it's expired
-    // if (!this.tokenValidationService.isTokenValid(this.tokenSet)) {
-    //   throw new AirtelApiError(
-    //     '666 Access token is expired. Please authenticate again.',
-    //   );
-    // }
-    headers.append('Authorization', `Bearer ${this.tokenSet.access_token}`);
-    return headers;
-  }
-
-  private async authenticate(): Promise<void> {
-    // if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
-    //   console.log(
-    //     'Airtel API token is still valid, no need to authenticate again.',
-    //   );
-    //   return;
-    // }
-
-    // Uses different headers from the other endpoints.
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-
-    const payload = {
-      grant_type: 'client_credentials',
-      client_id: this.airtelClientId,
-      client_secret: this.airtelClientSecret,
-    };
-
-    let response;
-    try {
-      // We don't actually validate that the API returns this.
-      // We'll add actual validation later.
-      response = await this.httpService.post<
-        AxiosResponse<AirtelApiAuthenticationResponseDto>
-      >(`${this.airtelAuthenticateURL}`, payload, headersToPojo(headers));
-    } catch (error) {
-      throw new AirtelApiError(`authentication failed: ${error.message}`);
-    }
-
-    // ## TODO: Validate using the DTO.
-    const accessToken = response?.data?.access_token;
-    if (!accessToken) {
-      throw new AirtelApiError(
-        'authentication failed: No access token received from Airtel API',
-      );
-    }
-    const expiresInSeconds = response?.data?.expires_in;
-
-    if (!expiresInSeconds || expiresInSeconds <= 0) {
-      throw new AirtelApiError(
-        `authentication failed: Invalid or missing expires_in value from Airtel API: "${expiresInSeconds}".`,
-      );
-    }
-
-    // We subtract 5 seconds to ensure we don't use an expired token.
-    const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
-
-    this.tokenSet = new TokenSet({
-      access_token: accessToken,
-      expires_at: expiresAtUnixTimestamp,
-    });
-  }
-
-  private processResponse(data: AirtelDisbursementOrEnquiryResponseDto) {
-    const responseCode = data?.status?.response_code;
-    if (!responseCode) {
-      console.error(data);
-      throw new AirtelApiError(
-        'disbursement failed: No response code received from Airtel API',
-      );
-    }
-
-    let message = '';
-    // We're not sure this exists.
-    if (data?.status?.message) {
-      message = `${data.status.message} (${responseCode})`;
-    } else {
-      // Put whatever is in data as a string.
-      // This is a fallback in case the message is not structured as expected.
-      message = JSON.stringify(data);
-    }
-
-    // ## TODO: rename?
-    const result = AirtelDisbursementOrEnquiryResultMapper(responseCode);
-
-    return { result, message };
   }
 
   public async disburse({
@@ -212,35 +120,23 @@ export class AirtelApiService {
       },
     };
 
-    console.log('😃😃😃😃😃😃😃😃😃');
-    console.log('Disbursement payload');
-    console.log(payload);
-    console.log('headers');
-    console.log(headersToPojo(headers));
-    console.log('😃😃😃😃😃😃😃😃😃');
-
+    let response: AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>;
     try {
       // We don't actually validate that the API returns this.
       // We'll add actual validation later.
-      const response = await this.httpService.post<
+      response = await this.httpService.post<
         AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>
       >(url.href, payload, headersToPojo(headers));
-
-      console.log('😃😃😃😃😃😃😃😃😃');
-      console.log('Disbursement response');
-      console.log(response.data);
-      console.log('😃😃😃😃😃😃😃😃😃');
-
-      return this.processResponse(response.data);
     } catch (error) {
-      if (error instanceof AirtelApiError) {
-        throw error; // Re-throw AirtelApiError to preserve the error message.
-      } else {
-        throw new AirtelApiError(
-          `disbursement failed, could not complete request: ${error.message}`,
-        );
-      }
+      throw new AirtelApiError(
+        `disbursement failed, could not complete request: ${error.message}`,
+      );
     }
+
+    return {
+      result: this.getResultOrThrow(response.data?.status?.response_code),
+      message: this.getMessage(response.data),
+    };
   }
 
   public async enquire({
@@ -259,7 +155,7 @@ export class AirtelApiService {
   }> {
     await this.authenticate();
     const url = new URL(airtelTransactionId, this.airtelEnquiryV2URL);
-
+    url.searchParams.append('transactionType', 'B2C');
     const headers = this.addAuthHeaders(
       new Headers({
         Accept: '*/*',
@@ -269,21 +165,116 @@ export class AirtelApiService {
       }),
     );
 
+    let response: AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>;
     try {
       // We don't actually validate that the API returns this.
-      // We'll add actual validation later.
-      const response = await this.httpService.get<
+      // ##TODO: add actual validation later.
+      response = await this.httpService.get<
         AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>
       >(url.href, headersToPojo(headers));
-      return this.processResponse(response.data);
     } catch (error) {
-      if (error instanceof AirtelApiError) {
-        throw error; // Re-throw AirtelApiError to preserve the error message.
-      } else {
-        throw new AirtelApiError(
-          `disbursement failed, could not complete request: ${error.message}`,
-        );
-      }
+      throw new AirtelApiError(
+        `enquire failed, could not complete request: ${error.message}`,
+      );
     }
+
+    return {
+      // The result of enquiry cannot be duplicate.
+      result: this.getResultOrThrow(response.data?.status?.response_code) as
+        | AirtelDisbursementResultEnum.fail
+        | AirtelDisbursementResultEnum.success,
+      message: this.getMessage(response.data),
+    };
+  }
+
+  // ##TODO: Refactore: Do not call both addAuthHeader and authenticate in enquire and disburse methods.
+  private addAuthHeaders(headers: Headers): Headers {
+    if (!this.tokenSet || !this.tokenSet.access_token) {
+      throw new Error('No access token available for Airtel API requests');
+    }
+    // ##TODO: Uncomment this when the token validation service is implemented with ms as param
+
+    headers.append('Authorization', `Bearer ${this.tokenSet.access_token}`);
+    return headers;
+  }
+
+  // ##TODO: Refactore: Do not call both addAuthHeader and authenticate in enquire and disburse methods.
+  private async authenticate(): Promise<void> {
+    // if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
+    //   console.log(
+    //     'Airtel API token is still valid, no need to authenticate again.',
+    //   );
+    //   return;
+    // }
+
+    // Uses different headers from the other endpoints.
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const payload = {
+      grant_type: 'client_credentials',
+      client_id: this.airtelClientId,
+      client_secret: this.airtelClientSecret,
+    };
+
+    let response;
+    try {
+      // We don't actually validate that the API returns this.
+      // ##TODO: add actual validation later.
+      response = await this.httpService.post<
+        AxiosResponse<AirtelApiAuthenticationResponseDto>
+      >(`${this.airtelAuthenticateURL}`, payload, headersToPojo(headers));
+    } catch (error) {
+      throw new AirtelApiError(`authentication failed: ${error.message}`);
+    }
+
+    // ## TODO: Validate using the DTO.
+    const accessToken = response?.data?.access_token;
+    if (!accessToken) {
+      throw new AirtelApiError(
+        'authentication failed: No access token received from Airtel API',
+      );
+    }
+    const expiresInSeconds = response?.data?.expires_in;
+
+    if (!expiresInSeconds || expiresInSeconds <= 0) {
+      throw new AirtelApiError(
+        `authentication failed: Invalid or missing expires_in value from Airtel API: "${expiresInSeconds}".`,
+      );
+    }
+
+    // We subtract 5 seconds to ensure we don't use an expired token.
+    const expiresAtUnixTimestamp = (expiresInSeconds - 5) * 1000 + Date.now();
+
+    this.tokenSet = new TokenSet({
+      access_token: accessToken,
+      expires_at: expiresAtUnixTimestamp,
+    });
+  }
+
+  private getMessage(data: AirtelDisbursementOrEnquiryResponseDto): string {
+    const responseCode = data?.status?.response_code;
+
+    let message = '';
+
+    if (data?.status?.message) {
+      message = `${data.status.message} (${responseCode})`;
+    } else {
+      // Put whatever is in data as a string.
+      // This is a fallback in case the message is not structured as expected.
+      message = JSON.stringify(data);
+    }
+    return message;
+  }
+
+  private getResultOrThrow(
+    responseCode: AirtelDisbursementResultEnum | undefined,
+  ): AirtelDisbursementResultEnum {
+    if (!responseCode) {
+      throw new AirtelApiError(
+        'disbursement failed: No response code received from Airtel API',
+      );
+    }
+    return AirtelDisbursementOrEnquiryResultMapper(responseCode);
   }
 }
