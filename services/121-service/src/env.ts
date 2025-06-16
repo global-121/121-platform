@@ -123,7 +123,15 @@ export const env = createEnv({
     KOBO_CONNECT_API_URL: z.url().refine((value) => !value.endsWith('/')),
 
     // FSP-specific configuration:
+    // FSP: Intersolve - Visa
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
+
+    // FSP: Commercial Bank of Ethiopia (CBE)
+    MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
+    COMMERCIAL_BANK_ETHIOPIA_URL: z
+      .url()
+      .refine((value) => !value.endsWith('/'))
+      .optional(),
   },
 
   // We don't use client-side env variables in the same way as in the services
