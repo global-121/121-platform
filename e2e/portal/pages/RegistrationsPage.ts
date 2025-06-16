@@ -223,6 +223,10 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
   }
 
+  async validateImportOptionNotVisible() {
+    await expect(this.importButton).toBeHidden();
+  }
+
   async clickAndSelectExportOption(option: string) {
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
