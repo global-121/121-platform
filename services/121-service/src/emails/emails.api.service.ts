@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -7,20 +8,14 @@ export class EmailsApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async sendEmail(payload: unknown): Promise<void> {
+    if (!env.AZURE_EMAIL_API_URL) {
+      throw new Error('ENV-variable: AZURE_EMAIL_API_URL is not defined');
+    }
     try {
-      const emailApiUrl = process.env.AZURE_EMAIL_API_URL as string;
-
-      const headers = [
-        {
-          name: 'Content-Type',
-          value: 'application/json',
-        },
-      ];
-
-      await this.httpService.post<unknown>(emailApiUrl, payload, headers);
+      await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, payload);
     } catch (error) {
       console.error('Failed to send email through API', error);
-      throw new Error('Failed to send email');
+      throw new Error('Failed to send email through API');
     }
   }
 }
