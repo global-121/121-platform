@@ -72,6 +72,9 @@ graph LR
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
   PaymentsModule-->NedbankModule
+  PaymentsModule-->OnafriqModule
+  OnafriqModule-->RedisModule
+  OnafriqModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
