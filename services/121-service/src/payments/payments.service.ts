@@ -697,7 +697,7 @@ export class PaymentsService {
         }
 
         if (fsp === Fsps.airtel) {
-          return await this.createAndAddNedbankTransactionJobs({
+          return await this.createAndAddAirtelTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
                 return {
@@ -901,17 +901,17 @@ export class PaymentsService {
    *
    */
   private async createAndAddAirtelTransactionJobs({
-    _referenceIdsAndTransactionAmounts: _referenceIdsTransactionAmounts,
-    _programId,
-    _userId,
-    _paymentNumber,
-    _isRetry,
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
   }: {
-    _referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    _programId: number;
-    _userId: number;
-    _paymentNumber: number;
-    _isRetry: boolean;
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
   }): Promise<void> {
     // WIP
     // Some code to make linter happy.

@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { constants, publicEncrypt } from 'crypto';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { AirtelDisbursementResponseToWithMessageMapper } from '@121-service/src/payments/fsp-integration/airtel/mappers/airtel-disbursement-response-to-with-message.mapper';
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
+import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -59,14 +61,16 @@ export class AirtelService
     return encrypted.toString('base64');
   }
 
-  public async doDisbursement({
-    idempotencyKey,
+  // ## TODO: rename
+
+  public async attemptOrCheckDisbursement({
+    airtelTransactionId,
     phoneNumber,
     currencyCode,
     countryCode,
     amount,
   }: {
-    idempotencyKey: string;
+    airtelTransactionId: string;
     phoneNumber: string;
     currencyCode: string;
     countryCode: string;
@@ -82,34 +86,47 @@ export class AirtelService
       airtelDisbursementV1PinEncryptionPublicKey,
     );
 
-    const airtelDisbursementResponse = await this.airtelApiService.disburse({
-      idempotencyKey,
+    // Validate phone number here, we want to *not* send requests when the phone number is invalid.
+    const zambianCountryCode = '260';
+    const phoneNumberWithoutCountryCode = phoneNumber.slice(
+      zambianCountryCode.length,
+    );
+
+    if (!(phoneNumberWithoutCountryCode.length === 9)) {
+      throw new AirtelError('does not have a valid phone number');
+    }
+
+    const { result, message } = await this.airtelApiService.disburse({
+      airtelTransactionId,
       encryptedPin,
-      phoneNumber,
+      phoneNumberWithoutCountryCode,
       currencyCode,
       countryCode,
       amount,
     });
 
-    return AirtelDisbursementResponseToWithMessageMapper(
-      airtelDisbursementResponse,
-    );
-  }
+    if (result === AirtelDisbursementResultEnum.success) {
+      return;
+    }
 
-  public async doEnquiry({
-    idempotencyKey,
-    countryCode,
-    currencyCode,
-  }: {
-    idempotencyKey: string;
-    countryCode: string;
-    currencyCode: string;
-  }) {
-    const airtelEnquiryResponse = await this.airtelApiService.enquire({
-      idempotencyKey,
-      countryCode,
-      currencyCode,
-    });
-    return AirtelDisbursementResponseToWithMessageMapper(airtelEnquiryResponse);
+    if (result === AirtelDisbursementResultEnum.fail) {
+      throw new AirtelApiError(message);
+    }
+
+    if (result === AirtelDisbursementResultEnum.duplicate) {
+      const { result, message } = await this.airtelApiService.enquire({
+        airtelTransactionId,
+        countryCode,
+        currencyCode,
+      });
+
+      if (result === AirtelDisbursementResultEnum.success) {
+        return;
+      }
+
+      if (result === AirtelDisbursementResultEnum.fail) {
+        throw new AirtelApiError(message);
+      }
+    }
   }
 }

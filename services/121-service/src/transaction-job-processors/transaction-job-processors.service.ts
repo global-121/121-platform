@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -10,8 +11,6 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
-import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
-import { AirtelDisbursementOrEnquiryResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -300,85 +299,33 @@ export class TransactionJobProcessorsService {
       };
     };
 
-    const getPreviousDisbursementResult = async (
-      transactionJob,
-    ): Promise<{
-      result: AirtelDisbursementOrEnquiryResultEnum;
-      message: string;
-    }> => {
-      // 1. get key
-      const previous =
-        await this.airtelDisbursementScopedRepository.getDisbursement({
-          programId: transactionJob.programId,
-          registrationReferenceId: transactionJob.referenceId,
-          paymentNumber: transactionJob.paymentNumber,
-        });
-      const idempotencyKey = previous ? previous.airtelTransactionId : null;
-
-      // This can happen when the job was attempted but failed before the disbursement entity (including idempotency key) was persisted.
-      // That can also happen when it's not the first time we try to disburse.
-      if (!idempotencyKey) {
-        // Strictly speaking not what we get back from Airtel, but functionally equivalent.
-        return {
-          result: AirtelDisbursementOrEnquiryResultEnum.not_found,
-          message: '',
-        };
-      }
-
-      const { countryCode, currencyCode } = await getCountryAndCurrencyCodes(
-        transactionJob.programId,
-      );
-
-      // 2. enquiry
-      const enquiryResult = await this.airtelService.doEnquiry({
-        idempotencyKey,
-        countryCode,
-        currencyCode,
-      });
-      return {
-        result: enquiryResult.result,
-        message: enquiryResult.message,
-      };
-    };
-
-    const deletePreviousDisbursement = async (
-      transactionJob: AirtelTransactionJobDto,
-    ): Promise<void> => {
-      // We need to be able to do this without an idempotency key because it might not have been saved.
-      await this.airtelDisbursementScopedRepository.deleteDisbursement({
-        programId: transactionJob.programId,
-        registrationReferenceId: transactionJob.referenceId,
-        paymentNumber: transactionJob.paymentNumber,
-      });
-    };
-
     const doDisbursement = async (
       transactionJob,
       failedTransactionsCount,
-    ): Promise<{
-      result: AirtelDisbursementOrEnquiryResultEnum;
-      message: string;
-    }> => {
+    ): Promise<void> => {
       // Necessary order: (1) create disbursement object with idempotency key and persist it, (2) do disbursement.
       // This order prevents duplicate disbursements and guarantees we can find disbursements that were received by Airtel.
       // ## TODO: implement
 
-      // 1. Create disbursement object with idempotency key and persist it.
-      const airtelTransactionId = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
-      await this.airtelDisbursementScopedRepository.storeDisbursement({
-        airtelTransactionId,
-        registrationReferenceId: transactionJob.referenceId,
-        paymentNumber: transactionJob.paymentNumber,
-      });
+      // Create transaction id
+      let toHash = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
+      toHash = `${toHash}, ${Math.floor(Math.random() * 1000)}`;
+      // The airtelTransactionId "must not be null or blank and should only contain alphanumeric characters with length between 5 and 80 characters"
+      // To make sure it's deterministic we base64 it, and delete the last character (the "=").
+      const airtelTransactionId = crypto
+        .createHash('sha256')
+        .update(toHash, 'utf8')
+        .digest('hex');
 
       // 2. Do disbursement.
       const phoneNumber = transactionJob.phoneNumber;
       const amount = transactionJob.transactionAmount;
+      // ## TODO: just hardcode for now
       const { countryCode, currencyCode } = await getCountryAndCurrencyCodes(
         transactionJob.programId,
       );
       // ## TODO: actually pass result
-      return this.airtelService.doDisbursement({
+      await this.airtelService.attemptOrCheckDisbursement({
         airtelTransactionId,
         phoneNumber,
         currencyCode,
@@ -475,12 +422,6 @@ export class TransactionJobProcessorsService {
         transactionJob,
         TransactionStatusEnum.success,
       )();
-    const createWaitingTransaction = () =>
-      createCreateTransaction(
-        registration,
-        transactionJob,
-        TransactionStatusEnum.waiting,
-      )();
     // Always needs a message
     const createErrorTransaction = (errorMessage: string) =>
       createCreateTransaction(
@@ -498,78 +439,14 @@ export class TransactionJobProcessorsService {
         },
       });
 
-    // will contain the result of the previous disbursement or the new one.
-    let disbursementResult:
-      | AirtelDisbursementResponseWithMessageDto
-      | undefined = undefined;
-
-    // 2. Get previous result or do fresh disbursement.
-    if (transactionJob.isRetry) {
-      try {
-        disbursementResult =
-          await getPreviousDisbursementResult(transactionJob);
-      } catch (error) {
-        return await createErrorTransaction(error?.message);
-      }
-      if (
-        disbursementResult?.result ===
-        AirtelDisbursementOrEnquiryResultEnum.not_found
-      ) {
-        // ## TODO: log this?
-        await deletePreviousDisbursement(transactionJob);
-        // From here on out we can treat this transactionJob as a new job.
-      }
+    // ## TODO: log this?
+    try {
+      await doDisbursement(transactionJob, failedTransactionsCount);
+    } catch (error) {
+      return await createErrorTransaction(error?.message);
     }
-
-    // Happens when: (1) we have a new job or (2) we don't have a previous result,
-    if (!disbursementResult) {
-      try {
-        disbursementResult = await doDisbursement(
-          transactionJob,
-          failedTransactionsCount,
-        );
-      } catch (error) {
-        return await createErrorTransaction(error?.message);
-      }
-    }
-
-    // 3. Process the result of the previous disbursement or the new one.
-    // Use a function with a switch and a type to ensure we handle all cases.
-    const getAction: (
-      result: AirtelDisbursementOrEnquiryResultEnum,
-    ) => () => Promise<void> = (result) => {
-      switch (result) {
-        case AirtelDisbursementOrEnquiryResultEnum.success:
-          return async () => {
-            await createSuccessTransaction();
-          };
-        case AirtelDisbursementOrEnquiryResultEnum.processing:
-          return async () => {
-            await createWaitingTransaction();
-          };
-        case AirtelDisbursementOrEnquiryResultEnum.fail:
-          return async () => {
-            await createErrorTransaction(
-              `Airtel disbursement failed with error: ${disbursementResult.message}`,
-            );
-          };
-        case AirtelDisbursementOrEnquiryResultEnum.unfamiliar_response_code:
-          return async () => {
-            await createErrorTransaction(
-              `Airtel disbursement failed with an unfamiliar response code: ${disbursementResult.message}`,
-            );
-          };
-        case AirtelDisbursementOrEnquiryResultEnum.not_found:
-          return async () => {
-            // Should never happen.
-            await createErrorTransaction(
-              "Unexpectedly got a 'not found' result.",
-            );
-          };
-        // Explicitly no default.
-      }
-    };
-    await getAction(disbursementResult.result)();
+    // If no error was thrown, we are certain the disbursement was successful.
+    await createSuccessTransaction();
   }
 
   public async processNedbankTransactionJob(

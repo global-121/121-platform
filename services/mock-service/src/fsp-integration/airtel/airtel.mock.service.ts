@@ -1,13 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { constants, privateDecrypt } from 'crypto';
 
-import {
-  AirtelAuthenticateBodyDto,
-  AirtelAuthenticateResponseBodyFailDto,
-  AirtelAuthenticateResponseBodySuccessDto,
-  AirtelDisbursementV1PayloadDto,
-  AirtelDisbursementV3PayloadDto,
-} from '@mock-service/src/fsp-integration/airtel/airtel.dto';
+import { AirtelDisbursementV3PayloadDto } from '@mock-service/src/fsp-integration/airtel/airtel.dto';
+import { AirtelAuthenticateRequestDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-request.dto';
+import { AirtelAuthenticateResponseFailDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-response-fail.dto';
+import { AirtelAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-response-success.dto';
+import { AirtelDisbursementV2RequestDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-disbursementv2-request.dto';
 
 export const AirtelAuthToken = 'FjE953LG40P0hdehYEiSkUd0hGWshyFf';
 // PIN we use during testing.
@@ -65,13 +63,22 @@ const getDecimalPlaces = (number: number): number => {
 
 @Injectable()
 export class AirtelMockService {
-  public async getAccessToken(
-    body: AirtelAuthenticateBodyDto,
-  ): Promise<
-    | AirtelAuthenticateResponseBodyFailDto
-    | AirtelAuthenticateResponseBodySuccessDto
+  public async getAccessToken({
+    headers,
+    body,
+  }: {
+    headers: Record<string, string>;
+    body: AirtelAuthenticateRequestDto;
+  }): Promise<
+    AirtelAuthenticateResponseFailDto | AirtelAuthenticateResponseSuccessDto
   > {
     let error = false;
+
+    // Using these headers with @nestjs/swagger''s @ApiHeader decorator is not (easily) possible, so we don't check them. We do want to check them in all other cases.
+    const requestFromSwagger = headers?.origin === 'http://localhost:3001';
+    if (!requestFromSwagger) {
+      if (!(headers['content-type'] === 'application/json')) error = true;
+    }
     if (body?.client_id === undefined) error = true;
     if (body.client_id === '') error = true;
     if (body?.client_secret === undefined) error = true;
@@ -91,18 +98,27 @@ export class AirtelMockService {
       response = {
         token_type: 'bearer',
         access_token: AirtelAuthToken,
-        expires_in: 180,
+        expires_in: '180',
       };
     }
     return response;
   }
 
-  public async disburseV1(
-    transferDto: AirtelDisbursementV1PayloadDto,
+  public async disburseV2(
+    transferDto: AirtelDisbursementV2RequestDto,
     headers: Record<string, string>,
     // We use type "object" here because we have a bunch of different response bodies.
   ): Promise<[HttpStatus, object]> {
     // FYI: header names are lower cased.
+
+    console.info('disburseV2 called with');
+
+    // Using these headers with @nestjs/swagger''s @ApiHeader decorator is not (easily) possible, so we don't check them. We do want to check them in all other cases.
+    const requestFromSwagger = headers?.origin === 'http://localhost:3001';
+    if (!requestFromSwagger) {
+      // 415 Unsupported Media Type
+      if (!(headers['content-type'] === 'application/json')) return [415, {}];
+    }
 
     // We accept Authorization headers under "Authorization" and
     // "Authorization_", but not both. See controller for why.
@@ -192,7 +208,10 @@ export class AirtelMockService {
         },
       },
     ];
-    if (transferDto?.payee?.msisdn.length !== 9) return invalidPhoneNumber;
+    if (transferDto?.payee?.msisdn.length !== 9) {
+      console.error('Got invalid phone number');
+      return invalidPhoneNumber;
+    }
 
     // transaction.amount
     const invalidAmount: [HttpStatus, object] = [
