@@ -2,6 +2,7 @@
   "recommendations": [
     "editorconfig.editorconfig",
     "mikestead.dotenv",
+    "danlevett.regex-robin",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "tombonnike.vscode-status-bar-format-toggle",
