@@ -6,6 +6,7 @@ import { MessageQueuesModule } from '@121-service/src/notifications/message-queu
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.module';
+import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
@@ -14,6 +15,7 @@ import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
 import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-job-processors/processors/transaction-job-nedbank.processor';
+import { TransactionJobProcessorOnafriq } from '@121-service/src/transaction-job-processors/processors/transaction-job-onafriq.processor';
 import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
 import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
 
@@ -23,6 +25,7 @@ import { TransactionJobProcessorsService } from '@121-service/src/transaction-jo
     IntersolveVisaModule,
     SafaricomModule,
     NedbankModule,
+    OnafriqModule,
     ProgramFinancialServiceProviderConfigurationsModule,
     RegistrationsModule,
     ProgramModule,
@@ -37,6 +40,7 @@ import { TransactionJobProcessorsService } from '@121-service/src/transaction-jo
     TransactionJobProcessorIntersolveVisa,
     TransactionJobProcessorSafaricom,
     TransactionJobProcessorNedbank,
+    TransactionJobProcessorOnafriq,
   ],
 })
 export class TransactionJobProcessorsModule {}

@@ -72,6 +72,9 @@ graph LR
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
   PaymentsModule-->NedbankModule
+  PaymentsModule-->OnafriqModule
+  OnafriqModule-->RedisModule
+  OnafriqModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -115,6 +118,7 @@ graph LR
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->SafaricomModule
   TransactionJobProcessorsModule-->NedbankModule
+  TransactionJobProcessorsModule-->OnafriqModule
   TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule

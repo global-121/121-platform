@@ -15,6 +15,11 @@ import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integratio
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
+import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
+import { DuplicateThirdPartyTransIdError } from '@121-service/src/payments/fsp-integration/onafriq/errors/duplicate-third-party-trans-id.error';
+import { OnafriqApiError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq-api.error';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
+import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
@@ -33,6 +38,7 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
+import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
@@ -55,10 +61,12 @@ export class TransactionJobProcessorsService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly safaricomService: SafaricomService,
     private readonly nedbankService: NedbankService,
+    private readonly onafriqService: OnafriqService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
+    private readonly onafriqTransactionScopedRepository: OnafriqTransactionScopedRepository,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
@@ -274,6 +282,80 @@ export class TransactionJobProcessorsService {
     // 4. No messages sent for safaricom
 
     // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+  }
+
+  public async processOnafriqTransactionJob(
+    transactionJob: OnafriqTransactionJobDto,
+  ): Promise<void> {
+    // 1. Check for existing Onafriq Transaction with the same thirdPartyTransId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
+    let onafriqTransaction =
+      await this.onafriqTransactionScopedRepository.findOne({
+        where: {
+          thirdPartyTransId: Equal(transactionJob.thirdPartyTransId),
+        },
+      });
+
+    // 2. if no onafriq transaction yet, create a 121 transaction, otherwise this has already happened before
+    let transactionId: number;
+    if (!onafriqTransaction) {
+      const registration = await this.getRegistrationOrThrow(
+        transactionJob.referenceId,
+      );
+      const oldRegistration = structuredClone(registration);
+      const transaction = await this.createTransactionAndUpdateRegistration({
+        programId: transactionJob.programId,
+        paymentNumber: transactionJob.paymentNumber,
+        userId: transactionJob.userId,
+        transferAmountInMajorUnit: transactionJob.transactionAmount,
+        programFinancialServiceProviderConfigurationId:
+          transactionJob.programFinancialServiceProviderConfigurationId,
+        registration,
+        oldRegistration,
+        isRetry: transactionJob.isRetry,
+        status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+      });
+      transactionId = transaction.id;
+
+      // TODO: combine this with the transaction creation above in one SQL transaction
+      const newOnafriqTransaction = new OnafriqTransactionEntity();
+      newOnafriqTransaction.thirdPartyTransId =
+        transactionJob.thirdPartyTransId;
+      newOnafriqTransaction.transactionId = transactionId;
+      onafriqTransaction = await this.onafriqTransactionScopedRepository.save(
+        newOnafriqTransaction,
+      );
+    } else {
+      transactionId = onafriqTransaction.transactionId;
+    }
+
+    // 3. Start the transfer, if failure: update to error transaction and return early
+    try {
+      await this.onafriqService.createTransaction({
+        transferAmount: transactionJob.transactionAmount,
+        phoneNumber: transactionJob.phoneNumber!,
+        firstName: transactionJob.firstName!,
+        lastName: transactionJob.lastName!,
+        thirdPartyTransId: transactionJob.thirdPartyTransId!,
+      });
+    } catch (error) {
+      if (error instanceof DuplicateThirdPartyTransIdError) {
+        // Return early, as this job re-attempt has already been processed before, which should not be overwritten
+        console.error(error.message);
+        return;
+      } else if (error instanceof OnafriqApiError) {
+        await this.transactionScopedRepository.update(
+          { id: transactionId },
+          { status: TransactionStatusEnum.error, errorMessage: error?.message },
+        );
+        return;
+      } else {
+        throw error;
+      }
+    }
+
+    // 4. No messages sent for onafriq
+
+    // 5. No 121 transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   public async processNedbankTransactionJob(
