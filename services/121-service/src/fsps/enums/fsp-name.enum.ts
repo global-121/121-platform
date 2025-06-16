@@ -7,6 +7,7 @@ export enum Fsps {
   excel = 'Excel',
   deprecatedJumbo = 'Intersolve-jumbo-physical',
   nedbank = 'Nedbank',
+  onafriq = 'Onafriq',
 }
 
 export enum FspConfigurationProperties {

@@ -28,6 +28,8 @@ export class QueuesRegistryService implements OnModuleInit {
     public transactionJobSafaricomQueue: Queue,
     @InjectQueue(TransactionJobQueueNames.nedbank)
     public transactionJobNedbankQueue: Queue,
+    @InjectQueue(TransactionJobQueueNames.onafriq)
+    public transactionJobOnafriqQueue: Queue,
 
     @InjectQueue(SafaricomCallbackQueueNames.transfer)
     public safaricomTransferCallbackQueue: Queue,
@@ -58,6 +60,7 @@ export class QueuesRegistryService implements OnModuleInit {
       this.transactionJobIntersolveVoucherQueue,
       this.transactionJobCommercialBankEthiopiaQueue,
       this.transactionJobSafaricomQueue,
+      this.transactionJobOnafriqQueue, // ##TODO: why was Nedbank not in this list?
       this.safaricomTimeoutCallbackQueue,
       this.safaricomTransferCallbackQueue,
       this.createMessageReplyOnIncomingQueue,
