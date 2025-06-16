@@ -3,18 +3,23 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Headers,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
-  Res,
+  Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-
 import {
-  AirtelDisbursementV3PayloadDto,
-  AirtelDisbursementV3ResponseSuccessBodyDto,
-} from '@mock-service/src/fsp-integration/airtel/airtel.dto';
+  ApiHeader,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
 import {
   AirtelAuthToken,
   AirtelMockService,
@@ -22,6 +27,7 @@ import {
 import { AirtelAuthenticateRequestDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-request.dto';
 import { AirtelAuthenticateResponseFailDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-response-fail.dto';
 import { AirtelAuthenticateResponseSuccessDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticate-response-success.dto';
+import { AirtelAuthenticatedRequestHeadersDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-authenticated-request-headers.dto';
 import { AirtelDisbursementV2RequestDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-disbursementv2-request.dto';
 import { AirtelDisbursementV2ResponseSuccessDto } from '@mock-service/src/fsp-integration/airtel/dto/airtel-disbursementv2-response-success.dto';
 
@@ -70,8 +76,9 @@ export class AirtelMockController {
   }
 
   @ApiOperation({ summary: 'Disbursement API v2' })
-  @Post('standard/v2/disbursements/')
-  // Airtel API responds with 200 on success
+  // The * is a wildcard is needed because the airtel API want the url to end with a slash.
+  // This is a a workaround because the Post decorator does not allow trailing slashes."
+  @Post('standard/v2/disbursements/*')
   @HttpCode(200)
   @ApiHeader({
     name: 'X-Country',
@@ -98,7 +105,7 @@ export class AirtelMockController {
   })
   public async disburseV2(
     @Body() disburseV2Body: AirtelDisbursementV2RequestDto,
-    @Headers() headers: Record<string, string>,
+    @Headers() headers: AirtelAuthenticatedRequestHeadersDto,
     // We use type "object" here because we have a bunch of different response bodies.
   ): Promise<AirtelDisbursementV2ResponseSuccessDto | object> {
     const [http, body] = await this.airtelMockService.disburseV2(
@@ -112,22 +119,22 @@ export class AirtelMockController {
     return body;
   }
 
-  @ApiOperation({ summary: 'Disbursement API v3' })
-  @Post('standard/v3/disbursements/')
-  // Airtel API responds with 200 on success
+  @ApiOperation({ summary: 'Enquiry API v2' })
+  @Get('standard/v2/disbursements/:id')
   @HttpCode(200)
-  @ApiHeader({
-    name: 'X-Currency',
-    description:
-      'Currency code in "ISO 4217" format, for example: "ZMW" for Zambian Kwacha.',
-    required: true,
-  })
   @ApiHeader({
     name: 'X-Country',
     description:
       'Country code in "ISO 3166-1 alpha-2" format, for example: "ZM" for Zambia.',
     required: true,
   })
+  @ApiHeader({
+    name: 'X-Currency',
+    description:
+      'Currency code in "ISO 4217" format, for example: "ZMW" for Zambian Kwacha.',
+    required: true,
+  })
+
   // Using @ApiHeader with "Authorization" does not work. Actually using Having
   // "Authorization" headers is possible but then we'd have to create full auth
   // for the whole mock-service. So we use "Authorization_" instead and accept
@@ -139,26 +146,29 @@ export class AirtelMockController {
     description: `Oauth Bearer token, needs to be exactly: "Bearer ${AirtelAuthToken}". <br/> In the production API the header is called "Authorization", for technical reasons it\'s called "Authorization_" here.`,
     required: true,
   })
-  public async disburseV3(
-    @Body() disburseV3Body: AirtelDisbursementV3PayloadDto,
-    @Headers() headers: Record<string, string>,
-    @Res() res: Response,
+  @ApiParam({ name: 'id', required: true, type: 'integer' })
+  @ApiQuery({
+    name: 'transactionType',
+    required: true,
+    type: 'string',
+    description: 'Always "B2C" for Airtel.',
+  })
+  public async enquiryV2(
+    @Headers() headers: AirtelAuthenticatedRequestHeadersDto,
+    @Param('id') id: string,
+    @Query('transactionType')
+    transactionType: string, // Always "B2C" for Airtel.
     // We use type "object" here because we have a bunch of different response bodies.
-  ): Promise<AirtelDisbursementV3ResponseSuccessBodyDto | object> {
-    try {
-      const [http, body] = await this.airtelMockService.disburseV3(
-        disburseV3Body,
-        headers,
-      );
+  ): Promise<AirtelDisbursementV2ResponseSuccessDto | object> {
+    const [http, body] = await this.airtelMockService.enquiryV2({
+      id,
+      transactionType,
+      headers,
+    });
 
-      if (http === 403) throw new ForbiddenException(body);
-      if (http === 400) throw new BadRequestException(body);
+    if (http === 403) throw new ForbiddenException(body);
+    if (http === 400) throw new BadRequestException(body);
 
-      // We also get error responses with status 200, so we can't narrow the type
-      // here.
-      return body;
-    } catch (err) {
-      return res.status(501).json(err.message);
-    }
+    return body;
   }
 }
