@@ -8,7 +8,12 @@
     class="flex gap-x-2"
   >
     @if (canImport()) {
-      <app-import-registrations [projectId]="projectId()" />
+      <app-import-registrations-menu
+        [projectId]="projectId()"
+        [getActionData]="
+          registrationsTable.getActionData.bind(registrationsTable)
+        "
+      />
     }
     @if (canExport()) {
       <app-export-registrations

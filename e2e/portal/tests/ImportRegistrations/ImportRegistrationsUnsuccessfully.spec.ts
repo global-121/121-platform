@@ -5,7 +5,6 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
@@ -23,7 +22,6 @@ test.beforeEach(async ({ page }) => {
 
 test('[29369] Unsuccessfully import registrations', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
-  const table = new TableComponent(page);
   const wrongRegistrationsDataFilePath = path.resolve(
     __dirname,
     '../../../test-registration-data/test-registrations-OCW-scoped.csv',
@@ -41,7 +39,7 @@ test('[29369] Unsuccessfully import registrations', async ({ page }) => {
   });
 
   await test.step('Validate import error message', async () => {
-    await table.validateErrorMessage(
+    await registrationsPage.validateErrorMessage(
       'Something went wrong with this import. Please fix the errors reported below and try again.',
     );
   });

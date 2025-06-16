@@ -190,6 +190,7 @@ class TableComponent {
     await this.textboxField.click();
     await this.textboxField.fill(filterText);
     await this.applyFiltersButton.click();
+    await this.waitForLoaded();
   }
 
   async filterColumnByNumber({
@@ -387,13 +388,6 @@ class TableComponent {
       .getByLabel(label)
       .textContent();
     expect(firstRowText).toBe(label);
-  }
-
-  async validateErrorMessage(errorMessage: string) {
-    const errorElement = this.page
-      .locator('app-form-error')
-      .filter({ hasText: errorMessage });
-    await expect(errorElement).toContainText(errorMessage);
   }
 
   async assertEmptyTableState() {
