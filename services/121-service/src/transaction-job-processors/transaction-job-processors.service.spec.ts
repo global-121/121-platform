@@ -3,7 +3,7 @@ import { Equal, UpdateResult } from 'typeorm';
 
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
-import { AirtelDisbursementOrEnquiryResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
@@ -177,7 +177,7 @@ describe('TransactionJobProcessorsService', () => {
 
     const mockedDoDisbursementReturn: AirtelDisbursementResponseWithMessageDto =
       {
-        result: AirtelDisbursementOrEnquiryResultEnum.success,
+        result: AirtelDisbursementResultEnum.success,
         message: 'Disbursement successful',
       };
 
@@ -213,7 +213,7 @@ describe('TransactionJobProcessorsService', () => {
           status: Equal(TransactionStatusEnum.error),
         },
       });
-      expect(airtelService.doDisbursement).toHaveBeenCalledWith({
+      expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
         idempotencyKey: 'foo',
         phoneNumber: mockedAirtelTransactionJob.phoneNumber,
         currencyCode: 'foo',
