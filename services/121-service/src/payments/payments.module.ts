@@ -10,6 +10,7 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.module';
+import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
@@ -49,6 +50,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionsModule,
     SafaricomModule,
     NedbankModule,
+    OnafriqModule,
     ExcelModule,
     CommercialBankEthiopiaModule,
     RegistrationsModule,

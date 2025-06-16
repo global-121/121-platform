@@ -28,6 +28,7 @@ import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/p
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import {
@@ -64,6 +65,7 @@ import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
+import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
@@ -93,6 +95,7 @@ export class PaymentsService {
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly excelService: ExcelService,
     private readonly nedbankService: NedbankService,
+    private readonly onafriqService: OnafriqService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly dataSource: DataSource,
@@ -122,6 +125,7 @@ export class PaymentsService {
         {} as FinancialServiceProviderIntegrationInterface,
       ],
       [FinancialServiceProviders.nedbank]: [this.nedbankService],
+      [FinancialServiceProviders.onafriq]: [this.onafriqService],
     };
   }
 
@@ -724,6 +728,23 @@ export class PaymentsService {
           });
         }
 
+        if (fsp === FinancialServiceProviders.onafriq) {
+          return await this.createAndAddOnafriqTransactionJobs({
+            referenceIdsAndTransactionAmounts: paPaymentList.map(
+              (paPaymentData) => {
+                return {
+                  referenceId: paPaymentData.referenceId,
+                  transactionAmount: paPaymentData.transactionAmount,
+                };
+              },
+            ),
+            userId: paPaymentList[0].userId,
+            programId,
+            paymentNumber: payment,
+            isRetry,
+          });
+        }
+
         const [paymentService, useWhatsapp] =
           this.financialServiceProviderNameToServiceMap[fsp];
         return await paymentService.sendPayment(
@@ -961,6 +982,73 @@ export class PaymentsService {
       });
     await this.transactionQueuesService.addNedbankTransactionJobs(
       nedbankTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds onafriq transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Onafriq. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddOnafriqTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentNumber,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentNumber: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const onafriqAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+      FinancialServiceProviders.onafriq,
+    ).attributes;
+    const onafriqAttributeNames = onafriqAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      onafriqAttributeNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const onafriqTransactionJobs: OnafriqTransactionJobDto[] =
+      registrationViews.map((registrationView): OnafriqTransactionJobDto => {
+        return {
+          programId,
+          paymentNumber,
+          referenceId: registrationView.referenceId,
+          programFinancialServiceProviderConfigurationId:
+            registrationView.programFinancialServiceProviderConfigurationId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+          phoneNumber: registrationView.phoneNumber!,
+          firstName:
+            registrationView[FinancialServiceProviderAttributes.firstName],
+          lastName:
+            registrationView[FinancialServiceProviderAttributes.lastName],
+          thirdPartyTransId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
+        };
+      });
+    await this.transactionQueuesService.addOnafriqTransactionJobs(
+      onafriqTransactionJobs,
     );
   }
 

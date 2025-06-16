@@ -62,11 +62,13 @@ export class CustomHttpService {
     url: string,
     payload: any,
     headers?: Header[],
+    httpsAgent?: https.Agent,
   ): Promise<T> {
     return await lastValueFrom(
       this.httpService
         .post(url, payload, {
           headers: this.createHeaders(headers),
+          httpsAgent,
         })
         .pipe(
           map((response) => {
