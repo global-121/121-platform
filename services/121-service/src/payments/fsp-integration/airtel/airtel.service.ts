@@ -4,7 +4,6 @@ import { constants, publicEncrypt } from 'crypto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
-import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 
@@ -23,10 +22,7 @@ const getEnvOrThrow = (envVar: string): string => {
 export class AirtelService
   implements FinancialServiceProviderIntegrationInterface
 {
-  public constructor(
-    private readonly airtelApiService: AirtelApiService,
-    private readonly airtelDisbursementScopedRepository: AirtelDisbursementScopedRepository,
-  ) {}
+  public constructor(private readonly airtelApiService: AirtelApiService) {}
 
   /**
    * Do not use! This function was previously used to send payments.

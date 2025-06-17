@@ -4,7 +4,6 @@ import { Equal, UpdateResult } from 'typeorm';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
-import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -70,7 +69,6 @@ describe('TransactionJobProcessorsService', () => {
   let transactionScopedRepository: TransactionScopedRepository;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
-  let airtelDisbursementScopedRepository: AirtelDisbursementScopedRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -193,10 +191,6 @@ describe('TransactionJobProcessorsService', () => {
         .spyOn(airtelService, 'doDisbursement')
         .mockResolvedValueOnce(mockedDoDisbursementReturn);
 
-      jest
-        .spyOn(airtelDisbursementScopedRepository, 'storeDisbursement')
-        .mockResolvedValueOnce(undefined);
-
       await transactionJobProcessorsService.processAirtelTransactionJob(
         mockedAirtelTransactionJob,
       );
@@ -221,13 +215,6 @@ describe('TransactionJobProcessorsService', () => {
         transferAmount: mockedAirtelTransactionJob.transactionAmount,
       });
 
-      expect(
-        airtelDisbursementScopedRepository.storeDisbursement,
-      ).toHaveBeenCalledWith({
-        transactionId: mockedTransactionId,
-        orderCreateReference: expect.any(String),
-        paymentReference: expect.any(String),
-      });
       expect(transactionScopedRepository.save).toHaveBeenCalledWith(
         // TODO: is this correct?
         expect.objectContaining({
