@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 
+import { env } from '@121-service/src/env';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -127,14 +128,14 @@ export class QueuesRegistryService implements OnModuleInit {
     }
     const redisClient = createRedisClient();
     // Prefix is needed here because .keys does not take into account the prefix of the redis client
-    const keys = await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+    const keys = await redisClient.keys(`${env.REDIS_PREFIX}:*`);
     if (keys.length) {
       const keysWithoutPrefix = keys.map((key) =>
-        key.replace(process.env.REDIS_PREFIX + ':', ''),
+        key.replace(env.REDIS_PREFIX + ':', ''),
       );
       await this.batchDeleteKeys(redisClient, keysWithoutPrefix);
     }
-    await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+    await redisClient.keys(`${env.REDIS_PREFIX}:*`);
   }
 
   // This is prevent this error when deleting large amount of keys: RangeError: Maximum call stack size exceeded
