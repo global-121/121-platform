@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqController } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.controller';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
@@ -26,5 +27,6 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
     OnafriqTransactionScopedRepository,
   ],
   exports: [OnafriqService, OnafriqTransactionScopedRepository],
+  controllers: [OnafriqController],
 })
 export class OnafriqModule {}
