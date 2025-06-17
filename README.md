@@ -219,19 +219,26 @@ All the tokens and access keys for third party APIs should be added on the `.env
 
 ### Recommended code-editor/IDE tools/extensions
 
-To help with some types if files/tasks we've listed them here:
+To make development of all components of the 121-Platform easier, we recommend using VSCode with some specific extensions.  
+They are listed in [`.vscode/extensions.json`](.vscode/extensions.json)-files, in each component's sub-folder, next to the root of the repository.
 
-- [Workspace recommendations for VS Code](.vscode/extensions.json)
-  When you open the root-folder of this repository in VSCode and go to: "_Extensions_" and use the filter: "_Recommended_"(`@recommended`);
-  A list should be shown and each extension can be installed individually.
+- [Main/root-folder](.vscode/extensions.json)  
+  Generic extensions for code-style, linting, formatting, etc. Also GitHub Actions-workflow and Azure related ones.
 
-  Generic highlights:
+- [Portal](interfaces/portal/.vscode/extensions.json)  
+  Additional extensions for working with Angular, Tailwind, etc.
 
-  - [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) - To work with `.feature`-files for test-scenarios
+- [121-Service](services/121-service/.vscode/extensions.json) / [Mock-Service](services/mock-service/.vscode/extensions.json)  
+  Additional extensions for working with Node.js, Jest Unit-tests, etc.
 
-  Interfaces / front-end highlights:
+When you open a folder in VSCode and go to: "_Extensions_" and use the filter: "_Recommended_"(`@recommended`);  
+A list should be shown and each extension can be installed individually.
 
-  - [i18n Ally](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally) - To work with translations in the HTML-templates and component TS-files
+#### Adding/Updating recommended extensions
+
+In VSCode, you can add a new recommended extension by selecting "_Add to Workspace Recommendations_" from the context-menu in the Extensions sidebar.
+
+Make sure to add an extension to all (other) **relevant** `extensions.json`-files, so that it is available in all components of the 121-platform. Angular/CSS-specific extensions don't need to be shared, but TypeScript/Formatting/Developer-convenience-related ones _do_.
 
 ## Common problems with Local Environment set-up
 
