@@ -9,6 +9,7 @@ import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 
+import { env } from '@121-service/src/env';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
@@ -16,8 +17,8 @@ import { UserService } from '@121-service/src/user/user.service';
 
 const config = {
   credentials: {
-    clientID: process.env.AZURE_ENTRA_CLIENT_ID,
-    audience: `api://${process.env.AZURE_ENTRA_CLIENT_ID}`,
+    clientID: env.AZURE_ENTRA_CLIENT_ID,
+    audience: `api://${env.AZURE_ENTRA_CLIENT_ID}`,
   },
   metadata: {
     authority: 'login.microsoftonline.com',

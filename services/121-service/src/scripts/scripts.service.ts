@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { SEED_CONFIGURATION_SETTINGS } from '@121-service/src/scripts/seed-configuration.const';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
@@ -71,7 +72,7 @@ export class ScriptsService {
     }
     if (
       seedConfig.includeMockData &&
-      !['development', 'test'].includes(process.env.NODE_ENV!)
+      !['development', 'test'].includes(env.NODE_ENV)
     ) {
       throw new Error(
         `Mock data is only allowed in development and test environments`,
