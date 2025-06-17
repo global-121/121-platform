@@ -8,9 +8,6 @@ export class EmailsApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async sendEmail(payload: unknown): Promise<void> {
-    if (!env.AZURE_EMAIL_API_URL) {
-      throw new Error('ENV-variable: AZURE_EMAIL_API_URL is not defined');
-    }
     try {
       await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, payload);
     } catch (error) {
