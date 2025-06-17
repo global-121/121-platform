@@ -55,7 +55,7 @@ jobs:
         run: 'npm run typecheck'
 
       - name: Load environment variables
-        run: 'cat services/.env.example >> $GITHUB_ENV'
+        run: 'grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV'
 
       - name: Unit-Test
         working-directory: ${{ env.workingDirectory }}
