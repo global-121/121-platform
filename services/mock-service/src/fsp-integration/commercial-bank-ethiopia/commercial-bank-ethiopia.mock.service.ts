@@ -113,7 +113,9 @@ export class CommercialBankEthiopiaMockService {
               'ns4:gEACCOUNTCBEREMITANCEDetailType': {
                 'ns4:mEACCOUNTCBEREMITANCEDetailType': {
                   'ns4:ACCOUNTNO': { _text: bankAccountNumber },
-                  'ns4:CUSTOMERNAME': { _text: 'ANDUALEM MOHAMMED YIMER' },
+                  'ns4:CUSTOMERNAME': {
+                    _text: 'example name for CBE mock mode',
+                  },
                   'ns4:ACCOUNTSTATUS': { _text: 'CREDIT ALLOWED' },
                   'ns4:MOBILENO': { _text: '+251947940727' },
                 },
