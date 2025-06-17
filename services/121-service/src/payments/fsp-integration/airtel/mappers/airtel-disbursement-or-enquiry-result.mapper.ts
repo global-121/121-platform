@@ -9,6 +9,8 @@ export const AirtelDisbursementOrEnquiryResultMapper = (
       return AirtelDisbursementResultEnum.success;
     case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001011:
       return AirtelDisbursementResultEnum.duplicate;
+    case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001000:
+      return AirtelDisbursementResultEnum.ambiguous;
     default:
       return AirtelDisbursementResultEnum.fail;
   }

@@ -9,7 +9,8 @@ import { AirtelDisbursementV2RequestDto } from '@mock-service/src/fsp-integratio
 
 enum AirtelMockPhoneNumber {
   failDuplicateTransactionId = '000000001',
-  invalidMobileNumber = '000000002',
+  failInvalidMobileNumber = '000000002',
+  failAmbiguousError = '000000003',
 }
 
 export const AirtelAuthToken = 'FjE953LG40P0hdehYEiSkUd0hGWshyFf';
@@ -213,6 +214,7 @@ export class AirtelMockService {
     const encryptedPin = transferDto?.pin;
     if (encryptedPin === undefined) return missingPin;
 
+    // ##TODO: Dry the error responses up.
     if (
       AirtelMockPhoneNumber.failDuplicateTransactionId ===
       transferDto.payee.msisdn
@@ -232,7 +234,7 @@ export class AirtelMockService {
     }
 
     if (
-      AirtelMockPhoneNumber.invalidMobileNumber === transferDto.payee.msisdn
+      AirtelMockPhoneNumber.failInvalidMobileNumber === transferDto.payee.msisdn
     ) {
       return [
         200,
@@ -243,6 +245,22 @@ export class AirtelMockService {
             success: false,
             result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
             message: 'Mobile number entered is incorrect.',
+          },
+        },
+      ];
+    }
+
+    if (AirtelMockPhoneNumber.failAmbiguousError === transferDto.payee.msisdn) {
+      return [
+        200,
+        {
+          status: {
+            response_code: 'DP00900001000',
+            code: '400',
+            success: false,
+            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
+            message:
+              'The transaction is still processing and is in ambiguous state. Please do the transaction enquiry to fetch the transaction status.',
           },
         },
       ];

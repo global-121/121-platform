@@ -4,7 +4,6 @@ import { constants, publicEncrypt } from 'crypto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
-import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
@@ -93,7 +92,10 @@ export class AirtelService
     );
 
     if (!(phoneNumberWithoutCountryCode.length === 9)) {
-      throw new AirtelError('does not have a valid phone number');
+      throw new AirtelError(
+        'does not have a valid phone number',
+        AirtelDisbursementResultEnum.fail,
+      );
     }
 
     const { result, message } = await this.airtelApiService.disburse({
@@ -110,7 +112,14 @@ export class AirtelService
     }
 
     if (result === AirtelDisbursementResultEnum.fail) {
-      throw new AirtelApiError(message);
+      throw new AirtelError(message, result);
+    }
+
+    if (result === AirtelDisbursementResultEnum.ambiguous) {
+      throw new AirtelError(
+        `The transaction is in an ambiguous state. Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: ${airtelTransactionId}`,
+        result,
+      );
     }
 
     if (result === AirtelDisbursementResultEnum.duplicate) {
@@ -125,7 +134,7 @@ export class AirtelService
       }
 
       if (result === AirtelDisbursementResultEnum.fail) {
-        throw new AirtelApiError(message);
+        throw new AirtelError(message, result);
       }
     }
   }
