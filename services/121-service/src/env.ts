@@ -145,6 +145,7 @@ export const env = createEnv({
       .url()
       .refine((value) => !value.endsWith('/'))
       .optional(),
+    COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
   },
 
   // We don't use client-side env variables in the same way as in the services
