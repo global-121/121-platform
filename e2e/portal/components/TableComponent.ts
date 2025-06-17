@@ -386,6 +386,7 @@ class TableComponent {
     const firstRowText = await this.page
       .getByRole('row', { name: registrationName })
       .getByLabel(label)
+      .first()
       .textContent();
     expect(firstRowText).toBe(label);
   }

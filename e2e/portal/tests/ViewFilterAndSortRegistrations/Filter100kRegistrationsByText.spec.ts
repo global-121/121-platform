@@ -10,8 +10,10 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPV5,
+  registrationPV6,
+  registrationPV7,
   registrationPV8,
-  registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
@@ -19,6 +21,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 let registrationName: string;
+const visaFsp = 'Visa debit card';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -26,7 +29,7 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
 
   await seedRegistrationsWithStatus(
-    registrationsPV,
+    [registrationPV5, registrationPV6, registrationPV7],
     programIdPV,
     accessToken,
     RegistrationStatusEnum.included,
@@ -69,5 +72,23 @@ test('[34945] Filter registrations by text', async ({ page }) => {
     await tableComponent.filterColumnByText('Phone Number', '14155235557');
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter FSP column by Visa debit card', async () => {
+    // First ensure the FSP column is visible
+    await registrations.manageTableColumns(['FSP']);
+    // Filter by Visa debit card
+    await tableComponent.filterColumnByDropDownSelection({
+      columnName: 'FSP',
+      selection: visaFsp,
+    });
+
+    registrationName = await registrations.getFirstRegistrationNameFromTable();
+    await tableComponent.validateLabelInTableByRegistrationName(
+      registrationName,
+      visaFsp,
+    );
+    await tableComponent.validateAllRecordsCount(32769); // 32769 is the expected count for Visa debit card registrations
   });
 });
