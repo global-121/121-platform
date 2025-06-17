@@ -96,7 +96,7 @@ test('[36125] View available actions for admin', async () => {
     await paymentsPage.exportButton.click();
 
     const exportOptions = await page.getByRole('menuitem').all();
-    await expect(exportOptions.length).toBe(3);
+    expect(exportOptions.length).toBe(3);
     await expect(exportOptions[0]).toHaveText('Export last 5 payment(s)');
   });
 });

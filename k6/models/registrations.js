@@ -50,4 +50,36 @@ export default class RegistrationsModel {
     const url = `${baseUrl}api/programs/${programId}/registrations?${queryParams}`;
     return http.get(url);
   }
+
+  exportRegistrations(programId, filter) {
+    const url = `${baseUrl}api/programs/${programId}/metrics/export-list/all-registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`;
+    return http.get(url);
+  }
+
+  bulkUpdateRegistrationsCSV(programId, csvContent) {
+    const url = `${baseUrl}api/programs/${programId}/registrations`;
+
+    const formData = {
+      file: http.file(csvContent, 'registrations.csv'),
+      reason: 'bulk update',
+    };
+
+    const res = http.patch(url, formData);
+    return res;
+  }
+
+  jsonToCsv(data) {
+    if (!data || data.length === 0) return '';
+    const headers = Object.keys(data[0]);
+    const csvRows = [headers.join(',')];
+
+    for (const item of data) {
+      const row = headers.map((header) => {
+        const value = item[header];
+        return `"${String(value).replace(/"/g, '""')}"`;
+      });
+      csvRows.push(row.join(','));
+    }
+    return csvRows.join('\n');
+  }
 }
