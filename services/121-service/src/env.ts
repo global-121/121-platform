@@ -146,6 +146,17 @@ export const env = createEnv({
       .refine((value) => !value.endsWith('/'))
       .optional(),
     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
+    // FSP: Nedbank
+    MOCK_NEDBANK: z.stringbool().default(false),
+    NEDBANK_ACCOUNT_NUMBER: z.string().min(10).optional(),
+    NEDBANK_CLIENT_ID: z.string().optional(),
+    NEDBANK_CLIENT_SECRET: z.string().optional(),
+    NEDBANK_CERTIFICATE_PATH: z.string().default(''),
+    NEDBANK_CERTIFICATE_PASSWORD: z.string().optional(),
+    NEDBANK_API_URL: z
+      .url()
+      .refine((value) => !value.endsWith('/'))
+      .optional(),
   },
 
   // We don't use client-side env variables in the same way as in the services
