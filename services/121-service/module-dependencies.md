@@ -141,4 +141,8 @@ graph LR
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->OnafriqModule
+  OnafriqReconciliationModule-->RedisModule
+  OnafriqReconciliationModule-->TransactionsModule
+  OnafriqReconciliationModule-->QueuesRegistryModule
 ```
