@@ -31,7 +31,7 @@ export class OnafriqApiService {
       return; // No need to subscribe to webhook in mock mode
     }
 
-    const webhookSubscribeUrl = 'abc'; //`${process.env.ONAFRIQ_API_URL}hub/async/api/webhook/subscribe`; // ##TODO check if it is OK to always use /subscribe instead of /update. Both seem to always work.
+    const webhookSubscribeUrl = `${process.env.ONAFRIQ_API_URL}hub/async/api/webhook/subscribe`; // ##TODO check if it is OK to always use /subscribe instead of /update. Both seem to always work.
     const payload = {
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
       callbackUrl: `${EXTERNAL_API.baseApiUrl}financial-service-providers/onafriq/callback`,
