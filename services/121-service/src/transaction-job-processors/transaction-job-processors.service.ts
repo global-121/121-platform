@@ -310,8 +310,7 @@ export class TransactionJobProcessorsService {
       // ## TODO: implement
 
       // Create transaction id
-      let toHash = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
-      toHash = `${toHash}, ${Math.floor(Math.random() * 1000)}`;
+      const toHash = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
       // The airtelTransactionId "must not be null or blank and should only contain alphanumeric characters with length between 5 and 80 characters"
       // To make sure it's deterministic we base64 it, and delete the last character (the "=").
       const airtelTransactionId = crypto
