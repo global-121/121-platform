@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
+import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -25,7 +26,7 @@ export function resetDB(seedScript: SeedScript): Promise<request.Response> {
       isApiTests: true,
     })
     .send({
-      secret: process.env.RESET_SECRET,
+      secret: env.RESET_SECRET,
     });
 }
 
@@ -38,7 +39,7 @@ export function resetDuplicateRegistrations(
       mockPowerNumberRegistrations: mockNumber,
     })
     .send({
-      secret: process.env.RESET_SECRET,
+      secret: env.RESET_SECRET,
     });
 }
 
@@ -53,8 +54,8 @@ export function loginApi(
 }
 
 export async function getAccessToken(
-  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!,
-  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
+  username = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  password = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
 ): Promise<string> {
   const login = await loginApi(username, password);
   const cookies = login.get('Set-Cookie');
@@ -71,8 +72,8 @@ export async function getAccessToken(
 
 export async function getAccessTokenProgramManager(): Promise<string> {
   return await getAccessToken(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
   );
 }
 
@@ -81,14 +82,14 @@ export async function getAccessTokenScoped(
 ): Promise<string> {
   return await getAccessToken(
     `${defaultScope}@example.org`,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
 }
 
 export async function getAccessTokenCvaManager(): Promise<string> {
   return await getAccessToken(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+    env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+    env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }
 
