@@ -5,8 +5,20 @@ import { z } from 'zod/v4';
 // See: https://env.t3.gg/docs/core
 export const env = createEnv({
   server: {
-    // See explanations for each variable in `/services/.env.example`
-    // This file follows the same order/structure.
+    /**
+     * See explanations for each variable in `/services/.env.example`
+     * This file follows the same order/structure.
+     *
+     * Guidelines:
+     * - Use as many _specific_ requirements as possible, like `.min(8)`, `.email()`, `.url()`, etc.
+     *   See: https://zod.dev/api
+     * - Use `.optional()` if the service should be able start-up without a value (So not for critical features).
+     * - Use `.default(value)` if there is a safe, generic value available that is safe-to-be-forgotten-to-make-unique in production.
+     * - If a value IS required for the service to start-up,
+     *   and MUST be set to a unique/proper value in production (and thus report an error on start-up),
+     *   then use a hard-coded (development/test-only) value in `.env.example`, do not use `.default()`.
+     *
+     */
 
     // Environment/Instance specifics
     ENV_NAME: z.string().optional(),
@@ -113,10 +125,10 @@ export const env = createEnv({
     MOCK_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
 
     // Third-party: Twilio
-    TWILIO_SID: z.string(),
+    TWILIO_SID: z.string().startsWith('AC'),
     TWILIO_AUTHTOKEN: z.string(),
     TWILIO_WHATSAPP_NUMBER: z.string().min(10).regex(/\d+/),
-    TWILIO_MESSAGING_SID: z.string(),
+    TWILIO_MESSAGING_SID: z.string().startsWith('MG'),
     MOCK_TWILIO: z.stringbool().default(false),
 
     // Third-party: Kobo Connect
@@ -125,6 +137,7 @@ export const env = createEnv({
     // FSP-specific configuration:
     // FSP: Intersolve - Visa
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
+    MOCK_INTERSOLVE: z.stringbool().default(false),
 
     // FSP: Commercial Bank of Ethiopia (CBE)
     MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
