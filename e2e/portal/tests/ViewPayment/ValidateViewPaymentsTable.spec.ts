@@ -81,7 +81,7 @@ test('[32298] Table should be a filtered list of registrations included in the t
     await table.sortAndValidateColumnByName('Name');
     await table.sortAndValidateColumnByName('Registration status');
     await table.sortAndValidateColumnByName('Transfer status');
-    await table.sortAndValidateColumnByName('Fail reason');
+    await table.sortAndValidateColumnByName('Reason');
     await table.sortAndValidateColumnByName('Transfer value');
     await table.sortAndValidateColumnByName('FSP');
 

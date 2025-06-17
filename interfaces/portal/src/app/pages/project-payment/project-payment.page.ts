@@ -238,7 +238,7 @@ export class ProjectPaymentPageComponent {
       },
       {
         field: 'errorMessage',
-        header: $localize`Fail reason`,
+        header: $localize`Reason`,
       },
       {
         field: 'amount',
