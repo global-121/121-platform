@@ -22,7 +22,6 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       plugins: ['no-relative-import-paths', 'simple-import-sort'],
       extends: [
-        'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
         // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
@@ -104,14 +103,19 @@ module.exports = {
         ],
         'simple-import-sort/exports': 'error',
       },
-    },
-    {
-      files: ['*.entity.ts'],
-      parser: '@typescript-eslint/parser',
-      plugins: ['custom-rules'],
-      rules: {
-        'custom-rules/typeorm-cascade-ondelete': 'error',
-      },
+      overrides: [
+        {
+          files: ['*.entity.ts'],
+          plugins: ['custom-rules'],
+          rules: {
+            'custom-rules/typeorm-cascade-ondelete': 'error',
+          },
+        },
+        {
+          files: ['*.spec.ts', '*.test.ts'],
+          extends: ['plugin:jest/recommended'],
+        },
+      ],
     },
   ],
 };
