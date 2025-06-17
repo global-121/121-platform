@@ -54,17 +54,9 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run typecheck'
 
+      - name: Load environment variables
+        run: 'cat services/.env.example >> $GITHUB_ENV'
+
       - name: Unit-Test
         working-directory: ${{ env.workingDirectory }}
-        env:
-          NODE_ENV: development
-          TWILIO_SID: AC
-          TWILIO_AUTHTOKEN: test
-          TWILIO_WHATSAPP_NUMBER: 15005550006
-          MOCK_TWILIO: TRUE
-          MOCK_INTERSOLVE: TRUE
-          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
-          MOCK_NEDBANK: TRUE
-          NEDBANK_CERTIFICATE_PATH: test
-
         run: 'npm run test:unit:all'
