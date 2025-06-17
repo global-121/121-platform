@@ -45,6 +45,7 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Run Services with Docker
         run: |
@@ -57,17 +58,6 @@ jobs:
 
       - name: Run unit tests with Jest
         working-directory: ${{ env.workingDirectory }}
-        env:
-          NODE_ENV: development
-          TWILIO_SID: AC
-          TWILIO_AUTHTOKEN: test
-          TWILIO_WHATSAPP_NUMBER: 15005550006
-          MOCK_TWILIO: TRUE
-          MOCK_INTERSOLVE: TRUE
-          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
-          MOCK_NEDBANK: TRUE
-          NEDBANK_CERTIFICATE_PATH: test
-
         run: |
           npm install
           npm run test:unit:coverage
@@ -77,7 +67,7 @@ jobs:
         run: |
           docker compose exec 121-service npm run test:integration:coverage
 
-      - name: Copy coverage report output from docker container
+      - name: Copy coverage report output from Docker container
         working-directory: ${{ env.workingDirectory }}
         run: |
           docker cp 121-service:/home/node/app/coverage .

@@ -118,7 +118,7 @@ export const env = createEnv({
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
 
     // Third-party: Azure Email Service
-    AZURE_EMAIL_API_URL: z.url().optional(),
+    AZURE_EMAIL_API_URL: z.url(),
 
     // Third-party: Mock/testing
     MOCK_SERVICE_URL: z.url().endsWith('/'),
