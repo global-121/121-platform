@@ -932,5 +932,10 @@
     "method": "post",
     "path": "/api/financial-service-providers/safaricom/timeout-callback",
     "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/financial-service-providers/onafriq/callback",
+    "params": []
   }
 ]

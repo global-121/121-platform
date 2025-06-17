@@ -1,0 +1,84 @@
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { Redis } from 'ioredis';
+
+import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
+import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
+import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';
+import {
+  getRedisSetName,
+  REDIS_CLIENT,
+} from '@121-service/src/payments/redis/redis-client';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
+import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+
+@Injectable()
+export class OnafriqReconciliationService {
+  public constructor(
+    private readonly onafriqTransactionScopedRepository: OnafriqTransactionScopedRepository,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly queuesService: QueuesRegistryService,
+    @Inject(REDIS_CLIENT)
+    private readonly redisClient: Redis,
+  ) {}
+
+  public async processTransactionCallback(
+    onafriqTransactionCallback: OnafriqTransactionCallbackDto,
+  ): Promise<void> {
+    const onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto = {
+      thirdPartyTransId: onafriqTransactionCallback.thirdPartyTransId,
+      statusCode: onafriqTransactionCallback.status.code,
+      statusMessage: onafriqTransactionCallback.status.message,
+    };
+
+    const job = await this.queuesService.onafriqTransactionCallbackQueue.add(
+      JobNames.default,
+      onafriqTransactionCallbackJob,
+    );
+
+    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+  }
+
+  public async processOnafriqTransactionCallbackJob(
+    onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto,
+  ): Promise<void> {
+    try {
+      const onafriqTransaction =
+        await this.onafriqTransactionScopedRepository.getByThirdPartyTransId(
+          onafriqTransactionCallbackJob.thirdPartyTransId,
+        );
+
+      // Prepare the transaction status based on resultCode from callback
+      let updatedTransactionStatusAndErrorMessage = {};
+      if (onafriqTransactionCallbackJob.statusCode === 'MR101') {
+        updatedTransactionStatusAndErrorMessage = {
+          status: TransactionStatusEnum.success,
+        };
+      } else {
+        updatedTransactionStatusAndErrorMessage = {
+          status: TransactionStatusEnum.error,
+          errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
+        };
+      }
+
+      // Update transaction status
+      await this.transactionScopedRepository.update(
+        { id: onafriqTransaction.transaction.id },
+        updatedTransactionStatusAndErrorMessage,
+      );
+    } catch (error) {
+      // This should never happen. This way, if it happens, we receive an alert
+      if (error instanceof NotFoundException) {
+        throw new InternalServerErrorException(error.message);
+      }
+
+      throw error;
+    }
+  }
+}
