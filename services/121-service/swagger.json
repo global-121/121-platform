@@ -837,6 +837,11 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/financial-service-providers/onafriq/webhook/subscribe",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
