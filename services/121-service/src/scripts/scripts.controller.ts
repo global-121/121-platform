@@ -9,6 +9,7 @@ import {
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { DEBUG } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -84,7 +85,7 @@ export class ScriptsController {
     @Query('isApiTests') isApiTests: boolean,
     @Res() res,
   ): Promise<string> {
-    if (body.secret !== process.env.RESET_SECRET) {
+    if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
 
@@ -137,10 +138,10 @@ export class ScriptsController {
     mockPowerNumberRegistrations: string,
     @Res() res,
   ): Promise<void> {
-    if (body.secret !== process.env.RESET_SECRET) {
+    if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
-    if (!['development', 'test'].includes(process.env.NODE_ENV!)) {
+    if (!['development', 'test'].includes(env.NODE_ENV)) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .send('Not allowed in this environment. Only for development and test');
@@ -159,7 +160,7 @@ export class ScriptsController {
   @ApiExcludeEndpoint(!DEBUG)
   @Post('kill-service')
   killService(@Body() body: SecretDto, @Res() res): void {
-    if (body.secret !== process.env.RESET_SECRET) {
+    if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
     if (!DEBUG) {

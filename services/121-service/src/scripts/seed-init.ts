@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, Equal } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -39,18 +40,13 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async clearCallbacksMockService(): Promise<void> {
-    if (process.env.NODE_ENV === 'development') {
-      await this.httpService.get(
-        `${process.env.MOCK_SERVICE_URL}api/reset/callbacks`,
-      );
+    if (env.NODE_ENV === 'development') {
+      await this.httpService.get(`${env.MOCK_SERVICE_URL}api/reset/callbacks`);
     }
   }
 
   private async clearRedisData(): Promise<void> {
-    if (
-      process.env.REDIS_PREFIX &&
-      ['development', 'test'].includes(process.env.NODE_ENV!)
-    ) {
+    if (env.REDIS_PREFIX && ['development', 'test'].includes(env.NODE_ENV)) {
       await this.queuesService.emptyAllQueues();
     }
   }
@@ -247,18 +243,14 @@ export class SeedInit implements InterfaceScript {
   private async createAdminUser(): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     await userRepository.save({
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
-        .createHmac(
-          'sha256',
-          process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
-        )
+        .createHmac('sha256', env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),
       userType: UserType.aidWorker,
       admin: true,
       isOrganizationAdmin: true,
-      displayName:
-        process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!.split('@')[0],
+      displayName: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN.split('@')[0],
     });
   }
 
