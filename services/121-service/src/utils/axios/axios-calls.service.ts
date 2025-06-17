@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
   CustomHttpService,
@@ -13,9 +14,9 @@ export class AxiosCallsService {
   private httpService = new CustomHttpService(new HttpService());
 
   public getBaseUrl(): string {
-    if (process.env.NODE_ENV === 'development') {
+    if (env.NODE_ENV === 'development') {
       // If development, use localhost as base url
-      return `http://localhost:${process.env.PORT_121_SERVICE}/api`;
+      return `http://localhost:${env.PORT_121_SERVICE}/api`;
     } else {
       return EXTERNAL_API.rootApi;
     }
@@ -24,8 +25,8 @@ export class AxiosCallsService {
   public async loginAsAdmin(): Promise<any> {
     const url = `${this.getBaseUrl()}/users/login`;
     return this.httpService.post(url, {
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      password: env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
     });
   }
 

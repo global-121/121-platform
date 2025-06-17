@@ -1,7 +1,7 @@
 import { env } from '@121-service/src/env';
 
-export const DEBUG = !['production', 'test'].includes(env.NODE_ENV!);
-export const PORT = env.PORT_121_SERVICE!;
+export const DEBUG = !['production', 'test'].includes(env.NODE_ENV);
+export const PORT = env.PORT_121_SERVICE;
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
