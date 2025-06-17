@@ -74,13 +74,6 @@ export async function getAccessToken(
   return accessToken;
 }
 
-export async function getAccessTokenProgramManager(): Promise<string> {
-  return await getAccessToken(
-    env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-    env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-  );
-}
-
 export async function getAccessTokenScoped(
   defaultScope: DebugScope,
 ): Promise<string> {
