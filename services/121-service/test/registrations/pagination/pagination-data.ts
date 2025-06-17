@@ -305,7 +305,7 @@ export const registrationCbe = {
   programFinancialServiceProviderConfigurationName:
     FinancialServiceProviders.commercialBankEthiopia,
   maxPayments: 3,
-  fullName: 'ANDUALEM MOHAMMED YIMER',
+  fullName: 'example name for CBE mock mode',
   idNumber: '39231855170',
   age: '48',
   gender: 'male',
