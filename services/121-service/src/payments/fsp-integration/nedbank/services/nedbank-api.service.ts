@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { v4 as uuid } from 'uuid';
 
+import { env } from '@121-service/src/env';
 import { CreateOrderRequestBodyNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-request-body-nedbank-api.dto';
 import { CreateOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank-api.dto';
 import { GetOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/get-order-reponse-nedbank-api.dto';
@@ -62,7 +63,7 @@ export class NedbankApiService {
           },
           DebtorAccount: {
             SchemeName: 'account', // should always be 'account'
-            Identification: process.env.NEDBANK_ACCOUNT_NUMBER!,
+            Identification: env.NEDBANK_ACCOUNT_NUMBER,
             Name: paymentReference,
           },
           CreditorAccount: {
