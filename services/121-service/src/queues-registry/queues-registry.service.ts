@@ -6,8 +6,8 @@ import Redis from 'ioredis';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
 import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
+import { PaymentCallbackQueueNames } from '@121-service/src/queues-registry/enum/payment-callback-queue-names.enum';
 import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -31,10 +31,12 @@ export class QueuesRegistryService implements OnModuleInit {
     @InjectQueue(TransactionJobQueueNames.onafriq)
     public transactionJobOnafriqQueue: Queue,
 
-    @InjectQueue(SafaricomCallbackQueueNames.transfer)
+    @InjectQueue(PaymentCallbackQueueNames.safaricomTransfer)
     public safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(SafaricomCallbackQueueNames.timeout)
+    @InjectQueue(PaymentCallbackQueueNames.safaricomTimeout)
     public safaricomTimeoutCallbackQueue: Queue,
+    @InjectQueue(PaymentCallbackQueueNames.onafriqTransaction)
+    public onafriqTransactionCallbackQueue: Queue,
 
     @InjectQueue(CreateMessageQueueNames.replyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
@@ -63,6 +65,7 @@ export class QueuesRegistryService implements OnModuleInit {
       this.transactionJobOnafriqQueue, // ##TODO: why was Nedbank not in this list?
       this.safaricomTimeoutCallbackQueue,
       this.safaricomTransferCallbackQueue,
+      this.onafriqTransactionCallbackQueue,
       this.createMessageReplyOnIncomingQueue,
       this.createMessageSmallBulkQueue,
       this.createMessageMediumBulkQueue,

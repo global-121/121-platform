@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 
 import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
 import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
+import { PaymentCallbackQueueNames } from '@121-service/src/queues-registry/enum/payment-callback-queue-names.enum';
 import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
 import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -87,7 +87,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.transfer,
+      name: PaymentCallbackQueueNames.safaricomTransfer,
       processors: [
         {
           path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
@@ -99,10 +99,23 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.timeout,
+      name: PaymentCallbackQueueNames.safaricomTimeout,
       processors: [
         {
           path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    // Onafriq Callback Queue
+    BullModule.registerQueue({
+      name: PaymentCallbackQueueNames.onafriqTransaction,
+      processors: [
+        {
+          path: 'src/payments/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor.ts',
         },
       ],
       limiter: {

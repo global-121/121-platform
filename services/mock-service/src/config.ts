@@ -36,6 +36,7 @@ export const API_PATHS = {
   whatsAppIncoming: 'notifications/whatsapp/incoming',
   safaricomTransferCallback: 'fsps/safaricom/transfer-callback',
   safaricomTimeoutCallback: 'fsps/safaricom/timeout-callback',
+  onafriqCallback: 'fsps/onafriq/callback',
 };
 
 export const EXTERNAL_API_ROOT = `${

@@ -8,10 +8,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
+import { PaymentCallbackQueueNames } from '@121-service/src/queues-registry/enum/payment-callback-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(SafaricomCallbackQueueNames.timeout)
+@Processor(PaymentCallbackQueueNames.safaricomTimeout)
 export class TimeoutCallbackJobProcessorSafaricom {
   constructor(
     private readonly safaricomReconciliationService: SafaricomReconciliationService,
