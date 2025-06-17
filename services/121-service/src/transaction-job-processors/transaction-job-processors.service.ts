@@ -13,7 +13,6 @@ import { MessageTemplateService } from '@121-service/src/notifications/message-t
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
-import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -66,7 +65,6 @@ export class TransactionJobProcessorsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    private readonly airtelDisbursementScopedRepository: AirtelDisbursementScopedRepository,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
