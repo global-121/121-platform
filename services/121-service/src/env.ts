@@ -39,7 +39,7 @@ export const env = createEnv({
     REDIS_PREFIX: z
       .string()
       .regex(/[\w.-]*/)
-      .optional(),
+      .default('dev_'),
 
     // Data management
     RESET_SECRET: z.string().min(8),
