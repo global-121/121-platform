@@ -11,6 +11,8 @@ import { MessageProcessTypeExtension } from '@121-service/src/notifications/mess
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelDisbursementScopedRepository } from '@121-service/src/payments/fsp-integration/airtel/repositories/airtel-disbursement.scoped.repository';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -422,6 +424,14 @@ export class TransactionJobProcessorsService {
         transactionJob,
         TransactionStatusEnum.success,
       )();
+
+    const createWaitingTransaction = (errorMessage?: string) =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.waiting,
+      )(errorMessage);
+
     // Always needs a message
     const createErrorTransaction = (errorMessage: string) =>
       createCreateTransaction(
@@ -443,6 +453,12 @@ export class TransactionJobProcessorsService {
     try {
       await doDisbursement(transactionJob, failedTransactionsCount);
     } catch (error) {
+      if (
+        error instanceof AirtelError &&
+        error.type === AirtelDisbursementResultEnum.ambiguous
+      ) {
+        return await createWaitingTransaction(error?.message);
+      }
       return await createErrorTransaction(error?.message);
     }
     // If no error was thrown, we are certain the disbursement was successful.

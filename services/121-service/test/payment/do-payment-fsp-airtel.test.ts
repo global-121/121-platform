@@ -224,4 +224,53 @@ describe('Do payment with FSP: Airtel', () => {
     expect(transaction.errorMessage).toMatchSnapshot();
     expect(transaction.status).toBe(TransactionStatusEnum.error);
   });
+
+  it('should create a transaction with status waiting when we get an Ambiguous error from Airtel', async () => {
+    // Arrange
+    const registrationAirtelAmbiguousError = {
+      ...registrationAirtel,
+      phoneNumber: '260000000003',
+      referenceId: 'airtel-ambiguous-error',
+    };
+    const paymentReferenceIds = [registrationAirtelAmbiguousError.referenceId];
+    await seedIncludedRegistrations(
+      [registrationAirtelAmbiguousError],
+      programId,
+      accessToken,
+    );
+
+    // Act
+    await doPayment({
+      programId,
+      paymentNr: payment,
+      amount,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 30_000,
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+        TransactionStatusEnum.waiting,
+      ],
+    });
+    const getTransactionsResult = await getTransactions({
+      programId,
+      paymentNr: payment,
+      registrationReferenceId: registrationAirtelAmbiguousError.referenceId,
+      accessToken,
+    });
+    const transaction = getTransactionsResult.body[0];
+
+    // Assert
+    expect(transaction.status).toBe(TransactionStatusEnum.waiting);
+    expect(transaction.errorMessage).toMatch(
+      /^Airtel Error: The transaction is in an ambiguous state. Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: [a-z0-9]{64}/,
+    );
+  });
 });
