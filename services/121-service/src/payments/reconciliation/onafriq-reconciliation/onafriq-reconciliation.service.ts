@@ -1,12 +1,8 @@
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { Equal } from 'typeorm';
 
-import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
+import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';
 import {
@@ -16,12 +12,15 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class OnafriqReconciliationService {
   public constructor(
-    private readonly onafriqTransactionScopedRepository: OnafriqTransactionScopedRepository,
+    @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
+    private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
@@ -48,37 +47,33 @@ export class OnafriqReconciliationService {
   public async processOnafriqTransactionCallbackJob(
     onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto,
   ): Promise<void> {
-    try {
-      const onafriqTransaction =
-        await this.onafriqTransactionScopedRepository.getByThirdPartyTransId(
-          onafriqTransactionCallbackJob.thirdPartyTransId,
-        );
+    const onafriqTransaction =
+      await this.onafriqTransactionScopedRepository.findOneOrFail({
+        where: {
+          thirdPartyTransId: Equal(
+            onafriqTransactionCallbackJob.thirdPartyTransId,
+          ),
+        },
+        relations: ['transaction'],
+      });
 
-      // Prepare the transaction status based on resultCode from callback
-      let updatedTransactionStatusAndErrorMessage = {};
-      if (onafriqTransactionCallbackJob.statusCode === 'MR101') {
-        updatedTransactionStatusAndErrorMessage = {
-          status: TransactionStatusEnum.success,
-        };
-      } else {
-        updatedTransactionStatusAndErrorMessage = {
-          status: TransactionStatusEnum.error,
-          errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
-        };
-      }
-
-      // Update transaction status
-      await this.transactionScopedRepository.update(
-        { id: onafriqTransaction.transaction.id },
-        updatedTransactionStatusAndErrorMessage,
-      );
-    } catch (error) {
-      // This should never happen. This way, if it happens, we receive an alert
-      if (error instanceof NotFoundException) {
-        throw new InternalServerErrorException(error.message);
-      }
-
-      throw error;
+    // Prepare the transaction status based on statusCode from callback
+    let updatedTransactionStatusAndErrorMessage = {};
+    if (onafriqTransactionCallbackJob.statusCode === 'MR101') {
+      updatedTransactionStatusAndErrorMessage = {
+        status: TransactionStatusEnum.success,
+      };
+    } else {
+      updatedTransactionStatusAndErrorMessage = {
+        status: TransactionStatusEnum.error,
+        errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
+      };
     }
+
+    // Update transaction status
+    await this.transactionScopedRepository.update(
+      { id: onafriqTransaction.transaction.id },
+      updatedTransactionStatusAndErrorMessage,
+    );
   }
 }

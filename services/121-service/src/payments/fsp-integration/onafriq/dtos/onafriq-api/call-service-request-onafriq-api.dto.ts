@@ -1,59 +1,60 @@
-export interface CallServiceRequestOnafriqApiDto {
-  readonly corporateCode: string;
-  readonly password: string;
-  readonly mfsSign: string;
-  readonly batchId: string;
-  readonly requestBody: {
-    readonly instructionType: {
-      readonly destAcctType: number; // 1 for Mobile Money, 2 for Bank Account
-      readonly amountType: number; // 1 for Amount, 2 for Amount and Fee
+// ##TODO: limit to only the fields that are actually used in the request, and remove the rest (once clear). Same for other dto's.
+export class CallServiceRequestOnafriqApiDto {
+  public corporateCode: string;
+  public password: string;
+  public mfsSign: string;
+  public batchId: number;
+  public requestBody: {
+    instructionType: {
+      destAcctType: number; // 1 for Mobile Money, 2 for Bank Account
+      amountType: number; // 1 for Amount, 2 for Amount and Fee
     };
-    readonly amount: {
-      readonly amount: number;
-      readonly currencyCode: string; // e.g. "UGX"
+    amount: {
+      amount: number;
+      currencyCode: string;
     };
-    readonly sendFee: {
-      readonly amount: number;
-      readonly currencyCode: string; // e.g. "UGX"
+    sendFee: {
+      amount: number;
+      currencyCode: string;
     };
-    readonly sender: {
-      readonly msisdn: string; // sender's phone number
-      readonly fromCountry: string; // e.g. "GB"
-      readonly name: string;
-      readonly surname: string;
-      readonly address?: string | null;
-      readonly city?: string | null;
-      readonly state?: string | null;
-      readonly postalCode?: string | null;
-      readonly email?: string | null;
-      readonly dateOfBirth?: string | null; // format YYYY-MM-DD
-      readonly placeOfBirth?: string | null; // optional field
-      readonly document: {
-        idNumber: string; // e.g. "123456789"
-        idType: string; // e.g. "ID1" (ID1 = NATIONAL ID)
-        idCountry: string; // e.g. "GB"
-        idExpiry?: string | null; // format YYYY-MM-DD, optional field
+    sender: {
+      msisdn: string; // sender's phone number
+      fromCountry: string;
+      name: string;
+      surname: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      email?: string;
+      dateOfBirth?: string;
+      placeOfBirth?: string;
+      document: {
+        idNumber: string;
+        idType: string;
+        idCountry: string;
+        idExpiry?: string;
       };
     };
-    readonly recipient: {
-      readonly msisdn: string; // recipient's phone number
-      readonly toCountry: string; // e.g. "DC"
-      readonly name: string;
-      readonly surname: string;
-      readonly address?: string | null;
-      readonly city?: string | null;
-      readonly state?: string | null;
-      readonly postalCode?: string | null;
-      readonly email?: string | null;
-      readonly dateOfBirth?: string | null;
-      readonly document?: string | null; // optional field
-      readonly destinationAccount?: {
+    recipient: {
+      msisdn: string; // recipient's phone number
+      toCountry: string;
+      name: string;
+      surname: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      email?: string;
+      dateOfBirth?: string;
+      document?: string;
+      destinationAccount?: {
         accountNumber: string;
       };
     };
-    readonly thirdPartyTransId: string; // unique transaction ID
-    readonly reference?: string | null; // optional field, can be used for additional info
-    readonly purposeOfTransfer: string; // e.g. "PT3"
-    readonly sourceOfFunds: string; // e.g. "SF1"
+    thirdPartyTransId: string; // unique transaction ID > used as idempotency key
+    reference?: string; // optional field, can be used for potential offline reconciliation, but is for now not used.
+    purposeOfTransfer: string;
+    sourceOfFunds: string;
   }[];
 }

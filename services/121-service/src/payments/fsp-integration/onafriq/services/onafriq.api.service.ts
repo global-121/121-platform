@@ -5,9 +5,14 @@ import { DEBUG, EXTERNAL_API } from '@121-service/src/config';
 import { CallServiceRequestOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-request-onafriq-api.dto';
 import { CallServiceResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-response-onafriq-api.dto';
 import { WebhookSubscribeResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/webhook-subscribe-response-onafriq-api.dto';
-import { OnafriqApiError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq-api.error';
+import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+
+const onafriqApiUrl = !!process.env.MOCK_ONAFRIQ
+  ? `${process.env.MOCK_SERVICE_URL}api/fsp/onafriq`
+  : `${process.env.ONAFRIQ_API_URL}hub/async`;
 
 @Injectable()
 export class OnafriqApiService {
@@ -31,7 +36,7 @@ export class OnafriqApiService {
       return; // No need to subscribe to webhook in mock mode
     }
 
-    const webhookSubscribeUrl = `${process.env.ONAFRIQ_API_URL}hub/async/api/webhook/subscribe`; // ##TODO check if it is OK to always use /subscribe instead of /update. Both seem to always work.
+    const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`; // ##TODO check if it is OK to always use /subscribe instead of /update. Both seem to always work.
     const payload = {
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
       callbackUrl: `${EXTERNAL_API.baseApiUrl}financial-service-providers/onafriq/callback`,
@@ -46,7 +51,7 @@ export class OnafriqApiService {
     try {
       const { status, statusText, data } =
         await this.httpService.post<WebhookSubscribeResponseOnafriqApiDto>(
-          `${webhookSubscribeUrl}`,
+          webhookSubscribeUrl,
           payload,
           headers,
           DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
@@ -54,7 +59,10 @@ export class OnafriqApiService {
       return { status, statusText, data };
     } catch (error) {
       console.error('Failed to subscribe to Onafriq webhook', error);
-      throw new OnafriqApiError(`Error: ${error.message}`);
+      throw new OnafriqError(
+        `Error: ${error.message}`,
+        OnafriqApiResponseStatusType.genericError,
+      );
     }
   }
 
@@ -71,7 +79,10 @@ export class OnafriqApiService {
     firstName: string;
     lastName: string;
     thirdPartyTransId: string;
-  }): Promise<void> {
+  }): Promise<{
+    status: OnafriqApiResponseStatusType;
+    errorMessage?: string;
+  }> {
     const payload = this.onafriqApiHelperService.createCallServicePayload({
       transferAmount,
       phoneNumber,
@@ -81,36 +92,29 @@ export class OnafriqApiService {
     });
     const callServiceResponse = await this.makeCallServiceCall(payload);
 
-    const errorMessage =
-      this.onafriqApiHelperService.createErrorMessageIfApplicable(
-        callServiceResponse,
-        thirdPartyTransId,
-      );
-
-    if (errorMessage) {
-      throw new OnafriqApiError(errorMessage);
-    }
-
-    return;
+    return this.onafriqApiHelperService.processCallServiceResponse(
+      callServiceResponse,
+    );
   }
 
   private async makeCallServiceCall(
     payload: CallServiceRequestOnafriqApiDto,
   ): Promise<CallServiceResponseOnafriqApiDto> {
     try {
-      const callServiceUrl = !!process.env.MOCK_ONAFRIQ
-        ? `${process.env.MOCK_SERVICE_URL}api/fsp/onafriq/callService`
-        : `${process.env.ONAFRIQ_API_URL}hub/async/callService`;
+      const callServiceUrl = `${onafriqApiUrl}/callService`;
 
       return await this.httpService.post<CallServiceResponseOnafriqApiDto>(
-        `${callServiceUrl}`,
+        callServiceUrl,
         payload,
         undefined, // headers,
         DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
     } catch (error) {
       console.error('Failed to make Onafriq callService API call', error);
-      throw new OnafriqApiError(`Error: ${error.message}`);
+      throw new OnafriqError(
+        `Error: ${error.message}`,
+        OnafriqApiResponseStatusType.genericError,
+      );
     }
   }
 }
