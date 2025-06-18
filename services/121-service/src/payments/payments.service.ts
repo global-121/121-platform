@@ -883,7 +883,7 @@ export class PaymentsService {
           bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView[FspAttributes.nationalId],
-          originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
+          originatorConversationId: uuid(), // REFACTOR: switch to nedbank/onafriq approach for idempotency key
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
@@ -1011,7 +1011,6 @@ export class PaymentsService {
             registrationView[FinancialServiceProviderAttributes.firstName],
           lastName:
             registrationView[FinancialServiceProviderAttributes.lastName],
-          thirdPartyTransId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };
       });
     await this.transactionQueuesService.addOnafriqTransactionJobs(
