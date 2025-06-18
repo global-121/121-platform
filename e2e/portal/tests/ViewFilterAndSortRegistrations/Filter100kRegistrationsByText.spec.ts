@@ -36,8 +36,6 @@ test.beforeEach(async ({ page }) => {
   );
 
   await resetDuplicateRegistrations(15);
-  // Change registration's reference id
-  registrationPV8.referenceId = 'PV8-1234567890';
   // Seed a specific registration for testing the filter under big load
   await seedRegistrationsWithStatus(
     [registrationPV8],
