@@ -1,0 +1,4 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AirtelService attemptOrCheckDisbursement should throw an error if the phoneNumber has the wrong length 1`] = `"Airtel Error: does not have a valid phone number"`;
+
