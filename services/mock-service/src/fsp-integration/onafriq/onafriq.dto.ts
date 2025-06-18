@@ -1,3 +1,4 @@
+// ##TODO: limit to only the fields that are actually used in the request, and remove the rest (once clear). Same for other dto's.
 export class OnafriqCallServicePayload {
   public corporateCode: string;
   public password: string;
@@ -10,51 +11,51 @@ export class OnafriqCallServicePayload {
     };
     amount: {
       amount: number;
-      currencyCode: string; // e.g. "UGX"
+      currencyCode: string;
     };
     sendFee: {
       amount: number;
-      currencyCode: string; // e.g. "UGX"
+      currencyCode: string;
     };
     sender: {
       msisdn: string; // sender's phone number
-      fromCountry: string; // e.g. "GB"
+      fromCountry: string;
       name: string;
       surname: string;
-      address?: string | null;
-      city?: string | null;
-      state?: string | null;
-      postalCode?: string | null;
-      email?: string | null;
-      dateOfBirth?: string | null; // format YYYY-MM-DD
-      placeOfBirth?: string | null; // optional field
+      address?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      email?: string;
+      dateOfBirth?: string;
+      placeOfBirth?: string;
       document: {
-        idNumber: string; // e.g. "123456789"
-        idType: string; // e.g. "ID1" (ID1 = NATIONAL ID)
-        idCountry: string; // e.g. "GB"
-        idExpiry?: string | null; // format YYYY-MM-DD, optional field
+        idNumber: string;
+        idType: string;
+        idCountry: string;
+        idExpiry?: string;
       };
     };
     recipient: {
       msisdn: string; // recipient's phone number
-      toCountry: string; // e.g. "DC"
+      toCountry: string;
       name: string;
       surname: string;
-      address?: string | null;
-      city?: string | null;
-      state?: string | null;
-      postalCode?: string | null;
-      email?: string | null;
-      dateOfBirth?: string | null;
-      document?: string | null; // optional field
+      address?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      email?: string;
+      dateOfBirth?: string;
+      document?: string;
       destinationAccount?: {
         accountNumber: string;
       };
     };
-    thirdPartyTransId: string; // unique transaction ID
-    reference?: string | null; // optional field, can be used for additional info
-    purposeOfTransfer: string; // e.g. "PT3"
-    sourceOfFunds: string; // e.g. "SF1"
+    thirdPartyTransId: string; // unique transaction ID > used as idempotency key
+    reference?: string; // optional field, can be used for potential offline reconciliation, but is for now not used.
+    purposeOfTransfer: string;
+    sourceOfFunds: string;
   }[];
 }
 
@@ -73,4 +74,19 @@ export class OnafriqCallServiceResponseBodyDto {
     }[];
   };
   timestamp: string; // e.g. "2019-12-18 07:50:26.771"
+}
+
+export class OnafriqCallbackResponseBodyDto {
+  thirdPartyTransId: string;
+  mfsTransId: string;
+  e_trans_id: string;
+  fxRate: number;
+  status: {
+    code: string;
+    message: string;
+  };
+  receiveAmount: {
+    amount: number;
+    currencyCode: string;
+  };
 }

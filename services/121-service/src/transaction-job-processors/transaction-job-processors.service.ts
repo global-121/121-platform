@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -16,10 +16,9 @@ import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
-import { DuplicateThirdPartyTransIdError } from '@121-service/src/payments/fsp-integration/onafriq/errors/duplicate-third-party-trans-id.error';
-import { OnafriqApiError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq-api.error';
+import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
-import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { DuplicateOriginatorConversationIdError } from '@121-service/src/payments/fsp-integration/safaricom/errors/duplicate-originator-conversation-id.error';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
@@ -35,11 +34,13 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 interface ProcessTransactionResultInput {
@@ -66,7 +67,8 @@ export class TransactionJobProcessorsService {
     private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    private readonly onafriqTransactionScopedRepository: OnafriqTransactionScopedRepository,
+    @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
+    private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
@@ -338,11 +340,15 @@ export class TransactionJobProcessorsService {
         thirdPartyTransId: transactionJob.thirdPartyTransId!,
       });
     } catch (error) {
-      if (error instanceof DuplicateThirdPartyTransIdError) {
+      if (
+        error instanceof OnafriqError &&
+        error.type ===
+          OnafriqApiResponseStatusType.duplicateThirdPartyTransIdError
+      ) {
         // Return early, as this job re-attempt has already been processed before, which should not be overwritten
         console.error(error.message);
         return;
-      } else if (error instanceof OnafriqApiError) {
+      } else if (error instanceof OnafriqError) {
         await this.transactionScopedRepository.update(
           { id: transactionId },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
