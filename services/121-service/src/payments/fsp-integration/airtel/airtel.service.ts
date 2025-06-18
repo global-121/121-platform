@@ -22,10 +22,18 @@ const getEnvOrThrow = (envVar: string): string => {
 export class AirtelService
   implements FinancialServiceProviderIntegrationInterface
 {
+  private readonly airtelDisbursementPin: string;
+  private readonly airtelDisbursementV1PinEncryptionPublicKey: string;
+
   public constructor(
     private readonly airtelApiService: AirtelApiService,
     private readonly airtelEncryptionService: AirtelEncryptionService,
-  ) {}
+  ) {
+    this.airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
+    this.airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
+      'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+    );
+  }
 
   /**
    * Do not use! This function was previously used to send payments.
@@ -38,8 +46,6 @@ export class AirtelService
   ): Promise<void> {
     throw new Error('Method should not be called anymore.');
   }
-
-  // ## TODO: rename
 
   public async attemptOrCheckDisbursement({
     airtelTransactionId,
@@ -54,14 +60,9 @@ export class AirtelService
     countryCode: string;
     amount: number;
   }) {
-    // Encrypt the pin.
-    const airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
-    const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
-      'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
-    );
     const encryptedPin = this.airtelEncryptionService.encryptPinV1(
-      airtelDisbursementPin,
-      airtelDisbursementV1PinEncryptionPublicKey,
+      this.airtelDisbursementPin,
+      this.airtelDisbursementV1PinEncryptionPublicKey,
     );
 
     // Validate phone number here, we want to *not* send requests when the phone number is invalid.
