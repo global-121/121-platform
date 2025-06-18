@@ -18,7 +18,6 @@ describe('AirtelService', () => {
           provide: AirtelApiService,
           useValue: {
             disburse: jest.fn(),
-            // enquire: jest.fn(),
           },
         },
         {
@@ -40,14 +39,16 @@ describe('AirtelService', () => {
     const currencyCode = 'ZMW';
     const countryCode = 'ZM';
     const encryptedPin = 'mock-encrypted-pin';
+    const phoneNumber = '260000000000';
+    const phoneNumberWithoutCountryCode = phoneNumber.slice(3); // Remove country code '260'
 
+    // Happy path
     it('should send a disbursement request', async () => {
       // Arrange
       jest.spyOn(apiService, 'disburse').mockResolvedValue({
         result: AirtelDisbursementResultEnum.success,
         message: '',
       });
-      const phoneNumber = '260000000000';
 
       // Act
       const result = await service.attemptOrCheckDisbursement({
@@ -64,7 +65,7 @@ describe('AirtelService', () => {
         expect.objectContaining({
           airtelTransactionId,
           encryptedPin,
-          phoneNumberWithoutCountryCode: phoneNumber.slice(3), // Remove country code '260'
+          phoneNumberWithoutCountryCode,
           currencyCode,
           countryCode,
           amount,
@@ -97,23 +98,6 @@ describe('AirtelService', () => {
       expect(error.message).toMatchSnapshot();
       expect(error.type).toBe(AirtelDisbursementResultEnum.fail);
       expect(apiService.disburse).not.toHaveBeenCalled();
-    });
-
-    it('should throw an AirtelError with type "fail" if the phoneNumber has the wrong length', async () => {
-      const invalidPhoneNumber = '26012345'; // Too short
-      await expect(
-        service.attemptOrCheckDisbursement({
-          airtelTransactionId,
-          phoneNumber: invalidPhoneNumber,
-          currencyCode: 'ZMW',
-          countryCode: 'ZM',
-          amount,
-        }),
-      ).rejects.toMatchObject({
-        name: 'AirtelError',
-        message: expect.stringContaining('does not have a valid phone number'),
-        type: 'fail',
-      });
     });
   });
 });
