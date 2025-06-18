@@ -36,7 +36,7 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
     creditAcctNo: '407951684723597',
     creditCurrency: 'ETB',
     remitterName: 'EKHCDC',
-    beneficiaryName: 'ANDUALEM MOHAMMED YIMER',
+    beneficiaryName: 'example name for CBE mock mode',
   },
 ];
 

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   model,
   signal,
@@ -9,10 +10,13 @@ import {
 
 import { MenuItem } from 'primeng/api';
 
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { Registration } from '~/domains/registration/registration.model';
 import { ImportRegistrationsComponent } from '~/pages/project-registrations/components/import-registrations/import-registrations.component';
 import { UpdateRegistrationsComponent } from '~/pages/project-registrations/components/update-registrations/update-registrations.component';
+import { AuthService } from '~/services/auth.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 
 @Component({
@@ -32,6 +36,8 @@ export class ImportRegistrationsMenuComponent {
     input.required<
       () => ActionDataWithPaginateQuery<Registration> | undefined
     >();
+
+  private authService = inject(AuthService);
 
   readonly importNewRegistrationsDialogVisible = model<boolean>(false);
   readonly updateExistingRegistrationsDialogVisible = model<boolean>(false);
@@ -57,6 +63,10 @@ export class ImportRegistrationsMenuComponent {
         this.updateSelectedRegistrationsActionData.set(actionData);
         this.updateExistingRegistrationsDialogVisible.set(true);
       },
+      visible: this.authService.hasPermission({
+        projectId: this.projectId(),
+        requiredPermission: PermissionEnum.RegistrationBulkUPDATE,
+      }),
     },
   ]);
 }
