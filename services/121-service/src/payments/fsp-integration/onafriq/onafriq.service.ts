@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { WebhookSubscribeResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/webhook-subscribe-response-onafriq-api.dto';
+import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CreateTransactionParams } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/create-transaction-params.interface';
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
 
@@ -41,13 +43,18 @@ export class OnafriqService
     // 1. Simulate crash before API-call
     // await new Promise((resolve) => setTimeout(resolve, 60000));
 
-    await this.onafriqApiService.callService({
+    const mappedResponse = await this.onafriqApiService.callService({
       transferAmount,
       phoneNumber,
       firstName,
       lastName,
       thirdPartyTransId,
     });
+
+    if (mappedResponse.status !== OnafriqApiResponseStatusType.success) {
+      const errorMessage = mappedResponse.errorMessage;
+      throw new OnafriqError(errorMessage!, mappedResponse.status);
+    }
 
     // 2. Simulate crash after API call
     // await new Promise((resolve) => setTimeout(resolve, 60000));

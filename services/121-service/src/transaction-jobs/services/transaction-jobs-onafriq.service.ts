@@ -1,20 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqApiError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq-api.error';
+import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
-import { OnafriqTransactionScopedRepository } from '@121-service/src/payments/fsp-integration/onafriq/repositories/onafriq-transaction.scoped.repository';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class TransactionJobsOnafriqService {
   constructor(
     private readonly onafriqService: OnafriqService,
-    private readonly onafriqTransactionScopedRepository: OnafriqTransactionScopedRepository,
+    @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
+    private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
@@ -76,11 +79,15 @@ export class TransactionJobsOnafriqService {
         thirdPartyTransId: transactionJob.thirdPartyTransId!,
       });
     } catch (error) {
-      if (error instanceof DuplicateThirdPartyTransIdError) {
+      if (
+        error instanceof OnafriqError &&
+        error.type ===
+          OnafriqApiResponseStatusType.duplicateThirdPartyTransIdError
+      ) {
         // Return early, as this job re-attempt has already been processed before, which should not be overwritten
         console.error(error.message);
         return;
-      } else if (error instanceof OnafriqApiError) {
+      } else if (error instanceof OnafriqError) {
         await this.transactionScopedRepository.update(
           { id: transactionId },
           { status: TransactionStatusEnum.error, errorMessage: error?.message },
