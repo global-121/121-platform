@@ -289,20 +289,37 @@ export class TransactionJobProcessorsService {
   public async processOnafriqTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
-    // 1. Check for existing Onafriq Transaction with the same thirdPartyTransId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
+    // 1. Create idempotency key
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
+    const failedTransactionsCount =
+      await this.transactionScopedRepository.count({
+        where: {
+          registrationId: Equal(registration.id),
+          payment: Equal(transactionJob.paymentNumber),
+          status: Equal(TransactionStatusEnum.error),
+        },
+      });
+    // thirdPartyTransId is generated using: (referenceId + paymentNr + failedTransactionsCount)
+    // Using this count to generate the thirdPartyTransId ensures that on:
+    // a. Payment retry, a new thirdPartyTransId is generated, which will not be blocked by Onafriq API, as desired.
+    // b. Queue retry: on queue retry, the same thirdPartyTransId is generated, which will be blocked by Onafriq API, as desired.
+    const thirdPartyTransId = generateUUIDFromSeed(
+      `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`,
+    );
+
+    // 2. Check for existing Onafriq Transaction with the same thirdPartyTransId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
     let onafriqTransaction =
       await this.onafriqTransactionScopedRepository.findOne({
         where: {
-          thirdPartyTransId: Equal(transactionJob.thirdPartyTransId),
+          thirdPartyTransId: Equal(thirdPartyTransId),
         },
       });
 
-    // 2. if no onafriq transaction yet, create a 121 transaction, otherwise this has already happened before
+    // 3. if no onafriq transaction yet, create a 121 transaction, otherwise this has already happened before
     let transactionId: number;
     if (!onafriqTransaction) {
-      const registration = await this.getRegistrationOrThrow(
-        transactionJob.referenceId,
-      );
       const oldRegistration = structuredClone(registration);
       const transaction = await this.createTransactionAndUpdateRegistration({
         programId: transactionJob.programId,
@@ -320,8 +337,7 @@ export class TransactionJobProcessorsService {
 
       // TODO: combine this with the transaction creation above in one SQL transaction
       const newOnafriqTransaction = new OnafriqTransactionEntity();
-      newOnafriqTransaction.thirdPartyTransId =
-        transactionJob.thirdPartyTransId;
+      newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
       newOnafriqTransaction.transactionId = transactionId;
       onafriqTransaction = await this.onafriqTransactionScopedRepository.save(
         newOnafriqTransaction,
@@ -330,14 +346,14 @@ export class TransactionJobProcessorsService {
       transactionId = onafriqTransaction.transactionId;
     }
 
-    // 3. Start the transfer, if failure: update to error transaction and return early
+    // 4. Start the transfer, if failure: update to error transaction and return early
     try {
       await this.onafriqService.createTransaction({
         transferAmount: transactionJob.transactionAmount,
         phoneNumber: transactionJob.phoneNumber!,
         firstName: transactionJob.firstName!,
         lastName: transactionJob.lastName!,
-        thirdPartyTransId: transactionJob.thirdPartyTransId!,
+        thirdPartyTransId,
       });
     } catch (error) {
       if (
@@ -359,9 +375,9 @@ export class TransactionJobProcessorsService {
       }
     }
 
-    // 4. No messages sent for onafriq
+    // 5. No messages sent for onafriq
 
-    // 5. No 121 transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+    // 6. No 121 transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
   }
 
   public async processNedbankTransactionJob(
