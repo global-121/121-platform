@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { constants, publicEncrypt } from 'crypto';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
+import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 
 // ## TODO: when the branch for better handling of environment variables is merged, use that pattern.
@@ -22,7 +22,10 @@ const getEnvOrThrow = (envVar: string): string => {
 export class AirtelService
   implements FinancialServiceProviderIntegrationInterface
 {
-  public constructor(private readonly airtelApiService: AirtelApiService) {}
+  public constructor(
+    private readonly airtelApiService: AirtelApiService,
+    private readonly airtelEncryptionService: AirtelEncryptionService,
+  ) {}
 
   /**
    * Do not use! This function was previously used to send payments.
@@ -34,26 +37,6 @@ export class AirtelService
     _paymentNr: number,
   ): Promise<void> {
     throw new Error('Method should not be called anymore.');
-  }
-
-  private rsaPublicKeyToPem(key: string): string {
-    const formattedKey = `-----BEGIN PUBLIC KEY-----\n${key
-      .match(/.{1,64}/g)
-      ?.join('\n')}\n-----END PUBLIC KEY-----`;
-    return formattedKey;
-  }
-
-  private encryptPinV1(data: string, base64PublicKey: string): string {
-    const publicKey = this.rsaPublicKeyToPem(base64PublicKey);
-    const encrypted = publicEncrypt(
-      {
-        key: publicKey,
-        padding: constants.RSA_PKCS1_PADDING,
-        oaepHash: 'sha256',
-      },
-      Buffer.from(data),
-    );
-    return encrypted.toString('base64');
   }
 
   // ## TODO: rename
@@ -76,7 +59,7 @@ export class AirtelService
     const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
       'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
     );
-    const encryptedPin = this.encryptPinV1(
+    const encryptedPin = this.airtelEncryptionService.encryptPinV1(
       airtelDisbursementPin,
       airtelDisbursementV1PinEncryptionPublicKey,
     );
