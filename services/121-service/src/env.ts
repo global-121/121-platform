@@ -138,9 +138,25 @@ export const env = createEnv({
     KOBO_CONNECT_API_URL: z.url().refine((value) => !value.endsWith('/')),
 
     // FSP-specific configuration:
-    // FSP: Intersolve - Visa
-    INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
+    // FSP: Intersolve
     MOCK_INTERSOLVE: z.stringbool().default(false),
+    // FSP: Intersolve - Voucher
+    INTERSOLVE_EAN: z.string().default(''),
+    INTERSOLVE_URL: z.url().default(''),
+    // FSP: Intersolve - Visa
+    INTERSOLVE_VISA_CLIENT_ID: z.string().default(''),
+    INTERSOLVE_VISA_CLIENT_SECRET: z.string().optional(),
+    INTERSOLVE_VISA_TENANT_ID: z.string().optional(),
+    INTERSOLVE_VISA_PROD: z.stringbool().default(false),
+    INTERSOLVE_VISA_API_URL: z
+      .url()
+      .refine((value) => !value.endsWith('/'))
+      .optional(),
+    INTERSOLVE_VISA_OIDC_ISSUER: z
+      .url()
+      .refine((value) => !value.endsWith('/'))
+      .optional(),
+    INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
 
     // FSP: Commercial Bank of Ethiopia (CBE)
     MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),

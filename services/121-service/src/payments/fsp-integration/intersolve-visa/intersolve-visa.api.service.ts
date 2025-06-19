@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Issuer, TokenSet } from 'openid-client';
 import { v4 as uuid } from 'uuid';
 
+import { env } from '@121-service/src/env';
 import { CreateCustomerRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-request-intersolve-api.dto';
 import { CreateCustomerResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-response-intersolve-api.dto';
 import { CreatePhysicalCardRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-physical-card-request-intersolve-api.dto';
@@ -30,9 +31,9 @@ import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
-const intersolveVisaApiUrl = process.env.MOCK_INTERSOLVE
-  ? `${process.env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
-  : process.env.INTERSOLVE_VISA_API_URL;
+const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
+  ? `${env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
+  : env.INTERSOLVE_VISA_API_URL;
 
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
@@ -47,7 +48,7 @@ export class IntersolveVisaApiService {
   ) {}
 
   public async getAuthenticationToken() {
-    if (process.env.MOCK_INTERSOLVE) {
+    if (env.MOCK_INTERSOLVE) {
       return 'mocked-token';
     }
     if (this.tokenValidationService.isTokenValid(this.tokenSet)) {
@@ -56,11 +57,11 @@ export class IntersolveVisaApiService {
     }
     // If not valid, request new token
     const trustIssuer = await Issuer.discover(
-      `${process.env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
+      `${env.INTERSOLVE_VISA_OIDC_ISSUER}/.well-known/openid-configuration`,
     );
     const client = new trustIssuer.Client({
-      client_id: process.env.INTERSOLVE_VISA_CLIENT_ID!,
-      client_secret: process.env.INTERSOLVE_VISA_CLIENT_SECRET!,
+      client_id: env.INTERSOLVE_VISA_CLIENT_ID,
+      client_secret: env.INTERSOLVE_VISA_CLIENT_SECRET,
     });
     const tokenSet = await client.grant({
       grant_type: 'client_credentials',
@@ -180,7 +181,7 @@ export class IntersolveVisaApiService {
     const tokenData = getTokenResponseDto.data.data;
     if (tokenData?.balances) {
       const balanceObject = tokenData.balances.find(
-        (b) => b.quantity.assetCode === process.env.INTERSOLVE_VISA_ASSET_CODE,
+        (b) => b.quantity.assetCode === env.INTERSOLVE_VISA_ASSET_CODE,
       );
       if (balanceObject) {
         balance = balanceObject.quantity.value;
@@ -435,7 +436,7 @@ export class IntersolveVisaApiService {
     const transferRequestDto: TransferRequestIntersolveApiDto = {
       quantity: {
         value: amountInCent,
-        assetCode: process.env.INTERSOLVE_VISA_ASSET_CODE!,
+        assetCode: env.INTERSOLVE_VISA_ASSET_CODE,
       },
       creditor: {
         tokenCode: toTokenCode,
@@ -601,12 +602,12 @@ export class IntersolveVisaApiService {
     const authToken = await this.getAuthenticationToken();
     const headers = [
       { name: 'Authorization', value: `Bearer ${authToken}` },
-      { name: 'Tenant-ID', value: process.env.INTERSOLVE_VISA_TENANT_ID },
+      { name: 'Tenant-ID', value: env.INTERSOLVE_VISA_TENANT_ID },
     ];
 
     let intersolveVisaApiPath: string = apiPath;
 
-    if (process.env.INTERSOLVE_VISA_PROD) {
+    if (env.INTERSOLVE_VISA_PROD) {
       switch (apiPath) {
         case 'customer':
           intersolveVisaApiPath = 'customer-payments';
