@@ -95,27 +95,27 @@ export class ActivityLogExpandedRowComponent
     });
 
   readonly dataList = computed<DataListItem[] | undefined>(() => {
-    const item = this.value();
-    switch (item.type) {
+    const { attributes, user, type } = this.value();
+    switch (type) {
       case ActivityTypeEnum.DataChange:
         return [
           {
             label: $localize`Old data`,
             value: this.localizeAttribute(
-              item.attributes.fieldName,
-              item.attributes.oldValue,
+              attributes.fieldName,
+              attributes.oldValue,
             ),
           },
           {
             label: $localize`New data`,
             value: this.localizeAttribute(
-              item.attributes.fieldName,
-              item.attributes.newValue,
+              attributes.fieldName,
+              attributes.newValue,
             ),
           },
           {
             label: $localize`Change reason`,
-            value: item.attributes.reason,
+            value: attributes.reason,
           },
         ];
       case ActivityTypeEnum.FinancialServiceProviderChange:
@@ -124,34 +124,34 @@ export class ActivityLogExpandedRowComponent
             label: $localize`Old FSP`,
             value: this.localizeAttribute(
               GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
-              item.attributes.oldValue,
+              attributes.oldValue,
             ),
           },
           {
             label: $localize`New FSP`,
             value: this.localizeAttribute(
               GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
-              item.attributes.newValue,
+              attributes.newValue,
             ),
           },
           {
             label: $localize`Change reason`,
-            value: item.attributes.reason,
+            value: attributes.reason,
           },
         ];
       case ActivityTypeEnum.StatusChange:
         return [
           {
             label: $localize`Old status`,
-            ...getChipDataByRegistrationStatus(item.attributes.oldValue),
+            ...getChipDataByRegistrationStatus(attributes.oldValue),
           },
           {
             label: $localize`New status`,
-            ...getChipDataByRegistrationStatus(item.attributes.newValue),
+            ...getChipDataByRegistrationStatus(attributes.newValue),
           },
           {
             label: $localize`Change reason`,
-            value: item.attributes.reason,
+            value: attributes.reason,
           },
         ];
       case ActivityTypeEnum.Transaction: {
@@ -162,30 +162,30 @@ export class ActivityLogExpandedRowComponent
             type: 'text',
             routerLink: paymentLink({
               projectId: this.context().projectId(),
-              paymentId: item.attributes.payment,
+              paymentId: attributes.payment,
             }),
           },
           {
             label: $localize`Transfer status updated`,
             value:
               new DatePipe(this.locale).transform(
-                item.attributes.updatedDate,
+                attributes.updatedDate,
                 'short',
               ) ?? '',
             type: 'text',
           },
           {
             label: $localize`Approved by`,
-            chipLabel: item.user.username,
+            chipLabel: user.username,
             chipVariant: 'blue',
           },
           {
             label: $localize`FSP`,
-            value: item.attributes.financialServiceProviderConfigurationLabel,
+            value: attributes.financialServiceProviderConfigurationLabel,
           },
           {
             label: $localize`Amount`,
-            value: item.attributes.amount,
+            value: attributes.amount,
             type: 'currency',
             currencyCode: this.context().currencyCode(),
           },
@@ -201,10 +201,17 @@ export class ActivityLogExpandedRowComponent
           });
         }
 
-        if (item.attributes.status === TransactionStatusEnum.error) {
+        if (
+          attributes.errorMessage &&
+          (attributes.status === TransactionStatusEnum.error ||
+            attributes.status === TransactionStatusEnum.waiting)
+        ) {
           list.push({
-            label: $localize`Fail reason`,
-            value: item.attributes.errorMessage,
+            label:
+              attributes.status === TransactionStatusEnum.error
+                ? $localize`Fail reason`
+                : $localize`Pending reason`,
+            value: attributes.errorMessage,
             type: 'text',
           });
         }
@@ -215,7 +222,7 @@ export class ActivityLogExpandedRowComponent
         return [
           {
             label: $localize`Update reason`,
-            value: item.attributes.reason,
+            value: attributes.reason,
             type: 'text',
           },
         ];
@@ -225,15 +232,13 @@ export class ActivityLogExpandedRowComponent
   });
 
   readonly message = computed<string | undefined>(() => {
-    const item = this.value();
-    switch (item.type) {
+    const { type, attributes } = this.value();
+
+    switch (type) {
       case ActivityTypeEnum.Note:
-        return item.attributes.text;
+        return attributes.text;
       case ActivityTypeEnum.Message:
-        return this.getMessageBody(
-          item.attributes.body,
-          item.attributes.mediaUrl,
-        );
+        return this.getMessageBody(attributes.body, attributes.mediaUrl);
       default:
         return undefined;
     }
