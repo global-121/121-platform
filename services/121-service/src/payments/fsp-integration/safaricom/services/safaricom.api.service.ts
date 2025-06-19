@@ -63,7 +63,7 @@ export class SafaricomApiService {
     const consumerKey = env.SAFARICOM_CONSUMER_KEY;
     const consumerSecret = env.SAFARICOM_CONSUMER_SECRET;
     const accessTokenUrl = env.MOCK_SAFARICOM
-      ? `${env.MOCK_SERVICE_URL}api/fsp/safaricom/authenticate`
+      ? `${env.MOCK_SERVICE_URL}/api/fsp/safaricom/authenticate`
       : `${env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
@@ -99,7 +99,7 @@ export class SafaricomApiService {
       await this.authenticate();
 
       const paymentUrl = env.MOCK_SAFARICOM
-        ? `${env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
+        ? `${env.MOCK_SERVICE_URL}/api/fsp/safaricom/transfer`
         : `${env.SAFARICOM_API_URL}/${env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
 
       const headers = [

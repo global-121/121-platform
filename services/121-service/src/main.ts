@@ -132,7 +132,7 @@ async function bootstrap(): Promise<void> {
 
   if (!!env.REDIRECT_PORTAL_URL_HOST) {
     expressInstance.get(`/`, (__req: Request, res: Response) => {
-      res.redirect(env.REDIRECT_PORTAL_URL_HOST!);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST);
     });
     expressInstance.get(`/portal*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
@@ -148,7 +148,7 @@ async function bootstrap(): Promise<void> {
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
     .addServer(
-      DEBUG ? `http://localhost:${PORT}/` : env.EXTERNAL_121_SERVICE_URL,
+      DEBUG ? `http://localhost:${PORT}` : env.EXTERNAL_121_SERVICE_URL,
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);

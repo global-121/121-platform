@@ -25,7 +25,7 @@ export class ExchangeRatesApiService {
 
     try {
       const exchangeRateUrl = env.MOCK_DAILY_EXCHANGE_RATES
-        ? `${env.MOCK_SERVICE_URL}api/exchange-rates`
+        ? `${env.MOCK_SERVICE_URL}/api/exchange-rates`
         : `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
       const response: ExchangeRateApiResponse =
         await this.httpService.get(exchangeRateUrl);

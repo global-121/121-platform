@@ -1,4 +1,5 @@
 import { createEnv } from '@t3-oss/env-core';
+import { withoutTrailingSlash } from 'ufo';
 import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
@@ -17,7 +18,9 @@ export const env = createEnv({
     PORT_MOCK_SERVICE: z.coerce.number().optional(),
     PORT_121_SERVICE: z.coerce.number().optional(),
 
-    EXTERNAL_121_SERVICE_URL: z.url().endsWith('/'),
+    EXTERNAL_121_SERVICE_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     // FSP-specific configuration:
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
