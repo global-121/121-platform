@@ -146,6 +146,24 @@ export const env = createEnv({
       .refine((value) => !value.endsWith('/'))
       .optional(),
     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
+
+    // FSP: Safaricom
+    MOCK_SAFARICOM: z.stringbool().default(false),
+    SAFARICOM_API_URL: z
+      .url()
+      .refine((value) => !value.endsWith('/'))
+      .optional(),
+    SAFARICOM_CONSUMER_KEY: z.string().optional(),
+    SAFARICOM_CONSUMER_SECRET: z.string().optional(),
+    SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT: z
+      .url()
+      .refine((value) => !value.startsWith('/'))
+      .optional(),
+    SAFARICOM_INITIATORNAME: z.string().optional(),
+    SAFARICOM_SECURITY_CREDENTIAL: z.string().optional(),
+    SAFARICOM_PARTY_A: z.string().optional(),
+    SAFARICOM_IDTYPE: z.string().optional(),
+
     // FSP: Nedbank
     MOCK_NEDBANK: z.stringbool().default(false),
     NEDBANK_ACCOUNT_NUMBER: z.string().min(10).optional(),
