@@ -12,6 +12,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
+// ##TODO: Rename this to ProjectEntity
 @Entity('program')
 export class ProgramEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: true })
