@@ -5,9 +5,17 @@ RUN apt-get update && apt-get install -y curl procps
 
 WORKDIR /home/node/app
 
+EXPOSE ${PORT_MOCK_SERVICE}
+
+HEALTHCHECK \
+  --start-period=60s \
+  --timeout=300s \
+  CMD curl --fail http://localhost:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
+
 FROM base AS production
 
 COPY ./package*.json ./
+COPY ./.npmrc ./
 
 RUN npm ci
 
