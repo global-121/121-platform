@@ -166,7 +166,7 @@ export const env = createEnv({
 
     // FSP: Nedbank
     MOCK_NEDBANK: z.stringbool().default(false),
-    NEDBANK_ACCOUNT_NUMBER: z.string().length(10).optional(),
+    NEDBANK_ACCOUNT_NUMBER: z.string().min(10).optional(),
     NEDBANK_CLIENT_ID: z.string().optional(),
     NEDBANK_CLIENT_SECRET: z.string().optional(),
     NEDBANK_CERTIFICATE_PATH: z.string().default(''),
