@@ -102,10 +102,11 @@ class RegistrationsPage extends BasePage {
 
   async getFirstRegistrationNameFromTable() {
     await this.page.waitForTimeout(200);
-    const table = this.page.locator('table tbody td').first();
-    const fullName = await this.table.getCell(0, 2);
 
+    const table = this.page.locator('table tbody td').first();
     await table.waitFor({ state: 'visible' });
+
+    const fullName = await this.table.getCell(0, 2);
     const fullNameText = (await fullName.textContent())?.trim();
     if (!fullNameText) {
       throw new Error('Could not find full name in the table');
