@@ -26,7 +26,7 @@ let mockClient: ClientOpts | undefined;
 
 if (env.MOCK_TWILIO) {
   mockClient = {
-    httpClient: new MockTwilioRequestClient(`${env.MOCK_SERVICE_URL}api`),
+    httpClient: new MockTwilioRequestClient(`${env.MOCK_SERVICE_URL}/api`),
   };
 }
 

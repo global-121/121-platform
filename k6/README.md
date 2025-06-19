@@ -37,7 +37,7 @@ Then:
 npm install
 ```
 
-Make sure ENV-variable EXTERNAL_121_SERVICE_URL is set to http://localhost:3000/ (and not to some ngrok address)
+Make sure ENV-variable `EXTERNAL_121_SERVICE_URL` is set to `http://localhost:3000` (and not to some `ngrok` address)
 
 **To run the tests:**
 

@@ -12,7 +12,7 @@ import {
 } from '@121-service/src/shared/services/custom-http.service';
 
 const nedbankApiUrl = env.MOCK_NEDBANK
-  ? `${env.MOCK_SERVICE_URL}api/fsp/nedbank`
+  ? `${env.MOCK_SERVICE_URL}/api/fsp/nedbank`
   : env.NEDBANK_API_URL;
 
 @Injectable()

@@ -1,4 +1,5 @@
 import { createEnv } from '@t3-oss/env-core';
+import { withoutLeadingSlash, withoutTrailingSlash } from 'ufo';
 import { v4 as createUuid } from 'uuid';
 import { z } from 'zod/v4';
 
@@ -33,7 +34,9 @@ export const env = createEnv({
     PORT_121_SERVICE: z.coerce.number(),
     PORT_MOCK_SERVICE: z.coerce.number(),
 
-    EXTERNAL_121_SERVICE_URL: z.url().endsWith('/'),
+    EXTERNAL_121_SERVICE_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     GENERIC_THROTTLING_LIMIT: z.coerce.number().optional().default(3_000),
     GENERIC_THROTTLING_TTL: z.coerce.number().optional().default(60),
@@ -115,7 +118,9 @@ export const env = createEnv({
     CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
 
     // Interface(s) configuration
-    REDIRECT_PORTAL_URL_HOST: z.url().refine((value) => !value.endsWith('/')), // TODO: Rename to better reflect other uses.
+    REDIRECT_PORTAL_URL_HOST: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     // Third-party: Azure ApplicationInsights
     APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
@@ -124,7 +129,9 @@ export const env = createEnv({
     AZURE_EMAIL_API_URL: z.url(),
 
     // Third-party: Mock/testing
-    MOCK_SERVICE_URL: z.url().endsWith('/'),
+    MOCK_SERVICE_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     MOCK_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
 
     // Third-party: Twilio
@@ -135,7 +142,9 @@ export const env = createEnv({
     TWILIO_MESSAGING_SID: z.string().startsWith('MG'),
 
     // Third-party: Kobo Connect
-    KOBO_CONNECT_API_URL: z.url().refine((value) => !value.endsWith('/')),
+    KOBO_CONNECT_API_URL: z
+      .url()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     // FSP-specific configuration(s):
 
@@ -151,12 +160,12 @@ export const env = createEnv({
     INTERSOLVE_VISA_PROD: z.stringbool().default(false),
     INTERSOLVE_VISA_API_URL: z
       .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     INTERSOLVE_VISA_OIDC_ISSUER: z
       .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
     INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION: z
       .stringbool()
@@ -166,22 +175,22 @@ export const env = createEnv({
     MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
     COMMERCIAL_BANK_ETHIOPIA_URL: z
       .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
 
     // FSP: Safaricom
     MOCK_SAFARICOM: z.stringbool().default(false),
     SAFARICOM_API_URL: z
       .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
     SAFARICOM_CONSUMER_KEY: z.string().optional(),
     SAFARICOM_CONSUMER_SECRET: z.string().optional(),
     SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT: z
       .url()
-      .refine((value) => !value.startsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutLeadingSlash(url))),
     SAFARICOM_INITIATORNAME: z.string().optional(),
     SAFARICOM_SECURITY_CREDENTIAL: z.string().optional(),
     SAFARICOM_PARTY_A: z.string().optional(),
@@ -196,8 +205,8 @@ export const env = createEnv({
     NEDBANK_CERTIFICATE_PASSWORD: z.string().optional(),
     NEDBANK_API_URL: z
       .url()
-      .refine((value) => !value.endsWith('/'))
-      .optional(),
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
   },
 
   // We don't use client-side env variables in the same way as in the services

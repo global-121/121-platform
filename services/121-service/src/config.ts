@@ -33,7 +33,7 @@ export const SWAGGER_CUSTOM_CSS = `
 export const SWAGGER_CUSTOM_JS = `
 const loc = window.location;
 const currentUrl = loc.origin + '/';
-const envUrl = '${env.EXTERNAL_121_SERVICE_URL}';
+const envUrl = '${env.EXTERNAL_121_SERVICE_URL}/';
 if (currentUrl !== envUrl ) {
   loc.replace(loc.href.replace(currentUrl,envUrl));
 }
@@ -50,7 +50,7 @@ export const API_PATHS = {
   imageCode: 'notifications/imageCode/',
   voucherInstructions: 'fsps/intersolve-voucher/instructions/',
 };
-const rootApi = `${env.EXTERNAL_121_SERVICE_URL}api`;
+const rootApi = `${env.EXTERNAL_121_SERVICE_URL}/api`;
 export const EXTERNAL_API = {
   rootApi,
   smsStatus: `${rootApi}/${API_PATHS.smsStatus}`,

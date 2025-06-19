@@ -32,7 +32,7 @@ import { TokenValidationService } from '@121-service/src/utils/token/token-valid
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
-  ? `${env.MOCK_SERVICE_URL}api/fsp/intersolve-visa`
+  ? `${env.MOCK_SERVICE_URL}/api/fsp/intersolve-visa`
   : env.INTERSOLVE_VISA_API_URL;
 
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
