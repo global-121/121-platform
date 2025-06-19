@@ -39,14 +39,13 @@ jobs:
           cp ./services/.env.example services/.env
 
       - name: Run Services with Docker
-        working-directory: ./services
         run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
+          npm run start:services:production
 
       - name: Check that no new migrations are necessary
         working-directory: ./services
         run: |
-          docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
+          docker compose exec 121-service npm run test:migration
 
       - name: Run API tests with Jest
         working-directory: ./services
