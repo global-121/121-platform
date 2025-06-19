@@ -128,16 +128,17 @@ export const env = createEnv({
     MOCK_DAILY_EXCHANGE_RATES: z.stringbool().default(false),
 
     // Third-party: Twilio
+    MOCK_TWILIO: z.stringbool().default(false),
     TWILIO_SID: z.string().startsWith('AC'),
     TWILIO_AUTHTOKEN: z.string(),
     TWILIO_WHATSAPP_NUMBER: z.string().min(10).regex(/\d+/),
     TWILIO_MESSAGING_SID: z.string().startsWith('MG'),
-    MOCK_TWILIO: z.stringbool().default(false),
 
     // Third-party: Kobo Connect
     KOBO_CONNECT_API_URL: z.url().refine((value) => !value.endsWith('/')),
 
-    // FSP-specific configuration:
+    // FSP-specific configuration(s):
+
     // FSP: Intersolve
     MOCK_INTERSOLVE: z.stringbool().default(false),
     // FSP: Intersolve - Voucher
