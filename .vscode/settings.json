@@ -7,6 +7,18 @@
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
   },
+  "regexrobin.rules": [
+    {
+      "regex": "AB#(\\d+)",
+      "tree": { "group": "Azure DevOps backlog items" },
+      "editor": [
+        {
+          "link": "https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/$1",
+          "hoverMessage": "Azure DevOps backlog item: **$1**"
+        }
+      ]
+    }
+  ],
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.showPixelEquivalents": true,
   "tailwindCSS.classAttributes": [
