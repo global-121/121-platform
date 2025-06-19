@@ -55,7 +55,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[34945] Filter registrations by text', async ({ page }) => {
+test('[36750] Filter the table with 100k registrations', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
@@ -67,6 +67,7 @@ test('[34945] Filter registrations by text', async ({ page }) => {
   });
 
   await test.step('Filter Phone Number column by text', async () => {
+    await page.reload();
     await tableComponent.filterColumnByText('Phone Number', '14155235557');
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
@@ -82,7 +83,10 @@ test('[34945] Filter registrations by text', async ({ page }) => {
       selection: visaFsp,
     });
 
+    await page.waitForTimeout(500); // Wait for the table to load under big load
+    // Validate the first record in the table
     registrationName = await registrations.getFirstRegistrationNameFromTable();
+    console.log('registrationName: ', registrationName);
     await tableComponent.validateLabelInTableByRegistrationName(
       registrationName,
       visaFsp,
