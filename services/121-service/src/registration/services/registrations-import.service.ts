@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { EventsService } from '@121-service/src/events/events.service';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -52,7 +52,7 @@ export class RegistrationsImportService {
     private readonly eventsService: EventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async patchBulk(
@@ -104,7 +104,7 @@ export class RegistrationsImportService {
   ): Promise<string[]> {
     const genericAttributes: string[] = [
       GenericRegistrationAttributes.referenceId,
-      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+      GenericRegistrationAttributes.programFspConfigurationName,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
     ];
@@ -177,11 +177,10 @@ export class RegistrationsImportService {
     const registrations: RegistrationEntity[] = [];
     const customDataList: Record<string, unknown>[] = [];
 
-    const programFinancialServiceProviderConfigurations =
-      await this.getProgramFinancialServiceProviderConfigurations(
-        validatedImportRecords,
-        program,
-      );
+    const programFspConfigurations = await this.getProgramFspConfigurations(
+      validatedImportRecords,
+      program,
+    );
 
     for await (const record of validatedImportRecords) {
       const registration = new RegistrationEntity();
@@ -214,9 +213,7 @@ export class RegistrationsImportService {
       }
 
       registration.programFspConfiguration =
-        programFinancialServiceProviderConfigurations[
-          record.programFinancialServiceProviderConfigurationName!
-        ];
+        programFspConfigurations[record.programFspConfigurationName!];
 
       registrations.push(registration);
       customDataList.push(customData);
@@ -289,40 +286,28 @@ export class RegistrationsImportService {
     return { aggregateImportResult: { countImported } };
   }
 
-  private async getProgramFinancialServiceProviderConfigurations(
+  private async getProgramFspConfigurations(
     validatedImportRecords: ValidatedRegistrationInput[],
     program: ProgramEntity,
   ) {
-    const programFinancialServiceProviderConfigurations = {};
+    const programFspConfigurations = {};
     const uniqueConfigNames = Array.from(
       new Set(
         validatedImportRecords
-          .filter(
-            (record) =>
-              record.programFinancialServiceProviderConfigurationName !==
-              undefined,
-          )
-          .map(
-            (record) => record.programFinancialServiceProviderConfigurationName,
-          ),
+          .filter((record) => record.programFspConfigurationName !== undefined)
+          .map((record) => record.programFspConfigurationName),
       ),
     );
-    for (const programFinancialServiceProviderConfigurationName of uniqueConfigNames) {
-      programFinancialServiceProviderConfigurations[
-        programFinancialServiceProviderConfigurationName!
-      ] =
-        await this.programFinancialServiceProviderConfigurationRepository.findOneOrFail(
-          {
-            where: {
-              name: Equal(
-                programFinancialServiceProviderConfigurationName ?? '',
-              ),
-              programId: Equal(program.id),
-            },
+    for (const programFspConfigurationName of uniqueConfigNames) {
+      programFspConfigurations[programFspConfigurationName!] =
+        await this.programFspConfigurationRepository.findOneOrFail({
+          where: {
+            name: Equal(programFspConfigurationName ?? ''),
+            programId: Equal(program.id),
           },
-        );
+        });
     }
-    return programFinancialServiceProviderConfigurations;
+    return programFspConfigurations;
   }
 
   private async programHasInclusionScore(programId: number): Promise<boolean> {

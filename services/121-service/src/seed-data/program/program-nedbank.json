@@ -58,9 +58,9 @@
   "enableMaxPayments": true,
   "enableScope": true,
   "allowEmptyPhoneNumber": true,
-  "programFinancialServiceProviderConfigurations": [
+  "programFspConfigurations": [
     {
-      "financialServiceProvider": "Nedbank",
+      "fsp": "Nedbank",
       "properties": [
         {
           "name": "paymentReferencePrefix",

@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -19,9 +19,9 @@ describe('Program exist interceptor', () => {
   it('should throw an error if the program does not exist', async () => {
     // Act
     const nonExistingProgramId = 999999;
-    const result = await postProgramFinancialServiceProviderConfiguration({
+    const result = await postProgramFspConfiguration({
       programId: nonExistingProgramId,
-      body: new CreateProgramFinancialServiceProviderConfigurationDto(),
+      body: new CreateProgramFspConfigurationDto(),
       accessToken,
     });
 

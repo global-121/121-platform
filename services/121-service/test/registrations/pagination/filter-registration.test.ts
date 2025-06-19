@@ -128,7 +128,7 @@ describe('Load PA table', () => {
           filterValue: '1',
           expectedReferenceIds: allReferenceIds,
         },
-        programFinancialServiceProviderConfigurationName: {
+        programFspConfigurationName: {
           filterValue: Fsps.intersolveVoucherWhatsapp,
           expectedReferenceIds: [registrationOCW5.referenceId],
         },

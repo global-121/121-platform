@@ -8,13 +8,13 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import {
-  getFinancialServiceProviderConfigurationRequiredProperties,
-  getFinancialServiceProviderSettingByNameOrThrow,
+  getFspConfigurationRequiredProperties,
+  getFspSettingByNameOrThrow,
 } from '@121-service/src/fsps/fsp-settings.helpers';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
@@ -24,7 +24,7 @@ import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -43,7 +43,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
   BulkActionResultPaymentDto,
@@ -75,9 +75,9 @@ export class PaymentsService {
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
-  private financialServiceProviderNameToServiceMap: Record<
+  private fspNameToServiceMap: Record<
     Fsps,
-    [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
+    [FspIntegrationInterface, useWhatsapp?: boolean]
   >;
 
   public constructor(
@@ -98,11 +98,11 @@ export class PaymentsService {
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionQueuesService: TransactionQueuesService,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {
-    this.financialServiceProviderNameToServiceMap = {
+    this.fspNameToServiceMap = {
       [Fsps.intersolveVoucherWhatsapp]: [this.intersolveVoucherService, true],
       [Fsps.intersolveVoucherPaper]: [this.intersolveVoucherService, false],
       // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
@@ -110,9 +110,7 @@ export class PaymentsService {
       [Fsps.safaricom]: [this.safaricomService],
       [Fsps.commercialBankEthiopia]: [this.commercialBankEthiopiaService],
       [Fsps.excel]: [this.excelService],
-      [Fsps.deprecatedJumbo]: [
-        {} as FinancialServiceProviderIntegrationInterface,
-      ],
+      [Fsps.deprecatedJumbo]: [{} as FspIntegrationInterface],
       [Fsps.nedbank]: [this.nedbankService],
     };
   }
@@ -243,7 +241,7 @@ export class PaymentsService {
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
-        programFinancialServiceProviderConfigurationNames: [],
+        programFspConfigurationNames: [],
       };
     }
 
@@ -266,13 +264,12 @@ export class PaymentsService {
       // This is only needed in actual doPayment call
     }
 
-    // Get unique programFinancialServiceProviderConfigurationNames in payment
-    // Getting unique programFinancialServiceProviderConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
-    const programFinancialServiceProviderConfigurationNames = Array.from(
+    // Get unique programFspConfigurationNames in payment
+    // Getting unique programFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
+    const programFspConfigurationNames = Array.from(
       new Set(
         registrationsForPayment.map(
-          (registration) =>
-            registration.programFinancialServiceProviderConfigurationName,
+          (registration) => registration.programFspConfigurationName,
         ),
       ),
     );
@@ -281,7 +278,7 @@ export class PaymentsService {
     const bulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      programFinancialServiceProviderConfigurationNames,
+      programFspConfigurationNames,
     };
 
     // Create an array of referenceIds to be paid
@@ -292,7 +289,7 @@ export class PaymentsService {
     if (!dryRun && referenceIds.length > 0) {
       await this.checkFspConfigurationsOrThrow(
         programId,
-        programFinancialServiceProviderConfigurationNames,
+        programFspConfigurationNames,
       );
 
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
@@ -321,10 +318,10 @@ export class PaymentsService {
 
   private async checkFspConfigurationsOrThrow(
     programId: number,
-    programFinancialServiceProviderConfigurationNames: string[],
+    programFspConfigurationNames: string[],
   ): Promise<void> {
     const validationResults = await Promise.all(
-      programFinancialServiceProviderConfigurationNames.map((name) =>
+      programFspConfigurationNames.map((name) =>
         this.validateMissingFspConfigurations(programId, name),
       ),
     );
@@ -339,31 +336,27 @@ export class PaymentsService {
 
   private async validateMissingFspConfigurations(
     programId: number,
-    programFinancialServiceProviderConfigurationName: string,
+    programFspConfigurationName: string,
   ): Promise<string[]> {
-    const config =
-      await this.programFinancialServiceProviderConfigurationRepository.findOne(
-        {
-          where: {
-            name: Equal(programFinancialServiceProviderConfigurationName),
-            programId: Equal(programId),
-          },
-          relations: ['properties'],
-        },
-      );
+    const config = await this.programFspConfigurationRepository.findOne({
+      where: {
+        name: Equal(programFspConfigurationName),
+        programId: Equal(programId),
+      },
+      relations: ['properties'],
+    });
 
     const errorMessages: string[] = [];
     if (!config) {
       errorMessages.push(
-        `Missing Program FSP configuration with name ${programFinancialServiceProviderConfigurationName}`,
+        `Missing Program FSP configuration with name ${programFspConfigurationName}`,
       );
       return errorMessages;
     }
 
-    const requiredConfigurations =
-      getFinancialServiceProviderConfigurationRequiredProperties(
-        config.fspName,
-      );
+    const requiredConfigurations = getFspConfigurationRequiredProperties(
+      config.fspName,
+    );
     // Early return for FSP that don't have required configurations
     if (!requiredConfigurations) {
       return [];
@@ -497,16 +490,16 @@ export class PaymentsService {
         );
       });
 
-    const programFinancialServiceProviderConfigurationNames: string[] = [];
+    const programFspConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
       if (
-        !programFinancialServiceProviderConfigurationNames.includes(
-          registration.programFinancialServiceProviderConfigurationName,
+        !programFspConfigurationNames.includes(
+          registration.programFspConfigurationName,
         )
       ) {
-        programFinancialServiceProviderConfigurationNames.push(
-          registration.programFinancialServiceProviderConfigurationName,
+        programFspConfigurationNames.push(
+          registration.programFspConfigurationName,
         );
       }
     }
@@ -515,7 +508,7 @@ export class PaymentsService {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
-      programFinancialServiceProviderConfigurationNames,
+      programFspConfigurationNames,
     };
   }
 
@@ -524,7 +517,7 @@ export class PaymentsService {
   ): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -547,7 +540,7 @@ export class PaymentsService {
     // Create an object with an array of PA data for each FSP
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    await this.initiatePaymentPerFinancialServiceProvider({
+    await this.initiatePaymentPerFsp({
       paLists,
       programId,
       payment,
@@ -634,17 +627,17 @@ export class PaymentsService {
   ): SplitPaymentListDto {
     return paPaymentDataList.reduce(
       (acc: SplitPaymentListDto, paPaymentData) => {
-        if (!acc[paPaymentData.financialServiceProviderName]) {
-          acc[paPaymentData.financialServiceProviderName] = [];
+        if (!acc[paPaymentData.fspName]) {
+          acc[paPaymentData.fspName] = [];
         }
-        acc[paPaymentData.financialServiceProviderName]!.push(paPaymentData);
+        acc[paPaymentData.fspName]!.push(paPaymentData);
         return acc;
       },
       {},
     );
   }
 
-  private async initiatePaymentPerFinancialServiceProvider({
+  private async initiatePaymentPerFsp({
     paLists,
     programId,
     payment,
@@ -716,8 +709,7 @@ export class PaymentsService {
           });
         }
 
-        const [paymentService, useWhatsapp] =
-          this.financialServiceProviderNameToServiceMap[fsp];
+        const [paymentService, useWhatsapp] = this.fspNameToServiceMap[fsp];
         return await paymentService.sendPayment(
           paPaymentList,
           programId,
@@ -757,15 +749,14 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes =
-      getFinancialServiceProviderSettingByNameOrThrow(
-        Fsps.intersolveVisa,
-      ).attributes;
+    const intersolveVisaAttributes = getFspSettingByNameOrThrow(
+      Fsps.intersolveVisa,
+    ).attributes;
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
     );
     const dataFieldNames = [
-      FinancialServiceProviderAttributes.phoneNumber,
+      FspAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
     const registrationViews = await this.getRegistrationViews(
@@ -790,35 +781,23 @@ export class PaymentsService {
             userId,
             paymentNumber,
             referenceId: registrationView.referenceId,
-            programFinancialServiceProviderConfigurationId:
-              registrationView.programFinancialServiceProviderConfigurationId,
+            programFspConfigurationId:
+              registrationView.programFspConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
               registrationView.referenceId,
             )!,
             isRetry,
             bulkSize: referenceIdsTransactionAmounts.length,
-            name: registrationView[
-              FinancialServiceProviderAttributes.fullName
-            ]!, // Fullname is a required field if a registration has visa as FSP
-            addressStreet:
-              registrationView[
-                FinancialServiceProviderAttributes.addressStreet
-              ],
+            name: registrationView[FspAttributes.fullName]!, // Fullname is a required field if a registration has visa as FSP
+            addressStreet: registrationView[FspAttributes.addressStreet],
             addressHouseNumber:
-              registrationView[
-                FinancialServiceProviderAttributes.addressHouseNumber
-              ],
+              registrationView[FspAttributes.addressHouseNumber],
             addressHouseNumberAddition:
-              registrationView[
-                FinancialServiceProviderAttributes.addressHouseNumberAddition
-              ],
+              registrationView[FspAttributes.addressHouseNumberAddition],
             addressPostalCode:
-              registrationView[
-                FinancialServiceProviderAttributes.addressPostalCode
-              ],
-            addressCity:
-              registrationView[FinancialServiceProviderAttributes.addressCity],
+              registrationView[FspAttributes.addressPostalCode],
+            addressCity: registrationView[FspAttributes.addressCity],
             phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has visa as FSP
           };
         },
@@ -850,7 +829,7 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const safaricomAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+    const safaricomAttributes = getFspSettingByNameOrThrow(
       Fsps.safaricom,
     ).attributes;
     const safaricomAttributeNames = safaricomAttributes.map((q) => q.name);
@@ -874,8 +853,7 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -883,8 +861,7 @@ export class PaymentsService {
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
-          idNumber:
-            registrationView[FinancialServiceProviderAttributes.nationalId],
+          idNumber: registrationView[FspAttributes.nationalId],
           originatorConversationId: uuid(), // OriginatorConversationId is not used for reconciliation by clients, so can be any random unique identifier
         };
       });
@@ -915,7 +892,7 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const nedbankAttributes = getFinancialServiceProviderSettingByNameOrThrow(
+    const nedbankAttributes = getFspSettingByNameOrThrow(
       Fsps.nedbank,
     ).attributes;
     const nedbankAttributeNames = nedbankAttributes.map((q) => q.name);
@@ -939,16 +916,14 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          phoneNumber:
-            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
+          phoneNumber: registrationView[FspAttributes.phoneNumber]!,
         };
       });
     await this.transactionQueuesService.addNedbankTransactionJobs(
@@ -1021,17 +996,10 @@ export class PaymentsService {
       .createQueryBuilder('registration')
       .select('"referenceId"')
       .addSelect('registration.id as id')
-      .addSelect(
-        '"fspConfig"."financialServiceProviderName" as "financialServiceProviderName"',
-      )
-      .addSelect(
-        '"fspConfig"."id" as "programFinancialServiceProviderConfigurationId"',
-      )
+      .addSelect('"fspConfig"."fspName" as "fspName"')
+      .addSelect('"fspConfig"."id" as "programFspConfigurationId"')
       .andWhere('registration."programId" = :programId', { programId })
-      .leftJoin(
-        'registration.programFinancialServiceProviderConfiguration',
-        'fspConfig',
-      );
+      .leftJoin('registration.programFspConfiguration', 'fspConfig');
     q.addSelect((subQuery) => {
       return subQuery
         .addSelect('value', 'paymentAddress')
@@ -1059,9 +1027,7 @@ export class PaymentsService {
     let q = this.getPaymentRegistrationsQuery(programId);
     q = this.failedTransactionForRegistrationAndPayment(q, payment);
 
-    q.addSelect(
-      '"fspConfig"."name" as "programFinancialServiceProviderConfigurationName"',
-    );
+    q.addSelect('"fspConfig"."name" as "programFspConfigurationName"');
 
     // If referenceIds passed, only retry those
     let rawResult;
@@ -1122,12 +1088,11 @@ export class PaymentsService {
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
         userId,
-        programFinancialServiceProviderConfigurationId:
-          row.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: row.programFspConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,
-        financialServiceProviderName: row.financialServiceProviderName,
+        fspName: row.fspName,
         bulkSize,
       };
       paPaymentDataList.push(paPaymentData);
@@ -1146,12 +1111,10 @@ export class PaymentsService {
     );
 
     const programFspConfigEntitiesWithFspInstruction =
-      await this.programFinancialServiceProviderConfigurationRepository.find({
+      await this.programFspConfigurationRepository.find({
         where: {
           programId: Equal(programId),
-          financialServiceProviderName: In(
-            this.getFspNamesThatRequireInstructions(),
-          ),
+          fspName: In(this.getFspNamesThatRequireInstructions()),
         },
         order: {
           name: 'ASC',
@@ -1171,7 +1134,7 @@ export class PaymentsService {
       );
     }
 
-    /// Seprate transactionsWithFspInstruction based on their programFinancialServiceProviderConfigurationName
+    /// Seprate transactionsWithFspInstruction based on their programFspConfigurationName
     const allFspInstructions: FspInstructions[] = [];
     for (const fspConfigEntity of programFspConfigEntitiesWithFspInstruction) {
       const fspInstructions =
@@ -1179,14 +1142,11 @@ export class PaymentsService {
           programId,
           payment,
           transactions: transactionsWithFspInstruction.filter(
-            (t) =>
-              t.programFinancialServiceProviderConfigurationName ===
-              fspConfigEntity.name,
+            (t) => t.programFspConfigurationName === fspConfigEntity.name,
           ),
-          programFinancialServiceProviderConfigurationName:
-            fspConfigEntity.name,
-          programFinancialServiceProviderConfigurationId: fspConfigEntity.id,
-          financialServiceProviderName: fspConfigEntity.fspName,
+          programFspConfigurationName: fspConfigEntity.name,
+          programFspConfigurationId: fspConfigEntity.id,
+          fspName: fspConfigEntity.fspName,
         });
       // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
       allFspInstructions.push(fspInstructions);
@@ -1201,10 +1161,8 @@ export class PaymentsService {
   }
 
   private getFspNamesThatRequireInstructions(): string[] {
-    return FINANCIAL_SERVICE_PROVIDER_SETTINGS.filter((fsp) =>
-      [FinancialServiceProviderIntegrationType.csv].includes(
-        fsp.integrationType,
-      ),
+    return FSP_SETTINGS.filter((fsp) =>
+      [FspIntegrationType.csv].includes(fsp.integrationType),
     ).map((fsp) => fsp.name);
   }
 
@@ -1217,7 +1175,7 @@ export class PaymentsService {
 
     const transactionsWithFspInstruction = transactions.filter((t) =>
       programFspConfigNamesThatRequireInstructions.includes(
-        t.programFinancialServiceProviderConfigurationName,
+        t.programFspConfigurationName,
       ),
     );
 
@@ -1237,32 +1195,30 @@ export class PaymentsService {
     transactions,
     programId,
     payment,
-    programFinancialServiceProviderConfigurationName,
-    programFinancialServiceProviderConfigurationId,
-    financialServiceProviderName,
+    programFspConfigurationName,
+    programFspConfigurationId,
+    fspName,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
     payment: number;
-    programFinancialServiceProviderConfigurationName: string;
-    programFinancialServiceProviderConfigurationId: number;
-    financialServiceProviderName: Fsps;
+    programFspConfigurationName: string;
+    programFspConfigurationId: number;
+    fspName: Fsps;
   }): Promise<FspInstructions> {
-    if (financialServiceProviderName === Fsps.excel) {
+    if (fspName === Fsps.excel) {
       return {
         data: await this.excelService.getFspInstructions({
           transactions,
           programId,
           payment,
-          programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId,
         }),
-        fileNamePrefix: programFinancialServiceProviderConfigurationName,
+        fileNamePrefix: programFspConfigurationName,
       };
     }
     // Is this the best way to prevent a typeerror on the return type?
-    throw new Error(
-      `FinancialServiceProviderName ${financialServiceProviderName} not supported in fsp export`,
-    );
+    throw new Error(`FspName ${fspName} not supported in fsp export`);
   }
 
   public async getTransactions({

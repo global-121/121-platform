@@ -1,7 +1,7 @@
 import { ActivitiesDto } from '@121-service/src/activities/dtos/activities.dto';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { DataChangeActivity } from '@121-service/src/activities/interfaces/data-change-activity.interface';
-import { FinancialServiceProviderChangeActivity } from '@121-service/src/activities/interfaces/financial-service-provider.interface';
+import { FspChangeActivity } from '@121-service/src/activities/interfaces/fsp-change.interface';
 import { IgnoredDuplicateActivity } from '@121-service/src/activities/interfaces/ignored-duplicate-activity.interface';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { NoteActivity } from '@121-service/src/activities/interfaces/note-activity.interface';
@@ -34,12 +34,8 @@ export class ActivitiesMapper {
     const count: Partial<Record<ActivityTypeEnum, number>> = {};
     const activityLogItems: Activity[] = [];
 
-    const {
-      dataChanges,
-      statusUpdates,
-      financialServiceProviderChanges,
-      ignoredDuplicates,
-    } = this.categoriseEvents(events);
+    const { dataChanges, statusUpdates, fspChanges, ignoredDuplicates } =
+      this.categoriseEvents(events);
 
     availableTypes.forEach((type) => {
       let activities: Activity[] = [];
@@ -63,10 +59,9 @@ export class ActivitiesMapper {
         case ActivityTypeEnum.IgnoredDuplicate:
           activities = this.mapIgnoredDuplicatesToActivity(ignoredDuplicates);
           break;
-        case ActivityTypeEnum.FinancialServiceProviderChange:
-          activities = this.mapFinanacialServiceProviderChangesToActivity(
-            financialServiceProviderChanges,
-          );
+        case ActivityTypeEnum.FspChange:
+          activities =
+            this.mapFinanacialServiceProviderChangesToActivity(fspChanges);
           break;
       }
       count[type] = activities.length;
@@ -82,7 +77,7 @@ export class ActivitiesMapper {
   private static categoriseEvents(events: EventEntity[]) {
     const dataChanges: GetEventDto[] = [];
     const statusUpdates: GetEventDto[] = [];
-    const financialServiceProviderChanges: GetEventDto[] = [];
+    const fspChanges: GetEventDto[] = [];
     const ignoredDuplicates: GetEventDto[] = [];
 
     events.forEach((event) => {
@@ -95,8 +90,8 @@ export class ActivitiesMapper {
         case EventEnum.registrationStatusChange:
           statusUpdates.push(mappedEvent);
           break;
-        case EventEnum.financialServiceProviderChange:
-          financialServiceProviderChanges.push(mappedEvent);
+        case EventEnum.fspChange:
+          fspChanges.push(mappedEvent);
           break;
         case EventEnum.ignoredDuplicate:
           ignoredDuplicates.push(mappedEvent);
@@ -106,7 +101,7 @@ export class ActivitiesMapper {
     return {
       dataChanges,
       statusUpdates,
-      financialServiceProviderChanges,
+      fspChanges,
       ignoredDuplicates,
     };
   }
@@ -128,11 +123,9 @@ export class ActivitiesMapper {
         amount: transaction.amount,
         paymentDate: transaction.paymentDate,
         updatedDate: transaction.updated,
-        financialServiceProviderName: transaction.financialServiceProviderName,
-        financialServiceProviderConfigurationLabel:
-          transaction.programFinancialServiceProviderConfigurationLabel,
-        financialServiceProviderConfigurationName:
-          transaction.programFinancialServiceProviderConfigurationName,
+        fspName: transaction.fspName,
+        fspConfigurationLabel: transaction.programFspConfigurationLabel,
+        fspConfigurationName: transaction.programFspConfigurationName,
         errorMessage: transaction.errorMessage,
       },
     }));
@@ -212,15 +205,15 @@ export class ActivitiesMapper {
   }
   private static mapFinanacialServiceProviderChangesToActivity(
     events: GetEventDto[],
-  ): FinancialServiceProviderChangeActivity[] {
+  ): FspChangeActivity[] {
     return events.map((event, index) => ({
-      id: `${ActivityTypeEnum.FinancialServiceProviderChange}${index}`,
+      id: `${ActivityTypeEnum.FspChange}${index}`,
       user: {
         id: event.user?.id,
         username: event.user?.username,
       },
       created: event.created,
-      type: ActivityTypeEnum.FinancialServiceProviderChange,
+      type: ActivityTypeEnum.FspChange,
       attributes: {
         oldValue: event.attributes.oldValue,
         newValue: event.attributes.newValue,

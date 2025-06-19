@@ -37,8 +37,7 @@ const registrations = [
   }),
   createOcwRegistrationForImport({
     referenceId: 'referenceId5',
-    programFinancialServiceProviderConfigurationName:
-      Fsps.intersolveVoucherWhatsapp,
+    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     paymentAmountMultiplier: 3,
     addressHouseNumber: null,
   }),

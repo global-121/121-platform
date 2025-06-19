@@ -12,7 +12,7 @@ export const registrationScopedGoesPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
-  programFinancialServiceProviderConfigurationName: Fsps.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
@@ -21,7 +21,7 @@ export const registrationScopedMiddelburgPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
-  programFinancialServiceProviderConfigurationName: Fsps.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
@@ -30,7 +30,7 @@ export const registrationScopedUtrechtPv = {
   scope: DebugScope.UtrechtHouten,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
-  programFinancialServiceProviderConfigurationName: Fsps.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
@@ -39,7 +39,7 @@ export const registrationNotScopedPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550200',
   fullName: 'Nick Brouwers',
-  programFinancialServiceProviderConfigurationName: Fsps.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationsPV = [

@@ -24,7 +24,7 @@ export class ImageCodeController {
     description: 'Collect voucher image via WhatsApp',
   })
   @ApiParam({ name: 'secret' })
-  // TODO: rename to /financial-service-providers/intersolve-voucher/vouchers/:secret
+  // TODO: rename to /fsps/intersolve-voucher/vouchers/:secret
   @Get(':secret')
   public async get(
     @Param('secret') secret: string,

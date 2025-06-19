@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
@@ -42,16 +42,10 @@ export class CommercialBankEthiopiaReconciliationService {
     const programs = await this.programRepository
       .createQueryBuilder('program')
       .select('program.id')
-      .innerJoin(
-        'program.programFinancialServiceProviderConfigurations',
-        'programFinancialServiceProviderConfigurations',
-      )
-      .where(
-        'programFinancialServiceProviderConfigurations.financialServiceProviderName = :fsp',
-        {
-          fsp: Fsps.commercialBankEthiopia,
-        },
-      )
+      .innerJoin('program.programFspConfigurations', 'programFspConfigurations')
+      .where('programFspConfigurations.fspName = :fsp', {
+        fsp: Fsps.commercialBankEthiopia,
+      })
       .getMany();
 
     return programs;
@@ -153,10 +147,7 @@ export class CommercialBankEthiopiaReconciliationService {
       ])
       .andWhere('registration.programId = :programId', { programId })
       .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: [
-          FinancialServiceProviderAttributes.fullName,
-          FinancialServiceProviderAttributes.bankAccountNumber,
-        ],
+        names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
       })
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
         statusValues: ['deleted', 'paused'],

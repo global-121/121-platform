@@ -12,7 +12,7 @@ export const registrationVisa = {
   paymentAmountMultiplier: 1,
   fullName: 'Jane Doe',
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '14155238887',
-  programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
+  programFspConfigurationName: Fsps.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',

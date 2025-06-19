@@ -7,7 +7,7 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesf
       "body": "",
       "contentType": "payment-instructions",
       "errorCode": null,
-      "mediaUrl": "http://localhost:3000/api/programs/2/financial-service-providers/intersolve-voucher/instructions/",
+      "mediaUrl": "http://localhost:3000/api/programs/2/fsps/intersolve-voucher/instructions/",
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",

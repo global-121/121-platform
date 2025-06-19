@@ -56,7 +56,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       registrationStatus: RegistrationStatusEnum;
       amount: number;
       errorMessage: string | null;
-      programFinancialServiceProviderConfigurationName: string;
+      programFspConfigurationName: string;
     }[]
   > {
     const query = this.createQueryBuilder('transaction')
@@ -72,12 +72,9 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'status',
         'amount',
         'transaction.errorMessage as "errorMessage"',
-        'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
+        'fspconfig.name as "programFspConfigurationName"',
       ])
-      .leftJoin(
-        'transaction.programFinancialServiceProviderConfiguration',
-        'fspconfig',
-      )
+      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
@@ -95,14 +92,14 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     registrationId,
     referenceId,
     status,
-    programFinancialServiceProviderConfigId,
+    programFspConfigId,
   }: {
     programId: number;
     payment?: number;
     registrationId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
-    programFinancialServiceProviderConfigId?: number;
+    programFspConfigId?: number;
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
@@ -114,15 +111,12 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'amount',
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
-        'fspconfig.financialServiceProviderName as "financialServiceProviderName"',
-        'transaction.programFinancialServiceProviderConfigurationId as "programFinancialServiceProviderConfigurationId"',
-        'fspconfig.label as "programFinancialServiceProviderConfigurationLabel"',
-        'fspconfig.name as "programFinancialServiceProviderConfigurationName"',
+        'fspconfig.fspName as "fspName"',
+        'transaction.programFspConfigurationId as "programFspConfigurationId"',
+        'fspconfig.label as "programFspConfigurationLabel"',
+        'fspconfig.name as "programFspConfigurationName"',
       ])
-      .leftJoin(
-        'transaction.programFinancialServiceProviderConfiguration',
-        'fspconfig',
-      )
+      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
@@ -151,11 +145,11 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         { status },
       );
     }
-    if (programFinancialServiceProviderConfigId) {
+    if (programFspConfigId) {
       transactionQuery = transactionQuery.andWhere(
-        'fspconfig.id = :programFinancialServiceProviderConfigId',
+        'fspconfig.id = :programFspConfigId',
         {
-          programFinancialServiceProviderConfigId,
+          programFspConfigId,
         },
       );
     }

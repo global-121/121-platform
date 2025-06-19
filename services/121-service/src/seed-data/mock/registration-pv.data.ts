@@ -9,8 +9,7 @@ export const registrationAHWhatsapp = {
   fullName: 'Juan Garcia',
   scope: 'utrecht.houten',
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '14155238888',
-  programFinancialServiceProviderConfigurationName:
-    Fsps.intersolveVoucherWhatsapp,
+  programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
   [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]: '14155238888',
   namePartnerOrganization: 'Help Elkaar',
 };

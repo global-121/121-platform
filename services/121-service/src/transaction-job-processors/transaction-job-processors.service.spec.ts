@@ -10,7 +10,7 @@ import { SafaricomService } from '@121-service/src/payments/fsp-integration/safa
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -40,7 +40,7 @@ const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   bulkSize: 10,
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
-  programFinancialServiceProviderConfigurationId: 1,
+  programFspConfigurationId: 1,
   originatorConversationId: 'originator-conversation-id',
 };
 
@@ -63,7 +63,7 @@ describe('TransactionJobProcessorsService', () => {
   let latestTransactionRepository: LatestTransactionRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
-  let programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository;
+  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -90,9 +90,9 @@ describe('TransactionJobProcessorsService', () => {
       unitRef.get<NedbankVoucherScopedRepository>(
         NedbankVoucherScopedRepository,
       );
-    programFinancialServiceProviderConfigurationRepository =
-      unitRef.get<ProgramFinancialServiceProviderConfigurationRepository>(
-        ProgramFinancialServiceProviderConfigurationRepository,
+    programFspConfigurationRepository =
+      unitRef.get<ProgramFspConfigurationRepository>(
+        ProgramFspConfigurationRepository,
       );
 
     jest
@@ -164,17 +164,14 @@ describe('TransactionJobProcessorsService', () => {
       userId: 1,
       bulkSize: 10,
       phoneNumber: registrationNedbank.phoneNumber,
-      programFinancialServiceProviderConfigurationId: 1,
+      programFspConfigurationId: 1,
     };
 
     const mockedCreateOrderReturn = NedbankVoucherStatus.PENDING;
 
     it('should process Nedbank transaction job successfully', async () => {
       jest
-        .spyOn(
-          programFinancialServiceProviderConfigurationRepository,
-          'getPropertyValueByName',
-        )
+        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue('ref#1');
 
       jest
@@ -227,10 +224,7 @@ describe('TransactionJobProcessorsService', () => {
 
     it('should create a transaction with status error and a voucher with status failed when a Nedbank error occurs', async () => {
       jest
-        .spyOn(
-          programFinancialServiceProviderConfigurationRepository,
-          'getPropertyValueByName',
-        )
+        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue('ref#1');
       const errorMessage = 'Nedbank error occurred';
       const nedbankError = new NedbankError(errorMessage);
@@ -264,10 +258,7 @@ describe('TransactionJobProcessorsService', () => {
     it('should never create a payment reference longer than 30 characters', async () => {
       const longPaymentReference = '1234567890123456789012345678901234567890';
       jest
-        .spyOn(
-          programFinancialServiceProviderConfigurationRepository,
-          'getPropertyValueByName',
-        )
+        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue(longPaymentReference);
 
       await transactionJobProcessorsService.processNedbankTransactionJob(
@@ -291,10 +282,7 @@ describe('TransactionJobProcessorsService', () => {
     it('should never create a payment reference with special characters in it except a dash', async () => {
       const specialCharPaymentReference = '1234@5678#9012$3456%7890^';
       jest
-        .spyOn(
-          programFinancialServiceProviderConfigurationRepository,
-          'getPropertyValueByName',
-        )
+        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue(specialCharPaymentReference);
 
       await transactionJobProcessorsService.processNedbankTransactionJob(

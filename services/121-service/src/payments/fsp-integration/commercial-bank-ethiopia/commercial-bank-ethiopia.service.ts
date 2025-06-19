@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
@@ -19,7 +19,7 @@ import {
   CommercialBankEthiopiaTransferPayload,
 } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -29,7 +29,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -39,9 +39,7 @@ import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
-export class CommercialBankEthiopiaService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   @InjectRepository(RegistrationEntity)
   public registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
@@ -61,7 +59,7 @@ export class CommercialBankEthiopiaService
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    public readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async sendPayment(
@@ -117,7 +115,7 @@ export class CommercialBankEthiopiaService
   ): Promise<void> {
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+        data.paPaymentData.programFspConfigurationId,
       );
 
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -130,8 +128,7 @@ export class CommercialBankEthiopiaService
       programId: data.programId,
       paymentNr: data.paymentNr,
       userId: data.userId,
-      programFinancialServiceProviderConfigurationId:
-        data.paPaymentData.programFinancialServiceProviderConfigurationId,
+      programFspConfigurationId: data.paPaymentData.programFspConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -181,10 +178,7 @@ export class CommercialBankEthiopiaService
         referenceIds,
       })
       .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: [
-          FinancialServiceProviderAttributes.fullName,
-          FinancialServiceProviderAttributes.bankAccountNumber,
-        ],
+        names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin(
@@ -221,11 +215,9 @@ export class CommercialBankEthiopiaService
     let debitTheirRefRetry;
 
     paRegistrationData.forEach((data) => {
-      if (data.fieldName === FinancialServiceProviderAttributes.fullName) {
+      if (data.fieldName === FspAttributes.fullName) {
         fullName = data.value;
-      } else if (
-        data.fieldName === FinancialServiceProviderAttributes.bankAccountNumber
-      ) {
+      } else if (data.fieldName === FspAttributes.bankAccountNumber) {
         bankAccountNumber = data.value;
       } else if ((data.fieldName = 'debitTheirRef')) {
         // This is a test code which is used in mock mode to simulate a transfer credit that is duplicated
@@ -322,12 +314,10 @@ export class CommercialBankEthiopiaService
     programId: number;
   }): Promise<RequiredUsernamePasswordInterface> {
     const configs =
-      await this.programFspConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
-        {
-          programId,
-          financialServiceProviderName: Fsps.commercialBankEthiopia,
-        },
-      );
+      await this.programFspConfigurationRepository.getByProgramIdAndFspName({
+        programId,
+        fspName: Fsps.commercialBankEthiopia,
+      });
 
     // For now we only support one CBE FSP configuration per program
     if (configs.length !== 1) {

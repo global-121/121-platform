@@ -281,7 +281,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa/funding-wallet",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/funding-wallet",
     "params": [
       "programId"
     ]
@@ -305,35 +305,35 @@
   },
   {
     "method": "get",
-    "path": "/api/financial-service-providers",
+    "path": "/api/fsps",
     "params": [],
-    "returnType": "FinancialServiceProviderDto"
+    "returnType": "FspDto"
   },
   {
     "method": "get",
-    "path": "/api/financial-service-providers/{financialServiceProviderName}",
+    "path": "/api/fsps/{fspName}",
     "params": [
-      "financialServiceProviderName"
+      "fspName"
     ],
-    "returnType": "FinancialServiceProviderDto"
+    "returnType": "FspDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations",
+    "path": "/api/programs/{programId}/fsp-configurations",
     "params": [
       "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations",
+    "path": "/api/programs/{programId}/fsp-configurations",
     "params": [
       "programId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}",
     "params": [
       "programId",
       "name"
@@ -341,7 +341,7 @@
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}",
     "params": [
       "programId",
       "name"
@@ -349,7 +349,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
     "params": [
       "programId",
       "name"
@@ -357,7 +357,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties/{propertyName}",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
     "params": [
       "programId",
       "name",
@@ -366,7 +366,7 @@
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/financial-service-provider-configurations/{name}/properties/{propertyName}",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
     "params": [
       "programId",
       "name",
@@ -410,7 +410,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers",
     "params": [
       "programId",
       "referenceId",
@@ -419,7 +419,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/vouchers/balance",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers/balance",
     "params": [
       "programId",
       "referenceId",
@@ -428,31 +428,31 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
     "params": [
       "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/instructions",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
     "params": [
       "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/intersolve-voucher/cancel",
+    "path": "/api/fsps/intersolve-voucher/cancel",
     "params": []
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/intersolve-voucher/send-reminders",
+    "path": "/api/fsps/intersolve-voucher/send-reminders",
     "params": []
   },
   {
     "method": "delete",
-    "path": "/api/financial-service-providers/intersolve-voucher/deprecated-image-codes",
+    "path": "/api/fsps/intersolve-voucher/deprecated-image-codes",
     "params": []
   },
   {
@@ -481,9 +481,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -550,9 +550,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -588,9 +588,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -627,9 +627,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -674,9 +674,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -707,7 +707,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
     "params": [
       "programId",
       "referenceId"
@@ -715,7 +715,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet/cards/{tokenCode}",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
     "params": [
       "programId",
       "referenceId",
@@ -725,7 +725,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
       "programId"
@@ -734,7 +734,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/wallet",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
       "programId"
@@ -743,7 +743,7 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/financial-service-providers/intersolve-visa/contact-information",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
     "params": [
       "programId",
       "referenceId"
@@ -780,9 +780,9 @@
       "filter.preferredLanguage",
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
-      "filter.financialServiceProviderName",
-      "filter.programFinancialServiceProviderConfigurationName",
-      "filter.programFinancialServiceProviderConfigurationLabel",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
       "filter.registrationProgramId",
       "filter.maxPayments",
       "filter.paymentCount",
@@ -837,7 +837,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
     ],
@@ -845,7 +845,7 @@
   },
   {
     "method": "put",
-    "path": "/api/programs/{programId}/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
     ]
@@ -867,7 +867,7 @@
   },
   {
     "method": "patch",
-    "path": "/api/financial-service-providers/nedbank",
+    "path": "/api/fsps/nedbank",
     "params": []
   },
   {
@@ -888,7 +888,7 @@
   },
   {
     "method": "put",
-    "path": "/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": []
   },
   {
@@ -908,29 +908,29 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-visa",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa",
     "params": []
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/financial-service-providers/intersolve-voucher/all",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
     "params": [
       "programId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/financial-service-providers/intersolve-voucher/unused-vouchers",
+    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
     "params": []
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/safaricom/transfer-callback",
+    "path": "/api/fsps/safaricom/transfer-callback",
     "params": []
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/safaricom/timeout-callback",
+    "path": "/api/fsps/safaricom/timeout-callback",
     "params": []
   }
 ]

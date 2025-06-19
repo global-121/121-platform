@@ -1,6 +1,6 @@
-import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
+import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 
-import { getFinancialServiceProviderSettingByName } from '~/domains/financial-service-provider/financial-service-provider.helper';
+import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
   FSPS_WITH_VOUCHER_SUPPORT,
@@ -8,22 +8,22 @@ import {
 import { Project } from '~/domains/project/project.model';
 
 export const projectHasVoucherSupport = (project?: Project): boolean =>
-  project?.programFinancialServiceProviderConfigurations.some((fsp) =>
-    FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.financialServiceProviderName),
+  project?.programFspConfigurations.some((fsp) =>
+    FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.fspName),
   ) ?? false;
 
 export const projectHasPhysicalCardSupport = (project?: Project): boolean =>
-  project?.programFinancialServiceProviderConfigurations.some((fsp) =>
-    FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.financialServiceProviderName),
+  project?.programFspConfigurations.some((fsp) =>
+    FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fspName),
   ) ?? false;
 
 export const projectHasFspWithExportFileIntegration = (
   project?: Project,
 ): boolean =>
-  project?.programFinancialServiceProviderConfigurations.some(
+  project?.programFspConfigurations.some(
     (fsp) =>
-      getFinancialServiceProviderSettingByName(fsp.financialServiceProviderName)
-        ?.integrationType === FinancialServiceProviderIntegrationType.csv,
+      getFspSettingByName(fsp.fspName)?.integrationType ===
+      FspIntegrationType.csv,
   ) ?? false;
 
 export const projectHasInclusionScore = (project?: Project): boolean =>
@@ -31,32 +31,28 @@ export const projectHasInclusionScore = (project?: Project): boolean =>
     (attribute) => Object.keys(attribute.scoring).length > 0,
   ) ?? false;
 
-export const financialServiceProviderConfigurationNamesHaveIntegrationType = ({
+export const fspConfigurationNamesHaveIntegrationType = ({
   project,
-  financialServiceProviderConfigurationNames,
+  fspConfigurationNames,
   integrationType,
 }: {
   project: Project;
-  financialServiceProviderConfigurationNames: string[];
-  integrationType: FinancialServiceProviderIntegrationType;
+  fspConfigurationNames: string[];
+  integrationType: FspIntegrationType;
 }) => {
-  const fspSettings = financialServiceProviderConfigurationNames.map(
-    (financialServiceProviderConfigurationName) => {
-      const config = project.programFinancialServiceProviderConfigurations.find(
-        (fsp) => fsp.name === financialServiceProviderConfigurationName,
-      );
+  const fspSettings = fspConfigurationNames.map((fspConfigurationName) => {
+    const config = project.programFspConfigurations.find(
+      (fsp) => fsp.name === fspConfigurationName,
+    );
 
-      if (!config) {
-        throw new Error(
-          `Could not find financial service provider configuration with name ${financialServiceProviderConfigurationName}`,
-        );
-      }
-
-      return getFinancialServiceProviderSettingByName(
-        config.financialServiceProviderName,
+    if (!config) {
+      throw new Error(
+        `Could not find financial service provider configuration with name ${fspConfigurationName}`,
       );
-    },
-  );
+    }
+
+    return getFspSettingByName(config.fspName);
+  });
 
   return fspSettings.some(
     (fspSetting) => fspSetting?.integrationType === integrationType,

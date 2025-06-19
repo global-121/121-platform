@@ -255,13 +255,10 @@ export class MetricsService {
       row['id'] = row['registrationProgramId'] ?? null;
       delete row['registrationProgramId'];
 
-      if (
-        typeof row['programFinancialServiceProviderConfigurationLabel'] ===
-        'object'
-      ) {
+      if (typeof row['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
-        row['programFinancialServiceProviderConfigurationLabel'] = row[
-          'programFinancialServiceProviderConfigurationLabel'
+        row['programFspConfigurationLabel'] = row[
+          'programFspConfigurationLabel'
         ]?.[preferredLanguage] as string | undefined;
       }
     }
@@ -275,7 +272,7 @@ export class MetricsService {
         status: null,
         phoneNumber: null,
         preferredLanguage: null,
-        financialserviceprovider: null,
+        fsp: null,
         paymentAmountMultiplier: null,
         paymentCount: null,
       };
@@ -434,7 +431,7 @@ export class MetricsService {
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
-      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+      GenericRegistrationAttributes.programFspConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ] as string[];
 
@@ -559,7 +556,7 @@ export class MetricsService {
         'registration.paymentAmountMultiplier as "paymentAmountMultiplier"',
         'transaction.amount as "amount"',
         'SUBSTRING(transaction."errorMessage", 1, 32000) as "errorMessage"',
-        'fspConfig.name AS financialServiceProvider',
+        'fspConfig.name AS fsp',
       ])
       .innerJoin(
         '(' + latestTransactionPerPa.getQuery() + ')',
@@ -568,10 +565,7 @@ export class MetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin(
-        'transaction.programFinancialServiceProviderConfiguration',
-        'fspConfig',
-      );
+      .leftJoin('transaction.programFspConfiguration', 'fspConfig');
 
     const additionalFspExportFields =
       await this.getAdditionalFspExportFields(programId);
@@ -685,17 +679,17 @@ export class MetricsService {
           ...fields,
           ...[
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'status',
               alias: 'nedbankVoucherStatus',
             },
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'orderCreateReference',
               alias: 'nedbankOrderCreateReference',
             },
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'paymentReference',
               alias: 'nedbankPaymentReference',
             },

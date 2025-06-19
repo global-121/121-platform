@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -91,7 +91,7 @@ describe('Create program', () => {
     // Arrange
     const names = [
       'namePartnerOrganization',
-      FinancialServiceProviderAttributes.whatsappPhoneNumber,
+      FspAttributes.whatsappPhoneNumber,
     ];
     for (const name of names) {
       const programRegistrationAttributeCopy = {

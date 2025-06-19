@@ -33,7 +33,7 @@ const filterableAttributesToIgnore = [
   'successPayment',
   'notYetSentPayment',
   // Below attributes are already hardcoded in the table columns service
-  'programFinancialServiceProviderConfigurationName',
+  'programFspConfigurationName',
   'fullName',
   'created',
   'registrationCreatedDate',
@@ -247,11 +247,7 @@ export class ProjectApiService extends DomainApiService {
     paymentId: number | string;
   }) {
     return this.generateQueryOptions<Blob>({
-      path: [
-        BASE_ENDPOINT,
-        projectId,
-        'financial-service-providers/intersolve-voucher/vouchers',
-      ],
+      path: [BASE_ENDPOINT, projectId, 'fsps/intersolve-voucher/vouchers'],
       params: {
         referenceId: voucherReferenceId,
         payment: paymentId.toString(),
@@ -273,7 +269,7 @@ export class ProjectApiService extends DomainApiService {
       path: [
         BASE_ENDPOINT,
         projectId,
-        'financial-service-providers/intersolve-voucher/vouchers/balance',
+        'fsps/intersolve-voucher/vouchers/balance',
       ],
       params: {
         referenceId: registrationReferenceId,
@@ -289,7 +285,7 @@ export class ProjectApiService extends DomainApiService {
       path: [
         BASE_ENDPOINT,
         projectId,
-        'financial-service-providers/commercial-bank-ethiopia/account-enquiries',
+        'fsps/commercial-bank-ethiopia/account-enquiries',
       ],
     });
   }

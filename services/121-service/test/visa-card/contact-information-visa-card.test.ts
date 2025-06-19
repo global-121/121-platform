@@ -43,8 +43,7 @@ describe('Update registration data of registration with visa customer', () => {
       programIdVisa,
       registrationVisa.referenceId,
       {
-        programFinancialServiceProviderConfigurationName:
-          'Intersolve-voucher-whatsapp',
+        programFspConfigurationName: 'Intersolve-voucher-whatsapp',
       },
       'test',
       accessToken,

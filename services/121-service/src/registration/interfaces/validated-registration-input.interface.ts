@@ -2,7 +2,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 
 export interface ValidatedRegistrationInput
   extends RegistrationEntityProperties {
-  programFinancialServiceProviderConfigurationName?: string;
+  programFspConfigurationName?: string;
   data: Record<string, string | number | boolean | null>;
 }
 

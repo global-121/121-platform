@@ -299,11 +299,11 @@ export class MessageIncomingService {
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
         where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['programFinancialServiceProviderConfigurations'],
+        relations: ['programFspConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
         program.programFspConfigurations.find((config) => {
-          return (config.fspName === Fsps.intersolveVoucherWhatsapp);
+          return config.fspName === Fsps.intersolveVoucherWhatsapp;
         })!;
       tryWhatsapp.registration.programFspConfigurationId =
         fspConfigWithFspIntersolveWhatsapp.id;

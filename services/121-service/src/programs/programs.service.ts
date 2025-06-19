@@ -11,9 +11,9 @@ import { GetTokenResult } from '@121-service/src/payments/fsp-integration/inters
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import {
@@ -44,8 +44,8 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly programFspConfigurationService: ProgramFinancialServiceProviderConfigurationsService,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationService: ProgramFspConfigurationsService,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}
 
@@ -62,7 +62,7 @@ export class ProgramService {
       );
     }
 
-    const relations = ['programFinancialServiceProviderConfigurations'];
+    const relations = ['programFspConfigurations'];
 
     const program = await this.programRepository.findOne({
       where: { id: Equal(programId) },
@@ -91,8 +91,8 @@ export class ProgramService {
     program['filterableAttributes'] =
       this.programAttributesService.getFilterableAttributes(program);
 
-    program['financialServiceProviderConfigurations'] =
-      ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
+    program['fspConfigurations'] =
+      ProgramFspConfigurationMapper.mapEntitiesToDtos(
         program.programFspConfigurations,
       );
     const outputProgram: FoundProgramDto = program;
@@ -255,8 +255,8 @@ export class ProgramService {
 
     // Overwrite any non-nested attributes of the program with the new supplued values.
     for (const attribute in updateProgramDto) {
-      // Skip attribute financialServiceProviders, or all configured FSPs will be deleted. See processing of financialServiceProviders below.
-      if (attribute !== 'programFinancialServiceProviderConfigurations') {
+      // Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
+      if (attribute !== 'programFspConfigurations') {
         program[attribute] = updateProgramDto[attribute];
       }
     }
@@ -295,10 +295,9 @@ export class ProgramService {
       fixedTransferValue: program.fixedTransferValue ?? undefined,
       paymentAmountMultiplierFormula:
         program.paymentAmountMultiplierFormula ?? undefined,
-      financialServiceProviderConfigurations:
-        ProgramFinancialServiceProviderConfigurationMapper.mapEntitiesToDtos(
-          program.programFspConfigurations,
-        ),
+      fspConfigurations: ProgramFspConfigurationMapper.mapEntitiesToDtos(
+        program.programFspConfigurations,
+      ),
       targetNrRegistrations: program.targetNrRegistrations ?? undefined,
       tryWhatsAppFirst: program.tryWhatsAppFirst,
       budget: program.budget ?? undefined,
@@ -503,12 +502,10 @@ export class ProgramService {
   public async getFundingWallet(programId: number) {
     // TODO: Refactor ensure this works with the new structure of FSP configuration properties
     const programFspConfigurations =
-      await this.programFinancialServiceProviderConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
-        {
-          programId,
-          financialServiceProviderName: Fsps.intersolveVisa,
-        },
-      );
+      await this.programFspConfigurationRepository.getByProgramIdAndFspName({
+        programId,
+        fspName: Fsps.intersolveVisa,
+      });
     if (!programFspConfigurations) {
       throw new HttpException(
         'Financial Service Provider configurations not found',

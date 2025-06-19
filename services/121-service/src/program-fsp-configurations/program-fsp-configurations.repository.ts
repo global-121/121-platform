@@ -8,7 +8,7 @@ import {
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 
-export class ProgramFinancialServiceProviderConfigurationRepository extends Repository<ProgramFspConfigurationEntity> {
+export class ProgramFspConfigurationRepository extends Repository<ProgramFspConfigurationEntity> {
   constructor(
     @InjectRepository(ProgramFspConfigurationEntity)
     private baseRepository: Repository<ProgramFspConfigurationEntity>,
@@ -20,28 +20,26 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     );
   }
 
-  public async getByProgramIdAndFinancialServiceProviderName({
+  public async getByProgramIdAndFspName({
     programId,
-    financialServiceProviderName,
+    fspName,
   }: {
     programId: number;
-    financialServiceProviderName: Fsps;
+    fspName: Fsps;
   }): Promise<ProgramFspConfigurationEntity[]> {
     return await this.baseRepository.find({
       where: {
         programId: Equal(programId),
-        financialServiceProviderName: Equal(financialServiceProviderName),
+        fspName: Equal(fspName),
       },
       relations: { properties: true },
     });
   }
 
   public async getUsernamePasswordProperties(
-    programFinancialServiceProviderConfigurationId: number,
+    programFspConfigurationId: number,
   ): Promise<UsernamePasswordInterface> {
-    const properties = await this.getProperties(
-      programFinancialServiceProviderConfigurationId,
-    );
+    const properties = await this.getProperties(programFspConfigurationId);
     const propertyUsername = properties.find(
       (c) => c.name === FspConfigurationProperties.username,
     );
@@ -91,17 +89,17 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
 
   // This methods specfically does not throw as it also used to check if the property exists
   public async getPropertyValueByName({
-    programFinancialServiceProviderConfigurationId,
+    programFspConfigurationId,
     name,
   }: {
-    programFinancialServiceProviderConfigurationId: number;
+    programFspConfigurationId: number;
     name: FspConfigurationProperties;
   }) {
     const configuration = await this.baseRepository
       .createQueryBuilder('configuration')
       .leftJoinAndSelect('configuration.properties', 'properties')
       .where('configuration.id = :id', {
-        id: programFinancialServiceProviderConfigurationId,
+        id: programFspConfigurationId,
       })
       .andWhere('properties.name = :name', { name })
       .getOne();
@@ -110,20 +108,18 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
   }
 
   public async getPropertiesByNamesOrThrow({
-    programFinancialServiceProviderConfigurationId,
+    programFspConfigurationId,
     names,
   }: {
-    programFinancialServiceProviderConfigurationId: number;
+    programFspConfigurationId: number;
     names: string[];
   }) {
-    const properties = await this.getProperties(
-      programFinancialServiceProviderConfigurationId,
-    );
+    const properties = await this.getProperties(programFspConfigurationId);
 
     for (const name of names) {
       if (!properties.find((property) => property.name === name)) {
         throw new Error(
-          `Configuration with name ${name} not found for ProgramFinancialServiceProviderConfigurationEntity with id:  ${programFinancialServiceProviderConfigurationId}`,
+          `Configuration with name ${name} not found for ProgramFspConfigurationEntity with id:  ${programFspConfigurationId}`,
         );
       }
     }
@@ -134,12 +130,10 @@ export class ProgramFinancialServiceProviderConfigurationRepository extends Repo
     }));
   }
 
-  private async getProperties(
-    programFinancialServiceProviderConfigurationId: number,
-  ) {
+  private async getProperties(programFspConfigurationId: number) {
     const configuration = await this.baseRepository.findOne({
       where: {
-        id: Equal(programFinancialServiceProviderConfigurationId),
+        id: Equal(programFspConfigurationId),
       },
       relations: ['properties'],
     });

@@ -7,7 +7,7 @@ import { IntersolveVisaReconciliationService } from '@121-service/src/payments/r
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/intersolve-visa')
+@ApiTags('fsps/intersolve-visa')
 @Controller()
 export class IntersolveVisaReconciliationController {
   public constructor(
@@ -25,7 +25,7 @@ export class IntersolveVisaReconciliationController {
     description:
       'Data retrieved from Intersolve and entities updated for all programs.',
   })
-  @Patch('programs/:programId/financial-service-providers/intersolve-visa/')
+  @Patch('programs/:programId/fsps/intersolve-visa/')
   public async retrieveAndUpdateAllCards(): Promise<void> {
     console.info('Start: Intersolve-Visa - retrieveAndUpdateAllCards');
     void this.intersolveVisaReconciliationService

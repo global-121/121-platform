@@ -252,15 +252,13 @@ export class ProjectPaymentPageComponent {
           ) ?? '',
       },
       {
-        field: 'programFinancialServiceProviderConfigurationName',
+        field: 'programFspConfigurationName',
         header: $localize`FSP`,
         type: QueryTableColumnType.MULTISELECT,
-        options: this.project
-          .data()
-          .programFinancialServiceProviderConfigurations.map((config) => ({
-            label: this.translatableStringService.translate(config.label) ?? '',
-            value: config.name,
-          })),
+        options: this.project.data().programFspConfigurations.map((config) => ({
+          label: this.translatableStringService.translate(config.label) ?? '',
+          value: config.name,
+        })),
       },
       {
         field: 'created',

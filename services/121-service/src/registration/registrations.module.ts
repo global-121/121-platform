@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventsModule } from '@121-service/src/events/events.module';
-import { FinancialServiceProvidersModule } from '@121-service/src/fsps/fsp.module';
+import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
@@ -18,7 +18,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -64,13 +64,13 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     LookupModule,
     ActionsModule,
     ProgramModule,
-    FinancialServiceProvidersModule,
+    FspsModule,
     MessageQueuesModule,
     IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     EventsModule,
-    ProgramFinancialServiceProviderConfigurationsModule,
+    ProgramFspConfigurationsModule,
     QueuesRegistryModule,
   ],
   providers: [

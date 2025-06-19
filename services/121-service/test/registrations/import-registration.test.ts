@@ -292,7 +292,7 @@ describe('Import a registration', () => {
       whatsappPhoneNumber: _whatsappPhoneNumber,
       ...registrationWesteros1Copy
     } = registrationWesteros1;
-    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
+    registrationWesteros1Copy.programFspConfigurationName =
       Fsps.intersolveVoucherWhatsapp;
 
     const programIdWestoros = 2;
@@ -327,8 +327,7 @@ describe('Import a registration', () => {
       whatsappPhoneNumber: _whatsappPhoneNumber,
       ...registrationWesteros1Copy
     } = registrationWesteros1;
-    registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
-      'non-existing-fsp';
+    registrationWesteros1Copy.programFspConfigurationName = 'non-existing-fsp';
 
     // Act
     const response = await importRegistrations(
@@ -339,7 +338,7 @@ describe('Import a registration', () => {
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body[0].error).toContain(
-      registrationWesteros1Copy.programFinancialServiceProviderConfigurationName,
+      registrationWesteros1Copy.programFspConfigurationName,
     );
 
     const result = await searchRegistrationByReferenceId(
@@ -368,7 +367,7 @@ describe('Import a registration', () => {
     accessToken = await getAccessToken();
     const registrationWesterosEmpty = {
       referenceId: 'registrationWesterosEmpty',
-      programFinancialServiceProviderConfigurationName: 'ironBank',
+      programFspConfigurationName: 'ironBank',
     };
 
     const programUpdate = {

@@ -94,7 +94,7 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   },
 ];
 
-export class ProgramFinancialServiceProviderDto {
+export class ProgramFspDto {
   @ApiProperty()
   @IsEnum(Fsps)
   fsp: WrapperType<Fsps>;

@@ -105,9 +105,7 @@ export async function removeProgramAssignment(
 
 export async function runCronJobDoNedbankReconciliation(): Promise<void> {
   const accessToken = await getAccessToken();
-  await getServer()
-    .patch('/financial-service-providers/nedbank')
-    .set('Cookie', [accessToken]);
+  await getServer().patch('/fsps/nedbank').set('Cookie', [accessToken]);
 }
 
 export async function updatePermissionsOfRole(
@@ -205,14 +203,14 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     'endDate',
     'updated',
     'created',
-    'programFinancialServiceProviderConfigurations',
-    'financialServiceProviderConfigurations',
+    'programFspConfigurations',
+    'fspConfigurations',
   ]);
 
   const attributesToSort = [
     { attribute: 'editableAttributes', key: 'name' },
     { attribute: 'paTableAttributes', key: 'name' },
-    { attribute: 'financialServiceProviders', key: 'fsp' },
+    { attribute: 'fsps', key: 'fsp' },
     { attribute: 'programRegistrationAttributes', key: 'name' },
     { attribute: 'filterableAttributes', key: 'group' },
   ];

@@ -17,7 +17,7 @@ export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
   @ApiProperty({
     example: ['Intersolve-voucher-whatsapp', 'Intersolve-voucher-paper'],
   })
-  public readonly programFinancialServiceProviderConfigurationNames: string[];
+  public readonly programFspConfigurationNames: string[];
 }
 
 export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto {

@@ -1,6 +1,6 @@
 export enum ActivityTypeEnum {
   DataChange = 'data-change',
-  FinancialServiceProviderChange = 'financial-service-provider-change',
+  FspChange = 'fsp-change',
   Message = 'message',
   Note = 'note',
   StatusChange = 'status-change',

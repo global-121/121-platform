@@ -323,11 +323,11 @@ export class RegistrationsBulkService {
     ];
     if (includePaymentAttributes) {
       query.select.push(GenericRegistrationAttributes.paymentAmountMultiplier);
-      query.select.push('programFinancialServiceProviderConfigurationId');
+      query.select.push('programFspConfigurationId');
       query.select.push(
-        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+        GenericRegistrationAttributes.programFspConfigurationName,
       );
-      query.select.push('financialServiceProviderName');
+      query.select.push('fspName');
     }
     if (includeSendMessageProperties) {
       query.select.push('id');

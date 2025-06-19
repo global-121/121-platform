@@ -12,9 +12,9 @@ export interface TransactionActivity extends BaseActivity {
     amount: number;
     paymentDate: Date;
     updatedDate: Date;
-    financialServiceProviderName: Fsps;
-    financialServiceProviderConfigurationLabel: LocalizedString;
-    financialServiceProviderConfigurationName: string;
+    fspName: Fsps;
+    fspConfigurationLabel: LocalizedString;
+    fspConfigurationName: string;
     errorMessage?: string;
   };
 }

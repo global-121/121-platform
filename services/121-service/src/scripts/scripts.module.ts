@@ -4,7 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { ORMConfig } from '@121-service/src/ormconfig';
-import { ProgramFinancialServiceProviderConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
+import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
@@ -23,7 +23,7 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     QueuesRegistryModule,
     ProgramModule,
     HttpModule,
-    ProgramFinancialServiceProviderConfigurationsModule,
+    ProgramFspConfigurationsModule,
   ],
   providers: [
     ScriptsService,

@@ -13,19 +13,17 @@ import {
 } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
-export class ExcelService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class ExcelService implements FspIntegrationInterface {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -34,7 +32,7 @@ export class ExcelService
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly fileImportService: FileImportService,
   ) {}
 
@@ -59,8 +57,7 @@ export class ExcelService
         programId,
         paymentNr,
         userId: paPaymentList[0].userId,
-        programFinancialServiceProviderConfigurationId:
-          paPayment.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: paPayment.programFspConfigurationId,
       };
 
       const transactionResultObject = {
@@ -88,15 +85,15 @@ export class ExcelService
     transactions,
     programId,
     payment,
-    programFinancialServiceProviderConfigurationId,
+    programFspConfigurationId,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
     payment: number;
-    programFinancialServiceProviderConfigurationId: number;
+    programFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
     const exportColumns = await this.getExportColumnsForProgramFspConfig(
-      programFinancialServiceProviderConfigurationId,
+      programFspConfigurationId,
       programId,
     );
     // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
@@ -106,7 +103,7 @@ export class ExcelService
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,
         payment,
-        programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId,
         status: TransactionStatusEnum.waiting,
       });
     const chunkSize = 400000;
@@ -129,23 +126,21 @@ export class ExcelService
   }
 
   private async getExportColumnsForProgramFspConfig(
-    programFinancialServiceProviderConfigurationId: number,
+    programFspConfigurationId: number,
     programId: number,
   ): Promise<string[]> {
     const columnsToExportConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
-        {
-          programFinancialServiceProviderConfigurationId,
-          name: FspConfigurationProperties.columnsToExport,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.columnsToExport,
+      });
 
     if (columnsToExportConfig) {
       // check if columnsToExportConfig is a string array or throw an error
       if (!Array.isArray(columnsToExportConfig)) {
         throw new HttpException(
           {
-            errors: `FinancialServiceProviderConfigurationProperty ${FspConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
+            errors: `FspConfigurationProperty ${FspConfigurationProperties.columnsToExport} must be an array, but received ${typeof columnsToExportConfig}`,
           },
           HttpStatus.NOT_FOUND,
         );
@@ -217,19 +212,17 @@ export class ExcelService
   }
 
   public async getImportMatchColumn(
-    programFinancialServiceProviderConfigurationId: number,
+    programFspConfigurationId: number,
   ): Promise<string> {
     const matchColumn =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
-        {
-          programFinancialServiceProviderConfigurationId,
-          name: FspConfigurationProperties.columnToMatch,
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.columnToMatch,
+      });
     if (!matchColumn) {
       throw new HttpException(
         {
-          errors: `No match column found for FSP 'Excel' and programFinancialServiceProviderConfigurationId with id ${programFinancialServiceProviderConfigurationId}`,
+          errors: `No match column found for FSP 'Excel' and programFspConfigurationId with id ${programFspConfigurationId}`,
         },
         HttpStatus.NOT_FOUND,
       );

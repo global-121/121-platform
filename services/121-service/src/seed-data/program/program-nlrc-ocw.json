@@ -118,9 +118,9 @@
   "enableScope": false,
   "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfigurations": [
+  "programFspConfigurations": [
     {
-      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "fsp": "Intersolve-voucher-whatsapp",
       "properties": [
         {
           "name": "username",
@@ -133,7 +133,7 @@
       ]
     },
     {
-      "financialServiceProvider": "Intersolve-visa",
+      "fsp": "Intersolve-visa",
       "properties": [
         {
           "name": "brandCode",

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ProgramFinancialServiceProviderConfigurationPropertyResponseDto {
+export class ProgramFspConfigurationPropertyResponseDto {
   @ApiProperty({ example: 'username' })
   public readonly name: string;
 

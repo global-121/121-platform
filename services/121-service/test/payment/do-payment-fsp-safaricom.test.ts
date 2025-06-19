@@ -30,7 +30,7 @@ describe('Do payment to 1 PA', () => {
   const amount = 12327;
   const registrationSafaricom = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-    programFinancialServiceProviderConfigurationName: Fsps.safaricom,
+    programFspConfigurationName: Fsps.safaricom,
     phoneNumber: '254708374149',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,

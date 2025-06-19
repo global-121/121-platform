@@ -71,9 +71,7 @@ export class ActivityLogExpandedRowComponent
 
     return (
       activity.type === ActivityTypeEnum.Transaction &&
-      FSPS_WITH_VOUCHER_SUPPORT.includes(
-        activity.attributes.financialServiceProviderName,
-      )
+      FSPS_WITH_VOUCHER_SUPPORT.includes(activity.attributes.fspName)
     );
   });
 
@@ -118,19 +116,19 @@ export class ActivityLogExpandedRowComponent
             value: attributes.reason,
           },
         ];
-      case ActivityTypeEnum.FinancialServiceProviderChange:
+      case ActivityTypeEnum.FspChange:
         return [
           {
             label: $localize`Old FSP`,
             value: this.localizeAttribute(
-              GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+              GenericRegistrationAttributes.programFspConfigurationName,
               attributes.oldValue,
             ),
           },
           {
             label: $localize`New FSP`,
             value: this.localizeAttribute(
-              GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+              GenericRegistrationAttributes.programFspConfigurationName,
               attributes.newValue,
             ),
           },
@@ -181,7 +179,7 @@ export class ActivityLogExpandedRowComponent
           },
           {
             label: $localize`FSP`,
-            value: attributes.financialServiceProviderConfigurationLabel,
+            value: attributes.fspConfigurationLabel,
           },
           {
             label: $localize`Amount`,

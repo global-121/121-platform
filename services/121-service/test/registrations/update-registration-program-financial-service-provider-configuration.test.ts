@@ -4,7 +4,7 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -14,7 +14,7 @@ import {
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { postProgramFinancialServiceProviderConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { postProgramFspConfiguration } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   importRegistrations,
   seedIncludedRegistrations,
@@ -48,11 +48,9 @@ describe('Update program financial servce provider configuration of PA', () => {
     accessToken = await setupNlrcEnvironment();
 
     // Intersolve-visa and Intersolve-voucher-whatsapp both have whatsappPhoneNumber as required
-    const newProgramFinancialServiceProviderConfigurationName =
-      'Intersolve-voucher-whatsapp';
+    const newProgramFspConfigurationName = 'Intersolve-voucher-whatsapp';
     const dataUpdate = {
-      programFinancialServiceProviderConfigurationName:
-        newProgramFinancialServiceProviderConfigurationName,
+      programFspConfigurationName: newProgramFspConfigurationName,
     };
     const reason = 'automated test';
 
@@ -67,9 +65,7 @@ describe('Update program financial servce provider configuration of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.financialServiceProviderName).toBe(
-      newProgramFinancialServiceProviderConfigurationName,
-    );
+    expect(response.body.fspName).toBe(newProgramFspConfigurationName);
   });
 
   it('should fail when updating program financial servce provider configuration when a required property of new FSP is not yet present', async () => {
@@ -77,11 +73,9 @@ describe('Update program financial servce provider configuration of PA', () => {
     accessToken = await setupNlrcEnvironment();
 
     // Intersolve-voucher-whtatsapp does not have e.g. addressStreet which is required for Intersolve-visa
-    const newProgramFinancialServiceProviderConfigurationName =
-      'Intersolve-visa';
+    const newProgramFspConfigurationName = 'Intersolve-visa';
     const dataUpdate = {
-      programFinancialServiceProviderConfigurationName:
-        newProgramFinancialServiceProviderConfigurationName,
+      programFspConfigurationName: newProgramFspConfigurationName,
     };
     const reason = 'automated test';
 
@@ -105,11 +99,9 @@ describe('Update program financial servce provider configuration of PA', () => {
 
     // Intersolve-voucher-whtatsapp does not have e.g. addressStreet which is required for Intersolve-visa
     // The missing attributes can be passed along (or can be updated first)
-    const newProgramFinancialServiceProviderConfigurationName =
-      'Intersolve-visa';
+    const newProgramFspConfigurationName = 'Intersolve-visa';
     const dataUpdate = {
-      programFinancialServiceProviderConfigurationName:
-        newProgramFinancialServiceProviderConfigurationName,
+      programFspConfigurationName: newProgramFspConfigurationName,
       addressStreet: 'Teststraat 1',
       addressHouseNumber: '1',
       addressCity: 'Teststad',
@@ -128,8 +120,8 @@ describe('Update program financial servce provider configuration of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.programFinancialServiceProviderConfigurationName).toBe(
-      newProgramFinancialServiceProviderConfigurationName,
+    expect(response.body.programFspConfigurationName).toBe(
+      newProgramFspConfigurationName,
     );
   });
 
@@ -143,11 +135,9 @@ describe('Update program financial servce provider configuration of PA', () => {
     accessToken = await getAccessToken();
 
     // Intersolve-visa and Intersolve-voucher-whatsapp both have 'whatsappPhoneNumber' as required, so this would succeed apart from the permission
-    const newProgramFinancialServiceProviderConfigurationName =
-      'Intersolve-voucher-whatsapp';
+    const newProgramFspConfigurationName = 'Intersolve-voucher-whatsapp';
     const dataUpdate = {
-      programFinancialServiceProviderConfigurationName:
-        newProgramFinancialServiceProviderConfigurationName,
+      programFspConfigurationName: newProgramFspConfigurationName,
     };
     const reason = 'automated test';
 
@@ -175,36 +165,33 @@ describe('Update program financial servce provider configuration of PA', () => {
       accessToken,
     );
 
-    const newProgramFinancialServiceProviderConfigurationName =
-      'VoucherNumberTwo';
-    const newProgramFinancialServiceProviderConfigurationLabel = {
+    const newProgramFspConfigurationName = 'VoucherNumberTwo';
+    const newProgramFspConfigurationLabel = {
       en: 'Voucher number 2',
     };
-    const fspConfigBody: CreateProgramFinancialServiceProviderConfigurationDto =
-      {
-        name: newProgramFinancialServiceProviderConfigurationName,
-        financialServiceProviderName: Fsps.intersolveVoucherWhatsapp,
-        label: newProgramFinancialServiceProviderConfigurationLabel,
-        properties: [
-          {
-            name: FspConfigurationProperties.password,
-            value: 'password',
-          },
-          {
-            name: FspConfigurationProperties.username,
-            value: 'username',
-          },
-        ],
-      };
-    await postProgramFinancialServiceProviderConfiguration({
+    const fspConfigBody: CreateProgramFspConfigurationDto = {
+      name: newProgramFspConfigurationName,
+      fspName: Fsps.intersolveVoucherWhatsapp,
+      label: newProgramFspConfigurationLabel,
+      properties: [
+        {
+          name: FspConfigurationProperties.password,
+          value: 'password',
+        },
+        {
+          name: FspConfigurationProperties.username,
+          value: 'username',
+        },
+      ],
+    };
+    await postProgramFspConfiguration({
       programId: programIdPv,
       body: fspConfigBody,
       accessToken,
     });
 
     const dataUpdate = {
-      programFinancialServiceProviderConfigurationName:
-        newProgramFinancialServiceProviderConfigurationName,
+      programFspConfigurationName: newProgramFspConfigurationName,
     };
     const reason = 'automated test';
 
@@ -239,13 +226,12 @@ describe('Update program financial servce provider configuration of PA', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.programFinancialServiceProviderConfigurationName).toBe(
-      newProgramFinancialServiceProviderConfigurationName,
+    expect(response.body.programFspConfigurationName).toBe(
+      newProgramFspConfigurationName,
     );
     expect(transactionsResponse.text).toContain('success');
     expect(
-      transactionsResponse.body[0]
-        .programFinancialServiceProviderConfigurationName,
-    ).toStrictEqual(newProgramFinancialServiceProviderConfigurationName);
+      transactionsResponse.body[0].programFspConfigurationName,
+    ).toStrictEqual(newProgramFspConfigurationName);
   });
 });

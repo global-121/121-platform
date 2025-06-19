@@ -1,52 +1,51 @@
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
-import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
+import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
+import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 
-export class ProgramFinancialServiceProviderConfigurationMapper {
+export class ProgramFspConfigurationMapper {
   public static mapEntitiesToDtos(
     entities: ProgramFspConfigurationEntity[],
-  ): ProgramFinancialServiceProviderConfigurationResponseDto[] {
+  ): ProgramFspConfigurationResponseDto[] {
     return entities.map((entity) =>
-      ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(entity),
+      ProgramFspConfigurationMapper.mapEntityToDto(entity),
     );
   }
 
   public static mapEntityToDto(
     entity: ProgramFspConfigurationEntity,
-  ): ProgramFinancialServiceProviderConfigurationResponseDto {
-    // Remove unnecessary properties from the financialServiceProvider object
+  ): ProgramFspConfigurationResponseDto {
+    // Remove unnecessary properties from the fsp object
     const {
       configurationProperties: _configurationProperties,
       defaultLabel: _defaultLabel,
-      ...financialServiceProvider
-    } = getFinancialServiceProviderSettingByNameOrThrow(entity.fspName);
+      ...fsp
+    } = getFspSettingByNameOrThrow(entity.fspName);
 
-    const dto: ProgramFinancialServiceProviderConfigurationResponseDto = {
+    const dto: ProgramFspConfigurationResponseDto = {
       programId: entity.programId,
-      financialServiceProviderName: entity.fspName,
+      fspName: entity.fspName,
       name: entity.name,
       label: entity.label,
-      financialServiceProvider,
-      properties:
-        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyEntitiesToDtos(
-          entity.properties,
-        ),
+      fsp,
+      properties: ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
+        entity.properties,
+      ),
     };
     return dto;
   }
 
   public static mapDtoToEntity(
-    dto: CreateProgramFinancialServiceProviderConfigurationDto,
+    dto: CreateProgramFspConfigurationDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
     const entity = new ProgramFspConfigurationEntity();
     entity.programId = programId;
-    entity.fspName = dto.financialServiceProviderName;
+    entity.fspName = dto.fspName;
     entity.name = dto.name;
     entity.label = dto.label;
     return entity;
@@ -54,20 +53,18 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
 
   public static mapPropertyEntitiesToDtos(
     properties?: ProgramFspConfigurationPropertyEntity[],
-  ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto[] {
+  ): ProgramFspConfigurationPropertyResponseDto[] {
     if (!properties) {
       return [];
     }
     return properties.map((property) =>
-      ProgramFinancialServiceProviderConfigurationMapper.mapPropertyEntityToDto(
-        property,
-      ),
+      ProgramFspConfigurationMapper.mapPropertyEntityToDto(property),
     );
   }
 
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
-  ): ProgramFinancialServiceProviderConfigurationPropertyResponseDto {
+  ): ProgramFspConfigurationPropertyResponseDto {
     return {
       name: property.name,
       updated: property.updated,
@@ -75,28 +72,27 @@ export class ProgramFinancialServiceProviderConfigurationMapper {
   }
 
   public static mapPropertyDtosToEntities(
-    dtos: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
-    programFinancialServiceProviderConfigurationId: number,
+    dtos: CreateProgramFspConfigurationPropertyDto[],
+    programFspConfigurationId: number,
   ): ProgramFspConfigurationPropertyEntity[] {
     return dtos.map((dto) =>
-      ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoToEntity(
+      ProgramFspConfigurationMapper.mapPropertyDtoToEntity(
         dto,
-        programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId,
       ),
     );
   }
 
   private static mapPropertyDtoToEntity(
-    dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
-    programFinancialServiceProviderConfigurationId: number,
+    dto: CreateProgramFspConfigurationPropertyDto,
+    programFspConfigurationId: number,
   ): ProgramFspConfigurationPropertyEntity {
     const entity = new ProgramFspConfigurationPropertyEntity();
     entity.name = dto.name;
-    entity.programFspConfigurationId =
-      programFinancialServiceProviderConfigurationId;
+    entity.programFspConfigurationId = programFspConfigurationId;
     // Later we can add a switch case and a type for each property if there are more non-string properties
     entity.value =
-      ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtoValueToEntityValue(
+      ProgramFspConfigurationMapper.mapPropertyDtoValueToEntityValue(
         dto.value,
         dto.name,
       );

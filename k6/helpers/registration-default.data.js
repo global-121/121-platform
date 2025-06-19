@@ -1,7 +1,4 @@
-import {
-  CustomDataAttributes,
-  FinancialServiceProviders,
-} from './custom-data-attributes.js';
+import { CustomDataAttributes, Fsps } from './custom-data-attributes.js';
 
 export const registrationVisa = {
   referenceId: 'registration-visa-1',
@@ -9,8 +6,7 @@ export const registrationVisa = {
   paymentAmountMultiplier: 1,
   fullName: 'Jane Doe',
   [CustomDataAttributes.phoneNumber]: '14155238887',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVisa,
+  programFspConfigurationName: Fsps.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -25,15 +21,13 @@ export const registrationPV = {
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherWhatsapp,
+  programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
 };
 
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.safaricom,
+  programFspConfigurationName: Fsps.safaricom,
   phoneNumber: '254708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
@@ -47,8 +41,7 @@ export const registrationSafaricom = {
 
 export const registrationNedbank = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.nedbank,
+  programFspConfigurationName: Fsps.nedbank,
   phoneNumber: '2708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
