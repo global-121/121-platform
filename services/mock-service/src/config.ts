@@ -41,6 +41,6 @@ export const API_PATHS = {
 
 export const EXTERNAL_API_ROOT = `${
   DEVELOPMENT
-    ? `http://121-service:${env.PORT_121_SERVICE}/`
+    ? `http://121-service:${env.PORT_121_SERVICE}`
     : env.EXTERNAL_121_SERVICE_URL
-}api`;
+}/api`;

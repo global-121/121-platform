@@ -41,7 +41,7 @@ export class SeedInit implements InterfaceScript {
 
   private async clearCallbacksMockService(): Promise<void> {
     if (env.NODE_ENV === 'development') {
-      await this.httpService.get(`${env.MOCK_SERVICE_URL}api/reset/callbacks`);
+      await this.httpService.get(`${env.MOCK_SERVICE_URL}/api/reset/callbacks`);
     }
   }
 
