@@ -6,7 +6,7 @@ import { LookupService } from '@121-service/src/notifications/lookup/lookup.serv
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
@@ -24,7 +24,7 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
     LookupService,
     FileImportService,
     // TODO: Refactor this to not make excel module depedenent on program financial service provider configuration
-    ProgramFinancialServiceProviderConfigurationRepository,
+    ProgramFspConfigurationRepository,
   ],
   controllers: [],
   exports: [ExcelService],

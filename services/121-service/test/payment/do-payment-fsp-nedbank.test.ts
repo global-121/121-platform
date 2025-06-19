@@ -16,7 +16,7 @@ import {
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   seedIncludedRegistrations,
   seedPaidRegistrations,
@@ -601,7 +601,7 @@ describe('Do payment', () => {
         );
         const paymentReferenceIds = [registrationNedbank.referenceId];
 
-        await deleteProgramFinancialServiceProviderConfigurationProperty({
+        await deleteProgramFspConfigurationProperty({
           programId,
           configName: Fsps.nedbank,
           propertyName: FspConfigurationProperties.paymentReferencePrefix,

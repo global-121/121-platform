@@ -20,7 +20,7 @@ import {
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -304,13 +304,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
-    await deleteProgramFinancialServiceProviderConfigurationProperty({
+    await deleteProgramFspConfigurationProperty({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa,
       propertyName: FspConfigurationProperties.coverLetterCode,
       accessToken,
     });
-    await deleteProgramFinancialServiceProviderConfigurationProperty({
+    await deleteProgramFspConfigurationProperty({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa,
       propertyName: FspConfigurationProperties.fundingTokenCode,

@@ -410,7 +410,7 @@ export class RegistrationsController {
         }
       } else if (
         attributeKey ===
-        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+        GenericRegistrationAttributes.programFspConfigurationName
       ) {
         if (!hasUpdateFspConfigPermission) {
           const errors = `User does not have permission to update chosen program financial service provider configuration`;
@@ -688,7 +688,7 @@ export class RegistrationsController {
   }
 
   // Re-issue card: this is placed in registrationscontroller because it also sends messages and searches by referenceId
-  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({
     summary: '[SCOPED] Re-issue card: replace existing card with a new card.',
@@ -701,7 +701,7 @@ export class RegistrationsController {
       'Card replaced - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet/cards',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards',
   )
   @HttpCode(HttpStatus.NO_CONTENT)
   public async reissueCardAndSendMessage(
@@ -718,7 +718,7 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser()
   @ApiOperation({
     summary: '[SCOPED] [EXTERNALLY USED] Pause Intersolve Visa Card',
@@ -733,7 +733,7 @@ export class RegistrationsController {
       'Body.status 204: Paused card, stored in 121 db and sent notification to registration. - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet/cards/:tokenCode',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet/cards/:tokenCode',
   )
   public async pauseCardAndSendMessage(
     @Param('programId', ParseIntPipe) programId: number,
@@ -773,7 +773,7 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
@@ -788,7 +788,7 @@ export class RegistrationsController {
     type: IntersolveVisaWalletDto,
   })
   @Patch(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet',
   )
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     @Param('referenceId') referenceId: string,
@@ -801,7 +801,7 @@ export class RegistrationsController {
     );
   }
 
-  @ApiTags('financial-service-providers/intersolve-visa')
+  @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardREAD] })
   @ApiOperation({
     summary:
@@ -816,7 +816,7 @@ export class RegistrationsController {
     type: IntersolveVisaWalletDto,
   })
   @Get(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/wallet',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/wallet',
   )
   public async getIntersolveVisaWalletAndCards(
     @Param('referenceId') referenceId: string,
@@ -840,7 +840,7 @@ export class RegistrationsController {
     description: 'Customer data sent',
   })
   @Post(
-    'programs/:programId/registrations/:referenceId/financial-service-providers/intersolve-visa/contact-information',
+    'programs/:programId/registrations/:referenceId/fsps/intersolve-visa/contact-information',
   )
   public async getRegistrationAndSendContactInformationToIntersolve(
     @Param('programId', ParseIntPipe) programId: number,

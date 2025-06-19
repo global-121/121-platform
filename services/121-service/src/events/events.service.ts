@@ -345,9 +345,9 @@ export class EventsService {
       'paymentCountRemaining',
       'programId',
       'created',
-      'financialServiceProviderName',
-      'programFinancialServiceProviderConfigurationId',
-      'programFinancialServiceProviderConfigurationLabel',
+      'fspName',
+      'programFspConfigurationId',
+      'programFspConfigurationLabel',
       'registrationProgramId',
       'personAffectedSequence',
       'lastMessageStatus',
@@ -360,10 +360,9 @@ export class EventsService {
   }
 
   private getEventType(key: string): EventEnum {
-    const financialServiceProviderKey: keyof RegistrationViewEntity =
-      'programFinancialServiceProviderConfigurationName';
-    if (key === financialServiceProviderKey) {
-      return EventEnum.financialServiceProviderChange;
+    const fspKey: keyof RegistrationViewEntity = 'programFspConfigurationName';
+    if (key === fspKey) {
+      return EventEnum.fspChange;
     }
     const statusKey: keyof RegistrationViewEntity = 'status';
     if (key === statusKey) {

@@ -9,14 +9,14 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FspDto } from '@121-service/src/fsps/fsp.dto';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -35,7 +35,7 @@ export class SeedHelper {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
@@ -257,25 +257,23 @@ export class SeedHelper {
     const foundProgram = await programRepository.findOneOrFail({
       where: { id: Equal(programReturn.id) },
     });
-    const fspConfigArrayFromJson =
-      programFromJSON.programFinancialServiceProviderConfigurations;
+    const fspConfigArrayFromJson = programFromJSON.programFspConfigurations;
     foundProgram.programFspConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
-      const financialServiceProviderObject =
-        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-          (fsp) => fsp.name === fspConfigFromJson.financialServiceProvider,
-        );
-      if (!financialServiceProviderObject) {
+      const fspObject = FSP_SETTINGS.find(
+        (fsp) => fsp.name === fspConfigFromJson.fsp,
+      );
+      if (!fspObject) {
         throw new HttpException(
-          `FSP with name ${fspConfigFromJson.financialServiceProvider} not found in FINANCIAL_SERVICE_PROVIDER_SETTINGS`,
+          `FSP with name ${fspConfigFromJson.fsp} not found in FSP_SETTINGS`,
           HttpStatus.NOT_FOUND,
         );
       }
 
       const programFspConfig = this.createProgramFspConfiguration(
         fspConfigFromJson,
-        financialServiceProviderObject,
+        fspObject,
         foundProgram.id,
       );
       await this.programFspConfigurationRepository.save(programFspConfig);
@@ -286,25 +284,25 @@ export class SeedHelper {
 
   private createProgramFspConfiguration(
     fspConfigFromJson: {
-      financialServiceProvider: Fsps;
+      fsp: Fsps;
       properties: { name: string; value: string }[] | undefined;
       name?: string;
       label: LocalizedString;
     },
-    financialServiceProviderObject: FinancialServiceProviderDto,
+    fspObject: FspDto,
     programId: number,
   ): ProgramFspConfigurationEntity {
     const fspConfigEntity = new ProgramFspConfigurationEntity();
-    fspConfigEntity.fspName = fspConfigFromJson.financialServiceProvider;
+    fspConfigEntity.fspName = fspConfigFromJson.fsp;
     fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
       fspConfigFromJson.properties ?? [],
     );
     fspConfigEntity.label = fspConfigFromJson.label
       ? fspConfigFromJson.label
-      : financialServiceProviderObject.defaultLabel;
+      : fspObject.defaultLabel;
     fspConfigEntity.name = fspConfigFromJson.name
       ? fspConfigFromJson.name
-      : financialServiceProviderObject.name;
+      : fspObject.name;
     fspConfigEntity.transactions = [];
     fspConfigEntity.programId = programId;
     return fspConfigEntity;

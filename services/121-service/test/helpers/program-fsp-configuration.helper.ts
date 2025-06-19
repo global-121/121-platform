@@ -1,30 +1,30 @@
 import * as request from 'supertest';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
-import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
+import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
-export async function postProgramFinancialServiceProviderConfiguration({
+export async function postProgramFspConfiguration({
   programId,
   body,
   accessToken,
 }: {
   programId: number;
-  body: CreateProgramFinancialServiceProviderConfigurationDto;
+  body: CreateProgramFspConfigurationDto;
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
-    .post(`/programs/${programId}/financial-service-provider-configurations`)
+    .post(`/programs/${programId}/fsp-configurations`)
     .set('Cookie', [accessToken])
     .send(body);
 }
 
-export async function patchProgramFinancialServiceProviderConfiguration({
+export async function patchProgramFspConfiguration({
   programId,
   name,
   body,
@@ -32,22 +32,20 @@ export async function patchProgramFinancialServiceProviderConfiguration({
 }: {
   programId: number;
   name: string;
-  body: UpdateProgramFinancialServiceProviderConfigurationDto;
+  body: UpdateProgramFspConfigurationDto;
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationResponseDto;
+    body: ProgramFspConfigurationResponseDto;
   }
 > {
   return await getServer()
-    .patch(
-      `/programs/${programId}/financial-service-provider-configurations/${name}`,
-    )
+    .patch(`/programs/${programId}/fsp-configurations/${name}`)
     .set('Cookie', [accessToken])
     .send(body);
 }
 
-export async function getProgramFinancialServiceProviderConfigurations({
+export async function getProgramFspConfigurations({
   programId,
   accessToken,
 }: {
@@ -55,15 +53,15 @@ export async function getProgramFinancialServiceProviderConfigurations({
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationResponseDto[];
+    body: ProgramFspConfigurationResponseDto[];
   }
 > {
   return await getServer()
-    .get(`/programs/${programId}/financial-service-provider-configurations`)
+    .get(`/programs/${programId}/fsp-configurations`)
     .set('Cookie', [accessToken]);
 }
 
-export async function deleteProgramFinancialServiceProviderConfiguration({
+export async function deleteProgramFspConfiguration({
   programId,
   name,
   accessToken,
@@ -73,36 +71,32 @@ export async function deleteProgramFinancialServiceProviderConfiguration({
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
-    .delete(
-      `/programs/${programId}/financial-service-provider-configurations/${name}`,
-    )
+    .delete(`/programs/${programId}/fsp-configurations/${name}`)
     .set('Cookie', [accessToken]);
 }
 
-export async function postProgramFinancialServiceProviderConfigurationProperties({
+export async function postProgramFspConfigurationProperties({
   programId,
   properties,
   accessToken,
   name,
 }: {
   programId: number;
-  properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
+  properties: CreateProgramFspConfigurationPropertyDto[];
   name: string;
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationPropertyResponseDto[];
+    body: ProgramFspConfigurationPropertyResponseDto[];
   }
 > {
   return await getServer()
-    .post(
-      `/programs/${programId}/financial-service-provider-configurations/${name}/properties`,
-    )
+    .post(`/programs/${programId}/fsp-configurations/${name}/properties`)
     .set('Cookie', [accessToken])
     .send(properties);
 }
 
-export async function patchProgramFinancialServiceProviderConfigurationProperty({
+export async function patchProgramFspConfigurationProperty({
   programId,
   configName,
   propertyName,
@@ -112,22 +106,22 @@ export async function patchProgramFinancialServiceProviderConfigurationProperty(
   programId: number;
   configName: string;
   propertyName: FspConfigurationProperties;
-  body: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
+  body: UpdateProgramFspConfigurationPropertyDto;
   accessToken: string;
 }): Promise<
   Omit<request.Response, 'body'> & {
-    body: ProgramFinancialServiceProviderConfigurationPropertyResponseDto;
+    body: ProgramFspConfigurationPropertyResponseDto;
   }
 > {
   return await getServer()
     .patch(
-      `/programs/${programId}/financial-service-provider-configurations/${configName}/properties/${propertyName}`,
+      `/programs/${programId}/fsp-configurations/${configName}/properties/${propertyName}`,
     )
     .set('Cookie', [accessToken])
     .send(body);
 }
 
-export async function deleteProgramFinancialServiceProviderConfigurationProperty({
+export async function deleteProgramFspConfigurationProperty({
   programId,
   configName,
   propertyName,
@@ -140,7 +134,7 @@ export async function deleteProgramFinancialServiceProviderConfigurationProperty
 }): Promise<request.Response> {
   return await getServer()
     .delete(
-      `/programs/${programId}/financial-service-provider-configurations/${configName}/properties/${propertyName}`,
+      `/programs/${programId}/fsp-configurations/${configName}/properties/${propertyName}`,
     )
     .set('Cookie', [accessToken]);
 }

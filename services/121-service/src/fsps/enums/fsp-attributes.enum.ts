@@ -1,4 +1,4 @@
-export enum FinancialServiceProviderAttributes {
+export enum FspAttributes {
   phoneNumber = 'phoneNumber',
   nationalId = 'nationalId',
   fullName = 'fullName',

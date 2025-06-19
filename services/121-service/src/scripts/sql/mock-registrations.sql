@@ -32,6 +32,6 @@ INSERT
                 END
             ELSE scope
         END,
-        "programFinancialServiceProviderConfigurationId"
+        "programFspConfigurationId"
     FROM
         "121-service".registration);

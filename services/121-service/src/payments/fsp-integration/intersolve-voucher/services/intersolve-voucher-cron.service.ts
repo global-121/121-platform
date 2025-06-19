@@ -12,7 +12,7 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -38,7 +38,7 @@ export class IntersolveVoucherCronService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly registrationDataService: RegistrationDataService,
-    private readonly programFspConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
   public async cancelByRefposIntersolve(): Promise<void> {
@@ -59,9 +59,9 @@ export class IntersolveVoucherCronService {
       return;
     }
 
-    // Get the first intersolve programFinancialServiceProviderConfigurationId that has intersolveVoucherWhatsapp as FSP
+    // Get the first intersolve programFspConfigurationId that has intersolveVoucherWhatsapp as FSP
     // TODO: store the programFspConfigurationId or the usename and password in the intersolveRequest table so we know which credentials to use for the cancelation
-    // Before the registration data/programFinancialServiceProviderConfiguration this problem already existed...
+    // Before the registration data/programFspConfiguration this problem already existed...
     const configId = await this.programFspConfigurationRepository.findOne({
       where: {
         fspName: Equal(Fsps.intersolveVoucherWhatsapp),

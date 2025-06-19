@@ -32,7 +32,7 @@ export class ProgramAttributesService {
       'preferredLanguage',
       'inclusionScore',
       'paymentAmountMultiplier',
-      'programFinancialServiceProviderConfigurationName',
+      'programFspConfigurationName',
     ];
     const paAttributesNameArray = program['paTableAttributes'].map(
       (paAttribute: Attribute) => paAttribute.name,
@@ -139,7 +139,7 @@ export class ProgramAttributesService {
         label: null,
       },
       {
-        name: GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+        name: GenericRegistrationAttributes.programFspConfigurationLabel,
         type: RegistrationAttributeTypes.text,
         label: null,
       },

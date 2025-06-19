@@ -12,10 +12,10 @@ import {
 import { v4 as uuid } from 'uuid';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-export class CreateProgramFinancialServiceProviderConfigurationDto {
+export class CreateProgramFspConfigurationDto {
   @ApiProperty({ example: 'VisaDebitCards' })
   @IsNotEmpty()
   @IsString()
@@ -36,18 +36,18 @@ export class CreateProgramFinancialServiceProviderConfigurationDto {
   })
   @IsNotEmpty()
   @IsEnum(Fsps)
-  public readonly financialServiceProviderName: Fsps;
+  public readonly fspName: Fsps;
 
   @IsArray()
   @ValidateNested()
   @IsDefined()
   @IsOptional()
-  @Type(() => CreateProgramFinancialServiceProviderConfigurationPropertyDto)
+  @Type(() => CreateProgramFspConfigurationPropertyDto)
   @ApiProperty({
     example: [
       { name: 'username', value: `username-${uuid()}` },
       { name: 'password', value: `password-${uuid()}` },
     ],
   })
-  public readonly properties?: CreateProgramFinancialServiceProviderConfigurationPropertyDto[];
+  public readonly properties?: CreateProgramFspConfigurationPropertyDto[];
 }

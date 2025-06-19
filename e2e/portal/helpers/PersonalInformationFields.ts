@@ -62,7 +62,7 @@ export const numberInputs = {
 };
 
 export const dropdownInputs = {
-  programFinancialServiceProviderConfigurationName: {
+  programFspConfigurationName: {
     fieldName: 'FSP',
   },
   preferredLanguage: {

@@ -51,8 +51,7 @@ export const API_PATHS = {
   whatsAppIncoming: 'notifications/whatsapp/incoming',
   whatsAppStatusTemplateTest: 'notifications/whatsapp/templates',
   imageCode: 'notifications/imageCode/',
-  voucherInstructions:
-    'financial-service-providers/intersolve-voucher/instructions/',
+  voucherInstructions: 'fsps/intersolve-voucher/instructions/',
 };
 const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {

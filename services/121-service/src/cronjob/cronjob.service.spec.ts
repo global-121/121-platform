@@ -33,7 +33,7 @@ describe('Cronjobs', () => {
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl =
-      'http://example.com/api/financial-service-providers/commercial-bank-ethiopia/account-enquiries';
+      'http://example.com/api/fsps/commercial-bank-ethiopia/account-enquiries';
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -51,7 +51,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/financial-service-providers/intersolve-voucher/unused-vouchers`;
+    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/unused-vouchers`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -69,7 +69,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/financial-service-providers/intersolve-voucher/cancel`;
+    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/cancel`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -87,7 +87,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/financial-service-providers/intersolve-voucher/deprecated-image-codes`;
+    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/deprecated-image-codes`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, testHeader);
 
     // Cleanup

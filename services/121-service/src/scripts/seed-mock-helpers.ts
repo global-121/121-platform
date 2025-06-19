@@ -270,10 +270,7 @@ export class SeedMockHelper {
       if (!['custom_migration', 'typeorm_metadata'].includes(tableName)) {
         let sequenceName = `${tableName}_id_seq`;
         // this sequences is created with an abbreviated name automatically, so this exception is needed here
-        if (
-          tableName ===
-          'program_financial_service_provider_configuration_property'
-        ) {
+        if (tableName === 'program_fsp_configuration_property') {
           sequenceName = 'program_financial_service_pro_id_seq';
         }
 

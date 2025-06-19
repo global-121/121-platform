@@ -24,7 +24,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -41,7 +41,7 @@ interface ProcessTransactionResultInput {
   paymentNumber: number;
   userId: number;
   transferAmountInMajorUnit: number;
-  programFinancialServiceProviderConfigurationId: number;
+  programFspConfigurationId: number;
   registration: RegistrationEntity;
   oldRegistration: RegistrationEntity;
   isRetry: boolean;
@@ -56,7 +56,7 @@ export class TransactionJobProcessorsService {
     private readonly safaricomService: SafaricomService,
     private readonly nedbankService: NedbankService,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
@@ -89,8 +89,7 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-          programFinancialServiceProviderConfigurationId:
-            input.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: input.programFspConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -106,10 +105,9 @@ export class TransactionJobProcessorsService {
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
       const intersolveVisaConfig =
-        await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
+        await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow(
           {
-            programFinancialServiceProviderConfigurationId:
-              input.programFinancialServiceProviderConfigurationId,
+            programFspConfigurationId: input.programFspConfigurationId,
             names: [
               FspConfigurationProperties.brandCode,
               FspConfigurationProperties.coverLetterCode,
@@ -149,8 +147,7 @@ export class TransactionJobProcessorsService {
           paymentNumber: input.paymentNumber,
           userId: input.userId,
           transferAmountInMajorUnit,
-          programFinancialServiceProviderConfigurationId:
-            input.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: input.programFspConfigurationId,
           registration,
           oldRegistration,
           isRetry: input.isRetry,
@@ -186,8 +183,7 @@ export class TransactionJobProcessorsService {
       userId: input.userId,
       transferAmountInMajorUnit:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-      programFinancialServiceProviderConfigurationId:
-        input.programFinancialServiceProviderConfigurationId,
+      programFspConfigurationId: input.programFspConfigurationId,
       registration,
       oldRegistration,
       isRetry: input.isRetry,
@@ -221,8 +217,7 @@ export class TransactionJobProcessorsService {
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
         transferAmountInMajorUnit: transactionJob.transactionAmount,
-        programFinancialServiceProviderConfigurationId:
-          transactionJob.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
         registration,
         oldRegistration,
         isRetry: transactionJob.isRetry,
@@ -284,13 +279,10 @@ export class TransactionJobProcessorsService {
     // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
     // Payment reference cannot be longer than 30 characters
     const paymentReferencePrefix =
-      (await this.programFinancialServiceProviderConfigurationRepository.getPropertyValueByName(
-        {
-          programFinancialServiceProviderConfigurationId:
-            transactionJob.programFinancialServiceProviderConfigurationId,
-          name: FspConfigurationProperties.paymentReferencePrefix,
-        },
-      )) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
+      (await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
+        name: FspConfigurationProperties.paymentReferencePrefix,
+      })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
     const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(
       /[^a-zA-Z0-9-]/g,
       '',
@@ -320,8 +312,7 @@ export class TransactionJobProcessorsService {
         paymentNumber: transactionJob.paymentNumber,
         userId: transactionJob.userId,
         transferAmountInMajorUnit: transactionJob.transactionAmount,
-        programFinancialServiceProviderConfigurationId:
-          transactionJob.programFinancialServiceProviderConfigurationId,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
         registration,
         oldRegistration,
         isRetry: transactionJob.isRetry,
@@ -417,7 +408,7 @@ export class TransactionJobProcessorsService {
     paymentNumber,
     userId,
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
-    programFinancialServiceProviderConfigurationId,
+    programFspConfigurationId,
     registration,
     oldRegistration,
     isRetry,
@@ -427,7 +418,7 @@ export class TransactionJobProcessorsService {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
-      programFinancialServiceProviderConfigurationId,
+      programFspConfigurationId,
       programId,
       paymentNumber,
       userId,
@@ -492,7 +483,7 @@ export class TransactionJobProcessorsService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    programFinancialServiceProviderConfigurationId,
+    programFspConfigurationId,
     programId,
     paymentNumber,
     userId,
@@ -501,7 +492,7 @@ export class TransactionJobProcessorsService {
   }: {
     amount: number;
     registration: RegistrationEntity;
-    programFinancialServiceProviderConfigurationId: number;
+    programFspConfigurationId: number;
     programId: number;
     paymentNumber: number;
     userId: number;
@@ -512,8 +503,7 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFspConfigurationId =
-      programFinancialServiceProviderConfigurationId;
+    transaction.programFspConfigurationId = programFspConfigurationId;
     transaction.programId = programId;
     transaction.payment = paymentNumber;
     transaction.userId = userId;

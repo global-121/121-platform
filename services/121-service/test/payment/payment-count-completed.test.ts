@@ -34,8 +34,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    programFinancialServiceProviderConfigurationName:
-      Fsps.intersolveVoucherWhatsapp,
+    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
     maxPayments: 1,
   };

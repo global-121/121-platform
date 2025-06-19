@@ -16,7 +16,7 @@ import { IntersolveVoucherReconciliationService } from '@121-service/src/payment
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/intersolve-voucher')
+@ApiTags('fsps/intersolve-voucher')
 @Controller()
 export class IntersolveVoucherReconciliationController {
   public constructor(
@@ -35,9 +35,7 @@ export class IntersolveVoucherReconciliationController {
     status: HttpStatus.CREATED,
     description: 'Voucher update job started',
   })
-  @Patch(
-    '/programs/:programId/financial-service-providers/intersolve-voucher/all',
-  )
+  @Patch('/programs/:programId/fsps/intersolve-voucher/all')
   public async createJob(
     @Body() jobDetails: IntersolveVoucherJobDetails,
     @Param('programId', ParseIntPipe)
@@ -57,7 +55,7 @@ export class IntersolveVoucherReconciliationController {
     status: HttpStatus.CREATED,
     description: 'Cached unused vouchers',
   })
-  @Patch('/financial-service-providers/intersolve-voucher/unused-vouchers')
+  @Patch('/fsps/intersolve-voucher/unused-vouchers')
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
     console.info(
       'Start: Intersolve-Voucher -  cronRetrieveAndUpdatedUnusedIntersolveVouchers',

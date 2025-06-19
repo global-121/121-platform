@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -16,8 +16,8 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  deleteProgramFinancialServiceProviderConfigurationProperty,
-  getProgramFinancialServiceProviderConfigurations,
+  deleteProgramFspConfigurationProperty,
+  getProgramFspConfigurations,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -161,14 +161,13 @@ describe('Do payment with Excel FSP', () => {
         programTest.programRegistrationAttributes.map((pa) => pa.name);
       programAttributeColumns.concat(['amount']);
 
-      const fspConfigurations =
-        await getProgramFinancialServiceProviderConfigurations({
-          programId: programIdWesteros,
-          accessToken,
-        });
+      const fspConfigurations = await getProgramFspConfigurations({
+        programId: programIdWesteros,
+        accessToken,
+      });
 
       for (const fspConfiguration of fspConfigurations.body) {
-        await deleteProgramFinancialServiceProviderConfigurationProperty({
+        await deleteProgramFspConfigurationProperty({
           programId: programIdWesteros,
           configName: fspConfiguration.name,
           propertyName: FspConfigurationProperties.columnsToExport,
@@ -194,7 +193,7 @@ describe('Do payment with Excel FSP', () => {
   describe('Import FSP reconciliation data', () => {
     it('Should update transaction status based on imported reconciliation data', async () => {
       // Arrange
-      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
+      const matchColumn = FspAttributes.phoneNumber;
       // construct reconciliation-file here
       const reconciliationData = [
         {
@@ -267,7 +266,7 @@ describe('Do payment with Excel FSP', () => {
 
     it(`Should give an error when there are duplicate values in the toMatch column`, async () => {
       // Arrange
-      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
+      const matchColumn = FspAttributes.phoneNumber;
       const reconciliationData = [
         {
           [matchColumn]: registrationWesteros1.phoneNumber,
@@ -301,7 +300,7 @@ describe('Do payment with Excel FSP', () => {
 
     it('Should give an error when status column is missing', async () => {
       // Arrange
-      const matchColumn = FinancialServiceProviderAttributes.phoneNumber;
+      const matchColumn = FspAttributes.phoneNumber;
       // construct reconciliation-file here
       const reconciliationData = [
         {

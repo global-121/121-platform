@@ -1,5 +1,5 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
@@ -22,8 +22,7 @@ describe('Send custom message with placeholders', () => {
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',
-    programFinancialServiceProviderConfigurationName:
-      Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    programFspConfigurationName: Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
     maxPayments: 2,
     paymentCountRemaining: 2,
@@ -41,7 +40,7 @@ describe('Send custom message with placeholders', () => {
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{programFinancialServiceProviderConfigurationLabel}} and {{fullName}} and {{paymentCountRemaining}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{programFspConfigurationLabel}} and {{fullName}} and {{paymentCountRemaining}}';
 
     // Act
     await sendMessage(
@@ -74,12 +73,11 @@ describe('Send custom message with placeholders', () => {
       new RegExp('{{paymentAmountMultiplier}}', 'g'),
       String(registrationAh.paymentAmountMultiplier),
     );
-    const labelInPreferredLanguage =
-      getFinancialServiceProviderSettingByNameOrThrow(
-        Fsps.intersolveVoucherPaper,
-      ).defaultLabel[registrationAh.preferredLanguage];
+    const labelInPreferredLanguage = getFspSettingByNameOrThrow(
+      Fsps.intersolveVoucherPaper,
+    ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
-      new RegExp('{{programFinancialServiceProviderConfigurationLabel}}', 'g'),
+      new RegExp('{{programFspConfigurationLabel}}', 'g'),
       labelInPreferredLanguage!,
     );
     processedMessage = processedMessage.replace(

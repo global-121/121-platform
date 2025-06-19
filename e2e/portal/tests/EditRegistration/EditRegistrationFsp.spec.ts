@@ -61,9 +61,8 @@ test('[35234] Edit: FSP', async ({ page }) => {
   // Act
   // Change FSP from dropdown selection and fill in all the required fields
   await personalInformationPage.selectDropdownOption({
-    dropdownIdName: 'programFinancialServiceProviderConfigurationName',
-    dropdownLabel:
-      dropdownInputs.programFinancialServiceProviderConfigurationName.fieldName,
+    dropdownIdName: 'programFspConfigurationName',
+    dropdownLabel: dropdownInputs.programFspConfigurationName.fieldName,
     option: 'Visa debit card',
   });
   // Fill in all the required fields
@@ -86,8 +85,7 @@ test('[35234] Edit: FSP', async ({ page }) => {
   await personalInformationPage.saveChanges();
   // Assert
   await personalInformationPage.validatePersonalInformationField({
-    fieldName:
-      dropdownInputs.programFinancialServiceProviderConfigurationName.fieldName,
+    fieldName: dropdownInputs.programFspConfigurationName.fieldName,
     fieldValue: 'Visa debit card',
   });
 });

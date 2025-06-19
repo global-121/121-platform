@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
 
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
@@ -768,13 +768,10 @@ export class RegistrationsInputValidator {
     // Otherwise, check the required attributes for the original registration that is in the database
 
     const relevantFspConfigName =
-      row[
-        GenericRegistrationAttributes
-          .programFinancialServiceProviderConfigurationName
-      ] ??
-      originalRegistration?.programFinancialServiceProviderConfigurationName;
+      row[GenericRegistrationAttributes.programFspConfigurationName] ??
+      originalRegistration?.programFspConfigurationName;
     if (!relevantFspConfigName) {
-      // If the programFinancialServiceProviderConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
+      // If the programFspConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
       // Errors will be thrown in a different validation step
       return [];
     }
@@ -798,14 +795,9 @@ export class RegistrationsInputValidator {
         }
       }
 
-      // If the programFinancialServiceProviderConfigurationName being updated / set in this request
+      // If the programFspConfigurationName being updated / set in this request
       // check if a combination orignal registration and new row has all required attributes
-      if (
-        row[
-          GenericRegistrationAttributes
-            .programFinancialServiceProviderConfigurationName
-        ]
-      ) {
+      if (row[GenericRegistrationAttributes.programFspConfigurationName]) {
         // Check if the required attributes are present in the row
         if (
           !this.isRequiredAttributeInObject(attribute, row) &&
@@ -845,9 +837,7 @@ export class RegistrationsInputValidator {
       (programFspConfig) =>
         programFspConfig.name === programFspConfigurationName,
     )?.fspName;
-    const foundFsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-      (fsp) => fsp.name === fspName,
-    );
+    const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === fspName);
     if (!foundFsp) {
       return [];
     }

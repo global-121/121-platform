@@ -8,12 +8,12 @@ import {
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 
 const programId = 1;
 const mockProgramFspConfigPropertyEntity =
@@ -33,19 +33,18 @@ mockProgramFspConfigEntity.label = { en: 'Test Label' };
 mockProgramFspConfigEntity.properties = [mockProgramFspConfigPropertyEntity];
 mockProgramFspConfigEntity.registrations = [];
 
-const validPropertyDto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
-  {
-    name: FspConfigurationProperties.brandCode,
-    value: '123',
-  };
+const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
+  name: FspConfigurationProperties.brandCode,
+  value: '123',
+};
 
 // Declaring mocks here so they are accesble through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
 let mockTransactionScopedRepository;
 
-describe('ProgramFinancialServiceProviderConfigurationsService', () => {
-  let service: ProgramFinancialServiceProviderConfigurationsService;
+describe('ProgramFspConfigurationsService', () => {
+  let service: ProgramFspConfigurationsService;
 
   beforeEach(async () => {
     mockProgramFspConfigurationRepository = {
@@ -95,10 +94,10 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
     mockTransactionScopedRepository = {
       count: jest.fn().mockImplementation((criteria) => {
-        const programFinancialServiceProviderConfigurationIdOfWhere =
-          criteria.where.programFinancialServiceProviderConfigurationId._value;
+        const programFspConfigurationIdOfWhere =
+          criteria.where.programFspConfigurationId._value;
 
-        if (programFinancialServiceProviderConfigurationIdOfWhere === 1) {
+        if (programFspConfigurationIdOfWhere === 1) {
           return 0;
         }
         return 1;
@@ -107,7 +106,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
     const moduleRef = await Test.createTestingModule({
       providers: [
-        ProgramFinancialServiceProviderConfigurationsService,
+        ProgramFspConfigurationsService,
         {
           provide: getRepositoryToken(ProgramFspConfigurationEntity),
           useValue: mockProgramFspConfigurationRepository,
@@ -123,10 +122,9 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
       ],
     }).compile();
 
-    service =
-      moduleRef.get<ProgramFinancialServiceProviderConfigurationsService>(
-        ProgramFinancialServiceProviderConfigurationsService,
-      );
+    service = moduleRef.get<ProgramFspConfigurationsService>(
+      ProgramFspConfigurationsService,
+    );
   });
 
   describe('findByProgramId', () => {
@@ -143,9 +141,9 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
   });
 
   describe('validateAndCreate', () => {
-    const createDto: CreateProgramFinancialServiceProviderConfigurationDto = {
+    const createDto: CreateProgramFspConfigurationDto = {
       name: 'Test Configuration',
-      financialServiceProviderName: Fsps.intersolveVisa,
+      fspName: Fsps.intersolveVisa,
       label: { en: 'Test Label' },
       properties: [
         {
@@ -249,7 +247,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
 
   describe('update', () => {
     it('should successfully update the configuration', async () => {
-      const updateDto: UpdateProgramFinancialServiceProviderConfigurationDto = {
+      const updateDto: UpdateProgramFspConfigurationDto = {
         label: { en: 'Updated Label' },
         properties: [],
       };
@@ -276,7 +274,7 @@ describe('ProgramFinancialServiceProviderConfigurationsService', () => {
     });
 
     it('should throw an exception if the configuration does not exist', async () => {
-      const updateDto: UpdateProgramFinancialServiceProviderConfigurationDto = {
+      const updateDto: UpdateProgramFspConfigurationDto = {
         label: { en: 'Updated Label' },
         properties: [],
       };

@@ -11,9 +11,9 @@ export interface GetAuditedTransactionDto {
   amount: number;
   errorMessage?: string;
   customData?: string;
-  programFinancialServiceProviderConfigurationLabel: LocalizedString;
-  programFinancialServiceProviderConfigurationName: string;
-  financialServiceProviderName: Fsps;
+  programFspConfigurationLabel: LocalizedString;
+  programFspConfigurationName: string;
+  fspName: Fsps;
   fspIntegrationType: string;
   userId: number;
   username: string;

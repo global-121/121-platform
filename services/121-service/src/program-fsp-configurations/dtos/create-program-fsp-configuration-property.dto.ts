@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-export class CreateProgramFinancialServiceProviderConfigurationPropertyDto {
+export class CreateProgramFspConfigurationPropertyDto {
   @ApiProperty({
     example: FspConfigurationProperties.username,
   })

@@ -53,7 +53,7 @@ describe('Load PA table', () => {
         referenceId: registrationOCW1.referenceId,
         paymentAmountMultiplier: 1,
         preferredLanguage: registrationOCW1.preferredLanguage,
-        programFinancialServiceProviderConfigurationName: Fsps.intersolveVisa,
+        programFspConfigurationName: Fsps.intersolveVisa,
       };
       const notExpectedValueObject = {
         fullName: registrationOCW1.fullName,

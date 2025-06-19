@@ -84,8 +84,8 @@ test('[34689] User can view the registration data of registration that has only 
 }) => {
   const registrationWithOnlyRequiredData = {
     referenceId: registrationWesteros4.referenceId,
-    programFinancialServiceProviderConfigurationName:
-      registrationWesteros4.programFinancialServiceProviderConfigurationName,
+    programFspConfigurationName:
+      registrationWesteros4.programFspConfigurationName,
     phoneNumber: registrationWesteros4.phoneNumber,
     house: registrationWesteros4.house,
     preferredLanguage: registrationWesteros4.preferredLanguage,

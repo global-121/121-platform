@@ -53,9 +53,7 @@ export class RegistrationMenuComponent {
       label: $localize`:@@page-title-project-registrations-debit-cards:Debit cards`,
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationDebitCards}`,
       icon: 'pi pi-credit-card',
-      visible:
-        this.registration.data()?.financialServiceProviderName ===
-        Fsps.intersolveVisa,
+      visible: this.registration.data()?.fspName === Fsps.intersolveVisa,
     },
   ]);
 }
