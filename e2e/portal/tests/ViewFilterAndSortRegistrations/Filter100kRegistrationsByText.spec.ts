@@ -84,7 +84,7 @@ test('[36750] Filter the table with 100k registrations', async ({ page }) => {
       selection: visaFsp,
     });
 
-    await page.waitForTimeout(1000); // Wait for the table to load under big load
+    await page.waitForTimeout(2000); // Wait for the table to load under big load
     // Validate the first record in the table
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     console.log('registrationName: ', registrationName);
