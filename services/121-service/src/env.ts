@@ -157,6 +157,9 @@ export const env = createEnv({
       .refine((value) => !value.endsWith('/'))
       .optional(),
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
+    INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION: z
+      .stringbool()
+      .default(false),
 
     // FSP: Commercial Bank of Ethiopia (CBE)
     MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
