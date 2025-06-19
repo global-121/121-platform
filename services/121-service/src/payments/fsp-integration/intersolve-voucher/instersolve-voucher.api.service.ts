@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { IntersolveCancelTransactionByRefPosResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveGetCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
@@ -47,7 +48,7 @@ export class IntersolveVoucherApiService {
       payload,
       IntersolveVoucherSoapElements.IssueCard,
       ['EAN'],
-      process.env.INTERSOLVE_EAN!,
+      env.INTERSOLVE_EAN,
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -58,19 +59,19 @@ export class IntersolveVoucherApiService {
 
     const intersolveRequest = new IntersolveIssueVoucherRequestEntity();
     intersolveRequest.refPos = refPos;
-    intersolveRequest.EAN = process.env.INTERSOLVE_EAN!;
+    intersolveRequest.EAN = env.INTERSOLVE_EAN;
     intersolveRequest.value = amount;
 
     let result = new IntersolveIssueCardResponse();
     try {
-      const responseBody = !!process.env.MOCK_INTERSOLVE
+      const responseBody = env.MOCK_INTERSOLVE
         ? await this.intersolveMock.post(payload)
         : await this.soapService.post(
             payload,
             IntersolveVoucherSoapElements.LoyaltyHeader,
             username,
             password,
-            process.env.INTERSOLVE_URL!,
+            env.INTERSOLVE_URL,
           );
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
@@ -120,14 +121,14 @@ export class IntersolveVoucherApiService {
       pin,
     );
 
-    const responseBody = !!process.env.MOCK_INTERSOLVE
+    const responseBody = env.MOCK_INTERSOLVE
       ? await this.intersolveMock.post(payload)
       : await this.soapService.post(
           payload,
           IntersolveVoucherSoapElements.LoyaltyHeader,
           username,
           password,
-          process.env.INTERSOLVE_URL!,
+          env.INTERSOLVE_URL,
         );
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
@@ -180,7 +181,7 @@ export class IntersolveVoucherApiService {
       payload,
       IntersolveVoucherSoapElements.CancelTransactionByRefPos,
       ['EAN'],
-      process.env.INTERSOLVE_EAN!,
+      env.INTERSOLVE_EAN,
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -194,7 +195,7 @@ export class IntersolveVoucherApiService {
       IntersolveVoucherSoapElements.LoyaltyHeader,
       username,
       password,
-      process.env.INTERSOLVE_URL!,
+      env.INTERSOLVE_URL,
     );
     const result = {
       resultCode:

@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
@@ -279,7 +280,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode,
       activate: true, // Parent Wallets are always created activated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: env.MOCK_INTERSOLVE
         ? intersolveVisaCustomer.holderId
         : undefined,
     });
@@ -341,7 +342,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode,
       activate: false, // Child Wallets are always created deactivated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: env.MOCK_INTERSOLVE
         ? intersolveVisaParentWallet.intersolveVisaCustomer.holderId
         : undefined,
     });
@@ -490,7 +491,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
 
     // Our mock service always return that a token is not blocked
     // However when we are using the mock service, we should not update the token status else it is always false when you refresh the registration page
-    if (!process.env.MOCK_INTERSOLVE) {
+    if (!env.MOCK_INTERSOLVE) {
       intersolveVisaChildWallet.isTokenBlocked = getTokenResult.blocked;
     }
     intersolveVisaChildWallet.lastExternalUpdate = new Date();
@@ -557,7 +558,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
     const issueTokenResult = await this.intersolveVisaApiService.issueToken({
       brandCode: input.brandCode,
       activate: false, // Child Wallets are always created deactivated
-      reference: process.env.MOCK_INTERSOLVE
+      reference: env.MOCK_INTERSOLVE
         ? intersolveVisaCustomer.holderId
         : undefined,
     });
