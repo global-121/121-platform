@@ -4,22 +4,25 @@ import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
 export const env = createEnv({
-  server: {
-    /**
-     * See explanations for each variable in `/services/.env.example`
-     * This file follows the same order/structure.
-     *
-     * Guidelines:
-     * - Use as many _specific_ requirements as possible, like `.min(8)`, `.email()`, `.url()`, etc.
-     *   See: https://zod.dev/api
-     * - Use `.optional()` if the service should be able start-up without a value (So not for critical features).
-     * - Use `.default(value)` if there is a safe, generic value available that is safe-to-be-forgotten-to-make-unique in production.
-     * - If a value IS required for the service to start-up,
-     *   and MUST be set to a unique/proper value in production (and thus report an error on start-up),
-     *   then use a hard-coded (development/test-only) value in `.env.example`, do not use `.default()`.
-     *
-     */
+  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
+  runtimeEnv: process.env,
+  emptyStringAsUndefined: true,
 
+  /**
+   * See explanations for each variable in `/services/.env.example`
+   * This file follows the same order/structure.
+   *
+   * Guidelines:
+   * - Use as many _specific_ requirements as possible, like `.min(8)`, `.email()`, `.url()`, etc.
+   *   See: https://zod.dev/api
+   * - Use `.optional()` if the service should be able start-up without a value (So not for critical features).
+   * - Use `.default(value)` if there is a safe, generic value available that is safe-to-be-forgotten-to-make-unique in production.
+   * - If a value IS required for the service to start-up,
+   *   and MUST be set to a unique/proper value in production (and thus report an error on start-up),
+   *   then use a hard-coded (development/test-only) value in `.env.example`, do not use `.default()`.
+   *
+   */
+  server: {
     // Environment/Instance specifics
     ENV_NAME: z.string().optional(),
     ENV_ICON: z.url().or(z.string().startsWith('data:')).optional(),
@@ -180,8 +183,4 @@ export const env = createEnv({
   // We don't use client-side env variables in the same way as in the services
   clientPrefix: '',
   client: {},
-
-  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
-  runtimeEnv: process.env,
-  emptyStringAsUndefined: true,
 });
