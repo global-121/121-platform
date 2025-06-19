@@ -30,6 +30,8 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   const programIdOcw = 3;
 
   let accessToken: string;
+  const referenceId1 = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
+  const referenceId2 = '01dc9451-1273-484c-b2e8-ae21b51a96ab';
 
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple);
@@ -63,7 +65,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     // Registration before patch
     const searchByReferenceIdBeforePatchPa1 =
       await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId1,
         programIdOcw,
         accessToken,
       );
@@ -71,7 +73,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdBeforePatchPa2 =
       await searchRegistrationByReferenceId(
-        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId2,
         programIdOcw,
         accessToken,
       );
@@ -89,11 +91,11 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     await waitForBulkRegistrationChanges(
       [
         {
-          referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+          referenceId: referenceId1,
           expectedPatch: registrationDataThatWillChangePa1,
         },
         {
-          referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+          referenceId: referenceId2,
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
@@ -103,7 +105,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId1,
         programIdOcw,
         accessToken,
       );
@@ -112,7 +114,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdAfterPatchPa2 =
       await searchRegistrationByReferenceId(
-        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId2,
         programIdOcw,
         accessToken,
       );
@@ -163,7 +165,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     // Registration before patch
     const searchByReferenceIdBeforePatchPa1 =
       await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId1,
         programIdOcw,
         accessToken,
       );
@@ -171,7 +173,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdBeforePatchPa2 =
       await searchRegistrationByReferenceId(
-        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId2,
         programIdOcw,
         accessToken,
       );
@@ -189,11 +191,11 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     await waitForBulkRegistrationChanges(
       [
         {
-          referenceId: '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+          referenceId: referenceId1,
           expectedPatch: registrationDataThatWillChangePa1,
         },
         {
-          referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+          referenceId: referenceId2,
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
@@ -203,7 +205,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
-        '00dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId1,
         programIdOcw,
         accessToken,
       );
@@ -212,7 +214,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
     const searchByReferenceIdAfterPatchPa2 =
       await searchRegistrationByReferenceId(
-        '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+        referenceId2,
         programIdOcw,
         accessToken,
       );
