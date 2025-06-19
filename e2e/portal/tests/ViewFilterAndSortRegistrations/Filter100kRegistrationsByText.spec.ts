@@ -60,7 +60,8 @@ test('[36750] Filter the table with 100k registrations', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act & Assert
   await test.step('Filter Name column by text', async () => {
-    await page.waitForTimeout(3000); // Wait for the table to load under big load
+    await page.waitForTimeout(2000); // Wait for the table to load under big load
+    await page.reload();
     await tableComponent.filterColumnByText('Name', 'Jan Janssen');
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jan Janssen');
