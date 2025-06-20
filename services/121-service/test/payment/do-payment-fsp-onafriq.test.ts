@@ -5,6 +5,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
@@ -144,7 +145,7 @@ describe('Do payment to 1 PA', () => {
 
   it('should give error via callback based on magic phonenumber', async () => {
     // Arrange
-    registrationOnafriq.phoneNumber = '24300000001'; // this magic number is configured in mock to return an error on callback
+    registrationOnafriq.phoneNumber = '24300000002'; // this magic number is configured in mock to return an error on callback
     await importRegistrations(programId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
       programId,
@@ -195,7 +196,9 @@ describe('Do payment to 1 PA', () => {
 
   it('should not update transaction on a `duplicate thirdPartyTransId error` API response', async () => {
     // Arrange
-    registrationOnafriq.phoneNumber = '24300000002'; // this magic number is configured in mock to return an error on callback
+    // NOTE 1: we use a magic phone number here that is configured in the mock to return a duplicate thirdPartyTransId error on request.
+    // We use this as we cannot actually easily test a duplicate thirdPartyTransId error in the mock.
+    registrationOnafriq.phoneNumber = '24300000001';
     await importRegistrations(programId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
       programId,
@@ -214,19 +217,11 @@ describe('Do payment to 1 PA', () => {
       accessToken,
     });
 
-    // wait for non-waiting transactions only, to make sure callback came in
-    await waitForPaymentTransactionsToComplete({
-      programId,
-      paymentReferenceIds,
-      accessToken,
-      maxWaitTimeMs: 4_000,
-      completeStatusses: [
-        TransactionStatusEnum.success,
-        TransactionStatusEnum.error,
-      ],
-    });
-
     // Assert
+    // NOTE 2: we cannot wait for transactions to have a certain status, because we want to test that the transaction stays on 'waiting'.
+    // We also assert that no callback comes in, so we must give some time for the callback to potentially come in, as the assertion is not valuable otherwise.
+    await waitFor(1_000);
+
     const getTransactionsBody = await getTransactions({
       programId,
       paymentNr: payment,
@@ -238,9 +233,10 @@ describe('Do payment to 1 PA', () => {
     expect(doPaymentResponse.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
+    // NOTE 3: this is the critical assertion, as in case of a duplicate thirdPartyTransId error, the transaction should not be updated to an error status.
+    // This test is not following the real-life use case of making 2 calls, but does test the different handling in the code of this type of error.
     expect(getTransactionsBody.body[0].status).toBe(
-      TransactionStatusEnum.error,
+      TransactionStatusEnum.waiting,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
   });
 });
