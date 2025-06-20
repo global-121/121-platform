@@ -77,20 +77,21 @@ export class OnafriqApiHelperService {
   public processCallServiceResponse(
     callServiceResponse: CallServiceResponseOnafriqApiDto,
   ): CallServiceResult {
-    // NOTE: we assume in the below there is only one transaction per batch (which is the case)
-    if (!callServiceResponse?.data) {
+    // NOTE: we assume in the below there is only one transaction per batch (which is how we make the request)
+    // NOTE: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligining with the status per transaction. We choose to focus on the information on transaction-level.
+    const transResponse =
+      callServiceResponse?.data?.details?.transResponse?.[0];
+    const status = transResponse?.status;
+    if (!status) {
       return {
         status: OnafriqApiResponseStatusType.genericError,
-        errorMessage: 'No response data from Onafriq API',
+        errorMessage: 'No (correct) response data from Onafriq API',
       };
     }
 
-    const transResponse = callServiceResponse.data.details?.transResponse[0];
-    const statusDetails = transResponse?.status;
     // NOTE: there is unfortunately no specific error code for this, so must be done on messageDetail
     if (
-      statusDetails?.messageDetail ===
-      'Transaction already exist with given ThirdParty'
+      status.messageDetail === 'Transaction already exist with given ThirdParty'
     ) {
       return {
         status: OnafriqApiResponseStatusType.duplicateThirdPartyTransIdError,
@@ -98,12 +99,15 @@ export class OnafriqApiHelperService {
       };
     }
 
-    if (callServiceResponse.data.noTxRejected === 1) {
+    // 101 is the generic code for all errors, unlike 100 for success
+    if (status.code === '101') {
       return {
         status: OnafriqApiResponseStatusType.genericError,
-        errorMessage: `Error: ${statusDetails?.code} - ${statusDetails?.message} - ${statusDetails?.messageDetail}`,
+        errorMessage: `Error: ${status?.code} - ${status?.message} - ${status?.messageDetail}`,
       };
     }
+
+    // If status exists and does not have code 101, this implies success
     return { status: OnafriqApiResponseStatusType.success };
   }
 }
