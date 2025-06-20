@@ -60,7 +60,7 @@ abstract class RegistrationBasePage extends BasePage {
     await this.page.getByRole('button', { name: 'Actions' }).click();
   }
 
-  async inititateAction(action: string) {
+  async initiateAction(action: string) {
     await this.clickActionDropdown();
     await this.page.getByRole('menuitem', { name: action }).click();
   }
