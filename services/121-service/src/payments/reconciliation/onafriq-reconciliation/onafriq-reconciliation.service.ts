@@ -49,7 +49,7 @@ export class OnafriqReconciliationService {
   public async processOnafriqTransactionCallbackJob(
     onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto,
   ): Promise<void> {
-    const onafriqTransaction =
+    const { transactionId } =
       await this.onafriqTransactionScopedRepository.findOneOrFail({
         where: {
           thirdPartyTransId: Equal(
@@ -76,7 +76,7 @@ export class OnafriqReconciliationService {
     }
 
     await this.transactionScopedRepository.update(
-      { id: onafriqTransaction.transactionId },
+      { id: transactionId },
       updatedTransactionStatusAndErrorMessage,
     );
   }

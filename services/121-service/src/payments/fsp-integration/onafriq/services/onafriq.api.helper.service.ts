@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { CallServiceRequestOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-request-onafriq-api.dto';
 import { CallServiceResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-response-onafriq-api.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 
 @Injectable()
 export class OnafriqApiHelperService {
@@ -38,22 +39,16 @@ export class OnafriqApiHelperService {
             amount: transferAmount,
             currencyCode,
           },
-          sendFee: {
-            // ##TODO: sendFee should not be needed with amountType = 2, so can be removed
-            amount: 0,
-            currencyCode,
-          },
           sender: {
-            // ##TODO: this can be anything for now in sandbox, just fill in something
-            msisdn: '1234567890', // ##TODO
+            // NOTE: this can be anything for now in sandbox. Find out production config. See AB#36783
+            msisdn: '1234567890',
             fromCountry: countryCode,
             name: 'Red Cross DRC',
             surname: 'Red Cross DRC',
+            dateOfBirth: '1980-01-01',
             document: {
-              idNumber: '123456789', // ##TODO
-              idType: 'ID1', // ##TODO
-              idCountry: countryCode, // ##TODO
-              idExpiry: '2025-12-31', // ##TODO: conditional. on what?
+              idNumber: '123456789',
+              idType: 'ID1',
             },
           },
           recipient: {
@@ -61,15 +56,9 @@ export class OnafriqApiHelperService {
             toCountry: countryCode,
             name: firstName,
             surname: lastName,
-            address: 'Recipient Address', // ##TODO: conditional. on what?
-            city: 'Kinshasa', // ##TODO: conditional. on what?
-            destinationAccount: {
-              accountNumber: '1234567890', // ##TODO: conditional. on what?
-            },
           },
           thirdPartyTransId,
-          purposeOfTransfer: 'PT3', // ##TODO: PT3 = BUSINESS PAYMENT. Is this correct?
-          sourceOfFunds: 'SF6', // ##TODO: SF6 = OTHER (see https://developers.onafriq.com/docs/remittance-apis-v1/ltkyfhltgh35s-async-api-methods). Is this correct? (And is this needed? It says 'conditional'.)
+          purposeOfTransfer: 'PT3',
         },
       ],
     };
@@ -87,12 +76,8 @@ export class OnafriqApiHelperService {
 
   public processCallServiceResponse(
     callServiceResponse: CallServiceResponseOnafriqApiDto,
-  ): {
-    status: OnafriqApiResponseStatusType;
-    errorMessage?: string;
-  } {
+  ): CallServiceResult {
     // NOTE: we assume in the below there is only one transaction per batch (which is the case)
-    // ##TODO: check/scrutinize possible error scenarios a lot more
     if (!callServiceResponse?.data) {
       return {
         status: OnafriqApiResponseStatusType.genericError,
@@ -102,6 +87,7 @@ export class OnafriqApiHelperService {
 
     const transResponse = callServiceResponse.data.details?.transResponse[0];
     const statusDetails = transResponse?.status;
+    // NOTE: there is unfortunately no specific error code for this, so must be done on messageDetail
     if (
       statusDetails?.messageDetail ===
       'Transaction already exist with given ThirdParty'

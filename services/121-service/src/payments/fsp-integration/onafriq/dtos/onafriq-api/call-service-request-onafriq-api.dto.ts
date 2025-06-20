@@ -1,4 +1,4 @@
-// ##TODO: limit to only the fields that are actually used in the request, and remove the rest (once clear). Same for other dto's.
+// NOTE: this is limited to only the fields that are actually used in the request. When expanding to other destination countries other fields may be required.
 export class CallServiceRequestOnafriqApiDto {
   public corporateCode: string;
   public password: string;
@@ -13,27 +13,15 @@ export class CallServiceRequestOnafriqApiDto {
       amount: number;
       currencyCode: string;
     };
-    sendFee: {
-      amount: number;
-      currencyCode: string;
-    };
     sender: {
       msisdn: string; // sender's phone number
       fromCountry: string;
       name: string;
       surname: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      postalCode?: string;
-      email?: string;
-      dateOfBirth?: string;
-      placeOfBirth?: string;
+      dateOfBirth: string;
       document: {
         idNumber: string;
         idType: string;
-        idCountry: string;
-        idExpiry?: string;
       };
     };
     recipient: {
@@ -41,20 +29,8 @@ export class CallServiceRequestOnafriqApiDto {
       toCountry: string;
       name: string;
       surname: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      postalCode?: string;
-      email?: string;
-      dateOfBirth?: string;
-      document?: string;
-      destinationAccount?: {
-        accountNumber: string;
-      };
     };
     thirdPartyTransId: string; // unique transaction ID > used as idempotency key
-    reference?: string; // optional field, can be used for potential offline reconciliation, but is for now not used.
     purposeOfTransfer: string;
-    sourceOfFunds: string;
   }[];
 }

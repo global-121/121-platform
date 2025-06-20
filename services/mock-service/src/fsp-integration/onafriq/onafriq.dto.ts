@@ -1,4 +1,4 @@
-// ##TODO: limit to only the fields that are actually used in the request, and remove the rest (once clear). Same for other dto's.
+// NOTE: this is limited to only the fields that are actually used in the request. When expanding to other destination countries other fields may be required.
 export class OnafriqCallServicePayload {
   public corporateCode: string;
   public password: string;
@@ -13,27 +13,15 @@ export class OnafriqCallServicePayload {
       amount: number;
       currencyCode: string;
     };
-    sendFee: {
-      amount: number;
-      currencyCode: string;
-    };
     sender: {
       msisdn: string; // sender's phone number
       fromCountry: string;
       name: string;
       surname: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      postalCode?: string;
-      email?: string;
-      dateOfBirth?: string;
-      placeOfBirth?: string;
+      dateOfBirth: string;
       document: {
         idNumber: string;
         idType: string;
-        idCountry: string;
-        idExpiry?: string;
       };
     };
     recipient: {
@@ -41,21 +29,9 @@ export class OnafriqCallServicePayload {
       toCountry: string;
       name: string;
       surname: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      postalCode?: string;
-      email?: string;
-      dateOfBirth?: string;
-      document?: string;
-      destinationAccount?: {
-        accountNumber: string;
-      };
     };
     thirdPartyTransId: string; // unique transaction ID > used as idempotency key
-    reference?: string; // optional field, can be used for potential offline reconciliation, but is for now not used.
     purposeOfTransfer: string;
-    sourceOfFunds: string;
   }[];
 }
 
@@ -78,15 +54,8 @@ export class OnafriqCallServiceResponseBodyDto {
 
 export class OnafriqCallbackResponseBodyDto {
   thirdPartyTransId: string;
-  mfsTransId: string;
-  e_trans_id: string;
-  fxRate: number;
   status: {
     code: string;
     message: string;
-  };
-  receiveAmount: {
-    amount: number;
-    currencyCode: string;
   };
 }
