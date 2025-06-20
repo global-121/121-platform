@@ -10,6 +10,26 @@ describe('AirtelService', () => {
   let service: AirtelService;
   let apiService: AirtelApiService;
 
+  const responseSuccess = {
+    result: AirtelDisbursementResultEnum.success,
+    message: '',
+  };
+
+  const responseFail = {
+    result: AirtelDisbursementResultEnum.fail as const,
+    message: 'mock failure message',
+  };
+
+  const responseAmbiguous = {
+    result: AirtelDisbursementResultEnum.ambiguous,
+    message: 'mock ambiguous message',
+  };
+
+  const responseDuplicate = {
+    result: AirtelDisbursementResultEnum.duplicate,
+    message: 'mock duplicate message',
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -17,7 +37,8 @@ describe('AirtelService', () => {
         {
           provide: AirtelApiService,
           useValue: {
-            disburse: jest.fn(),
+            disburse: jest.fn().mockResolvedValue(responseSuccess),
+            enquire: jest.fn().mockResolvedValue(responseSuccess),
           },
         },
         {
@@ -44,12 +65,6 @@ describe('AirtelService', () => {
 
     // Happy path
     it('should send a disbursement request', async () => {
-      // Arrange
-      jest.spyOn(apiService, 'disburse').mockResolvedValue({
-        result: AirtelDisbursementResultEnum.success,
-        message: '',
-      });
-
       // Act
       const result = await service.attemptOrCheckDisbursement({
         airtelTransactionId,
@@ -73,15 +88,11 @@ describe('AirtelService', () => {
       );
     });
 
-    it('should throw an error if the phoneNumber has the wrong length', async () => {
+    it('should throw an AirtelError if the phoneNumber has the wrong length', async () => {
       // Arrange
-      jest.spyOn(apiService, 'disburse').mockResolvedValue({
-        result: AirtelDisbursementResultEnum.success,
-        message: '',
-      });
       const invalidPhoneNumber = '26012345'; // Too short
 
-      // Act & Assert
+      // Act
       let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
       try {
         await service.attemptOrCheckDisbursement({
@@ -94,10 +105,124 @@ describe('AirtelService', () => {
       } catch (e) {
         error = e;
       }
+
+      // Assert
       expect(error).toBeInstanceOf(AirtelError);
       expect(error.message).toMatchSnapshot();
       expect(error.type).toBe(AirtelDisbursementResultEnum.fail);
       expect(apiService.disburse).not.toHaveBeenCalled();
+    });
+
+    it('should throw an AirtelError if disburse returns fail', async () => {
+      // Arrange
+      jest.spyOn(apiService, 'disburse').mockResolvedValue(responseFail);
+
+      // Act
+      let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+      try {
+        await service.attemptOrCheckDisbursement({
+          airtelTransactionId,
+          phoneNumber,
+          currencyCode,
+          countryCode,
+          amount,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(AirtelError);
+      expect(error.message).toMatchSnapshot();
+      expect(error.type).toBe(AirtelDisbursementResultEnum.fail);
+    });
+
+    it('should throw an AirtelError if disburse returns ambiguous', async () => {
+      // Arrange
+      jest.spyOn(apiService, 'disburse').mockResolvedValue(responseAmbiguous);
+
+      // Act
+      let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+      try {
+        await service.attemptOrCheckDisbursement({
+          airtelTransactionId,
+          phoneNumber,
+          currencyCode,
+          countryCode,
+          amount,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      // Assert
+      expect(error).toBeInstanceOf(AirtelError);
+      expect(error.message).toMatchSnapshot();
+      expect(error.type).toBe(AirtelDisbursementResultEnum.ambiguous);
+    });
+
+    describe('when disburse call returns "duplicate"', () => {
+      beforeEach(() => {
+        // Overrides the one in the outer beforeEach.
+        jest.spyOn(apiService, 'disburse').mockResolvedValue(responseDuplicate);
+      });
+
+      it('should call enquire endpoint', async () => {
+        // Act
+        await service.attemptOrCheckDisbursement({
+          airtelTransactionId,
+          phoneNumber,
+          currencyCode,
+          countryCode,
+          amount,
+        });
+
+        // Assert
+        expect(apiService.enquire).toHaveBeenCalledWith(
+          expect.objectContaining({
+            airtelTransactionId,
+            countryCode,
+          }),
+        );
+      });
+
+      it('if enquire endpoint returns "succes" this should return undefined', async () => {
+        // Act
+        const result = await service.attemptOrCheckDisbursement({
+          airtelTransactionId,
+          phoneNumber,
+          currencyCode,
+          countryCode,
+          amount,
+        });
+
+        // Assert
+        expect(result).toEqual(undefined);
+      });
+
+      it('if enquire endpoint returns "fail" we should get an AirtelError', async () => {
+        // Arrange
+        jest.spyOn(apiService, 'enquire').mockResolvedValue(responseFail);
+
+        // Act
+        let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+        try {
+          await service.attemptOrCheckDisbursement({
+            airtelTransactionId,
+            phoneNumber,
+            currencyCode,
+            countryCode,
+            amount,
+          });
+        } catch (e) {
+          error = e;
+        }
+
+        // Assert
+        expect(error).toBeInstanceOf(AirtelError);
+        expect(error.message).toMatchSnapshot();
+        expect(error.type).toBe(AirtelDisbursementResultEnum.fail);
+      });
     });
   });
 });
