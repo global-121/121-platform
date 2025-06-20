@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
 
-import { SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
+import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -11,18 +11,18 @@ import {
 import { PaymentCallbackQueueNames } from '@121-service/src/queues-registry/enum/payment-callback-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(PaymentCallbackQueueNames.safaricomTransfer)
-export class TransferCallbackJobProcessorSafaricom {
+@Processor(PaymentCallbackQueueNames.onafriqTransaction)
+export class TransactionCallbackJobProcessorOnafriq {
   constructor(
-    private readonly safaricomReconciliationService: SafaricomReconciliationService,
+    private readonly onafriqReconciliationService: OnafriqReconciliationService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
   @Process(JobNames.default)
-  async handleSafaricomTransferCallbackJob(job: Job): Promise<void> {
+  async handleOnafriqTransferCallbackJob(job: Job): Promise<void> {
     try {
-      await this.safaricomReconciliationService.processSafaricomTransferCallbackJob(
+      await this.onafriqReconciliationService.processOnafriqTransactionCallbackJob(
         job.data,
       );
     } catch (error) {

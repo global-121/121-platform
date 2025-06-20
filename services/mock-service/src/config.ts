@@ -38,6 +38,7 @@ export const API_PATHS = {
     'financial-service-providers/safaricom/transfer-callback',
   safaricomTimeoutCallback:
     'financial-service-providers/safaricom/timeout-callback',
+  onafriqCallback: 'financial-service-providers/onafriq/callback',
 };
 
 export const EXTERNAL_API_ROOT = `${

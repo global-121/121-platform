@@ -187,4 +187,27 @@ export const FINANCIAL_SERVICE_PROVIDER_SETTINGS: FinancialServiceProviderDto[] 
         },
       ],
     },
+    {
+      name: FinancialServiceProviders.onafriq,
+      integrationType: FinancialServiceProviderIntegrationType.api,
+      defaultLabel: {
+        en: 'Onafriq',
+      },
+      notifyOnTransaction: false,
+      attributes: [
+        {
+          name: FinancialServiceProviderAttributes.phoneNumber,
+          isRequired: true,
+        },
+        {
+          name: FinancialServiceProviderAttributes.firstName,
+          isRequired: true,
+        },
+        {
+          name: FinancialServiceProviderAttributes.lastName,
+          isRequired: true,
+        },
+      ],
+      configurationProperties: [],
+    },
   ];
