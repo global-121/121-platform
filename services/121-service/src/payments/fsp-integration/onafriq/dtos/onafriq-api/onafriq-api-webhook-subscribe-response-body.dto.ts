@@ -1,6 +1,6 @@
-export interface WebhookSubscribeResponseOnafriqApiDto {
-  readonly status: number; // e.g. 200
-  readonly statusText: string; // e.g. "OK"
+export interface OnafriqApiWebhookSubscribeResponseBody {
+  readonly status: number;
+  readonly statusText: string;
   readonly data: {
     readonly message: number;
     readonly data: {
