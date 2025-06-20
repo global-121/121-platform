@@ -55,7 +55,7 @@ test('[34649] User can initiate registration status changes from registration pa
     });
 
     await test.step(`Initiate action: ${actionName}`, async () => {
-      await activityLogPage.inititateAction(actionName);
+      await activityLogPage.initiateAction(actionName);
 
       const dialog = page.getByRole('dialog');
       await expect(dialog).toBeVisible();
@@ -86,7 +86,7 @@ test('[34650] User can open add note sidebar from action menu', async ({
   });
 
   await test.step(`Initiate action: ${actionName}`, async () => {
-    await activityLogPage.inititateAction(actionName);
+    await activityLogPage.initiateAction(actionName);
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');
     const sidebarDescription = page.getByText(/You are about to/);
@@ -111,7 +111,7 @@ test('[34651] User can open message dialog from action menu', async ({
   });
 
   await test.step(`Initiate action: ${actionName}`, async () => {
-    await activityLogPage.inititateAction(actionName);
+    await activityLogPage.initiateAction(actionName);
     await page.waitForLoadState('domcontentloaded');
     await page.waitForLoadState('networkidle');
 

@@ -61,7 +61,7 @@ test('[34664] Ignore duplicates', async ({ page }) => {
   });
 
   await test.step('Ignore duplication', async () => {
-    await registrationActivityLogPage.inititateAction('Ignore duplication');
+    await registrationActivityLogPage.initiateAction('Ignore duplication');
 
     const dialog = await registrationActivityLogPage.dialog;
 
