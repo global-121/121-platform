@@ -13,6 +13,7 @@
         [getActionData]="
           registrationsTable.getActionData.bind(registrationsTable)
         "
+        (actionComplete)="onActionComplete()"
       />
     }
     @if (canExport()) {

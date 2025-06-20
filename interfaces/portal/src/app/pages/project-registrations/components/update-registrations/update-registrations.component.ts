@@ -5,6 +5,7 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -70,6 +71,8 @@ type UpdateRegistrationsFormGroup =
 })
 export class UpdateRegistrationsComponent {
   readonly projectId = input.required<string>();
+  readonly updateSuccess = output();
+
   readonly dialogVisible = model<boolean>(false);
   readonly actionData = input<ActionDataWithPaginateQuery<Registration>>();
 
@@ -172,6 +175,8 @@ export class UpdateRegistrationsComponent {
       void this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
+      this.exportCSVFormGroup.reset();
+      this.updateRegistrationsFormGroup.reset();
       this.dialogVisible.set(false);
       this.toastService.showToast({
         summary: $localize`Updating registration(s)`,
@@ -185,6 +190,7 @@ export class UpdateRegistrationsComponent {
           projectId: this.projectId,
         });
       }, 500);
+      this.updateSuccess.emit();
     },
   }));
 
