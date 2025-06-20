@@ -48,22 +48,14 @@ export class OnafriqApiService {
       },
     ];
 
-    try {
-      const { status, statusText, data } =
-        await this.httpService.post<WebhookSubscribeResponseOnafriqApiDto>(
-          webhookSubscribeUrl,
-          payload,
-          headers,
-          DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
-        );
-      return { status, statusText, data };
-    } catch (error) {
-      console.error('Failed to subscribe to Onafriq webhook', error);
-      throw new OnafriqError(
-        `Error: ${error.message}`,
-        OnafriqApiResponseStatusType.genericError,
+    const { status, statusText, data } =
+      await this.httpService.post<WebhookSubscribeResponseOnafriqApiDto>(
+        webhookSubscribeUrl,
+        payload,
+        headers,
+        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
-    }
+    return { status, statusText, data };
   }
 
   // NOTE: this method-name aligns exactly with the name of the endpoint in the Onafriq API

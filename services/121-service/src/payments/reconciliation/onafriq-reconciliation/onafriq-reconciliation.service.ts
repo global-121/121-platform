@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { Equal } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
@@ -10,6 +11,7 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -54,11 +56,14 @@ export class OnafriqReconciliationService {
             onafriqTransactionCallbackJob.thirdPartyTransId,
           ),
         },
-        relations: ['transaction'],
+        select: {
+          transactionId: true,
+        },
       });
 
     // Prepare the transaction status based on statusCode from callback
-    let updatedTransactionStatusAndErrorMessage = {};
+    let updatedTransactionStatusAndErrorMessage: QueryDeepPartialEntity<TransactionEntity> =
+      {};
     if (onafriqTransactionCallbackJob.statusCode === 'MR101') {
       updatedTransactionStatusAndErrorMessage = {
         status: TransactionStatusEnum.success,
@@ -70,9 +75,8 @@ export class OnafriqReconciliationService {
       };
     }
 
-    // Update transaction status
     await this.transactionScopedRepository.update(
-      { id: onafriqTransaction.transaction.id },
+      { id: onafriqTransaction.transactionId },
       updatedTransactionStatusAndErrorMessage,
     );
   }
