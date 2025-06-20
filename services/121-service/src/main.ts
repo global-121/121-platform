@@ -19,11 +19,11 @@ import {
   APP_TITLE,
   APP_VERSION,
   DEBUG,
-  EXTERNAL_API,
   PORT,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
@@ -126,15 +126,6 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(ApplicationModule);
 
-  if (!process.env.REDIS_PREFIX) {
-    throw new Error('REDIS_PREFIX not set');
-  }
-
-  const notAllowedRegex = /[\0\n\r :]/;
-  if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
-    throw new Error('REDIS_PREFIX contains one or more not allowed characters');
-  }
-
   app.enableCors({
     origin: DEBUG,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -144,13 +135,13 @@ async function bootstrap(): Promise<void> {
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
 
-  if (!!process.env.REDIRECT_PORTAL_URL_HOST) {
+  if (!!env.REDIRECT_PORTAL_URL_HOST) {
     expressInstance.get(`/`, (__req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST!);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST);
     });
     expressInstance.get(`/portal*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST + newPath);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST + newPath);
     });
   }
 
@@ -161,7 +152,9 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(EXTERNAL_API.root)
+    .addServer(
+      DEBUG ? `http://localhost:${PORT}` : env.EXTERNAL_121_SERVICE_URL,
+    )
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {
@@ -238,14 +231,14 @@ async function bootstrap(): Promise<void> {
       logService.logError(new Error('Uncaught Exception: restarting'), true);
     }
 
-    // Trigger a reboot, as the app is in an unknown state.
+    // eslint-disable-next-line n/no-process-exit -- Trigger a reboot, as the app is in an unknown state.
     process.exit(1);
   });
 }
 
 void bootstrap();
 
-if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
+if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(env.APPLICATIONINSIGHTS_CONNECTION_STRING);
   appInsights.start();
 }

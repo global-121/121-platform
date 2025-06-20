@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import twilio from 'twilio';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
@@ -12,7 +13,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    if (process.env.MOCK_TWILIO) {
+    if (env.MOCK_TWILIO) {
       return next();
     }
 
@@ -28,12 +29,8 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       );
     }
 
-    if (!process.env.TWILIO_AUTHTOKEN) {
-      throw new Error('Twilio auth token not found');
-    }
-
     const validWhatsAppStatus = twilio.validateRequest(
-      process.env.TWILIO_AUTHTOKEN,
+      env.TWILIO_AUTHTOKEN,
       twilioSignature,
       EXTERNAL_API.whatsAppStatus,
       req.body,
@@ -43,7 +40,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validWhatsAppIncoming = twilio.validateRequest(
-      process.env.TWILIO_AUTHTOKEN,
+      env.TWILIO_AUTHTOKEN,
       twilioSignature,
       EXTERNAL_API.whatsAppIncoming,
       req.body,
@@ -53,7 +50,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validSms = twilio.validateRequest(
-      process.env.TWILIO_AUTHTOKEN,
+      env.TWILIO_AUTHTOKEN,
       twilioSignature,
       EXTERNAL_API.smsStatus,
       req.body,

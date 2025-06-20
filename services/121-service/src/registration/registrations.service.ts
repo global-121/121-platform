@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
@@ -618,7 +619,7 @@ export class RegistrationsService {
         FinancialServiceProviders.intersolveVisa,
       ).attributes.map((attr) => attr.name) as string[];
     if (
-      process.env.SYNC_WITH_THIRD_PARTIES &&
+      env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       intersolveVisaAttributeNames.includes(attribute)
     ) {
       await this.sendContactInformationToIntersolve(registration);
