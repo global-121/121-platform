@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { WebhookSubscribeResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/webhook-subscribe-response-onafriq-api.dto';
+import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 
 @UseGuards(AuthenticatedUserGuard)
@@ -26,7 +26,7 @@ export class OnafriqController {
   })
   @Post('financial-service-providers/onafriq/webhook/subscribe')
   public async subscribeWebhook(): Promise<
-    WebhookSubscribeResponseOnafriqApiDto | undefined
+    OnafriqApiWebhookSubscribeResponseBody | undefined
   > {
     return await this.onafriqService.subscribeWebhook();
   }

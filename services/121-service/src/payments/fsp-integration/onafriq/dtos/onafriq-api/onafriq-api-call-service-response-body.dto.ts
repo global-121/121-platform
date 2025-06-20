@@ -1,4 +1,4 @@
-export interface CallServiceResponseOnafriqApiDto {
+export interface OnafriqApiCallServiceResponseBody {
   readonly data: {
     readonly totalTxSent: number;
     readonly noTxAccepted: number;
@@ -13,6 +13,6 @@ export interface CallServiceResponseOnafriqApiDto {
         };
       }[];
     };
-    readonly timestamp: string; // e.g. "2019-12-18 07:50:26.771"
+    readonly timestamp: string;
   };
 }

@@ -1,10 +1,10 @@
 // NOTE: this is limited to only the fields that are actually used in the request. When expanding to other destination countries other fields may be required.
-export class CallServiceRequestOnafriqApiDto {
-  public corporateCode: string;
-  public password: string;
-  public mfsSign: string;
-  public batchId: number;
-  public requestBody: {
+export interface OnafriqApiCallServiceRequestBody {
+  corporateCode: string;
+  password: string;
+  mfsSign: string;
+  batchId: number;
+  requestBody: {
     instructionType: {
       destAcctType: number; // 1 for Mobile Money, 2 for Bank Account
       amountType: number; // 1 for Amount, 2 for Amount and Fee

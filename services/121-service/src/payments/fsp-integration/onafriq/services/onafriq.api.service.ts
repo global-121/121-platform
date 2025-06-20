@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import * as https from 'https';
 
 import { DEBUG, EXTERNAL_API } from '@121-service/src/config';
-import { CallServiceRequestOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-request-onafriq-api.dto';
-import { CallServiceResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-response-onafriq-api.dto';
-import { WebhookSubscribeResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/webhook-subscribe-response-onafriq-api.dto';
+import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
+import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
+import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
@@ -31,7 +31,7 @@ export class OnafriqApiService {
   }
 
   public async subscribeWebhook(): Promise<
-    WebhookSubscribeResponseOnafriqApiDto | undefined
+    OnafriqApiWebhookSubscribeResponseBody | undefined
   > {
     if (process.env.MOCK_ONAFRIQ) {
       return; // No need to subscribe to webhook in mock mode
@@ -50,7 +50,7 @@ export class OnafriqApiService {
     ];
 
     const { status, statusText, data } =
-      await this.httpService.post<WebhookSubscribeResponseOnafriqApiDto>(
+      await this.httpService.post<OnafriqApiWebhookSubscribeResponseBody>(
         webhookSubscribeUrl,
         payload,
         headers,
@@ -88,12 +88,12 @@ export class OnafriqApiService {
   }
 
   private async makeCallServiceCall(
-    payload: CallServiceRequestOnafriqApiDto,
-  ): Promise<CallServiceResponseOnafriqApiDto> {
+    payload: OnafriqApiCallServiceRequestBody,
+  ): Promise<OnafriqApiCallServiceResponseBody> {
     try {
       const callServiceUrl = `${onafriqApiUrl}/callService`;
 
-      return await this.httpService.post<CallServiceResponseOnafriqApiDto>(
+      return await this.httpService.post<OnafriqApiCallServiceResponseBody>(
         callServiceUrl,
         payload,
         undefined, // headers,

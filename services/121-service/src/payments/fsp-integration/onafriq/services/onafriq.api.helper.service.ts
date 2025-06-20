@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
 
-import { CallServiceRequestOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-request-onafriq-api.dto';
-import { CallServiceResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/call-service-response-onafriq-api.dto';
+import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
+import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 
@@ -15,7 +15,7 @@ export class OnafriqApiHelperService {
     firstName,
     lastName,
     thirdPartyTransId,
-  }): CallServiceRequestOnafriqApiDto {
+  }): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
       process.env.ONAFRIQ_PASSWORD!,
@@ -24,7 +24,7 @@ export class OnafriqApiHelperService {
     );
     const currencyCode = process.env.ONAFRIQ_CURRENCY_CODE!;
     const countryCode = process.env.ONAFRIQ_COUNTRY_CODE!;
-    const callServicePayload: CallServiceRequestOnafriqApiDto = {
+    const callServicePayload: OnafriqApiCallServiceRequestBody = {
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE!,
       password: process.env.ONAFRIQ_PASSWORD!,
       mfsSign,
@@ -75,7 +75,7 @@ export class OnafriqApiHelperService {
   }
 
   public processCallServiceResponse(
-    callServiceResponse: CallServiceResponseOnafriqApiDto,
+    callServiceResponse: OnafriqApiCallServiceResponseBody,
   ): CallServiceResult {
     // NOTE: we assume in the below there is only one transaction per batch (which is how we make the request)
     // NOTE: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligining with the status per transaction. We choose to focus on the information on transaction-level.
