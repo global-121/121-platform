@@ -5,6 +5,7 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
 } from '@angular/core';
 
@@ -36,6 +37,8 @@ export class ImportRegistrationsMenuComponent {
     input.required<
       () => ActionDataWithPaginateQuery<Registration> | undefined
     >();
+
+  readonly actionComplete = output();
 
   private authService = inject(AuthService);
 
@@ -69,4 +72,8 @@ export class ImportRegistrationsMenuComponent {
       }),
     },
   ]);
+
+  onUpdateSuccess() {
+    this.actionComplete.emit();
+  }
 }
