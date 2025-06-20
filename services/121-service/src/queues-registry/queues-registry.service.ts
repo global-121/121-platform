@@ -62,7 +62,7 @@ export class QueuesRegistryService implements OnModuleInit {
       this.transactionJobIntersolveVoucherQueue,
       this.transactionJobCommercialBankEthiopiaQueue,
       this.transactionJobSafaricomQueue,
-      this.transactionJobOnafriqQueue, // ##TODO: why was Nedbank not in this list?
+      this.transactionJobOnafriqQueue,
       this.safaricomTimeoutCallbackQueue,
       this.safaricomTransferCallbackQueue,
       this.onafriqTransactionCallbackQueue,

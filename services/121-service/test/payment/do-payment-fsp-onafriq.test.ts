@@ -20,7 +20,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
-describe('Do payment to 1 PA', () => {
+describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const programId = 1;
   const payment = 1;
   const amount = 12327;
@@ -217,9 +217,16 @@ describe('Do payment to 1 PA', () => {
       accessToken,
     });
 
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
+
     // Assert
-    // NOTE 2: we cannot wait for transactions to have a certain status, because we want to test that the transaction stays on 'waiting'.
-    // We also assert that no callback comes in, so we must give some time for the callback to potentially come in, as the assertion is not valuable otherwise.
+    // NOTE 2: We also assert that no callback comes in, so we must give some time for the callback to potentially come in, as the assertion is not valuable otherwise.
     await waitFor(1_000);
 
     const getTransactionsBody = await getTransactions({

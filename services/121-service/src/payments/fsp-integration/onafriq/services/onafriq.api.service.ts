@@ -7,6 +7,7 @@ import { CallServiceResponseOnafriqApiDto } from '@121-service/src/payments/fsp-
 import { WebhookSubscribeResponseOnafriqApiDto } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/webhook-subscribe-response-onafriq-api.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
+import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
@@ -22,8 +23,8 @@ export class OnafriqApiService {
     private readonly httpService: CustomHttpService,
     private readonly onafriqApiHelperService: OnafriqApiHelperService,
   ) {
-    // Adding this was needed to get past an UNABLE_TO_GET_ISSUER_CERT_LOCALLY error. Create a custom HTTPS agent that ignores certificate errors
-    // ##TODO: Figure out what is needed for production
+    // NOTE: Adding this was needed to get past an UNABLE_TO_GET_ISSUER_CERT_LOCALLY error on sandbox API. Create a custom HTTPS agent that ignores certificate errors
+    // For now, do not use this on production, but first test there without this work-around. If needed, we can add it to production as well.
     this.httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
@@ -36,7 +37,7 @@ export class OnafriqApiService {
       return; // No need to subscribe to webhook in mock mode
     }
 
-    const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`; // ##TODO check if it is OK to always use /subscribe instead of /update. Both seem to always work.
+    const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`;
     const payload = {
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
       callbackUrl: `${EXTERNAL_API.baseApiUrl}financial-service-providers/onafriq/callback`,
@@ -71,10 +72,7 @@ export class OnafriqApiService {
     firstName: string;
     lastName: string;
     thirdPartyTransId: string;
-  }): Promise<{
-    status: OnafriqApiResponseStatusType;
-    errorMessage?: string;
-  }> {
+  }): Promise<CallServiceResult> {
     const payload = this.onafriqApiHelperService.createCallServicePayload({
       transferAmount,
       phoneNumber,

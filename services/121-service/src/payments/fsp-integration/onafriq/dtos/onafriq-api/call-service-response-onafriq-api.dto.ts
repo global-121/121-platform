@@ -9,7 +9,7 @@ export interface CallServiceResponseOnafriqApiDto {
         readonly status: {
           readonly code: string;
           readonly message: string;
-          readonly messageDetail: string;
+          readonly messageDetail?: string;
         };
       }[];
     };
