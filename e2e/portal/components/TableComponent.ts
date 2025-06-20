@@ -445,6 +445,14 @@ class TableComponent {
 
     await expect(messageNotification).not.toBeVisible();
   }
+
+  async validateActivityPresentByType(notificationType: string) {
+    const messageNotification = this.page
+      .locator('tr')
+      .filter({ hasText: notificationType });
+
+    await expect(messageNotification).toBeVisible();
+  }
 }
 
 export default TableComponent;

@@ -64,6 +64,13 @@ abstract class RegistrationBasePage extends BasePage {
     await this.clickActionDropdown();
     await this.page.getByRole('menuitem', { name: action }).click();
   }
+
+  async fillNote(note: string) {
+    const noteInput = this.page.locator('textarea');
+    await noteInput.fill(note);
+    await this.page.getByRole('button', { name: 'Submit' }).click();
+    await this.validateToastMessageAndClose('Note successfully added.');
+  }
 }
 
 export default RegistrationBasePage;

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
@@ -14,6 +14,7 @@ import {
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -30,13 +31,10 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-const newName = 'Michael Scarn';
-
-test('[36352] Data should be updated according to selected columns and registrations', async ({
-  page,
-}) => {
+test('[36780] Successfully Add Note', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
+  const activityLogPage = new RegistrationActivityLogPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -44,36 +42,15 @@ test('[36352] Data should be updated according to selected columns and registrat
     await registrationsPage.selectProgram(projectTitle);
   });
 
-  await test.step('Select all registrations and open "Update registrations" dialog', async () => {
-    await registrationsPage.selectAllRegistrations();
-    await registrationsPage.clickAndSelectImportOption(
-      'Update selected registrations',
-    );
-  });
-
-  await test.step('Download the template, edit it, and upload', async () => {
-    expect(newName).not.toBe(registrationPV5.fullName);
-
-    await registrationsPage.massUpdateRegistrations({
-      expectedRowCount: 1,
-      columns: ['Scope', 'Preferred Language', 'Full Name'],
-      reason: 'Test reason',
-      transformCSVFunction: (csv) =>
-        csv.replace(registrationPV5.fullName, newName),
-    });
-    await registrationsPage.validateToastMessageAndClose(
-      'Updating registration(s)',
-    );
-  });
-
-  await test.step('Validate that bulk update is visible in activity log', async () => {
+  await test.step('Go to registration', async () => {
     await registrationsPage.goToRegistrationByName({
-      registrationName: newName,
+      registrationName: registrationPV5.fullName,
     });
-    await tableComponent.filterColumnByDropDownSelection({
-      columnName: 'Activity',
-      selection: 'Data change',
-    });
-    await tableComponent.validateActivityPresentByType('Data change');
+  });
+
+  await test.step('Add note', async () => {
+    await activityLogPage.inititateAction('Add note');
+    await activityLogPage.fillNote('This is a test note');
+    await tableComponent.validateActivityPresentByType('Note');
   });
 });
