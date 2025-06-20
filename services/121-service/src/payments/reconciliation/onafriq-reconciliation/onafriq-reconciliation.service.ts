@@ -4,6 +4,7 @@ import { Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
+import { OnafriqApiCallbackStatusCode } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-callback-status-code.enum';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';
 import {
@@ -64,7 +65,10 @@ export class OnafriqReconciliationService {
     // Prepare the transaction status based on statusCode from callback
     let updatedTransactionStatusAndErrorMessage: QueryDeepPartialEntity<TransactionEntity> =
       {};
-    if (onafriqTransactionCallbackJob.statusCode === 'MR101') {
+    if (
+      onafriqTransactionCallbackJob.statusCode ===
+      OnafriqApiCallbackStatusCode.success
+    ) {
       updatedTransactionStatusAndErrorMessage = {
         status: TransactionStatusEnum.success,
       };

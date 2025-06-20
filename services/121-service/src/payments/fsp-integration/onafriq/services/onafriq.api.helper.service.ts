@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
 import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
+import { OnafriqApiCallServiceResponseTransactionStatusCode } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-call-service-response-transaction-status-code.enum';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 
@@ -99,8 +100,10 @@ export class OnafriqApiHelperService {
       };
     }
 
-    // 101 is the generic code for all errors, unlike 100 for success
-    if (status.code === '101') {
+    if (
+      status.code ===
+      OnafriqApiCallServiceResponseTransactionStatusCode.rejected
+    ) {
       return {
         status: OnafriqApiResponseStatusType.genericError,
         errorMessage: `Error: ${status?.code} - ${status?.message} - ${status?.messageDetail}`,
