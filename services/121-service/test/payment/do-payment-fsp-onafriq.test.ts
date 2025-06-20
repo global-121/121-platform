@@ -23,11 +23,11 @@ describe('Do payment to 1 PA', () => {
   const programId = 1;
   const payment = 1;
   const amount = 12327;
-  const registrationOnafriq = {
+  const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFinancialServiceProviderConfigurationName:
       FinancialServiceProviders.onafriq,
-    phoneNumber: '243708374149',
+    phoneNumber: '24311111111',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
@@ -36,166 +36,211 @@ describe('Do payment to 1 PA', () => {
     gender: 'male',
     age: 25,
   };
+  let registrationOnafriq;
+  let accessToken: string;
 
-  describe('with FSP: Onafriq', () => {
-    let accessToken: string;
+  beforeEach(async () => {
+    await resetDB(SeedScript.onafriqProgram);
+    accessToken = await getAccessToken();
+    registrationOnafriq = { ...baseRegistrationOnafriq };
+  });
 
-    beforeEach(async () => {
-      await resetDB(SeedScript.onafriqProgram);
-      accessToken = await getAccessToken();
+  it('should successfully pay-out', async () => {
+    // Arrange
+    await importRegistrations(programId, [registrationOnafriq], accessToken);
+
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    const paymentReferenceIds = [registrationOnafriq.referenceId];
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      paymentNr: payment,
+      amount,
+      referenceIds: paymentReferenceIds,
+      accessToken,
     });
 
-    it('should successfully pay-out', async () => {
-      // Arrange
-      registrationOnafriq.phoneNumber = '243708374149';
-      await importRegistrations(programId, [registrationOnafriq], accessToken);
-
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationOnafriq.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
-      const paymentReferenceIds = [registrationOnafriq.referenceId];
-
-      // Act
-      const doPaymentResponse = await doPayment({
-        programId,
-        paymentNr: payment,
-        amount,
-        referenceIds: paymentReferenceIds,
-        accessToken,
-      });
-
-      await waitForPaymentTransactionsToComplete({
-        programId,
-        paymentReferenceIds,
-        accessToken,
-        maxWaitTimeMs: 4_000,
-        completeStatusses: [
-          TransactionStatusEnum.success,
-          TransactionStatusEnum.error,
-        ],
-      });
-
-      // Assert
-      const getTransactionsBody = await getTransactions({
-        programId,
-        paymentNr: payment,
-        registrationReferenceId: registrationOnafriq.referenceId,
-        accessToken,
-      });
-
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
-      );
-      expect(getTransactionsBody.body[0].status).toBe(
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatusses: [
         TransactionStatusEnum.success,
-      );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(null);
-    });
-
-    it('should give error on the initial request based on magic phonenumber', async () => {
-      // Arrange
-      registrationOnafriq.phoneNumber = '24300000000'; // this magic number is configured in mock to return an error on request
-      await importRegistrations(programId, [registrationOnafriq], accessToken);
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationOnafriq.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
-      const paymentReferenceIds = [registrationOnafriq.referenceId];
-
-      // Act
-      const doPaymentResponse = await doPayment({
-        programId,
-        paymentNr: payment,
-        amount,
-        referenceIds: paymentReferenceIds,
-        accessToken,
-      });
-
-      await waitForPaymentTransactionsToComplete({
-        programId,
-        paymentReferenceIds,
-        accessToken,
-        maxWaitTimeMs: 4_000,
-        completeStatusses: Object.values(TransactionStatusEnum),
-      });
-
-      // Assert
-      const getTransactionsBody = await getTransactions({
-        programId,
-        paymentNr: payment,
-        registrationReferenceId: registrationOnafriq.referenceId,
-        accessToken,
-      });
-
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
-      );
-      expect(getTransactionsBody.body[0].status).toBe(
         TransactionStatusEnum.error,
-      );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(
-        'Error: 101 - Rejected - Generic mock error on request',
-      );
+      ],
     });
 
-    it('should give error via callback based on magic phonenumber', async () => {
-      // Arrange
-      registrationOnafriq.phoneNumber = '24300000001'; // this magic number is configured in mock to return an error on callback
-      await importRegistrations(programId, [registrationOnafriq], accessToken);
-      await awaitChangeRegistrationStatus({
-        programId,
-        referenceIds: [registrationOnafriq.referenceId],
-        status: RegistrationStatusEnum.included,
-        accessToken,
-      });
-      const paymentReferenceIds = [registrationOnafriq.referenceId];
+    // Assert
+    const getTransactionsBody = await getTransactions({
+      programId,
+      paymentNr: payment,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
 
-      // Act
-      const doPaymentResponse = await doPayment({
-        programId,
-        paymentNr: payment,
-        amount,
-        referenceIds: paymentReferenceIds,
-        accessToken,
-      });
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(
+      paymentReferenceIds.length,
+    );
+    expect(getTransactionsBody.body[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
+    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+  });
 
-      // wait for non-waiting transactions only, to make sure callback came in
-      await waitForPaymentTransactionsToComplete({
-        programId,
-        paymentReferenceIds,
-        accessToken,
-        maxWaitTimeMs: 4_000,
-        completeStatusses: [
-          TransactionStatusEnum.success,
-          TransactionStatusEnum.error,
-        ],
-      });
+  it('should give error on the initial request based on magic phonenumber', async () => {
+    // Arrange
+    registrationOnafriq.phoneNumber = '24300000000'; // this magic number is configured in mock to return an error on request
+    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    const paymentReferenceIds = [registrationOnafriq.referenceId];
 
-      // Assert
-      const getTransactionsBody = await getTransactions({
-        programId,
-        paymentNr: payment,
-        registrationReferenceId: registrationOnafriq.referenceId,
-        accessToken,
-      });
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      paymentNr: payment,
+      amount,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
 
-      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(
-        paymentReferenceIds.length,
-      );
-      expect(getTransactionsBody.body[0].status).toBe(
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatusses: Object.values(TransactionStatusEnum),
+    });
+
+    // Assert
+    const getTransactionsBody = await getTransactions({
+      programId,
+      paymentNr: payment,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
+
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(
+      paymentReferenceIds.length,
+    );
+    expect(getTransactionsBody.body[0].status).toBe(
+      TransactionStatusEnum.error,
+    );
+    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+  });
+
+  it('should give error via callback based on magic phonenumber', async () => {
+    // Arrange
+    registrationOnafriq.phoneNumber = '24300000001'; // this magic number is configured in mock to return an error on callback
+    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    const paymentReferenceIds = [registrationOnafriq.referenceId];
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      paymentNr: payment,
+      amount,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+
+    // wait for non-waiting transactions only, to make sure callback came in
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatusses: [
+        TransactionStatusEnum.success,
         TransactionStatusEnum.error,
-      );
-      expect(getTransactionsBody.body[0].errorMessage).toBe(
-        'Error: ER103 - Mock error on callback',
-      );
+      ],
     });
+
+    // Assert
+    const getTransactionsBody = await getTransactions({
+      programId,
+      paymentNr: payment,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
+
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(
+      paymentReferenceIds.length,
+    );
+    expect(getTransactionsBody.body[0].status).toBe(
+      TransactionStatusEnum.error,
+    );
+    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+  });
+
+  it('should not update transaction on a `duplicate thirdPartyTransId error` API response', async () => {
+    // Arrange
+    registrationOnafriq.phoneNumber = '24300000002'; // this magic number is configured in mock to return an error on callback
+    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await awaitChangeRegistrationStatus({
+      programId,
+      referenceIds: [registrationOnafriq.referenceId],
+      status: RegistrationStatusEnum.included,
+      accessToken,
+    });
+    const paymentReferenceIds = [registrationOnafriq.referenceId];
+
+    // Act
+    const doPaymentResponse = await doPayment({
+      programId,
+      paymentNr: payment,
+      amount,
+      referenceIds: paymentReferenceIds,
+      accessToken,
+    });
+
+    // wait for non-waiting transactions only, to make sure callback came in
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4_000,
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
+    });
+
+    // Assert
+    const getTransactionsBody = await getTransactions({
+      programId,
+      paymentNr: payment,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
+
+    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse.body.applicableCount).toBe(
+      paymentReferenceIds.length,
+    );
+    expect(getTransactionsBody.body[0].status).toBe(
+      TransactionStatusEnum.error,
+    );
+    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
   });
 });
