@@ -74,6 +74,9 @@ test('[36352] Data should be updated according to selected columns and registrat
       columnName: 'Activity',
       selection: 'Data change',
     });
-    await tableComponent.validateActivityPresentByType('Data change');
+    await tableComponent.validateActivityPresentByType({
+      notificationType: 'Data change',
+      count: 1,
+    });
   });
 });
