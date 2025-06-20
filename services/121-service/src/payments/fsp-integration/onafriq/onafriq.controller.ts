@@ -12,6 +12,7 @@ import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafri
 export class OnafriqController {
   public constructor(private onafriqService: OnafriqService) {}
 
+  // NOTE: This endpoint is not tested via API-tests, as it is only used one-off in production. If it breaks, it can be fixed manually.
   @AuthenticatedUser({
     isAdmin: true,
   })
