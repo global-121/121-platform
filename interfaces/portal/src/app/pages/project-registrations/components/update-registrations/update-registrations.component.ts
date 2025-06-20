@@ -175,6 +175,8 @@ export class UpdateRegistrationsComponent {
       void this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
+      this.exportCSVFormGroup.reset();
+      this.updateRegistrationsFormGroup.reset();
       this.dialogVisible.set(false);
       this.toastService.showToast({
         summary: $localize`Updating registration(s)`,
