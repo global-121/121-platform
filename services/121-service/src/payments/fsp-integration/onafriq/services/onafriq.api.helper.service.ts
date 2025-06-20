@@ -93,30 +93,31 @@ export class OnafriqApiHelperService {
   } {
     // NOTE: we assume in the below there is only one transaction per batch (which is the case)
     // ##TODO: check/scrutinize possible error scenarios a lot more
-    if (!callServiceResponse || !callServiceResponse.data) {
+    if (!callServiceResponse?.data) {
       return {
         status: OnafriqApiResponseStatusType.genericError,
         errorMessage: 'No response data from Onafriq API',
       };
-    } else if (
-      callServiceResponse.data.details?.transResponse[0]?.status
-        ?.messageDetail === 'Transaction already exist with given ThirdParty' //##TODO: get exact code for this?
+    }
+
+    const transResponse = callServiceResponse.data.details?.transResponse[0];
+    const statusDetails = transResponse?.status;
+    if (
+      statusDetails?.messageDetail ===
+      'Transaction already exist with given ThirdParty'
     ) {
       return {
         status: OnafriqApiResponseStatusType.duplicateThirdPartyTransIdError,
-        errorMessage: `Error: duplicate thirdPartyTransId error for thirdPartyTransId ${callServiceResponse.data.details?.transResponse[0]?.thirdPartyId}`,
-      };
-    } else if (callServiceResponse.data.noTxRejected === 1) {
-      const errorObj =
-        callServiceResponse.data.details?.transResponse[0]?.status;
-      return {
-        status: OnafriqApiResponseStatusType.genericError,
-        errorMessage: `Error: ${errorObj?.code} - ${errorObj?.message} - ${errorObj?.messageDetail}`,
+        errorMessage: `Error: duplicate thirdPartyTransId error for thirdPartyTransId ${transResponse.thirdPartyId}`,
       };
     }
 
-    return {
-      status: OnafriqApiResponseStatusType.success,
-    };
+    if (callServiceResponse.data.noTxRejected === 1) {
+      return {
+        status: OnafriqApiResponseStatusType.genericError,
+        errorMessage: `Error: ${statusDetails?.code} - ${statusDetails?.message} - ${statusDetails?.messageDetail}`,
+      };
+    }
+    return { status: OnafriqApiResponseStatusType.success };
   }
 }
