@@ -6,29 +6,29 @@ import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/er
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
 import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 
+const responseSuccess = {
+  result: AirtelDisbursementResultEnum.success,
+  message: '',
+};
+
+const responseFail = {
+  result: AirtelDisbursementResultEnum.fail as const,
+  message: 'mock failure message',
+};
+
+const responseAmbiguous = {
+  result: AirtelDisbursementResultEnum.ambiguous,
+  message: 'mock ambiguous message',
+};
+
+const responseDuplicate = {
+  result: AirtelDisbursementResultEnum.duplicate,
+  message: 'mock duplicate message',
+};
+
 describe('AirtelService', () => {
   let service: AirtelService;
   let apiService: AirtelApiService;
-
-  const responseSuccess = {
-    result: AirtelDisbursementResultEnum.success,
-    message: '',
-  };
-
-  const responseFail = {
-    result: AirtelDisbursementResultEnum.fail as const,
-    message: 'mock failure message',
-  };
-
-  const responseAmbiguous = {
-    result: AirtelDisbursementResultEnum.ambiguous,
-    message: 'mock ambiguous message',
-  };
-
-  const responseDuplicate = {
-    result: AirtelDisbursementResultEnum.duplicate,
-    message: 'mock duplicate message',
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
