@@ -134,7 +134,9 @@ export class AirtelApiService {
     }
 
     return {
-      result: this.getResultOrThrow(response.data?.status?.response_code),
+      result: this.getResultFromResponseCode(
+        response.data?.status?.response_code,
+      ),
       message: this.getMessage(response.data),
     };
   }
@@ -180,7 +182,9 @@ export class AirtelApiService {
 
     return {
       // The result of enquiry cannot be duplicate.
-      result: this.getResultOrThrow(response.data?.status?.response_code) as
+      result: this.getResultFromResponseCode(
+        response.data?.status?.response_code,
+      ) as
         | AirtelDisbursementResultEnum.fail
         | AirtelDisbursementResultEnum.success,
       message: this.getMessage(response.data),
@@ -267,7 +271,7 @@ export class AirtelApiService {
     return message;
   }
 
-  private getResultOrThrow(
+  private getResultFromResponseCode(
     responseCode: AirtelDisbursementResultEnum | undefined,
   ): AirtelDisbursementResultEnum {
     if (!responseCode) {
