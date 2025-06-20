@@ -12,7 +12,8 @@ import {
 
 enum MockScenario {
   success = 'success',
-  errorOnRequest = 'error-on-request',
+  errorOnRequestGeneric = 'error-on-request-generic',
+  errorOnRequestDuplicateThirdPartyTransId = 'error-on-request-duplicate-third-party-trans-id',
   errorOnCallback = 'error-on-callback',
 }
 @Injectable()
@@ -22,18 +23,27 @@ export class OnafriqMockService {
   public async callService(
     callServiceDto: OnafriqCallServicePayload,
   ): Promise<OnafriqCallServiceResponseBodyDto> {
+    console.log('callServiceDto: ', callServiceDto);
     let mockScenario: MockScenario = MockScenario.success;
     if (callServiceDto.requestBody[0].recipient.msisdn === '24300000000') {
-      mockScenario = MockScenario.errorOnRequest;
+      mockScenario = MockScenario.errorOnRequestGeneric;
     } else if (
       callServiceDto.requestBody[0].recipient.msisdn === '24300000001'
     ) {
+      mockScenario = MockScenario.errorOnRequestDuplicateThirdPartyTransId;
+    } else if (
+      callServiceDto.requestBody[0].recipient.msisdn === '24300000002'
+    ) {
       mockScenario = MockScenario.errorOnCallback;
     }
+    console.log('mockScenario: ', mockScenario);
 
-    if (mockScenario === MockScenario.errorOnRequest) {
+    if (
+      mockScenario === MockScenario.errorOnRequestGeneric ||
+      mockScenario === MockScenario.errorOnRequestDuplicateThirdPartyTransId
+    ) {
       return this.createCallServiceResponseBody(
-        MockScenario.errorOnRequest,
+        mockScenario,
         callServiceDto.requestBody[0].thirdPartyTransId,
       );
     }
@@ -59,23 +69,28 @@ export class OnafriqMockService {
   ): OnafriqCallServiceResponseBodyDto {
     return {
       totalTxSent: 1,
-      noTxAccepted: mockScenario === MockScenario.errorOnRequest ? 0 : 1,
-      noTxRejected: mockScenario === MockScenario.errorOnRequest ? 1 : 0,
+      noTxAccepted: mockScenario === MockScenario.errorOnRequestGeneric ? 0 : 1,
+      noTxRejected: mockScenario === MockScenario.errorOnRequestGeneric ? 1 : 0,
       details: {
         transResponse: [
           {
             thirdPartyId: thirdPartyTransId,
             status: {
               code:
-                mockScenario === MockScenario.errorOnRequest ? '101' : '100',
+                mockScenario === MockScenario.errorOnRequestGeneric
+                  ? '101'
+                  : '100',
               message:
-                mockScenario === MockScenario.errorOnRequest
+                mockScenario === MockScenario.errorOnRequestGeneric
                   ? 'Rejected'
                   : 'Accepted',
               messageDetail:
-                mockScenario === MockScenario.errorOnRequest
+                mockScenario === MockScenario.errorOnRequestGeneric
                   ? 'Generic mock error on request'
-                  : undefined,
+                  : mockScenario ===
+                      MockScenario.errorOnRequestDuplicateThirdPartyTransId
+                    ? 'Transaction already exist with given ThirdParty' // This exact errorMessage is needed to trigger the duplicate error in the Onafriq API
+                    : undefined,
             },
           },
         ],
