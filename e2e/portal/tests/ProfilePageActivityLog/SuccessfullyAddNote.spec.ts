@@ -51,6 +51,9 @@ test('[36780] Successfully Add Note', async ({ page }) => {
   await test.step('Add note', async () => {
     await activityLogPage.inititateAction('Add note');
     await activityLogPage.fillNote('This is a test note');
-    await tableComponent.validateActivityPresentByType('Note');
+    await tableComponent.validateActivityPresentByType({
+      notificationType: 'Note',
+      count: 1,
+    });
   });
 });
