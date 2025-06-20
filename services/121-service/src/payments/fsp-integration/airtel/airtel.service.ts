@@ -97,7 +97,7 @@ export class AirtelService
 
     if (result === AirtelDisbursementResultEnum.ambiguous) {
       throw new AirtelError(
-        `The transaction is in an ambiguous state. Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: ${airtelTransactionId}`,
+        `Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: ${airtelTransactionId} - Status: Ambigious`,
         result,
       );
     }
