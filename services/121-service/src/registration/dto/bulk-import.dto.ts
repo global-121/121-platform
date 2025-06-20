@@ -9,7 +9,7 @@ import {
   Length,
 } from 'class-validator';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -21,9 +21,7 @@ export enum ImportStatus {
   paymentFailed = 'paymentFailed',
 }
 
-const fspArray = Object.values(FinancialServiceProviders).map((item) =>
-  String(item),
-);
+const fspArray = Object.values(Fsps).map((item) => String(item));
 const languageArray = Object.values(LanguageEnum).map((item) => String(item));
 class BulkImportDto {
   @ApiProperty()
@@ -82,9 +80,9 @@ export class ImportRegistrationsDto extends BulkImportDto {
   })
   @IsString()
   // Should we change this to a more specific name?
-  // It could also be programFinancialServiceProviderConfigurationName (which is a good name for us programmers)
+  // It could also be programFspConfigurationName (which is a good name for us programmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them
-  public programFinancialServiceProviderConfigurationName: string;
+  public programFspConfigurationName: string;
 
   @ApiProperty()
   @IsOptional()

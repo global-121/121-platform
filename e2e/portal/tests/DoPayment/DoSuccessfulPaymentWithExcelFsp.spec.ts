@@ -48,7 +48,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
   const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const financialServiceProviders: string[] = ['Excel Payment Instructions'];
+  const fsps: string[] = ['Excel Payment Instructions'];
 
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
@@ -65,7 +65,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
 
   await test.step('Do payment', async () => {
     await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
+      fsp: fsps,
       registrationsNumber: numberOfPas,
       currency: '€',
       paymentAmount: defaultMaxTransferValue,

@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -16,9 +16,8 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    financialServiceProviderName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
-    programFinancialServiceProviderConfigurationId: 1,
+    fspName: Fsps.intersolveVoucherWhatsapp,
+    programFspConfigurationId: 1,
     bulkSize: 1,
     userId: 1,
   },

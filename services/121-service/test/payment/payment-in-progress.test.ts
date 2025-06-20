@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
@@ -29,9 +29,7 @@ describe('Payment in progress', () => {
   );
 
   const registrationsVisaOcw = registrationsOCW.filter(
-    (r) =>
-      r.programFinancialServiceProviderConfigurationName ===
-      FinancialServiceProviders.intersolveVisa,
+    (r) => r.programFspConfigurationName === Fsps.intersolveVisa,
   );
   // Create a registration with a different referenceId from OCW registrations as the default ones from PV have no VISA
   const registrationsVisaPV = [

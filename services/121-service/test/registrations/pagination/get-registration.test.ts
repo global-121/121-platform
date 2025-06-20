@@ -1,4 +1,4 @@
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getRegistrations,
@@ -19,15 +19,14 @@ import {
 describe('Load PA table', () => {
   describe('getting registration using paginate', () => {
     let accessToken: string;
-    const attribute1 = FinancialServiceProviderAttributes.whatsappPhoneNumber;
-    const attribute2 = FinancialServiceProviderAttributes.addressCity;
+    const attribute1 = FspAttributes.whatsappPhoneNumber;
+    const attribute2 = FspAttributes.addressCity;
     const attribute3 = 'referenceId';
     const attributeName = 'name';
     const attributeFullName = 'fullName';
-    const attributeprogramFinancialServiceProviderConfigurationLabel =
-      'programFinancialServiceProviderConfigurationLabel';
-    const attributeProgramFinancialServiceProviderConfigurationName =
-      'programFinancialServiceProviderConfigurationName';
+    const attributeprogramFspConfigurationLabel =
+      'programFspConfigurationLabel';
+    const attributeProgramFspConfigurationName = 'programFspConfigurationName';
 
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple);
@@ -112,10 +111,10 @@ describe('Load PA table', () => {
       expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
-    it('should only return programFinancialServiceProviderConfigurationLabel', async () => {
+    it('should only return programFspConfigurationLabel', async () => {
       // Arrange
       const requestedDynamicAttributes = [
-        attributeprogramFinancialServiceProviderConfigurationLabel,
+        attributeprogramFspConfigurationLabel,
       ];
 
       // Act
@@ -127,12 +126,8 @@ describe('Load PA table', () => {
       const data = getRegistrationsResponse.body.data;
 
       // Assert
-      expect(data[0]).toHaveProperty(
-        attributeprogramFinancialServiceProviderConfigurationLabel,
-      );
-      expect(data[0]).not.toHaveProperty(
-        attributeProgramFinancialServiceProviderConfigurationName,
-      );
+      expect(data[0]).toHaveProperty(attributeprogramFspConfigurationLabel);
+      expect(data[0]).not.toHaveProperty(attributeProgramFspConfigurationName);
     });
 
     it('Should return specified amount of PA per page', async () => {

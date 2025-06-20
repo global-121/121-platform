@@ -31,7 +31,7 @@ docker stop "$DOCKER_DB_NAME"
 docker rm "$DOCKER_DB_NAME"
 
 # Start the specified Docker container to apply the migration and load some data, then stop it again
-npm run start:services
+npm run start:services:detach
 
 # Wait until the service is up or timeout after 1 minute
 timeout=60

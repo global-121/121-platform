@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -27,43 +27,43 @@ const userId = 1;
 const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
   {
     id: 8,
-    name: FinancialServiceProviderAttributes.addressStreet,
+    name: FspAttributes.addressStreet,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 9,
-    name: FinancialServiceProviderAttributes.addressHouseNumber,
+    name: FspAttributes.addressHouseNumber,
     type: RegistrationAttributeTypes.numeric,
     isRequired: false,
   },
   {
     id: 10,
-    name: FinancialServiceProviderAttributes.addressHouseNumberAddition,
+    name: FspAttributes.addressHouseNumberAddition,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 11,
-    name: FinancialServiceProviderAttributes.addressPostalCode,
+    name: FspAttributes.addressPostalCode,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 12,
-    name: FinancialServiceProviderAttributes.addressCity,
+    name: FspAttributes.addressCity,
     type: RegistrationAttributeTypes.text,
     isRequired: false,
   },
   {
     id: 13,
-    name: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+    name: FspAttributes.whatsappPhoneNumber,
     type: RegistrationAttributeTypes.tel,
     isRequired: false,
   },
   {
     id: 3,
-    name: FinancialServiceProviderAttributes.fullName,
+    name: FspAttributes.fullName,
     type: RegistrationAttributeTypes.text,
     options: null,
     isRequired: false,
@@ -94,14 +94,13 @@ const program = {
   languages: ['en'],
   enableMaxPayments: true,
   enableScope: true,
-  programFinancialServiceProviderConfigurations: [
+  programFspConfigurations: [
     {
-      financialServiceProviderName:
-        FinancialServiceProviders.intersolveVoucherWhatsapp,
+      fspName: Fsps.intersolveVoucherWhatsapp,
       name: 'Intersolve-voucher-whatsapp',
     },
     {
-      financialServiceProviderName: FinancialServiceProviders.excel,
+      fspName: Fsps.excel,
       name: 'Excel',
     },
   ],
@@ -186,8 +185,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
         house: 'stark',
       },
@@ -211,8 +209,8 @@ describe('RegistrationsInputValidator', () => {
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
     );
     expect(result[0]).toHaveProperty(
-      'programFinancialServiceProviderConfigurationName',
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+      'programFspConfigurationName',
+      Fsps.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
     expect(result[0]).toHaveProperty('preferredLanguage', 'en');
@@ -230,8 +228,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -253,8 +250,7 @@ describe('RegistrationsInputValidator', () => {
   it('should report errors for rows missing mandatory fields on import', async () => {
     const csvArray = [
       {
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -278,8 +274,7 @@ describe('RegistrationsInputValidator', () => {
   it('should not report errors for rows missing mandatory fields on bulk update', async () => {
     const csvArray = [
       {
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -306,8 +301,7 @@ describe('RegistrationsInputValidator', () => {
         maxPayments: '5',
         nameFirst: 'Test',
         nameLast: 'Test',
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         whatsappPhoneNumber: '1234567890',
         scope: 'country',
       },
@@ -378,8 +372,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: '',
         addressHouseNumber: '',
         addressHouseNumberAddition: '',
-        programFinancialServiceProviderConfigurationName:
-          FinancialServiceProviders.excel,
+        programFspConfigurationName: Fsps.excel,
         scope: '',
         house: '',
       },
@@ -409,7 +402,7 @@ describe('RegistrationsInputValidator', () => {
       scope: '',
       preferredLanguage: 'en',
       phoneNumber: null,
-      programFinancialServiceProviderConfigurationName: 'Excel',
+      programFspConfigurationName: 'Excel',
     };
 
     expect(result[0]).toEqual(expected);
@@ -444,7 +437,7 @@ describe('RegistrationsInputValidator', () => {
     const referenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
     const mockRegistration = {
       referenceId,
-      programFinancialServiceProviderConfigurationName: 'Excel',
+      programFspConfigurationName: 'Excel',
     } as unknown as RegistrationViewEntity;
 
     jest
@@ -484,9 +477,9 @@ describe('RegistrationsInputValidator', () => {
         },
         {
           lineNumber: 1,
-          column: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+          column: FspAttributes.whatsappPhoneNumber,
           value: '14155238880',
-          error: `Attribute ${FinancialServiceProviderAttributes.whatsappPhoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
+          error: `Attribute ${FspAttributes.whatsappPhoneNumber} is of type tel (telephone number) and cannot be updated in bulk`,
         },
       ]),
     });

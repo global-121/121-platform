@@ -1,12 +1,12 @@
 import { test } from '@playwright/test';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -26,11 +26,11 @@ const amount = NLRCProgramPV.fixedTransferValue;
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await deleteProgramFinancialServiceProviderConfigurationProperty({
+  await deleteProgramFspConfigurationProperty({
     programId: programIdPV,
     accessToken,
-    configName: FinancialServiceProviders.excel,
-    propertyName: FinancialServiceProviderConfigurationProperties.columnToMatch,
+    configName: Fsps.excel,
+    propertyName: FspConfigurationProperties.columnToMatch,
   });
   await seedIncludedRegistrations(
     registrationsPvExcel,
@@ -58,7 +58,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
   const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
     return output + pa.paymentAmountMultiplier * defaultTransferValue;
   }, 0);
-  const financialServiceProviders: string[] = ['Excel Payment Instructions'];
+  const fsps: string[] = ['Excel Payment Instructions'];
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
@@ -73,7 +73,7 @@ test('[32302] [Excel fsp]: Error message should be shown in case no matching col
 
   await test.step('Start payment and validate Error message', async () => {
     await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
+      fsp: fsps,
       registrationsNumber: numberOfPas,
       currency: '€',
       paymentAmount: defaultMaxTransferValue,

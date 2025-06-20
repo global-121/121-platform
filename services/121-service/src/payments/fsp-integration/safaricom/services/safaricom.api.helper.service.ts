@@ -13,8 +13,8 @@ export class SafaricomApiHelperService {
     originatorConversationId,
   }): TransferRequestSafaricomApiDto {
     const callbackBaseUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
-    const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}financial-service-providers/safaricom/timeout-callback`;
-    const safaricomTransferCallbacktUrl = `${callbackBaseUrl}financial-service-providers/safaricom/transfer-callback`;
+    const safaricomTimeoutCallbackUrl = `${callbackBaseUrl}fsps/safaricom/timeout-callback`;
+    const safaricomTransferCallbacktUrl = `${callbackBaseUrl}fsps/safaricom/transfer-callback`;
 
     return {
       InitiatorName: process.env.SAFARICOM_INITIATORNAME!,

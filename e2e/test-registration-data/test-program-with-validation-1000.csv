@@ -1,4 +1,4 @@
-phoneNumber,preferredLanguage,programFinancialServiceProviderConfigurationName,paymentAmountMultiplier,nameFirst,nameLast,nameMiddle,whatsappPhoneNumber
+phoneNumber,preferredLanguage,programFspConfigurationName,paymentAmountMultiplier,nameFirst,nameLast,nameMiddle,whatsappPhoneNumber
 63910680830,en,Intersolve-voucher-whatsapp,2,Micheal,Shelton,Cory,29738048450
 81101414999,nl,Intersolve-voucher-whatsapp,2,Brandon,Gray,Ora,89312620536
 20718425180,nl,Intersolve-voucher-paper,2,Kyle,Cook,Mario,30073112391

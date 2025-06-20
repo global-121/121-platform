@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateProgramFinancialServiceProviderConfigurationPropertyDto {
+export class UpdateProgramFspConfigurationPropertyDto {
   @ApiProperty({
     example: 'redcross-user',
     description:

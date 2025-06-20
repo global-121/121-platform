@@ -1,4 +1,4 @@
-export enum FinancialServiceProviderIntegrationType {
+export enum FspIntegrationType {
   csv = 'csv',
   api = 'api',
 }

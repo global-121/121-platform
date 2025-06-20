@@ -1,65 +1,55 @@
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { ProgramFinancialServiceProviderConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 
-describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
+describe('ProgramFspConfigurationMapper', () => {
   describe('mapEntitytoDto', () => {
-    it('should correctly map ProgramFinancialServiceProviderConfigurationEntity to ProgramFinancialServiceProviderConfigurationResponseDto', () => {
+    it('should correctly map ProgramFspConfigurationEntity to ProgramFspConfigurationResponseDto', () => {
       // Arrange
-      const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
+      const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName =
-        FinancialServiceProviders.intersolveVisa;
+      testEntity.fspName = Fsps.intersolveVisa;
       testEntity.name = 'Intersolve Visa';
       testEntity.label = { en: 'Visa Debit Card' };
       testEntity.properties = [
         {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
+          name: FspConfigurationProperties.brandCode,
           updated: new Date('2023-01-01'),
         },
         {
-          name: FinancialServiceProviderConfigurationProperties.coverLetterCode,
+          name: FspConfigurationProperties.coverLetterCode,
           updated: new Date('2023-02-01'),
         },
-      ] as ProgramFinancialServiceProviderConfigurationPropertyEntity[];
+      ] as ProgramFspConfigurationPropertyEntity[];
 
       // Act
-      const result =
-        ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
-          testEntity,
-        );
+      const result = ProgramFspConfigurationMapper.mapEntityToDto(testEntity);
 
       // Assert
       expect(result.programId).toBe(testEntity.programId);
-      expect(result.financialServiceProviderName).toBe(
-        testEntity.financialServiceProviderName,
-      );
+      expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
 
-      const expectedFinancialServiceProvider =
-        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-          (fsp) => fsp.name === testEntity.financialServiceProviderName,
-        )!;
-      // Remove unnecessary properties from the financialServiceProvider object
+      const expectedFsp = FSP_SETTINGS.find(
+        (fsp) => fsp.name === testEntity.fspName,
+      )!;
+      // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,
         defaultLabel: _defaultLabel,
-        ...expectedFinancialServiceProviderWithoutProps
-      } = expectedFinancialServiceProvider;
+        ...expectedFspWithoutProps
+      } = expectedFsp;
 
-      // Now use expectedFinancialServiceProviderWithoutProps in your test
-      expect(result.financialServiceProvider).toEqual(
-        expectedFinancialServiceProviderWithoutProps,
-      );
+      // Now use expectedFspWithoutProps in your test
+      expect(result.fsp).toEqual(expectedFspWithoutProps);
 
       expect(result.properties).toHaveLength(testEntity.properties.length);
       testEntity.properties.forEach((property, index) => {
@@ -70,119 +60,98 @@ describe('ProgramFinancialServiceProviderConfigurationMapper', () => {
 
     it('should handle an entity with no properties', () => {
       // Arrange
-      const testEntity =
-        new ProgramFinancialServiceProviderConfigurationEntity();
+      const testEntity = new ProgramFspConfigurationEntity();
       testEntity.programId = 1;
-      testEntity.financialServiceProviderName =
-        FinancialServiceProviders.safaricom;
+      testEntity.fspName = Fsps.safaricom;
       testEntity.name = 'Safaricom M-Pesa';
       testEntity.label = { en: 'Safaricom' };
       testEntity.properties = [];
 
       // Act
-      const result =
-        ProgramFinancialServiceProviderConfigurationMapper.mapEntityToDto(
-          testEntity,
-        );
+      const result = ProgramFspConfigurationMapper.mapEntityToDto(testEntity);
 
       // Assert
       expect(result.programId).toBe(testEntity.programId);
-      expect(result.financialServiceProviderName).toBe(
-        testEntity.financialServiceProviderName,
-      );
+      expect(result.fspName).toBe(testEntity.fspName);
       expect(result.name).toBe(testEntity.name);
       expect(result.label).toEqual(testEntity.label);
-      const expectedFinancialServiceProvider =
-        FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-          (fsp) => fsp.name === testEntity.financialServiceProviderName,
-        )!;
-      // Remove unnecessary properties from the financialServiceProvider object
+      const expectedFsp = FSP_SETTINGS.find(
+        (fsp) => fsp.name === testEntity.fspName,
+      )!;
+      // Remove unnecessary properties from the fsp object
       const {
         configurationProperties: _configurationProperties,
         defaultLabel: _defaultLabel,
-        ...expectedFinancialServiceProviderWithoutProps
-      } = expectedFinancialServiceProvider;
-      expect(result.financialServiceProvider).toEqual(
-        expectedFinancialServiceProviderWithoutProps,
-      );
+        ...expectedFspWithoutProps
+      } = expectedFsp;
+      expect(result.fsp).toEqual(expectedFspWithoutProps);
       expect(result.properties).toEqual([]);
     });
   });
 
   describe('mapDtoToEntity', () => {
-    it('should correctly map CreateProgramFinancialServiceProviderConfigurationDto to ProgramFinancialServiceProviderConfigurationEntity', () => {
+    it('should correctly map CreateProgramFspConfigurationDto to ProgramFspConfigurationEntity', () => {
       // Arrange
       const programId = 1;
-      const dto: CreateProgramFinancialServiceProviderConfigurationDto = {
-        financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
+      const dto: CreateProgramFspConfigurationDto = {
+        fspName: Fsps.intersolveVisa,
         name: 'Intersolve Visa in program 1',
         label: { en: 'Visa Debit Card' },
       };
 
       // Act
-      const entity =
-        ProgramFinancialServiceProviderConfigurationMapper.mapDtoToEntity(
-          dto,
-          programId,
-        );
+      const entity = ProgramFspConfigurationMapper.mapDtoToEntity(
+        dto,
+        programId,
+      );
 
       // Assert
       expect(entity.programId).toBe(programId);
-      expect(entity.financialServiceProviderName).toBe(
-        dto.financialServiceProviderName,
-      );
+      expect(entity.fspName).toBe(dto.fspName);
       expect(entity.name).toBe(dto.name);
       expect(entity.label).toEqual(dto.label);
     });
   });
 
   describe('mapPropertyDtoToEntities', () => {
-    it('should correctly map CreateProgramFinancialServiceProviderConfigurationPropertyDto to ProgramFinancialServiceProviderConfigurationPropertyEntity', () => {
+    it('should correctly map CreateProgramFspConfigurationPropertyDto to ProgramFspConfigurationPropertyEntity', () => {
       // Arrange
-      const dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
-        {
-          name: FinancialServiceProviderConfigurationProperties.brandCode,
-          value: 'brand123',
-        };
-      const programFinancialServiceProviderConfigurationId = 1;
+      const dto: CreateProgramFspConfigurationPropertyDto = {
+        name: FspConfigurationProperties.brandCode,
+        value: 'brand123',
+      };
+      const programFspConfigurationId = 1;
 
       // Act
-      const entities =
-        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
-          [dto],
-          programFinancialServiceProviderConfigurationId,
-        );
+      const entities = ProgramFspConfigurationMapper.mapPropertyDtosToEntities(
+        [dto],
+        programFspConfigurationId,
+      );
       const entity = entities[0];
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
-        programFinancialServiceProviderConfigurationId,
-      );
+      expect(entity.programFspConfigurationId).toBe(programFspConfigurationId);
       expect(entity.value).toBe(dto.value);
     });
 
     it('should correctly handle columnsToExport as an array and convert to JSON string', () => {
       // Arrange
-      const dto: CreateProgramFinancialServiceProviderConfigurationPropertyDto =
-        {
-          name: FinancialServiceProviderConfigurationProperties.columnsToExport,
-          value: ['column1', 'column2', 'column3'],
-        };
-      const programFinancialServiceProviderConfigurationId = 2;
+      const dto: CreateProgramFspConfigurationPropertyDto = {
+        name: FspConfigurationProperties.columnsToExport,
+        value: ['column1', 'column2', 'column3'],
+      };
+      const programFspConfigurationId = 2;
 
       // Act
-      const entities =
-        ProgramFinancialServiceProviderConfigurationMapper.mapPropertyDtosToEntities(
-          [dto],
-          programFinancialServiceProviderConfigurationId,
-        );
+      const entities = ProgramFspConfigurationMapper.mapPropertyDtosToEntities(
+        [dto],
+        programFspConfigurationId,
+      );
       const entity = entities[0];
 
       // Assert
       expect(entity.name).toBe(dto.name);
-      expect(entity.programFinancialServiceProviderConfigurationId).toBe(
-        programFinancialServiceProviderConfigurationId,
-      );
+      expect(entity.programFspConfigurationId).toBe(programFspConfigurationId);
       expect(entity.value).toBe(JSON.stringify(dto.value)); // Expect value to be JSON string
     });
   });

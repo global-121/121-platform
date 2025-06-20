@@ -11,8 +11,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ProgramFinancialServiceProviderDto } from '@121-service/src/programs/dto/create-program.dto';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { ProgramFspDto } from '@121-service/src/programs/dto/create-program.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class UpdateProgramDto {
@@ -75,20 +75,20 @@ export class UpdateProgramDto {
   @ApiProperty({
     example: [
       {
-        fsp: FinancialServiceProviders.intersolveVoucherWhatsapp,
+        fsp: Fsps.intersolveVoucherWhatsapp,
       },
       {
-        fsp: FinancialServiceProviders.intersolveVoucherPaper,
+        fsp: Fsps.intersolveVoucherPaper,
       },
     ],
     description:
-      'Use the GET /api/financial-service-providers endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. Existing FSPs are not removed from a program. Program-fsp-config is not processed. Use specific POST/PUT endpoints for that.',
+      'Use the GET /api/fsps endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. Existing FSPs are not removed from a program. Program-fsp-config is not processed. Use specific POST/PUT endpoints for that.',
   })
   @IsOptional()
   @IsArray()
   @ValidateNested()
-  @Type(() => ProgramFinancialServiceProviderDto)
-  public readonly financialServiceProviders?: ProgramFinancialServiceProviderDto[];
+  @Type(() => ProgramFspDto)
+  public readonly fsps?: ProgramFspDto[];
 
   @ApiProperty()
   @IsOptional()

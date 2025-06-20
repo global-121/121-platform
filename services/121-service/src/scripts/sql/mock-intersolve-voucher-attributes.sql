@@ -2,8 +2,8 @@
   SELECT pra.id
   FROM "121-service".program_registration_attribute pra
   LEFT JOIN "121-service".program p ON p.id = pra."programId"
-  LEFT JOIN "121-service".program_financial_service_provider_configuration f ON f."programId" = p.id
-  WHERE pra."name" = 'whatsappPhoneNumber' AND f."financialServiceProviderName" = 'Intersolve-voucher-whatsapp'
+  LEFT JOIN "121-service".program_fsp_configuration f ON f."programId" = p.id
+  WHERE pra."name" = 'whatsappPhoneNumber' AND f."fspName" = 'Intersolve-voucher-whatsapp'
 )
 
 UPDATE "121-service".intersolve_voucher iv

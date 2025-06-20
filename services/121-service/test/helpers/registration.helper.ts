@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -28,7 +28,7 @@ export function createOcwRegistrationForImport({
   addressStreet,
   addressPostalCode,
   addressCity,
-  programFinancialServiceProviderConfigurationName,
+  programFspConfigurationName,
 }: {
   referenceId?: string;
   paymentAmountMultiplier?: number;
@@ -39,7 +39,7 @@ export function createOcwRegistrationForImport({
   addressStreet?: string | null;
   addressPostalCode?: string | null;
   addressCity?: string | null;
-  programFinancialServiceProviderConfigurationName?: string;
+  programFspConfigurationName?: string;
 }) {
   return {
     referenceId:
@@ -51,10 +51,9 @@ export function createOcwRegistrationForImport({
       paymentAmountMultiplier !== undefined ? paymentAmountMultiplier : 1,
     fullName: fullName !== undefined ? fullName : 'Default Name',
     phoneNumber: phoneNumber !== undefined ? phoneNumber : '14155236666',
-    programFinancialServiceProviderConfigurationName:
-      programFinancialServiceProviderConfigurationName
-        ? programFinancialServiceProviderConfigurationName
-        : FinancialServiceProviders.intersolveVisa,
+    programFspConfigurationName: programFspConfigurationName
+      ? programFspConfigurationName
+      : Fsps.intersolveVisa,
     whatsappPhoneNumber:
       whatsappPhoneNumber !== undefined ? whatsappPhoneNumber : '14155236666',
     addressStreet:
@@ -516,7 +515,7 @@ export function getVisaWalletsAndDetails(
 ): Promise<request.Response> {
   return getServer()
     .get(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
     )
     .set('Cookie', [accessToken])
     .send();
@@ -529,7 +528,7 @@ export function retrieveAndUpdateVisaWalletsAndDetails(
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
     )
     .set('Cookie', [accessToken])
     .send();
@@ -542,7 +541,7 @@ export function issueNewVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards`,
     )
     .set('Cookie', [accessToken])
     .send();
@@ -556,7 +555,7 @@ export function blockVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
     )
     .set('Cookie', [accessToken])
     .send({});
@@ -570,7 +569,7 @@ export function unblockVisaCard(
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/financial-service-providers/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
+      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
     )
     .set('Cookie', [accessToken])
     .send({});

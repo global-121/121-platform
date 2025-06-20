@@ -9,7 +9,7 @@ export class NedbankReconciliationController {
   public constructor(
     private nedbankReconciliationService: NedbankReconciliationService,
   ) {}
-  @ApiTags('financial-service-providers/nedbank')
+  @ApiTags('fsps/nedbank')
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
@@ -19,7 +19,7 @@ export class NedbankReconciliationController {
     status: HttpStatus.NO_CONTENT,
     description: 'Nedbank vouchers and transaction update process started',
   })
-  @Patch('financial-service-providers/nedbank')
+  @Patch('fsps/nedbank')
   public async doNedbankReconciliation(): Promise<void> {
     console.info('Start: Nedbank Reconciliation');
     this.nedbankReconciliationService

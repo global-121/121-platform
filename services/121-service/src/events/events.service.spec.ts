@@ -4,8 +4,8 @@ import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { EventScopedRepository } from '@121-service/src/events/event.repository';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -27,7 +27,7 @@ const attributeEntityNewValue = {
 
 const attributeEntityFieldName = {
   key: 'fieldName',
-  value: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+  value: FspAttributes.whatsappPhoneNumber,
 };
 
 const mockFindEventResult: EventEntity[] = [
@@ -66,9 +66,9 @@ function getViewRegistration(): RegistrationViewEntity {
     preferredLanguage: LanguageEnum.en,
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
-    financialServiceProviderName: FinancialServiceProviders.intersolveVisa,
-    programFinancialServiceProviderConfigurationName: 'Intersolve-Visa',
-    programFinancialServiceProviderConfigurationLabel: {
+    fspName: Fsps.intersolveVisa,
+    programFspConfigurationName: 'Intersolve-Visa',
+    programFspConfigurationLabel: {
       en: 'Visa debit card',
     },
     registrationProgramId: 2,
@@ -205,29 +205,19 @@ describe('EventsService', () => {
 
   it('should create events for an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
-    newViewRegistration[
-      FinancialServiceProviderAttributes.whatsappPhoneNumber
-    ] = '1234567890';
-    newViewRegistration['programFinancialServiceProviderConfigurationLabel'] = {
+    newViewRegistration[FspAttributes.whatsappPhoneNumber] = '1234567890';
+    newViewRegistration['programFspConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
-    delete newViewRegistration[FinancialServiceProviderAttributes.addressCity];
-    delete newViewRegistration[
-      FinancialServiceProviderAttributes.addressPostalCode
-    ];
-    delete newViewRegistration[
-      FinancialServiceProviderAttributes.addressHouseNumberAddition
-    ];
-    delete newViewRegistration[
-      FinancialServiceProviderAttributes.addressHouseNumber
-    ];
-    delete newViewRegistration[
-      FinancialServiceProviderAttributes.addressStreet
-    ];
+    delete newViewRegistration[FspAttributes.addressCity];
+    delete newViewRegistration[FspAttributes.addressPostalCode];
+    delete newViewRegistration[FspAttributes.addressHouseNumberAddition];
+    delete newViewRegistration[FspAttributes.addressHouseNumber];
+    delete newViewRegistration[FspAttributes.addressStreet];
 
     // Changes that should not be logged
-    newViewRegistration.programFinancialServiceProviderConfigurationName =
-      FinancialServiceProviders.intersolveVoucherWhatsapp;
+    newViewRegistration.programFspConfigurationName =
+      Fsps.intersolveVoucherWhatsapp;
 
     // Act
     await eventsService.createFromRegistrationViews(
@@ -240,21 +230,15 @@ describe('EventsService', () => {
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.financialServiceProviderChange,
+        type: EventEnum.fspChange,
         attributes: [
           {
             key: 'oldValue',
-            value:
-              oldViewRegistration[
-                'programFinancialServiceProviderConfigurationLabel'
-              ],
+            value: oldViewRegistration['programFspConfigurationLabel'],
           },
           {
             key: 'newValue',
-            value:
-              newViewRegistration[
-                'programFinancialServiceProviderConfigurationLabel'
-              ],
+            value: newViewRegistration['programFspConfigurationLabel'],
           },
         ],
         userId: 2,
@@ -265,21 +249,15 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value:
-              oldViewRegistration[
-                FinancialServiceProviderAttributes.whatsappPhoneNumber
-              ],
+            value: oldViewRegistration[FspAttributes.whatsappPhoneNumber],
           },
           {
             key: 'newValue',
-            value:
-              newViewRegistration[
-                FinancialServiceProviderAttributes.whatsappPhoneNumber
-              ],
+            value: newViewRegistration[FspAttributes.whatsappPhoneNumber],
           },
           {
             key: 'fieldName',
-            value: FinancialServiceProviderAttributes.whatsappPhoneNumber,
+            value: FspAttributes.whatsappPhoneNumber,
           },
         ],
         userId: 2,
@@ -290,14 +268,11 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value:
-              oldViewRegistration[
-                FinancialServiceProviderAttributes.addressCity
-              ],
+            value: oldViewRegistration[FspAttributes.addressCity],
           },
           {
             key: 'fieldName',
-            value: FinancialServiceProviderAttributes.addressCity,
+            value: FspAttributes.addressCity,
           },
         ],
         userId: 2,
@@ -308,14 +283,11 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value:
-              oldViewRegistration[
-                FinancialServiceProviderAttributes.addressPostalCode
-              ],
+            value: oldViewRegistration[FspAttributes.addressPostalCode],
           },
           {
             key: 'fieldName',
-            value: FinancialServiceProviderAttributes.addressPostalCode,
+            value: FspAttributes.addressPostalCode,
           },
         ],
         userId: 2,
@@ -326,26 +298,7 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'fieldName',
-            value:
-              FinancialServiceProviderAttributes.addressHouseNumberAddition,
-          },
-        ],
-        userId: 2,
-      },
-      {
-        registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
-        attributes: [
-          {
-            key: 'oldValue',
-            value:
-              oldViewRegistration[
-                FinancialServiceProviderAttributes.addressHouseNumber
-              ],
-          },
-          {
-            key: 'fieldName',
-            value: FinancialServiceProviderAttributes.addressHouseNumber,
+            value: FspAttributes.addressHouseNumberAddition,
           },
         ],
         userId: 2,
@@ -356,14 +309,26 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value:
-              oldViewRegistration[
-                FinancialServiceProviderAttributes.addressStreet
-              ],
+            value: oldViewRegistration[FspAttributes.addressHouseNumber],
           },
           {
             key: 'fieldName',
-            value: FinancialServiceProviderAttributes.addressStreet,
+            value: FspAttributes.addressHouseNumber,
+          },
+        ],
+        userId: 2,
+      },
+      {
+        registrationId: oldViewRegistration.id,
+        type: EventEnum.registrationDataChange,
+        attributes: [
+          {
+            key: 'oldValue',
+            value: oldViewRegistration[FspAttributes.addressStreet],
+          },
+          {
+            key: 'fieldName',
+            value: FspAttributes.addressStreet,
           },
         ],
         userId: 2,
@@ -388,7 +353,7 @@ describe('EventsService', () => {
           attributes: expect.arrayContaining([
             expect.objectContaining({
               key: 'fieldName',
-              value: 'financialServiceProvider',
+              value: 'fsp',
             }),
           ]),
         }),

@@ -18,24 +18,24 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
-import { ProgramFinancialServiceProviderConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
-import { ProgramFinancialServiceProviderConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
+import { ProgramFspConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
+import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('programs/financial-service-provider-configurations')
+@ApiTags('programs/fsp-configurations')
 @Controller('programs')
-export class ProgramFinancialServiceProviderConfigurationsController {
+export class ProgramFspConfigurationsController {
   public constructor(
-    private readonly programFinancialServiceProviderConfigurationsService: ProgramFinancialServiceProviderConfigurationsService,
+    private readonly programFspConfigurationsService: ProgramFspConfigurationsService,
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
@@ -52,20 +52,18 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     status: HttpStatus.NOT_FOUND,
     description: 'Program does not exist',
   })
-  @Get(':programId/financial-service-provider-configurations')
+  @Get(':programId/fsp-configurations')
   public async getByProgramId(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto[]> {
-    return this.programFinancialServiceProviderConfigurationsService.getByProgramId(
-      programId,
-    );
+  ): Promise<ProgramFspConfigurationResponseDto[]> {
+    return this.programFspConfigurationsService.getByProgramId(programId);
   }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Create a Financial Service Provider Configuration for a Program. You can also add properties in this API call or you can add them later using /programs/{programId}/financial-service-provider-configurations/{name}/properties',
+      'Create a Financial Service Provider Configuration for a Program. You can also add properties in this API call or you can add them later using /programs/{programId}/fsp-configurations/{name}/properties',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -86,14 +84,14 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     description:
       'Program Financial Service Provider Configuration with same name already exists',
   })
-  @Post(':programId/financial-service-provider-configurations')
+  @Post(':programId/fsp-configurations')
   public async create(
     @Body()
-    programFspConfigurationData: CreateProgramFinancialServiceProviderConfigurationDto,
+    programFspConfigurationData: CreateProgramFspConfigurationDto,
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
-    return await this.programFinancialServiceProviderConfigurationsService.create(
+  ): Promise<ProgramFspConfigurationResponseDto> {
+    return await this.programFspConfigurationsService.create(
       programId,
       programFspConfigurationData,
     );
@@ -102,7 +100,7 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/financial-service-provider-configurations/{name}/properties. Example of how to format properties can also be found there',
+      'Update a Financial Service Provider Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/fsp-configurations/{name}/properties. Example of how to format properties can also be found there',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -123,16 +121,16 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     status: HttpStatus.BAD_REQUEST,
     description: 'Bad request. Body or params are malformed',
   })
-  @Patch(':programId/financial-service-provider-configurations/:name')
+  @Patch(':programId/fsp-configurations/:name')
   public async update(
     @Body()
-    programFspConfigurationData: UpdateProgramFinancialServiceProviderConfigurationDto,
+    programFspConfigurationData: UpdateProgramFspConfigurationDto,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('name')
     name: string,
-  ): Promise<ProgramFinancialServiceProviderConfigurationResponseDto> {
-    return await this.programFinancialServiceProviderConfigurationsService.update(
+  ): Promise<ProgramFspConfigurationResponseDto> {
+    return await this.programFspConfigurationsService.update(
       programId,
       name,
       programFspConfigurationData,
@@ -165,22 +163,19 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     description:
       'Program Financial Service Provider Configuration is associated with transactions, so cannot be deleted',
   })
-  @Delete(':programId/financial-service-provider-configurations/:name')
+  @Delete(':programId/fsp-configurations/:name')
   public async delete(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('name')
     name: string,
   ): Promise<void> {
-    await this.programFinancialServiceProviderConfigurationsService.delete(
-      programId,
-      name,
-    );
+    await this.programFspConfigurationsService.delete(programId, name);
   }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Create properties for a Program Financial Service Provider Configuration. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+    summary: `Create properties for a Program Financial Service Provider Configuration. See ${EXTERNAL_API.baseApiUrl}/fsps for allowed properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -204,35 +199,31 @@ export class ProgramFinancialServiceProviderConfigurationsController {
   })
   @ApiBody({
     isArray: true,
-    type: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
+    type: CreateProgramFspConfigurationPropertyDto,
   })
-  @Post(':programId/financial-service-provider-configurations/:name/properties')
+  @Post(':programId/fsp-configurations/:name/properties')
   public async createProperties(
     @Body(
       new ParseArrayPipe({
-        items: CreateProgramFinancialServiceProviderConfigurationPropertyDto,
+        items: CreateProgramFspConfigurationPropertyDto,
       }),
     )
-    properties: CreateProgramFinancialServiceProviderConfigurationPropertyDto[],
+    properties: CreateProgramFspConfigurationPropertyDto[],
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('name')
     name: string,
-  ): Promise<
-    ProgramFinancialServiceProviderConfigurationPropertyResponseDto[]
-  > {
-    return await this.programFinancialServiceProviderConfigurationsService.createProperties(
-      {
-        programId,
-        name,
-        properties,
-      },
-    );
+  ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
+    return await this.programFspConfigurationsService.createProperties({
+      programId,
+      name,
+      properties,
+    });
   }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Update a single property for a Program Financial Service Provider Configuration.. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for allowed properties per financial service provider.`,
+    summary: `Update a single property for a Program Financial Service Provider Configuration.. See ${EXTERNAL_API.baseApiUrl}/fsps for allowed properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -259,32 +250,28 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     description:
       'Program does not exist or Financial Service Provider Configuration or propery does not exist',
   })
-  @Patch(
-    ':programId/financial-service-provider-configurations/:name/properties/:propertyName',
-  )
+  @Patch(':programId/fsp-configurations/:name/properties/:propertyName')
   public async updateProperty(
     @Body()
-    property: UpdateProgramFinancialServiceProviderConfigurationPropertyDto,
+    property: UpdateProgramFspConfigurationPropertyDto,
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('name')
     name: string,
     @Param('propertyName')
-    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
-  ): Promise<ProgramFinancialServiceProviderConfigurationPropertyResponseDto> {
-    return await this.programFinancialServiceProviderConfigurationsService.updateProperty(
-      {
-        programId,
-        name,
-        propertyName,
-        property,
-      },
-    );
+    propertyName: WrapperType<FspConfigurationProperties>,
+  ): Promise<ProgramFspConfigurationPropertyResponseDto> {
+    return await this.programFspConfigurationsService.updateProperty({
+      programId,
+      name,
+      propertyName,
+      property,
+    });
   }
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Delete a single Program Financial Service Provider Configuration property. See ${EXTERNAL_API.baseApiUrl}/financial-service-providers for required properties per financial service provider.`,
+    summary: `Delete a single Program Financial Service Provider Configuration property. See ${EXTERNAL_API.baseApiUrl}/fsps for required properties per financial service provider.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -312,23 +299,19 @@ export class ProgramFinancialServiceProviderConfigurationsController {
     description:
       'Program does not exist or Financial Service Provider Configuration or propery does not exist',
   })
-  @Delete(
-    ':programId/financial-service-provider-configurations/:name/properties/:propertyName',
-  )
+  @Delete(':programId/fsp-configurations/:name/properties/:propertyName')
   public async deleteProperty(
     @Param('programId', ParseIntPipe)
     programId: number,
     @Param('name')
     name: string,
     @Param('propertyName')
-    propertyName: WrapperType<FinancialServiceProviderConfigurationProperties>,
+    propertyName: WrapperType<FspConfigurationProperties>,
   ): Promise<void> {
-    await this.programFinancialServiceProviderConfigurationsService.deleteProperty(
-      {
-        programId,
-        name,
-        propertyName,
-      },
-    );
+    await this.programFspConfigurationsService.deleteProperty({
+      programId,
+      name,
+      propertyName,
+    });
   }
 }

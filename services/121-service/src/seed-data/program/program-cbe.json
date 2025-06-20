@@ -136,9 +136,9 @@
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfigurations": [
+  "programFspConfigurations": [
     {
-      "financialServiceProvider": "Commercial-bank-ethiopia",
+      "fsp": "Commercial-bank-ethiopia",
       "properties": [
         {
           "name": "username",

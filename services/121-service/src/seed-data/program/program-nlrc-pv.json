@@ -136,9 +136,9 @@
   "enableMaxPayments": true,
   "enableScope": true,
   "allowEmptyPhoneNumber": true,
-  "programFinancialServiceProviderConfigurations": [
+  "programFspConfigurations": [
     {
-      "financialServiceProvider": "Intersolve-voucher-whatsapp",
+      "fsp": "Intersolve-voucher-whatsapp",
       "properties": [
         {
           "name": "username",
@@ -151,7 +151,7 @@
       ]
     },
     {
-      "financialServiceProvider": "Intersolve-voucher-paper",
+      "fsp": "Intersolve-voucher-paper",
       "properties": [
         {
           "name": "username",
@@ -164,7 +164,7 @@
       ]
     },
     {
-      "financialServiceProvider": "Intersolve-visa",
+      "fsp": "Intersolve-visa",
       "properties": [
         {
           "name": "brandCode",
@@ -181,7 +181,7 @@
       ]
     },
     {
-      "financialServiceProvider": "Excel",
+      "fsp": "Excel",
       "properties": [
         {
           "name": "displayName",

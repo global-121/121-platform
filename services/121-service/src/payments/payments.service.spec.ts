@@ -22,7 +22,7 @@ function createMockTransaction(
     status,
     amount,
     errorMessage: null,
-    programFinancialServiceProviderConfigurationName: 'someFsp',
+    programFspConfigurationName: 'someFsp',
     registrationProgramId: registrationId + 100,
     registrationId,
     registrationStatus: RegistrationStatusEnum.included,

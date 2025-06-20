@@ -1,13 +1,9 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FinancialServiceProviderDto } from '@121-service/src/fsps/fsp.dto';
-import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspDto } from '@121-service/src/fsps/fsp.dto';
+import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 
-export function getFinancialServiceProviderSettingByNameOrThrow(
-  name: string,
-): FinancialServiceProviderDto {
-  const foundFsp = FINANCIAL_SERVICE_PROVIDER_SETTINGS.find(
-    (fsp) => fsp.name === name,
-  );
+export function getFspSettingByNameOrThrow(name: string): FspDto {
+  const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === name);
   if (!foundFsp) {
     throw new Error(`Financial service provider with name ${name} not found`);
   } else {
@@ -15,21 +11,13 @@ export function getFinancialServiceProviderSettingByNameOrThrow(
   }
 }
 
-export function getFinancialServiceProviderConfigurationProperties(
-  financialServiceProviderName: FinancialServiceProviders,
-): string[] {
-  const foundFsp = getFinancialServiceProviderSettingByNameOrThrow(
-    financialServiceProviderName,
-  );
+export function getFspConfigurationProperties(fspName: Fsps): string[] {
+  const foundFsp = getFspSettingByNameOrThrow(fspName);
   return foundFsp.configurationProperties.map((property) => property.name);
 }
 
-export function getFinancialServiceProviderConfigurationRequiredProperties(
-  financialServiceProviderName: FinancialServiceProviders,
-): string[] {
-  const foundFsp = getFinancialServiceProviderSettingByNameOrThrow(
-    financialServiceProviderName,
-  );
+export function getFspConfigurationRequiredProperties(fspName: Fsps): string[] {
+  const foundFsp = getFspSettingByNameOrThrow(fspName);
   return foundFsp.configurationProperties
     .filter((property) => property.isRequired)
     .map((property) => property.name);

@@ -272,7 +272,7 @@ export class RegistrationApiService extends DomainApiService {
       path: [
         ...BASE_ENDPOINT(projectId),
         referenceId,
-        'financial-service-providers',
+        'fsps',
         'intersolve-visa',
         'wallet',
       ],
@@ -295,7 +295,7 @@ export class RegistrationApiService extends DomainApiService {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(projectId),
       referenceId,
-      'financial-service-providers',
+      'fsps',
       'intersolve-visa',
       'wallet',
       'cards',
@@ -321,7 +321,7 @@ export class RegistrationApiService extends DomainApiService {
     const endpoint = this.pathToQueryKey([
       ...BASE_ENDPOINT(projectId),
       referenceId,
-      'financial-service-providers',
+      'fsps',
       'intersolve-visa',
       'wallet',
       'cards',

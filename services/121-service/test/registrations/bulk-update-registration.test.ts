@@ -145,19 +145,18 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
   it('Should bulk update chosen FSP and validate changed records', async () => {
     const registrationDataThatWillChangePa1 = {
-      financialServiceProviderName: 'Intersolve-voucher-whatsapp',
-      programFinancialServiceProviderConfigurationId: 5,
-      programFinancialServiceProviderConfigurationName:
-        'Intersolve-voucher-whatsapp',
-      programFinancialServiceProviderConfigurationLabel: {
+      fspName: 'Intersolve-voucher-whatsapp',
+      programFspConfigurationId: 5,
+      programFspConfigurationName: 'Intersolve-voucher-whatsapp',
+      programFspConfigurationLabel: {
         en: 'Albert Heijn voucher WhatsApp',
       },
     };
     const registrationDataThatWillChangePa2 = {
-      financialServiceProviderName: 'Intersolve-visa',
-      programFinancialServiceProviderConfigurationId: 6,
-      programFinancialServiceProviderConfigurationName: 'Intersolve-visa',
-      programFinancialServiceProviderConfigurationLabel: {
+      fspName: 'Intersolve-visa',
+      programFspConfigurationId: 6,
+      programFspConfigurationName: 'Intersolve-visa',
+      programFspConfigurationLabel: {
         en: 'Visa debit card',
       },
     };

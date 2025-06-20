@@ -1,6 +1,6 @@
 import { FilterOperator } from 'nestjs-paginate';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createOcwRegistrationForImport,
@@ -37,8 +37,7 @@ const registrations = [
   }),
   createOcwRegistrationForImport({
     referenceId: 'referenceId5',
-    programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     paymentAmountMultiplier: 3,
     addressHouseNumber: null,
   }),
