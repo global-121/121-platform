@@ -5,7 +5,7 @@ import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
@@ -75,8 +75,7 @@ export class CommercialBankEthiopiaService
 
     const fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.paList = [];
-    fspTransactionResult.fspName =
-      FinancialServiceProviders.commercialBankEthiopia;
+    fspTransactionResult.fspName = Fsps.commercialBankEthiopia;
 
     const referenceIds = paPaymentList.map(
       (paPayment) => paPayment.referenceId,
@@ -260,8 +259,7 @@ export class CommercialBankEthiopiaService
     credentials: UsernamePasswordInterface,
   ): Promise<PaTransactionResultDto> {
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName =
-      FinancialServiceProviders.commercialBankEthiopia;
+    paTransactionResult.fspName = Fsps.commercialBankEthiopia;
     paTransactionResult.referenceId = referenceId;
     paTransactionResult.date = new Date();
     paTransactionResult.calculatedAmount = payload.debitAmount;
@@ -327,15 +325,14 @@ export class CommercialBankEthiopiaService
       await this.programFspConfigurationRepository.getByProgramIdAndFinancialServiceProviderName(
         {
           programId,
-          financialServiceProviderName:
-            FinancialServiceProviders.commercialBankEthiopia,
+          financialServiceProviderName: Fsps.commercialBankEthiopia,
         },
       );
 
     // For now we only support one CBE FSP configuration per program
     if (configs.length !== 1) {
       throw new HttpException(
-        `Expected exactly one program financial service provider configuration for program ${programId} and financial service provider ${FinancialServiceProviders.commercialBankEthiopia}`,
+        `Expected exactly one program financial service provider configuration for program ${programId} and financial service provider ${Fsps.commercialBankEthiopia}`,
         HttpStatus.NOT_FOUND,
       );
     }

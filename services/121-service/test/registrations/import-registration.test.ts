@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -293,7 +293,7 @@ describe('Import a registration', () => {
       ...registrationWesteros1Copy
     } = registrationWesteros1;
     registrationWesteros1Copy.programFinancialServiceProviderConfigurationName =
-      FinancialServiceProviders.intersolveVoucherWhatsapp;
+      Fsps.intersolveVoucherWhatsapp;
 
     const programIdWestoros = 2;
 

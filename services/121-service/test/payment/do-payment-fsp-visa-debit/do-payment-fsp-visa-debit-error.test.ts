@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -306,16 +306,14 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     await deleteProgramFinancialServiceProviderConfigurationProperty({
       programId: programIdVisa,
-      configName: FinancialServiceProviders.intersolveVisa,
-      propertyName:
-        FinancialServiceProviderConfigurationProperties.coverLetterCode,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.coverLetterCode,
       accessToken,
     });
     await deleteProgramFinancialServiceProviderConfigurationProperty({
       programId: programIdVisa,
-      configName: FinancialServiceProviders.intersolveVisa,
-      propertyName:
-        FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+      configName: Fsps.intersolveVisa,
+      propertyName: FspConfigurationProperties.fundingTokenCode,
       accessToken,
     });
 
@@ -331,10 +329,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
     // Check if both properties are mentioned in the error message
     expect(doPaymentResponse.body.message).toContain(
-      FinancialServiceProviderConfigurationProperties.coverLetterCode,
+      FspConfigurationProperties.coverLetterCode,
     );
     expect(doPaymentResponse.body.message).toContain(
-      FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+      FspConfigurationProperties.fundingTokenCode,
     );
   });
 

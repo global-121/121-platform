@@ -4,7 +4,7 @@ import { Equal, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
@@ -49,7 +49,7 @@ export class CommercialBankEthiopiaReconciliationService {
       .where(
         'programFinancialServiceProviderConfigurations.financialServiceProviderName = :fsp',
         {
-          fsp: FinancialServiceProviders.commercialBankEthiopia,
+          fsp: Fsps.commercialBankEthiopia,
         },
       )
       .getMany();

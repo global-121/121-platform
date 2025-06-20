@@ -17,7 +17,7 @@ import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
@@ -41,7 +41,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFinancialServiceProviderConfigurationEntity,
+      ProgramFspConfigurationEntity,
       ProgramAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),

@@ -84,7 +84,7 @@ export class TransactionsService {
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
+    transaction.programFspConfigurationId =
       relationDetails.programFinancialServiceProviderConfigurationId;
     transaction.program = program;
     transaction.payment = relationDetails.paymentNr;
@@ -296,7 +296,7 @@ export class TransactionsService {
         const transaction = new TransactionEntity();
         transaction.amount = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
-        transaction.programFinancialServiceProviderConfigurationId =
+        transaction.programFspConfigurationId =
           transactionRelationDetails.programFinancialServiceProviderConfigurationId;
         transaction.programId = transactionRelationDetails.programId;
         transaction.payment = transactionRelationDetails.paymentNr;

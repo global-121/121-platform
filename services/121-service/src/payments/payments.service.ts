@@ -10,7 +10,7 @@ import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { FinancialServiceProviderIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FINANCIAL_SERVICE_PROVIDER_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import {
   getFinancialServiceProviderConfigurationRequiredProperties,
@@ -42,7 +42,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import {
@@ -76,7 +76,7 @@ export class PaymentsService {
   private readonly transactionRepository: Repository<TransactionEntity>;
 
   private financialServiceProviderNameToServiceMap: Record<
-    FinancialServiceProviders,
+    Fsps,
     [FinancialServiceProviderIntegrationInterface, useWhatsapp?: boolean]
   >;
 
@@ -103,25 +103,17 @@ export class PaymentsService {
     private readonly redisClient: Redis,
   ) {
     this.financialServiceProviderNameToServiceMap = {
-      [FinancialServiceProviders.intersolveVoucherWhatsapp]: [
-        this.intersolveVoucherService,
-        true,
-      ],
-      [FinancialServiceProviders.intersolveVoucherPaper]: [
-        this.intersolveVoucherService,
-        false,
-      ],
+      [Fsps.intersolveVoucherWhatsapp]: [this.intersolveVoucherService, true],
+      [Fsps.intersolveVoucherPaper]: [this.intersolveVoucherService, false],
       // TODO: REFACTOR: This should be refactored after the other FSPs (all except Intersolve Visa) are also refactored.
-      [FinancialServiceProviders.intersolveVisa]: [this.intersolveVisaService],
-      [FinancialServiceProviders.safaricom]: [this.safaricomService],
-      [FinancialServiceProviders.commercialBankEthiopia]: [
-        this.commercialBankEthiopiaService,
-      ],
-      [FinancialServiceProviders.excel]: [this.excelService],
-      [FinancialServiceProviders.deprecatedJumbo]: [
+      [Fsps.intersolveVisa]: [this.intersolveVisaService],
+      [Fsps.safaricom]: [this.safaricomService],
+      [Fsps.commercialBankEthiopia]: [this.commercialBankEthiopiaService],
+      [Fsps.excel]: [this.excelService],
+      [Fsps.deprecatedJumbo]: [
         {} as FinancialServiceProviderIntegrationInterface,
       ],
-      [FinancialServiceProviders.nedbank]: [this.nedbankService],
+      [Fsps.nedbank]: [this.nedbankService],
     };
   }
 
@@ -370,7 +362,7 @@ export class PaymentsService {
 
     const requiredConfigurations =
       getFinancialServiceProviderConfigurationRequiredProperties(
-        config.financialServiceProviderName,
+        config.fspName,
       );
     // Early return for FSP that don't have required configurations
     if (!requiredConfigurations) {
@@ -383,7 +375,7 @@ export class PaymentsService {
       );
       if (!foundConfig) {
         errorMessages.push(
-          `Missing required configuration ${requiredConfiguration} for FSP ${config.financialServiceProviderName}`,
+          `Missing required configuration ${requiredConfiguration} for FSP ${config.fspName}`,
         );
       }
     }
@@ -665,7 +657,7 @@ export class PaymentsService {
   }): Promise<void> {
     await Promise.all(
       Object.entries(paLists).map(async ([fsp, paPaymentList]) => {
-        if (fsp === FinancialServiceProviders.intersolveVisa) {
+        if (fsp === Fsps.intersolveVisa) {
           /*
             TODO: REFACTOR: We need to refactor the Payments Service during segregation of duties implementation, so that the Payments Service calls a private function per FSP with a list of ReferenceIds (or RegistrationIds ?!)
             which then gathers the necessary data to create transaction jobs for the FSP.
@@ -690,7 +682,7 @@ export class PaymentsService {
           });
         }
 
-        if (fsp === FinancialServiceProviders.safaricom) {
+        if (fsp === Fsps.safaricom) {
           return await this.createAndAddSafaricomTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
@@ -707,7 +699,7 @@ export class PaymentsService {
           });
         }
 
-        if (fsp === FinancialServiceProviders.nedbank) {
+        if (fsp === Fsps.nedbank) {
           return await this.createAndAddNedbankTransactionJobs({
             referenceIdsAndTransactionAmounts: paPaymentList.map(
               (paPaymentData) => {
@@ -767,7 +759,7 @@ export class PaymentsService {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes =
       getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVisa,
+        Fsps.intersolveVisa,
       ).attributes;
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
@@ -859,7 +851,7 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     const safaricomAttributes = getFinancialServiceProviderSettingByNameOrThrow(
-      FinancialServiceProviders.safaricom,
+      Fsps.safaricom,
     ).attributes;
     const safaricomAttributeNames = safaricomAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews(
@@ -924,7 +916,7 @@ export class PaymentsService {
     isRetry: boolean;
   }): Promise<void> {
     const nedbankAttributes = getFinancialServiceProviderSettingByNameOrThrow(
-      FinancialServiceProviders.nedbank,
+      Fsps.nedbank,
     ).attributes;
     const nedbankAttributeNames = nedbankAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews(
@@ -1194,8 +1186,7 @@ export class PaymentsService {
           programFinancialServiceProviderConfigurationName:
             fspConfigEntity.name,
           programFinancialServiceProviderConfigurationId: fspConfigEntity.id,
-          financialServiceProviderName:
-            fspConfigEntity.financialServiceProviderName,
+          financialServiceProviderName: fspConfigEntity.fspName,
         });
       // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
       allFspInstructions.push(fspInstructions);
@@ -1219,7 +1210,7 @@ export class PaymentsService {
 
   private filterTransactionsWithFspInstructionBasedOnStatus(
     transactions: TransactionReturnDto[],
-    programFspConfigEntitiesWithFspInstruction: ProgramFinancialServiceProviderConfigurationEntity[],
+    programFspConfigEntitiesWithFspInstruction: ProgramFspConfigurationEntity[],
   ): TransactionReturnDto[] {
     const programFspConfigNamesThatRequireInstructions =
       programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
@@ -1255,9 +1246,9 @@ export class PaymentsService {
     payment: number;
     programFinancialServiceProviderConfigurationName: string;
     programFinancialServiceProviderConfigurationId: number;
-    financialServiceProviderName: FinancialServiceProviders;
+    financialServiceProviderName: Fsps;
   }): Promise<FspInstructions> {
-    if (financialServiceProviderName === FinancialServiceProviders.excel) {
+    if (financialServiceProviderName === Fsps.excel) {
       return {
         data: await this.excelService.getFspInstructions({
           transactions,

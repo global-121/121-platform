@@ -9,22 +9,19 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFinancialServiceProviderConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
+import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-@Unique('programFinancialServiceProviderConfigurationUnique', [
-  'programId',
-  'name',
-])
-@Entity('program_financial_service_provider_configuration')
-export class ProgramFinancialServiceProviderConfigurationEntity extends Base121Entity {
+@Unique('programFspConfigurationUnique', ['programId', 'name'])
+@Entity('program_fsp_configuration')
+export class ProgramFspConfigurationEntity extends Base121Entity {
   @ManyToOne(
     (_type) => ProgramEntity,
-    (program) => program.programFinancialServiceProviderConfigurations,
+    (program) => program.programFspConfigurations,
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'programId' })
@@ -32,7 +29,7 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends Base121E
   public programId: number;
 
   @Column({ type: 'character varying' })
-  public financialServiceProviderName: FinancialServiceProviders;
+  public fspName: Fsps;
 
   @Column({ type: 'character varying' })
   public name: string;
@@ -41,25 +38,22 @@ export class ProgramFinancialServiceProviderConfigurationEntity extends Base121E
   public label: LocalizedString;
 
   @OneToMany(
-    (_type) => ProgramFinancialServiceProviderConfigurationPropertyEntity,
-    (programFinancialServiceProviderConfigurationProperty) =>
-      programFinancialServiceProviderConfigurationProperty.programFinancialServiceProviderConfiguration,
+    (_type) => ProgramFspConfigurationPropertyEntity,
+    (programFspConfigurationProperty) =>
+      programFspConfigurationProperty.programFspConfiguration,
     { cascade: ['insert'] },
   )
-  public properties: Relation<
-    ProgramFinancialServiceProviderConfigurationPropertyEntity[]
-  >;
+  public properties: Relation<ProgramFspConfigurationPropertyEntity[]>;
 
   @OneToMany(
     (_type) => TransactionEntity,
-    (transactions) => transactions.programFinancialServiceProviderConfiguration,
+    (transactions) => transactions.programFspConfiguration,
   )
   public transactions: Relation<TransactionEntity[]>;
 
   @OneToMany(
     (_type) => RegistrationEntity,
-    (registrations) =>
-      registrations.programFinancialServiceProviderConfiguration,
+    (registrations) => registrations.programFspConfiguration,
   )
   public registrations: Relation<RegistrationEntity[]>;
 }

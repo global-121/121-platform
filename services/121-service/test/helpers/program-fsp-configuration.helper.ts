@@ -1,6 +1,6 @@
 import * as request from 'supertest';
 
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
 import { ProgramFinancialServiceProviderConfigurationPropertyResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-property-response.dto';
@@ -111,7 +111,7 @@ export async function patchProgramFinancialServiceProviderConfigurationProperty(
 }: {
   programId: number;
   configName: string;
-  propertyName: FinancialServiceProviderConfigurationProperties;
+  propertyName: FspConfigurationProperties;
   body: UpdateProgramFinancialServiceProviderConfigurationPropertyDto;
   accessToken: string;
 }): Promise<
@@ -135,7 +135,7 @@ export async function deleteProgramFinancialServiceProviderConfigurationProperty
 }: {
   programId: number;
   configName: string;
-  propertyName: FinancialServiceProviderConfigurationProperties;
+  propertyName: FspConfigurationProperties;
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()

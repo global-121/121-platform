@@ -5,8 +5,8 @@ import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 import { EventsService } from '@121-service/src/events/events.service';
 import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -590,11 +590,8 @@ export class RegistrationsService {
       }
     }
 
-    if (
-      attribute ===
-      AdditionalAttributes.programFinancialServiceProviderConfigurationName
-    ) {
-      registration.programFinancialServiceProviderConfigurationId =
+    if (attribute === AdditionalAttributes.programFspConfigurationName) {
+      registration.programFspConfigurationId =
         await this.getChosenFspConfigurationId({
           registration,
           newFspConfigurationName: String(value),
@@ -615,7 +612,7 @@ export class RegistrationsService {
 
     const intersolveVisaAttributeNames =
       getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVisa,
+        Fsps.intersolveVisa,
       ).attributes.map((attr) => attr.name) as string[];
     if (
       process.env.SYNC_WITH_THIRD_PARTIES &&
@@ -1005,13 +1002,11 @@ export class RegistrationsService {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
-      relations: ['programFinancialServiceProviderConfiguration'],
+      relations: ['programFspConfiguration'],
     });
     if (
-      !registration.programFinancialServiceProviderConfigurationId ||
-      registration.programFinancialServiceProviderConfiguration
-        ?.financialServiceProviderName !==
-        FinancialServiceProviders.intersolveVisa
+      !registration.programFspConfigurationId ||
+      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
     ) {
       throw new HttpException(
         `This registration is not associated with the Intersolve Visa financial service provider.`,
@@ -1023,10 +1018,10 @@ export class RegistrationsService {
       await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
         {
           programFinancialServiceProviderConfigurationId:
-            registration.programFinancialServiceProviderConfigurationId,
+            registration.programFspConfigurationId,
           names: [
-            FinancialServiceProviderConfigurationProperties.brandCode,
-            FinancialServiceProviderConfigurationProperties.coverLetterCode,
+            FspConfigurationProperties.brandCode,
+            FspConfigurationProperties.coverLetterCode,
           ],
         },
       );
@@ -1034,7 +1029,7 @@ export class RegistrationsService {
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
     const intersolveVisaAttributes =
       getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVisa,
+        Fsps.intersolveVisa,
       ).attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
@@ -1120,14 +1115,10 @@ export class RegistrationsService {
             ], // In the above for loop it is checked that this is not undefined or empty
         },
         brandCode: intersolveVisaConfig.find(
-          (c) =>
-            c.name ===
-            FinancialServiceProviderConfigurationProperties.brandCode,
+          (c) => c.name === FspConfigurationProperties.brandCode,
         )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         coverLetterCode: intersolveVisaConfig.find(
-          (c) =>
-            c.name ===
-            FinancialServiceProviderConfigurationProperties.coverLetterCode,
+          (c) => c.name === FspConfigurationProperties.coverLetterCode,
         )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       });
     } catch (error) {

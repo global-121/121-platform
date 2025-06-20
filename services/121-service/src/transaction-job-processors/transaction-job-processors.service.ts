@@ -3,7 +3,7 @@ import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -111,9 +111,9 @@ export class TransactionJobProcessorsService {
             programFinancialServiceProviderConfigurationId:
               input.programFinancialServiceProviderConfigurationId,
             names: [
-              FinancialServiceProviderConfigurationProperties.brandCode,
-              FinancialServiceProviderConfigurationProperties.coverLetterCode,
-              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+              FspConfigurationProperties.brandCode,
+              FspConfigurationProperties.coverLetterCode,
+              FspConfigurationProperties.fundingTokenCode,
             ],
           },
         );
@@ -133,19 +133,13 @@ export class TransactionJobProcessorsService {
           },
           transferAmountInMajorUnit,
           brandCode: intersolveVisaConfig.find(
-            (c) =>
-              c.name ===
-              FinancialServiceProviderConfigurationProperties.brandCode,
+            (c) => c.name === FspConfigurationProperties.brandCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           coverLetterCode: intersolveVisaConfig.find(
-            (c) =>
-              c.name ===
-              FinancialServiceProviderConfigurationProperties.coverLetterCode,
+            (c) => c.name === FspConfigurationProperties.coverLetterCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
           fundingTokenCode: intersolveVisaConfig.find(
-            (c) =>
-              c.name ===
-              FinancialServiceProviderConfigurationProperties.fundingTokenCode,
+            (c) => c.name === FspConfigurationProperties.fundingTokenCode,
           )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         });
     } catch (error) {
@@ -294,7 +288,7 @@ export class TransactionJobProcessorsService {
         {
           programFinancialServiceProviderConfigurationId:
             transactionJob.programFinancialServiceProviderConfigurationId,
-          name: FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          name: FspConfigurationProperties.paymentReferencePrefix,
         },
       )) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
     const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(
@@ -518,7 +512,7 @@ export class TransactionJobProcessorsService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
+    transaction.programFspConfigurationId =
       programFinancialServiceProviderConfigurationId;
     transaction.programId = programId;
     transaction.payment = paymentNumber;

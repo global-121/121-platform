@@ -14,7 +14,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -96,14 +96,14 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
 
 export class ProgramFinancialServiceProviderDto {
   @ApiProperty()
-  @IsEnum(FinancialServiceProviders)
-  fsp: WrapperType<FinancialServiceProviders>;
+  @IsEnum(Fsps)
+  fsp: WrapperType<Fsps>;
 
   @ApiProperty()
   @IsArray()
   @IsOptional()
   configuration?: {
-    name: WrapperType<FinancialServiceProviders>;
+    name: WrapperType<Fsps>;
     value: string | string[] | Record<string, string>;
   }[];
 }
