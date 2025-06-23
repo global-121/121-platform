@@ -58,6 +58,7 @@ export class QueuesRegistryService implements OnModuleInit {
       this.transactionJobIntersolveVoucherQueue,
       this.transactionJobCommercialBankEthiopiaQueue,
       this.transactionJobSafaricomQueue,
+      this.transactionJobNedbankQueue,
       this.safaricomTimeoutCallbackQueue,
       this.safaricomTransferCallbackQueue,
       this.createMessageReplyOnIncomingQueue,
