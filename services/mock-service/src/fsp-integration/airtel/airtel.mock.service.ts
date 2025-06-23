@@ -150,8 +150,8 @@ export class AirtelMockService {
         status: {
           code: '400',
           message: 'Invalid/Missing Currency',
-          success: false,
           response_code: 'DP00900001013',
+          success: false,
         },
       },
     ];
@@ -162,11 +162,11 @@ export class AirtelMockService {
       200,
       {
         status: {
-          response_code: 'DP00900001013',
           code: '400',
-          success: false,
-          result_code: '521002',
           message: 'Invalid Msisdn Length. Msisdn Length should be 9',
+          response_code: 'DP00900001013',
+          result_code: '521002',
+          success: false,
         },
       },
     ];
@@ -180,12 +180,12 @@ export class AirtelMockService {
       200,
       {
         status: {
-          response_code: 'DP00900001004',
           code: '400',
-          success: false,
-          result_code: 'ESB000008',
           message:
             'Invalid Amount: The amount must not be null or blank, should contain only numeric characters, be greater than zero, and have a limited number of decimal places',
+          response_code: 'DP00900001004',
+          result_code: 'ESB000008',
+          success: false,
         },
       },
     ];
@@ -206,8 +206,8 @@ export class AirtelMockService {
         status: {
           code: '400',
           message: 'Missing header/body params',
-          success: false,
           response_code: 'DP00900001013',
+          success: false,
         },
       },
     ];
@@ -223,11 +223,11 @@ export class AirtelMockService {
         200,
         {
           status: {
-            response_code: 'DP00900001011',
             code: '400',
-            success: false,
-            result_code: '521050',
             message: 'Duplicate exttRID',
+            response_code: 'DP00900001011',
+            result_code: '521050',
+            success: false,
           },
         },
       ];
@@ -240,11 +240,11 @@ export class AirtelMockService {
         200,
         {
           status: {
-            response_code: 'DP00900001012',
             code: '400',
-            success: false,
-            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
             message: 'Mobile number entered is incorrect.',
+            response_code: 'DP00900001012',
+            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
+            success: false,
           },
         },
       ];
@@ -255,12 +255,12 @@ export class AirtelMockService {
         200,
         {
           status: {
-            response_code: 'DP00900001000',
             code: '400',
-            success: false,
-            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
             message:
               'The transaction is still processing and is in ambiguous state. Please do the transaction enquiry to fetch the transaction status.',
+            response_code: 'DP00900001000',
+            result_code: '521050', // ##TODO: We are not using this in the 121-service not sure if we should keep or remove it here.
+            success: false,
           },
         },
       ];
