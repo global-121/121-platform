@@ -2,7 +2,7 @@ import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
 import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
-import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { TransactionJobProcessorsSafaricomService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-safaricom.service';
 
 const mockPaymentJob = {
   id: 11,
@@ -21,31 +21,31 @@ const testJob = { data: mockPaymentJob } as Job;
 
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
-  let transactionJobProcessorsService: jest.Mocked<TransactionJobProcessorsService>;
+  let transactionJobProcessorsSafaricomService: jest.Mocked<TransactionJobProcessorsSafaricomService>;
   let paymentProcessor: TransactionJobProcessorSafaricom;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(TransactionJobProcessorSafaricom)
-      .mock(TransactionJobProcessorsService)
-      .using(transactionJobProcessorsService)
+      .mock(TransactionJobProcessorsSafaricomService)
+      .using(transactionJobProcessorsSafaricomService)
       .compile();
 
     paymentProcessor = unit;
-    transactionJobProcessorsService = unitRef.get(
-      TransactionJobProcessorsService,
+    transactionJobProcessorsSafaricomService = unitRef.get(
+      TransactionJobProcessorsSafaricomService,
     );
   });
 
   it('should call processSafaricomTransactionJob', async () => {
     // Arrange
-    transactionJobProcessorsService.processSafaricomTransactionJob.mockResolvedValue();
+    transactionJobProcessorsSafaricomService.processSafaricomTransactionJob.mockResolvedValue();
 
     // Act
     await paymentProcessor.handleSafaricomTransactionJob(testJob);
 
     // Assert
     expect(
-      transactionJobProcessorsService.processSafaricomTransactionJob,
+      transactionJobProcessorsSafaricomService.processSafaricomTransactionJob,
     ).toHaveBeenCalledTimes(1);
   });
 });

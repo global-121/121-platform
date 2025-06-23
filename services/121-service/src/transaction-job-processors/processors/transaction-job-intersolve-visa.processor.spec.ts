@@ -1,8 +1,10 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
+import Redis from 'ioredis';
 
+import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
-import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { TransactionJobProcessorsIntersolveVisaService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-intersolve-visa.service';
 
 const mockPaymentJob = {
   id: 11,
@@ -25,34 +27,38 @@ const testJob = { data: mockPaymentJob } as Job;
 
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
-  let transactionJobProcessorsService: jest.Mocked<TransactionJobProcessorsService>;
+  let transactionJobProcessorsIntersolveVisaService: jest.Mocked<TransactionJobProcessorsIntersolveVisaService>;
   let paymentProcessor: TransactionJobProcessorIntersolveVisa;
+  let redisClient: jest.Mocked<Redis>;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(
       TransactionJobProcessorIntersolveVisa,
     )
-      .mock(TransactionJobProcessorsService)
-      .using(transactionJobProcessorsService)
+      .mock(TransactionJobProcessorsIntersolveVisaService)
+      .using(transactionJobProcessorsIntersolveVisaService)
+      .mock(REDIS_CLIENT)
+      .using(redisClient)
       .compile();
 
     paymentProcessor = unit;
-    transactionJobProcessorsService = unitRef.get(
-      TransactionJobProcessorsService,
+    transactionJobProcessorsIntersolveVisaService = unitRef.get(
+      TransactionJobProcessorsIntersolveVisaService,
     );
+    redisClient = unitRef.get(REDIS_CLIENT);
   });
 
   it('should call processIntersolveVisaTransactionJob', async () => {
     // Arrange
     //intersolveVisaService.processQueuedPayment.mockResolvedValue();
-    transactionJobProcessorsService.processIntersolveVisaTransactionJob.mockResolvedValue();
+    transactionJobProcessorsIntersolveVisaService.processIntersolveVisaTransactionJob.mockResolvedValue();
 
     // Act
     await paymentProcessor.handleIntersolveVisaTransactionJob(testJob);
 
     // Assert
     expect(
-      transactionJobProcessorsService.processIntersolveVisaTransactionJob,
+      transactionJobProcessorsIntersolveVisaService.processIntersolveVisaTransactionJob,
     ).toHaveBeenCalledTimes(1);
   });
 });

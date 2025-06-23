@@ -9,12 +9,12 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { TransactionJobProcessorsNedbankService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-nedbank.service';
 
 @Processor(TransactionJobQueueNames.nedbank)
 export class TransactionJobProcessorNedbank {
   constructor(
-    private readonly transactionJobProcessorsService: TransactionJobProcessorsService,
+    private readonly TransactionJobProcessorsNedbankService: TransactionJobProcessorsNedbankService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
@@ -22,7 +22,7 @@ export class TransactionJobProcessorNedbank {
   @Process(JobNames.default)
   async handleNedbankTransactionJob(job: Job): Promise<void> {
     try {
-      await this.transactionJobProcessorsService.processNedbankTransactionJob(
+      await this.TransactionJobProcessorsNedbankService.processNedbankTransactionJob(
         job.data,
       );
     } catch (error) {

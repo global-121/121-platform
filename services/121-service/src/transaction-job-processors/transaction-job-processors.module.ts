@@ -15,7 +15,10 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
 import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-job-processors/processors/transaction-job-nedbank.processor';
 import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
-import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
+import { TransactionJobProcessorsIntersolveVisaService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-intersolve-visa.service';
+import { TransactionJobProcessorsNedbankService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-nedbank.service';
+import { TransactionJobProcessorsSafaricomService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-safaricom.service';
 
 @Module({
   imports: [
@@ -33,7 +36,10 @@ import { TransactionJobProcessorsService } from '@121-service/src/transaction-jo
     MessageTemplateModule,
   ],
   providers: [
-    TransactionJobProcessorsService,
+    TransactionJobProcessorsHelperService,
+    TransactionJobProcessorsNedbankService,
+    TransactionJobProcessorsSafaricomService,
+    TransactionJobProcessorsIntersolveVisaService,
     TransactionJobProcessorIntersolveVisa,
     TransactionJobProcessorSafaricom,
     TransactionJobProcessorNedbank,
