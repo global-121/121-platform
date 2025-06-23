@@ -1,11 +1,6 @@
-/**
- * @type {import('@jest/types').Config.InitialOptions}
- */
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  moduleFileExtensions: ['js', 'ts'],
-  transform: {
-    '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
-  },
+  preset: 'ts-jest',
   rootDir: '.',
   testMatch: ['<rootDir>/test/**/*.test.ts'],
   coverageReporters: ['json', 'lcov'],
@@ -13,8 +8,14 @@ module.exports = {
   moduleNameMapper: {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
+  moduleFileExtensions: ['js', 'ts'],
+  transform: {
+    '^.+\\.ts?$': ['ts-jest', { tsconfig: '<rootDir>/test/tsconfig.json' }],
+    'node_modules/@t3-oss/.+\\.js$': ['ts-jest'],
+  },
+  transformIgnorePatterns: ['node_modules/(?!@t3-oss)'],
   testTimeout: 30_000,
-  randomize: true, // TODO: Some tests still depend on the order, but should not. Toggle locally to test + fix.
+  randomize: true,
   verbose: true,
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
 };
