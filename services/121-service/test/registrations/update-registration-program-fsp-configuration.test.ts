@@ -40,10 +40,10 @@ async function setupNlrcEnvironment() {
   return accessToken;
 }
 
-describe('Update program financial servce provider configuration of PA', () => {
+describe('Update program fsp configuration of PA', () => {
   let accessToken: string;
 
-  it('should succeed when updating program financial servce provider configuration when all required properties of new FSP are already present', async () => {
+  it('should succeed when updating program fsp configuration when all required properties of new FSP are already present', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
 
@@ -68,7 +68,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     expect(response.body.fspName).toBe(newProgramFspConfigurationName);
   });
 
-  it('should fail when updating program financial servce provider configuration when a required property of new FSP is not yet present', async () => {
+  it('should fail when updating program fsp configuration when a required property of new FSP is not yet present', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
 
@@ -93,7 +93,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     expect(response.body).toMatchSnapshot();
   });
 
-  it('should succeed when updating program financial servce provider configuration when missing required properties of new FSP are passed along with the request', async () => {
+  it('should succeed when updating program fsp configuration when missing required properties of new FSP are passed along with the request', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
 
@@ -125,7 +125,7 @@ describe('Update program financial servce provider configuration of PA', () => {
     );
   });
 
-  it('should fail when updating program financial servce provider configuration without right permission', async () => {
+  it('should fail when updating program fsp configuration without right permission', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
 

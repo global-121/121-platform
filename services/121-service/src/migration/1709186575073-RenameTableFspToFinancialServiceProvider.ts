@@ -83,6 +83,9 @@ export class RenameTableFspToFinancialServiceProvider1709186575073
     await queryRunner.query(
       `ALTER TABLE "121-service"."program_financial_service_providers_financial_service_provider" ADD CONSTRAINT "FK_9963d8ef06f3358d2bc7fa6a4dd" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_a0f41ec6505ba4bd1c8e99c6e5" ON "121-service"."financial_service_provider" ("created") `,
+    );
 
     await queryRunner.query(
       `CREATE INDEX "IDX_9963d8ef06f3358d2bc7fa6a4d" ON "121-service"."program_financial_service_providers_financial_service_provider" ("programId") `,
