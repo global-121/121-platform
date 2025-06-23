@@ -838,7 +838,7 @@
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/onafriq/webhook/subscribe",
+    "path": "/api/fsps/onafriq/webhook/subscribe",
     "params": []
   },
   {
@@ -941,7 +941,7 @@
   },
   {
     "method": "post",
-    "path": "/api/financial-service-providers/onafriq/callback",
+    "path": "/api/fsps/onafriq/callback",
     "params": []
   }
 ]

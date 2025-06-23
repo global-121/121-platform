@@ -40,7 +40,7 @@ export class OnafriqApiService {
     const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`;
     const payload = {
       corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
-      callbackUrl: `${EXTERNAL_API.baseApiUrl}financial-service-providers/onafriq/callback`,
+      callbackUrl: `${EXTERNAL_API.baseApiUrl}fsps/onafriq/callback`,
     };
     const headers = [
       {

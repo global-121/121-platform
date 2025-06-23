@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
@@ -9,9 +9,7 @@ import { CreateTransactionParams } from '@121-service/src/payments/fsp-integrati
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
 
 @Injectable()
-export class OnafriqService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class OnafriqService implements FspIntegrationInterface {
   public constructor(private readonly onafriqApiService: OnafriqApiService) {}
 
   /**

@@ -64,9 +64,9 @@
   "enableMaxPayments": true,
   "enableScope": false,
   "allowEmptyPhoneNumber": false,
-  "programFinancialServiceProviderConfigurations": [
+  "programFspConfigurations": [
     {
-      "financialServiceProvider": "Onafriq"
+      "fsp": "Onafriq"
     }
   ]
 }

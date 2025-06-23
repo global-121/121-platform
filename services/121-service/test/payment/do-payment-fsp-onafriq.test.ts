@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -26,8 +26,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-    programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviders.onafriq,
+    programFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
