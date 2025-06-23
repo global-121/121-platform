@@ -4,40 +4,13 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
-import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-
-// ## TODO: when the branch for better handling of environment variables is merged, use that pattern.
-const getEnvOrThrow = (envVar: string): string => {
-  const value = process.env[envVar];
-  if (!value) {
-    throw new Error(
-      `Tried to get environment variable "${envVar}" but it is not set or is empty.`,
-    );
-  }
-  return value;
-};
 
 @Injectable()
 export class AirtelService
   implements FinancialServiceProviderIntegrationInterface
 {
-  private readonly encryptedPin: string;
-
-  public constructor(
-    private readonly airtelApiService: AirtelApiService,
-    private readonly airtelEncryptionService: AirtelEncryptionService,
-  ) {
-    const airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
-    const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
-      'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
-    );
-    // No need to re-encrypt the same value for every request.
-    this.encryptedPin = this.airtelEncryptionService.encryptPinV1(
-      airtelDisbursementPin,
-      airtelDisbursementV1PinEncryptionPublicKey,
-    );
-  }
+  public constructor(private readonly airtelApiService: AirtelApiService) {}
 
   /**
    * Do not use! This function was previously used to send payments.
@@ -75,7 +48,6 @@ export class AirtelService
 
     const { result, message } = await this.airtelApiService.disburse({
       airtelTransactionId,
-      encryptedPin: this.encryptedPin,
       phoneNumberWithoutCountryCode,
       amount,
     });

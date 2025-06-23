@@ -8,6 +8,7 @@ import { AirtelDisbursementOrEnquiryResponseDto } from '@121-service/src/payment
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { AirtelDisbursementOrEnquiryResultMapper } from '@121-service/src/payments/fsp-integration/airtel/mappers/airtel-disbursement-or-enquiry-result.mapper';
+import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
@@ -41,6 +42,7 @@ const headersToPojo = (headers: Headers) => {
 
 @Injectable()
 export class AirtelApiService {
+  private readonly encryptedPin: string;
   private tokenSet: TokenSet;
   private readonly airtelClientId: string;
   private readonly airtelClientSecret: string;
@@ -53,7 +55,18 @@ export class AirtelApiService {
   public constructor(
     private readonly httpService: CustomHttpService,
     private readonly tokenValidationService: TokenValidationService,
+    private readonly airtelEncryptionService: AirtelEncryptionService,
   ) {
+    const airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
+    const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
+      'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+    );
+    // No need to re-encrypt the same value for every request.
+    this.encryptedPin = this.airtelEncryptionService.encryptPinV1(
+      airtelDisbursementPin,
+      airtelDisbursementV1PinEncryptionPublicKey,
+    );
+
     this.airtelClientId = getEnvOrThrow('AIRTEL_CLIENT_ID');
     this.airtelClientSecret = getEnvOrThrow('AIRTEL_CLIENT_SECRET');
 
@@ -83,12 +96,10 @@ export class AirtelApiService {
 
   public async disburse({
     airtelTransactionId,
-    encryptedPin,
     phoneNumberWithoutCountryCode,
     amount,
   }: {
     airtelTransactionId: string;
-    encryptedPin: string;
     phoneNumberWithoutCountryCode: string;
     amount: number;
   }): Promise<{
@@ -113,7 +124,7 @@ export class AirtelApiService {
       // The docs say "Reference for service / goods purchased."
       // We can just use a static non-relevant value here. Needs to be alphanumeric and 4 - 64 characters long.
       reference: '1234',
-      pin: encryptedPin,
+      pin: this.encryptedPin,
       transaction: {
         amount,
         id: airtelTransactionId,

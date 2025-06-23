@@ -4,7 +4,6 @@ import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
-import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 
 const responseSuccess = {
   result: AirtelDisbursementResultEnum.success,
@@ -41,12 +40,6 @@ describe('AirtelService', () => {
             enquire: jest.fn().mockResolvedValue(responseSuccess),
           },
         },
-        {
-          provide: AirtelEncryptionService,
-          useValue: {
-            encryptPinV1: jest.fn().mockReturnValue('mock-encrypted-pin'),
-          },
-        },
       ],
     }).compile();
 
@@ -57,7 +50,6 @@ describe('AirtelService', () => {
   describe('attemptOrCheckDisbursement', () => {
     const amount = 200;
     const airtelTransactionId = 'mock-transaction-id';
-    const encryptedPin = 'mock-encrypted-pin';
     const phoneNumber = '260000000000';
     const phoneNumberWithoutCountryCode = phoneNumber.slice(3); // Remove country code '260'
 
@@ -75,7 +67,6 @@ describe('AirtelService', () => {
       expect(apiService.disburse).toHaveBeenCalledWith(
         expect.objectContaining({
           airtelTransactionId,
-          encryptedPin,
           phoneNumberWithoutCountryCode,
           amount,
         }),

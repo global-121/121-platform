@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
+import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
 import { AirtelApiDisbursementStatusResponseCodeEnum } from '@121-service/src/payments/fsp-integration/airtel/services/enums/airtel-api-disbursement-result-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
@@ -17,7 +18,6 @@ const authenticationSuccessResponse = responseWrapper({
 
 const disburseInput = {
   airtelTransactionId: 'mock-transaction-id',
-  encryptedPin: 'mock-encrypted-pin',
   phoneNumberWithoutCountryCode: '000000000',
   amount: 200,
 };
@@ -81,6 +81,12 @@ describe('AirtelApiService', () => {
           useValue: {
             get: jest.fn(),
             post: jest.fn(),
+          },
+        },
+        {
+          provide: AirtelEncryptionService,
+          useValue: {
+            encryptPinV1: jest.fn().mockReturnValue('mock-encrypted-pin'),
           },
         },
       ],
