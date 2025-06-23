@@ -7,8 +7,8 @@ import { AirtelApiDisbursementRequestDto } from '@121-service/src/payments/fsp-i
 import { AirtelDisbursementOrEnquiryResponseDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-or-enquiry-response.dto';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
-import { AirtelDisbursementOrEnquiryResultMapper } from '@121-service/src/payments/fsp-integration/airtel/mappers/airtel-disbursement-or-enquiry-result.mapper';
 import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
+import { AirtelApiDisbursementStatusResponseCodeEnum } from '@121-service/src/payments/fsp-integration/airtel/services/enums/airtel-api-disbursement-result-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
@@ -284,7 +284,7 @@ export class AirtelApiService {
   }
 
   private getResultFromResponseCode(
-    responseCode: AirtelDisbursementResultEnum | undefined,
+    responseCode: string | undefined,
     requestType: 'disburse' | 'enquire',
   ): AirtelDisbursementResultEnum {
     if (!responseCode) {
@@ -292,6 +292,16 @@ export class AirtelApiService {
         `${requestType} failed, unclear response received from Airtel API`,
       );
     }
-    return AirtelDisbursementOrEnquiryResultMapper(responseCode);
+    switch (responseCode) {
+      case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001001:
+        return AirtelDisbursementResultEnum.success;
+      case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001011:
+        return AirtelDisbursementResultEnum.duplicate;
+      case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001000:
+        return AirtelDisbursementResultEnum.ambiguous;
+      // If we get an unknown response code, we treat it as a failure. Unlikely to happen, and we display the response code in the UI anyway so end user can still solve it.
+      default:
+        return AirtelDisbursementResultEnum.fail;
+    }
   }
 }
