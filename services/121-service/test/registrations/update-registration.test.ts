@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -151,8 +150,8 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
 
     const accessTokenNoFinancePermission = await getAccessToken(
-      env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-      env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
     );
 
     // Act
@@ -188,8 +187,8 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
 
     const accessTokenNoFinancePermission = await getAccessToken(
-      env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
-      env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
     );
 
     // Act
