@@ -22,16 +22,20 @@ const getEnvOrThrow = (envVar: string): string => {
 export class AirtelService
   implements FinancialServiceProviderIntegrationInterface
 {
-  private readonly airtelDisbursementPin: string;
-  private readonly airtelDisbursementV1PinEncryptionPublicKey: string;
+  private readonly encryptedPin: string;
 
   public constructor(
     private readonly airtelApiService: AirtelApiService,
     private readonly airtelEncryptionService: AirtelEncryptionService,
   ) {
-    this.airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
-    this.airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
+    const airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
+    const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
       'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+    );
+    // No need to re-encrypt the same value for every request.
+    this.encryptedPin = this.airtelEncryptionService.encryptPinV1(
+      airtelDisbursementPin,
+      airtelDisbursementV1PinEncryptionPublicKey,
     );
   }
 
@@ -56,11 +60,6 @@ export class AirtelService
     phoneNumber: string;
     amount: number;
   }) {
-    const encryptedPin = this.airtelEncryptionService.encryptPinV1(
-      this.airtelDisbursementPin,
-      this.airtelDisbursementV1PinEncryptionPublicKey,
-    );
-
     // Validate phone number here, we want to *not* send requests when the phone number is invalid.
     const zambianCountryCode = '260';
     const phoneNumberWithoutCountryCode = phoneNumber.slice(
@@ -76,7 +75,7 @@ export class AirtelService
 
     const { result, message } = await this.airtelApiService.disburse({
       airtelTransactionId,
-      encryptedPin,
+      encryptedPin: this.encryptedPin,
       phoneNumberWithoutCountryCode,
       amount,
     });
