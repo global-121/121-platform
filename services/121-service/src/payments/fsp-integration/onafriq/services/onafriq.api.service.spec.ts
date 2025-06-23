@@ -82,4 +82,25 @@ describe('OnafriqApiService', () => {
       );
     });
   });
+
+  describe('subscribeWebhook', () => {
+    it('should call httpService.post and return the response if not in mock mode', async () => {
+      process.env.MOCK_ONAFRIQ = '';
+      const expectedResponse = {
+        status: 200,
+        statusText: 'OK',
+        data: {
+          message: 1,
+          data: {
+            corporateCode: 'corp',
+            callbackUrl: 'url',
+          },
+        },
+      };
+      (customHttpService.post as jest.Mock).mockResolvedValue(expectedResponse);
+      const result = await onafriqApiService.subscribeWebhook();
+      expect(customHttpService.post).toHaveBeenCalled();
+      expect(result).toEqual(expectedResponse);
+    });
+  });
 });
