@@ -408,7 +408,9 @@ export async function waitForStatusChangeToComplete(
   }
 }
 
-// It's only useful to call this function on bulk updates, because single updates happen synchronously
+/**
+ * It's only useful to call this function on bulk updates, because single updates happen synchronously
+ */
 export async function waitForBulkRegistrationChanges(
   expectedChanges: {
     referenceId: string;
