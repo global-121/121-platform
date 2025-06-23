@@ -11,6 +11,7 @@ export const AirtelDisbursementOrEnquiryResultMapper = (
       return AirtelDisbursementResultEnum.duplicate;
     case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001000:
       return AirtelDisbursementResultEnum.ambiguous;
+    // If we get an unknown response code, we treat it as a failure. Unlikely to happen, and we display the response code in the UI anyway so end user can still solve it.
     default:
       return AirtelDisbursementResultEnum.fail;
   }

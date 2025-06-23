@@ -233,18 +233,21 @@ export class AirtelApiService {
       throw new AirtelApiError(`authentication failed: ${error.message}`);
     }
 
-    // ## TODO: Validate using the DTO.
-    const accessToken = response?.data?.access_token;
-    if (!accessToken) {
+    // If secrets are invalid we get this specific response.
+    if ('error' in response && 'error_description' in response) {
       throw new AirtelApiError(
-        'authentication failed: No access token received from Airtel API',
+        `authentication failed: ${response.error} - ${response.error_description}`,
       );
     }
+
+    // ## TODO: Validate using the DTO.
+    const accessToken = response?.data?.access_token;
     const expiresInSeconds = response?.data?.expires_in;
 
-    if (!expiresInSeconds || expiresInSeconds <= 0) {
+    if (!accessToken || !expiresInSeconds || expiresInSeconds <= 0) {
+      // Unlikely to go wrong, so bad ROI in throwing more specific errors.
       throw new AirtelApiError(
-        `authentication failed: Invalid or missing expires_in value from Airtel API: "${expiresInSeconds}".`,
+        'authentication failed: unclear response from Airtel API',
       );
     }
 
