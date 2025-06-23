@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
+import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 import { CreateTransactionParams } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/create-transaction-params.interface';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
@@ -26,24 +27,44 @@ describe('OnafriqService', () => {
   });
 
   describe('createTransaction', () => {
-    it('should create Onafriq transaction', async () => {
-      const callServiceResult: CallServiceResult = {
+    it('should complete successfully when API returns success status', async () => {
+      const successResponse: CallServiceResult = {
         status: OnafriqApiResponseStatusType.success,
       };
 
       jest
         .spyOn(onafriqApiService, 'callService')
-        .mockResolvedValue(callServiceResult);
+        .mockResolvedValue(successResponse);
 
-      await onafriqService.createTransaction(mockedCreateTransactionParams);
+      await expect(
+        onafriqService.createTransaction(mockedCreateTransactionParams),
+      ).resolves.not.toThrow();
 
-      expect(onafriqApiService.callService).toHaveBeenCalledWith({
-        transferAmount: mockedCreateTransactionParams.transferAmount,
-        phoneNumber: mockedCreateTransactionParams.phoneNumber,
-        firstName: mockedCreateTransactionParams.firstName,
-        lastName: mockedCreateTransactionParams.lastName,
-        thirdPartyTransId: mockedCreateTransactionParams.thirdPartyTransId,
-      });
+      expect(onafriqApiService.callService).toHaveBeenCalledWith(
+        mockedCreateTransactionParams,
+      );
+    });
+
+    it('should throw OnafriqError when API returns non-success status', async () => {
+      const errorStatus = OnafriqApiResponseStatusType.genericError;
+      const errorMessage = 'mock_error_message';
+
+      const errorResponse: CallServiceResult = {
+        status: errorStatus,
+        errorMessage,
+      };
+
+      jest
+        .spyOn(onafriqApiService, 'callService')
+        .mockResolvedValue(errorResponse);
+
+      await expect(
+        onafriqService.createTransaction(mockedCreateTransactionParams),
+      ).rejects.toThrow(new OnafriqError(errorMessage, errorStatus));
+
+      expect(onafriqApiService.callService).toHaveBeenCalledWith(
+        mockedCreateTransactionParams,
+      );
     });
   });
 });
