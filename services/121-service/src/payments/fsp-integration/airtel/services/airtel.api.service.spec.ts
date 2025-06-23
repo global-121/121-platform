@@ -19,8 +19,6 @@ const disburseInput = {
   airtelTransactionId: 'mock-transaction-id',
   encryptedPin: 'mock-encrypted-pin',
   phoneNumberWithoutCountryCode: '000000000',
-  currencyCode: 'ZMW',
-  countryCode: 'ZM',
   amount: 200,
 };
 
@@ -45,8 +43,6 @@ const disburseSuccessResponse = responseWrapper({
 
 const enquireInput = {
   airtelTransactionId: 'mock-transaction-id',
-  currencyCode: 'ZMW',
-  countryCode: 'ZM',
 };
 
 // A full example of a response we can parse successfully.

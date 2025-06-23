@@ -44,6 +44,8 @@ export class AirtelApiService {
   private tokenSet: TokenSet;
   private readonly airtelClientId: string;
   private readonly airtelClientSecret: string;
+  private readonly countryCode: string;
+  private readonly currencyCode: string;
   private readonly airtelAuthenticateURL: URL;
   private readonly airtelDisbursementV2URL: URL;
   private readonly airtelEnquiryV2URL: URL;
@@ -54,6 +56,9 @@ export class AirtelApiService {
   ) {
     this.airtelClientId = getEnvOrThrow('AIRTEL_CLIENT_ID');
     this.airtelClientSecret = getEnvOrThrow('AIRTEL_CLIENT_SECRET');
+
+    this.countryCode = 'ZM';
+    this.currencyCode = 'ZMW';
 
     let airtelApiBaseUrl: URL;
     if (getBooleanEnvDefaultToFalse('MOCK_AIRTEL')) {
@@ -80,15 +85,11 @@ export class AirtelApiService {
     airtelTransactionId,
     encryptedPin,
     phoneNumberWithoutCountryCode,
-    currencyCode,
-    countryCode,
     amount,
   }: {
     airtelTransactionId: string;
     encryptedPin: string;
     phoneNumberWithoutCountryCode: string;
-    currencyCode: string;
-    countryCode: string;
     amount: number;
   }): Promise<{
     result: AirtelDisbursementResultEnum;
@@ -99,14 +100,14 @@ export class AirtelApiService {
     const headers = this.addAuthHeaders(
       new Headers({
         'Content-Type': 'application/json',
-        'X-Country': countryCode,
-        'X-Currency': currencyCode,
+        'X-Country': this.countryCode,
+        'X-Currency': this.currencyCode,
       }),
     );
 
     const payload: AirtelApiDisbursementRequestDto = {
       payee: {
-        currency: currencyCode,
+        currency: this.currencyCode,
         msisdn: phoneNumberWithoutCountryCode,
       },
       // The docs say "Reference for service / goods purchased."
@@ -144,12 +145,8 @@ export class AirtelApiService {
 
   public async enquire({
     airtelTransactionId,
-    countryCode,
-    currencyCode,
   }: {
     airtelTransactionId: string;
-    countryCode: string;
-    currencyCode: string;
   }): Promise<{
     result:
       | AirtelDisbursementResultEnum.success
@@ -163,8 +160,8 @@ export class AirtelApiService {
       new Headers({
         Accept: '*/*',
         'Content-Type': 'application/json',
-        'X-Country': countryCode,
-        'X-Currency': currencyCode,
+        'X-Country': this.countryCode,
+        'X-Currency': this.currencyCode,
       }),
     );
 

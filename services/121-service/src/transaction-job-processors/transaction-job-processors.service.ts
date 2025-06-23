@@ -276,29 +276,6 @@ export class TransactionJobProcessorsService {
   ): Promise<void> {
     // ## TODO: Not sure if creating a bunch of utility/helper functions inside of this function are an OK pattern.
 
-    const getCountryAndCurrencyCodes = async (programId) => {
-      const program = await this.programRepository.findOneByOrFail({
-        id: programId,
-      });
-      // Default to this as we don't save country code currently.
-      const countryCode = 'ZM';
-      const currencyCode = 'ZMW';
-      if (!currencyCode) {
-        throw new Error(
-          `Program ${program.id} does not have a valid currency code, current value: ${currencyCode}`,
-        );
-      }
-      if (!countryCode) {
-        throw new Error(
-          `Program ${program.id} does not have a valid country code, current value: ${countryCode}`,
-        );
-      }
-      return {
-        countryCode,
-        currencyCode,
-      };
-    };
-
     const doDisbursement = async (
       transactionJob,
       failedTransactionsCount,
@@ -319,16 +296,10 @@ export class TransactionJobProcessorsService {
       // 2. Do disbursement.
       const phoneNumber = transactionJob.phoneNumber;
       const amount = transactionJob.transactionAmount;
-      // ## TODO: just hardcode for now
-      const { countryCode, currencyCode } = await getCountryAndCurrencyCodes(
-        transactionJob.programId,
-      );
       // ## TODO: actually pass result
       await this.airtelService.attemptOrCheckDisbursement({
         airtelTransactionId,
         phoneNumber,
-        currencyCode,
-        countryCode,
         amount,
       });
     };

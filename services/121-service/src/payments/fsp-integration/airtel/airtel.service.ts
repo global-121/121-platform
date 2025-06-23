@@ -50,14 +50,10 @@ export class AirtelService
   public async attemptOrCheckDisbursement({
     airtelTransactionId,
     phoneNumber,
-    currencyCode,
-    countryCode,
     amount,
   }: {
     airtelTransactionId: string;
     phoneNumber: string;
-    currencyCode: string;
-    countryCode: string;
     amount: number;
   }) {
     const encryptedPin = this.airtelEncryptionService.encryptPinV1(
@@ -82,8 +78,6 @@ export class AirtelService
       airtelTransactionId,
       encryptedPin,
       phoneNumberWithoutCountryCode,
-      currencyCode,
-      countryCode,
       amount,
     });
 
@@ -105,8 +99,6 @@ export class AirtelService
     if (result === AirtelDisbursementResultEnum.duplicate) {
       const { result, message } = await this.airtelApiService.enquire({
         airtelTransactionId,
-        countryCode,
-        currencyCode,
       });
 
       if (result === AirtelDisbursementResultEnum.success) {

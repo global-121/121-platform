@@ -57,8 +57,6 @@ describe('AirtelService', () => {
   describe('attemptOrCheckDisbursement', () => {
     const amount = 200;
     const airtelTransactionId = 'mock-transaction-id';
-    const currencyCode = 'ZMW';
-    const countryCode = 'ZM';
     const encryptedPin = 'mock-encrypted-pin';
     const phoneNumber = '260000000000';
     const phoneNumberWithoutCountryCode = phoneNumber.slice(3); // Remove country code '260'
@@ -69,8 +67,6 @@ describe('AirtelService', () => {
       const result = await service.attemptOrCheckDisbursement({
         airtelTransactionId,
         phoneNumber,
-        currencyCode,
-        countryCode,
         amount,
       });
 
@@ -81,8 +77,6 @@ describe('AirtelService', () => {
           airtelTransactionId,
           encryptedPin,
           phoneNumberWithoutCountryCode,
-          currencyCode,
-          countryCode,
           amount,
         }),
       );
@@ -98,8 +92,6 @@ describe('AirtelService', () => {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
           phoneNumber: invalidPhoneNumber,
-          currencyCode,
-          countryCode,
           amount,
         });
       } catch (e) {
@@ -123,8 +115,6 @@ describe('AirtelService', () => {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
           phoneNumber,
-          currencyCode,
-          countryCode,
           amount,
         });
       } catch (e) {
@@ -147,8 +137,6 @@ describe('AirtelService', () => {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
           phoneNumber,
-          currencyCode,
-          countryCode,
           amount,
         });
       } catch (e) {
@@ -172,8 +160,6 @@ describe('AirtelService', () => {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
           phoneNumber,
-          currencyCode,
-          countryCode,
           amount,
         });
 
@@ -181,7 +167,6 @@ describe('AirtelService', () => {
         expect(apiService.enquire).toHaveBeenCalledWith(
           expect.objectContaining({
             airtelTransactionId,
-            countryCode,
           }),
         );
       });
@@ -191,8 +176,6 @@ describe('AirtelService', () => {
         const result = await service.attemptOrCheckDisbursement({
           airtelTransactionId,
           phoneNumber,
-          currencyCode,
-          countryCode,
           amount,
         });
 
@@ -210,8 +193,6 @@ describe('AirtelService', () => {
           await service.attemptOrCheckDisbursement({
             airtelTransactionId,
             phoneNumber,
-            currencyCode,
-            countryCode,
             amount,
           });
         } catch (e) {
