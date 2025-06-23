@@ -47,7 +47,7 @@ export class ExcelRecociliationController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Get payments template instructions to post in Financial Service Provider Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Get payments template instructions to post in Fsp Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
   @Get('programs/:programId/payments/excel-reconciliation/template')
   public async getImportFspReconciliationTemplate(

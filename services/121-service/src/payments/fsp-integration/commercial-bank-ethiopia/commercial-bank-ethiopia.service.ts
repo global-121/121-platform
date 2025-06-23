@@ -260,7 +260,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     if (credentials.password == null || credentials.username == null) {
       paTransactionResult.status = TransactionStatusEnum.error;
       paTransactionResult.message =
-        'Missing username or password for program financial service provider configuration of the registration';
+        'Missing username or password for program Fsp configuration of the registration';
       return paTransactionResult;
     } else {
       requiredCredentials = {
@@ -322,7 +322,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     // For now we only support one CBE FSP configuration per program
     if (configs.length !== 1) {
       throw new HttpException(
-        `Expected exactly one program financial service provider configuration for program ${programId} and financial service provider ${Fsps.commercialBankEthiopia}`,
+        `Expected exactly one program Fsp configuration for program ${programId} and Fsp ${Fsps.commercialBankEthiopia}`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -334,7 +334,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
 
     if (credentials.password == null || credentials.username == null) {
       throw new HttpException(
-        'Missing username or password for program financial service provider configuration of the registration',
+        'Missing username or password for program Fsp configuration of the registration',
         HttpStatus.NOT_FOUND,
       );
     }

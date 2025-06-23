@@ -1005,7 +1005,7 @@ export class RegistrationsService {
       registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
     ) {
       throw new HttpException(
-        `This registration is not associated with the Intersolve Visa financial service provider.`,
+        `This registration is not associated with the Intersolve Visa Fsp.`,
         HttpStatus.BAD_REQUEST,
       );
     }

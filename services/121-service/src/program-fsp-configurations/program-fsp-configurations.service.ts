@@ -64,7 +64,7 @@ export class ProgramFspConfigurationsService {
 
     if (existingConfig) {
       throw new HttpException(
-        `Program Financial Service Provider with name ${programFspConfigurationDto.name} already exists`,
+        `Program Fsp with name ${programFspConfigurationDto.name} already exists`,
         HttpStatus.CONFLICT,
       );
     }
@@ -161,7 +161,7 @@ export class ProgramFspConfigurationsService {
         (r) => r.referenceId,
       );
       throw new HttpException(
-        `Cannot delete program financial service provider configuration ${name} because it is still in use by registrations with referenceIds: ${registrationReferenceIds.join(
+        `Cannot delete program Fsp configuration ${name} because it is still in use by registrations with referenceIds: ${registrationReferenceIds.join(
           ', ',
         )}`,
         HttpStatus.CONFLICT,
@@ -376,7 +376,7 @@ export class ProgramFspConfigurationsService {
     });
     if (!config) {
       throw new HttpException(
-        `Program financial service provider configuration with name ${name} not found`,
+        `Program Fsp configuration with name ${name} not found`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -396,7 +396,7 @@ export class ProgramFspConfigurationsService {
       });
     if (!property) {
       throw new HttpException(
-        `Program financial service provider configuration property with name ${propertyName} not found`,
+        `Program Fsp configuration property with name ${propertyName} not found`,
         HttpStatus.NOT_FOUND,
       );
     }

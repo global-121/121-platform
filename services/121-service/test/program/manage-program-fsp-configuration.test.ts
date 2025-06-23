@@ -61,7 +61,7 @@ const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto = {
   ],
 };
 
-describe('Manage financial service provider configurations', () => {
+describe('Manage Fsp configurations', () => {
   let accessToken: string;
 
   beforeEach(async () => {
@@ -69,7 +69,7 @@ describe('Manage financial service provider configurations', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should add program financial service provider configuration to an existing program', async () => {
+  it('should add program Fsp configuration to an existing program', async () => {
     // Act
     const result = await postProgramFspConfiguration({
       programId: programIdVisa,
@@ -111,7 +111,7 @@ describe('Manage financial service provider configurations', () => {
     expect(getResultConfig).toEqual(result.body);
   });
 
-  it('should patch existing program financial service provider configuration', async () => {
+  it('should patch existing program Fsp configuration', async () => {
     // Act
     const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
       label: {
@@ -169,7 +169,7 @@ describe('Manage financial service provider configurations', () => {
     expect(getResultConfig).toEqual(result.body);
   });
 
-  it('should delete existing program financial service provider configuration', async () => {
+  it('should delete existing program Fsp configuration', async () => {
     // Act
     const name = seededFspConfigVoucher.fsp;
     const result = await deleteProgramFspConfiguration({
@@ -189,7 +189,7 @@ describe('Manage financial service provider configurations', () => {
     expect(getResultConfig).toBeUndefined();
   });
 
-  it('should not delete existing program financial service provider configuration because of active registrations with that config', async () => {
+  it('should not delete existing program Fsp configuration because of active registrations with that config', async () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
@@ -215,7 +215,7 @@ describe('Manage financial service provider configurations', () => {
   });
 
   // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('deleting program financial service provider configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
+  it('deleting program Fsp configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
@@ -266,7 +266,7 @@ describe('Manage financial service provider configurations', () => {
     expect(getTranactions.body[0].programFspConfigurationName).toBe(null);
   });
 
-  it('should add program financial service provider configuration properties to an existing program financial service provider configuration', async () => {
+  it('should add program Fsp configuration properties to an existing program Fsp configuration', async () => {
     // Prepare
     const createProgramFspConfigurationDtoNoProperties = {
       ...createProgramFspConfigurationDto,
@@ -313,7 +313,7 @@ describe('Manage financial service provider configurations', () => {
     expect(getResultConfig?.properties.sort()).toEqual(result.body.sort());
   });
 
-  it('should patch a property of an existing program financial service provider configuration', async () => {
+  it('should patch a property of an existing program Fsp configuration', async () => {
     // Prepare
     const updatedPropertyDto: UpdateProgramFspConfigurationPropertyDto = {
       value: 'user1234',
@@ -360,7 +360,7 @@ describe('Manage financial service provider configurations', () => {
     );
   });
 
-  it('should delete a property of an existing program financial service provider configuration', async () => {
+  it('should delete a property of an existing program Fsp configuration', async () => {
     // Act
     const deleteResult = await deleteProgramFspConfigurationProperty({
       programId: programIdVisa,
