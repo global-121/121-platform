@@ -75,6 +75,7 @@ Following the configuration of the 121 Demo environment, the following CSP is se
   ##### Testing Twilio Flex integration
 
   Some aspects of the Twilio Flex integration can be simulated/mocked (locally) by injecting an `<iframe>` into a page on the Twilio Flex website.
+
   1. Go to <https://flex.twilio.com/>
   2. Without being logged in, open the browser's developer tools (F12 or ⌘+⇧+I) or console. Paste and run the following code:
 
