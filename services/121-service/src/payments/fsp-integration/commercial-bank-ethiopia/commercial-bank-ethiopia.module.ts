@@ -10,8 +10,8 @@ import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payment
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -27,7 +27,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       RegistrationEntity,
       TransactionEntity,
       ProgramEntity,
-      ProgramFinancialServiceProviderConfigurationEntity,
+      ProgramFspConfigurationEntity,
     ]),
     TransactionsModule,
     UserModule,
@@ -43,7 +43,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       CommercialBankEthiopiaAccountEnquiriesEntity,
     ),
     PaymentProcessorCommercialBankEthiopia,
-    ProgramFinancialServiceProviderConfigurationRepository,
+    ProgramFspConfigurationRepository,
   ],
   controllers: [CommercialBankEthiopiaController],
   exports: [CommercialBankEthiopiaApiService, CommercialBankEthiopiaService],

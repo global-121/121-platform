@@ -144,7 +144,7 @@ export class MetricsController {
     status: HttpStatus.OK,
     description: 'Retrieved list of vouchers to cancel',
   })
-  // TODO: move to intersolve-voucher.controller and rename to /financial-servicer-providers/intersolve-voucher/vouchers?status=toCancel&responseType=csv
+  // TODO: move to intersolve-voucher.controller and rename to /fsps/intersolve-voucher/vouchers?status=toCancel&responseType=csv
   @Get('metrics/to-cancel-vouchers')
   public async getToCancelVouchers(): Promise<FileDto> {
     return await this.metricsService.getToCancelVouchers();

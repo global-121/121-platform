@@ -4,7 +4,7 @@ import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -54,7 +54,7 @@ export class TransactionsService {
     payment?: number,
     referenceId?: string,
     status?: TransactionStatusEnum,
-    programFinancialServiceProviderConfigId?: number,
+    programFspConfigId?: number,
   ): Promise<TransactionReturnDto[]> {
     return this.transactionScopedRepository
       .getLastTransactionsQuery({
@@ -62,7 +62,7 @@ export class TransactionsService {
         payment,
         referenceId,
         status,
-        programFinancialServiceProviderConfigId,
+        programFspConfigId,
       })
       .getRawMany();
   }
@@ -84,8 +84,8 @@ export class TransactionsService {
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
-    transaction.programFinancialServiceProviderConfigurationId =
-      relationDetails.programFinancialServiceProviderConfigurationId;
+    transaction.programFspConfigurationId =
+      relationDetails.programFspConfigurationId;
     transaction.program = program;
     transaction.payment = relationDetails.paymentNr;
     transaction.userId = relationDetails.userId;
@@ -107,7 +107,7 @@ export class TransactionsService {
       );
     }
 
-    const notifyOnTransaction = getFinancialServiceProviderSettingByNameOrThrow(
+    const notifyOnTransaction = getFspSettingByNameOrThrow(
       transactionResponse.fspName,
     ).notifyOnTransaction;
 
@@ -276,7 +276,7 @@ export class TransactionsService {
     transactionRelationDetails: TransactionRelationDetailsDto,
   ): Promise<void> {
     // NOTE: this method is currently only used for the import-excel-reconciliation use case and assumes:
-    // 1: only 1 program financial service provider id
+    // 1: only 1 program fsp id
     // 2: no notifications to send
     // 3: no payment count to update (as it is reconciliation of existing payment)
     // 4: no twilio message to relate to
@@ -296,8 +296,8 @@ export class TransactionsService {
         const transaction = new TransactionEntity();
         transaction.amount = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
-        transaction.programFinancialServiceProviderConfigurationId =
-          transactionRelationDetails.programFinancialServiceProviderConfigurationId;
+        transaction.programFspConfigurationId =
+          transactionRelationDetails.programFspConfigurationId;
         transaction.programId = transactionRelationDetails.programId;
         transaction.payment = transactionRelationDetails.paymentNr;
         transaction.userId = transactionRelationDetails.userId;

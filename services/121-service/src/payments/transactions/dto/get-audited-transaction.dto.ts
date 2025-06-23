@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -11,9 +11,9 @@ export interface GetAuditedTransactionDto {
   amount: number;
   errorMessage?: string;
   customData?: string;
-  programFinancialServiceProviderConfigurationLabel: LocalizedString;
-  programFinancialServiceProviderConfigurationName: string;
-  financialServiceProviderName: FinancialServiceProviders;
+  programFspConfigurationLabel: LocalizedString;
+  programFspConfigurationName: string;
+  fspName: Fsps;
   fspIntegrationType: string;
   userId: number;
   username: string;

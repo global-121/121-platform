@@ -210,7 +210,7 @@ exports[`Create program should post a program: Create program response for progr
             "$null",
           ],
           "isInteger": false,
-          "name": "programFinancialServiceProviderConfigurationName",
+          "name": "programFspConfigurationName",
         },
         {
           "allowedOperators": [
@@ -711,7 +711,7 @@ exports[`Create program should post a program: Create program response for progr
             "$null",
           ],
           "isInteger": false,
-          "name": "programFinancialServiceProviderConfigurationName",
+          "name": "programFspConfigurationName",
         },
         {
           "allowedOperators": [

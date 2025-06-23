@@ -1,6 +1,6 @@
 export interface NedbankTransactionJobDto {
   readonly programId: number;
-  readonly programFinancialServiceProviderConfigurationId: number;
+  readonly programFspConfigurationId: number;
   readonly paymentNumber: number;
   readonly referenceId: string;
   readonly transactionAmount: number;

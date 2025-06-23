@@ -10,7 +10,7 @@ import {
   ViewEntity,
 } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
@@ -42,22 +42,10 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect('registration.programId', 'programId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect(
-        'fspconfig."name"',
-        'programFinancialServiceProviderConfigurationName',
-      )
-      .addSelect(
-        'fspconfig."id"',
-        'programFinancialServiceProviderConfigurationId',
-      )
-      .addSelect(
-        'fspconfig."financialServiceProviderName"',
-        'financialServiceProviderName',
-      )
-      .addSelect(
-        'fspconfig.label',
-        'programFinancialServiceProviderConfigurationLabel',
-      )
+      .addSelect('fspconfig."name"', 'programFspConfigurationName')
+      .addSelect('fspconfig."id"', 'programFspConfigurationId')
+      .addSelect('fspconfig."fspName"', 'fspName')
+      .addSelect('fspconfig.label', 'programFspConfigurationLabel')
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -70,10 +58,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
-      .leftJoin(
-        'registration.programFinancialServiceProviderConfiguration',
-        'fspconfig',
-      )
+      .leftJoin('registration.programFspConfiguration', 'fspconfig')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
       .addSelect(
@@ -161,16 +146,16 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public financialServiceProviderName?: FinancialServiceProviders;
+  public fspName?: Fsps;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationId: number;
+  public programFspConfigurationId: number;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationName: string;
+  public programFspConfigurationName: string;
 
   @ViewColumn()
-  public programFinancialServiceProviderConfigurationLabel: LocalizedString;
+  public programFspConfigurationLabel: LocalizedString;
 
   /** This is an "auto" incrementing field with a registration ID per program. */
   @ViewColumn()

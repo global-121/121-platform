@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -128,8 +128,8 @@ describe('Load PA table', () => {
           filterValue: '1',
           expectedReferenceIds: allReferenceIds,
         },
-        programFinancialServiceProviderConfigurationName: {
-          filterValue: FinancialServiceProviders.intersolveVoucherWhatsapp,
+        programFspConfigurationName: {
+          filterValue: Fsps.intersolveVoucherWhatsapp,
           expectedReferenceIds: [registrationOCW5.referenceId],
         },
       };

@@ -15,7 +15,7 @@ import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/paym
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/commercial-bank-ethiopia')
+@ApiTags('fsps/commercial-bank-ethiopia')
 @Controller()
 export class CommercialBankEthiopiaController {
   public constructor(
@@ -36,9 +36,7 @@ export class CommercialBankEthiopiaController {
     type: CommercialBankEthiopiaValidationReportDto,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get(
-    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries',
-  )
+  @Get('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
   public async getValidated(
     @Param('programId', ParseIntPipe)
     programId: number,

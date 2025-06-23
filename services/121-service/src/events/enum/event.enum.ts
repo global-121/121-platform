@@ -1,6 +1,6 @@
 export enum EventEnum {
   registrationDataChange = 'registrationDataChange',
-  financialServiceProviderChange = 'financialServiceProviderChange',
+  fspChange = 'fspChange',
   registrationStatusChange = 'registrationStatusChange',
   ignoredDuplicate = 'ignoredDuplicate',
 }

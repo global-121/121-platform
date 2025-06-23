@@ -15,7 +15,6 @@ Set all ENV-variables in a local `.env`-file, based on: [`.env.example`](.env.ex
 
 - [PrimeNG](https://primeng.org/)  
   A UI-library for Angular, to quickly build interfaces with a lot of components and features off-the-shelve.
-
   - Documentation: <https://primeng.org/configuration>
 
 ## Development

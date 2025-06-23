@@ -9,12 +9,12 @@ graph LR
   ProgramModule-->ActionsModule
   ActionsModule-->UserModule
   ProgramModule-->UserModule
-  ProgramModule-->FinancialServiceProvidersModule
-  FinancialServiceProvidersModule-->UserModule
+  ProgramModule-->FspsModule
+  FspsModule-->UserModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
-  ProgramModule-->ProgramFinancialServiceProviderConfigurationsModule
+  ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->IntersolveVisaModule
   IntersolveVisaModule-->UserModule
   OrganizationModule-->UserModule
@@ -53,13 +53,13 @@ graph LR
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule
   RegistrationsModule-->ProgramModule
-  RegistrationsModule-->FinancialServiceProvidersModule
+  RegistrationsModule-->FspsModule
   RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->EventsModule
-  RegistrationsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
   MetricsModule-->ActionsModule
   MetricsModule-->PaymentsModule
@@ -87,8 +87,8 @@ graph LR
   PaymentsModule-->TransactionQueuesModule
   TransactionQueuesModule-->RedisModule
   TransactionQueuesModule-->QueuesRegistryModule
-  PaymentsModule-->FinancialServiceProvidersModule
-  PaymentsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  PaymentsModule-->FspsModule
+  PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->RedisModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
@@ -115,12 +115,12 @@ graph LR
   TransactionJobProcessorsModule-->IntersolveVisaModule
   TransactionJobProcessorsModule-->SafaricomModule
   TransactionJobProcessorsModule-->NedbankModule
-  TransactionJobProcessorsModule-->ProgramFinancialServiceProviderConfigurationsModule
+  TransactionJobProcessorsModule-->ProgramFspConfigurationsModule
   TransactionJobProcessorsModule-->RegistrationsModule
   TransactionJobProcessorsModule-->ProgramModule
   TransactionJobProcessorsModule-->TransactionsModule
   TransactionJobProcessorsModule-->MessageQueuesModule
-  TransactionJobProcessorsModule-->FinancialServiceProvidersModule
+  TransactionJobProcessorsModule-->FspsModule
   TransactionJobProcessorsModule-->EventsModule
   TransactionJobProcessorsModule-->MessageTemplateModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
@@ -132,7 +132,7 @@ graph LR
   IntersolveVisaReconciliationModule-->IntersolveVisaModule
   IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
   IntersolveVoucherReconciliationModule-->ProgramModule
-  IntersolveVoucherReconciliationModule-->ProgramFinancialServiceProviderConfigurationsModule
+  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
   SafaricomReconciliationModule-->SafaricomModule
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule

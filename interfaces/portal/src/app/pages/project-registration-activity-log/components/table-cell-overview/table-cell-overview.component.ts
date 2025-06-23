@@ -102,11 +102,11 @@ export class TableCellOverviewComponent
           attributes: this.registrationAttributes.data(),
           attributeName: item.attributes.fieldName,
         });
-      case ActivityTypeEnum.FinancialServiceProviderChange:
+      case ActivityTypeEnum.FspChange:
         return this.registrationAttributeService.localizeAttribute({
           attributes: this.registrationAttributes.data(),
           attributeName:
-            GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+            GenericRegistrationAttributes.programFspConfigurationName,
           attributeOptionValue: item.attributes.newValue,
         });
       case ActivityTypeEnum.Message:
@@ -153,9 +153,7 @@ export class TableCellOverviewComponent
 
     if (
       item.type !== ActivityTypeEnum.Transaction ||
-      !FSPS_WITH_VOUCHER_SUPPORT.includes(
-        item.attributes.financialServiceProviderName,
-      )
+      !FSPS_WITH_VOUCHER_SUPPORT.includes(item.attributes.fspName)
     ) {
       return;
     }

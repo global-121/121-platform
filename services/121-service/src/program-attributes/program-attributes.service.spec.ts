@@ -69,8 +69,8 @@ describe('ProgramAttributesService', () => {
       const includeTemplateDefaultAttributes: (keyof RegistrationViewEntity)[] =
         [
           'paymentAmountMultiplier',
-          'programFinancialServiceProviderConfigurationLabel',
-          'programFinancialServiceProviderConfigurationLabel',
+          'programFspConfigurationLabel',
+          'programFspConfigurationLabel',
           'paymentCountRemaining',
         ];
 

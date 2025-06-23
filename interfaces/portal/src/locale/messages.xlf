@@ -219,7 +219,7 @@
       <trans-unit id="7203225042973794131" datatype="html">
         <source>&lt;UNNAMED TEMPLATE&gt;</source>
       </trans-unit>
-      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationLabel" datatype="html">
+      <trans-unit id="attribute-label-programFspConfigurationLabel" datatype="html">
         <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
@@ -1114,7 +1114,7 @@
       <trans-unit id="attribute-label-preferredLanguage" datatype="html">
         <source>Preferred Language</source>
       </trans-unit>
-      <trans-unit id="attribute-label-programFinancialServiceProviderConfigurationName" datatype="html">
+      <trans-unit id="attribute-label-programFspConfigurationName" datatype="html">
         <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-referenceId" datatype="html">

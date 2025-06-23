@@ -18,7 +18,7 @@ import {
   WhereExpressionBuilder,
 } from 'typeorm';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
@@ -92,13 +92,10 @@ export class RegistrationsPaginationService {
       }
     }
 
-    // If you want to select programFinancialServiceProviderConfigurationLabel, you also need to get financialServiceProvider because we need this to find the correct programFinancialServiceProviderConfigurationLabel
-    if (
-      query.select &&
-      query.select.includes('programFinancialServiceProviderConfigurationLabel')
-    ) {
+    // If you want to select programFspConfigurationLabel, you also need to get fsp because we need this to find the correct programFspConfigurationLabel
+    if (query.select && query.select.includes('programFspConfigurationLabel')) {
       if (fullnameNamingConvention) {
-        query.select.push('financialServiceProvider');
+        query.select.push('fsp');
       }
     }
 
@@ -658,14 +655,14 @@ export class RegistrationsPaginationService {
   public getQueryBuilderForFspInstructions({
     programId,
     payment,
-    programFinancialServiceProviderConfigurationId,
-    financialServiceProviderName,
+    programFspConfigurationId,
+    fspName,
     status,
   }: {
     programId: number;
     payment: number;
-    programFinancialServiceProviderConfigurationId?: number;
-    financialServiceProviderName?: FinancialServiceProviders;
+    programFspConfigurationId?: number;
+    fspName?: Fsps;
     status?: TransactionStatusEnum;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.registrationViewScopedRepository
@@ -678,22 +675,19 @@ export class RegistrationsPaginationService {
     if (status) {
       query.andWhere('transaction.status = :status', { status });
     }
-    if (programFinancialServiceProviderConfigurationId) {
+    if (programFspConfigurationId) {
       query.andWhere(
-        'transaction.programFinancialServiceProviderConfigurationId = :programFinancialServiceProviderConfigurationId',
-        { programFinancialServiceProviderConfigurationId },
+        'transaction.programFspConfigurationId = :programFspConfigurationId',
+        { programFspConfigurationId },
       );
     }
-    if (financialServiceProviderName) {
+    if (fspName) {
       query
         .leftJoin(
-          'transaction.programFinancialServiceProviderConfiguration',
-          'programFinancialServiceProviderConfiguration',
+          'transaction.programFspConfiguration',
+          'programFspConfiguration',
         )
-        .andWhere(
-          'programFinancialServiceProviderConfiguration.financialServiceProviderName = :financialServiceProviderName',
-          { financialServiceProviderName },
-        );
+        .andWhere('programFspConfiguration.fspName = :fspName', { fspName });
     }
     return query;
   }

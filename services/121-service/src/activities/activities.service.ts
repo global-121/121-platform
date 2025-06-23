@@ -78,7 +78,7 @@ export class ActivitiesService {
     if (canViewPersonalData) {
       availableTypes.push(ActivityTypeEnum.DataChange);
       availableTypes.push(ActivityTypeEnum.StatusChange);
-      availableTypes.push(ActivityTypeEnum.FinancialServiceProviderChange);
+      availableTypes.push(ActivityTypeEnum.FspChange);
       availableTypes.push(ActivityTypeEnum.IgnoredDuplicate);
 
       events =

@@ -1,4 +1,4 @@
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -12,8 +12,7 @@ export const registrationScopedGoesPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationScopedMiddelburgPv = {
@@ -22,8 +21,7 @@ export const registrationScopedMiddelburgPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationScopedUtrechtPv = {
@@ -32,8 +30,7 @@ export const registrationScopedUtrechtPv = {
   scope: DebugScope.UtrechtHouten,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationNotScopedPv = {
@@ -42,8 +39,7 @@ export const registrationNotScopedPv = {
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550200',
   fullName: 'Nick Brouwers',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.intersolveVoucherPaper,
+  programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
 export const registrationsPV = [

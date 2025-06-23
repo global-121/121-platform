@@ -14,7 +14,7 @@ import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/pa
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/commercial-bank-ethiopia')
+@ApiTags('fsps/commercial-bank-ethiopia')
 @Controller()
 export class CommercialBankEthiopiaReconciliationController {
   public constructor(
@@ -33,9 +33,7 @@ export class CommercialBankEthiopiaReconciliationController {
       'Done retrieving and updating/insterting account enquiry data for all registrations in this program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put(
-    'programs/:programId/financial-service-providers/commercial-bank-ethiopia/account-enquiries',
-  )
+  @Put('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
   public async retrieveAndUpsertAccountEnquiriesForProgram(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -55,7 +53,7 @@ export class CommercialBankEthiopiaReconciliationController {
     description:
       'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
   })
-  @Put('financial-service-providers/commercial-bank-ethiopia/account-enquiries')
+  @Put('fsps/commercial-bank-ethiopia/account-enquiries')
   public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
     console.info('Start: CBE - retrieveAndUpsertAccountEnquiries');
     // Don't wait for the result, as that can cause a timeout on the API

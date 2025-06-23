@@ -1,8 +1,8 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { BaseActivity } from '@121-service/src/activities/interfaces/base-activity.interface';
 
-export interface FinancialServiceProviderChangeActivity extends BaseActivity {
-  type: ActivityTypeEnum.FinancialServiceProviderChange;
+export interface FspChangeActivity extends BaseActivity {
+  type: ActivityTypeEnum.FspChange;
   attributes: {
     oldValue: string | null;
     newValue: string | null;

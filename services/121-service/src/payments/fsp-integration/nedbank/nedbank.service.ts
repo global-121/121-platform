@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { NedbankApiErrorCode } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-api-error-code.enum';
 import { NedbankErrorCode } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-error-code.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -10,9 +10,7 @@ import { NedbankApiError } from '@121-service/src/payments/fsp-integration/nedba
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api.service';
 
 @Injectable()
-export class NedbankService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class NedbankService implements FspIntegrationInterface {
   public constructor(private readonly nedbankApiService: NedbankApiService) {}
 
   /**

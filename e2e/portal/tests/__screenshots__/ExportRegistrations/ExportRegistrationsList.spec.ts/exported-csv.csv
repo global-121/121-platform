@@ -1,2 +1,2 @@
-referenceId,id,status,phoneNumber,preferredLanguage,paymentAmountMultiplier,paymentCount,programFinancialServiceProviderConfigurationLabel,scope,namePartnerOrganization,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumberAddition,addressPostalCode,addressCity,addressHouseNumber
+referenceId,id,status,phoneNumber,preferredLanguage,paymentAmountMultiplier,paymentCount,programFspConfigurationLabel,scope,namePartnerOrganization,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumberAddition,addressPostalCode,addressCity,addressHouseNumber
 44e62864557597e0d,1,included,14155235556,nl,1,0,Albert Heijn voucher WhatsApp,,,Gemma Houtenbos,14155235555,,,,,

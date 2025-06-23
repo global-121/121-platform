@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -32,8 +32,7 @@ describe('Do payment to 1 PA', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    programFinancialServiceProviderConfigurationName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
+    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
   };
 

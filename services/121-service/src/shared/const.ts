@@ -16,7 +16,7 @@ export const nameConstraintQuestionsArray = [
   'preferredLanguage',
   'inclusionScore',
   'paymentAmountMultiplier',
-  'financialServiceProvider',
+  'fsp',
   'registrationProgramId',
   'maxPayments',
   'lastTransactionCreated',

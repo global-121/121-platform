@@ -71,7 +71,7 @@ export const VISA_CARD_STATUS_LABELS: Record<VisaCard121Status, string> = {
 
 export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.DataChange]: $localize`:@@activity-log-item-type-data-change:Data change`,
-  [ActivityTypeEnum.FinancialServiceProviderChange]: $localize`:@@activity-log-item-type-fsp-change:FSP change`,
+  [ActivityTypeEnum.FspChange]: $localize`:@@activity-log-item-type-fsp-change:FSP change`,
   [ActivityTypeEnum.Message]: $localize`:@@activity-log-item-type-message:Message`,
   [ActivityTypeEnum.Note]: $localize`:@@activity-log-item-type-note:Note`,
   [ActivityTypeEnum.StatusChange]: $localize`:@@activity-log-item-type-status-update:Status update`,
@@ -81,7 +81,7 @@ export const ACTIVITY_LOG_ITEM_TYPE_LABELS: Record<ActivityTypeEnum, string> = {
 
 export const ACTIVITY_LOG_ITEM_TYPE_ICONS: Record<ActivityTypeEnum, string> = {
   [ActivityTypeEnum.DataChange]: 'pi pi-pencil',
-  [ActivityTypeEnum.FinancialServiceProviderChange]: 'pi pi-pencil',
+  [ActivityTypeEnum.FspChange]: 'pi pi-pencil',
   [ActivityTypeEnum.Message]: 'pi pi-envelope',
   [ActivityTypeEnum.Note]: 'pi pi-pen-to-square',
   [ActivityTypeEnum.StatusChange]: 'pi pi-refresh',

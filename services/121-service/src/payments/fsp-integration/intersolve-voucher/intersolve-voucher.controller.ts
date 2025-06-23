@@ -37,7 +37,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/intersolve-voucher')
+@ApiTags('fsps/intersolve-voucher')
 @Controller()
 export class IntersolveVoucherController {
   public constructor(
@@ -58,9 +58,7 @@ export class IntersolveVoucherController {
     description:
       'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get(
-    'programs/:programId/financial-service-providers/intersolve-voucher/vouchers',
-  )
+  @Get('programs/:programId/fsps/intersolve-voucher/vouchers')
   public async exportVouchers(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -92,9 +90,7 @@ export class IntersolveVoucherController {
     description:
       'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get(
-    'programs/:programId/financial-service-providers/intersolve-voucher/vouchers/balance',
-  )
+  @Get('programs/:programId/fsps/intersolve-voucher/vouchers/balance')
   public async getBalance(
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -116,9 +112,7 @@ export class IntersolveVoucherController {
     status: HttpStatus.OK,
     description: 'Get intersolve instructions',
   })
-  @Get(
-    'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
-  )
+  @Get('programs/:programId/fsps/intersolve-voucher/instructions')
   public async intersolveInstructions(
     @Res() response: Response,
     @Param('programId', ParseIntPipe)
@@ -144,9 +138,7 @@ export class IntersolveVoucherController {
     status: HttpStatus.CREATED,
     description: 'Post intersolve instructions',
   })
-  @Post(
-    'programs/:programId/financial-service-providers/intersolve-voucher/instructions',
-  )
+  @Post('programs/:programId/fsps/intersolve-voucher/instructions')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob: Blob,
@@ -167,7 +159,7 @@ export class IntersolveVoucherController {
     status: HttpStatus.CREATED,
     description: 'Vouchers canceled by refpos',
   })
-  @Post('/financial-service-providers/intersolve-voucher/cancel')
+  @Post('/fsps/intersolve-voucher/cancel')
   public async cancelByRefPos(): Promise<void> {
     console.info('Start: Intersolve-Voucher - cancelByRefPos');
     void this.intersolveVoucherCronService
@@ -192,7 +184,7 @@ export class IntersolveVoucherController {
     status: HttpStatus.CREATED,
     description: 'Sent WhatsApp reminders',
   })
-  @Post('/financial-service-providers/intersolve-voucher/send-reminders')
+  @Post('/fsps/intersolve-voucher/send-reminders')
   public async sendWhatsappReminders(): Promise<void> {
     console.info('Start: Intersolve-Voucher - cronSendWhatsappReminders');
     void this.intersolveVoucherCronService
@@ -219,9 +211,7 @@ export class IntersolveVoucherController {
     status: HttpStatus.OK,
     description: 'Successfully removed deprecated image codes',
   })
-  @Delete(
-    '/financial-service-providers/intersolve-voucher/deprecated-image-codes',
-  )
+  @Delete('/fsps/intersolve-voucher/deprecated-image-codes')
   public async removeDeprecatedImageCodes(
     @Body() body: RemoveDeprecatedImageCodesDto,
   ): Promise<number> {

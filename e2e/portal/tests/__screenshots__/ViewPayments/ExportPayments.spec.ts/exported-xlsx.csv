@@ -1,2 +1,2 @@
-referenceId,id,registrationId,status,payment,registrationStatus,phoneNumber,paymentAmountMultiplier,amount,errorMessage,financialserviceprovider,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+referenceId,id,registrationId,status,payment,registrationStatus,phoneNumber,paymentAmountMultiplier,amount,errorMessage,fsp,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
 22e62864557597e0d,2,4,success,1,included,14155237775,1,25,,Intersolve-visa,Anna Hello,14155237775,Teststeeg,2,,2345AB,AnotherCity

@@ -4,7 +4,7 @@ import { Equal, Repository } from 'typeorm';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconciliation-feedback.dto';
@@ -14,7 +14,7 @@ import { ReconciliationResult } from '@121-service/src/payments/interfaces/recon
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFinancialServiceProviderConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
@@ -42,13 +42,13 @@ export class ExcelRecociliationService {
     const programWithExcelFspConfigs = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
-        programFinancialServiceProviderConfigurations: {
-          financialServiceProviderName: Equal(FinancialServiceProviders.excel),
+        programFspConfigurations: {
+          fspName: Equal(Fsps.excel),
         },
       },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
       order: {
-        programFinancialServiceProviderConfigurations: {
+        programFspConfigurations: {
           name: 'ASC',
         },
       },
@@ -62,7 +62,7 @@ export class ExcelRecociliationService {
     }
 
     const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFinancialServiceProviderConfigurations) {
+    for (const fspConfig of programWithExcelFspConfigs.programFspConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
@@ -92,15 +92,11 @@ export class ExcelRecociliationService {
       where: {
         id: Equal(programId),
       },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
     });
-    const fspConfigsExcel: ProgramFinancialServiceProviderConfigurationEntity[] =
-      [];
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.excel
-      ) {
+    const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
     }
@@ -120,10 +116,7 @@ export class ExcelRecociliationService {
 
     for (const fspConfig of fspConfigsExcel) {
       const transactions = importResults
-        .filter(
-          (r) =>
-            r.programFinancialServiceProviderConfigurationId === fspConfig.id,
-        )
+        .filter((r) => r.programFspConfigurationId === fspConfig.id)
         .map((r) => r.transaction)
         .filter((t): t is PaTransactionResultDto => t !== undefined);
 
@@ -133,7 +126,7 @@ export class ExcelRecociliationService {
           programId,
           paymentNr: payment,
           userId,
-          programFinancialServiceProviderConfigurationId: fspConfig.id,
+          programFspConfigurationId: fspConfig.id,
         },
       );
     }
@@ -190,7 +183,7 @@ export class ExcelRecociliationService {
     file: Express.Multer.File;
     payment: number;
     programId: number;
-    fspConfigs: ProgramFinancialServiceProviderConfigurationEntity[];
+    fspConfigs: ProgramFspConfigurationEntity[];
   }): Promise<ReconciliationResult[]> {
     const maxRecords = 10000;
     const validatedExcelImport = await this.fileImportService.validateCsv(
@@ -209,7 +202,7 @@ export class ExcelRecociliationService {
         referenceId: null,
         message: null,
       };
-      resultRow.programFinancialServiceProviderConfigurationId = undefined;
+      resultRow.programFspConfigurationId = undefined;
       resultRow.transaction = undefined;
       crossFspConfigImportResults.push(resultRow);
     }
@@ -264,7 +257,7 @@ export class ExcelRecociliationService {
     programId: number;
     payment: number;
     validatedExcelImport: object[];
-    fspConfig: ProgramFinancialServiceProviderConfigurationEntity;
+    fspConfig: ProgramFspConfigurationEntity;
     matchColumn: string;
   }): Promise<ReconciliationResult[]> {
     const registrationsForReconciliation =
@@ -298,14 +291,14 @@ export class ExcelRecociliationService {
     programId: number,
     payment: number,
     matchColumn: string,
-    programFinancialServiceProviderConfigurationId: number,
+    programFspConfigurationId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationsPaginationService.getQueryBuilderForFspInstructions({
         programId,
         payment,
-        programFinancialServiceProviderConfigurationId,
-        financialServiceProviderName: FinancialServiceProviders.excel,
+        programFspConfigurationId,
+        fspName: Fsps.excel,
       });
     // log query
     const chunkSize = 400000;
@@ -384,7 +377,7 @@ export class ExcelRecociliationService {
           importStatus,
           [matchColumn]: record[matchColumn],
         },
-        programFinancialServiceProviderConfigurationId: matchedRegistration
+        programFspConfigurationId: matchedRegistration
           ? fspConfigId
           : undefined,
         transaction: transaction || undefined,
@@ -417,7 +410,7 @@ export class ExcelRecociliationService {
     return {
       referenceId: registrationWithAmount.referenceId,
       registrationId: registrationWithAmount.id,
-      fspName: FinancialServiceProviders.excel,
+      fspName: Fsps.excel,
       status: importResponseRecord[
         this.statusColumnName
       ]?.toLowerCase() as TransactionStatusEnum,

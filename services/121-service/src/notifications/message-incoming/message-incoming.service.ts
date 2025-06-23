@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
 import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import {
   MessageContentType,
   TemplatedMessages,
@@ -299,14 +299,13 @@ export class MessageIncomingService {
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
         where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['programFinancialServiceProviderConfigurations'],
+        relations: ['programFspConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
-        program.programFinancialServiceProviderConfigurations.find((config) => {
-          return (config.financialServiceProviderName =
-            FinancialServiceProviders.intersolveVoucherWhatsapp);
+        program.programFspConfigurations.find((config) => {
+          return config.fspName === Fsps.intersolveVoucherWhatsapp;
         })!;
-      tryWhatsapp.registration.programFinancialServiceProviderConfigurationId =
+      tryWhatsapp.registration.programFspConfigurationId =
         fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,

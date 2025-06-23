@@ -2,12 +2,12 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { CreateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
-import { UpdateProgramFinancialServiceProviderConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
+import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration.dto';
+import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/update-program-fsp-configuration-property.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -15,13 +15,13 @@ import { paymentNrVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import {
-  deleteProgramFinancialServiceProviderConfiguration,
-  deleteProgramFinancialServiceProviderConfigurationProperty,
-  getProgramFinancialServiceProviderConfigurations,
-  patchProgramFinancialServiceProviderConfiguration,
-  patchProgramFinancialServiceProviderConfigurationProperty,
-  postProgramFinancialServiceProviderConfiguration,
-  postProgramFinancialServiceProviderConfigurationProperties,
+  deleteProgramFspConfiguration,
+  deleteProgramFspConfigurationProperty,
+  getProgramFspConfigurations,
+  patchProgramFspConfiguration,
+  patchProgramFspConfigurationProperty,
+  postProgramFspConfiguration,
+  postProgramFspConfigurationProperties,
 } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
@@ -37,34 +37,29 @@ import { registrationOCW5 } from '@121-service/test/registrations/pagination/pag
 
 // Only tests most of the happy paths, edge cases are mostly covered in the unit tests
 
-const seededFspConfigVoucher =
-  programOCW.programFinancialServiceProviderConfigurations.find(
-    (fspConfig) =>
-      fspConfig.financialServiceProvider ===
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
-  )!;
+const seededFspConfigVoucher = programOCW.programFspConfigurations.find(
+  (fspConfig) => fspConfig.fsp === Fsps.intersolveVoucherWhatsapp,
+)!;
 
-const createProgramFspConfigurationDto: CreateProgramFinancialServiceProviderConfigurationDto =
-  {
-    name: 'Intersolve Voucher WhatsApp name',
-    label: {
-      en: 'Intersolve Voucher WhatsApp label',
-      nl: 'Intersolve Voucher WhatsApp label Dutch translation',
-      es: 'Intersolve Voucher WhatsApp label Spanish translation',
+const createProgramFspConfigurationDto: CreateProgramFspConfigurationDto = {
+  name: 'Intersolve Voucher WhatsApp name',
+  label: {
+    en: 'Intersolve Voucher WhatsApp label',
+    nl: 'Intersolve Voucher WhatsApp label Dutch translation',
+    es: 'Intersolve Voucher WhatsApp label Spanish translation',
+  },
+  fspName: Fsps.intersolveVoucherWhatsapp,
+  properties: [
+    {
+      name: FspConfigurationProperties.username,
+      value: 'user123',
     },
-    financialServiceProviderName:
-      FinancialServiceProviders.intersolveVoucherWhatsapp,
-    properties: [
-      {
-        name: FinancialServiceProviderConfigurationProperties.username,
-        value: 'user123',
-      },
-      {
-        name: FinancialServiceProviderConfigurationProperties.password,
-        value: 'password123',
-      },
-    ],
-  };
+    {
+      name: FspConfigurationProperties.password,
+      value: 'password123',
+    },
+  ],
+};
 
 describe('Manage financial service provider configurations', () => {
   let accessToken: string;
@@ -76,12 +71,12 @@ describe('Manage financial service provider configurations', () => {
 
   it('should add program financial service provider configuration to an existing program', async () => {
     // Act
-    const result = await postProgramFinancialServiceProviderConfiguration({
+    const result = await postProgramFspConfiguration({
       programId: programIdVisa,
       body: createProgramFspConfigurationDto,
       accessToken,
     });
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -94,8 +89,7 @@ describe('Manage financial service provider configurations', () => {
       expect.objectContaining({
         name: createProgramFspConfigurationDto.name,
         label: createProgramFspConfigurationDto.label,
-        financialServiceProviderName:
-          createProgramFspConfigurationDto.financialServiceProviderName,
+        fspName: createProgramFspConfigurationDto.fspName,
       }),
     );
     const propertyNamesResult = result.body.properties.map(
@@ -119,28 +113,27 @@ describe('Manage financial service provider configurations', () => {
 
   it('should patch existing program financial service provider configuration', async () => {
     // Act
-    const updateProgramFinancialServiceProviderConfigurationDto: UpdateProgramFinancialServiceProviderConfigurationDto =
-      {
-        label: {
-          en: 'Intersolve Voucher WhatsApp label updated',
-          nl: 'Intersolve Voucher WhatsApp label Dutch translation updated',
-          es: 'Intersolve Voucher WhatsApp label Spanish translation updated',
+    const updateProgramFspConfigurationDto: UpdateProgramFspConfigurationDto = {
+      label: {
+        en: 'Intersolve Voucher WhatsApp label updated',
+        nl: 'Intersolve Voucher WhatsApp label Dutch translation updated',
+        es: 'Intersolve Voucher WhatsApp label Spanish translation updated',
+      },
+      properties: [
+        {
+          name: FspConfigurationProperties.username,
+          value: 'user1234',
         },
-        properties: [
-          {
-            name: FinancialServiceProviderConfigurationProperties.username,
-            value: 'user1234',
-          },
-        ],
-      };
-    const name = seededFspConfigVoucher.financialServiceProvider;
-    const result = await patchProgramFinancialServiceProviderConfiguration({
+      ],
+    };
+    const name = seededFspConfigVoucher.fsp;
+    const result = await patchProgramFspConfiguration({
       programId: programIdVisa,
       name,
-      body: updateProgramFinancialServiceProviderConfigurationDto,
+      body: updateProgramFspConfigurationDto,
       accessToken,
     });
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -153,16 +146,15 @@ describe('Manage financial service provider configurations', () => {
     expect(result.body).toEqual(
       expect.objectContaining({
         name,
-        label: updateProgramFinancialServiceProviderConfigurationDto.label,
-        financialServiceProviderName:
-          seededFspConfigVoucher.financialServiceProvider,
+        label: updateProgramFspConfigurationDto.label,
+        fspName: seededFspConfigVoucher.fsp,
       }),
     );
     const propertyNamesResult = result.body.properties.map(
       (property) => property.name,
     );
     const propertyNamesExpected =
-      updateProgramFinancialServiceProviderConfigurationDto.properties!.map(
+      updateProgramFspConfigurationDto.properties!.map(
         (property) => property.name,
       );
     expect(propertyNamesResult).toEqual(
@@ -179,13 +171,13 @@ describe('Manage financial service provider configurations', () => {
 
   it('should delete existing program financial service provider configuration', async () => {
     // Act
-    const name = seededFspConfigVoucher.financialServiceProvider;
-    const result = await deleteProgramFinancialServiceProviderConfiguration({
+    const name = seededFspConfigVoucher.fsp;
+    const result = await deleteProgramFspConfiguration({
       programId: programIdVisa,
       name,
       accessToken,
     });
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -202,13 +194,13 @@ describe('Manage financial service provider configurations', () => {
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
     // Act
-    const name = seededFspConfigVoucher.financialServiceProvider;
-    const result = await deleteProgramFinancialServiceProviderConfiguration({
+    const name = seededFspConfigVoucher.fsp;
+    const result = await deleteProgramFspConfiguration({
       programId: programIdVisa,
       name,
       accessToken,
     });
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -223,7 +215,7 @@ describe('Manage financial service provider configurations', () => {
   });
 
   // Checking this exception in api test because it's hard to unit test the more complex transaction querybuilder part
-  it('deleting program financial service provider configuration with existing transactions should set programFinancialServiceProviderConfigurationId of transactions to null', async () => {
+  it('deleting program financial service provider configuration with existing transactions should set programFspConfigurationId of transactions to null', async () => {
     // Prepare
     await seedPaidRegistrations([registrationOCW5], programIdVisa);
 
@@ -247,13 +239,13 @@ describe('Manage financial service provider configurations', () => {
     );
 
     // Act
-    const name = seededFspConfigVoucher.financialServiceProvider;
-    const result = await deleteProgramFinancialServiceProviderConfiguration({
+    const name = seededFspConfigVoucher.fsp;
+    const result = await deleteProgramFspConfiguration({
       programId: programIdVisa,
       name,
       accessToken,
     });
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -271,9 +263,7 @@ describe('Manage financial service provider configurations', () => {
     // Assert
     expect(result.statusCode).toBe(HttpStatus.NO_CONTENT);
     expect(getResultConfig).not.toBeDefined();
-    expect(
-      getTranactions.body[0].programFinancialServiceProviderConfigurationName,
-    ).toBe(null);
+    expect(getTranactions.body[0].programFspConfigurationName).toBe(null);
   });
 
   it('should add program financial service provider configuration properties to an existing program financial service provider configuration', async () => {
@@ -282,22 +272,21 @@ describe('Manage financial service provider configurations', () => {
       ...createProgramFspConfigurationDto,
       properties: undefined,
     };
-    await postProgramFinancialServiceProviderConfiguration({
+    await postProgramFspConfiguration({
       programId: programIdVisa,
       body: createProgramFspConfigurationDtoNoProperties,
       accessToken,
     });
 
     // Act
-    const result =
-      await postProgramFinancialServiceProviderConfigurationProperties({
-        programId: programIdVisa,
-        properties: createProgramFspConfigurationDto.properties!,
-        accessToken,
-        name: createProgramFspConfigurationDto.name,
-      });
+    const result = await postProgramFspConfigurationProperties({
+      programId: programIdVisa,
+      properties: createProgramFspConfigurationDto.properties!,
+      accessToken,
+      name: createProgramFspConfigurationDto.name,
+    });
 
-    const getResult = await getProgramFinancialServiceProviderConfigurations({
+    const getResult = await getProgramFspConfigurations({
       programId: programIdVisa,
       accessToken,
     });
@@ -326,51 +315,37 @@ describe('Manage financial service provider configurations', () => {
 
   it('should patch a property of an existing program financial service provider configuration', async () => {
     // Prepare
-    const updatedPropertyDto: UpdateProgramFinancialServiceProviderConfigurationPropertyDto =
-      {
-        value: 'user1234',
-      };
+    const updatedPropertyDto: UpdateProgramFspConfigurationPropertyDto = {
+      value: 'user1234',
+    };
 
     // Act
-    const getResultBefore =
-      await getProgramFinancialServiceProviderConfigurations({
-        programId: programIdVisa,
-        accessToken,
-      });
+    const getResultBefore = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
     const usernamePropertyBefore = getResultBefore.body
-      .find(
-        (config) =>
-          config.name === seededFspConfigVoucher.financialServiceProvider,
-      )!
+      .find((config) => config.name === seededFspConfigVoucher.fsp)!
       .properties.find(
-        (property) =>
-          property.name ===
-          FinancialServiceProviderConfigurationProperties.username,
+        (property) => property.name === FspConfigurationProperties.username,
       );
 
-    const patchResult =
-      await patchProgramFinancialServiceProviderConfigurationProperty({
-        programId: programIdVisa,
-        configName: seededFspConfigVoucher.financialServiceProvider,
-        propertyName: FinancialServiceProviderConfigurationProperties.username,
-        body: updatedPropertyDto,
-        accessToken,
-      });
+    const patchResult = await patchProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: seededFspConfigVoucher.fsp,
+      propertyName: FspConfigurationProperties.username,
+      body: updatedPropertyDto,
+      accessToken,
+    });
 
-    const getResultAfter =
-      await getProgramFinancialServiceProviderConfigurations({
-        programId: programIdVisa,
-        accessToken,
-      });
+    const getResultAfter = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
     const usernamePropertyAfter = getResultAfter.body
-      .find(
-        (config) =>
-          config.name === seededFspConfigVoucher.financialServiceProvider,
-      )!
+      .find((config) => config.name === seededFspConfigVoucher.fsp)!
       .properties.find(
-        (property) =>
-          property.name ===
-          FinancialServiceProviderConfigurationProperties.username,
+        (property) => property.name === FspConfigurationProperties.username,
       );
 
     // Assert
@@ -387,28 +362,23 @@ describe('Manage financial service provider configurations', () => {
 
   it('should delete a property of an existing program financial service provider configuration', async () => {
     // Act
-    const deleteResult =
-      await deleteProgramFinancialServiceProviderConfigurationProperty({
-        programId: programIdVisa,
-        configName: seededFspConfigVoucher.financialServiceProvider,
-        propertyName: FinancialServiceProviderConfigurationProperties.username,
-        accessToken,
-      });
+    const deleteResult = await deleteProgramFspConfigurationProperty({
+      programId: programIdVisa,
+      configName: seededFspConfigVoucher.fsp,
+      propertyName: FspConfigurationProperties.username,
+      accessToken,
+    });
 
-    const getResultAfter =
-      await getProgramFinancialServiceProviderConfigurations({
-        programId: programIdVisa,
-        accessToken,
-      });
+    const getResultAfter = await getProgramFspConfigurations({
+      programId: programIdVisa,
+      accessToken,
+    });
     const config = getResultAfter.body.find(
-      (config) =>
-        config.name === seededFspConfigVoucher.financialServiceProvider,
+      (config) => config.name === seededFspConfigVoucher.fsp,
     );
 
     const usernamePropertyAfter = config?.properties.find(
-      (property) =>
-        property.name ===
-        FinancialServiceProviderConfigurationProperties.username,
+      (property) => property.name === FspConfigurationProperties.username,
     );
 
     // Assert

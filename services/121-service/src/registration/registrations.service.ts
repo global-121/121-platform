@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
 import { EventsService } from '@121-service/src/events/events.service';
-import { FinancialServiceProviderAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { getFinancialServiceProviderSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
+import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -20,7 +20,7 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integr
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
-import { ProgramFinancialServiceProviderConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
@@ -83,7 +83,7 @@ export class RegistrationsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly eventsService: EventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly programFinancialServiceProviderConfigurationRepository: ProgramFinancialServiceProviderConfigurationRepository,
+    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
@@ -590,11 +590,8 @@ export class RegistrationsService {
       }
     }
 
-    if (
-      attribute ===
-      AdditionalAttributes.programFinancialServiceProviderConfigurationName
-    ) {
-      registration.programFinancialServiceProviderConfigurationId =
+    if (attribute === AdditionalAttributes.programFspConfigurationName) {
+      registration.programFspConfigurationId =
         await this.getChosenFspConfigurationId({
           registration,
           newFspConfigurationName: String(value),
@@ -613,10 +610,9 @@ export class RegistrationsService {
       });
     }
 
-    const intersolveVisaAttributeNames =
-      getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVisa,
-      ).attributes.map((attr) => attr.name) as string[];
+    const intersolveVisaAttributeNames = getFspSettingByNameOrThrow(
+      Fsps.intersolveVisa,
+    ).attributes.map((attr) => attr.name) as string[];
     if (
       process.env.SYNC_WITH_THIRD_PARTIES &&
       intersolveVisaAttributeNames.includes(attribute)
@@ -638,12 +634,12 @@ export class RegistrationsService {
     if (registrationHasVisaCustomer) {
       type ContactInformationKeys = keyof ContactInformation;
       const fieldNames: ContactInformationKeys[] = [
-        FinancialServiceProviderAttributes.addressStreet,
-        FinancialServiceProviderAttributes.addressHouseNumber,
-        FinancialServiceProviderAttributes.addressHouseNumberAddition,
-        FinancialServiceProviderAttributes.addressPostalCode,
-        FinancialServiceProviderAttributes.addressCity,
-        FinancialServiceProviderAttributes.phoneNumber,
+        FspAttributes.addressStreet,
+        FspAttributes.addressHouseNumber,
+        FspAttributes.addressHouseNumberAddition,
+        FspAttributes.addressPostalCode,
+        FspAttributes.addressCity,
+        FspAttributes.phoneNumber,
       ];
       const registrationData =
         await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
@@ -795,15 +791,12 @@ export class RegistrationsService {
     newFspConfigurationName: string;
   }): Promise<number> {
     //Identify new FSP
-    const newFspConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.findOne(
-        {
-          where: {
-            name: Equal(newFspConfigurationName),
-            programId: Equal(registration.programId),
-          },
-        },
-      );
+    const newFspConfig = await this.programFspConfigurationRepository.findOne({
+      where: {
+        name: Equal(newFspConfigurationName),
+        programId: Equal(registration.programId),
+      },
+    });
     if (!newFspConfig) {
       const error = `FSP with this name not found`;
       throw new Error(error);
@@ -1005,13 +998,11 @@ export class RegistrationsService {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       programId,
-      relations: ['programFinancialServiceProviderConfiguration'],
+      relations: ['programFspConfiguration'],
     });
     if (
-      !registration.programFinancialServiceProviderConfigurationId ||
-      registration.programFinancialServiceProviderConfiguration
-        ?.financialServiceProviderName !==
-        FinancialServiceProviders.intersolveVisa
+      !registration.programFspConfigurationId ||
+      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
     ) {
       throw new HttpException(
         `This registration is not associated with the Intersolve Visa financial service provider.`,
@@ -1020,29 +1011,25 @@ export class RegistrationsService {
     }
 
     const intersolveVisaConfig =
-      await this.programFinancialServiceProviderConfigurationRepository.getPropertiesByNamesOrThrow(
-        {
-          programFinancialServiceProviderConfigurationId:
-            registration.programFinancialServiceProviderConfigurationId,
-          names: [
-            FinancialServiceProviderConfigurationProperties.brandCode,
-            FinancialServiceProviderConfigurationProperties.coverLetterCode,
-          ],
-        },
-      );
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId: registration.programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.brandCode,
+          FspConfigurationProperties.coverLetterCode,
+        ],
+      });
 
     //  TODO: REFACTOR: This 'ugly' code is now also in payments.service.createAndAddIntersolveVisaTransactionJobs. This should be refactored when there's a better way of getting registration data.
-    const intersolveVisaAttributes =
-      getFinancialServiceProviderSettingByNameOrThrow(
-        FinancialServiceProviders.intersolveVisa,
-      ).attributes;
+    const intersolveVisaAttributes = getFspSettingByNameOrThrow(
+      Fsps.intersolveVisa,
+    ).attributes;
 
     const intersolveVisaAttributeNames = intersolveVisaAttributes.map(
       (q) => q.name,
     );
     const dataFieldNames = [
-      FinancialServiceProviderAttributes.fullName,
-      FinancialServiceProviderAttributes.phoneNumber,
+      FspAttributes.fullName,
+      FspAttributes.phoneNumber,
       ...intersolveVisaAttributeNames,
     ];
 
@@ -1068,10 +1055,7 @@ export class RegistrationsService {
     );
 
     for (const name of dataFieldNames) {
-      if (
-        name === FinancialServiceProviderAttributes.addressHouseNumberAddition
-      )
-        continue; // Skip non-required property
+      if (name === FspAttributes.addressHouseNumberAddition) continue; // Skip non-required property
       if (
         mappedRegistrationData[name] === null ||
         mappedRegistrationData[name] === undefined ||
@@ -1090,44 +1074,23 @@ export class RegistrationsService {
         registrationId: registration.id,
         // Why do we need this?
         reference: registration.referenceId,
-        name: mappedRegistrationData[
-          FinancialServiceProviderAttributes.fullName
-        ],
+        name: mappedRegistrationData[FspAttributes.fullName],
         contactInformation: {
-          addressStreet:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.addressStreet
-            ],
+          addressStreet: mappedRegistrationData[FspAttributes.addressStreet],
           addressHouseNumber:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.addressHouseNumber
-            ],
+            mappedRegistrationData[FspAttributes.addressHouseNumber],
           addressHouseNumberAddition:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.addressHouseNumberAddition
-            ],
+            mappedRegistrationData[FspAttributes.addressHouseNumberAddition],
           addressPostalCode:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.addressPostalCode
-            ],
-          addressCity:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.addressCity
-            ],
-          phoneNumber:
-            mappedRegistrationData[
-              FinancialServiceProviderAttributes.phoneNumber
-            ], // In the above for loop it is checked that this is not undefined or empty
+            mappedRegistrationData[FspAttributes.addressPostalCode],
+          addressCity: mappedRegistrationData[FspAttributes.addressCity],
+          phoneNumber: mappedRegistrationData[FspAttributes.phoneNumber], // In the above for loop it is checked that this is not undefined or empty
         },
         brandCode: intersolveVisaConfig.find(
-          (c) =>
-            c.name ===
-            FinancialServiceProviderConfigurationProperties.brandCode,
+          (c) => c.name === FspConfigurationProperties.brandCode,
         )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
         coverLetterCode: intersolveVisaConfig.find(
-          (c) =>
-            c.name ===
-            FinancialServiceProviderConfigurationProperties.coverLetterCode,
+          (c) => c.name === FspConfigurationProperties.coverLetterCode,
         )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
       });
     } catch (error) {

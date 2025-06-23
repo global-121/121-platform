@@ -1,8 +1,10 @@
 import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import CbeProgram from '@121-service/src/seed-data/program/program-cbe.json';
+import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -16,9 +18,11 @@ import {
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
+let accessToken: string;
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.cbeProgram);
-  const accessToken = await getAccessToken();
+  accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsCbe, programIdCbe, accessToken);
 
   // Login
@@ -49,6 +53,14 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.startPayment();
+
+    await waitForPaymentTransactionsToComplete({
+      programId: programIdCbe,
+      paymentReferenceIds: registrationsCbe.map((r) => r.referenceId),
+      accessToken,
+      maxWaitTimeMs: 30_000,
+      completeStatusses: [TransactionStatusEnum.success],
+    });
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),

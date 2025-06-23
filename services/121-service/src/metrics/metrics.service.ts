@@ -5,7 +5,7 @@ import { Equal, In, Not, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { FinancialServiceProviders } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
@@ -255,13 +255,10 @@ export class MetricsService {
       row['id'] = row['registrationProgramId'] ?? null;
       delete row['registrationProgramId'];
 
-      if (
-        typeof row['programFinancialServiceProviderConfigurationLabel'] ===
-        'object'
-      ) {
+      if (typeof row['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
-        row['programFinancialServiceProviderConfigurationLabel'] = row[
-          'programFinancialServiceProviderConfigurationLabel'
+        row['programFspConfigurationLabel'] = row[
+          'programFspConfigurationLabel'
         ]?.[preferredLanguage] as string | undefined;
       }
     }
@@ -275,7 +272,7 @@ export class MetricsService {
         status: null,
         phoneNumber: null,
         preferredLanguage: null,
-        financialserviceprovider: null,
+        fsp: null,
         paymentAmountMultiplier: null,
         paymentCount: null,
       };
@@ -434,7 +431,7 @@ export class MetricsService {
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
-      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel,
+      GenericRegistrationAttributes.programFspConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ] as string[];
 
@@ -559,7 +556,7 @@ export class MetricsService {
         'registration.paymentAmountMultiplier as "paymentAmountMultiplier"',
         'transaction.amount as "amount"',
         'SUBSTRING(transaction."errorMessage", 1, 32000) as "errorMessage"',
-        'fspConfig.name AS financialServiceProvider',
+        'fspConfig.name AS fsp',
       ])
       .innerJoin(
         '(' + latestTransactionPerPa.getQuery() + ')',
@@ -568,10 +565,7 @@ export class MetricsService {
       )
       .setParameters(latestTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
-      .leftJoin(
-        'transaction.programFinancialServiceProviderConfiguration',
-        'fspConfig',
-      );
+      .leftJoin('transaction.programFspConfiguration', 'fspConfig');
 
     const additionalFspExportFields =
       await this.getAdditionalFspExportFields(programId);
@@ -659,7 +653,7 @@ export class MetricsService {
   > {
     const program = await this.programRepository.findOneOrFail({
       where: { id: Equal(programId) },
-      relations: ['programFinancialServiceProviderConfigurations'],
+      relations: ['programFspConfigurations'],
     });
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
@@ -667,11 +661,8 @@ export class MetricsService {
       alias: string;
     }[] = [];
 
-    for (const fspConfig of program.programFinancialServiceProviderConfigurations) {
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.safaricom
-      ) {
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.safaricom) {
         fields = [
           ...fields,
           ...[
@@ -683,25 +674,22 @@ export class MetricsService {
           ],
         ];
       }
-      if (
-        fspConfig.financialServiceProviderName ===
-        FinancialServiceProviders.nedbank
-      ) {
+      if (fspConfig.fspName === Fsps.nedbank) {
         fields = [
           ...fields,
           ...[
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'status',
               alias: 'nedbankVoucherStatus',
             },
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'orderCreateReference',
               alias: 'nedbankOrderCreateReference',
             },
             {
-              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to financial-service-providers-settings.const.ts?
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
               attribute: 'paymentReference',
               alias: 'nedbankPaymentReference',
             },

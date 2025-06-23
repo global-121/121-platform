@@ -1,8 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import {
-  FinancialServiceProviderConfigurationProperties,
-  FinancialServiceProviders,
+  FspConfigurationProperties,
+  Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -16,7 +16,7 @@ import {
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { deleteProgramFinancialServiceProviderConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   seedIncludedRegistrations,
   seedPaidRegistrations,
@@ -601,11 +601,10 @@ describe('Do payment', () => {
         );
         const paymentReferenceIds = [registrationNedbank.referenceId];
 
-        await deleteProgramFinancialServiceProviderConfigurationProperty({
+        await deleteProgramFspConfigurationProperty({
           programId,
-          configName: FinancialServiceProviders.nedbank,
-          propertyName:
-            FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          configName: Fsps.nedbank,
+          propertyName: FspConfigurationProperties.paymentReferencePrefix,
           accessToken,
         });
 
@@ -621,7 +620,7 @@ describe('Do payment', () => {
         // Assert
         expect(doPaymentResponse.status).toBe(HttpStatus.BAD_REQUEST);
         expect(doPaymentResponse.body.message).toContain(
-          FinancialServiceProviderConfigurationProperties.paymentReferencePrefix,
+          FspConfigurationProperties.paymentReferencePrefix,
         );
       });
     });

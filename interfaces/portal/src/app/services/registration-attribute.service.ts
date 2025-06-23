@@ -46,9 +46,9 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.paymentCountRemaining:
       return RegistrationAttributeTypes.numeric;
     case GenericRegistrationAttributes.preferredLanguage:
-    case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName:
+    case GenericRegistrationAttributes.programFspConfigurationName:
       return RegistrationAttributeTypes.dropdown;
-    case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationLabel:
+    case GenericRegistrationAttributes.programFspConfigurationLabel:
     case GenericRegistrationAttributes.referenceId:
     case GenericRegistrationAttributes.scope:
     case GenericRegistrationAttributes.status:
@@ -106,7 +106,7 @@ export class RegistrationAttributeService {
           PermissionEnum.RegistrationAttributeFinancialUPDATE;
       } else if (
         attributeName ===
-        GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName
+        GenericRegistrationAttributes.programFspConfigurationName
       ) {
         requiredPermission = PermissionEnum.RegistrationFspConfigUPDATE;
       }
@@ -150,13 +150,11 @@ export class RegistrationAttributeService {
           value: language,
           label: LANGUAGE_ENUM_LABEL[language],
         }));
-      case GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName:
-        return project.programFinancialServiceProviderConfigurations.map(
-          (fspConfig) => ({
-            value: fspConfig.name,
-            label: this.translatableStringService.translate(fspConfig.label),
-          }),
-        );
+      case GenericRegistrationAttributes.programFspConfigurationName:
+        return project.programFspConfigurations.map((fspConfig) => ({
+          value: fspConfig.name,
+          label: this.translatableStringService.translate(fspConfig.label),
+        }));
       default:
         return undefined;
     }
@@ -168,7 +166,7 @@ export class RegistrationAttributeService {
   ): NormalizedRegistrationAttribute[] {
     const genericAttributeNames: GenericRegistrationAttributes[] = [
       GenericRegistrationAttributes.phoneNumber,
-      GenericRegistrationAttributes.programFinancialServiceProviderConfigurationName,
+      GenericRegistrationAttributes.programFspConfigurationName,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.preferredLanguage,
     ];

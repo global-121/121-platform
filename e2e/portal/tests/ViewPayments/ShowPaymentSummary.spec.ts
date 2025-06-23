@@ -34,10 +34,7 @@ test('[31971] Show payment summary', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = 'NLRC OCW Program';
-  const financialServiceProviders: string[] = [
-    'Albert Heijn voucher WhatsApp',
-    'Visa debit card',
-  ];
+  const fsps: string[] = ['Albert Heijn voucher WhatsApp', 'Visa debit card'];
   const numberOfPas = registrationsOCW.length;
   const defaultTransferValue = NLRCProgram.fixedTransferValue;
   const defaultMaxTransferValue = registrationsOCW.reduce((output, pa) => {
@@ -52,7 +49,7 @@ test('[31971] Show payment summary', async ({ page }) => {
   await test.step('Create payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.validatePaymentSummary({
-      fsp: financialServiceProviders,
+      fsp: fsps,
       registrationsNumber: numberOfPas,
       currency: '€',
       paymentAmount: defaultMaxTransferValue,

@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
 
 @Injectable()
-export class SafaricomService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class SafaricomService implements FspIntegrationInterface {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,

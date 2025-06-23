@@ -14,8 +14,8 @@ import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/reconcili
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback.dto';
 import { SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
 
-@ApiTags('financial-service-providers/safaricom')
-@Controller('financial-service-providers/safaricom')
+@ApiTags('fsps/safaricom')
+@Controller('fsps/safaricom')
 @Controller()
 export class SafaricomReconciliationController {
   public constructor(
