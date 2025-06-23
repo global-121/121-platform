@@ -146,7 +146,7 @@ export class AirtelMockController {
     description: `Oauth Bearer token, needs to be exactly: "Bearer ${AirtelAuthToken}". <br/> In the production API the header is called "Authorization", for technical reasons it\'s called "Authorization_" here.`,
     required: true,
   })
-  @ApiParam({ name: 'id', required: true, type: 'integer' })
+  @ApiParam({ name: 'id', required: true, type: 'string' })
   @ApiQuery({
     name: 'transactionType',
     required: true,
