@@ -32,8 +32,7 @@ export class AirtelService
     airtelTransactionId: string;
     phoneNumber: string;
     amount: number;
-  }) {
-    // Validate phone number here, we want to *not* send requests when the phone number is invalid.
+  }): Promise<void> {
     const zambianCountryCode = '260';
     const phoneNumberWithoutCountryCode = phoneNumber.slice(
       zambianCountryCode.length,
