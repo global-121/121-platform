@@ -1,7 +1,6 @@
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
-import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -30,7 +29,7 @@ export function resetDB(
       resetIdentifier,
     })
     .send({
-      secret: env.RESET_SECRET,
+      secret: process.env.RESET_SECRET,
     });
 }
 
@@ -43,7 +42,7 @@ export function resetDuplicateRegistrations(
       mockPowerNumberRegistrations: mockNumber,
     })
     .send({
-      secret: env.RESET_SECRET,
+      secret: process.env.RESET_SECRET,
     });
 }
 
@@ -58,8 +57,8 @@ export function loginApi(
 }
 
 export async function getAccessToken(
-  username = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-  password = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!,
+  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
 ): Promise<string> {
   const login = await loginApi(username, password);
   const cookies = login.get('Set-Cookie');
@@ -79,14 +78,14 @@ export async function getAccessTokenScoped(
 ): Promise<string> {
   return await getAccessToken(
     `${defaultScope}@example.org`,
-    env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
 }
 
 export async function getAccessTokenCvaManager(): Promise<string> {
   return await getAccessToken(
-    env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-    env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+    process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+    process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }
 
