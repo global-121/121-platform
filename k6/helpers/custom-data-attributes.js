@@ -33,4 +33,5 @@ export const Fsps = {
   commercialBankEthiopia: 'Commercial-bank-ethiopia',
   nedbank: 'Nedbank',
   excel: 'Excel',
+  onafriq: 'Onafriq',
 };
