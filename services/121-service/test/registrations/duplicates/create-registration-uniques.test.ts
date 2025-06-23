@@ -1,5 +1,4 @@
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   createRegistrationUniques,
@@ -152,7 +151,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
       },
       created: expect.any(String),
       user: {
-        username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+        username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       },
     });
   });
