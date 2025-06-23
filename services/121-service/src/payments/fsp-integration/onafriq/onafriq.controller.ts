@@ -7,7 +7,7 @@ import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payment
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('financial-service-providers/onafriq')
+@ApiTags('fsps/onafriq')
 @Controller()
 export class OnafriqController {
   public constructor(private onafriqService: OnafriqService) {}
@@ -24,7 +24,7 @@ export class OnafriqController {
     status: HttpStatus.CREATED,
     description: 'Webhook subscribed or updated successfully',
   })
-  @Post('financial-service-providers/onafriq/webhook/subscribe')
+  @Post('fsps/onafriq/webhook/subscribe')
   public async subscribeWebhook(): Promise<
     OnafriqApiWebhookSubscribeResponseBody | undefined
   > {

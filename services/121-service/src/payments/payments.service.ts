@@ -974,8 +974,8 @@ export class PaymentsService {
     paymentNumber: number;
     isRetry: boolean;
   }): Promise<void> {
-    const onafriqAttributes = getFinancialServiceProviderSettingByNameOrThrow(
-      FinancialServiceProviders.onafriq,
+    const onafriqAttributes = getFspSettingByNameOrThrow(
+      Fsps.onafriq,
     ).attributes;
     const onafriqAttributeNames = onafriqAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews(
@@ -998,8 +998,7 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -1007,10 +1006,8 @@ export class PaymentsService {
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
           phoneNumber: registrationView.phoneNumber!,
-          firstName:
-            registrationView[FinancialServiceProviderAttributes.firstName],
-          lastName:
-            registrationView[FinancialServiceProviderAttributes.lastName],
+          firstName: registrationView[FspAttributes.firstName],
+          lastName: registrationView[FspAttributes.lastName],
         };
       });
     await this.transactionQueuesService.addOnafriqTransactionJobs(

@@ -51,8 +51,7 @@ export const registrationNedbank = {
 
 export const registrationOnafriq = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.onafriq,
+  programFspConfigurationName: Fsps.onafriq,
   phoneNumber: '243708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,

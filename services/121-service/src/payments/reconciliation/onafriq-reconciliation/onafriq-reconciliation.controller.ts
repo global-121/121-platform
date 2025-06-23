@@ -5,8 +5,8 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 
-@ApiTags('financial-service-providers/onafriq')
-@Controller('financial-service-providers/onafriq')
+@ApiTags('fsps/onafriq')
+@Controller('fsps/onafriq')
 export class OnafriqReconciliationController {
   public constructor(
     private onafriqReconciliationService: OnafriqReconciliationService,
