@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   deleteProgram,
@@ -33,7 +32,7 @@ describe('Delete program', () => {
     await seedPaidRegistrations(registrationsPV, programIdPV);
 
     // Act + Assert
-    const secretDto = { secret: env.RESET_SECRET };
+    const secretDto = { secret: process.env.RESET_SECRET! };
 
     const deleteResponseOCW = await deleteProgram(
       programIdOCW,
@@ -65,7 +64,7 @@ describe('Delete program', () => {
     await startCbeValidationProcess(programIdCbe, accessToken);
 
     // Act + Assert
-    const secretDto = { secret: env.RESET_SECRET };
+    const secretDto = { secret: process.env.RESET_SECRET! };
     const deleteResponseCbe = await deleteProgram(
       programIdCbe,
       accessToken,
