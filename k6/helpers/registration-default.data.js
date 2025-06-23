@@ -48,3 +48,17 @@ export const registrationNedbank = {
   maxPayments: 6,
   fullName: 'Franklin Floyd',
 };
+
+export const registrationOnafriq = {
+  referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
+  programFinancialServiceProviderConfigurationName:
+    FinancialServiceProviders.onafriq,
+  phoneNumber: '243708374149',
+  preferredLanguage: 'en',
+  paymentAmountMultiplier: 1,
+  maxPayments: 6,
+  gender: 'male',
+  age: 25,
+  firstName: 'Barbara',
+  lastName: 'Floyd',
+};
