@@ -34,3 +34,6 @@ jobs:
 
       - name: Lint
         run: 'npm run test:prettier'
+
+      - name: Debug
+        run: 'npx prettier --version'
