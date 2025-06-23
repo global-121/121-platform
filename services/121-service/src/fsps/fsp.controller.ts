@@ -13,10 +13,10 @@ export class FspsController {
   public constructor(private readonly fspService: FspsService) {}
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: 'Get all Financial Service Providers.' })
+  @ApiOperation({ summary: 'Get all Financial Service Providers. (Fsps)' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'All Financial Service Providers with attributes',
+    description: 'All Fsps with attributes',
     type: FspDto,
   })
   @Get()
@@ -24,7 +24,7 @@ export class FspsController {
     return await this.fspService.getAllFsps();
   }
 
-  @ApiOperation({ summary: 'Get Financial Service Provider (FSP) by name.' })
+  @ApiOperation({ summary: 'Get Financial Service Provider (Fsp) by name.' })
   @ApiParam({
     name: 'fspName',
     required: true,

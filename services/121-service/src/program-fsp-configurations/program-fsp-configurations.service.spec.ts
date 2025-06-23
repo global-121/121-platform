@@ -198,7 +198,7 @@ describe('ProgramFspConfigurationsService', () => {
         service.create(programId, duplivateNameCreateDto),
       ).rejects.toThrow(
         new HttpException(
-          `Program Financial Service Provider with name ${duplivateNameCreateDto.name} already exists`,
+          `Program Fsp with name ${duplivateNameCreateDto.name} already exists`,
           HttpStatus.CONFLICT,
         ),
       );
@@ -349,7 +349,7 @@ describe('ProgramFspConfigurationsService', () => {
         }),
       ).rejects.toThrow(
         new HttpException(
-          `Program financial service provider configuration with name ${
+          `Program Fsp configuration with name ${
             nonExistingConfigName
           } not found`,
           HttpStatus.NOT_FOUND,
@@ -404,7 +404,7 @@ describe('ProgramFspConfigurationsService', () => {
         }),
       ).rejects.toThrow(
         new HttpException(
-          `Program financial service provider configuration property with name ${propertyName} not found`,
+          `Program Fsp configuration property with name ${propertyName} not found`,
           HttpStatus.NOT_FOUND,
         ),
       );

@@ -413,7 +413,7 @@ export class RegistrationsController {
         GenericRegistrationAttributes.programFspConfigurationName
       ) {
         if (!hasUpdateFspConfigPermission) {
-          const errors = `User does not have permission to update chosen program financial service provider configuration`;
+          const errors = `User does not have permission to update chosen program Fsp configuration`;
           throw new HttpException({ errors }, HttpStatus.FORBIDDEN);
         }
       } else {

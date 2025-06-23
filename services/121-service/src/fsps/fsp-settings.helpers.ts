@@ -5,7 +5,7 @@ import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 export function getFspSettingByNameOrThrow(name: string): FspDto {
   const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === name);
   if (!foundFsp) {
-    throw new Error(`Financial service provider with name ${name} not found`);
+    throw new Error(`Fsp with name ${name} not found`);
   } else {
     return foundFsp;
   }

@@ -10,7 +10,7 @@ export class FspsService {
     if (!fsp) {
       const availableFsps = FSP_SETTINGS.map((fsp) => fsp.name).join(', ');
       throw new HttpException(
-        `Financial Service Provider not found. Available FSPs: ${availableFsps}`,
+        `Fsp not found. Available FSPs: ${availableFsps}`,
         HttpStatus.NOT_FOUND,
       );
     }

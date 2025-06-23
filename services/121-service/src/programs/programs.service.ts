@@ -508,7 +508,7 @@ export class ProgramService {
       });
     if (!programFspConfigurations) {
       throw new HttpException(
-        'Financial Service Provider configurations not found',
+        'Fsp configurations not found',
         HttpStatus.NOT_FOUND,
       );
     }
