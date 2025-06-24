@@ -5,11 +5,11 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { NedbankReconciliationService } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.service';
 
 @Controller()
+@ApiTags('fsps/nedbank')
 export class NedbankReconciliationController {
   public constructor(
     private nedbankReconciliationService: NedbankReconciliationService,
   ) {}
-  @ApiTags('fsps/nedbank')
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
