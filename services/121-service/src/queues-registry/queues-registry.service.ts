@@ -11,6 +11,10 @@ import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/en
 import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
+function getEnumValues<T extends object>(e: T): string[] {
+  return Object.values(e);
+}
+
 @Injectable()
 export class QueuesRegistryService implements OnModuleInit {
   private allQueues: Queue[] = [];
@@ -70,6 +74,22 @@ export class QueuesRegistryService implements OnModuleInit {
       this.messageStatusCallbackQueue,
       this.updateRegistrationQueue,
     ];
+    this.assertAllQueuesPresent();
+  }
+
+  private assertAllQueuesPresent() {
+    const expectedNames = [
+      ...getEnumValues(TransactionJobQueueNames),
+      ...getEnumValues(SafaricomCallbackQueueNames),
+      ...getEnumValues(CreateMessageQueueNames),
+      ...getEnumValues(MessageCallBackQueueNames),
+      ...getEnumValues(RegistrationQueueNames),
+    ];
+    const actualNames = this.allQueues.map((q) => q.name);
+    const missing = expectedNames.filter((name) => !actualNames.includes(name));
+    if (missing.length > 0) {
+      throw new Error(`Missing queues for: ${missing.join(', ')}`);
+    }
   }
 
   async onModuleInit(): Promise<void> {
