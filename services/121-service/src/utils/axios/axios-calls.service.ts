@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
-import { EXTERNAL_API } from '@121-service/src/config';
+import { EXTERNAL_API, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import {
@@ -14,12 +14,10 @@ export class AxiosCallsService {
   private httpService = new CustomHttpService(new HttpService());
 
   public getBaseUrl(): string {
-    if (env.NODE_ENV === 'development') {
-      // If development, use localhost as base url
+    if (IS_DEVELOPMENT) {
       return `http://localhost:${env.PORT_121_SERVICE}/api`;
-    } else {
-      return EXTERNAL_API.rootApi;
     }
+    return EXTERNAL_API.rootApi;
   }
 
   public async loginAsAdmin(): Promise<any> {

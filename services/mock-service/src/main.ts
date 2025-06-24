@@ -14,7 +14,7 @@ import {
   APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
-  DEVELOPMENT,
+  IS_DEVELOPMENT,
   PORT,
   SWAGGER_CUSTOM_CSS,
 } from '@mock-service/src/config';
@@ -53,15 +53,15 @@ async function bootstrap(): Promise<void> {
       deepLinking: true,
       defaultModelExpandDepth: 10,
       defaultModelsExpandDepth: 1,
-      displayOperationId: DEVELOPMENT,
+      displayOperationId: IS_DEVELOPMENT,
       displayRequestDuration: true,
       filter: false,
       operationsSorter: 'alpha',
-      queryConfigEnabled: DEVELOPMENT,
+      queryConfigEnabled: IS_DEVELOPMENT,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
-      tryItOutEnabled: DEVELOPMENT,
+      tryItOutEnabled: IS_DEVELOPMENT,
     },
   });
   // Use root as easy-default entrypoint
