@@ -400,8 +400,7 @@ export const registrationAirtel = {
   phoneNumber: '260978980279',
   preferredLanguage: LanguageEnum.en,
   paymentAmountMultiplier: 1,
-  programFinancialServiceProviderConfigurationName:
-    FinancialServiceProviders.airtel,
+  programFspConfigurationName: Fsps.airtel,
   maxPayments: 3,
   fullName: 'John Airtel Dimsum',
 };

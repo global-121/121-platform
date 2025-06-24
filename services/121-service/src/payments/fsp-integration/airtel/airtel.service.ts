@@ -4,12 +4,10 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
-import { FinancialServiceProviderIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
+import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 
 @Injectable()
-export class AirtelService
-  implements FinancialServiceProviderIntegrationInterface
-{
+export class AirtelService implements FspIntegrationInterface {
   public constructor(private readonly airtelApiService: AirtelApiService) {}
 
   /**

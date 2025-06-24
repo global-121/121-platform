@@ -343,8 +343,7 @@ export class TransactionJobProcessorsService {
         const resultTransaction = await processorsService.createTransaction({
           amount: transactionJob.transactionAmount,
           registration,
-          programFinancialServiceProviderConfigurationId:
-            transactionJob.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: transactionJob.programFspConfigurationId,
           programId,
           paymentNumber: transactionJob.paymentNumber,
           userId: transactionJob.userId,

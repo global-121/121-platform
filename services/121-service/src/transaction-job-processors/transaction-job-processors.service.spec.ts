@@ -163,7 +163,7 @@ describe('TransactionJobProcessorsService', () => {
   describe('Airtel transaction job processing', () => {
     const mockedAirtelTransactionJob: AirtelTransactionJobDto = {
       programId: 7,
-      programFinancialServiceProviderConfigurationId: 1,
+      programFspConfigurationId: 1,
       paymentNumber: 7,
       referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
       transactionAmount: 27,
@@ -181,10 +181,7 @@ describe('TransactionJobProcessorsService', () => {
 
     it('should process Airtel transaction job successfully', async () => {
       jest
-        .spyOn(
-          programFinancialServiceProviderConfigurationRepository,
-          'getPropertyValueByName',
-        )
+        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue('ref#1');
 
       jest

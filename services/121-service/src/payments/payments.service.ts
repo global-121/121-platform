@@ -917,9 +917,7 @@ export class PaymentsService {
     // Some code to make linter happy.
     let _a: AirtelTransactionJobDto;
 
-    const airtelAttributes = getFinancialServiceProviderSettingByNameOrThrow(
-      FinancialServiceProviders.airtel,
-    ).attributes;
+    const airtelAttributes = getFspSettingByNameOrThrow(Fsps.airtel).attributes;
     const airtelAttributeNames = airtelAttributes.map((q) => q.name);
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
@@ -941,16 +939,14 @@ export class PaymentsService {
           programId,
           paymentNumber,
           referenceId: registrationView.referenceId,
-          programFinancialServiceProviderConfigurationId:
-            registrationView.programFinancialServiceProviderConfigurationId,
+          programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          phoneNumber:
-            registrationView[FinancialServiceProviderAttributes.phoneNumber]!,
+          phoneNumber: registrationView[FspAttributes.phoneNumber]!,
         };
       },
     );
