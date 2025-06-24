@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { EventEmitter } from 'events';
 
-import { env } from '@121-service/src/env';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import {
   InterfaceScript,
   ScriptsModule,
@@ -71,7 +71,7 @@ function main(): void {
   try {
     const name = process.argv[2];
 
-    if (name === 'seed-prod' || env.NODE_ENV === 'development') {
+    if (name === 'seed-prod' || IS_DEVELOPMENT) {
       runScript(name).catch((e) => {
         console.log(e);
       });

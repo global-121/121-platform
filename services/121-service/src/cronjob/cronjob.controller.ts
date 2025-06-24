@@ -2,7 +2,7 @@ import { Controller, HttpStatus } from '@nestjs/common';
 import { Patch } from '@nestjs/common';
 import { ApiExcludeEndpoint, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { CronjobService } from '@121-service/src/cronjob/cronjob.service';
 import { RunCronjobsResponseDto } from '@121-service/src/cronjob/dtos/run-cronjobs-response.dto';
 
@@ -13,7 +13,7 @@ export class CronjobController {
   @ApiOperation({
     summary: 'Runs all Cron Jobs. Only used for testing.',
   })
-  @ApiExcludeEndpoint(!DEBUG)
+  @ApiExcludeEndpoint(!IS_DEVELOPMENT)
   @Patch()
   @ApiResponse({
     status: HttpStatus.OK,

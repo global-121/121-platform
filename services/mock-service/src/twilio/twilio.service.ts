@@ -4,8 +4,8 @@ import { lastValueFrom } from 'rxjs';
 
 import {
   API_PATHS,
-  DEVELOPMENT,
   EXTERNAL_API_ROOT,
+  IS_DEVELOPMENT,
 } from '@mock-service/src/config';
 import { ContentSidMessageMockMap } from '@mock-service/src/twilio/content-sid-message-mock-map.const';
 import {
@@ -253,7 +253,7 @@ export class TwilioService {
 
     let url = twilioMessagesCreateDto.StatusCallback;
 
-    if (DEVELOPMENT) {
+    if (IS_DEVELOPMENT) {
       const path = twilioMessagesCreateDto.To.includes('whatsapp')
         ? API_PATHS.whatsAppStatus
         : API_PATHS.smsStatus;
@@ -291,7 +291,7 @@ export class TwilioService {
       request.From = twilioMessagesCreateDto.To;
       request.To = formatWhatsAppNumber(twilioMessagesCreateDto.From);
 
-      const url = DEVELOPMENT
+      const url = IS_DEVELOPMENT
         ? `${EXTERNAL_API_ROOT}/${API_PATHS.whatsAppIncoming}`
         : twilioMessagesCreateDto.StatusCallback.replace(
             API_PATHS.whatsAppStatus,

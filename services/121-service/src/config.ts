@@ -1,6 +1,8 @@
 import { env } from '@121-service/src/env';
 
-export const DEBUG = !['production', 'test'].includes(env.NODE_ENV);
+export const IS_DEVELOPMENT = env.NODE_ENV === 'development';
+export const IS_PRODUCTION = env.NODE_ENV === 'production';
+
 export const PORT = env.PORT_121_SERVICE;
 
 // Configure Swagger UI appearance:
@@ -11,7 +13,7 @@ let appTitle = '121-service';
 if (env.ENV_NAME) {
   appTitle += ` [${env.ENV_NAME}]`;
 }
-if (DEBUG) {
+if (IS_DEVELOPMENT) {
   appTitle = 'Squagger ' + appTitle;
 }
 export const APP_TITLE = appTitle;
