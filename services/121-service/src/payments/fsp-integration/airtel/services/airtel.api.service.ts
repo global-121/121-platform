@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { TokenSet } from 'openid-client';
 
+import { AirtelApiAuthenticationRequestBodyDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-api-authentication-request-body.dto';
 import { AirtelApiAuthenticationResponseDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-api-authentication-response.dto';
 import { AirtelApiDisbursementRequestDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-api-disbursement-request.dto';
 import { AirtelDisbursementOrEnquiryResponseDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-or-enquiry-response.dto';
@@ -224,7 +225,7 @@ export class AirtelApiService {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    const payload = {
+    const payload: AirtelApiAuthenticationRequestBodyDto = {
       grant_type: 'client_credentials',
       client_id: this.airtelClientId,
       client_secret: this.airtelClientSecret,
