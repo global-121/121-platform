@@ -106,13 +106,6 @@ module.exports = {
       },
       overrides: [
         {
-          files: ['**/test/**/*.ts'],
-          plugins: ['custom-rules'],
-          rules: {
-            'n/no-process-env': [0], // Disable in API-test-related files, as T3-env is not used
-          },
-        },
-        {
           files: ['*.entity.ts'],
           plugins: ['custom-rules'],
           rules: {
