@@ -119,6 +119,7 @@ graph LR
   TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
+  TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->RegistrationsModule
   TransactionJobsModule-->ProgramModule
   TransactionJobsModule-->TransactionsModule
