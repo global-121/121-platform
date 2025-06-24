@@ -280,14 +280,16 @@ export class TransactionJobProcessorsService {
       transactionJob,
       failedTransactionsCount,
     ): Promise<void> => {
-      // Necessary order: (1) create disbursement object with idempotency key and persist it, (2) do disbursement.
-      // This order prevents duplicate disbursements and guarantees we can find disbursements that were received by Airtel.
-      // ## TODO: implement
+      // We need a transactionId that's unique for the combination of:
+      // - referenceId
+      // - paymentNumber
+      // - failedTransactionsCount (to ensure that each retry gets a different transactionId)
+      // But then it also needs to be a valid Airtel transactionId, which is a
+      // string that "must not be null or blank and should only contain
+      // alphanumeric characters with length between 5 and 80 characters".
 
-      // Create transaction id
       const toHash = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
       // The airtelTransactionId "must not be null or blank and should only contain alphanumeric characters with length between 5 and 80 characters"
-      // To make sure it's deterministic we base64 it, and delete the last character (the "=").
       const airtelTransactionId = crypto
         .createHash('sha256')
         .update(toHash, 'utf8')
