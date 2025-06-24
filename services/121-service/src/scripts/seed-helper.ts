@@ -4,7 +4,7 @@ import fs from 'fs';
 import { join } from 'path';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import {
   FspConfigurationProperties,
@@ -150,7 +150,7 @@ export class SeedHelper {
       }
     }
 
-    if (debugScopeUsers && DEBUG) {
+    if (debugScopeUsers && IS_DEVELOPMENT) {
       for (const debugScopeUser of debugScopeUsers) {
         const scopedUser = await this.getOrSaveUser({
           type: 'debugScopedUser',
@@ -221,7 +221,7 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const programFromJSON = JSON.parse(programExampleDump);
 
-    if (DEBUG && !isApiTests) {
+    if (IS_DEVELOPMENT && !isApiTests) {
       programFromJSON.published = true;
     }
 

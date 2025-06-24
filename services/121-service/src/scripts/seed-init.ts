@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, Equal } from 'typeorm';
 
+import { IS_DEVELOPMENT, IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
@@ -40,15 +41,18 @@ export class SeedInit implements InterfaceScript {
   }
 
   private async clearCallbacksMockService(): Promise<void> {
-    if (env.NODE_ENV === 'development') {
+    if (IS_DEVELOPMENT) {
       await this.httpService.get(`${env.MOCK_SERVICE_URL}/api/reset/callbacks`);
     }
   }
 
   private async clearRedisData(): Promise<void> {
-    if (env.REDIS_PREFIX && ['development', 'test'].includes(env.NODE_ENV)) {
-      await this.queuesService.emptyAllQueues();
+    if (IS_PRODUCTION) {
+      throw new Error(
+        `Clearing Redis queue is NOT allowed in production environments`,
+      );
     }
+    await this.queuesService.emptyAllQueues();
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {

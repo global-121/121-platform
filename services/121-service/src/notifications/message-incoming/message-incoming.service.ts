@@ -2,7 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, IsNull, Like, Not, Repository } from 'typeorm';
 
-import { API_PATHS, DEBUG, EXTERNAL_API } from '@121-service/src/config';
+import {
+  API_PATHS,
+  EXTERNAL_API,
+  IS_DEVELOPMENT,
+} from '@121-service/src/config';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import {
   MessageContentType,
@@ -344,7 +348,7 @@ export class MessageIncomingService {
       .getMany();
 
     if (!registrationsWithPhoneNumber.length) {
-      const phoneNumberLog = DEBUG
+      const phoneNumberLog = IS_DEVELOPMENT
         ? phoneNumber
         : maskValueKeepEnd(phoneNumber, 5);
       console.log(
