@@ -51,7 +51,7 @@ export const getChipDataByRegistrationStatus = (
     labels: REGISTRATION_STATUS_LABELS,
     chipVariants: {
       [RegistrationStatusEnum.included]: 'green',
-      [RegistrationStatusEnum.registered]: 'blue',
+      [RegistrationStatusEnum.new]: 'blue',
       [RegistrationStatusEnum.validated]: 'yellow',
       [RegistrationStatusEnum.declined]: 'red',
       [RegistrationStatusEnum.completed]: 'purple',

@@ -58,7 +58,7 @@ const mockFindEventResult: EventEntity[] = [
 function getViewRegistration(): RegistrationViewEntity {
   return {
     id: 3,
-    status: RegistrationStatusEnum.registered,
+    status: RegistrationStatusEnum.new,
     programId: 3,
     registrationCreated: '2024-02-19T14:21:11.163Z',
     referenceId: '7e9bdf2118b3fb4ece93b6458815ab86',
@@ -381,7 +381,7 @@ describe('EventsService', () => {
         registrationId: oldViewRegistration.id,
         type: EventEnum.registrationStatusChange,
         attributes: [
-          { key: 'oldValue', value: RegistrationStatusEnum.registered },
+          { key: 'oldValue', value: RegistrationStatusEnum.new },
           { key: 'newValue', value: RegistrationStatusEnum.included },
           { key: 'reason', value: options.reason },
         ],
@@ -427,7 +427,7 @@ describe('EventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: RegistrationStatusEnum.registered,
+            value: RegistrationStatusEnum.new,
           },
           {
             key: 'newValue',

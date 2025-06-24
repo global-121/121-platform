@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
     [registrationPV5],
     programIdPV,
     accessToken,
-    RegistrationStatusEnum.registered,
+    RegistrationStatusEnum.new,
   );
 
   // Login

@@ -29,7 +29,7 @@ describe('change the status of a set of registrations', () => {
     registrationPV5,
     registrationOCW4,
   ];
-  const oldStatus = RegistrationStatusEnum.registered;
+  const oldStatus = RegistrationStatusEnum.new;
   const referenceIds = registrations.map(
     (registration) => registration.referenceId,
   );
@@ -90,7 +90,7 @@ describe('change the status of a set of registrations', () => {
       const expectedEvent = {
         type: EventEnum.registrationStatusChange,
         attributes: {
-          oldValue: RegistrationStatusEnum.registered,
+          oldValue: RegistrationStatusEnum.new,
           newValue: newStatus,
           reason,
         },

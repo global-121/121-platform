@@ -6,7 +6,7 @@ export class StatusChangeHelper {
     to: RegistrationStatusEnum,
   ): boolean {
     const {
-      registered,
+      new: registered,
       validated,
       included,
       completed,

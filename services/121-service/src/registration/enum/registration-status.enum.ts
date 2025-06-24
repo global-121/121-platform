@@ -1,5 +1,5 @@
 export enum RegistrationStatusEnum {
-  registered = 'registered',
+  new = 'new',
   validated = 'validated',
   included = 'included',
   deleted = 'deleted',

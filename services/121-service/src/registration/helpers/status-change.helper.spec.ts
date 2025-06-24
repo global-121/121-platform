@@ -2,7 +2,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 
 const {
-  registered,
+  new: registered,
   validated,
   included,
   completed,

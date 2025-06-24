@@ -158,7 +158,7 @@ export class RegistrationsService {
     await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
-      RegistrationStatusEnum.registered,
+      RegistrationStatusEnum.new,
     );
   }
 
@@ -357,7 +357,7 @@ export class RegistrationsService {
     filterStatus: RegistrationStatusEnum,
   ): RegistrationStatusTimestampField {
     switch (filterStatus) {
-      case RegistrationStatusEnum.registered:
+      case RegistrationStatusEnum.new:
         return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.validated:
         return RegistrationStatusTimestampField.validationDate;
