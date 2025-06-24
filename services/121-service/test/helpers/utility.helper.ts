@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
@@ -61,6 +62,11 @@ export async function getAccessToken(
   password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
 ): Promise<string> {
   const login = await loginApi(username, password);
+
+  if (login.statusCode !== HttpStatus.CREATED) {
+    throw new Error(`Login failed with status code: ${login.statusCode}`);
+  }
+
   const cookies = login.get('Set-Cookie');
   const accessToken = cookies
     ?.find((cookie: string) => cookie.startsWith(CookieNames.general))
