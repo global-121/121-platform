@@ -111,18 +111,18 @@ graph LR
   ActivitiesModule-->MessageModule
   ActivitiesModule-->EventsModule
   ActivitiesModule-->UserModule
-  TransactionJobProcessorsModule-->RedisModule
-  TransactionJobProcessorsModule-->IntersolveVisaModule
-  TransactionJobProcessorsModule-->SafaricomModule
-  TransactionJobProcessorsModule-->NedbankModule
-  TransactionJobProcessorsModule-->ProgramFspConfigurationsModule
-  TransactionJobProcessorsModule-->RegistrationsModule
-  TransactionJobProcessorsModule-->ProgramModule
-  TransactionJobProcessorsModule-->TransactionsModule
-  TransactionJobProcessorsModule-->MessageQueuesModule
-  TransactionJobProcessorsModule-->FspsModule
-  TransactionJobProcessorsModule-->EventsModule
-  TransactionJobProcessorsModule-->MessageTemplateModule
+  TransactionJobsModule-->RedisModule
+  TransactionJobsModule-->IntersolveVisaModule
+  TransactionJobsModule-->SafaricomModule
+  TransactionJobsModule-->NedbankModule
+  TransactionJobsModule-->ProgramFspConfigurationsModule
+  TransactionJobsModule-->RegistrationsModule
+  TransactionJobsModule-->ProgramModule
+  TransactionJobsModule-->TransactionsModule
+  TransactionJobsModule-->MessageQueuesModule
+  TransactionJobsModule-->FspsModule
+  TransactionJobsModule-->EventsModule
+  TransactionJobsModule-->MessageTemplateModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
   ExcelReconcilicationModule-->ActionsModule

@@ -3,8 +3,8 @@ import { Job } from 'bull';
 import Redis from 'ioredis';
 
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
-import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-job-processors/processors/transaction-job-nedbank.processor';
-import { TransactionJobProcessorsService } from '@121-service/src/transaction-job-processors/transaction-job-processors.service';
+import { TransactionJobsProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-jobs-nedbank.processor';
+import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -21,41 +21,39 @@ const mockPaymentJob: NedbankTransactionJobDto = {
 };
 const testJob = { data: mockPaymentJob } as Job;
 
-describe('TransactionJobProcessorNedbank', () => {
-  let transactionJobProcessorsService: jest.Mocked<TransactionJobProcessorsService>;
-  let processor: TransactionJobProcessorNedbank;
+describe('TransactionJobsProcessorNedbank', () => {
+  let transactionJobsNedbankService: jest.Mocked<TransactionJobsNedbankService>;
+  let processor: TransactionJobsProcessorNedbank;
   let redisClient: jest.Mocked<Redis>;
 
   beforeEach(() => {
     jest.clearAllMocks(); // To esnure the call count is not influenced by other tests
 
-    const { unit, unitRef } = TestBed.create(TransactionJobProcessorNedbank)
-      .mock(TransactionJobProcessorsService)
-      .using(transactionJobProcessorsService)
+    const { unit, unitRef } = TestBed.create(TransactionJobsProcessorNedbank)
+      .mock(TransactionJobsNedbankService)
+      .using(transactionJobsNedbankService)
       .mock(REDIS_CLIENT)
       .using(redisClient)
       .compile();
 
     processor = unit;
-    transactionJobProcessorsService = unitRef.get(
-      TransactionJobProcessorsService,
-    );
+    transactionJobsNedbankService = unitRef.get(TransactionJobsNedbankService);
     redisClient = unitRef.get(REDIS_CLIENT);
   });
 
   it('should call processNedbankTransactionJob and remove job from Redis set', async () => {
     // Arrange
-    transactionJobProcessorsService.processNedbankTransactionJob.mockResolvedValue();
+    transactionJobsNedbankService.processNedbankTransactionJob.mockResolvedValue();
 
     // Act
     await processor.handleNedbankTransactionJob(testJob);
 
     // Assert
     expect(
-      transactionJobProcessorsService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processNedbankTransactionJob,
     ).toHaveBeenCalledTimes(1);
     expect(
-      transactionJobProcessorsService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processNedbankTransactionJob,
     ).toHaveBeenCalledWith(mockPaymentJob);
 
     expect(redisClient.srem).toHaveBeenCalledTimes(1);
@@ -64,7 +62,7 @@ describe('TransactionJobProcessorNedbank', () => {
   it('should handle errors and still remove job from Redis set', async () => {
     // Arrange
     const error = new Error('Test error');
-    transactionJobProcessorsService.processNedbankTransactionJob.mockRejectedValue(
+    transactionJobsNedbankService.processNedbankTransactionJob.mockRejectedValue(
       error,
     );
 
@@ -73,10 +71,10 @@ describe('TransactionJobProcessorNedbank', () => {
       processor.handleNedbankTransactionJob(testJob),
     ).rejects.toThrow(error);
     expect(
-      transactionJobProcessorsService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processNedbankTransactionJob,
     ).toHaveBeenCalledTimes(1);
     expect(
-      transactionJobProcessorsService.processNedbankTransactionJob,
+      transactionJobsNedbankService.processNedbankTransactionJob,
     ).toHaveBeenCalledWith(mockPaymentJob);
     expect(redisClient.srem).toHaveBeenCalledTimes(1);
   });
