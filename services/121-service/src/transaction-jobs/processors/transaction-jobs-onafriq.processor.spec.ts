@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
-import { TransactionJobProcessorOnafriq } from '@121-service/src/transaction-job-processors/processors/transaction-jobs-onafriq.processor';
+import { TransactionJobsProcessorOnafriq } from '@121-service/src/transaction-jobs/processors/transaction-jobs-onafriq.processor';
 import { TransactionJobsOnafriqService } from '@121-service/src/transaction-jobs/services/transaction-jobs-onafriq.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 
@@ -22,10 +22,10 @@ const testJob = { data: mockPaymentJob } as Job;
 
 describe('Payment processor(s)', () => {
   let transactionJobsOnafriqService: jest.Mocked<TransactionJobsOnafriqService>;
-  let paymentProcessor: TransactionJobProcessorOnafriq;
+  let paymentProcessor: TransactionJobsProcessorOnafriq;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(TransactionJobProcessorOnafriq)
+    const { unit, unitRef } = TestBed.create(TransactionJobsProcessorOnafriq)
       .mock(TransactionJobsOnafriqService)
       .using(transactionJobsOnafriqService)
       .compile();

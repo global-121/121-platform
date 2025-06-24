@@ -52,7 +52,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: TransactionJobQueueNames.onafriq,
       processors: [
         {
-          path: 'src/transaction-job-processors/processors/transaction-job-onafriq.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-onafriq.processor.ts',
         },
       ],
       limiter: {
