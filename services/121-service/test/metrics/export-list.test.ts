@@ -116,12 +116,12 @@ describe('Metric export list', () => {
     // 8 registrations in total are registered
     // 4 registrations are in include in program PV
     // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
-    // 1 of those 2 registrations has status registered
+    // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
       .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
       .set('Cookie', [accessToken])
       .query({
-        ['filter.status']: `$ilike:registered`,
+        ['filter.status']: `$ilike:new`,
       })
       .send();
 
@@ -145,12 +145,12 @@ describe('Metric export list', () => {
     // 8 registrations in total are registered
     // 4 registrations are in include in program PV
     // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
-    // 1 of those 2 registrations has status registered
+    // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
       .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
       .set('Cookie', [accessToken])
       .query({
-        ['filter.status']: `$ilike:registered`,
+        ['filter.status']: `$ilike:new`,
         search: `011`,
       })
       .send();

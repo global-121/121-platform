@@ -53,7 +53,7 @@ export class ImportRegistrationsComponent {
     onSuccess: (csvContents) => {
       this.downloadService.downloadStringArrayToCSV({
         file: csvContents,
-        filename: 'import-as-registered-TEMPLATE',
+        filename: 'import-as-new-TEMPLATE',
       });
     },
   }));

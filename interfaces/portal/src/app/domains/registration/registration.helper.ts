@@ -11,7 +11,7 @@ export const REGISTRATION_STATUS_LABELS: Record<
   string
 > = {
   [RegistrationStatusEnum.included]: $localize`:@@registration-status-included:Included`,
-  [RegistrationStatusEnum.new]: $localize`:@@registration-status-registered:Registered`,
+  [RegistrationStatusEnum.new]: $localize`:@@registration-status-new:New`,
   [RegistrationStatusEnum.validated]: $localize`:@@registration-status-validated:Validated`,
   [RegistrationStatusEnum.declined]: $localize`:@@registration-status-declined:Declined`,
   [RegistrationStatusEnum.completed]: $localize`:@@registration-status-completed:Completed`,

@@ -81,7 +81,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
-    summary: 'Import set of registered PAs, from CSV',
+    summary: 'Import set of new PAs, from CSV',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Post('programs/:programId/registrations/import')
@@ -105,7 +105,7 @@ export class RegistrationsController {
   @ApiTags('programs/registrations')
   @AuthenticatedUser({ permissions: [PermissionEnum.RegistrationCREATE] })
   @ApiOperation({
-    summary: '[EXTERNALLY USED] Import set of registered PAs',
+    summary: '[EXTERNALLY USED] Import set of new PAs',
     description:
       'Use this endpoint to create new registrations in a specific program. Note that the attributes depend on the program configuration. Authenticate first using the /login endpoint.',
   })

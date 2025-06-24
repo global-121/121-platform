@@ -2,7 +2,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 
 const {
-  new: registered,
+  new: newStatus, // 'new' is a reserved keyword in JavaScript
   validated,
   included,
   completed,
@@ -13,17 +13,17 @@ const {
 
 describe('isValidStatusChange', () => {
   test.concurrent.each([
-    // registered to...
-    [registered, registered, false],
-    [registered, included, true],
-    [registered, validated, true],
-    [registered, declined, true],
-    [registered, paused, false],
-    [registered, completed, false],
-    [registered, deleted, true],
+    // new to...
+    [newStatus, newStatus, false],
+    [newStatus, included, true],
+    [newStatus, validated, true],
+    [newStatus, declined, true],
+    [newStatus, paused, false],
+    [newStatus, completed, false],
+    [newStatus, deleted, true],
 
     // validated to...
-    [validated, registered, false],
+    [validated, newStatus, false],
     [validated, validated, false],
     [validated, included, true],
     [validated, declined, true],
@@ -32,7 +32,7 @@ describe('isValidStatusChange', () => {
     [validated, deleted, true],
 
     // included to...
-    [included, registered, false],
+    [included, newStatus, false],
     [included, validated, false],
     [included, included, false],
     [included, declined, true],
@@ -41,7 +41,7 @@ describe('isValidStatusChange', () => {
     [included, deleted, true],
 
     // completed to...
-    [completed, registered, false],
+    [completed, newStatus, false],
     [completed, validated, false],
     [completed, included, true],
     [completed, declined, true],
@@ -50,7 +50,7 @@ describe('isValidStatusChange', () => {
     [completed, deleted, true],
 
     // paused to...
-    [paused, registered, false],
+    [paused, newStatus, false],
     [paused, validated, false],
     [paused, included, true],
     [paused, declined, true],
@@ -59,7 +59,7 @@ describe('isValidStatusChange', () => {
     [paused, deleted, true],
 
     // declined to...
-    [declined, registered, false],
+    [declined, newStatus, false],
     [declined, validated, false],
     [declined, included, true],
     [declined, declined, false],
@@ -68,7 +68,7 @@ describe('isValidStatusChange', () => {
     [declined, deleted, true],
 
     // deleted to...
-    [deleted, registered, false],
+    [deleted, newStatus, false],
     [deleted, validated, false],
     [deleted, included, false],
     [deleted, declined, false],

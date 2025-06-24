@@ -227,7 +227,7 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    // Save registration status change events they changed from null to registered
+    // Save registration status change events they changed from null to 'new'
     await this.eventsService.createFromRegistrationViews(
       savedRegistrations.map((r) => ({
         id: r.id,

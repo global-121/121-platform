@@ -44,7 +44,7 @@ describe('change the status of a set of registrations', () => {
   it('should update statuses if possible', async () => {
     // Arrange
     // NOTE: because the helper-function changePaStatus already uses an filter on IN(..referenceIds) this also already tests the scenario where in the front-end manually multiple rows are selected (instead of 'select all')
-    const newStatus = RegistrationStatusEnum.included; // registered to included IS possible
+    const newStatus = RegistrationStatusEnum.included; // 'new' to included IS possible
     const reason = 'new status';
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
@@ -101,7 +101,7 @@ describe('change the status of a set of registrations', () => {
 
   it('should not update statuses if not possible', async () => {
     // Arrange
-    const newStatus = RegistrationStatusEnum.paused; // registered to paused IS NOT possible
+    const newStatus = RegistrationStatusEnum.paused; // 'new' to paused IS NOT possible
 
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
@@ -129,7 +129,7 @@ describe('change the status of a set of registrations', () => {
   it('should update statuses if possible, with initial filter on status applied', async () => {
     // Arrange
     // This represents the situation where in the front-end you are filtered on ceratin statuses and then click 'select all'
-    const newStatus = RegistrationStatusEnum.included; // registered to included IS possible
+    const newStatus = RegistrationStatusEnum.included; // 'new' to 'included' IS possible
     const filter = {};
     filter[`filter.status`] = RegistrationStatusEnum.included; // but initial filter on included PAs leaves empty set as they are now registered
 
