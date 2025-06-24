@@ -2,8 +2,6 @@ import { TestBed } from '@automock/jest';
 import { Equal, UpdateResult } from 'typeorm';
 
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
-import { AirtelDisbursementResponseWithMessageDto } from '@121-service/src/payments/fsp-integration/airtel/dtos/airtel-disbursement-response-with-message.dto';
-import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-or-enquiry-result.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -173,20 +171,14 @@ describe('TransactionJobProcessorsService', () => {
       phoneNumber: '123456789',
     };
 
-    const mockedDoDisbursementReturn: AirtelDisbursementResponseWithMessageDto =
-      {
-        result: AirtelDisbursementResultEnum.success,
-        message: 'Disbursement successful',
-      };
-
     it('should process Airtel transaction job successfully', async () => {
       jest
         .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
         .mockResolvedValue('ref#1');
 
       jest
-        .spyOn(airtelService, 'doDisbursement')
-        .mockResolvedValueOnce(mockedDoDisbursementReturn);
+        .spyOn(airtelService, 'attemptOrCheckDisbursement')
+        .mockResolvedValueOnce(undefined);
 
       await transactionJobProcessorsService.processAirtelTransactionJob(
         mockedAirtelTransactionJob,
@@ -205,11 +197,10 @@ describe('TransactionJobProcessorsService', () => {
         },
       });
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
-        idempotencyKey: 'foo',
+        airtelTransactionId:
+          '972b054e8284535d571844a11cd2065f05c93acfbf53405e4fcaa4e10cdd73b9',
         phoneNumber: mockedAirtelTransactionJob.phoneNumber,
-        currencyCode: 'foo',
-        countryCode: 'foo',
-        transferAmount: mockedAirtelTransactionJob.transactionAmount,
+        amount: mockedAirtelTransactionJob.transactionAmount,
       });
 
       expect(transactionScopedRepository.save).toHaveBeenCalledWith(
