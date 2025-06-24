@@ -12,7 +12,7 @@ import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 
 @Processor(TransactionJobQueueNames.nedbank)
-export class TransactionJobProcessorNedbank {
+export class TransactionJobsProcessorNedbank {
   constructor(
     private readonly transactionJobsNedbankService: TransactionJobsNedbankService,
     @Inject(REDIS_CLIENT)

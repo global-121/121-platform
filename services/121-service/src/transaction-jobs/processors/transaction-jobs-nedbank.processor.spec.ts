@@ -3,7 +3,7 @@ import { Job } from 'bull';
 import Redis from 'ioredis';
 
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
-import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-job-nedbank.processor';
+import { TransactionJobsProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-jobs-nedbank.processor';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
@@ -21,15 +21,15 @@ const mockPaymentJob: NedbankTransactionJobDto = {
 };
 const testJob = { data: mockPaymentJob } as Job;
 
-describe('TransactionJobProcessorNedbank', () => {
+describe('TransactionJobsProcessorNedbank', () => {
   let transactionJobsNedbankService: jest.Mocked<TransactionJobsNedbankService>;
-  let processor: TransactionJobProcessorNedbank;
+  let processor: TransactionJobsProcessorNedbank;
   let redisClient: jest.Mocked<Redis>;
 
   beforeEach(() => {
     jest.clearAllMocks(); // To esnure the call count is not influenced by other tests
 
-    const { unit, unitRef } = TestBed.create(TransactionJobProcessorNedbank)
+    const { unit, unitRef } = TestBed.create(TransactionJobsProcessorNedbank)
       .mock(TransactionJobsNedbankService)
       .using(transactionJobsNedbankService)
       .mock(REDIS_CLIENT)

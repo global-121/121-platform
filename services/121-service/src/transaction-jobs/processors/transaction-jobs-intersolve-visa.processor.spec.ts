@@ -3,7 +3,7 @@ import { Job } from 'bull';
 import Redis from 'ioredis';
 
 import { REDIS_CLIENT } from '@121-service/src/payments/redis/redis-client';
-import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-job-intersolve-visa.processor';
+import { TransactionJobsProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
 
 const mockPaymentJob = {
@@ -28,12 +28,12 @@ const testJob = { data: mockPaymentJob } as Job;
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
   let transactionJobsIntersolveVisaService: jest.Mocked<TransactionJobsIntersolveVisaService>;
-  let paymentProcessor: TransactionJobProcessorIntersolveVisa;
+  let paymentProcessor: TransactionJobsProcessorIntersolveVisa;
   let redisClient: jest.Mocked<Redis>;
 
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(
-      TransactionJobProcessorIntersolveVisa,
+      TransactionJobsProcessorIntersolveVisa,
     )
       .mock(TransactionJobsIntersolveVisaService)
       .using(transactionJobsIntersolveVisaService)

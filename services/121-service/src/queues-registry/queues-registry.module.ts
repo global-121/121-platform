@@ -16,7 +16,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: TransactionJobQueueNames.intersolveVisa,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-job-intersolve-visa.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor.ts',
         },
       ],
       limiter: {
@@ -28,7 +28,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: TransactionJobQueueNames.nedbank,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-job-nedbank.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-nedbank.processor.ts',
         },
       ],
       limiter: {
@@ -40,7 +40,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: TransactionJobQueueNames.safaricom,
       processors: [
         {
-          path: 'src/transaction-jobs/processors/transaction-job-safaricom.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-safaricom.processor.ts',
         },
       ],
       limiter: {

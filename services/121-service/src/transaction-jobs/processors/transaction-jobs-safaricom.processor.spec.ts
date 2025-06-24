@@ -1,7 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
-import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-jobs/processors/transaction-job-safaricom.processor';
+import { TransactionJobsProcessorSafaricom } from '@121-service/src/transaction-jobs/processors/transaction-jobs-safaricom.processor';
 import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 
 const mockPaymentJob = {
@@ -22,10 +22,10 @@ const testJob = { data: mockPaymentJob } as Job;
 describe('Payment processor(s)', () => {
   // All message processors are the same, so we only test one
   let transactionJobsSafaricomService: jest.Mocked<TransactionJobsSafaricomService>;
-  let paymentProcessor: TransactionJobProcessorSafaricom;
+  let paymentProcessor: TransactionJobsProcessorSafaricom;
 
   beforeAll(() => {
-    const { unit, unitRef } = TestBed.create(TransactionJobProcessorSafaricom)
+    const { unit, unitRef } = TestBed.create(TransactionJobsProcessorSafaricom)
       .mock(TransactionJobsSafaricomService)
       .using(transactionJobsSafaricomService)
       .compile();
