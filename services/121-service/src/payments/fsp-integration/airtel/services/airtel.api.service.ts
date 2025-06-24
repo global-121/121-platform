@@ -145,10 +145,7 @@ export class AirtelApiService {
     }
 
     return {
-      result: this.getResultFromResponseCode(
-        response.data?.status?.response_code,
-        'disburse',
-      ),
+      result: this.getResult(response.data?.status?.response_code),
       message: this.getMessage(response.data),
     };
   }
@@ -189,10 +186,7 @@ export class AirtelApiService {
     }
     return {
       // The result of enquiry cannot be duplicate.
-      result: this.getResultFromResponseCode(
-        response.data?.status?.response_code,
-        'enquire',
-      ) as
+      result: this.getResult(response.data?.status?.response_code) as
         | AirtelDisbursementResultEnum.fail
         | AirtelDisbursementResultEnum.success,
       message: this.getMessage(response.data),
@@ -282,15 +276,9 @@ export class AirtelApiService {
     return message;
   }
 
-  private getResultFromResponseCode(
+  private getResult(
     responseCode: string | undefined,
-    requestType: 'disburse' | 'enquire',
   ): AirtelDisbursementResultEnum {
-    if (!responseCode) {
-      throw new AirtelApiError(
-        `${requestType} failed, unclear response received from Airtel API`,
-      );
-    }
     switch (responseCode) {
       case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001001:
         return AirtelDisbursementResultEnum.success;

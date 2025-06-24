@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
 import { AirtelEncryptionService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.encryption.service';
@@ -205,8 +206,131 @@ describe('AirtelApiService', () => {
         // Assert
         // Second call is disburse()
         expect(post).toHaveBeenCalledTimes(2);
+        // Also checks the message, even though we don't show that in the UI.
         expect(result).toMatchSnapshot();
         expect(post.mock.calls[1]).toMatchSnapshot();
+      });
+
+      it("correctly handles response code 'DP00900001000' (ambiguous)", async () => {
+        // Arrange
+        post.mockResolvedValue(
+          responseWrapper({
+            status: {
+              message: 'Transaction ambiguous.',
+              response_code:
+                AirtelApiDisbursementStatusResponseCodeEnum.DP00900001000,
+            },
+          }),
+        );
+
+        // Act
+        const { result, message } =
+          await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(result).toBe(AirtelDisbursementResultEnum.ambiguous);
+        expect(message).toBe('Transaction ambiguous. (DP00900001000)');
+      });
+
+      it("correctly handles response code 'DP00900001011' (duplicate)", async () => {
+        // Arrange
+        post.mockResolvedValue(
+          responseWrapper({
+            status: {
+              message: 'Transaction duplicate.',
+              response_code:
+                AirtelApiDisbursementStatusResponseCodeEnum.DP00900001011,
+            },
+          }),
+        );
+
+        // Act
+        const { result, message } =
+          await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(result).toBe(AirtelDisbursementResultEnum.duplicate);
+        expect(message).toBe('Transaction duplicate. (DP00900001011)');
+      });
+
+      it('returns a "fail" when we receive an unknown response code.', async () => {
+        // Arrange
+        post.mockResolvedValue(
+          responseWrapper({
+            status: {
+              response_code: 'DP0090000XXXX',
+            },
+          }),
+        );
+
+        // Act
+        const { result } = await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(result).toBe('fail');
+      });
+
+      it('returns a "fail" when we receive no response code.', async () => {
+        // Arrange
+        post.mockResolvedValue({
+          data: 'could be anything',
+        });
+
+        // Act
+        const { result } = await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(result).toBe('fail');
+      });
+
+      it('parses the message and combines with response code when we receive an unknown response code', async () => {
+        // Arrange
+        // A response code we don't know, but a message we can parse.
+        post.mockResolvedValue(
+          responseWrapper({
+            status: {
+              message: 'mock-message',
+              response_code: 'DP0090000XXXX',
+            },
+          }),
+        );
+
+        // Act
+        const { message } = await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(message).toBe('mock-message (DP0090000XXXX)');
+      });
+
+      it('JSON.stringifies the whole response when we receive an unknown response code and no message', async () => {
+        // Arrange
+        // A response code we don't know, but a message we can parse.
+        const mockPostResponse = {
+          status: {
+            response_code: 'DP0090000XXXX',
+          },
+        };
+        post.mockResolvedValue(responseWrapper(mockPostResponse));
+
+        // Act
+        const { message } = await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(message).toBe(JSON.stringify(mockPostResponse));
+      });
+
+      it('JSON.stringifies the whole response when we receive no response code and no message', async () => {
+        // Arrange
+        const mockPostResponse = {
+          data: 'could be anything',
+        };
+        post.mockResolvedValue(responseWrapper(mockPostResponse));
+
+        // Act
+        const { message } = await airtelApiService.disburse(disburseInput);
+
+        // Assert
+        expect(message).toBe(JSON.stringify(mockPostResponse));
       });
 
       it("throws an AirtelApiError when there's a network error", async () => {
@@ -226,80 +350,6 @@ describe('AirtelApiService', () => {
         expect(post).toHaveBeenCalledTimes(2);
         expect(error).toBeInstanceOf(AirtelApiError);
         expect(error.message).toMatchSnapshot();
-      });
-
-      it('throws an AirtelApiError when response is unclear.', async () => {
-        // Arrange
-        post.mockResolvedValue({
-          data: 'could be anything',
-        });
-
-        // Act
-        let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
-        try {
-          await airtelApiService.disburse(disburseInput);
-        } catch (e) {
-          error = e;
-        }
-
-        // Assert
-        // Both authenticate and disburse calls were made.
-        expect(post).toHaveBeenCalledTimes(2);
-        expect(error).toBeInstanceOf(AirtelApiError);
-        expect(error.message).toMatchSnapshot();
-      });
-
-      it('does not throw but fails when we receive an unknown response code.', async () => {
-        // Arrange
-        // A response code we don't know, but a message we can parse.
-        post.mockResolvedValue(
-          responseWrapper({
-            status: {
-              response_code: 'DP0090000XXXX',
-            },
-          }),
-        );
-
-        const result = await airtelApiService.disburse(disburseInput);
-
-        // Assert
-        expect(result.result).toBe('fail');
-      });
-
-      it('parses the message and combines with response code when we receive an unknown response code', async () => {
-        // Arrange
-        // A response code we don't know, but a message we can parse.
-        post.mockResolvedValue(
-          responseWrapper({
-            status: {
-              message: 'mock-message',
-              response_code: 'DP0090000XXXX',
-            },
-          }),
-        );
-
-        // Act
-        const result = await airtelApiService.disburse(disburseInput);
-
-        // Assert
-        expect(result.message).toBe('mock-message (DP0090000XXXX)');
-      });
-
-      it('JSON.stringifies the whole response when we receive an unknown response code and no message', async () => {
-        // Arrange
-        // A response code we don't know, but a message we can parse.
-        const mockPostResponse = {
-          status: {
-            response_code: 'DP0090000XXXX',
-          },
-        };
-        post.mockResolvedValue(responseWrapper(mockPostResponse));
-
-        // Act
-        const result = await airtelApiService.disburse(disburseInput);
-
-        // Assert
-        expect(result.message).toBe(JSON.stringify(mockPostResponse));
       });
     });
   });
@@ -344,27 +394,25 @@ describe('AirtelApiService', () => {
       expect(get.mock.calls[0]).toMatchSnapshot();
     });
 
+    // We don't test all the variations here because we've indirectly tested
+    // getMessage and getResult already in the tests for disburse().
+    it('JSON.stringifies the whole response when we receive no response code and no message', async () => {
+      // Arrange
+      const mockgetResponse = {
+        data: 'could be anything',
+      };
+      get.mockResolvedValue(responseWrapper(mockgetResponse));
+
+      // Act
+      const { message } = await airtelApiService.enquire(enquireInput);
+
+      // Assert
+      expect(message).toBe(JSON.stringify(mockgetResponse));
+    });
+
     it("throws an AirtelApiError when there's a network error", async () => {
       // Arrange
       get.mockRejectedValueOnce(new Error('Network error'));
-
-      // Act
-      let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
-      try {
-        await airtelApiService.enquire(enquireInput);
-      } catch (e) {
-        error = e;
-      }
-
-      // Assert
-      expect(get).toHaveBeenCalledTimes(1);
-      expect(error).toBeInstanceOf(AirtelApiError);
-      expect(error.message).toMatchSnapshot();
-    });
-
-    it('throws an AirtelApiError when response is unclear.', async () => {
-      // Arrange
-      get.mockResolvedValue({ data: 'could be anything' });
 
       // Act
       let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
