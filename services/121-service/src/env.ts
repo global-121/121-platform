@@ -44,7 +44,7 @@ export const env = createEnv({
     HIGH_THROTTLING_TTL: z.coerce.number().optional().default(60),
 
     // Database
-    POSTGRES_HOST: z.string(),
+    POSTGRES_HOST: z.string().default('121db'),
     POSTGRES_PORT: z.coerce.number().default(5432),
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
