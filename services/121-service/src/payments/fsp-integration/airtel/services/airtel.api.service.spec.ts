@@ -57,7 +57,7 @@ const enquireSuccessResponse = responseWrapper({
     },
   },
   status: {
-    response_code: 'DP00900001001',
+    response_code: AirtelApiDisbursementStatusResponseCodeEnum.DP00900001001,
     code: '200',
     success: true,
     result_code: 'ESB000010',
