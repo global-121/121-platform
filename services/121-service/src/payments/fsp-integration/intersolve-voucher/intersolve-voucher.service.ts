@@ -830,7 +830,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
    * ensuring any delayed processing or retry attempts have completed while preventing
    * unnecessary storage consumption and minimizes the risk by reducing the amount of voucher exposed via the API.
    *
-   * @param mockCurrentDate - ONLY for testing purposes! There is no easy way to mock the current date in out test setup
+   * @param mockCurrentDate - ONLY for testing purposes! There is no easy way to mock the current date in our test setup
    */
   public async removeDeprecatedImageCodes(
     mockCurrentDate?: string | undefined,
