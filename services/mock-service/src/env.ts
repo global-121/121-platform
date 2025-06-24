@@ -4,10 +4,15 @@ import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
 export const env = createEnv({
-  server: {
-    // See explanations for each variable in `/services/.env.example`
-    // This file follows the same order/structure.
+  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
+  runtimeEnv: process.env,
+  emptyStringAsUndefined: true,
 
+  /**
+   * See explanations for each variable in `services/.env.example`
+   * This file follows the same order/structure.
+   */
+  server: {
     // Environment/Instance specifics
     ENV_NAME: z.string().optional(),
     ENV_ICON: z.url().or(z.string().startsWith('data:')).optional(),
@@ -26,11 +31,7 @@ export const env = createEnv({
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
   },
 
-  // We don't use client-side env variables in the same way as in the services
+  // We don't use client-side ENV-variables in the same way as in the services
   clientPrefix: '',
   client: {},
-
-  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
-  runtimeEnv: process.env,
-  emptyStringAsUndefined: true,
 });
