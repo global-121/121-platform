@@ -46,10 +46,10 @@ test('[34946] Filter registrations by dropdown selection', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act & Assert
-  await test.step('Filter Status column with "Registered" selection', async () => {
+  await test.step('Filter Status column with "New" selection', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Status',
-      selection: 'Registered',
+      selection: 'New',
     });
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();

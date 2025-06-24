@@ -44,13 +44,11 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[34408] Delete registration with status "Registered"', async ({
-  page,
-}) => {
+test('[34408] Delete registration with status "New"', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
   // Act
-  await test.step('Delete registration with status "Registered"', async () => {
+  await test.step('Delete registration with status "New"', async () => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
@@ -61,7 +59,7 @@ test('[34408] Delete registration with status "Registered"', async ({
   await test.step('Validate registration was deleted succesfully', async () => {
     await tableComponent.filterColumnByDropDownSelection({
       columnName: 'Registration Status',
-      selection: 'Registered',
+      selection: 'New',
     });
     await tableComponent.assertEmptyTableState();
   });

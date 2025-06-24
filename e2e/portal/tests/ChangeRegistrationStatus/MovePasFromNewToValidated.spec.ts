@@ -33,7 +33,7 @@ test.beforeEach(async ({ page }) => {
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
-test('[31206] Move PA(s) from status "Registered" to "Validated"', async ({
+test('[31206] Move PA(s) from status "New" to "Validated"', async ({
   page,
 }) => {
   const registrations = new RegistrationsPage(page);
