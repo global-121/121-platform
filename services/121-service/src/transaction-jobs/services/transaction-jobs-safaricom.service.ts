@@ -8,16 +8,16 @@ import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 
 @Injectable()
-export class TransactionJobProcessorsSafaricomService {
+export class TransactionJobsSafaricomService {
   constructor(
     private readonly safaricomService: SafaricomService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly transactionJobProcessorsHelperService: TransactionJobProcessorsHelperService,
+    private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
 
   public async processSafaricomTransactionJob(
@@ -25,7 +25,7 @@ export class TransactionJobProcessorsSafaricomService {
   ): Promise<void> {
     // 1. Get additional data
     const registration =
-      await this.transactionJobProcessorsHelperService.getRegistrationOrThrow(
+      await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
       );
     const oldRegistration = structuredClone(registration);
@@ -43,7 +43,7 @@ export class TransactionJobProcessorsSafaricomService {
     let transactionId: number;
     if (!safaricomTransfer) {
       const transaction =
-        await this.transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration(
+        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
             programId: transactionJob.programId,
             paymentNumber: transactionJob.paymentNumber,

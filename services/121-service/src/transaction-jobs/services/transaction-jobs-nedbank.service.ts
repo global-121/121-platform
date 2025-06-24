@@ -9,18 +9,18 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
 
 @Injectable()
-export class TransactionJobProcessorsNedbankService {
+export class TransactionJobsNedbankService {
   constructor(
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly transactionJobProcessorsHelperService: TransactionJobProcessorsHelperService,
+    private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
 
   public async processNedbankTransactionJob(
@@ -28,25 +28,16 @@ export class TransactionJobProcessorsNedbankService {
   ): Promise<void> {
     // 1. Get the registration to log changes to it later in event table
     const registration =
-      await this.transactionJobProcessorsHelperService.getRegistrationOrThrow(
+      await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
       );
     const oldRegistration = structuredClone(registration);
 
     // 2. Set the payment reference
-    // This is a unique identifier for each transaction, which will be shown on the bank statement which the user receives by Nedbank out of the 121-platform
-    // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
-    // Payment reference cannot be longer than 30 characters
-    const paymentReferencePrefix =
-      (await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId: transactionJob.programFspConfigurationId,
-        name: FspConfigurationProperties.paymentReferencePrefix,
-      })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
-    const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(
-      /[^a-zA-Z0-9-]/g,
-      '',
-    ); // All non-alphanumeric characters (except hyphens) are removed because the nedbank API does not accept them
-    const paymentReference = `${sanitizedPaymentReferencePrefix.slice(0, 18)}-${transactionJob.phoneNumber}`;
+    const paymentReference = await this.createPaymentReference({
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+      phoneNumber: transactionJob.phoneNumber,
+    });
 
     // 3. Check if there is an existing voucher/orderCreateReference without status if not create orderCreateReference, the nedbank voucher and the related transaction
     // This should almost never happen, only when we have a server crash or when we got a timeout from the nedbank API when creating the order
@@ -67,7 +58,7 @@ export class TransactionJobProcessorsNedbankService {
       // Note: The transaction is created before the voucher is created, so it can be linked to the generated orderCreateReference
       // before the create voucher order API call to Nedbank is made
       const transaction =
-        await this.transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration(
+        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
             programId: transactionJob.programId,
             paymentNumber: transactionJob.paymentNumber,
@@ -148,5 +139,35 @@ export class TransactionJobProcessorsNedbankService {
       { orderCreateReference },
       { status: nedbankVoucherStatus },
     );
+  }
+
+  /**
+   * Generates a unique, human-readable payment reference for each transaction.
+   *
+   * This reference will be shown on the bank statement which the user receives by Nedbank out of the 121-platform.
+   * It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually.
+   * Payment reference cannot be longer than 30 characters.
+   * All non-alphanumeric characters (except hyphens) are removed because the Nedbank API does not accept them.
+   */
+  private async createPaymentReference({
+    programFspConfigurationId,
+    phoneNumber,
+  }: {
+    programFspConfigurationId: number;
+    phoneNumber: string;
+  }): Promise<string> {
+    // This is a unique identifier for each transaction, which will be shown on the bank statement which the user receives by Nedbank out of the 121-platform
+    // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
+    // Payment reference cannot be longer than 30 characters
+    const paymentReferencePrefix =
+      (await this.programFspConfigurationRepository.getPropertyValueByName({
+        programFspConfigurationId,
+        name: FspConfigurationProperties.paymentReferencePrefix,
+      })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
+    const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(
+      /[^a-zA-Z0-9-]/g,
+      '',
+    ); // All non-alphanumeric characters (except hyphens) are removed because the nedbank API does not accept them
+    return `${sanitizedPaymentReferencePrefix.slice(0, 18)}-${phoneNumber}`;
   }
 }

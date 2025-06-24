@@ -8,8 +8,8 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
-import { TransactionJobProcessorsNedbankService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-nedbank.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 
 const mockedRegistration = {
@@ -34,17 +34,17 @@ const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   programFspConfigurationId: 1,
 };
 
-describe('TransactionJobProcessorsNedbankService', () => {
-  let service: TransactionJobProcessorsNedbankService;
+describe('TransactionJobsNedbankService', () => {
+  let service: TransactionJobsNedbankService;
   let nedbankService: NedbankService;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
-  let transactionJobProcessorsHelperService: TransactionJobProcessorsHelperService;
+  let transactionJobsHelperService: TransactionJobsHelperService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
-      TransactionJobProcessorsNedbankService,
+      TransactionJobsNedbankService,
     ).compile();
 
     service = unit;
@@ -60,17 +60,16 @@ describe('TransactionJobProcessorsNedbankService', () => {
       unitRef.get<ProgramFspConfigurationRepository>(
         ProgramFspConfigurationRepository,
       );
-    transactionJobProcessorsHelperService =
-      unitRef.get<TransactionJobProcessorsHelperService>(
-        TransactionJobProcessorsHelperService,
-      );
+    transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
+      TransactionJobsHelperService,
+    );
 
     jest
-      .spyOn(transactionJobProcessorsHelperService, 'getRegistrationOrThrow')
+      .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
       .mockResolvedValue(mockedRegistration);
     jest
       .spyOn(
-        transactionJobProcessorsHelperService,
+        transactionJobsHelperService,
         'createTransactionAndUpdateRegistration',
       )
       .mockResolvedValue({ id: mockedTransactionId } as any);
@@ -104,10 +103,10 @@ describe('TransactionJobProcessorsNedbankService', () => {
     await service.processNedbankTransactionJob(mockedNedbankTransactionJob);
 
     expect(
-      transactionJobProcessorsHelperService.getRegistrationOrThrow,
+      transactionJobsHelperService.getRegistrationOrThrow,
     ).toHaveBeenCalledWith(mockedNedbankTransactionJob.referenceId);
     expect(
-      transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration,
+      transactionJobsHelperService.createTransactionAndUpdateRegistration,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         programId: mockedNedbankTransactionJob.programId,

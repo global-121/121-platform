@@ -7,22 +7,22 @@ import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 
 @Injectable()
-export class TransactionJobProcessorsIntersolveVisaService {
+export class TransactionJobsIntersolveVisaService {
   constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly transactionJobProcessorsHelperService: TransactionJobProcessorsHelperService,
+    private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
     input: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     const registration =
-      await this.transactionJobProcessorsHelperService.getRegistrationOrThrow(
+      await this.transactionJobsHelperService.getRegistrationOrThrow(
         input.referenceId,
       );
     const oldRegistration = structuredClone(registration);
@@ -38,7 +38,7 @@ export class TransactionJobProcessorsIntersolveVisaService {
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration(
+        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
             programId: input.programId,
             paymentNumber: input.paymentNumber,
@@ -60,17 +60,8 @@ export class TransactionJobProcessorsIntersolveVisaService {
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
-      const intersolveVisaConfig =
-        await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow(
-          {
-            programFspConfigurationId: input.programFspConfigurationId,
-            names: [
-              FspConfigurationProperties.brandCode,
-              FspConfigurationProperties.coverLetterCode,
-              FspConfigurationProperties.fundingTokenCode,
-            ],
-          },
-        );
+      const { brandCode, coverLetterCode, fundingTokenCode } =
+        await this.getIntersolveVisaFspConfig(input.programFspConfigurationId);
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
@@ -86,19 +77,13 @@ export class TransactionJobProcessorsIntersolveVisaService {
             phoneNumber: input.phoneNumber!,
           },
           transferAmountInMajorUnit,
-          brandCode: intersolveVisaConfig.find(
-            (c) => c.name === FspConfigurationProperties.brandCode,
-          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-          coverLetterCode: intersolveVisaConfig.find(
-            (c) => c.name === FspConfigurationProperties.coverLetterCode,
-          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
-          fundingTokenCode: intersolveVisaConfig.find(
-            (c) => c.name === FspConfigurationProperties.fundingTokenCode,
-          )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+          brandCode,
+          coverLetterCode,
+          fundingTokenCode,
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration(
+        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
             programId: input.programId,
             paymentNumber: input.paymentNumber,
@@ -119,25 +104,21 @@ export class TransactionJobProcessorsIntersolveVisaService {
     }
     // If the transactions was succesful
 
-    let messageType;
-    if (intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated) {
-      messageType = ProgramNotificationEnum.visaDebitCardCreated;
-    } else {
-      messageType = ProgramNotificationEnum.visaLoad;
-    }
-    await this.transactionJobProcessorsHelperService.createMessageAndAddToQueue(
-      {
-        type: messageType,
-        programId: input.programId,
-        registration,
-        amountTransferred:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        bulkSize: input.bulkSize,
-        userId: input.userId,
-      },
-    );
+    const messageType =
+      intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated
+        ? ProgramNotificationEnum.visaDebitCardCreated
+        : ProgramNotificationEnum.visaLoad;
+    await this.transactionJobsHelperService.createMessageAndAddToQueue({
+      type: messageType,
+      programId: input.programId,
+      registration,
+      amountTransferred:
+        intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
+      bulkSize: input.bulkSize,
+      userId: input.userId,
+    });
 
-    await this.transactionJobProcessorsHelperService.createTransactionAndUpdateRegistration(
+    await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
       {
         programId: input.programId,
         paymentNumber: input.paymentNumber,
@@ -151,5 +132,34 @@ export class TransactionJobProcessorsIntersolveVisaService {
         status: TransactionStatusEnum.success,
       },
     );
+  }
+
+  private async getIntersolveVisaFspConfig(
+    programFspConfigurationId: number,
+  ): Promise<{
+    brandCode: string;
+    coverLetterCode: string;
+    fundingTokenCode: string;
+  }> {
+    const intersolveVisaConfig =
+      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        programFspConfigurationId,
+        names: [
+          FspConfigurationProperties.brandCode,
+          FspConfigurationProperties.coverLetterCode,
+          FspConfigurationProperties.fundingTokenCode,
+        ],
+      });
+    return {
+      brandCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.brandCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      coverLetterCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.coverLetterCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+      fundingTokenCode: intersolveVisaConfig.find(
+        (c) => c.name === FspConfigurationProperties.fundingTokenCode,
+      )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
+    };
   }
 }

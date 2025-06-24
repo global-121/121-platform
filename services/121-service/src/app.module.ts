@@ -31,7 +31,7 @@ import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-re
 import { NedbankReconciliationModule } from '@121-service/src/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
-import { TransactionJobProcessorsModule } from '@121-service/src/transaction-job-processors/transaction-job-processors.module';
+import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
 
@@ -79,7 +79,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     AuthModule,
     ActivitiesModule,
     TransactionQueuesModule,
-    TransactionJobProcessorsModule,
+    TransactionJobsModule,
     CommercialBankEthiopiaReconciliationModule,
     ExcelReconcilicationModule,
     IntersolveVisaReconciliationModule,

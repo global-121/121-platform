@@ -31,7 +31,7 @@ interface ProcessTransactionResultInput {
 }
 
 @Injectable()
-export class TransactionJobProcessorsHelperService {
+export class TransactionJobsHelperService {
   public constructor(
     private readonly messageTemplateService: MessageTemplateService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,

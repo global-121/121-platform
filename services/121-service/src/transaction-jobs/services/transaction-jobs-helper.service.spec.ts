@@ -15,7 +15,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 
 const mockedRegistration: RegistrationEntity = {
   id: 1,
@@ -41,8 +41,8 @@ const mockedProgram = {
   budget: 50000,
 };
 
-describe('TransactionJobProcessorsHelperService', () => {
-  let service: TransactionJobProcessorsHelperService;
+describe('TransactionJobsHelperService', () => {
+  let service: TransactionJobsHelperService;
   let registrationScopedRepository: RegistrationScopedRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
@@ -53,7 +53,7 @@ describe('TransactionJobProcessorsHelperService', () => {
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
-      TransactionJobProcessorsHelperService,
+      TransactionJobsHelperService,
     ).compile();
 
     service = unit;

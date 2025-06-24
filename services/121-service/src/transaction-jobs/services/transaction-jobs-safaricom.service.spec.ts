@@ -5,8 +5,8 @@ import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/saf
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
-import { TransactionJobProcessorsSafaricomService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-safaricom.service';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 
 const mockedRegistration = {
@@ -33,16 +33,16 @@ const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   originatorConversationId: 'originator-conversation-id',
 };
 
-describe('TransactionJobProcessorsSafaricomService', () => {
-  let service: TransactionJobProcessorsSafaricomService;
+describe('TransactionJobsSafaricomService', () => {
+  let service: TransactionJobsSafaricomService;
   let safaricomService: SafaricomService;
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
   let transactionScopedRepository: TransactionScopedRepository;
-  let transactionJobProcessorsHelperService: TransactionJobProcessorsHelperService;
+  let transactionJobsHelperService: TransactionJobsHelperService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
-      TransactionJobProcessorsSafaricomService,
+      TransactionJobsSafaricomService,
     ).compile();
 
     service = unit;
@@ -55,17 +55,16 @@ describe('TransactionJobProcessorsSafaricomService', () => {
     transactionScopedRepository = unitRef.get<TransactionScopedRepository>(
       TransactionScopedRepository,
     );
-    transactionJobProcessorsHelperService =
-      unitRef.get<TransactionJobProcessorsHelperService>(
-        TransactionJobProcessorsHelperService,
-      );
+    transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
+      TransactionJobsHelperService,
+    );
 
     jest
-      .spyOn(transactionJobProcessorsHelperService, 'getRegistrationOrThrow')
+      .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
       .mockResolvedValue(mockedRegistration);
     jest
       .spyOn(
-        transactionJobProcessorsHelperService,
+        transactionJobsHelperService,
         'createTransactionAndUpdateRegistration',
       )
       .mockResolvedValue({ id: mockedTransactionId } as any);
@@ -101,7 +100,7 @@ describe('TransactionJobProcessorsSafaricomService', () => {
     await service.processSafaricomTransactionJob(mockedSafaricomTransactionJob);
 
     expect(
-      transactionJobProcessorsHelperService.getRegistrationOrThrow,
+      transactionJobsHelperService.getRegistrationOrThrow,
     ).toHaveBeenCalledWith(mockedSafaricomTransactionJob.referenceId);
     expect(safaricomService.doTransfer).toHaveBeenCalledWith(
       expect.objectContaining({

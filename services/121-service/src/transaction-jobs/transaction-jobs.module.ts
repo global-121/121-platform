@@ -12,13 +12,13 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
-import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-job-processors/processors/transaction-job-intersolve-visa.processor';
-import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-job-processors/processors/transaction-job-nedbank.processor';
-import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-job-processors/processors/transaction-job-safaricom.processor';
-import { TransactionJobProcessorsHelperService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-helper.service';
-import { TransactionJobProcessorsIntersolveVisaService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-intersolve-visa.service';
-import { TransactionJobProcessorsNedbankService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-nedbank.service';
-import { TransactionJobProcessorsSafaricomService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-safaricom.service';
+import { TransactionJobProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-job-intersolve-visa.processor';
+import { TransactionJobProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-job-nedbank.processor';
+import { TransactionJobProcessorSafaricom } from '@121-service/src/transaction-jobs/processors/transaction-job-safaricom.processor';
+import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
+import { TransactionJobsIntersolveVisaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
+import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
+import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 
 @Module({
   imports: [
@@ -36,13 +36,13 @@ import { TransactionJobProcessorsSafaricomService } from '@121-service/src/trans
     MessageTemplateModule,
   ],
   providers: [
-    TransactionJobProcessorsHelperService,
-    TransactionJobProcessorsNedbankService,
-    TransactionJobProcessorsSafaricomService,
-    TransactionJobProcessorsIntersolveVisaService,
+    TransactionJobsHelperService,
+    TransactionJobsNedbankService,
+    TransactionJobsSafaricomService,
+    TransactionJobsIntersolveVisaService,
     TransactionJobProcessorIntersolveVisa,
     TransactionJobProcessorSafaricom,
     TransactionJobProcessorNedbank,
   ],
 })
-export class TransactionJobProcessorsModule {}
+export class TransactionJobsModule {}

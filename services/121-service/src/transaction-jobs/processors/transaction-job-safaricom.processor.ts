@@ -9,20 +9,20 @@ import {
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { TransactionJobProcessorsIntersolveVisaService } from '@121-service/src/transaction-job-processors/services/transaction-job-processors-intersolve-visa.service';
+import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 
-@Processor(TransactionJobQueueNames.intersolveVisa)
-export class TransactionJobProcessorIntersolveVisa {
+@Processor(TransactionJobQueueNames.safaricom)
+export class TransactionJobProcessorSafaricom {
   constructor(
-    private readonly transactionJobProcessorsIntersolveVisaService: TransactionJobProcessorsIntersolveVisaService,
+    private readonly transactionJobsSafaricomService: TransactionJobsSafaricomService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {}
 
   @Process(JobNames.default)
-  async handleIntersolveVisaTransactionJob(job: Job): Promise<void> {
+  async handleSafaricomTransactionJob(job: Job): Promise<void> {
     try {
-      await this.transactionJobProcessorsIntersolveVisaService.processIntersolveVisaTransactionJob(
+      await this.transactionJobsSafaricomService.processSafaricomTransactionJob(
         job.data,
       );
     } catch (error) {
