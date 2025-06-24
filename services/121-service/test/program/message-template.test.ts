@@ -225,8 +225,8 @@ describe('Message template', () => {
 
   describe('Template updates', () => {
     it('should update message for regular template', async () => {
-      // Arrange - assuming 'registered' is a regular type from seed data
-      const typeToUpdate = 'registered';
+      // Arrange - assuming 'whatsappGenericMessage' is a regular type from seed data
+      const typeToUpdate = 'whatsappGenericMessage';
       const updatedMessage = 'updated test message';
 
       // Act
@@ -271,8 +271,8 @@ describe('Message template', () => {
     });
 
     it(`should NOT allow adding contentSid to a template of type: ${ContentSidMessageTypes.join(', ')}`, async () => {
-      // Assuming 'registered' is a regular type
-      const typeToUpdate = 'registered';
+      // Assuming 'whatsappGenericMessage' is a regular type
+      const typeToUpdate = 'whatsappGenericMessage';
 
       // Act
       const result = await updateMessageTemplate({
