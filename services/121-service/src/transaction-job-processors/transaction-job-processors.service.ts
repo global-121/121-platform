@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -9,6 +10,9 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
@@ -31,6 +35,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -54,6 +59,7 @@ export class TransactionJobProcessorsService {
   public constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly safaricomService: SafaricomService,
+    private readonly airtelService: AirtelService,
     private readonly nedbankService: NedbankService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -263,6 +269,167 @@ export class TransactionJobProcessorsService {
     // 4. No messages sent for safaricom
 
     // 5. No transaction stored or updated after API-call, because waiting transaction is already stored earlier and will remain 'waiting' at this stage (to be updated via callback)
+  }
+
+  public async processAirtelTransactionJob(
+    transactionJob: AirtelTransactionJobDto,
+  ): Promise<void> {
+    // ## TODO: Not sure if creating a bunch of utility/helper functions inside of this function are an OK pattern.
+
+    const doDisbursement = async (
+      transactionJob,
+      failedTransactionsCount,
+    ): Promise<void> => {
+      // Necessary order: (1) create disbursement object with idempotency key and persist it, (2) do disbursement.
+      // This order prevents duplicate disbursements and guarantees we can find disbursements that were received by Airtel.
+      // ## TODO: implement
+
+      // Create transaction id
+      const toHash = `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`;
+      // The airtelTransactionId "must not be null or blank and should only contain alphanumeric characters with length between 5 and 80 characters"
+      // To make sure it's deterministic we base64 it, and delete the last character (the "=").
+      const airtelTransactionId = crypto
+        .createHash('sha256')
+        .update(toHash, 'utf8')
+        .digest('hex');
+
+      // 2. Do disbursement.
+      const phoneNumber = transactionJob.phoneNumber;
+      const amount = transactionJob.transactionAmount;
+      // ## TODO: actually pass result
+      await this.airtelService.attemptOrCheckDisbursement({
+        airtelTransactionId,
+        phoneNumber,
+        amount,
+      });
+    };
+
+    // ✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️✳️
+    // Actual start of processing
+    /*
+      If any of these steps fail we throw so the transaction fails and a new job is created.
+      We *explicitly* don't work around the following problems, if any of this happens we just fail the transaction. If need be we can always later introduce retries.
+      - database problems
+        - data that should have been saved but can't be found
+      - network problems
+        - slow response
+        - no response (timeout)
+      - Airtel API problems
+        - endpoints generating unparseable responses
+        - disbursements that are on pending indefinitely
+    */
+    // Transaction objects need registrations; if this fails we don't create a failed transaction.
+    // That's also the case for the other job processors.
+    // Should we account for that?
+    // For now we assume this always works.
+
+    // 1. Prepare.
+    const registration = await this.getRegistrationOrThrow(
+      transactionJob.referenceId,
+    );
+
+    // Helper functions
+    const createCreateTransaction = (
+      (processorsService: TransactionJobProcessorsService) =>
+      (
+        registration: RegistrationEntity,
+        transactionJob: AirtelTransactionJobDto,
+        status: TransactionStatusEnum,
+      ) =>
+      async (errorMessage?: string) => {
+        // Here is where the actual work starts.
+        const programId = transactionJob.programId;
+
+        const resultTransaction = await processorsService.createTransaction({
+          amount: transactionJob.transactionAmount,
+          registration,
+          programFspConfigurationId: transactionJob.programFspConfigurationId,
+          programId,
+          paymentNumber: transactionJob.paymentNumber,
+          userId: transactionJob.userId,
+          status,
+          errorMessage,
+        });
+        // ## TODO: Not sure if this actually *does something*.
+        const oldRegistration = structuredClone(registration);
+
+        await processorsService.latestTransactionRepository.insertOrUpdateFromTransaction(
+          resultTransaction,
+        );
+
+        if (!transactionJob.isRetry) {
+          await processorsService.updatePaymentCountAndStatusInRegistration(
+            registration,
+            programId,
+          );
+          // Added this check to avoid a bit of processing time if the status is the same
+          if (
+            oldRegistration.registrationStatus !==
+            registration.registrationStatus
+          ) {
+            await processorsService.eventsService.createFromRegistrationViews(
+              {
+                id: oldRegistration.id,
+                status: oldRegistration.registrationStatus ?? undefined,
+              },
+              {
+                id: registration.id,
+                status: registration.registrationStatus ?? undefined,
+              },
+              {
+                explicitRegistrationPropertyNames: ['status'],
+              },
+            );
+          }
+        }
+      }
+    )(this);
+
+    const createSuccessTransaction = () =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.success,
+      )();
+
+    const createWaitingTransaction = (errorMessage?: string) =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.waiting,
+      )(errorMessage);
+
+    // Always needs a message
+    const createErrorTransaction = (errorMessage: string) =>
+      createCreateTransaction(
+        registration,
+        transactionJob,
+        TransactionStatusEnum.error,
+      )(errorMessage);
+
+    const failedTransactionsCount =
+      await this.transactionScopedRepository.count({
+        where: {
+          registrationId: Equal(registration.id),
+          payment: Equal(transactionJob.paymentNumber),
+          status: Equal(TransactionStatusEnum.error),
+        },
+      });
+
+    // ## TODO: log this?
+    try {
+      await doDisbursement(transactionJob, failedTransactionsCount);
+    } catch (error) {
+      if (
+        error instanceof AirtelError &&
+        error.type === AirtelDisbursementResultEnum.ambiguous
+      ) {
+        return await createWaitingTransaction(error?.message);
+      }
+      return await createErrorTransaction(error?.message);
+    }
+    // If no error was thrown, we are certain the disbursement was successful.
+    await createSuccessTransaction();
   }
 
   public async processNedbankTransactionJob(
