@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs';
 import { TlsOptions } from 'node:tls';
 import { DataSourceOptions } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 
 const createSSLConfig = (): boolean | TlsOptions => {
-  if (env.POSTGRES_HOST === '121db') {
+  if (IS_DEVELOPMENT) {
     // In local development, no SSL-connection is needed
     return false;
   }
