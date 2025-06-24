@@ -14,12 +14,13 @@ import { CustomHttpService } from '@121-service/src/shared/services/custom-http.
 import { TokenValidationService } from '@121-service/src/utils/token/token-validation.service';
 
 // ## TODO: when the branch for better handling of environment variables is merged, use that pattern.
-const getEnvOrThrow = (envVar: string): string => {
+const getEnv = (envVar: string): string => {
   const value = process.env[envVar];
   if (!value) {
-    throw new Error(
+    console.error(
       `Tried to get environment variable "${envVar}" but it is not set or is empty.`,
     );
+    return '';
   }
   return value;
 };
@@ -58,8 +59,8 @@ export class AirtelApiService {
     private readonly tokenValidationService: TokenValidationService,
     private readonly airtelEncryptionService: AirtelEncryptionService,
   ) {
-    const airtelDisbursementPin = getEnvOrThrow('AIRTEL_DISBURSEMENT_PIN');
-    const airtelDisbursementV1PinEncryptionPublicKey = getEnvOrThrow(
+    const airtelDisbursementPin = getEnv('AIRTEL_DISBURSEMENT_PIN');
+    const airtelDisbursementV1PinEncryptionPublicKey = getEnv(
       'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
     );
     // No need to re-encrypt the same value for every request.
@@ -68,20 +69,17 @@ export class AirtelApiService {
       airtelDisbursementV1PinEncryptionPublicKey,
     );
 
-    this.airtelClientId = getEnvOrThrow('AIRTEL_CLIENT_ID');
-    this.airtelClientSecret = getEnvOrThrow('AIRTEL_CLIENT_SECRET');
+    this.airtelClientId = getEnv('AIRTEL_CLIENT_ID');
+    this.airtelClientSecret = getEnv('AIRTEL_CLIENT_SECRET');
 
     this.countryCode = 'ZM';
     this.currencyCode = 'ZMW';
 
     let airtelApiBaseUrl: URL;
     if (getBooleanEnvDefaultToFalse('MOCK_AIRTEL')) {
-      airtelApiBaseUrl = new URL(
-        'api/fsp/airtel/',
-        getEnvOrThrow('MOCK_SERVICE_URL'),
-      );
+      airtelApiBaseUrl = new URL('api/fsp/airtel/', getEnv('MOCK_SERVICE_URL'));
     } else {
-      airtelApiBaseUrl = new URL(getEnvOrThrow('AIRTEL_API_URL'));
+      airtelApiBaseUrl = new URL(getEnv('AIRTEL_API_URL'));
     }
     this.airtelAuthenticateURL = new URL('auth/oauth2/token', airtelApiBaseUrl);
     this.airtelDisbursementV2URL = new URL(
