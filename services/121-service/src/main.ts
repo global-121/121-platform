@@ -13,7 +13,6 @@ import {
   APP_TITLE,
   APP_VERSION,
   IS_DEVELOPMENT,
-  PORT,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
@@ -149,7 +148,7 @@ async function bootstrap(): Promise<void> {
     .setVersion(APP_VERSION)
     .addServer(
       IS_DEVELOPMENT
-        ? `http://localhost:${PORT}`
+        ? `http://localhost:${env.PORT_121_SERVICE}`
         : env.EXTERNAL_121_SERVICE_URL,
     )
     .build();
@@ -187,7 +186,7 @@ async function bootstrap(): Promise<void> {
   );
   app.use(cookieParser());
 
-  const server = await app.listen(PORT);
+  const server = await app.listen(env.PORT_121_SERVICE);
   server.setTimeout(10 * 60 * 1000);
 
   if (IS_DEVELOPMENT) {

@@ -3,8 +3,6 @@ import { env } from '@121-service/src/env';
 export const IS_DEVELOPMENT = env.NODE_ENV === 'development';
 export const IS_PRODUCTION = env.NODE_ENV === 'production';
 
-export const PORT = env.PORT_121_SERVICE;
-
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
 export const APP_VERSION = env.GLOBAL_121_VERSION!;
