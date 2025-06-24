@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -18,9 +18,10 @@ export class OnafriqReconciliationController {
       '[EXTERNALLY USED] Notification callback used by Onafriq to notify status of transaction to us. Update if needed via /fsps/onafriq/webhook/subscribe endpoint.',
   })
   @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Notified transaction status',
+    status: HttpStatus.OK,
+    description: 'Callback processed successfully.',
   })
+  @HttpCode(HttpStatus.OK) // NOTE: Onafriq internally labels the callback as success on status 200
   @Post('callback')
   public async processTransactionCallback(
     @Body() onafriqTransactionCallback: OnafriqTransactionCallbackDto,
