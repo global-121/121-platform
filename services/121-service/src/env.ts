@@ -10,7 +10,7 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 
   /**
-   * See explanations for each variable in `/services/.env.example`
+   * See explanations for each variable in `services/.env.example`
    * This file follows the same order/structure.
    *
    * Guidelines:
@@ -209,7 +209,7 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
   },
 
-  // We don't use client-side env variables in the same way as in the services
+  // We don't use client-side ENV-variables in the same way as in the services
   clientPrefix: '',
   client: {},
 });
