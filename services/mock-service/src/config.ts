@@ -1,7 +1,7 @@
 import { env } from '@mock-service/src/env';
 
 export const PORT = env.PORT_MOCK_SERVICE;
-export const DEVELOPMENT = env.NODE_ENV === 'development';
+export const IS_DEVELOPMENT = env.NODE_ENV === 'development';
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
@@ -41,7 +41,7 @@ export const API_PATHS = {
 };
 
 export const EXTERNAL_API_ROOT = `${
-  DEVELOPMENT
+  IS_DEVELOPMENT
     ? `http://121-service:${env.PORT_121_SERVICE}`
     : env.EXTERNAL_121_SERVICE_URL
 }/api`;

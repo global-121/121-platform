@@ -7,7 +7,7 @@ import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
 import { env } from '@121-service/src/env';
@@ -611,8 +611,8 @@ export class UserService {
     httpOnly: boolean;
   } {
     return {
-      sameSite: DEBUG ? 'Lax' : 'None',
-      secure: !DEBUG,
+      sameSite: IS_DEVELOPMENT ? 'Lax' : 'None',
+      secure: !IS_DEVELOPMENT,
       httpOnly: true,
     };
   }

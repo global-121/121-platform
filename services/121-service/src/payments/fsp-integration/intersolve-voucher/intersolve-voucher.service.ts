@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
@@ -829,13 +829,14 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
    * A one-day retention provides a generous safety buffer (only seconds are actually needed),
    * ensuring any delayed processing or retry attempts have completed while preventing
    * unnecessary storage consumption and minimizes the risk by reducing the amount of voucher exposed via the API.
+   *
+   * @param mockCurrentDate - ONLY for testing purposes! There is no easy way to mock the current date in out test setup
    */
   public async removeDeprecatedImageCodes(
     mockCurrentDate?: string | undefined,
   ): Promise<number> {
-    // mockCurrentDate is only made available for testing purposes, as there is no easy way to mock the current date in out test setup
     let dateFilter: Date;
-    if (mockCurrentDate && DEBUG) {
+    if (mockCurrentDate && IS_DEVELOPMENT) {
       dateFilter = new Date(mockCurrentDate);
     } else {
       dateFilter = new Date();

@@ -12,7 +12,7 @@ import {
   APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
-  DEBUG,
+  IS_DEVELOPMENT,
   PORT,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
@@ -122,7 +122,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
   app.enableCors({
-    origin: DEBUG,
+    origin: IS_DEVELOPMENT,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
@@ -148,7 +148,9 @@ async function bootstrap(): Promise<void> {
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
     .addServer(
-      DEBUG ? `http://localhost:${PORT}` : env.EXTERNAL_121_SERVICE_URL,
+      IS_DEVELOPMENT
+        ? `http://localhost:${PORT}`
+        : env.EXTERNAL_121_SERVICE_URL,
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);
@@ -162,16 +164,16 @@ async function bootstrap(): Promise<void> {
       deepLinking: true,
       defaultModelExpandDepth: 10,
       defaultModelsExpandDepth: 1,
-      displayOperationId: DEBUG,
+      displayOperationId: IS_DEVELOPMENT,
       displayRequestDuration: true,
       filter: false,
       operationsSorter: 'alpha',
-      persistAuthorization: DEBUG,
-      queryConfigEnabled: DEBUG,
+      persistAuthorization: IS_DEVELOPMENT,
+      queryConfigEnabled: IS_DEVELOPMENT,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
-      tryItOutEnabled: DEBUG,
+      tryItOutEnabled: IS_DEVELOPMENT,
     },
   });
 
@@ -188,7 +190,7 @@ async function bootstrap(): Promise<void> {
   const server = await app.listen(PORT);
   server.setTimeout(10 * 60 * 1000);
 
-  if (DEBUG) {
+  if (IS_DEVELOPMENT) {
     generateModuleDependencyGraph(app);
     generateSwaggerSummaryJson(app);
   }
