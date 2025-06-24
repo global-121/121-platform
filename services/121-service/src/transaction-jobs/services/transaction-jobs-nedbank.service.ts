@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
+import { env } from '@121-service/src/env';
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -85,10 +86,7 @@ export class TransactionJobsNedbankService {
       ).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONONALITY FOR TESTING PURPOSES ONLY
-      if (
-        process.env.MOCK_NEDBANK &&
-        transactionJob.referenceId.includes('mock')
-      ) {
+      if (env.MOCK_NEDBANK && transactionJob.referenceId.includes('mock')) {
         // If mock, add the referenceId to the orderCreateReference
         // This way you can add one of the nedbank voucher statusses to the orderCreateReference
         // to simulate a specific statusses in responses from the nedbank API on getOrderByOrderCreateReference
