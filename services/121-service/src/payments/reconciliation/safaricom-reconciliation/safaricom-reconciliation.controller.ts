@@ -35,6 +35,11 @@ export class SafaricomReconciliationController {
   public async processTransferCallback(
     @AnyValidBody() safaricomTransferCallback: SafaricomTransferCallbackDto, // We cannot control the structure of the callback data, so we use AnyValidBody
   ): Promise<void> {
+    console.log(
+      'POST fsps/safaricom/transfer-callback:',
+      safaricomTransferCallback,
+    );
+
     await this.safaricomReconciliationService.processTransferCallback(
       safaricomTransferCallback,
     );
@@ -54,10 +59,9 @@ export class SafaricomReconciliationController {
     @AnyValidBody() // We cannot control the structure of the callback data, so we use AnyValidBody
     safaricomTimeoutCallback: any, // deliberatedly 'any', as we are unsure of the payload structure. This way we can console.log first and then validate.
   ): Promise<void> {
-    // console.log so we know what the actual payload looks like and can adjust the DTO accordingly
     console.log(
-      'safaricomTimeoutCallback: ',
-      JSON.stringify(safaricomTimeoutCallback, null, 2),
+      'POST fsps/safaricom/timeout-callback:',
+      safaricomTimeoutCallback,
     );
 
     // apply validation and error response according to current DTO structure
