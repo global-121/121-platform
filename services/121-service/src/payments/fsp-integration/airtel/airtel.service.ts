@@ -59,7 +59,7 @@ export class AirtelService implements FspIntegrationInterface {
 
     if (result === AirtelDisbursementResultEnum.ambiguous) {
       throw new AirtelError(
-        `Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: ${airtelTransactionId} - Status: Ambigious`,
+        `Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: ${airtelTransactionId} - Status: Ambiguous`,
         result,
       );
     }

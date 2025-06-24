@@ -270,7 +270,7 @@ describe('Do payment with FSP: Airtel', () => {
     // Assert
     expect(transaction.status).toBe(TransactionStatusEnum.waiting);
     expect(transaction.errorMessage).toMatch(
-      /^Airtel Error: Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: [a-z0-9]{64} - Status: Ambigious/,
+      /^Airtel Error: Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: [a-z0-9]{64} - Status: Ambiguous/,
     );
   });
 });
