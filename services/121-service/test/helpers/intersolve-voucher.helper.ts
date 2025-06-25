@@ -47,3 +47,11 @@ export async function getVoucherBalance(
     .set('Cookie', [accessToken])
     .query({ payment, referenceId });
 }
+
+export async function cacheUnusedVouchers(
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .patch('/fsps/intersolve-voucher/unused-vouchers')
+    .set('Cookie', [accessToken]);
+}

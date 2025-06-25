@@ -1,8 +1,13 @@
 import { test } from '@playwright/test';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { cacheUnusedVouchers } from '@121-service/test/helpers/intersolve-voucher.helper';
+import {
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -11,30 +16,38 @@ import {
 import {
   programIdPV,
   registrationPV5,
-  registrationPV6,
-  registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
+import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsVoucher,
-    programIdPV,
-    accessToken,
-  );
+  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
 
   await doPayment({
     programId: programIdPV,
     paymentNr: 1,
-    amount: 100,
-    referenceIds: [registrationPV5.referenceId, registrationPV6.referenceId],
+    amount: 12.5,
+    referenceIds: [registrationPV5.referenceId],
     accessToken,
   });
+
+  await waitForPaymentTransactionsToComplete({
+    programId: programIdPV,
+    paymentReferenceIds: [registrationPV5.referenceId],
+    accessToken,
+    maxWaitTimeMs: 2_000,
+    completeStatusses: [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.waiting,
+    ],
+  });
+  // Run cronJob to process unused vouchers
+  await cacheUnusedVouchers(accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -47,6 +60,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[36847] Export unused vouchers successfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
+  const registrationsPage = new RegistrationsPage(page);
 
   // Act
   await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
@@ -54,4 +68,8 @@ test('[36847] Export unused vouchers successfully', async ({ page }) => {
   await paymentsPage.selectPaymentExportOption({ option: 'Unused vouchers' });
 
   // Assert
+  await registrationsPage.exportAndAssertData({
+    minRowCount: 1,
+    excludedColumns: ['issueDate'],
+  });
 });
