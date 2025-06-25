@@ -2,6 +2,9 @@ import { TestBed } from '@automock/jest';
 import { Equal, UpdateResult } from 'typeorm';
 
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
+import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
+import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
+import { AirtelApiError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel-api.error';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
@@ -171,24 +174,37 @@ describe('TransactionJobProcessorsService', () => {
       phoneNumber: '123456789',
     };
 
-    it('should process Airtel transaction job successfully', async () => {
-      jest
-        .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
-        .mockResolvedValue('ref#1');
-
+    it('should get the registration from the registration repository using the referenceId', async () => {
+      // Arrange
       jest
         .spyOn(airtelService, 'attemptOrCheckDisbursement')
         .mockResolvedValueOnce(undefined);
 
+      // Act
       await transactionJobProcessorsService.processAirtelTransactionJob(
         mockedAirtelTransactionJob,
       );
 
+      // Assert
       expect(
         registrationScopedRepository.getByReferenceId,
       ).toHaveBeenCalledWith({
         referenceId: mockedAirtelTransactionJob.referenceId,
       });
+    });
+
+    it('should get number of failed transactions', async () => {
+      // Arrange
+      jest
+        .spyOn(airtelService, 'attemptOrCheckDisbursement')
+        .mockResolvedValueOnce(undefined);
+
+      // Act
+      await transactionJobProcessorsService.processAirtelTransactionJob(
+        mockedAirtelTransactionJob,
+      );
+
+      // Assert
       expect(transactionScopedRepository.count).toHaveBeenCalledWith({
         where: {
           registrationId: Equal(mockedRegistration.id),
@@ -196,20 +212,127 @@ describe('TransactionJobProcessorsService', () => {
           status: Equal(TransactionStatusEnum.error),
         },
       });
+    });
+
+    it('should correctly call attemptOrCheckDisbursement', async () => {
+      // Arrange
+      jest
+        .spyOn(airtelService, 'attemptOrCheckDisbursement')
+        .mockResolvedValueOnce(undefined);
+
+      // Act
+      await transactionJobProcessorsService.processAirtelTransactionJob(
+        mockedAirtelTransactionJob,
+      );
+
+      // Assert
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
+        // This is the (deterministic) Airtel transaction ID that is generated
+        // for the static test data.
         airtelTransactionId:
           '972b054e8284535d571844a11cd2065f05c93acfbf53405e4fcaa4e10cdd73b9',
         phoneNumber: mockedAirtelTransactionJob.phoneNumber,
         amount: mockedAirtelTransactionJob.transactionAmount,
       });
+    });
 
-      expect(transactionScopedRepository.save).toHaveBeenCalledWith(
-        // TODO: is this correct?
-        expect.objectContaining({
-          payment: mockedAirtelTransactionJob.paymentNumber,
-          status: TransactionStatusEnum.success,
-        }),
-      );
+    describe('should create a transaction with status', () => {
+      it('success when an Airtel disburse succeeds', async () => {
+        // Arrange
+        jest
+          .spyOn(airtelService, 'attemptOrCheckDisbursement')
+          .mockResolvedValueOnce(undefined);
+
+        // TODO: possibly refactor after rebase
+        // Act
+        await transactionJobProcessorsService.processAirtelTransactionJob(
+          mockedAirtelTransactionJob,
+        );
+
+        // Assert
+        expect(transactionScopedRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            payment: mockedAirtelTransactionJob.paymentNumber,
+            status: TransactionStatusEnum.success,
+          }),
+        );
+      });
+
+      it('error when an Airtel disburse fails', async () => {
+        // TODO: possibly refactor after rebase
+        // Arrange
+        const airtelError = new AirtelError(
+          'error occurred - mock',
+          AirtelDisbursementResultEnum.fail,
+        );
+        jest
+          .spyOn(airtelService, 'attemptOrCheckDisbursement')
+          .mockRejectedValueOnce(airtelError);
+
+        // Act
+        await transactionJobProcessorsService.processAirtelTransactionJob(
+          mockedAirtelTransactionJob,
+        );
+
+        // Assert
+        expect(transactionScopedRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            payment: mockedAirtelTransactionJob.paymentNumber,
+            status: TransactionStatusEnum.error,
+            errorMessage: 'Airtel Error: error occurred - mock',
+          }),
+        );
+      });
+
+      it('waiting when an Airtel disburse is ambiguous', async () => {
+        // TODO: possibly refactor after rebase
+        // Arrange
+        const airtelError = new AirtelError(
+          'ambiguous response given',
+          AirtelDisbursementResultEnum.ambiguous,
+        );
+        // Overrides the spyOn in beforeEach
+        jest
+          .spyOn(airtelService, 'attemptOrCheckDisbursement')
+          .mockRejectedValueOnce(airtelError);
+
+        // Act
+        await transactionJobProcessorsService.processAirtelTransactionJob(
+          mockedAirtelTransactionJob,
+        );
+
+        // Assert
+        expect(transactionScopedRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            payment: mockedAirtelTransactionJob.paymentNumber,
+            status: TransactionStatusEnum.waiting,
+            errorMessage: 'Airtel Error: ambiguous response given',
+          }),
+        );
+      });
+
+      it('error when an Airtel API Error occurs', async () => {
+        // TODO: possibly refactor after rebase
+        // Arrange
+        const airtelApiError = new AirtelApiError('network request failed');
+        jest
+          .spyOn(airtelService, 'attemptOrCheckDisbursement')
+          .mockRejectedValueOnce(airtelApiError);
+
+        // Act
+        await transactionJobProcessorsService.processAirtelTransactionJob(
+          mockedAirtelTransactionJob,
+        );
+
+        // Assert
+        expect(transactionScopedRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            payment: mockedAirtelTransactionJob.paymentNumber,
+            status: TransactionStatusEnum.error,
+            errorMessage: 'Airtel API Error: network request failed',
+          }),
+        );
+      });
     });
   });
 
