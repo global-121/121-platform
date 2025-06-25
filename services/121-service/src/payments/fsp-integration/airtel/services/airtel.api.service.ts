@@ -133,11 +133,18 @@ export class AirtelApiService {
 
     let response: AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>;
     try {
+      // ## TODO: remove this before merging to main, needed for Acceptance Testing with Airtel.
+      console.log('Calling disburse endpoint');
+      console.log('Url is ', url.href);
+      console.log('Headers are ', headersToPojo(headers));
+      console.log('Payload is ', JSON.stringify(payload, null, 2));
+
       // We don't actually validate that the API returns this.
       // We'll add actual validation later.
       response = await this.httpService.post<
         AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>
       >(url.href, payload, headersToPojo(headers));
+      console.log('Response is ', response.data);
     } catch (error) {
       throw new AirtelApiError(
         `disbursement failed, could not complete request: ${error.message}`,
@@ -174,11 +181,17 @@ export class AirtelApiService {
 
     let response: AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>;
     try {
+      // ## TODO: remove this before merging to main, needed for Acceptance Testing with Airtel.
+      console.log('Calling enquire endpoint');
+      console.log('Url is ', url.href);
+      console.log('Headers are ', headersToPojo(headers));
+
       // We don't actually validate that the API returns this.
       // ##TODO: add actual validation later.
       response = await this.httpService.get<
         AxiosResponse<AirtelDisbursementOrEnquiryResponseDto>
       >(url.href, headersToPojo(headers));
+      console.log('Response is ', response.data);
     } catch (error) {
       throw new AirtelApiError(
         `enquire failed, could not complete request: ${error.message}`,
@@ -225,11 +238,17 @@ export class AirtelApiService {
 
     let response;
     try {
+      // ## TODO: remove this before merging to main, needed for Acceptance Testing with Airtel.
+      console.log('Calling authenticate endpoint');
+      console.log('Url is ', this.airtelAuthenticateURL.href);
+      console.log('Headers are ', headersToPojo(headers));
+      console.log('Payload is ', JSON.stringify(payload, null, 2));
       // We don't actually validate that the API returns this.
       // ##TODO: add actual validation later.
       response = await this.httpService.post<
         AxiosResponse<AirtelApiAuthenticationResponseDto>
       >(this.airtelAuthenticateURL.href, payload, headersToPojo(headers));
+      console.log('Response is ', response.data);
     } catch (error) {
       throw new AirtelApiError(`authentication failed: ${error.message}`);
     }
