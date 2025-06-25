@@ -49,13 +49,26 @@ export class OnafriqApiService {
       },
     ];
 
-    const { status, statusText, data } =
+    let { status, statusText, data } =
       await this.httpService.post<OnafriqApiWebhookSubscribeResponseBody>(
         webhookSubscribeUrl,
         payload,
         headers,
         DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
+    if (status !== 200 || data?.message !== 'Success') {
+      return { status, statusText, data };
+    }
+
+    // NOTE: it is unclear if /subscribe or /update is needed, so the safest approach is to use both (unless the first failed already). In terms of payload and response they are identical.
+    const webhookUpdateUrl = `${onafriqApiUrl}/api/webhook/update`;
+    ({ status, statusText, data } =
+      await this.httpService.post<OnafriqApiWebhookSubscribeResponseBody>(
+        webhookUpdateUrl,
+        payload,
+        headers,
+        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+      ));
     return { status, statusText, data };
   }
 
