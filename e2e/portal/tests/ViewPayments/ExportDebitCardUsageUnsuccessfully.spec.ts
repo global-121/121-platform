@@ -11,8 +11,6 @@ import {
 import {
   programIdPV,
   registrationPV5,
-  registrationPV6,
-  registrationsVoucher,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
@@ -22,17 +20,13 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsVoucher,
-    programIdPV,
-    accessToken,
-  );
+  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
 
   await doPayment({
     programId: programIdPV,
     paymentNr: 1,
-    amount: 100,
-    referenceIds: [registrationPV5.referenceId, registrationPV6.referenceId],
+    amount: 12.5,
+    referenceIds: [registrationPV5.referenceId],
     accessToken,
   });
 
@@ -45,13 +39,13 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36848] Export unused vouchers unsuccessfully', async ({ page }) => {
+test('[36880] Export debit card usage unsuccessfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   // Act
   await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
   await paymentsPage.navigateToProgramPage('Payments');
-  await paymentsPage.selectPaymentExportOption({ option: 'Unused vouchers' });
+  await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
   // Click on Proceed button
   await paymentsPage.clickOnProceedButton();
 
