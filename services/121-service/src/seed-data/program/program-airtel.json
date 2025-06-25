@@ -14,7 +14,7 @@
   "currency": "ZMW",
   "distributionFrequency": "month",
   "distributionDuration": 6,
-  "fixedTransferValue": 1500,
+  "fixedTransferValue": 10,
   "paymentAmountMultiplierFormula": null,
   "targetNrRegistrations": 2850,
   "tryWhatsAppFirst": false,
