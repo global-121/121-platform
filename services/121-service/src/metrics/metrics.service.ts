@@ -716,7 +716,7 @@ export class MetricsService {
     const newPeople = await this.registrationScopedRepository.count({
       where: {
         program: { id: Equal(programId) },
-        registrationStatus: Equal(RegistrationStatusEnum.registered),
+        registrationStatus: Equal(RegistrationStatusEnum.new),
       },
     });
 

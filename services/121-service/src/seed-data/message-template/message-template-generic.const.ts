@@ -1,14 +1,6 @@
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 
 export const messageTemplateGeneric: SeedMessageTemplateConfig = {
-  registered: {
-    isSendMessageTemplate: false,
-    isWhatsappTemplate: false,
-    message: {
-      en: 'We have received your application for support.\n\nYou will receive another message with more information within 1 week.',
-      nl: 'Dummy text NL: registered',
-    },
-  },
   whatsappGenericMessage: {
     isSendMessageTemplate: false,
     isWhatsappTemplate: true,

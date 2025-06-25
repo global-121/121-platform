@@ -47,5 +47,5 @@ export type SendMessageData =
 
 export type RegistrationStatusChangeTarget = Exclude<
   RegistrationStatusEnum,
-  RegistrationStatusEnum.completed | RegistrationStatusEnum.registered
+  RegistrationStatusEnum.completed | RegistrationStatusEnum.new
 >;

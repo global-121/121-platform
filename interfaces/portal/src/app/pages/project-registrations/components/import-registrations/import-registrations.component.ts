@@ -42,7 +42,7 @@ export class ImportRegistrationsComponent {
   private toastService = inject(ToastService);
 
   readonly registeredChipData = getChipDataByRegistrationStatus(
-    RegistrationStatusEnum.registered,
+    RegistrationStatusEnum.new,
   );
 
   downloadImportRegistrationsTemplateMutation = injectMutation(() => ({
@@ -53,7 +53,7 @@ export class ImportRegistrationsComponent {
     onSuccess: (csvContents) => {
       this.downloadService.downloadStringArrayToCSV({
         file: csvContents,
-        filename: 'import-as-registered-TEMPLATE',
+        filename: 'import-as-new-TEMPLATE',
       });
     },
   }));

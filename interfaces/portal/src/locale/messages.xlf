@@ -195,9 +195,6 @@
       <trans-unit id="message-content-type-payment-voucher" datatype="html">
         <source>Payment voucher</source>
       </trans-unit>
-      <trans-unit id="message-content-type-registered" datatype="html">
-        <source>Registration</source>
-      </trans-unit>
       <trans-unit id="message-content-type-paused" datatype="html">
         <source>Paused</source>
       </trans-unit>
@@ -234,8 +231,8 @@
       <trans-unit id="registration-status-included" datatype="html">
         <source>Included</source>
       </trans-unit>
-      <trans-unit id="registration-status-registered" datatype="html">
-        <source>Registered</source>
+      <trans-unit id="registration-status-new" datatype="html">
+        <source>New</source>
       </trans-unit>
       <trans-unit id="registration-status-validated" datatype="html">
         <source>Validated</source>
@@ -902,7 +899,7 @@
         <source>The action &quot;Delete&quot; can not be applied to registrations with the &quot;Completed&quot; status.</source>
       </trans-unit>
       <trans-unit id="change-status-validate-warning" datatype="html">
-        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;Registered&quot; status.</source>
+        <source>The action &quot;Validate&quot; can only be applied to registrations with the &quot;New&quot; status.</source>
       </trans-unit>
       <trans-unit id="change-status-decline-warning" datatype="html">
         <source>The action &quot;Decline&quot; can not be applied to registrations with the &quot;Declined&quot; or &quot;Completed&quot; status.</source>

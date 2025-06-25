@@ -11,7 +11,7 @@ export const REGISTRATION_STATUS_LABELS: Record<
   string
 > = {
   [RegistrationStatusEnum.included]: $localize`:@@registration-status-included:Included`,
-  [RegistrationStatusEnum.registered]: $localize`:@@registration-status-registered:Registered`,
+  [RegistrationStatusEnum.new]: $localize`:@@registration-status-new:New`,
   [RegistrationStatusEnum.validated]: $localize`:@@registration-status-validated:Validated`,
   [RegistrationStatusEnum.declined]: $localize`:@@registration-status-declined:Declined`,
   [RegistrationStatusEnum.completed]: $localize`:@@registration-status-completed:Completed`,
@@ -21,7 +21,7 @@ export const REGISTRATION_STATUS_LABELS: Record<
 
 export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
   {
-    [RegistrationStatusEnum.registered]: '',
+    [RegistrationStatusEnum.new]: '',
     [RegistrationStatusEnum.completed]: '',
     [RegistrationStatusEnum.validated]: 'pi pi-check-circle',
     [RegistrationStatusEnum.included]: 'pi pi-check',
@@ -32,7 +32,7 @@ export const REGISTRATION_STATUS_ICON: Record<RegistrationStatusEnum, string> =
 
 export const REGISTRATION_STATUS_VERB: Record<RegistrationStatusEnum, string> =
   {
-    [RegistrationStatusEnum.registered]: $localize`Register`,
+    [RegistrationStatusEnum.new]: $localize`Register`,
     [RegistrationStatusEnum.completed]: $localize`Complete`,
     [RegistrationStatusEnum.validated]: $localize`Validate`,
     [RegistrationStatusEnum.included]: $localize`Include`,

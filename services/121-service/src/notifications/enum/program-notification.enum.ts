@@ -1,5 +1,4 @@
 export enum ProgramNotificationEnum {
-  registered = 'registered',
   whatsappGenericMessage = 'whatsappGenericMessage',
   whatsappReply = 'whatsappReply',
   whatsappPayment = 'whatsappPayment',

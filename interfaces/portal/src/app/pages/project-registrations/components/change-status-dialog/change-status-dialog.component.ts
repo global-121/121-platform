@@ -121,7 +121,7 @@ export class ChangeStatusDialogComponent
   readonly changeStatusWarningMessage = computed(() => {
     switch (this.status()) {
       case RegistrationStatusEnum.validated:
-        return $localize`:@@change-status-validate-warning:The action "Validate" can only be applied to registrations with the "Registered" status.`;
+        return $localize`:@@change-status-validate-warning:The action "Validate" can only be applied to registrations with the "New" status.`;
       case RegistrationStatusEnum.included:
         return $localize`:@@change-status-include-warning:The action "Include" can only be applied to registrations that do not have status "Included" and whose “Payments left” is larger than 0.`;
       case RegistrationStatusEnum.paused:

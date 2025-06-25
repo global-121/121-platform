@@ -41,13 +41,13 @@ describe('RegistrationBulkService', () => {
 
         if (
           programIdValue === programId &&
-          typeValue === RegistrationStatusEnum.registered
+          typeValue === RegistrationStatusEnum.new
         ) {
           return Promise.resolve({
             id: 1,
             name: 'test',
             language: LanguageEnum.en,
-            type: RegistrationStatusEnum.registered,
+            type: RegistrationStatusEnum.new,
             message: 'test message',
             programId: 2,
           });
@@ -133,7 +133,7 @@ describe('RegistrationBulkService', () => {
         paginateQuery,
         programId,
         'randomMessage',
-        RegistrationStatusEnum.registered,
+        RegistrationStatusEnum.new,
         true,
         userId,
       );
@@ -153,7 +153,7 @@ describe('RegistrationBulkService', () => {
         paginateQuery,
         programId,
         'randomMessage',
-        RegistrationStatusEnum.registered,
+        RegistrationStatusEnum.new,
         false,
         userId,
       );

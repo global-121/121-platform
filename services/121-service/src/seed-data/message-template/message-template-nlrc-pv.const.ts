@@ -1,21 +1,6 @@
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 
 export const messageTemplateNlrcPv: SeedMessageTemplateConfig = {
-  registered: {
-    isSendMessageTemplate: false,
-    isWhatsappTemplate: false,
-    message: {
-      ar: 'هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات إضافية في غضون 48 ساعة.',
-      en: 'This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS or WhatsApp message with more information within 48 hours.',
-      es: 'Este es un mensaje de la Cruz Roja.\n\nHemos recibido su solicitud de ayuda.\n\nRecibirá otro SMS o mensaje de WhatsApp con más información en el plazo de 48 horas.',
-      nl: 'Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 48 uur een volgende SMS of WhatsApp bericht met meer informatie.',
-      pt_BR:
-        'Esta é uma mensagem da Cruz Vermelha.\n\nRecebemos seu pedido para receber ajuda.\n\nVocê receberá outra mensagem SMS/WhatsApp com mais informações no prazo de 48 horas.',
-      tl: 'Ang mensaheng ito ay galing sa Red Cross.\n\nNatanggap na namin ang iyong application para sa suporta.\n\nMakakatanggap ka ng panibagong SMS/WhatsApp na may panibagong impormasyon sa loob ng 48 oras.',
-      in: 'Ini adalah pesan dari Red Cross\n\nKami telah menerima aplikasi anda untuk bantuan ini\n\nAnda akan menerima pesan SMS/WhatsApp dengan informasi berikutnya dalam waktu 48 jam.',
-      fr: "Ceci est un message de Croix Rouge.\n\nNous avons bien reçu votre application pour assistance.\n\nVous recevrez un autre SMS or de message WhatsApp avec plus d'informations dans un délai d' 48 heures.",
-    },
-  },
   invited: {
     isSendMessageTemplate: true,
     label: {

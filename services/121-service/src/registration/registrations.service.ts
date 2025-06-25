@@ -37,10 +37,7 @@ import {
   DefaultRegistrationDataAttributeNames,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import {
-  RegistrationStatusEnum,
-  RegistrationStatusTimestampField,
-} from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationValidationInputType } from '@121-service/src/registration/enum/registration-validation-input-type.enum';
 import { ErrorEnum } from '@121-service/src/registration/errors/registration-data.error';
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
@@ -158,7 +155,7 @@ export class RegistrationsService {
     await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
-      RegistrationStatusEnum.registered,
+      RegistrationStatusEnum.new,
     );
   }
 
@@ -351,27 +348,6 @@ export class RegistrationsService {
     registrationObject.name = fullnameConcat.join(' ');
 
     return registrationObject; // Return the modified object
-  }
-
-  public getDateFieldPerStatus(
-    filterStatus: RegistrationStatusEnum,
-  ): RegistrationStatusTimestampField {
-    switch (filterStatus) {
-      case RegistrationStatusEnum.registered:
-        return RegistrationStatusTimestampField.registeredDate;
-      case RegistrationStatusEnum.validated:
-        return RegistrationStatusTimestampField.validationDate;
-      case RegistrationStatusEnum.included:
-        return RegistrationStatusTimestampField.inclusionDate;
-      case RegistrationStatusEnum.deleted:
-        return RegistrationStatusTimestampField.deleteDate;
-      case RegistrationStatusEnum.completed:
-        return RegistrationStatusTimestampField.completedDate;
-      case RegistrationStatusEnum.paused:
-        return RegistrationStatusTimestampField.pausedDate;
-      case RegistrationStatusEnum.declined:
-        return RegistrationStatusTimestampField.declinedDate;
-    }
   }
 
   public async validateInputAndUpdateRegistration({

@@ -11,7 +11,6 @@ export const MESSAGE_CONTENT_TYPE_LABELS: Record<MessageContentType, string> = {
   [MessageContentType.paymentReminder]: $localize`:@@message-content-type-payment-reminder:Payment reminder`,
   [MessageContentType.paymentTemplated]: $localize`:@@message-content-type-payment-templated:Payment notification`,
   [MessageContentType.paymentVoucher]: $localize`:@@message-content-type-payment-voucher:Payment voucher`,
-  [MessageContentType.registered]: $localize`:@@message-content-type-registered:Registration`,
   [MessageContentType.paused]: $localize`:@@message-content-type-paused:Paused`,
 };
 

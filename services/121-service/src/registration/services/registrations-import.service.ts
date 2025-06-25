@@ -189,7 +189,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.registrationStatus = RegistrationStatusEnum.registered;
+      registration.registrationStatus = RegistrationStatusEnum.new;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
@@ -227,7 +227,7 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    // Save registration status change events they changed from null to registered
+    // Save registration status change events they changed from null to 'new'
     await this.eventsService.createFromRegistrationViews(
       savedRegistrations.map((r) => ({
         id: r.id,

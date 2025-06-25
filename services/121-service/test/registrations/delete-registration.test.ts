@@ -74,7 +74,7 @@ describe('Delete PA', () => {
     const expectedDeleteEvent = {
       type: EventEnum.registrationStatusChange,
       attributes: {
-        oldValue: RegistrationStatusEnum.registered,
+        oldValue: RegistrationStatusEnum.new,
         newValue: RegistrationStatusEnum.deleted,
         reason,
       },
