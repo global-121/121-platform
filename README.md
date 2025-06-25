@@ -186,7 +186,8 @@ The process is:
    - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
    - (Run seed)
 
-10. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
+10. When creating new sequences for tables with existing data be sure to also update it using setval ([example](https://github.com/global-121/121-platform/pull/6965/files)) to the current max id.
+11. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
 
