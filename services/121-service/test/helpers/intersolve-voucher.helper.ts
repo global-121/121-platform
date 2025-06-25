@@ -48,7 +48,7 @@ export async function getVoucherBalance(
     .query({ payment, referenceId });
 }
 
-export async function cacheUnusedVouchers(
+export async function triggerUnusedVouchersCache(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()

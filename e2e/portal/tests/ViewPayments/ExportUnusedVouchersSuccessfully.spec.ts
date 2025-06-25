@@ -3,7 +3,7 @@ import { test } from '@playwright/test';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { cacheUnusedVouchers } from '@121-service/test/helpers/intersolve-voucher.helper';
+import { triggerUnusedVouchersCache } from '@121-service/test/helpers/intersolve-voucher.helper';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }) => {
     ],
   });
   // Run cronJob to process unused vouchers
-  await cacheUnusedVouchers(accessToken);
+  await triggerUnusedVouchersCache(accessToken);
 
   // Login
   const loginPage = new LoginPage(page);

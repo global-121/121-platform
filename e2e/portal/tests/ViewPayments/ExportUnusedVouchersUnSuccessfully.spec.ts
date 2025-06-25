@@ -45,7 +45,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36848] Export unused vouchers un-successfully', async ({ page }) => {
+test('[36848] Export unused vouchers unsuccessfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
 
   // Act
