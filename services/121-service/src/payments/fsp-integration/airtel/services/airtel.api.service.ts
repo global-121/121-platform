@@ -229,7 +229,7 @@ export class AirtelApiService {
       // ##TODO: add actual validation later.
       response = await this.httpService.post<
         AxiosResponse<AirtelApiAuthenticationResponseDto>
-      >(`${this.airtelAuthenticateURL}`, payload, headersToPojo(headers));
+      >(this.airtelAuthenticateURL.href, payload, headersToPojo(headers));
     } catch (error) {
       throw new AirtelApiError(`authentication failed: ${error.message}`);
     }
