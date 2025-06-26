@@ -61,7 +61,7 @@ describe('Delete PA', () => {
       programId,
       accessToken,
     );
-    const eventsResponse = await getEvents(programId);
+    const eventsResponse = await getEvents({ programId, accessToken });
     const deleteEvent = eventsResponse.body[0];
 
     // Assert

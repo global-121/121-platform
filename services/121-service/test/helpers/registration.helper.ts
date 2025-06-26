@@ -146,17 +146,20 @@ export async function waitForDeleteRegistrations({
   maxWaitTimeMs?: number;
 }) {
   const startTime = Date.now();
+  const accessToken = await getAccessToken();
   while (Date.now() - startTime < maxWaitTimeMs) {
     // Get payment transactions
     let totalRegistrationSuccesfullyDeleted = 0;
+
     for (const referenceId of referenceIds) {
-      const getEventResponse = await getEvents(
+      const getEventsResponse = await getEvents({
         programId,
-        undefined,
-        undefined,
+        fromDate: undefined,
+        toDate: undefined,
         referenceId,
-      );
-      const deleteEvent = getEventResponse.body.find(
+        accessToken,
+      });
+      const deleteEvent = getEventsResponse.body.find(
         (event) =>
           event.type === EventEnum.registrationStatusChange &&
           event.attributes?.newValue === RegistrationStatusEnum.deleted,
@@ -267,37 +270,6 @@ export function getRegistrations({
     .send();
 }
 
-export async function changeBulkRegistrationStatus({
-  programId,
-  status,
-  accessToken,
-  options: { includeTemplatedMessage = false, reason = 'default reason' } = {},
-}: {
-  programId: number;
-  status: RegistrationStatusEnum;
-  accessToken: string;
-  options?: {
-    filter?: Record<string, string>;
-    includeTemplatedMessage?: boolean;
-    reason?: string | null;
-  };
-}): Promise<request.Response> {
-  const queryParams: Record<string, string> = {};
-
-  const result = await getServer()
-    .patch(`/programs/${programId}/registrations/status`)
-    .set('Cookie', [accessToken])
-    .query(queryParams)
-    .send({
-      status,
-      message: null,
-      messageTemplateKey: includeTemplatedMessage ? status : null,
-      reason,
-    });
-
-  return result;
-}
-
 export async function changeRegistrationStatus({
   programId,
   referenceIds,
@@ -390,18 +362,14 @@ export async function waitForStatusChangeToComplete(
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    // Get payment transactions
-    const paginatedRegistrations = await getRegistrations({
-      programId,
-      attributes: ['status'],
-      accessToken,
-      page: 1,
-      filter: {
-        'filter.status': `$in:${status}`,
-      },
-    });
+    const eventsResult = await getEvents({ programId, accessToken });
+    const filteredEvents = eventsResult.body.filter(
+      (event) =>
+        event.type === EventEnum.registrationStatusChange &&
+        event.attributes.newValue === status,
+    );
     // If not all status change are done check again
-    if (paginatedRegistrations.body.data.length >= amountOfRegistrations) {
+    if (filteredEvents.length >= amountOfRegistrations) {
       return;
     }
     await waitFor(200);
@@ -712,14 +680,19 @@ export async function seedRegistrationsWithStatus(
   });
 }
 
-export async function getEvents(
-  programId: number,
-  fromDate?: string,
-  toDate?: string,
-  referenceId?: string,
-): Promise<any> {
-  const accessToken = await getAccessToken();
-
+export async function getEvents({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+  referenceId,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+  referenceId?: string;
+}): Promise<any> {
   const queryParams: Record<string, string> = {};
 
   if (fromDate) {

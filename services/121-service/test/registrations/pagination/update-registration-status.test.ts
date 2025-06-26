@@ -67,7 +67,10 @@ describe('change the status of a set of registrations', () => {
     });
     const registrations = getRegistrationsResponse.body.data;
 
-    const eventsReponse = await getEvents(programIdOCW);
+    const eventsResponse = await getEvents({
+      programId: programIdOCW,
+      accessToken,
+    });
 
     // Assert
     expect(updateStatusResponse.body.totalFilterCount).toBe(
@@ -79,7 +82,7 @@ describe('change the status of a set of registrations', () => {
     for (const registration of registrations) {
       expect(registration.status).toBe(newStatus);
       // For each registration status change, there should be an event with a reason
-      const event = eventsReponse.body.find(
+      const event = eventsResponse.body.find(
         (event) =>
           event.registrationId === registration.id &&
           event.attributes.newValue === newStatus,
