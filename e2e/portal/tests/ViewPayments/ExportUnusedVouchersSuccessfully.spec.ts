@@ -21,7 +21,6 @@ import {
 import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
