@@ -188,9 +188,9 @@ async function bootstrap(): Promise<void> {
   });
 
   app.useGlobalPipes(
-    // TODO: REFACTOR: Add "whitelist: true" and "forbidNonWhitelisted: true" to the ValidationPipe, to that only properties in the DTOs are allowed.
-    // Now it is possible to send any property in the request body, which is not defined in the DTO. To figure out: how to deal with "dynamic attributes" we use in some places.
     new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
       forbidUnknownValues: true,
       exceptionFactory: (errors) => {
         for (const e of errors) {

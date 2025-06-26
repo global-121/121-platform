@@ -4,6 +4,8 @@ import {
   Controller,
   HttpStatus,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
@@ -31,6 +33,9 @@ export class SafaricomReconciliationController {
     status: HttpStatus.CREATED,
     description: 'Notified transfer status',
   })
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('transfer-callback')
   public async processTransferCallback(
     @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
@@ -49,6 +54,9 @@ export class SafaricomReconciliationController {
     status: HttpStatus.CREATED,
     description: 'Notified of timeout',
   })
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('timeout-callback')
   public async processTimeoutCallback(
     @Body()

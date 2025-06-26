@@ -21,5 +21,6 @@ export class CreateUserRoleDto {
     enum: PermissionEnum,
     example: Object.values(PermissionEnum),
   })
+  @IsNotEmpty()
   public readonly permissions: PermissionEnum[];
 }

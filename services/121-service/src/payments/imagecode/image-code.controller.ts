@@ -1,4 +1,12 @@
-import { Controller, Get, HttpStatus, Param, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
@@ -25,6 +33,9 @@ export class ImageCodeController {
   })
   @ApiParam({ name: 'secret' })
   // TODO: rename to /fsps/intersolve-voucher/vouchers/:secret
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Get(':secret')
   public async get(
     @Param('secret') secret: string,
