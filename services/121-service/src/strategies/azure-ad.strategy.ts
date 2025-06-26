@@ -9,6 +9,7 @@ import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { BearerStrategy } from 'passport-azure-ad';
 
+import { DEBUG } from '@121-service/src/config';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
@@ -25,8 +26,7 @@ const config = {
     version: 'v2.0',
   },
   settings: {
-    // TODO: Probably should be set to true in production
-    validateIssuer: false,
+    validateIssuer: !DEBUG,
     passReqToCallback: true,
     loggingLevel: 'error',
   },
