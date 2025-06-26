@@ -81,6 +81,7 @@ export class ProgramRegistrationAttributeDto extends BaseProgramRegistrationAttr
       fr: "Remplissez votre nom, s'il vous plaît:",
     },
   })
+  @IsNotEmpty()
   public readonly label: LocalizedString;
 
   @ApiProperty({

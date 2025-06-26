@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 
@@ -24,6 +24,7 @@ export class UpdateRegistrationDto {
     description: `Key value pairs of the registration object.`,
     example: `{ "phoneNumber" : "1234567890" }`,
   })
+  @IsNotEmpty()
   public data: Record<string, string | number | boolean | null | undefined>;
 
   @ApiProperty({

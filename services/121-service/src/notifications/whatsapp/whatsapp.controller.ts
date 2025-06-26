@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -6,6 +6,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
+import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('notifications')
@@ -32,7 +33,7 @@ export class WhatsappController {
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('templates')
   public async storeTemplateTestResult(
-    @Body() callbackData: TwilioStatusCallbackDto,
+    @AnyValidBody() callbackData: TwilioStatusCallbackDto, // We cannot control the structure of the callback data, so we use AnyValidBody
   ): Promise<void> {
     return await this.whatsappService.storeTemplateTestResult(callbackData);
   }

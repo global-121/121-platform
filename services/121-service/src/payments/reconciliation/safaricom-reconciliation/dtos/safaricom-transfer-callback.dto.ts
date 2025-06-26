@@ -15,6 +15,7 @@ class SafaricomTransferCallbackResult {
   readonly ResultDesc: string;
 }
 
+// Does not need validation decorators on all properties, because we want to accept any payload structure from Safaricom, as we cannot control it.
 export class SafaricomTransferCallbackDto {
   @ApiProperty()
   @IsNotEmpty()

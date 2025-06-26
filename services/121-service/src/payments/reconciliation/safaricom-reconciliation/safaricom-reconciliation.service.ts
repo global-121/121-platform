@@ -53,6 +53,19 @@ export class SafaricomReconciliationService {
   public async processTimeoutCallback(
     safaricomTimeoutCallback: SafaricomTimeoutCallbackDto,
   ): Promise<void> {
+    if (
+      !safaricomTimeoutCallback.OriginatorConversationID ||
+      safaricomTimeoutCallback.OriginatorConversationID === ''
+    ) {
+      console.error(
+        `Safaricom Timeout Callback does not contain OriginatorConversationID. Body: ${JSON.stringify(
+          safaricomTimeoutCallback,
+        )}`,
+      );
+      throw new Error(
+        `Safaricom Timeout Callback does not contain OriginatorConversationID.`,
+      );
+    }
     const safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto = {
       originatorConversationId:
         safaricomTimeoutCallback.OriginatorConversationID,

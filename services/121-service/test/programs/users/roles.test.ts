@@ -121,7 +121,6 @@ describe('Programs / Users / Roles', () => {
     const testUserRoles = fixtureUserRoles;
     const testRoles = {
       rolesToDelete: ['view', 'cva-manager'],
-      scope: 'test',
     };
 
     // Act

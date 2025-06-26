@@ -1,17 +1,10 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
+import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
 @ApiTags('fsps/onafriq')
 @Controller('fsps/onafriq')
@@ -29,13 +22,14 @@ export class OnafriqReconciliationController {
     status: HttpStatus.OK,
     description: 'Callback processed successfully.',
   })
+  @ApiBody({
+    description: 'Onafriq transaction callback data',
+    type: OnafriqTransactionCallbackDto,
+  })
   @HttpCode(HttpStatus.OK) // NOTE: Onafriq internally labels the callback as success on status 200
-  @UsePipes(
-    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
-  )
   @Post('callback')
   public async processTransactionCallback(
-    @Body() onafriqTransactionCallback: OnafriqTransactionCallbackDto,
+    @AnyValidBody() onafriqTransactionCallback: OnafriqTransactionCallbackDto, // We cannot control the structure of the callback data, so we use AnyValidBody
   ): Promise<void> {
     await this.onafriqReconciliationService.processTransactionCallback(
       onafriqTransactionCallback,

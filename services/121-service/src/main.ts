@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  INestApplication,
-  ValidationPipe,
-} from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
@@ -25,6 +19,7 @@ import {
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
 
 import 'multer'; // This is import is required to prevent typing error on the MulterModule
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -187,22 +182,7 @@ async function bootstrap(): Promise<void> {
     },
   });
 
-  app.useGlobalPipes(
-    // TODO: REFACTOR: Add "whitelist: true" and "forbidNonWhitelisted: true" to the ValidationPipe, to that only properties in the DTOs are allowed.
-    // Now it is possible to send any property in the request body, which is not defined in the DTO. To figure out: how to deal with "dynamic attributes" we use in some places.
-    new ValidationPipe({
-      forbidUnknownValues: true,
-      exceptionFactory: (errors) => {
-        for (const e of errors) {
-          if (e.constraints && e.constraints['unknownValue']) {
-            console.log('e: ', e);
-            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-          }
-        }
-        throw new BadRequestException(errors);
-      },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(ValidationPipeOptions));
   app.use(bodyParser.json({ limit: '25mb' }));
   app.use(
     bodyParser.urlencoded({
