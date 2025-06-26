@@ -93,10 +93,6 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
   // Act
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
-    // Wait for the activity log to be fully updated on local environment
-    // if (!isCI) {
-    //   await page.waitForTimeout(2000);
-    // }
     await registrationsPage.goToRegistrationByName({
       registrationName: registrationPV5.fullName,
     });
