@@ -15,6 +15,9 @@ overrides:
   - files: '*.html'
     options:
       parser: angular
+  - files: '**/*.{ts,tsx}'
+    options:
+      parser: typescript
   - files: '*.xlf'
     options:
       parser: xml
