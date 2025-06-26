@@ -303,34 +303,6 @@ class RegistrationsPage extends BasePage {
     await this.importFileButton.click();
   }
 
-  async exportAndAssertData({
-    minRowCount,
-    exactRowCount,
-    excludedColumns,
-    orderOfDataIsImportant,
-    format = 'xlsx',
-  }: {
-    minRowCount?: number;
-    exactRowCount?: number;
-    excludedColumns?: string[];
-    orderOfDataIsImportant?: boolean;
-    format?: 'xlsx' | 'csv';
-  } = {}) {
-    if (format === 'csv') {
-      await this.page.getByLabel('CSV').click();
-    }
-
-    const filePath = await this.downloadFile(this.clickProceedToExport());
-    await this.validateExportedFile({
-      filePath,
-      minRowCount,
-      expectedRowCount: exactRowCount,
-      format,
-      excludedColumns,
-      orderOfDataIsImportant,
-    });
-  }
-
   async assertImportTemplateForPvProgram() {
     await this.clickAndSelectImportOption('Import new registrations');
 

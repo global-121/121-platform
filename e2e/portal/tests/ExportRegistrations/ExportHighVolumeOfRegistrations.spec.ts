@@ -13,6 +13,7 @@ import {
   registrationPV8,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
@@ -35,6 +36,7 @@ test.beforeEach(async ({ page }) => {
 test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
@@ -47,7 +49,7 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
     await registrationsPage.clickAndSelectExportOption(
       'Selected registrations',
     );
-    await registrationsPage.exportAndAssertData({
+    await exportDataComponent.exportAndAssertData({
       minRowCount: 15000,
       orderOfDataIsImportant: true,
       excludedColumns: ['phoneNumber', 'whatsappPhoneNumber'],

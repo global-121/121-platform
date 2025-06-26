@@ -12,7 +12,7 @@ import {
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
@@ -31,13 +31,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29358] Export Selected Registrations', async ({ page }) => {
-  const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(projectTitle);
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
@@ -45,7 +45,7 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
     await registrationsPage.clickAndSelectExportOption(
       'Selected registrations',
     );
-    await registrationsPage.exportAndAssertData();
+    await exportDataComponent.exportAndAssertData();
   });
 
   await test.step('Export list and validate CSV files downloaded', async () => {
@@ -53,7 +53,7 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
     await registrationsPage.clickAndSelectExportOption(
       'Selected registrations',
     );
-    await registrationsPage.exportAndAssertData({
+    await exportDataComponent.exportAndAssertData({
       format: 'csv',
     });
   });

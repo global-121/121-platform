@@ -12,7 +12,7 @@ import {
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import BasePage from '@121-e2e/portal/pages/BasePage';
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
@@ -31,19 +31,19 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[29337] Export all People Affected data changes', async ({ page }) => {
-  const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
 
   await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+    await registrationsPage.selectProgram(projectTitle);
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectExportOption('Status & data changes');
-    await registrationsPage.exportAndAssertData({
+    await exportDataComponent.exportAndAssertData({
       excludedColumns: ['changedAt'],
     });
   });

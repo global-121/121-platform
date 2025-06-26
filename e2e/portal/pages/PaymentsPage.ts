@@ -230,8 +230,14 @@ class PaymentsPage extends BasePage {
   }
 
   async selectPaymentExportOption({ option }: { option: string }) {
+    await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
+  }
+
+  async validateExportMessage({ message }: { message: string }) {
+    const exportMessage = this.page.getByText(message);
+    await expect(exportMessage).toBeVisible();
   }
 
   async validateGraphStatus({
@@ -321,22 +327,6 @@ class PaymentsPage extends BasePage {
       .isVisible();
 
     return noPaymentsFoundVisible && noPaymentsForProjectVisible;
-  }
-
-  async exportAndAssertData({
-    expectedRowCount,
-    excludedColumns,
-  }: {
-    expectedRowCount: number;
-    excludedColumns?: string[];
-  }) {
-    const filePath = await this.downloadFile(this.proceedButton.click());
-    await this.validateExportedFile({
-      filePath,
-      expectedRowCount,
-      format: 'xlsx',
-      excludedColumns,
-    });
   }
 }
 

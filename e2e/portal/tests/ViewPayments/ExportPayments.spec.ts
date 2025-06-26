@@ -8,6 +8,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationsOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
@@ -70,6 +71,7 @@ test.beforeAll(async ({ browser }) => {
 
 test('[35621] ExportFivePayments', async () => {
   const paymentsPage = new PaymentsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   await test.step('Validate export payment button', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'visible' });
@@ -80,8 +82,8 @@ test('[35621] ExportFivePayments', async () => {
       option: 'Export last 5 payment(s)',
     });
 
-    await paymentsPage.exportAndAssertData({
-      expectedRowCount: 25,
+    await exportDataComponent.exportAndAssertData({
+      exactRowCount: 25,
       excludedColumns: ['created', 'updated'],
     });
   });
