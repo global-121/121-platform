@@ -13,6 +13,7 @@ import {
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
@@ -41,13 +42,14 @@ test.beforeEach(async ({ page }) => {
 
 test('[36880] Export debit card usage unsuccessfully', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   // Act
   await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
   await paymentsPage.navigateToProgramPage('Payments');
   await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
   // Click on Proceed button
-  await paymentsPage.clickOnProceedButton();
+  await exportDataComponent.clickProceedToExport();
 
   // Assert
   await paymentsPage.validateExportMessage({
