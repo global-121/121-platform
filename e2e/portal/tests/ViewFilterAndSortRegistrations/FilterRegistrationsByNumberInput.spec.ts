@@ -23,7 +23,7 @@ let registrationName: string;
 // Arrange
 test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   registrationsPV.push(registrationPvMaxPayment);
   await seedRegistrationsWithStatus(

@@ -73,7 +73,7 @@ describe('Filter registrations using range', () => {
   let middleCreatedDate: Date;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await seedIncludedRegistrations(

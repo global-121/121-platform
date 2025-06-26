@@ -2,8 +2,15 @@ import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
-import { resetDB } from '@121-service/test/helpers/utility.helper';
+import { doPayment } from '@121-service/test/helpers/program.helper';
+import {
+  seedIncludedRegistrations,
+  seedPaidRegistrations,
+} from '@121-service/test/helpers/registration.helper';
+import {
+  getAccessToken,
+  resetDB,
+} from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
   registrationPV5,
@@ -15,8 +22,18 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   await seedPaidRegistrations([registrationPV5], programIdPV); // Seeds a registration that does not have Visa as fsp so there is not debit card usage to export
+  const accessToken = await getAccessToken();
+  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+
+  await doPayment({
+    programId: programIdPV,
+    paymentNr: 1,
+    amount: 12.5,
+    referenceIds: [registrationPV5.referenceId],
+    accessToken,
+  });
 
   // Login
   const loginPage = new LoginPage(page);

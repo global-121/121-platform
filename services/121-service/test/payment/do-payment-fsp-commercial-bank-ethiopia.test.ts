@@ -23,7 +23,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.cbeProgram);
+    await resetDB(SeedScript.cbeProgram, __filename);
     accessToken = await getAccessToken();
   });
 

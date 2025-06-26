@@ -17,7 +17,7 @@ import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActiv
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);

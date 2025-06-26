@@ -26,7 +26,7 @@ import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/Registrat
 let registrationId: number;
 
 const reset = async () => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);

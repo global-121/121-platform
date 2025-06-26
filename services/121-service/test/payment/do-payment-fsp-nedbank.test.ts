@@ -50,7 +50,7 @@ describe('Do payment', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.nedbankProgram);
+      await resetDB(SeedScript.nedbankProgram, __filename);
       accessToken = await getAccessToken();
     });
 

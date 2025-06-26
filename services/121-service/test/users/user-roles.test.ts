@@ -12,7 +12,7 @@ describe('/ Users', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.testMultiple);
+      await resetDB(SeedScript.testMultiple, __filename);
       accessToken = await getAccessToken();
     });
 

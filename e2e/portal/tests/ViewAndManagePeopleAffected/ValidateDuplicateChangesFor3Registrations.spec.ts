@@ -28,7 +28,7 @@ const extraDuplicate = {
 const seededRegistrations = [...registrationsPV, extraDuplicate];
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     seededRegistrations,

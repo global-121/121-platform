@@ -21,7 +21,7 @@ describe('Delete PA', () => {
   const reason = 'automated test';
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
   });
   beforeEach(async () => {

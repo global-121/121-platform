@@ -158,6 +158,7 @@
     "path": "/api/scripts/reset",
     "params": [
       "mockPowerNumberRegistrations",
+      "resetIdentifier",
       "mockNumberPayments",
       "mockPowerNumberMessages",
       "mockPv",

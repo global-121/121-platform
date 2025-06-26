@@ -28,7 +28,7 @@ describe('send arbitrary messages to set of registrations', () => {
   ];
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await importRegistrations(programIdOCW, registrations, accessToken);

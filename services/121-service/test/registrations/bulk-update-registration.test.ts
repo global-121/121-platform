@@ -34,7 +34,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   const referenceId2 = '01dc9451-1273-484c-b2e8-ae21b51a96ab';
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await importRegistrationsCSV(
