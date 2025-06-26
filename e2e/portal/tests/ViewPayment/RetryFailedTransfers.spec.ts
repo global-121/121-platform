@@ -21,7 +21,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [...registrationsOCW, registrationOCW6Fail],

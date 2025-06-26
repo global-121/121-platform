@@ -23,7 +23,7 @@ describe('(Un)Block visa debit card', () => {
 
   beforeEach(async () => {
     await waitFor(1_000);
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     await waitFor(3_000);
   });

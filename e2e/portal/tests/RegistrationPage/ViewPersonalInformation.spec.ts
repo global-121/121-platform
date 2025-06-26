@@ -19,7 +19,7 @@ let registrationId: number;
 let accessToken: string;
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple);
+  await resetDB(SeedScript.testMultiple, __filename);
 
   accessToken = await getAccessToken();
 

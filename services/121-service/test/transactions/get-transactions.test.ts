@@ -27,7 +27,7 @@ describe('Registrations - [Scoped]', () => {
   const payment = 1;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     await seedPaidRegistrations(registrationsOCW, OcwProgramId);
     await seedPaidRegistrations(registrationsPV, PvProgramId);
   });

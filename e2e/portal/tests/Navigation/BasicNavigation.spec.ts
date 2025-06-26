@@ -16,7 +16,7 @@ const projectId = 2;
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsPV, projectId, accessToken);

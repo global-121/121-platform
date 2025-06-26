@@ -60,7 +60,7 @@ describe('Do payment with Excel FSP', () => {
   const programIdCbe = 1;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
     //////////////////////////

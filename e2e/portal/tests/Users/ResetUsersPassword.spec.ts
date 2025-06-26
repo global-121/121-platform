@@ -8,7 +8,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import UsersPage from '@121-e2e/portal/pages/UsersPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple);
+  await resetDB(SeedScript.testMultiple, __filename);
 
   // Login
   const loginPage = new LoginPage(page);

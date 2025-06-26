@@ -25,7 +25,7 @@ describe('Metric export list', () => {
   let accessToken: string;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.safaricomProgram);
+    await resetDB(SeedScript.safaricomProgram, __filename);
 
     accessToken = await getAccessToken();
     await importRegistrations(programId, [registrationSafaricom], accessToken);

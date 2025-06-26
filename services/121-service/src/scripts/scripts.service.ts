@@ -24,6 +24,7 @@ export class ScriptsService {
     powerNrMessagesString,
     mockPv = true,
     mockOcw = true,
+    resetIdentifier,
   }: {
     seedScript: string;
     isApiTests: boolean;
@@ -32,7 +33,11 @@ export class ScriptsService {
     powerNrMessagesString?: string;
     mockPv?: boolean;
     mockOcw?: boolean;
+    resetIdentifier?: string;
   }) {
+    console.log(
+      `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
+    );
     const seedConfig = this.getSeedConfigByNameOrThrow(seedScript);
 
     await this.seedInit.run(isApiTests);

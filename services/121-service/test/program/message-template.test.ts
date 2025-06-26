@@ -28,7 +28,7 @@ describe('Message template', () => {
   };
 
   beforeAll(async () => {
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
   });
 

@@ -10,7 +10,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const programIdOCW = 3;
   const OcwProgramId = programIdOCW;
 
