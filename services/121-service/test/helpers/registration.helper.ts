@@ -146,18 +146,20 @@ export async function waitForDeleteRegistrations({
   maxWaitTimeMs?: number;
 }) {
   const startTime = Date.now();
+  const accessToken = await getAccessToken();
   while (Date.now() - startTime < maxWaitTimeMs) {
     // Get payment transactions
     let totalRegistrationSuccesfullyDeleted = 0;
+
     for (const referenceId of referenceIds) {
-      const getEventResponse = await getEvents({
+      const getEventsResponse = await getEvents({
         programId,
         fromDate: undefined,
         toDate: undefined,
         referenceId,
-        accessToken: await getAccessToken(),
+        accessToken,
       });
-      const deleteEvent = getEventResponse.body.find(
+      const deleteEvent = getEventsResponse.body.find(
         (event) =>
           event.type === EventEnum.registrationStatusChange &&
           event.attributes?.newValue === RegistrationStatusEnum.deleted,
