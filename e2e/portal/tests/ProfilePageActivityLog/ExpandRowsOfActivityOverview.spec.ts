@@ -1,9 +1,15 @@
 import { test } from '@playwright/test';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import {
-  getRegistrationIdByReferenceId,
+  doPayment,
+  waitForMessagesToComplete,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
+import {
+  getAllActivities,
   seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -19,11 +25,10 @@ import {
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
+import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
-let registrationId: number;
-const paymentReferenceId = [registrationPV5.referenceId];
-// Choose the appropriate array based on environment
-const isCI = process.env.CI === 'true';
+const referenceIdPV5 = registrationPV5.referenceId;
+let activitiesCount: number;
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -31,29 +36,46 @@ test.beforeEach(async ({ page }) => {
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
-  registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
-    referenceId: registrationPV5.referenceId,
-    accessToken,
-  });
 
   await doPayment({
     programId: 2,
     paymentNr: 1,
     amount: 100,
-    referenceIds: paymentReferenceId,
+    referenceIds: [referenceIdPV5],
     accessToken,
+  });
+
+  await waitForPaymentTransactionsToComplete({
+    programId: programIdPV,
+    paymentReferenceIds: [referenceIdPV5],
+    accessToken,
+    maxWaitTimeMs: 2_000,
+    completeStatusses: [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.waiting,
+    ],
   });
 
   await updateRegistration(
     2,
-    registrationPV5.referenceId,
+    referenceIdPV5,
     {
       maxPayments: '2',
     },
     'automated test',
     accessToken,
   );
+
+  await waitForMessagesToComplete({
+    programId: programIdPV,
+    referenceIds: [referenceIdPV5],
+    accessToken,
+    minimumNumberOfMessagesPerReferenceId: 3,
+  });
+
+  activitiesCount = (
+    await getAllActivities(programIdPV, referenceIdPV5, accessToken)
+  ).totalCount;
 
   // Login
   const loginPage = new LoginPage(page);
@@ -67,11 +89,17 @@ test.beforeEach(async ({ page }) => {
 test('[34462] Expand rows of activity overview', async ({ page }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   const tableComponent = new TableComponent(page);
+  const registrationsPage = new RegistrationsPage(page);
   // Act
   await test.step('Navigate to registration activity log', async () => {
-    await activityLogPage.goto(
-      `/project/${programIdPV}/registrations/${registrationId}`,
-    );
+    await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+    // Wait for the activity log to be fully updated on local environment
+    // if (!isCI) {
+    //   await page.waitForTimeout(2000);
+    // }
+    await registrationsPage.goToRegistrationByName({
+      registrationName: registrationPV5.fullName,
+    });
   });
   // Assert
   await test.step('Expand all activity rows and assert that they are expanded', async () => {
@@ -82,10 +110,10 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
     });
     await tableComponent.clearAllFilters();
     // Validate amount of rows before expanding
-    await tableComponent.validateTableRowCount(isCI ? 6 : 5);
+    await tableComponent.validateTableRowCount(activitiesCount);
     // Expand all rows
     await tableComponent.expandAllRows();
     // Validate amount of rows after expanding
-    await tableComponent.validateTableRowCount(isCI ? 12 : 10);
+    await tableComponent.validateTableRowCount(activitiesCount * 2);
   });
 });

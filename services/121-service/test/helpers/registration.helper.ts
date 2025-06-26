@@ -571,6 +571,41 @@ export async function getMessageHistory(
   };
 }
 
+export async function getAllActivities(
+  programId: number,
+  referenceId: string,
+  accessToken: string,
+): Promise<{ body: any; totalCount: number }> {
+  const registrationId = await getRegistrationIdByReferenceId({
+    programId,
+    referenceId,
+    accessToken,
+  });
+
+  const activities = await getActivities({
+    programId,
+    registrationId,
+    accessToken,
+  });
+  // Parse the JSON if it's a string
+  const activitiesData =
+    typeof activities.text === 'string'
+      ? JSON.parse(activities.text)
+      : activities.body;
+
+  // Calculate the sum of all counts from the meta section
+  const countData = activitiesData.meta?.count ?? {};
+  const totalCount = (Object.values(countData) as number[]).reduce(
+    (sum: number, count: number) => sum + count,
+    0,
+  );
+
+  return {
+    body: activitiesData.meta.count,
+    totalCount,
+  };
+}
+
 export async function getMessageHistoryUntilX(
   programId: number,
   referenceId: string,
