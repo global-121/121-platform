@@ -71,12 +71,13 @@ describe('Get events', () => {
       accessToken,
     );
 
-    const eventsResult = await getEvents(
-      programIdOcw,
-      dateString,
-      tomorrowDateString,
-      undefined,
-    );
+    const eventsResult = await getEvents({
+      programId: programIdOcw,
+      fromDate: dateString,
+      toDate: tomorrowDateString,
+      referenceId: undefined,
+      accessToken,
+    });
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.OK);
@@ -105,12 +106,13 @@ describe('Get events', () => {
       reason,
       accessToken,
     );
-    const eventsResult = await getEvents(
-      programIdOcw,
-      yesterdayString,
-      yesterdayString, // same date makes sure no events are found
-      undefined,
-    );
+    const eventsResult = await getEvents({
+      programId: programIdOcw,
+      fromDate: yesterdayString,
+      toDate: yesterdayString,
+      referenceId: undefined,
+      accessToken,
+    });
 
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.NOT_FOUND);

@@ -67,7 +67,10 @@ describe('change the status of a set of registrations', () => {
     });
     const registrations = getRegistrationsResponse.body.data;
 
-    const eventsReponse = await getEvents(programIdOCW);
+    const eventsReponse = await getEvents({
+      programId: programIdOCW,
+      accessToken,
+    });
 
     // Assert
     expect(updateStatusResponse.body.totalFilterCount).toBe(
