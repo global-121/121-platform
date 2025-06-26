@@ -328,22 +328,6 @@ class PaymentsPage extends BasePage {
 
     return noPaymentsFoundVisible && noPaymentsForProjectVisible;
   }
-
-  async exportAndAssertData({
-    expectedRowCount,
-    excludedColumns,
-  }: {
-    expectedRowCount: number;
-    excludedColumns?: string[];
-  }) {
-    const filePath = await this.downloadFile(this.proceedButton.click());
-    await this.validateExportedFile({
-      filePath,
-      expectedRowCount,
-      format: 'xlsx',
-      excludedColumns,
-    });
-  }
 }
 
 export default PaymentsPage;

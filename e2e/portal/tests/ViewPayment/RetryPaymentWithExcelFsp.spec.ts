@@ -14,9 +14,9 @@ import {
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
@@ -40,7 +40,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -80,7 +80,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
     // Start download of the payment instructions file
     await paymentsPage.exportFspPaymentList();
     // Assert excel fsp list it should only include the failed transactions that were retried and are now in status pending
-    await registrationsPage.exportAndAssertData({
+    await exportDataComponent.exportAndAssertData({
       exactRowCount: 2,
     });
   });

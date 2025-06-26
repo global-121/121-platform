@@ -13,9 +13,9 @@ import {
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Export Excel FSP payment list
 const amount = NLRCProgramPV.fixedTransferValue;
@@ -40,7 +40,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[31972] Do payment for excel fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
   const numberOfPas = registrationsPvExcel.length;
@@ -85,7 +85,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentsPage.selectPaymentExportOption({
       option: 'Export FSP payment list',
     });
-    await registrationsPage.exportAndAssertData({
+    await exportDataComponent.exportAndAssertData({
       exactRowCount: 4,
     });
   });
