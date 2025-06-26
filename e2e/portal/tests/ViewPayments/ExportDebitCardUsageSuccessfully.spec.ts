@@ -17,9 +17,9 @@ import {
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
+import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
-import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
@@ -61,7 +61,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[36878] Export debit card usage', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
-  const registrationsPage = new RegistrationsPage(page);
+  const exportDataComponent = new ExportData(page);
 
   // Act
   await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
@@ -69,7 +69,7 @@ test('[36878] Export debit card usage', async ({ page }) => {
   await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
 
   // Assert
-  await registrationsPage.exportAndAssertData({
+  await exportDataComponent.exportAndAssertData({
     minRowCount: 4,
     excludedColumns: ['issuedDate', 'cardNumber'],
   });
