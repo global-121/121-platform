@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test Service: API Integration'
+name: 'Test Service: Unit & Integration Tests'
 
 on:
   workflow_dispatch:
@@ -8,23 +8,31 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - '.github/workflows/test_service_api.yml'
-      - '.github/actions/build-service/action.yml'
-      - 'services/.env.example'
-      - 'services/121-service/**'
-      - 'services/mock-service/**'
+      - .github/workflows/test_service_api.yml
+      - .github/actions/build-service/action.yml
+      - services/.env.example
+      - services/121-service/**
+      - services/mock-service/**
       - '!**.md'
   push:
     branches:
-      - 'release/*'
-      - 'hotfix/*'
+      - main
     paths:
-      - '.github/workflows/test_service_api.yml'
-      - '.github/actions/build-service/action.yml'
-      - 'services/.env.example'
-      - 'services/121-service/**'
-      - 'services/mock-service/**'
+      - .github/workflows/test_service_api.yml
+      - .github/actions/build-service/action.yml
+      - services/.env.example
+      - services/121-service/**
+      - services/mock-service/**
       - '!**.md'
+
+# This is needed for qlty to authenticate with OIDC
+# https://docs.qlty.sh/coverage/quickstart#github-actions
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  workingDirectory: services/121-service/
 
 jobs:
   test:
@@ -43,15 +51,58 @@ jobs:
           npm run start:services:ci
 
       - name: Check that no new migrations are necessary
-        working-directory: ./services
+        working-directory: ${{ env.workingDirectory }}
         run: |
           docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
 
-      - name: Run API tests with Jest
-        working-directory: ./services
+      - name: Run unit tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        env:
+          NODE_ENV: development
+          TWILIO_SID: AC
+          TWILIO_AUTHTOKEN: test
+          TWILIO_WHATSAPP_NUMBER: 15005550006
+          MOCK_TWILIO: TRUE
+          MOCK_INTERSOLVE: TRUE
+          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
+          MOCK_NEDBANK: TRUE
+          NEDBANK_CERTIFICATE_PATH: test
+
         run: |
-          docker compose exec 121-service npm run test:integration:all
+          npm install
+          npm run test:unit:coverage
+
+      - name: Run integration tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker compose exec 121-service npm run test:integration:coverage
+
+      - name: Copy coverage report output from docker container
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker cp 121-service:/home/node/app/coverage .
+
+      - name: Generate combined coverage report
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          npm install
+          npm run coverage
+
+      - uses: qltysh/qlty-action/coverage@v1
+        with:
+          oidc: true
+          add-prefix: services/121-service/
+          tag: 121-service
+          files: ${{ env.workingDirectory }}/coverage/combined/lcov.info
 
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
+
+      - name: Save coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            ${{ env.workingDirectory }}/coverage

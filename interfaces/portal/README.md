@@ -89,6 +89,10 @@ Run `npm run test:all` to run code-style, syntax-test and unit-tests combined.
 
 Run `npm test` to execute the unit-tests via [Karma](https://karma-runner.github.io).
 
+### Test coverage
+
+The coverage report is generated for unit test coverage using Karma, by running `npm run test:coverage`.
+
 ## Contributing
 
 ### PR Checklist

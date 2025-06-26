@@ -8,12 +8,18 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - '.github/workflows/test_interface_portal.yml'
-      - 'interfaces/portal/**'
-      - 'services/121-service/**' # 121-service's code is imported/used
+      - .github/workflows/test_interface_portal.yml
+      - interfaces/portal/**
+      - services/121-service/** # 121-service's code is imported/used
+
+# This is needed for qlty to authenticate with OIDC
+# https://docs.qlty.sh/coverage/quickstart#github-actions
+permissions:
+  contents: read
+  id-token: write
 
 env:
-  interfacePath: 'interfaces/portal'
+  interfacePath: interfaces/portal
 
 jobs:
   test:
@@ -54,7 +60,14 @@ jobs:
 
       - name: 'Test: Code'
         working-directory: ${{ env.interfacePath }}
-        run: 'npm run test:ci'
+        run: 'npm run test:coverage'
+
+      - uses: qltysh/qlty-action/coverage@v1
+        with:
+          oidc: true
+          add-prefix: interfaces/portal/
+          tag: portal
+          files: ${{ env.interfacePath }}/coverage/lcov.info
 
       - name: 'Check translations output-file'
         working-directory: ${{ env.interfacePath }}
@@ -62,3 +75,11 @@ jobs:
           npm run set-env-variables -- env=development
           npm run extract-i18n
           git diff --exit-code src/locale/messages.xlf
+
+      - name: Save coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            ${{ env.interfacePath }}/coverage
