@@ -10,7 +10,6 @@ Set all ENV-variables in a local `.env`-file, based on: [`.env.example`](.env.ex
 
 - [Angular](https://angular.dev/overview)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
-
   - API Documentation: <https://angular.dev/api>
 
 - [PrimeNG](https://primeng.org/)  
