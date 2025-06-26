@@ -168,7 +168,13 @@ export class EventsService {
 
     if (!isEqual(oldIds.sort(), newIds.sort())) {
       throw new Error(
-        `Old IDs: ${oldIds} and new IDs: ${newIds} do not match.`,
+        `Old IDs: ${oldIds} and new IDs: ${newIds} do not match. These are the entities that are being compared:
+        oldEntities:
+        ${JSON.stringify(oldEntities ?? {}, null, 2)}
+        newEntities:
+        ${JSON.stringify(newEntities ?? {}, null, 2)}
+        eventLogOptionsDto:
+        ${JSON.stringify(eventLogOptionsDto ?? {}, null, 2)}`,
       );
     }
 
