@@ -3,11 +3,8 @@ import { test } from '@playwright/test';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import {
-  doPayment,
-  waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
+import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -25,17 +22,7 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
-
-  await doPayment({
-    programId: programIdOCW,
-    paymentNr: 1,
-    amount: 25,
-    referenceIds: registrationsOCW.map(
-      (registration) => registration.referenceId,
-    ),
-    accessToken,
-  });
+  await seedPaidRegistrations(registrationsOCW, programIdOCW);
 
   await waitForPaymentTransactionsToComplete({
     programId: programIdOCW,
