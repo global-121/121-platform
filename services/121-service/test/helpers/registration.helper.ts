@@ -360,7 +360,6 @@ export async function waitForStatusChangeToComplete(
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    // Get payment transactions
     const eventsResult = await getEvents({ programId, accessToken });
     const filteredEvents = eventsResult.body.filter(
       (event) =>
