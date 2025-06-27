@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
+import { OnafriqApiCallServiceResponseTransactionStatusCode } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-call-service-response-transaction-status-code.enum';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 
@@ -15,7 +16,7 @@ const baseCallServiceResponse: OnafriqApiCallServiceResponseBody = {
         {
           thirdPartyId: thirdPartyTransId,
           status: {
-            code: '100',
+            code: OnafriqApiCallServiceResponseTransactionStatusCode.accepted,
             message: 'Accepted',
             messageDetail: undefined,
           },
@@ -52,7 +53,7 @@ describe('OnafriqApiHelperService', () => {
               {
                 thirdPartyId: thirdPartyTransId,
                 status: {
-                  code: '101',
+                  code: OnafriqApiCallServiceResponseTransactionStatusCode.rejected,
                   message: 'Rejected',
                   messageDetail:
                     'Transaction already exist with given ThirdParty',
@@ -84,7 +85,7 @@ describe('OnafriqApiHelperService', () => {
               {
                 thirdPartyId: thirdPartyTransId,
                 status: {
-                  code: '101',
+                  code: OnafriqApiCallServiceResponseTransactionStatusCode.rejected,
                   message: 'Rejected',
                   messageDetail: 'Other error',
                 },

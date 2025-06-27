@@ -84,9 +84,15 @@ export class OnafriqApiHelperService {
       callServiceResponse?.data?.details?.transResponse?.[0];
     const status = transResponse?.status;
     if (!status) {
+      let dataString: string;
+      try {
+        dataString = JSON.stringify(callServiceResponse?.data);
+      } catch {
+        dataString = '[Unserializable data]';
+      }
       return {
         status: OnafriqApiResponseStatusType.genericError,
-        errorMessage: 'No (correct) response data from Onafriq API',
+        errorMessage: `No (correct) response data from Onafriq API. ${dataString}`,
       };
     }
 
