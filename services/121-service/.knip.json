@@ -13,6 +13,7 @@
     "dependencies": "warn",
     "devDependencies": "warn",
     "unlisted": "warn",
+    "binaries": "warn",
     "enumMembers": "warn"
   }
 }
