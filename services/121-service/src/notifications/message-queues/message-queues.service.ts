@@ -19,7 +19,7 @@ import {
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
-import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -31,7 +31,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 export class MessageQueuesService {
   @InjectRepository(MessageTemplateEntity)
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
-  private readonly queueNameToQueueMap: Record<CreateMessageQueueNames, Queue>;
+  private readonly queueNameToQueueMap: Partial<Record<QueueNames, Queue>>;
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
@@ -39,15 +39,15 @@ export class MessageQueuesService {
     private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
-      [CreateMessageQueueNames.replyOnIncoming]:
+      [QueueNames.createMessageReplyOnIncoming]:
         this.queuesService.createMessageReplyOnIncomingQueue,
-      [CreateMessageQueueNames.smallBulk]:
+      [QueueNames.createMessageSmallBulk]:
         this.queuesService.createMessageSmallBulkQueue,
-      [CreateMessageQueueNames.mediumBulk]:
+      [QueueNames.createMessageMediumBulk]:
         this.queuesService.createMessageMediumBulkQueue,
-      [CreateMessageQueueNames.largeBulk]:
+      [QueueNames.createMessageLargeBulk]:
         this.queuesService.createMessageLargeBulkQueue,
-      [CreateMessageQueueNames.lowPriority]:
+      [QueueNames.createMessageLowPriority]:
         this.queuesService.createMessageLowPriorityQueue,
     };
   }
@@ -113,7 +113,7 @@ export class MessageQueuesService {
         customData,
         userId,
       };
-      const queue = this.queueNameToQueueMap[queueName];
+      const queue = this.queueNameToQueueMap[queueName]!;
       await queue.add(ProcessNameMessage.send, messageJob);
     } catch (error) {
       console.warn('Error in addMessageToQueue: ', error);

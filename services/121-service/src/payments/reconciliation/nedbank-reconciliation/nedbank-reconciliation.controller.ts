@@ -2,14 +2,14 @@ import { Controller, HttpStatus, Patch } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
-import { NedbankReconciliationService } from '@121-service/src/reconciliation/nedbank-reconciliation/nedbank-reconciliation.service';
+import { NedbankReconciliationService } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.service';
 
 @Controller()
+@ApiTags('fsps/nedbank')
 export class NedbankReconciliationController {
   public constructor(
     private nedbankReconciliationService: NedbankReconciliationService,
   ) {}
-  @ApiTags('fsps/nedbank')
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:

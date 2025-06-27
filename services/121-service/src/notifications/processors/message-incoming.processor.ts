@@ -3,9 +3,10 @@ import { Job } from 'bull';
 
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
-import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-@Processor(MessageCallBackQueueNames.incomingMessage)
+
+@Processor(QueueNames.messageCallbackIncoming)
 export class MessageIncomingProcessor {
   constructor(
     private readonly messageIncomingService: MessageIncomingService,

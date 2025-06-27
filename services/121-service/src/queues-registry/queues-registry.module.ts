@@ -1,11 +1,7 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
-import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
-import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
-import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -13,7 +9,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
   imports: [
     // Transaction job queues
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.intersolveVisa,
+      name: QueueNames.transactionJobsIntersolveVisa,
       processors: [
         {
           path: 'src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor.ts',
@@ -25,7 +21,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.nedbank,
+      name: QueueNames.transactionJobsNedbank,
       processors: [
         {
           path: 'src/transaction-jobs/processors/transaction-jobs-nedbank.processor.ts',
@@ -37,7 +33,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.safaricom,
+      name: QueueNames.transactionJobsSafaricom,
       processors: [
         {
           path: 'src/transaction-jobs/processors/transaction-jobs-safaricom.processor.ts',
@@ -49,7 +45,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.commercialBankEthiopia,
+      name: QueueNames.transactionJobsCommercialBankEthiopia,
       processors: [
         {
           path: 'src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor.ts',
@@ -61,7 +57,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: TransactionJobQueueNames.intersolveVoucher,
+      name: QueueNames.transactionJobsIntersolveVoucher,
       processors: [
         {
           path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',
@@ -75,7 +71,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.transfer,
+      name: QueueNames.paymentCallbackSafaricomTransfer,
       processors: [
         {
           path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
@@ -87,7 +83,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: SafaricomCallbackQueueNames.timeout,
+      name: QueueNames.paymentCallbackSafaricomTimeout,
       processors: [
         {
           path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
@@ -101,7 +97,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Message create Queues
     BullModule.registerQueue({
-      name: CreateMessageQueueNames.replyOnIncoming,
+      name: QueueNames.createMessageReplyOnIncoming,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
@@ -114,7 +110,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: CreateMessageQueueNames.smallBulk,
+      name: QueueNames.createMessageSmallBulk,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
@@ -127,7 +123,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: CreateMessageQueueNames.mediumBulk,
+      name: QueueNames.createMessageMediumBulk,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
@@ -140,7 +136,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: CreateMessageQueueNames.largeBulk,
+      name: QueueNames.createMessageLargeBulk,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
@@ -153,7 +149,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: CreateMessageQueueNames.lowPriority,
+      name: QueueNames.createMessageLowPriority,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',
@@ -168,7 +164,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Message callback Queues
     BullModule.registerQueue({
-      name: MessageCallBackQueueNames.status,
+      name: QueueNames.messageCallbackStatus,
       processors: [
         {
           path: 'src/notifications/processors/message-status-callback.processor.ts',
@@ -181,7 +177,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
-      name: MessageCallBackQueueNames.incomingMessage,
+      name: QueueNames.messageCallbackIncoming,
       processors: [
         {
           path: 'src/notifications/processors/message-incoming.processor.ts',
@@ -196,7 +192,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 
     // Update registration Queues
     BullModule.registerQueue({
-      name: RegistrationQueueNames.registration,
+      name: QueueNames.registration,
       processors: [
         {
           path: 'src/notifications/processors/message.processor.ts',

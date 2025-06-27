@@ -7,11 +7,11 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
 
-@Processor(TransactionJobQueueNames.intersolveVisa)
+@Processor(QueueNames.transactionJobsIntersolveVisa)
 export class TransactionJobsProcessorIntersolveVisa {
   constructor(
     private readonly transactionJobsIntersolveVisaService: TransactionJobsIntersolveVisaService,

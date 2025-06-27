@@ -4,71 +4,74 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
-import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
-import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
 export class QueuesRegistryService implements OnModuleInit {
-  private allQueues: Queue[] = [];
+  private allQueues: Record<QueueNames, Queue>;
 
   constructor(
     private azureLogService: AzureLogService,
 
-    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
+    @InjectQueue(QueueNames.transactionJobsIntersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
+    @InjectQueue(QueueNames.transactionJobsIntersolveVoucher)
     public transactionJobIntersolveVoucherQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
+    @InjectQueue(QueueNames.transactionJobsCommercialBankEthiopia)
     public transactionJobCommercialBankEthiopiaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.safaricom)
+    @InjectQueue(QueueNames.transactionJobsSafaricom)
     public transactionJobSafaricomQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.nedbank)
+    @InjectQueue(QueueNames.transactionJobsNedbank)
     public transactionJobNedbankQueue: Queue,
 
-    @InjectQueue(SafaricomCallbackQueueNames.transfer)
+    @InjectQueue(QueueNames.paymentCallbackSafaricomTransfer)
     public safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(SafaricomCallbackQueueNames.timeout)
+    @InjectQueue(QueueNames.paymentCallbackSafaricomTimeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
-    @InjectQueue(CreateMessageQueueNames.replyOnIncoming)
+    @InjectQueue(QueueNames.createMessageReplyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.smallBulk)
+    @InjectQueue(QueueNames.createMessageSmallBulk)
     public createMessageSmallBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.mediumBulk)
+    @InjectQueue(QueueNames.createMessageMediumBulk)
     public createMessageMediumBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.largeBulk)
+    @InjectQueue(QueueNames.createMessageLargeBulk)
     public createMessageLargeBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.lowPriority)
+    @InjectQueue(QueueNames.createMessageLowPriority)
     public createMessageLowPriorityQueue: Queue,
 
-    @InjectQueue(MessageCallBackQueueNames.incomingMessage)
+    @InjectQueue(QueueNames.messageCallbackIncoming)
     public messageIncomingCallbackQueue: Queue,
-    @InjectQueue(MessageCallBackQueueNames.status)
+    @InjectQueue(QueueNames.messageCallbackStatus)
     public messageStatusCallbackQueue: Queue,
 
-    @InjectQueue(RegistrationQueueNames.registration)
+    @InjectQueue(QueueNames.registration)
     public updateRegistrationQueue: Queue,
   ) {
-    this.allQueues = [
-      this.transactionJobIntersolveVisaQueue,
-      this.transactionJobIntersolveVoucherQueue,
-      this.transactionJobCommercialBankEthiopiaQueue,
-      this.transactionJobSafaricomQueue,
-      this.safaricomTimeoutCallbackQueue,
-      this.safaricomTransferCallbackQueue,
-      this.createMessageReplyOnIncomingQueue,
-      this.createMessageSmallBulkQueue,
-      this.createMessageMediumBulkQueue,
-      this.createMessageLargeBulkQueue,
-      this.createMessageLowPriorityQueue,
-      this.messageIncomingCallbackQueue,
-      this.messageStatusCallbackQueue,
-      this.updateRegistrationQueue,
-    ];
+    this.allQueues = {
+      [QueueNames.transactionJobsIntersolveVisa]:
+        this.transactionJobIntersolveVisaQueue,
+      [QueueNames.transactionJobsIntersolveVoucher]:
+        this.transactionJobIntersolveVoucherQueue,
+      [QueueNames.transactionJobsCommercialBankEthiopia]:
+        this.transactionJobCommercialBankEthiopiaQueue,
+      [QueueNames.transactionJobsSafaricom]: this.transactionJobSafaricomQueue,
+      [QueueNames.transactionJobsNedbank]: this.transactionJobNedbankQueue,
+      [QueueNames.paymentCallbackSafaricomTransfer]:
+        this.safaricomTransferCallbackQueue,
+      [QueueNames.paymentCallbackSafaricomTimeout]:
+        this.safaricomTimeoutCallbackQueue,
+      [QueueNames.createMessageReplyOnIncoming]:
+        this.createMessageReplyOnIncomingQueue,
+      [QueueNames.createMessageSmallBulk]: this.createMessageSmallBulkQueue,
+      [QueueNames.createMessageMediumBulk]: this.createMessageMediumBulkQueue,
+      [QueueNames.createMessageLargeBulk]: this.createMessageLargeBulkQueue,
+      [QueueNames.createMessageLowPriority]: this.createMessageLowPriorityQueue,
+      [QueueNames.messageCallbackIncoming]: this.messageIncomingCallbackQueue,
+      [QueueNames.messageCallbackStatus]: this.messageStatusCallbackQueue,
+      [QueueNames.registration]: this.updateRegistrationQueue,
+    };
   }
 
   async onModuleInit(): Promise<void> {
@@ -92,7 +95,7 @@ export class QueuesRegistryService implements OnModuleInit {
   }
 
   private async retryFailedJobs(): Promise<void> {
-    for (const queue of this.allQueues) {
+    for (const queue of Object.values(this.allQueues)) {
       const failedJobs = await queue.getFailed();
       // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
       const missingProcessHandlerJobs = failedJobs.filter((job) =>
@@ -113,7 +116,7 @@ export class QueuesRegistryService implements OnModuleInit {
   async emptyAllQueues(): Promise<void> {
     // Bull queues involve complex data structures and Bull maintains various metadata for job management.
     // Therefore the data of the Bull queue and the ioredis queue are deleted seperately
-    for (const queue of this.allQueues) {
+    for (const queue of Object.values(this.allQueues)) {
       await queue.empty();
     }
     const redisClient = createRedisClient();
