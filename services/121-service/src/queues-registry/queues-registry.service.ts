@@ -7,13 +7,9 @@ import { createRedisClient } from '@121-service/src/payments/redis/redis-client'
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
-function getEnumValues<T extends object>(e: T): string[] {
-  return Object.values(e);
-}
-
 @Injectable()
 export class QueuesRegistryService implements OnModuleInit {
-  private allQueues: Queue[] = [];
+  private allQueues: Record<QueueNames, Queue>;
 
   constructor(
     private azureLogService: AzureLogService,
@@ -53,68 +49,29 @@ export class QueuesRegistryService implements OnModuleInit {
     @InjectQueue(QueueNames.registration)
     public updateRegistrationQueue: Queue,
   ) {
-    for (const queueName of Object.values(QueueNames)) {
-      const propertyKey = this.getPropertyKeyForQueueName(queueName);
-      const queue = (this as Record<string, Queue>)[propertyKey];
-      if (queue) {
-        this.allQueues.push(queue);
-        this.queueNameToQueueMap[queueName] = queue;
-      }
-    }
-    this.allQueues = [
-      this.transactionJobIntersolveVisaQueue,
-      this.transactionJobIntersolveVoucherQueue,
-      this.transactionJobCommercialBankEthiopiaQueue,
-      this.transactionJobSafaricomQueue,
-      this.transactionJobNedbankQueue,
-      this.safaricomTimeoutCallbackQueue,
-      this.safaricomTransferCallbackQueue,
-      this.createMessageReplyOnIncomingQueue,
-      this.createMessageSmallBulkQueue,
-      this.createMessageMediumBulkQueue,
-      this.createMessageLargeBulkQueue,
-      this.createMessageLowPriorityQueue,
-      this.messageIncomingCallbackQueue,
-      this.messageStatusCallbackQueue,
-      this.updateRegistrationQueue,
-    ];
-    this.assertAllQueuesPresent();
-  }
-
-  private getPropertyKeyForQueueName(queueName: string): string {
-    const mapping: Record<string, string> = {
+    this.allQueues = {
       [QueueNames.transactionJobsIntersolveVisa]:
-        'transactionJobIntersolveVisaQueue',
+        this.transactionJobIntersolveVisaQueue,
       [QueueNames.transactionJobsIntersolveVoucher]:
-        'transactionJobIntersolveVoucherQueue',
+        this.transactionJobIntersolveVoucherQueue,
       [QueueNames.transactionJobsCommercialBankEthiopia]:
-        'transactionJobCommercialBankEthiopiaQueue',
-      [QueueNames.transactionJobsSafaricom]: 'transactionJobSafaricomQueue',
-      [QueueNames.transactionJobsNedbank]: 'transactionJobNedbankQueue',
+        this.transactionJobCommercialBankEthiopiaQueue,
+      [QueueNames.transactionJobsSafaricom]: this.transactionJobSafaricomQueue,
+      [QueueNames.transactionJobsNedbank]: this.transactionJobNedbankQueue,
       [QueueNames.paymentCallbackSafaricomTransfer]:
-        'safaricomTransferCallbackQueue',
+        this.safaricomTransferCallbackQueue,
       [QueueNames.paymentCallbackSafaricomTimeout]:
-        'safaricomTimeoutCallbackQueue',
+        this.safaricomTimeoutCallbackQueue,
       [QueueNames.createMessageReplyOnIncoming]:
-        'createMessageReplyOnIncomingQueue',
-      [QueueNames.createMessageSmallBulk]: 'createMessageSmallBulkQueue',
-      [QueueNames.createMessageMediumBulk]: 'createMessageMediumBulkQueue',
-      [QueueNames.createMessageLargeBulk]: 'createMessageLargeBulkQueue',
-      [QueueNames.createMessageLowPriority]: 'createMessageLowPriorityQueue',
-      [QueueNames.messageCallbackIncoming]: 'messageIncomingCallbackQueue',
-      [QueueNames.messageCallbackStatus]: 'messageStatusCallbackQueue',
-      [QueueNames.registration]: 'updateRegistrationQueue',
+        this.createMessageReplyOnIncomingQueue,
+      [QueueNames.createMessageSmallBulk]: this.createMessageSmallBulkQueue,
+      [QueueNames.createMessageMediumBulk]: this.createMessageMediumBulkQueue,
+      [QueueNames.createMessageLargeBulk]: this.createMessageLargeBulkQueue,
+      [QueueNames.createMessageLowPriority]: this.createMessageLowPriorityQueue,
+      [QueueNames.messageCallbackIncoming]: this.messageIncomingCallbackQueue,
+      [QueueNames.messageCallbackStatus]: this.messageStatusCallbackQueue,
+      [QueueNames.registration]: this.updateRegistrationQueue,
     };
-    return mapping[queueName];
-  }
-
-  private assertAllQueuesPresent() {
-    const expectedNames = [...getEnumValues(QueueNames)];
-    const actualNames = this.allQueues.map((q) => q.name);
-    const missing = expectedNames.filter((name) => !actualNames.includes(name));
-    if (missing.length > 0) {
-      throw new Error(`Missing queues for: ${missing.join(', ')}`);
-    }
   }
 
   async onModuleInit(): Promise<void> {
@@ -138,7 +95,7 @@ export class QueuesRegistryService implements OnModuleInit {
   }
 
   private async retryFailedJobs(): Promise<void> {
-    for (const queue of this.allQueues) {
+    for (const queue of Object.values(this.allQueues)) {
       const failedJobs = await queue.getFailed();
       // Only retry for this specific error message, as we know the job processing has never started and is therefore safe to retry (jobs are not idempotent)
       const missingProcessHandlerJobs = failedJobs.filter((job) =>
@@ -159,7 +116,7 @@ export class QueuesRegistryService implements OnModuleInit {
   async emptyAllQueues(): Promise<void> {
     // Bull queues involve complex data structures and Bull maintains various metadata for job management.
     // Therefore the data of the Bull queue and the ioredis queue are deleted seperately
-    for (const queue of this.allQueues) {
+    for (const queue of Object.values(this.allQueues)) {
       await queue.empty();
     }
     const redisClient = createRedisClient();
