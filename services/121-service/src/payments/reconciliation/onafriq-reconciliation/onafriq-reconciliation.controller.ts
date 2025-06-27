@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -22,6 +30,9 @@ export class OnafriqReconciliationController {
     description: 'Callback processed successfully.',
   })
   @HttpCode(HttpStatus.OK) // NOTE: Onafriq internally labels the callback as success on status 200
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  )
   @Post('callback')
   public async processTransactionCallback(
     @Body() onafriqTransactionCallback: OnafriqTransactionCallbackDto,

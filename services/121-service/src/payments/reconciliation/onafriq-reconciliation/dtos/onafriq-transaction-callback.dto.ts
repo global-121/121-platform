@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 class OnafriqTransactionCallbackStatus {
   @ApiProperty()
-  @IsNotEmpty() // REFACTOR: Ideally we don't want to block callbacks, but without these decorators, the callback is actually blocked. Solve differently.
+  @IsOptional() // NOTE: this is optional in the sense that callbacks could theoretically change and we do not want to block that through validation. (Some validation decorator is required.)
   readonly code: string;
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   readonly message: string;
 }
 
 export class OnafriqTransactionCallbackDto {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   readonly thirdPartyTransId: string;
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   readonly status: OnafriqTransactionCallbackStatus;
 }
