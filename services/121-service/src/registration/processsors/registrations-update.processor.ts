@@ -2,13 +2,14 @@ import { Process, Processor } from '@nestjs/bull';
 import { Scope } from '@nestjs/common';
 import { Job } from 'bull';
 
-import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
 import { ProcessNameRegistration } from '@121-service/src/registration/enum/process-name-registration.enum';
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+
 @Processor({
-  name: RegistrationQueueNames.registration,
+  name: QueueNames.registration,
   scope: Scope.REQUEST,
 })
 export class RegistrationUpdateProcessor {

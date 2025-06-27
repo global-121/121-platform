@@ -4,11 +4,7 @@ import { Queue } from 'bull';
 import Redis from 'ioredis';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
-import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
-import { MessageCallBackQueueNames } from '@121-service/src/queues-registry/enum/message-callback-queue-names.enum';
-import { RegistrationQueueNames } from '@121-service/src/queues-registry/enum/registration-queue-names.enum';
-import { SafaricomCallbackQueueNames } from '@121-service/src/queues-registry/enum/safaricom-callback-queue-names.enum';
-import { TransactionJobQueueNames } from '@121-service/src/queues-registry/enum/transaction-job-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 function getEnumValues<T extends object>(e: T): string[] {
@@ -22,41 +18,49 @@ export class QueuesRegistryService implements OnModuleInit {
   constructor(
     private azureLogService: AzureLogService,
 
-    @InjectQueue(TransactionJobQueueNames.intersolveVisa)
+    @InjectQueue(QueueNames.transactionJobsIntersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.intersolveVoucher)
+    @InjectQueue(QueueNames.transactionJobsIntersolveVoucher)
     public transactionJobIntersolveVoucherQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.commercialBankEthiopia)
+    @InjectQueue(QueueNames.transactionJobsCommercialBankEthiopia)
     public transactionJobCommercialBankEthiopiaQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.safaricom)
+    @InjectQueue(QueueNames.transactionJobsSafaricom)
     public transactionJobSafaricomQueue: Queue,
-    @InjectQueue(TransactionJobQueueNames.nedbank)
+    @InjectQueue(QueueNames.transactionJobsNedbank)
     public transactionJobNedbankQueue: Queue,
 
-    @InjectQueue(SafaricomCallbackQueueNames.transfer)
+    @InjectQueue(QueueNames.paymentCallbackSafaricomTransfer)
     public safaricomTransferCallbackQueue: Queue,
-    @InjectQueue(SafaricomCallbackQueueNames.timeout)
+    @InjectQueue(QueueNames.paymentCallbackSafaricomTimeout)
     public safaricomTimeoutCallbackQueue: Queue,
 
-    @InjectQueue(CreateMessageQueueNames.replyOnIncoming)
+    @InjectQueue(QueueNames.createMessageReplyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.smallBulk)
+    @InjectQueue(QueueNames.createMessageSmallBulk)
     public createMessageSmallBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.mediumBulk)
+    @InjectQueue(QueueNames.createMessageMediumBulk)
     public createMessageMediumBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.largeBulk)
+    @InjectQueue(QueueNames.createMessageLargeBulk)
     public createMessageLargeBulkQueue: Queue,
-    @InjectQueue(CreateMessageQueueNames.lowPriority)
+    @InjectQueue(QueueNames.createMessageLowPriority)
     public createMessageLowPriorityQueue: Queue,
 
-    @InjectQueue(MessageCallBackQueueNames.incomingMessage)
+    @InjectQueue(QueueNames.messageCallbackIncoming)
     public messageIncomingCallbackQueue: Queue,
-    @InjectQueue(MessageCallBackQueueNames.status)
+    @InjectQueue(QueueNames.messageCallbackStatus)
     public messageStatusCallbackQueue: Queue,
 
-    @InjectQueue(RegistrationQueueNames.registration)
+    @InjectQueue(QueueNames.registration)
     public updateRegistrationQueue: Queue,
   ) {
+    for (const queueName of Object.values(QueueNames)) {
+      const propertyKey = this.getPropertyKeyForQueueName(queueName);
+      const queue = (this as Record<string, Queue>)[propertyKey];
+      if (queue) {
+        this.allQueues.push(queue);
+        this.queueNameToQueueMap[queueName] = queue;
+      }
+    }
     this.allQueues = [
       this.transactionJobIntersolveVisaQueue,
       this.transactionJobIntersolveVoucherQueue,
@@ -77,14 +81,35 @@ export class QueuesRegistryService implements OnModuleInit {
     this.assertAllQueuesPresent();
   }
 
+  private getPropertyKeyForQueueName(queueName: string): string {
+    const mapping: Record<string, string> = {
+      [QueueNames.transactionJobsIntersolveVisa]:
+        'transactionJobIntersolveVisaQueue',
+      [QueueNames.transactionJobsIntersolveVoucher]:
+        'transactionJobIntersolveVoucherQueue',
+      [QueueNames.transactionJobsCommercialBankEthiopia]:
+        'transactionJobCommercialBankEthiopiaQueue',
+      [QueueNames.transactionJobsSafaricom]: 'transactionJobSafaricomQueue',
+      [QueueNames.transactionJobsNedbank]: 'transactionJobNedbankQueue',
+      [QueueNames.paymentCallbackSafaricomTransfer]:
+        'safaricomTransferCallbackQueue',
+      [QueueNames.paymentCallbackSafaricomTimeout]:
+        'safaricomTimeoutCallbackQueue',
+      [QueueNames.createMessageReplyOnIncoming]:
+        'createMessageReplyOnIncomingQueue',
+      [QueueNames.createMessageSmallBulk]: 'createMessageSmallBulkQueue',
+      [QueueNames.createMessageMediumBulk]: 'createMessageMediumBulkQueue',
+      [QueueNames.createMessageLargeBulk]: 'createMessageLargeBulkQueue',
+      [QueueNames.createMessageLowPriority]: 'createMessageLowPriorityQueue',
+      [QueueNames.messageCallbackIncoming]: 'messageIncomingCallbackQueue',
+      [QueueNames.messageCallbackStatus]: 'messageStatusCallbackQueue',
+      [QueueNames.registration]: 'updateRegistrationQueue',
+    };
+    return mapping[queueName];
+  }
+
   private assertAllQueuesPresent() {
-    const expectedNames = [
-      ...getEnumValues(TransactionJobQueueNames),
-      ...getEnumValues(SafaricomCallbackQueueNames),
-      ...getEnumValues(CreateMessageQueueNames),
-      ...getEnumValues(MessageCallBackQueueNames),
-      ...getEnumValues(RegistrationQueueNames),
-    ];
+    const expectedNames = [...getEnumValues(QueueNames)];
     const actualNames = this.allQueues.map((q) => q.name);
     const missing = expectedNames.filter((name) => !actualNames.includes(name));
     if (missing.length > 0) {
