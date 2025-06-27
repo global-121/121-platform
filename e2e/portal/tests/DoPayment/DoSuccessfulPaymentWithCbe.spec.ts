@@ -53,7 +53,7 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.startPayment();
-
+    // Wait for payment transactions to complete
     await waitForPaymentTransactionsToComplete({
       programId: programIdCbe,
       paymentReferenceIds: registrationsCbe.map((r) => r.referenceId),

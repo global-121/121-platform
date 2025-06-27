@@ -1,18 +1,20 @@
 import { test } from '@playwright/test';
 
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import {
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
-  registrationPV5,
-  registrationPV6,
-  registrationsVoucher,
+  programIdOCW,
+  registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import ExportData from '@121-e2e/portal/components/ExportData';
@@ -23,18 +25,29 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(
-    registrationsVoucher,
-    programIdPV,
-    accessToken,
-  );
+  await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
 
   await doPayment({
-    programId: programIdPV,
+    programId: programIdOCW,
     paymentNr: 1,
-    amount: 100,
-    referenceIds: [registrationPV5.referenceId, registrationPV6.referenceId],
+    amount: 25,
+    referenceIds: registrationsOCW.map(
+      (registration) => registration.referenceId,
+    ),
     accessToken,
+  });
+
+  await waitForPaymentTransactionsToComplete({
+    programId: programIdOCW,
+    paymentReferenceIds: registrationsOCW.map(
+      (registration) => registration.referenceId,
+    ),
+    accessToken,
+    maxWaitTimeMs: 2_000,
+    completeStatusses: [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.waiting,
+    ],
   });
 
   // Login
@@ -46,19 +59,18 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('[36848] Export unused vouchers unsuccessfully', async ({ page }) => {
+test('[36878] Export debit card usage', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
   // Act
   await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
   await paymentsPage.navigateToProgramPage('Payments');
-  await paymentsPage.selectPaymentExportOption({ option: 'Unused vouchers' });
-  // Click on Proceed button
-  await exportDataComponent.clickProceedToExport();
+  await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
 
   // Assert
-  await paymentsPage.validateExportMessage({
-    message: 'There is currently no data to export',
+  await exportDataComponent.exportAndAssertData({
+    minRowCount: 4,
+    excludedColumns: ['issuedDate', 'cardNumber'],
   });
 });
