@@ -571,7 +571,7 @@ export async function getMessageHistory(
   };
 }
 
-export async function getAllActivities(
+export async function getAllActivitiesCount(
   programId: number,
   referenceId: string,
   accessToken: string,

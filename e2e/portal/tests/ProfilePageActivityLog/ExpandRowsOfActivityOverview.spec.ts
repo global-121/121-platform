@@ -9,7 +9,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  getAllActivities,
+  getAllActivitiesCount,
   seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -74,7 +74,7 @@ test.beforeEach(async ({ page }) => {
   });
 
   activitiesCount = (
-    await getAllActivities(programIdPV, referenceIdPV5, accessToken)
+    await getAllActivitiesCount(programIdPV, referenceIdPV5, accessToken)
   ).totalCount;
 
   // Login
