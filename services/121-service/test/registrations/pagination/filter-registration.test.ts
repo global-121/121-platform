@@ -207,6 +207,36 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
 
+    it('should filter using not operator', async () => {
+      // Arrange
+
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.addressCity': `$not:$ilike:${registrationOCW1.addressCity}`, // Filter on registrationAttributeData
+          'filter.paymentAmountMultiplier': `$not:$eq:${registrationOCW3.paymentAmountMultiplier}`, // Filter root registration attribute
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const foundReferenceIds = data.map(
+        (registration) => registration.referenceId,
+      );
+
+      // Assert
+      // Should contain all referenceIds except those of registrationOCW3 and registrationOCW4
+      expect(foundReferenceIds).not.toContain(registrationOCW1.referenceId);
+      expect(foundReferenceIds).not.toContain(registrationOCW3.referenceId);
+
+      const expectedReferenceIds = allReferenceIds.filter(
+        (id) =>
+          id !== registrationOCW1.referenceId &&
+          id !== registrationOCW3.referenceId,
+      );
+      expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
     it('should filter using search in combination with filter', async () => {
       // Act
       // The postal code shoud filter 1 and 2 and the search should filter 2 and 4, so only 2 should be returned
