@@ -374,15 +374,15 @@ export class RegistrationsPaginationService {
     parsedFilter: ColumnsFilters;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     for (const [filterKey, filters] of Object.entries(parsedFilter)) {
-      const relationInfoArray = attributeRelations.filter(
-        (r) => r.name === filterKey,
-      );
-      for (const filter of filters) {
-        queryBuilder = this.applySingleAttributeFilter({
-          queryBuilder,
-          filter,
-          relationInfoArray,
-        });
+      const relationInfo = attributeRelations.find((r) => r.name === filterKey);
+      if (relationInfo) {
+        for (const filter of filters) {
+          queryBuilder = this.applySingleAttributeFilter({
+            queryBuilder,
+            filter,
+            relationInfo,
+          });
+        }
       }
     }
     return queryBuilder;
@@ -391,11 +391,11 @@ export class RegistrationsPaginationService {
   private applySingleAttributeFilter({
     queryBuilder,
     filter,
-    relationInfoArray,
+    relationInfo: relationInfo,
   }: {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
     filter: Filter;
-    relationInfoArray: RegistrationDataInfo[];
+    relationInfo: RegistrationDataInfo;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const operatorTypes: FindOperatorType[] = [
       'equal',
@@ -420,7 +420,11 @@ export class RegistrationsPaginationService {
       const uniqueJoinId = Array.from({ length: 25 }, () =>
         'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
       ).join('');
-      queryBuilder.leftJoin('registration.data', uniqueJoinId);
+      queryBuilder.leftJoin(
+        'registration.data', // relation path
+        uniqueJoinId, // alias
+        `${uniqueJoinId}."programRegistrationAttributeId" = ${relationInfo.relation.programRegistrationAttributeId}`,
+      );
       queryBuilder = this.applyFilterConditionAttributes({
         queryBuilder,
         findOperatortType,
@@ -428,15 +432,6 @@ export class RegistrationsPaginationService {
         uniqueJoinId,
         notFilter,
       });
-      queryBuilder.andWhere(
-        new Brackets((qb) => {
-          this.whereRegistrationDataIsOneOfIds(
-            relationInfoArray,
-            qb,
-            uniqueJoinId,
-          );
-        }),
-      );
     }
     return queryBuilder;
   }
@@ -495,28 +490,26 @@ export class RegistrationsPaginationService {
           HttpStatus.BAD_REQUEST,
         );
     }
-
     const wrapNot = (cond: string): string =>
-      notFilter ? `NOT (${cond})` : cond;
+      notFilter
+        ? `(NOT (${cond}) OR ${uniqueJoinId}.${columnName} is NULL)` // This is needed to also filter on registrations that do not have this attribute
+        : cond;
 
     return queryBuilder.andWhere(wrapNot(condition), parameters);
   }
 
   private whereRegistrationDataIsOneOfIds(
-    relationInfoArray: RegistrationDataInfo[],
+    relationInfo: RegistrationDataInfo,
     qb: WhereExpressionBuilder,
     uniqueJoinId: string,
   ): void {
-    let i = 0;
-    for (const relationInfo of relationInfoArray) {
-      for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
-        if (i === 0) {
-          qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-        } else {
-          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-        }
+    const i = 0;
+    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
+      if (i === 0) {
+        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      } else {
+        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
       }
-      i++;
     }
   }
 
@@ -526,13 +519,14 @@ export class RegistrationsPaginationService {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     attributeRelations: RegistrationDataInfo[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const relationInfoArray = attributeRelations.filter(
-      (r) => r.name === sortByKey,
-    );
+    const relationInfo = attributeRelations.find((r) => r.name === sortByKey);
+    if (!relationInfo) {
+      return queryBuilder;
+    }
     queryBuilder.leftJoin('registration.data', 'rd');
     queryBuilder.andWhere(
       new Brackets((qb) => {
-        this.whereRegistrationDataIsOneOfIds(relationInfoArray, qb, 'rd');
+        this.whereRegistrationDataIsOneOfIds(relationInfo, qb, 'rd');
       }),
     );
     queryBuilder.orderBy('rd.value', sortByValue);

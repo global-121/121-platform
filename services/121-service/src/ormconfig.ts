@@ -43,7 +43,7 @@ export const ORMConfig: DataSourceOptions = {
   dropSchema: false,
   synchronize: false,
   // UNCOMMENT the following lines to enable query-logging for debugging
-  // logging: ['query'],
-  // logger: 'advanced-console',
+  logging: ['query'],
+  logger: 'advanced-console',
   ssl: createSSLConfig(),
 };
