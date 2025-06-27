@@ -36,42 +36,6 @@ describe('TransactionJobsOnafriqService', () => {
       transactionScopedRepository,
       transactionJobsHelperService,
     );
-    // const { unit, unitRef } = TestBed.create(
-    //   TransactionJobsOnafriqService,
-    // ).compile();
-
-    // service = unit;
-    // onafriqService = unitRef.get<OnafriqService>(OnafriqService);
-    // onafriqTransferScopedRepository =
-    //   unitRef.get<OnafriqTransferScopedRepository>(
-    //     OnafriqTransferScopedRepository,
-    //   );
-
-    // transactionScopedRepository = unitRef.get<TransactionScopedRepository>(
-    //   TransactionScopedRepository,
-    // );
-    // transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
-    //   TransactionJobsHelperService,
-    // );
-
-    // jest
-    //   .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
-    //   .mockResolvedValue(mockedRegistration);
-    // jest
-    //   .spyOn(
-    //     transactionJobsHelperService,
-    //     'createTransactionAndUpdateRegistration',
-    //   )
-    //   .mockResolvedValue({ id: mockedTransactionId } as any);
-    // jest
-    //   .spyOn(onafriqTransferScopedRepository, 'findOne')
-    //   .mockResolvedValue(undefined);
-    // jest
-    //   .spyOn(onafriqTransferScopedRepository, 'save')
-    //   .mockImplementation(async (entity) => ({ ...entity, id: 1 }));
-    // jest
-    //   .spyOn(transactionScopedRepository, 'update')
-    //   .mockResolvedValue({} as UpdateResult);
   });
 
   it('should be defined', () => {
