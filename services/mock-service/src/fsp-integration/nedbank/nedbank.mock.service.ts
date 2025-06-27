@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { NedbankCreateOrderMockPayload } from '@mock-service/src/fsp-integration/nedbank/nedbank.mock.controller';
 
-export enum NedbankVoucherStatus { // Would be great if we could import this for the 121-service, unfortunately there is no easy way to do this yet.
+export enum NedbankVoucherStatus {
+  // Would be great if we could import this for the 121-service, unfortunately there is no easy way to do this yet.
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   REDEEMABLE = 'REDEEMABLE',
