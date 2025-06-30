@@ -43,8 +43,10 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
+
   - Install the version specified in the [`.node-version`](.node-version)-file.
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
+
     - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
 
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
@@ -52,11 +54,13 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
     - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows))
 
 - Install Docker
+
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
+
     - Install WSL2 Linux kernel package.  
       Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
@@ -78,6 +82,7 @@ Then install the required version of Node.js and `npm`:
 - If you use FNM: `fnm use` (And follow the prompts)
 
 - If you use NVM
+
   - On macOS/Linux: `nvm install`
 
   - On Windows: `nvm install <version in .node-version-file>`
@@ -92,17 +97,17 @@ npm install
 
 ## Setup Services
 
-Switch to the repository folder
+Copy the centralized `.env`-file
 
-    cd services/
+    cp -i services/.env.example services/.env
 
-Copy the centralized .env file
+Each environment-variable is explained in the [`.env.example`-file](./services/.env.example). See the comments above each variable.
 
-    cp .env.example .env
+The initially set values are the defaults that should enable you to do local development and run all (automated) tests.
 
-Environment variables are explained in the comments of the [`.env.example`-file](./services/.env.example), some already have a value that is safe/good to use for development, some need to be unique/specific for your environment.
-
-Some variables are for credentials or tokens to access third-party services.
+- Some variables _should_ have a unique/specific value for your (local) environment.
+- Some are (sensitive) credentials or tokens to access third-party services. (Reach out to the development-team if you need them.)
+- Some are feature-switches that enable/disable specific features of the platform.
 
 ## Start Services
 
@@ -130,9 +135,9 @@ Install dependencies for the portal, run:
 
     npm run install:portal
 
-Also, make sure to create an env file for each interface. For example:
+Also, make sure to set the environment-variables. Run:
 
-    cp interfaces/portal/.env.example interfaces/portal/.env
+    cp -i interfaces/portal/.env.example interfaces/portal/.env
 
 ## Start Interfaces
 
@@ -140,11 +145,9 @@ To start the portal, from the root of this repository, run:
 
     npm run start:portal
 
-- Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
+Or explore the specific options as defined in the [`package.json`](interfaces/portal/package.json) or [`README.md`](interfaces/portal/README.md).
 
-When started, the portal will be available via:
-
-- Portal: <http://localhost:8888>
+When started, the portal will be available via: <http://localhost:8888>
 
 ---
 
@@ -159,6 +162,16 @@ To start an individual interface/service in VS Code:
 - Run: (where `<package>` is one of `portal`, `121-service`, `mock-service`)
 
       npm run code:<package>
+
+### Using environment-variables
+
+See for guidelines on how we work with environment-variables, at the top of: [`.env.example`](services/.env.example).
+
+#### Third party API tokens, credentials, infrastructure-specific values, etc
+
+All (sensitive) tokens, access keys for third party APIs, infrastructure-specific hostnames and similar values should be injected in the application(s) via environment-variables.
+
+⚠️ Make sure never to commit any such sensitive values! Always use the (ignored) local `.env`-file.
 
 ### Process for implementing data-model changes
 
@@ -175,6 +188,7 @@ The process is:
 7. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
 8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
 9. If ever running into issues with migrations locally, the reset process is:
+
    - Delete all tables in the `121-service` database schema
    - Restart `121-service` container
    - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
@@ -207,10 +221,6 @@ This script performs the following steps:
 ### Authentication
 
 All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
-
-### Adding third party API tokens
-
-All the tokens and access keys for third party APIs should be added on the `.env`-file and subsequently imported using the environment variables within typescript files.
 
 ### Recommended code-editor/IDE tools/extensions
 
