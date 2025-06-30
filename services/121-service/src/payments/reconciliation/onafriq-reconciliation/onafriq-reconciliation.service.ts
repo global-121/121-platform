@@ -95,11 +95,11 @@ export class OnafriqReconciliationService {
 
   private classifyOnafriqStatus(code: string): OnafriqTransactionStatus {
     if (code === OnafriqApiCallbackStatusCode.success) {
-      return OnafriqTransactionStatus.Success;
+      return OnafriqTransactionStatus.success;
     }
     if (code.startsWith('ER')) {
-      return OnafriqTransactionStatus.Error;
+      return OnafriqTransactionStatus.error;
     }
-    return OnafriqTransactionStatus.Unknown;
+    return OnafriqTransactionStatus.other;
   }
 }
