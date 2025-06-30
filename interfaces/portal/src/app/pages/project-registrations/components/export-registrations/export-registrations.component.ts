@@ -33,6 +33,11 @@ import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-export-registrations',
@@ -63,6 +68,7 @@ export class ExportRegistrationsComponent {
   private exportService = inject(ExportService);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
+  private trackingService = inject(TrackingService);
 
   readonly exportSelectedDialog =
     viewChild.required<ConfirmationDialogComponent>('exportSelectedDialog');
@@ -118,6 +124,11 @@ export class ExportRegistrationsComponent {
     {
       label: $localize`:@@export-selected:Selected registrations`,
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'selected-registrations',
+        });
         const actionData = this.getActionData()();
         if (!actionData) {
           return;
@@ -129,6 +140,11 @@ export class ExportRegistrationsComponent {
     {
       label: $localize`:@@export-changes:Status & data changes`,
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'status-and-data-changes',
+        });
         this.dataChangesFormGroup.controls.fromDate.setValue(undefined);
         this.dataChangesFormGroup.controls.toDate.setValue(undefined);
         this.exportDataChangesDialog().askForConfirmation();
@@ -143,6 +159,11 @@ export class ExportRegistrationsComponent {
           requiredPermission: PermissionEnum.PaymentFspInstructionREAD,
         }),
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'account-number-nerification',
+        });
         this.exportAccountVerificationDialog().askForConfirmation();
       },
     },
