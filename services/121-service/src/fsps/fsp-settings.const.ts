@@ -186,4 +186,27 @@ export const FSP_SETTINGS: FspDto[] = [
       },
     ],
   },
+  {
+    name: Fsps.onafriq,
+    integrationType: FspIntegrationType.api,
+    defaultLabel: {
+      en: 'Onafriq',
+    },
+    notifyOnTransaction: false,
+    attributes: [
+      {
+        name: FspAttributes.phoneNumber,
+        isRequired: true,
+      },
+      {
+        name: FspAttributes.firstName,
+        isRequired: true,
+      },
+      {
+        name: FspAttributes.lastName,
+        isRequired: true,
+      },
+    ],
+    configurationProperties: [],
+  },
 ];

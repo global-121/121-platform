@@ -5,4 +5,5 @@ export enum TransactionJobQueueNames {
   commercialBankEthiopia = 'commercialBankEthiopia-transaction-jobs',
   safaricom = 'safaricom-transaction-jobs',
   nedbank = 'nedbank-transaction-jobs',
+  onafriq = 'onafriq-transaction-jobs',
 }
