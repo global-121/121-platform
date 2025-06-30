@@ -85,10 +85,13 @@ export class TransactionJobsHelperService {
     );
 
     if (!isRetry) {
-      await this.updatePaymentCountAndStatusInRegistration(
+      const paymentCount = await this.updateAndGetPaymentCount(registration.id);
+      await this.updateRegistrationStatus({
         registration,
         programId,
-      );
+        paymentCount,
+      });
+
       // Added this check to avoid a bit of processing time if the status is the same
       if (
         oldRegistration.registrationStatus !== registration.registrationStatus
@@ -168,39 +171,50 @@ export class TransactionJobsHelperService {
     return await this.transactionScopedRepository.save(transaction);
   }
 
-  private async updatePaymentCountAndStatusInRegistration(
-    registration: RegistrationEntity,
-    programId: number,
-  ): Promise<void> {
+  private async updateAndGetPaymentCount(
+    registrationId: number,
+  ): Promise<number> {
+    const paymentCount =
+      await this.latestTransactionRepository.getPaymentCount(registrationId);
+
+    await this.registrationScopedRepository.updateUnscoped(registrationId, {
+      paymentCount,
+    });
+    return paymentCount;
+  }
+
+  private async updateRegistrationStatus({
+    registration,
+    programId,
+    paymentCount,
+  }: {
+    registration: RegistrationEntity;
+    programId: number;
+    paymentCount: number;
+  }): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
 
-    const paymentCount = await this.latestTransactionRepository.getPaymentCount(
-      registration.id,
-    );
-
-    let updateData: {
-      paymentCount: number;
-      registrationStatus?: RegistrationStatusEnum;
-    };
-    if (
-      program.enableMaxPayments &&
-      registration.maxPayments &&
-      paymentCount >= registration.maxPayments
-    ) {
-      updateData = {
-        paymentCount: (registration.paymentCount || 0) + 1,
-        registrationStatus: RegistrationStatusEnum.completed,
-      };
-    } else {
-      updateData = {
-        paymentCount,
-      };
+    if (!program.enableMaxPayments) {
+      return;
     }
 
-    await this.registrationScopedRepository.updateUnscoped(
-      registration.id,
-      updateData,
-    );
+    // registration.maxPayments can only be a positive integer or null
+    // This situation will only occur when enableMaxPayments is turned on after
+    // the registration was created.
+    if (
+      registration.maxPayments === null ||
+      registration.maxPayments === undefined
+    ) {
+      return;
+    }
+
+    if (paymentCount < registration.maxPayments) {
+      return;
+    }
+
+    await this.registrationScopedRepository.updateUnscoped(registration.id, {
+      registrationStatus: RegistrationStatusEnum.completed,
+    });
   }
 
   public async createMessageAndAddToQueue({
