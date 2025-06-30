@@ -31,7 +31,6 @@ export class TransactionJobsNedbankService {
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
       );
-    const oldRegistration = structuredClone(registration);
 
     // 2. Set the payment reference
     const paymentReference = await this.createPaymentReference({
@@ -66,7 +65,6 @@ export class TransactionJobsNedbankService {
             transferAmountInMajorUnit: transactionJob.transactionAmount,
             programFspConfigurationId: transactionJob.programFspConfigurationId,
             registration,
-            oldRegistration,
             isRetry: transactionJob.isRetry,
             status: TransactionStatusEnum.waiting,
           },

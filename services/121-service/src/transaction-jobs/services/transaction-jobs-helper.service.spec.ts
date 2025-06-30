@@ -25,11 +25,6 @@ const mockedRegistration: RegistrationEntity = {
   preferredLanguage: LanguageEnum.en,
 } as RegistrationEntity;
 
-const mockedOldRegistration: RegistrationEntity = {
-  ...mockedRegistration,
-  registrationStatus: RegistrationStatusEnum.included,
-};
-
 const mockedTransactionId = 1;
 
 const mockedProgram = {
@@ -131,7 +126,6 @@ describe('TransactionJobsHelperService', () => {
     it('should update the payment count', async () => {
       // Arrange
       const registration = structuredClone(mockedRegistration);
-      const oldRegistration = structuredClone(mockedRegistration);
 
       const paymentCountFromDb = 5;
 
@@ -147,7 +141,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration,
-        oldRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
@@ -179,7 +172,6 @@ describe('TransactionJobsHelperService', () => {
         .mockResolvedValue(mockedProgramNoMaxPayments as any);
 
       const registration = structuredClone(mockedRegistration);
-      const oldRegistration = structuredClone(mockedRegistration);
 
       // Act
       await service.createTransactionAndUpdateRegistration({
@@ -189,7 +181,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration,
-        oldRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
@@ -216,7 +207,6 @@ describe('TransactionJobsHelperService', () => {
         ...mockedRegistration,
         paymentCount: 4,
       };
-      const oldRegistration = structuredClone(mockedRegistration);
       jest
         .spyOn(programRepository, 'findByIdOrFail')
         .mockResolvedValue(mockedProgramNoMaxPayments as any);
@@ -234,7 +224,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        oldRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
@@ -261,7 +250,6 @@ describe('TransactionJobsHelperService', () => {
         ...mockedRegistration,
         maxPayments: undefined,
       };
-      const oldRegistration = structuredClone(mockedRegistration);
       jest
         .spyOn(programRepository, 'findByIdOrFail')
         .mockResolvedValue(mockedProgramNoMaxPayments as any);
@@ -279,7 +267,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        oldRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
@@ -298,10 +285,6 @@ describe('TransactionJobsHelperService', () => {
         ...mockedRegistration,
         registrationStatus: RegistrationStatusEnum.completed,
       };
-      const oldRegistration = {
-        ...mockedOldRegistration,
-        registrationStatus: RegistrationStatusEnum.included,
-      };
 
       const paymentCountFromDb = 5;
 
@@ -317,7 +300,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration,
-        oldRegistration,
         isRetry: true,
         status: TransactionStatusEnum.success,
       });
@@ -328,67 +310,91 @@ describe('TransactionJobsHelperService', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should create transaction, update registration, and create event if status changed', async () => {
-      const registration = {
-        ...mockedRegistration,
-        registrationStatus: RegistrationStatusEnum.completed,
-      };
-      const oldRegistration = {
-        ...mockedOldRegistration,
-        registrationStatus: RegistrationStatusEnum.included,
-      };
+    it('create a registration status change event if status moved to "completed"', async () => {
+      // Arrange
+      const maxPayments = 6;
+      const alreadyCompletedPaymentsBeforeTransaction = 5;
 
+      const mockedProgramNoMaxPayments = {
+        enableMaxPayments: true,
+        titlePortal: { en: 'Example Title' },
+        published: false,
+        distributionDuration: 100,
+        fixedTransferValue: 500,
+        budget: 50000,
+      };
+      const localMockedRegistration = {
+        ...mockedRegistration,
+        paymentCount: alreadyCompletedPaymentsBeforeTransaction,
+        maxPayments,
+      };
+      jest
+        .spyOn(programRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+
+      jest
+        .spyOn(latestTransactionRepository, 'getPaymentCount')
+        .mockResolvedValue(alreadyCompletedPaymentsBeforeTransaction + 1);
+
+      // Act
       await service.createTransactionAndUpdateRegistration({
         programId: 1,
         paymentNumber: 1,
         userId: 1,
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
-        registration,
-        oldRegistration,
+        registration: localMockedRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
 
-      expect(transactionScopedRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          amount: 100,
-          registration,
-          programId: 1,
-          payment: 1,
-          userId: 1,
-          status: TransactionStatusEnum.success,
-        }),
+      // Assert
+      expect(eventsService.createFromRegistrationViews).toHaveBeenCalledWith(
+        { id: 1, status: 'included' },
+        { id: 1, status: 'completed' },
+        { explicitRegistrationPropertyNames: ['status'] },
       );
-      expect(
-        latestTransactionRepository.insertOrUpdateFromTransaction,
-      ).toHaveBeenCalled();
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalled();
-      expect(eventsService.createFromRegistrationViews).toHaveBeenCalled();
     });
 
-    it('should not create event if status did not change', async () => {
-      const registration = {
-        ...mockedRegistration,
-        registrationStatus: RegistrationStatusEnum.included,
-      };
-      const oldRegistration = {
-        ...mockedOldRegistration,
-        registrationStatus: RegistrationStatusEnum.included,
-      };
+    it('does not create a registration status change event if status did not move', async () => {
+      // Arrange
+      const maxPayments = 6;
+      const alreadyCompletedPaymentsBeforeTransaction = 4;
 
+      const mockedProgramNoMaxPayments = {
+        enableMaxPayments: true,
+        titlePortal: { en: 'Example Title' },
+        published: false,
+        distributionDuration: 100,
+        fixedTransferValue: 500,
+        budget: 50000,
+      };
+      const localMockedRegistration = {
+        ...mockedRegistration,
+        paymentCount: alreadyCompletedPaymentsBeforeTransaction,
+        maxPayments,
+      };
+      jest
+        .spyOn(programRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+
+      jest
+        .spyOn(latestTransactionRepository, 'getPaymentCount')
+        .mockResolvedValue(alreadyCompletedPaymentsBeforeTransaction + 1);
+
+      // Act
       await service.createTransactionAndUpdateRegistration({
         programId: 1,
         paymentNumber: 1,
         userId: 1,
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
-        registration,
-        oldRegistration,
+        registration: localMockedRegistration,
         isRetry: false,
         status: TransactionStatusEnum.success,
       });
 
+      // Assert
       expect(eventsService.createFromRegistrationViews).not.toHaveBeenCalled();
     });
 
@@ -400,7 +406,6 @@ describe('TransactionJobsHelperService', () => {
         transferAmountInMajorUnit: 100,
         programFspConfigurationId: 1,
         registration: mockedRegistration,
-        oldRegistration: mockedOldRegistration,
         isRetry: true,
         status: TransactionStatusEnum.success,
       });

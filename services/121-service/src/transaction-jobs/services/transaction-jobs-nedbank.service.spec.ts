@@ -117,7 +117,6 @@ describe('TransactionJobsNedbankService', () => {
         programFspConfigurationId:
           mockedNedbankTransactionJob.programFspConfigurationId,
         registration: mockedRegistration,
-        oldRegistration: expect.any(Object),
         isRetry: mockedNedbankTransactionJob.isRetry,
         status: TransactionStatusEnum.waiting,
       }),

@@ -25,7 +25,6 @@ export class TransactionJobsIntersolveVisaService {
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         input.referenceId,
       );
-    const oldRegistration = structuredClone(registration);
 
     let transferAmountInMajorUnit: number;
     try {
@@ -46,7 +45,6 @@ export class TransactionJobsIntersolveVisaService {
             transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
             programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            oldRegistration,
             isRetry: input.isRetry,
             status: TransactionStatusEnum.error,
             errorText: `Error calculating transfer amount: ${error?.message}`,
@@ -91,7 +89,6 @@ export class TransactionJobsIntersolveVisaService {
             transferAmountInMajorUnit,
             programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            oldRegistration,
             isRetry: input.isRetry,
             status: TransactionStatusEnum.error,
             errorText: error?.message,
@@ -127,7 +124,6 @@ export class TransactionJobsIntersolveVisaService {
           intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
         programFspConfigurationId: input.programFspConfigurationId,
         registration,
-        oldRegistration,
         isRetry: input.isRetry,
         status: TransactionStatusEnum.success,
       },

@@ -24,7 +24,6 @@ interface ProcessTransactionResultInput {
   transferAmountInMajorUnit: number;
   programFspConfigurationId: number;
   registration: RegistrationEntity;
-  oldRegistration: RegistrationEntity;
   isRetry: boolean;
   status: TransactionStatusEnum;
   errorText?: string;
@@ -64,7 +63,6 @@ export class TransactionJobsHelperService {
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     programFspConfigurationId,
     registration,
-    oldRegistration,
     isRetry,
     status,
     errorText: errorMessage,
@@ -86,24 +84,23 @@ export class TransactionJobsHelperService {
 
     if (!isRetry) {
       const paymentCount = await this.updateAndGetPaymentCount(registration.id);
-      await this.updateRegistrationStatus({
-        registration,
-        programId,
-        paymentCount,
-      });
+      const currentStatusIsCompleted =
+        await this.setStatusToCompleteIfApplicable({
+          registration,
+          programId,
+          paymentCount,
+        });
 
       // Added this check to avoid a bit of processing time if the status is the same
-      if (
-        oldRegistration.registrationStatus !== registration.registrationStatus
-      ) {
+      if (currentStatusIsCompleted) {
         await this.eventsService.createFromRegistrationViews(
-          {
-            id: oldRegistration.id,
-            status: oldRegistration.registrationStatus ?? undefined,
-          },
           {
             id: registration.id,
             status: registration.registrationStatus ?? undefined,
+          },
+          {
+            id: registration.id,
+            status: RegistrationStatusEnum.completed,
           },
           {
             explicitRegistrationPropertyNames: ['status'],
@@ -183,7 +180,7 @@ export class TransactionJobsHelperService {
     return paymentCount;
   }
 
-  private async updateRegistrationStatus({
+  private async setStatusToCompleteIfApplicable({
     registration,
     programId,
     paymentCount,
@@ -191,11 +188,11 @@ export class TransactionJobsHelperService {
     registration: RegistrationEntity;
     programId: number;
     paymentCount: number;
-  }): Promise<void> {
+  }): Promise<boolean> {
     const program = await this.programRepository.findByIdOrFail(programId);
 
     if (!program.enableMaxPayments) {
-      return;
+      return false;
     }
 
     // registration.maxPayments can only be a positive integer or null
@@ -205,16 +202,18 @@ export class TransactionJobsHelperService {
       registration.maxPayments === null ||
       registration.maxPayments === undefined
     ) {
-      return;
+      return false;
     }
 
     if (paymentCount < registration.maxPayments) {
-      return;
+      return false;
     }
 
     await this.registrationScopedRepository.updateUnscoped(registration.id, {
       registrationStatus: RegistrationStatusEnum.completed,
     });
+
+    return true;
   }
 
   public async createMessageAndAddToQueue({
