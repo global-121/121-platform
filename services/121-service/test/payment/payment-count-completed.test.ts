@@ -14,6 +14,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
+  getEvents,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -111,6 +112,18 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       expect(getRegistration!.status).toBe(RegistrationStatusEnum.completed);
       expect(getRegistration!.paymentCountRemaining).toBe(0);
       expect(getRegistration!.paymentCount).toBe(1);
+
+      const statusChangeToCompleted = (
+        await getEvents({
+          programId,
+          accessToken,
+          referenceId: registrationAh.referenceId,
+        })
+      ).body.filter(
+        (event) =>
+          event.attributes.newValue === RegistrationStatusEnum.completed,
+      );
+      expect(statusChangeToCompleted.length).toBe(1);
     });
   });
 });
