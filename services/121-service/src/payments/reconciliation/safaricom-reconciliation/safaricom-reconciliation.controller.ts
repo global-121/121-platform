@@ -24,8 +24,7 @@ export class SafaricomReconciliationController {
 
   @SkipThrottle()
   @ApiOperation({
-    summary:
-      'Notification callback used by Safaricom to notify status of transfer to us.',
+    summary: 'Used by Safaricom to notify us of the status of a transfer.',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -35,11 +34,6 @@ export class SafaricomReconciliationController {
   public async processTransferCallback(
     @AnyValidBody() safaricomTransferCallback: SafaricomTransferCallbackDto, // We cannot control the structure of the callback data, so we use AnyValidBody
   ): Promise<void> {
-    console.log(
-      'POST fsps/safaricom/transfer-callback:',
-      safaricomTransferCallback,
-    );
-
     await this.safaricomReconciliationService.processTransferCallback(
       safaricomTransferCallback,
     );
@@ -48,7 +42,7 @@ export class SafaricomReconciliationController {
   @SkipThrottle()
   @ApiOperation({
     summary:
-      'Notification callback used by Safaricom to notify us of timeout on transfer request.',
+      'Used by Safaricom to notify us of a timeout on a transfer request.',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -56,15 +50,17 @@ export class SafaricomReconciliationController {
   })
   @Post('timeout-callback')
   public async processTimeoutCallback(
-    @AnyValidBody() // We cannot control the structure of the callback data, so we use AnyValidBody
-    safaricomTimeoutCallback: any, // deliberatedly 'any', as we are unsure of the payload structure. This way we can console.log first and then validate.
+    @AnyValidBody() // We cannot control the structure of the callback data
+    safaricomTimeoutCallback: any, // deliberatedly 'any', as we are unsure of the payload structure.
   ): Promise<void> {
+    // Note: As we are unsure of the (exact) payload structure, we log it for debugging purposes when this _does_ occur in production.
+    // So that we can adapt the DTO in the future if needed.
     console.log(
       'POST fsps/safaricom/timeout-callback:',
-      safaricomTimeoutCallback,
+      JSON.stringify(safaricomTimeoutCallback, null, 2),
     );
 
-    // apply validation and error response according to current DTO structure
+    // Apply validation and error response according to our _current understanding_ of the DTO structure
     const errors = await validate(
       plainToClass(SafaricomTimeoutCallbackDto, safaricomTimeoutCallback),
     );
