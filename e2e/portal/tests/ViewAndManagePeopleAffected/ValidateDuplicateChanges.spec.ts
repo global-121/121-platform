@@ -6,7 +6,10 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { registrationsPV } from '@121-service/test/registrations/pagination/pagination-data';
+import {
+  programIdPV,
+  registrationsPV,
+} from '@121-service/test/registrations/pagination/pagination-data';
 
 import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
@@ -15,9 +18,7 @@ import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/Registrat
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ page }) => {
-  const programIdPV = 2;
   await resetDB(SeedScript.nlrcMultiple);
-
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
 

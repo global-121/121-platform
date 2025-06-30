@@ -38,7 +38,7 @@ export class NedbankMockController {
   public constructor(private readonly nedbankMockService: NedbankMockService) {}
 
   @ApiOperation({ summary: 'Make create order call' })
-  @Post('/v1/orders')
+  @Post('v1/orders')
   public createOrder(@Body() body: NedbankCreateOrderMockPayload): object {
     return this.nedbankMockService.createOrder(body);
   }

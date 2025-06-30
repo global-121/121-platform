@@ -92,13 +92,12 @@ describe('Manage Fsp configurations', () => {
         fspName: createProgramFspConfigurationDto.fspName,
       }),
     );
-    const propertyNamesResult = result.body.properties.map(
-      (property) => property.name,
-    );
-    const propertyNamesExpected =
-      createProgramFspConfigurationDto.properties!.map(
-        (property) => property.name,
-      );
+    const propertyNamesResult = result.body.properties
+      .map((property) => property.name)
+      .sort();
+    const propertyNamesExpected = createProgramFspConfigurationDto
+      .properties!.map((property) => property.name)
+      .sort();
     expect(propertyNamesResult).toEqual(
       expect.arrayContaining(propertyNamesExpected),
     );

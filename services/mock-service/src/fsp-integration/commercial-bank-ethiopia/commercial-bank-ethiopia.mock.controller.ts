@@ -14,7 +14,7 @@ export class CommercialBankEthiopiaMockController {
   ) {}
 
   @ApiOperation({ summary: 'Handle SOAP call' })
-  @Post('/services')
+  @Post('services')
   public async handleSoapCall(
     @Headers('soapAction') soapAction: string,
     @Req() req: Request,

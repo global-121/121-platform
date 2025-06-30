@@ -46,7 +46,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Get card' })
-  @Get('/payment-instrument-payment/v1/tokens/:tokenCode/physical-card-status')
+  @Get('payment-instrument-payment/v1/tokens/:tokenCode/physical-card-status')
   public getCard(
     @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
@@ -54,7 +54,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Get transactions' })
-  @Get('/wallet/v1/tokens/:tokenCode/transactions')
+  @Get('wallet/v1/tokens/:tokenCode/transactions')
   public getTransactions(
     @Param('tokenCode') tokenCode: string,
   ): IntersolveVisaMockResponseDto {
@@ -71,7 +71,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Create debit card' })
-  @Post('/payment-instrument-payment/v1/tokens/:tokenCode/create-physical-card')
+  @Post('payment-instrument-payment/v1/tokens/:tokenCode/create-physical-card')
   public createDebitCard(
     @Body() payload: Record<string, any>,
     @Param('tokenCode') _tokenCode: string,
@@ -83,7 +83,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Load balance' }) // This will be depricated after the new visa flow is implemented, it has been added for the current flow to make that one work and mergable
-  @Post('/pointofsale/v1/tokens/:tokenCode/load')
+  @Post('pointofsale/v1/tokens/:tokenCode/load')
   public loadBalanceCard(
     @Body() _payload: Record<string, unknown>,
     @Param('tokenCode') tokenCode: string,
@@ -92,7 +92,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Unload balance' }) // This will be depricated after the new visa flow is implemented, it has been added for the current flow to make that one work and mergable
-  @Post('/pointofsale/v1/tokens/:tokenCode/unload')
+  @Post('pointofsale/v1/tokens/:tokenCode/unload')
   public unloadBalanceCard(
     @Body() _payload: Record<string, unknown>,
     @Param('tokenCode') _tokenCode: string,
@@ -101,7 +101,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Block wallet' })
-  @Post('/pointofsale/v1/tokens/:tokenCode/block')
+  @Post('pointofsale/v1/tokens/:tokenCode/block')
   public blockWallet(
     @Body() _payload: Record<string, unknown>,
     @Param('tokenCode') _tokenCode: string,
@@ -110,7 +110,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Unblock wallet' })
-  @Post('/pointofsale/v1/tokens/:tokenCode/unblock')
+  @Post('pointofsale/v1/tokens/:tokenCode/unblock')
   public unblockWallet(
     @Body() _payload: Record<string, unknown>,
     @Param('tokenCode') _tokenCode: string,
@@ -119,7 +119,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Update customer phonenumber' })
-  @Put('/customer/v1/customers/:holderId/contact-info/phone-numbers')
+  @Put('customer/v1/customers/:holderId/contact-info/phone-numbers')
   public updateCustomerPhoneNumber(
     @Body() payload: Record<string, string>,
     @Param('holderId') _holderId: string,
@@ -128,7 +128,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Update customer address' })
-  @Put('/customer/v1/customers/:holderId/contact-info/addresses')
+  @Put('customer/v1/customers/:holderId/contact-info/addresses')
   public updateCustomerAddress(
     @Body() payload: Record<string, string>,
     @Param('holderId') _holderId: string,
@@ -137,7 +137,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Link token' })
-  @Post('/wallet/v1/tokens/:childTokenCode/link-token')
+  @Post('wallet/v1/tokens/:childTokenCode/link-token')
   public linkToken(
     @Body() payload: Record<string, string>,
     @Param('childTokenCode') _childTokenCode: string,
@@ -146,7 +146,7 @@ export class IntersolveVisaMockController {
   }
 
   @ApiOperation({ summary: 'Transfer' })
-  @Post('/wallet/v1/tokens/:fromToken/transfer')
+  @Post('wallet/v1/tokens/:fromToken/transfer')
   public transfer(
     @Body() payload: Record<string, any>,
     @Param('fromToken') _fromToken: string,
