@@ -4,9 +4,10 @@ import { Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqApiCallbackStatusCode } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-callback-status-code.enum';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback-job.dto';
+import { OnafriqApiCallbackStatusCode } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/enum/onafriq-api-callback-status-code.enum';
+import { OnafriqTransactionStatus } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/enum/onafriq-transaction-status.enum';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -65,30 +66,40 @@ export class OnafriqReconciliationService {
     // Prepare the transaction status based on statusCode from callback
     let updatedTransactionStatusAndErrorMessage: QueryDeepPartialEntity<TransactionEntity> =
       {};
-    if (
-      onafriqTransactionCallbackJob.statusCode ===
-      OnafriqApiCallbackStatusCode.success
+    switch (
+      this.classifyOnafriqStatus(onafriqTransactionCallbackJob.statusCode)
     ) {
-      updatedTransactionStatusAndErrorMessage = {
-        status: TransactionStatusEnum.success,
-      };
-    } else if (onafriqTransactionCallbackJob.statusCode.startsWith('ER')) {
-      // Onafriq informed us we should only map error status codes (starting with 'ER') to error transaction, instead of all non-MR101 status codes..
-      // .. Even though in practice that should amount to the same thing, as they are not sending callbacks on other codes like MR102/MR103/MR108 (see https://developers.onafriq.com/docs/remittance-apis-v1/jwzmsj25lyuoi-response-codes)
-      updatedTransactionStatusAndErrorMessage = {
-        status: TransactionStatusEnum.error,
-        errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
-      };
-    } else {
-      // NOTE: This should not happen according to Onafriq. Does this cover this unexpected situation enough?
-      console.log(
-        `POST /onafriq/callback - Unexpected status code received. Code: ${onafriqTransactionCallbackJob.statusCode}, Message: ${onafriqTransactionCallbackJob.statusMessage}`,
-      );
+      case OnafriqTransactionStatus.success:
+        updatedTransactionStatusAndErrorMessage = {
+          status: TransactionStatusEnum.success,
+        };
+        break;
+      case OnafriqTransactionStatus.error:
+        updatedTransactionStatusAndErrorMessage = {
+          status: TransactionStatusEnum.error,
+          errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
+        };
+        break;
+      default:
+        // NOTE: This should not happen according to Onafriq. Does this cover this unexpected situation enough?
+        console.log(
+          `POST /onafriq/callback - Unexpected status code received. Code: ${onafriqTransactionCallbackJob.statusCode}, Message: ${onafriqTransactionCallbackJob.statusMessage}`,
+        );
     }
 
     await this.transactionScopedRepository.update(
       { id: transactionId },
       updatedTransactionStatusAndErrorMessage,
     );
+  }
+
+  private classifyOnafriqStatus(code: string): OnafriqTransactionStatus {
+    if (code === OnafriqApiCallbackStatusCode.success) {
+      return OnafriqTransactionStatus.Success;
+    }
+    if (code.startsWith('ER')) {
+      return OnafriqTransactionStatus.Error;
+    }
+    return OnafriqTransactionStatus.Unknown;
   }
 }
