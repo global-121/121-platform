@@ -41,8 +41,6 @@ describe('OnafriqApiHelperService', () => {
   });
 
   describe('processCallServiceResponse', () => {
-    // NOTE: the error scenario of no (correct) data being returned cannot be tested, because we cannot pass such an incorrect data reponse to the processCallServiceResponse() method, because of type checking.
-
     it('to return duplicate thirdPartyTransId error status and message if API errorCode indicating duplicate thirdPartyTransId', async () => {
       // Arrange
       const callServiceResponse: OnafriqApiCallServiceResponseBody = {

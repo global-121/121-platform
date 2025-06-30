@@ -93,25 +93,27 @@ export class OnafriqApiService {
       lastName,
       thirdPartyTransId,
     });
-    const callServiceResponse = await this.makeCallServiceCall(payload);
+    const callServiceResponse =
+      await this.makeCallServiceCallAndValidateResponse(payload);
 
     return this.onafriqApiHelperService.processCallServiceResponse(
       callServiceResponse,
     );
   }
 
-  private async makeCallServiceCall(
+  private async makeCallServiceCallAndValidateResponse(
     payload: OnafriqApiCallServiceRequestBody,
   ): Promise<OnafriqApiCallServiceResponseBody> {
+    let rawResponse: unknown;
     try {
       const callServiceUrl = `${onafriqApiUrl}/callService`;
-
-      return await this.httpService.post<OnafriqApiCallServiceResponseBody>(
-        callServiceUrl,
-        payload,
-        undefined, // headers,
-        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
-      );
+      rawResponse =
+        await this.httpService.post<OnafriqApiCallServiceResponseBody>(
+          callServiceUrl,
+          payload,
+          undefined, // headers,
+          DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        );
     } catch (error) {
       console.error('Failed to make Onafriq callService API call', error);
       throw new OnafriqError(
@@ -119,5 +121,18 @@ export class OnafriqApiService {
         OnafriqApiResponseStatusType.genericError,
       );
     }
+
+    if (
+      !this.onafriqApiHelperService.isOnafriqApiCallServiceResponseBody(
+        rawResponse,
+      )
+    ) {
+      const errorMessage = `Error: Invalid Onafriq API response structure. ${this.onafriqApiHelperService.serializeErrorResponseData(rawResponse)}`;
+      throw new OnafriqError(
+        errorMessage,
+        OnafriqApiResponseStatusType.genericError,
+      );
+    }
+    return rawResponse;
   }
 }

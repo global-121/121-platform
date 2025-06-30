@@ -78,26 +78,14 @@ export class OnafriqApiHelperService {
   public processCallServiceResponse(
     callServiceResponse: OnafriqApiCallServiceResponseBody,
   ): CallServiceResult {
-    // NOTE 1: we assume in the below there is only one transaction per batch (which is how we make the request)
-    // NOTE 2: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligining with the status per transaction. We choose to focus on the information on transaction-level.
     const transResponse =
       callServiceResponse?.data?.details?.transResponse?.[0];
     const status = transResponse?.status;
-    // NOTE 3: we have successfully tested manually that this also correctly handles bad gateway/timeout/ECONNRESET errors. There are no separate API-tests on this, as logically this is part of the same generic-error scenario.
-    if (!status) {
-      let dataString: string;
-      try {
-        dataString = JSON.stringify(callServiceResponse?.data);
-      } catch {
-        dataString = '[Unserializable data]';
-      }
-      return {
-        status: OnafriqApiResponseStatusType.genericError,
-        errorMessage: `No (correct) response data from Onafriq API. ${dataString}`,
-      };
-    }
 
-    // NOTE: there is unfortunately no specific error code for this, so must be done on messageDetail
+    // NOTE 1: we assume in the below there is only one transaction per batch (which is how we make the request)
+    // NOTE 2: the response data also contains data on totalTxSent, noTxAccepted, noTxRejected, which could theoretically be not adding up or not aligining with the status per transaction. We choose to focus on the information on transaction-level.
+    // NOTE 3: we have successfully tested manually that the error handling (here plus in parent method) also correctly handles bad gateway/timeout/ECONNRESET errors. There are no separate API-tests on this, as logically this is part of the same generic-error scenario.
+    // NOTE 4: there is unfortunately no specific error code for duplicate thirdPartyTransId, so must be done on messageDetail
     if (
       status.messageDetail === 'Transaction already exist with given ThirdParty'
     ) {
@@ -119,5 +107,23 @@ export class OnafriqApiHelperService {
 
     // If status exists and does not have code 101, this implies success
     return { status: OnafriqApiResponseStatusType.success };
+  }
+
+  public isOnafriqApiCallServiceResponseBody(
+    responseObj: unknown,
+  ): responseObj is OnafriqApiCallServiceResponseBody {
+    const status = (responseObj as any)?.data?.details?.transResponse?.[0]
+      ?.status;
+    return typeof status !== 'undefined';
+  }
+
+  public serializeErrorResponseData(responseObj: unknown): string {
+    let jsonString: string;
+    try {
+      jsonString = JSON.stringify((responseObj as any)?.data);
+    } catch {
+      jsonString = '[Unserializable data]';
+    }
+    return jsonString;
   }
 }
