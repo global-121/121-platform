@@ -29,6 +29,11 @@ import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-export-payments',
@@ -51,6 +56,7 @@ export class ExportPaymentsComponent {
   private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
+  private trackingService = inject(TrackingService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
@@ -131,6 +137,11 @@ export class ExportPaymentsComponent {
           ],
         }),
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'last-payments',
+        });
         this.exportlastPaymentsDialog().askForConfirmation();
       },
     },
@@ -144,6 +155,11 @@ export class ExportPaymentsComponent {
           requiredPermission: PermissionEnum.PaymentVoucherExport,
         }),
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'unused-vouchers',
+        });
         this.exportUnusedVouchersDialog().askForConfirmation();
       },
     },
@@ -157,6 +173,11 @@ export class ExportPaymentsComponent {
           requiredPermission: PermissionEnum.FspDebitCardEXPORT,
         }),
       command: () => {
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'debit-card-usage',
+        });
         this.exportDebitCardUsageDialog().askForConfirmation();
       },
     },
