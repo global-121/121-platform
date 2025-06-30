@@ -15,12 +15,14 @@ export const env = createEnv({
    *
    * Guidelines:
    * - Use as many _specific_ requirements as possible, like `.min(8)`, `.email()`, `.url()`, etc.
-   *   See: https://zod.dev/api
-   * - Use `.optional()` if the service should be able start-up without a value (So not for critical features).
-   * - Use `.default(value)` if there is a safe, generic value available that is safe-to-be-forgotten-to-make-unique in production.
-   * - If a value IS required for the service to start-up,
-   *   and MUST be set to a unique/proper value in production (and thus report an error on start-up),
-   *   then use a hard-coded (development/test-only) value in `.env.example`, do not use `.default()`.
+   *   See, for built-in possibilities: https://zod.dev/api
+   * - Use `.optional()` if the service should be able to start-up without any value set.
+   *   This applies to non-critical features, but also for ANY FSP-related variables!
+   *   ANY FSP should be concidered "only optional", so thay each instance of the platform ONLY has to set the FSP-related values that are in use.
+   * - Use `.default(value)` ONLY if there is a safe, generic value available that can be used in production.
+   * - If a valid/unique value IS required for the service to start-up,
+   *   or MUST be set to run all (API/E2E-)tests,
+   *   _only then_ commit a hard-coded (development/test-only) value in `.env.example`, do not use `.default()`.
    *
    */
   server: {
