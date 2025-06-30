@@ -17,7 +17,7 @@ const toastMessage =
   'The status of 1 registration(s) is being changed to "Validated" successfully. The status change can take up to a minute to process.';
 // Arrange
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   await seedRegistrations([registrationPV5], programIdPV);
 

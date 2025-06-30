@@ -31,7 +31,7 @@ const programIdPv = 2;
 const programIdOcw = 3;
 
 async function setupNlrcEnvironment() {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
 
   await importRegistrations(programIdOcw, [registrationVisa], accessToken);
@@ -157,7 +157,7 @@ describe('Update program fsp configuration of PA', () => {
   it('should succeed updating registration to a newly added FSP config of which the name is not the same as the FSP and doing a payment', async () => {
     // Arrange
     const payment = 1;
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     await seedIncludedRegistrations(
       [registrationPvScoped],

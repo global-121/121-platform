@@ -19,7 +19,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV8], programIdPV, accessToken);
   await resetDuplicateRegistrations(14);

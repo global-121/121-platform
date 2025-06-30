@@ -16,7 +16,7 @@ describe('Export CBE validation report', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.cbeProgram);
+    await resetDB(SeedScript.cbeProgram, __filename);
     accessToken = await getAccessToken();
     await waitFor(1_000);
   });

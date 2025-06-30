@@ -41,7 +41,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
       ...registrationVisaDefault,
       whatsappPhoneNumber: registrationVisaDefault.phoneNumber, // Set WhatsApp-number for ALL tests in this suite only
     };
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     await waitFor(2_000);
   });

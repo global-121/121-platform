@@ -17,7 +17,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.cbeProgram);
+  await resetDB(SeedScript.cbeProgram, __filename);
   // Full name is set to 'error' to create a failed payment
   registrationsCbe[0].fullName = 'error';
   const accessToken = await getAccessToken();

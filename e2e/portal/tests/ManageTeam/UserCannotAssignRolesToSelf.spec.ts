@@ -14,7 +14,7 @@ import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
 const programId = 2;
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple);
+  await resetDB(SeedScript.testMultiple, __filename);
   // remove assignments of all users except admin again, to create the context for this test
   const accessToken = await getAccessToken();
   for (let userId = 2; userId <= 10; userId++) {

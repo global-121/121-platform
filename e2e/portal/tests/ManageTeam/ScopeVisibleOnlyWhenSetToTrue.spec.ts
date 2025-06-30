@@ -8,7 +8,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   // Login
   const loginPage = new LoginPage(page);

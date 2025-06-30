@@ -17,12 +17,16 @@ export function getServer(): TestAgent<request.Test> {
   return request.agent(getHostname());
 }
 
-export function resetDB(seedScript: SeedScript): Promise<request.Response> {
+export function resetDB(
+  seedScript: SeedScript,
+  resetIdentifier: string,
+): Promise<request.Response> {
   return getServer()
     .post('/scripts/reset')
     .query({
       script: seedScript,
       isApiTests: true,
+      resetIdentifier,
     })
     .send({
       secret: process.env.RESET_SECRET,

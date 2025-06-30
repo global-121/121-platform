@@ -21,7 +21,7 @@ let registrationProgramId: number;
 test('[34690] User should see a summary of a registration', async ({
   page,
 }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
   await seedPaidRegistrations([registrationPvScoped], projectId);

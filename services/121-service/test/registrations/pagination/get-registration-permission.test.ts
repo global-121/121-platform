@@ -20,7 +20,7 @@ import {
 describe('Load PA table', () => {
   describe(`Get registrations using paginate without "${PermissionEnum.RegistrationPersonalREAD}" permission`, () => {
     beforeEach(async () => {
-      await resetDB(SeedScript.nlrcMultiple);
+      await resetDB(SeedScript.nlrcMultiple, __filename);
       const accessTokenAdmin = await getAccessToken();
 
       await importRegistrations(

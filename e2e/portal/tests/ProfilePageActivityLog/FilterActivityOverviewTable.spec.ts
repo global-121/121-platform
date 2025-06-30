@@ -26,7 +26,7 @@ const paymentReferenceId = [registrationPV5.referenceId];
 let page: Page;
 test.beforeAll(async ({ browser }) => {
   // Arrange once because tests don't mutate backend state.
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   page = await browser.newPage();
 
   const accessToken = await getAccessToken();

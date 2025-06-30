@@ -17,7 +17,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.safaricomProgram);
+  await resetDB(SeedScript.safaricomProgram, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsSafaricom,

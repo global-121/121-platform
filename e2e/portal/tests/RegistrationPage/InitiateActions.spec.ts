@@ -21,7 +21,7 @@ const projectId = 2;
 let registrationId: number;
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);

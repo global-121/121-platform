@@ -14,7 +14,7 @@ describe('/ Users', () => {
     };
 
     beforeAll(async () => {
-      await resetDB(SeedScript.nlrcMultiple);
+      await resetDB(SeedScript.nlrcMultiple, __filename);
     });
 
     it('should log-in with valid credentials', async () => {

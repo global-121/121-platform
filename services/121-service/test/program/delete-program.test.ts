@@ -24,7 +24,7 @@ describe('Delete program', () => {
 
   it('should delete nlrc programs', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     // Create some test data which should be cascaded deleted
@@ -57,7 +57,7 @@ describe('Delete program', () => {
 
   it('should delete CBE programs', async () => {
     const programIdCbe = 1;
-    await resetDB(SeedScript.cbeProgram);
+    await resetDB(SeedScript.cbeProgram, __filename);
     accessToken = await getAccessToken();
 
     await seedPaidRegistrations([registrationCbe], programIdCbe);

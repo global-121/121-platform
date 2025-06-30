@@ -37,7 +37,7 @@ const ascedingNames = [...names].sort((a, b) => a.localeCompare(b));
 const descedingNames = [...names].sort((a, b) => b.localeCompare(a));
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsOCW, programIdOCW, accessToken);
 
