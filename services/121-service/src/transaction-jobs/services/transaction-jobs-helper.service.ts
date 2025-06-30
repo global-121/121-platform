@@ -16,15 +16,12 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 interface ProcessTransactionResultInput {
-  programId: number;
-  paymentNumber: number;
-  userId: number;
-  transferAmountInMajorUnit: number;
-  programFspConfigurationId: number;
   registration: RegistrationEntity;
-  isRetry: boolean;
+  transactionJob: SharedTransactionJobDto;
+  transferAmountInMajorUnit: number;
   status: TransactionStatusEnum;
   errorText?: string;
 }
@@ -57,16 +54,20 @@ export class TransactionJobsHelperService {
   }
 
   public async createTransactionAndUpdateRegistration({
-    programId,
-    paymentNumber,
-    userId,
-    transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
-    programFspConfigurationId,
     registration,
-    isRetry,
+    transactionJob,
+    transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     status,
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
+    const {
+      programFspConfigurationId,
+      programId,
+      paymentNumber,
+      userId,
+      isRetry,
+    } = transactionJob;
+
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,

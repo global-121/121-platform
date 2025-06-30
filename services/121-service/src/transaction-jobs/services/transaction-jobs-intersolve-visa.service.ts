@@ -39,13 +39,9 @@ export class TransactionJobsIntersolveVisaService {
       if (error instanceof IntersolveVisaApiError) {
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
-            programId: input.programId,
-            paymentNumber: input.paymentNumber,
-            userId: input.userId,
-            transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-            programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            isRetry: input.isRetry,
+            transactionJob: input,
+            transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
             status: TransactionStatusEnum.error,
             errorText: `Error calculating transfer amount: ${error?.message}`,
           },
@@ -83,13 +79,9 @@ export class TransactionJobsIntersolveVisaService {
       if (error instanceof IntersolveVisaApiError) {
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
-            programId: input.programId,
-            paymentNumber: input.paymentNumber,
-            userId: input.userId,
-            transferAmountInMajorUnit,
-            programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            isRetry: input.isRetry,
+            transactionJob: input,
+            transferAmountInMajorUnit,
             status: TransactionStatusEnum.error,
             errorText: error?.message,
           },
@@ -117,14 +109,10 @@ export class TransactionJobsIntersolveVisaService {
 
     await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
       {
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
+        registration,
+        transactionJob: input,
         transferAmountInMajorUnit:
           intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        programFspConfigurationId: input.programFspConfigurationId,
-        registration,
-        isRetry: input.isRetry,
         status: TransactionStatusEnum.success,
       },
     );

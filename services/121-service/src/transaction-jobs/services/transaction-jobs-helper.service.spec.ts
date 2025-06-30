@@ -123,6 +123,13 @@ describe('TransactionJobsHelperService', () => {
   });
 
   describe('createTransactionAndUpdateRegistration', () => {
+    const transactionJob = {
+      programId: 1,
+      paymentNumber: 5,
+      userId: 1,
+      programFspConfigurationId: 1,
+      isRetry: false,
+    };
     it('should update the payment count', async () => {
       // Arrange
       const registration = structuredClone(mockedRegistration);
@@ -135,13 +142,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -175,13 +178,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -218,13 +217,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -261,13 +256,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -294,13 +285,12 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: true,
+        transactionJob: {
+          ...transactionJob,
+          isRetry: true,
+        },
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -338,13 +328,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -384,13 +370,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -400,13 +382,12 @@ describe('TransactionJobsHelperService', () => {
 
     it('should not update registration or create event if isRetry is true', async () => {
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: mockedRegistration,
-        isRetry: true,
+        transactionJob: {
+          ...transactionJob,
+          isRetry: true,
+        },
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 

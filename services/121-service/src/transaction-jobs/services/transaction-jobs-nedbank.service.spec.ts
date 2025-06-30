@@ -109,15 +109,10 @@ describe('TransactionJobsNedbankService', () => {
       transactionJobsHelperService.createTransactionAndUpdateRegistration,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
-        programId: mockedNedbankTransactionJob.programId,
-        paymentNumber: mockedNedbankTransactionJob.paymentNumber,
-        userId: mockedNedbankTransactionJob.userId,
+        registration: mockedRegistration,
+        transactionJob: mockedNedbankTransactionJob,
         transferAmountInMajorUnit:
           mockedNedbankTransactionJob.transactionAmount,
-        programFspConfigurationId:
-          mockedNedbankTransactionJob.programFspConfigurationId,
-        registration: mockedRegistration,
-        isRetry: mockedNedbankTransactionJob.isRetry,
         status: TransactionStatusEnum.waiting,
       }),
     );
