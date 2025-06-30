@@ -36,7 +36,7 @@ describe('Import a registration', () => {
 
   it('should import registrations', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     // Act
@@ -61,7 +61,7 @@ describe('Import a registration', () => {
 
   it('should import registration with mixed attributes (dropdown, boolean, string, numeric)', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
     // Act
@@ -98,7 +98,7 @@ describe('Import a registration', () => {
 
   it('should fail import registrations due to program is not published yet', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     // unpublish a program
@@ -118,7 +118,7 @@ describe('Import a registration', () => {
 
   it('should import registration scoped', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
 
     // Act
@@ -145,7 +145,7 @@ describe('Import a registration', () => {
 
   it('should not import any registration if one of them has different scope than user', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
 
     // Act
@@ -169,7 +169,7 @@ describe('Import a registration', () => {
 
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
@@ -196,7 +196,7 @@ describe('Import a registration', () => {
 
   it('should import registrations with empty phoneNumber, when program allows this', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationPVCopy = { ...registrationPV5 };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
@@ -227,7 +227,7 @@ describe('Import a registration', () => {
 
   it('should throw an error with a numeric registration atribute set to null', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationVisaCopy = { ...registrationVisa };
     // @ts-expect-error we are forcing something to be null when it shouldn't be
@@ -255,7 +255,7 @@ describe('Import a registration', () => {
 
   it('should throw an error with a dropdown registration atribute set to null', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationWesteros1Copy = { ...registrationWesteros1 };
     const programIdWesteros = 2;
@@ -284,7 +284,7 @@ describe('Import a registration', () => {
 
   it('should throw an error when a required fsp attribute is missing', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
     // Removes whatsapp from original registration
@@ -319,7 +319,7 @@ describe('Import a registration', () => {
 
   it('should throw an error when uploading a non existing fsp', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
     // Removes whatsapp from original registration
@@ -353,7 +353,7 @@ describe('Import a registration', () => {
 
   it('should give me a CSV template when I request it', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     const response = await getImportRegistrationsTemplate(programIdOCW);
@@ -363,7 +363,7 @@ describe('Import a registration', () => {
 
   it('should import registration with null values when all attributes are non-required attributes', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationWesterosEmpty = {
       referenceId: 'registrationWesterosEmpty',

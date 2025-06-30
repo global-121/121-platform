@@ -29,7 +29,7 @@ describe('Load PA table', () => {
     const attributeProgramFspConfigurationName = 'programFspConfigurationName';
 
     beforeEach(async () => {
-      await resetDB(SeedScript.nlrcMultiple);
+      await resetDB(SeedScript.nlrcMultiple, __filename);
       accessToken = await getAccessToken();
 
       await importRegistrations(programIdOCW, [registrationOCW2], accessToken);

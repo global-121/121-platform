@@ -43,7 +43,7 @@ describe('/ Registrations - by phone-number', () => {
   };
 
   beforeEach(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await importRegistrations(

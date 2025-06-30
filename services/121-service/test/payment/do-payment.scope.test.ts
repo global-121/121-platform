@@ -40,7 +40,7 @@ describe('Registrations - [Scoped]', () => {
   const payment = 1;
 
   beforeAll(async () => {
-    await resetDB(SeedScript.nlrcMultiple);
+    await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);

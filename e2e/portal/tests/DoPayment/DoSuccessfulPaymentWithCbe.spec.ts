@@ -21,7 +21,7 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 let accessToken: string;
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.cbeProgram);
+  await resetDB(SeedScript.cbeProgram, __filename);
   accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsCbe, programIdCbe, accessToken);
 

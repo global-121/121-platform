@@ -19,7 +19,7 @@ const customMessage =
   'Test custom message to change the status of registration';
 // Arrange
 const reset = async () => {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
 };
 

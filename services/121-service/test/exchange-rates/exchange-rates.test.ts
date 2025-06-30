@@ -14,7 +14,7 @@ describe('Exchange rates', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.safaricomProgram);
+    await resetDB(SeedScript.safaricomProgram, __filename);
     accessToken = await getAccessToken();
   });
 

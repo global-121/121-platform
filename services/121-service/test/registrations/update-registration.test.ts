@@ -29,7 +29,7 @@ const programIdPv = 2;
 const programIdOcw = 3;
 
 async function setupNlrcEnvironment() {
-  await resetDB(SeedScript.nlrcMultiple);
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
 
   await importRegistrations(programIdOcw, [registrationVisa], accessToken);
@@ -336,7 +336,7 @@ describe('Update attribute of PA', () => {
 
   it('should succeed on removing all program registration attributes of test program', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     await importRegistrations(
       programIdWesteros,
@@ -390,7 +390,7 @@ describe('Update attribute of PA', () => {
 
   it('should fail when removing a required program registration attribute', async () => {
     // Arrange
-    await resetDB(SeedScript.testMultiple);
+    await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     await importRegistrations(
       programIdWesteros,

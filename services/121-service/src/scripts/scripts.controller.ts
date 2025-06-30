@@ -63,6 +63,12 @@ export class ScriptsController {
     example: 'false',
     description: `Only for API tests`,
   })
+  @ApiQuery({
+    name: 'resetIdentifier',
+    required: false,
+    description:
+      'Optional identifier for this reset action, will be logged by the server.',
+  })
   @ApiOperation({ summary: 'Reset instance database' })
   @Post('/reset')
   public async resetDb(
@@ -70,6 +76,7 @@ export class ScriptsController {
     @Query('script') script: WrapperType<SeedScript>,
     @Query('mockPowerNumberRegistrations')
     mockPowerNumberRegistrations: string,
+    @Query('resetIdentifier') resetIdentifier: string,
     @Query('mockNumberPayments') mockNumberPayments: string,
     @Query('mockPowerNumberMessages') mockPowerNumberMessages: string,
     @Query('mockPv') mockPv: boolean,
@@ -92,6 +99,7 @@ export class ScriptsController {
         : true;
       await this.scriptsService.loadSeedScenario({
         seedScript: SeedScript.nlrcMultipleMock,
+        resetIdentifier,
         isApiTests,
         powerNrRegistrationsString: mockPowerNumberRegistrations,
         nrPaymentsString: mockNumberPayments,
@@ -101,6 +109,7 @@ export class ScriptsController {
       });
     } else if (Object.values(SeedScript).includes(script)) {
       await this.scriptsService.loadSeedScenario({
+        resetIdentifier,
         seedScript: script,
         isApiTests,
       });

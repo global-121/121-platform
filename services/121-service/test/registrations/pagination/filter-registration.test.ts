@@ -40,7 +40,7 @@ describe('Load PA table', () => {
     let accessToken: string;
 
     beforeAll(async () => {
-      await resetDB(SeedScript.nlrcMultiple);
+      await resetDB(SeedScript.nlrcMultiple, __filename);
       accessToken = await getAccessToken();
 
       await importRegistrations(programIdOCW, registrations, accessToken);

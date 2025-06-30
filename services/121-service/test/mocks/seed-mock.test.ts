@@ -14,7 +14,7 @@ import {
 describe('Mock registrations', () => {
   it('does mock nlrc multiple still seed registrations and transactions', async () => {
     // Arrange
-    await resetDB(SeedScript.nlrcMultipleMock);
+    await resetDB(SeedScript.nlrcMultipleMock, __filename);
     const accessToken = await getAccessToken();
     const payment = 1;
     // Assert
