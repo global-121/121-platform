@@ -17,6 +17,7 @@ import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integr
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -729,15 +730,16 @@ export class MetricsService {
       },
     });
 
-    const result = await this.transactionScopedRepository
+    const cashDisbursedQueryResult = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
-      .select('SUM(transaction.amount)', 'spentMoney')
+      .select('SUM(transaction.amount::numeric)', 'cashDisbursed')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('transaction."programId" = :programId', {
+      .andWhere({
         programId,
+        status: Not(TransactionStatusEnum.error),
       })
       .getRawOne();
-    const spentMoney = result.spentMoney;
+    const cashDisbursed = cashDisbursedQueryResult.cashDisbursed;
     const totalBudget = program.budget;
 
     return {
@@ -747,7 +749,7 @@ export class MetricsService {
       newPeople,
       registeredPeople,
       totalBudget,
-      spentMoney,
+      cashDisbursed,
     };
   }
 
