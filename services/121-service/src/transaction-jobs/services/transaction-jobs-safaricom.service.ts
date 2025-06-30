@@ -28,7 +28,6 @@ export class TransactionJobsSafaricomService {
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
       );
-    const oldRegistration = structuredClone(registration);
 
     // 2. Check for existing Safaricom Transfer with the same originatorConversationId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.
     let safaricomTransfer =
@@ -51,7 +50,6 @@ export class TransactionJobsSafaricomService {
             transferAmountInMajorUnit: transactionJob.transactionAmount,
             programFspConfigurationId: transactionJob.programFspConfigurationId,
             registration,
-            oldRegistration,
             isRetry: transactionJob.isRetry,
             status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
           },

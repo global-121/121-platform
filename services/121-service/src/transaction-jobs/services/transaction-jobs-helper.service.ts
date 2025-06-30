@@ -24,7 +24,6 @@ interface ProcessTransactionResultInput {
   transferAmountInMajorUnit: number;
   programFspConfigurationId: number;
   registration: RegistrationEntity;
-  oldRegistration: RegistrationEntity;
   isRetry: boolean;
   status: TransactionStatusEnum;
   errorText?: string;
@@ -64,7 +63,6 @@ export class TransactionJobsHelperService {
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     programFspConfigurationId,
     registration,
-    oldRegistration,
     isRetry,
     status,
     errorText: errorMessage,
@@ -85,22 +83,24 @@ export class TransactionJobsHelperService {
     );
 
     if (!isRetry) {
-      await this.updatePaymentCountAndStatusInRegistration(
-        registration,
-        programId,
-      );
+      const paymentCount = await this.updateAndGetPaymentCount(registration.id);
+      const currentStatusIsCompleted =
+        await this.setStatusToCompleteIfApplicable({
+          registration,
+          programId,
+          paymentCount,
+        });
+
       // Added this check to avoid a bit of processing time if the status is the same
-      if (
-        oldRegistration.registrationStatus !== registration.registrationStatus
-      ) {
+      if (currentStatusIsCompleted) {
         await this.eventsService.createFromRegistrationViews(
-          {
-            id: oldRegistration.id,
-            status: oldRegistration.registrationStatus ?? undefined,
-          },
           {
             id: registration.id,
             status: registration.registrationStatus ?? undefined,
+          },
+          {
+            id: registration.id,
+            status: RegistrationStatusEnum.completed,
           },
           {
             explicitRegistrationPropertyNames: ['status'],
@@ -168,39 +168,52 @@ export class TransactionJobsHelperService {
     return await this.transactionScopedRepository.save(transaction);
   }
 
-  private async updatePaymentCountAndStatusInRegistration(
-    registration: RegistrationEntity,
-    programId: number,
-  ): Promise<void> {
+  private async updateAndGetPaymentCount(
+    registrationId: number,
+  ): Promise<number> {
+    const paymentCount =
+      await this.latestTransactionRepository.getPaymentCount(registrationId);
+
+    await this.registrationScopedRepository.updateUnscoped(registrationId, {
+      paymentCount,
+    });
+    return paymentCount;
+  }
+
+  private async setStatusToCompleteIfApplicable({
+    registration,
+    programId,
+    paymentCount,
+  }: {
+    registration: RegistrationEntity;
+    programId: number;
+    paymentCount: number;
+  }): Promise<boolean> {
     const program = await this.programRepository.findByIdOrFail(programId);
 
-    const paymentCount = await this.latestTransactionRepository.getPaymentCount(
-      registration.id,
-    );
-
-    let updateData: {
-      paymentCount: number;
-      registrationStatus?: RegistrationStatusEnum;
-    };
-    if (
-      program.enableMaxPayments &&
-      registration.maxPayments &&
-      paymentCount >= registration.maxPayments
-    ) {
-      updateData = {
-        paymentCount: (registration.paymentCount || 0) + 1,
-        registrationStatus: RegistrationStatusEnum.completed,
-      };
-    } else {
-      updateData = {
-        paymentCount,
-      };
+    if (!program.enableMaxPayments) {
+      return false;
     }
 
-    await this.registrationScopedRepository.updateUnscoped(
-      registration.id,
-      updateData,
-    );
+    // registration.maxPayments can only be a positive integer or null
+    // This situation will only occur when enableMaxPayments is turned on after
+    // the registration was created.
+    if (
+      registration.maxPayments === null ||
+      registration.maxPayments === undefined
+    ) {
+      return false;
+    }
+
+    if (paymentCount < registration.maxPayments) {
+      return false;
+    }
+
+    await this.registrationScopedRepository.updateUnscoped(registration.id, {
+      registrationStatus: RegistrationStatusEnum.completed,
+    });
+
+    return true;
   }
 
   public async createMessageAndAddToQueue({
