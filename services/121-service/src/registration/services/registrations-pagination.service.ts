@@ -355,11 +355,16 @@ export class RegistrationsPaginationService {
     const filterObject = {};
     for (const r of attributeRelations) {
       if (r.type === RegistrationAttributeTypes.numeric) {
-        filterObject[r.name] = AllowedFilterOperatorsNumber;
+        filterObject[r.name] = [
+          ...AllowedFilterOperatorsNumber,
+          FilterSuffix.NOT,
+        ];
       } else {
-        filterObject[r.name] = AllowedFilterOperatorsString;
+        filterObject[r.name] = [
+          ...AllowedFilterOperatorsString,
+          FilterSuffix.NOT,
+        ];
       }
-      filterObject[r.name].push(FilterSuffix.NOT);
     }
     return filterObject;
   }
