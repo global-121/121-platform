@@ -78,15 +78,15 @@ export class ProjectMonitoringPageComponent {
       return;
     }
 
-    if (!metricsData.totalBudget && metricsData.spentMoney) {
-      return -metricsData.spentMoney;
+    if (!metricsData.totalBudget && metricsData.cashDisbursed) {
+      return -metricsData.cashDisbursed;
     }
 
     if (!metricsData.totalBudget) {
       return;
     }
 
-    return metricsData.totalBudget - metricsData.spentMoney;
+    return metricsData.totalBudget - metricsData.cashDisbursed;
   });
 
   readonly latestPaymentNumber = computed(() => {
