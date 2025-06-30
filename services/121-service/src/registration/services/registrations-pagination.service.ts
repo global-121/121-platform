@@ -490,12 +490,24 @@ export class RegistrationsPaginationService {
           HttpStatus.BAD_REQUEST,
         );
     }
-    const wrapNot = (cond: string): string =>
-      notFilter
-        ? `(NOT (${cond}) OR ${uniqueJoinId}.${columnName} is NULL)` // This is needed to also filter on registrations that do not have this attribute
-        : cond;
+    if (notFilter) {
+      // If notFilter is true, we need to wrap the condition in a NOT clause
+      condition = this.wrapNot({ condition, uniqueJoinId, columnName });
+    }
 
-    return queryBuilder.andWhere(wrapNot(condition), parameters);
+    return queryBuilder.andWhere(condition, parameters);
+  }
+
+  private wrapNot({
+    condition,
+    uniqueJoinId,
+    columnName,
+  }: {
+    condition: string;
+    uniqueJoinId: string;
+    columnName: string;
+  }): string {
+    return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} is NULL)`;
   }
 
   private whereRegistrationDataIsOneOfIds(
