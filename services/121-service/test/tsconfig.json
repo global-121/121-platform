@@ -1,6 +1,8 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "allowJs": false,
+    "checkJs": false,
     "types": ["node", "jest", "supertest", "Multer"]
   },
   "exclude": ["../node_modules", "../dist", "../src/**/*"],

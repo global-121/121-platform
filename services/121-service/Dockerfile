@@ -22,4 +22,4 @@ FROM base AS development
 
 COPY . .
 
-# Starting the node process happens in docker-compose-development.yml
+CMD ["npm", "run", "start:dev"]

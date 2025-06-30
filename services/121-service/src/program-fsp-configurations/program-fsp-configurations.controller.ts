@@ -169,7 +169,7 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Create properties for a Program Fsp Configuration. See ${EXTERNAL_API.baseApiUrl}/fsps for allowed properties per Fsp.`,
+    summary: `Create properties for a Program FSP Configuration. See ${EXTERNAL_API.rootApi}/fsps for allowed properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -216,7 +216,7 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Update a single property for a Program Fsp Configuration.. See ${EXTERNAL_API.baseApiUrl}/fsps for allowed properties per Fsp.`,
+    summary: `Update a single property for a Program FSP Configuration.. See ${EXTERNAL_API.rootApi}/fsps for allowed properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -264,7 +264,7 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: `Delete a single Program Fsp Configuration property. See ${EXTERNAL_API.baseApiUrl}/fsps for required properties per Fsp.`,
+    summary: `Delete a single Program FSP Configuration property. See ${EXTERNAL_API.rootApi}/fsps for required properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({

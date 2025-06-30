@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { EventEmitter } from 'events';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import {
   InterfaceScript,
   ScriptsModule,
@@ -44,6 +45,7 @@ function confirmRun(scriptName): any {
     process.stdin.pause();
     if (result !== 'y') {
       console.log('Operation aborted.');
+      // eslint-disable-next-line n/no-process-exit -- User-initiated exit
       process.exit();
       return;
     } else {
@@ -69,7 +71,7 @@ function main(): void {
   try {
     const name = process.argv[2];
 
-    if (name === 'seed-prod' || process.env.NODE_ENV === 'development') {
+    if (name === 'seed-prod' || IS_DEVELOPMENT) {
       runScript(name).catch((e) => {
         console.log(e);
       });
