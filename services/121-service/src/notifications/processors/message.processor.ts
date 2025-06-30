@@ -3,9 +3,9 @@ import { Job } from 'bull';
 
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageService } from '@121-service/src/notifications/message.service';
-import { CreateMessageQueueNames } from '@121-service/src/queues-registry/enum/create-message-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 
-@Processor(CreateMessageQueueNames.replyOnIncoming)
+@Processor(QueueNames.createMessageReplyOnIncoming)
 export class MessageProcessorReplyOnIncoming {
   constructor(private readonly messageService: MessageService) {}
 
@@ -15,7 +15,7 @@ export class MessageProcessorReplyOnIncoming {
   }
 }
 
-@Processor(CreateMessageQueueNames.smallBulk)
+@Processor(QueueNames.createMessageSmallBulk)
 export class MessageProcessorSmallBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -25,7 +25,7 @@ export class MessageProcessorSmallBulk {
   }
 }
 
-@Processor(CreateMessageQueueNames.mediumBulk)
+@Processor(QueueNames.createMessageMediumBulk)
 export class MessageProcessorMediumBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -35,7 +35,7 @@ export class MessageProcessorMediumBulk {
   }
 }
 
-@Processor(CreateMessageQueueNames.largeBulk)
+@Processor(QueueNames.createMessageLargeBulk)
 export class MessageProcessorLargeBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -45,7 +45,7 @@ export class MessageProcessorLargeBulk {
   }
 }
 
-@Processor(CreateMessageQueueNames.lowPriority)
+@Processor(QueueNames.createMessageLowPriority)
 export class MessageProcessorLowPriority {
   constructor(private readonly messageService: MessageService) {}
 
