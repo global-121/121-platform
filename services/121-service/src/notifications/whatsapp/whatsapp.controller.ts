@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -30,6 +39,9 @@ export class WhatsappController {
       'Url for callbacks from Twilio triggered by a GET request to /notifications/whatsapp/templates',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('templates')
   public async storeTemplateTestResult(
     @Body() callbackData: TwilioStatusCallbackDto,

@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -22,6 +29,9 @@ export class MessageIncomingController {
     summary: 'Status callback used by Twilio to notify us of WhatsApp status.',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('whatsapp/status')
   public async addWhatsappStatusCallbackToQueue(
     @Body() callbackData: TwilioStatusCallbackDto,
@@ -37,6 +47,9 @@ export class MessageIncomingController {
       'Status callback used by Twilio to forward incoming messages to us',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('whatsapp/incoming')
   public async handleIncomingWhatsapp(
     @Body() callbackData: TwilioIncomingCallbackDto,
@@ -51,6 +64,9 @@ export class MessageIncomingController {
     summary: 'Status callback used by Twilio to notify us of SMS status.',
   })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   // TODO: can this endpoint+method be combind with whatsapp/status, as adding to the queue has the same logic for both?
   @Post('sms/status')
   public async addSmsStatusCallbackToQueue(

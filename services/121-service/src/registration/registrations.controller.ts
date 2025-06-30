@@ -17,6 +17,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -111,6 +113,9 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiBody({ isArray: true, type: ImportRegistrationsDto })
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Post('programs/:programId/registrations')
   public async importRegistrationsJSON(
     @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
@@ -176,6 +181,9 @@ export class RegistrationsController {
     summary: `Bulk update registration using a CSV file. The columns in the CSV file should contain at least referenceId and the columns you want to update. If you leave a cell empty the corresponding registration data will be update with an empty string. Max file length is 100k rows. We do not support updating phone numbers or referenceId.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  ) // Registrations have dynamic attributes, so we cannot use whitelist
   @Patch('programs/:programId/registrations')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_WITH_REASON_API_FORMAT)
@@ -360,6 +368,10 @@ export class RegistrationsController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
+  @UsePipes(
+    new ValidationPipe({ whitelist: false, forbidNonWhitelisted: false }),
+  )
+  // Registrations have dynamic attributes, so we cannot use whitelist
   //Note: this endpoint must be placed below /programs/:programId/registrations/status to avoid conflict
   @Patch('programs/:programId/registrations/:referenceId')
   public async updateRegistration(
