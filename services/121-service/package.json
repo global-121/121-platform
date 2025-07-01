@@ -117,7 +117,7 @@
     "jest": "^29.7.0",
     "jest-ci-spec-reporter": "^1.0.4",
     "knip": "^5.40.0",
-    "nodemon": "^3.1.7",
+    "nodemon": "^3.1.10",
     "prettier": "^3.6.1",
     "supertest": "^7.0.0",
     "ts-jest": "^29.3.4"

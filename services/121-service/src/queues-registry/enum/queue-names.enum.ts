@@ -5,10 +5,12 @@ export enum QueueNames {
   transactionJobsCommercialBankEthiopia = 'commercialBankEthiopia-transaction-jobs',
   transactionJobsSafaricom = 'safaricom-transaction-jobs',
   transactionJobsNedbank = 'nedbank-transaction-jobs',
+  transactionJobsOnafriq = 'onafriq-transaction-jobs',
 
   // payment callback jobs
   paymentCallbackSafaricomTransfer = 'safaricomTransferCallback',
   paymentCallbackSafaricomTimeout = 'safaricomTimeoutCallback',
+  paymentCallbackOnafriq = 'onafriqCallback',
 
   // create message jobs
   createMessageReplyOnIncoming = 'replyOnIncoming',

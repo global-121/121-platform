@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OnafriqApiHelperService processCallServiceResponse to return duplicate thirdPartyTransId error status and message if API errorCode indicating duplicate thirdPartyTransId 1`] = `"Error: duplicate thirdPartyTransId error for thirdPartyTransId mocked-third-party-trans-id"`;
+
+exports[`OnafriqApiHelperService processCallServiceResponse to return generic error status and right error message if other API errorCode 1`] = `"Error: 101 - Rejected - Other error"`;
