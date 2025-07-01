@@ -1,7 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import * as https from 'https';
 
-import { DEBUG, EXTERNAL_API } from '@121-service/src/config';
+import { EXTERNAL_API, IS_DEVELOPMENT } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
 import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
 import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
@@ -11,9 +12,9 @@ import { CallServiceResult } from '@121-service/src/payments/fsp-integration/ona
 import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.helper.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-const onafriqApiUrl = !!process.env.MOCK_ONAFRIQ
-  ? `${process.env.MOCK_SERVICE_URL}api/fsp/onafriq`
-  : `${process.env.ONAFRIQ_API_URL}hub/async`;
+const onafriqApiUrl = env.MOCK_ONAFRIQ
+  ? `${env.MOCK_SERVICE_URL}api/fsp/onafriq`
+  : `${env.ONAFRIQ_API_URL}hub/async`;
 
 @Injectable()
 export class OnafriqApiService {
@@ -33,19 +34,19 @@ export class OnafriqApiService {
   public async subscribeWebhook(): Promise<
     OnafriqApiWebhookSubscribeResponseBody | undefined
   > {
-    if (process.env.MOCK_ONAFRIQ) {
+    if (env.MOCK_ONAFRIQ) {
       return; // No need to subscribe to webhook in mock mode
     }
 
     const webhookSubscribeUrl = `${onafriqApiUrl}/api/webhook/subscribe`;
     const payload = {
-      corporateCode: process.env.ONAFRIQ_CORPORATE_CODE,
-      callbackUrl: `${EXTERNAL_API.baseApiUrl}fsps/onafriq/callback`,
+      corporateCode: env.ONAFRIQ_CORPORATE_CODE,
+      callbackUrl: `${EXTERNAL_API.rootApi}/fsps/onafriq/callback`,
     };
     const headers = [
       {
         name: 'password',
-        value: process.env.ONAFRIQ_PASSWORD,
+        value: env.ONAFRIQ_PASSWORD,
       },
     ];
 
@@ -54,7 +55,7 @@ export class OnafriqApiService {
         webhookSubscribeUrl,
         payload,
         headers,
-        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
     if (status !== HttpStatus.OK || data?.message !== 'Success') {
       return { status, statusText, data };
@@ -67,7 +68,7 @@ export class OnafriqApiService {
         webhookUpdateUrl,
         payload,
         headers,
-        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       ));
     return { status, statusText, data };
   }
@@ -111,7 +112,7 @@ export class OnafriqApiService {
         callServiceUrl,
         payload,
         undefined, // headers,
-        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
     } catch (error) {
       console.error('Failed to make Onafriq callService API call', error);

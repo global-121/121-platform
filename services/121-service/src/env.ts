@@ -209,6 +209,18 @@ export const env = createEnv({
       .url()
       .optional()
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
+
+    // FSP: Onafriq
+    MOCK_ONAFRIQ: z.stringbool().default(false),
+    ONAFRIQ_CORPORATE_CODE: z.string().optional(),
+    ONAFRIQ_PASSWORD: z.string().optional(),
+    ONAFRIQ_UNIQUE_KEY: z.string().optional(),
+    ONAFRIQ_API_URL: z
+      .url()
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+    ONAFRIQ_CURRENCY_CODE: z.string().length(3).optional(),
+    ONAFRIQ_COUNTRY_CODE: z.string().length(2).optional(),
   },
 
   // We don't use client-side ENV-variables in the same way as in the services

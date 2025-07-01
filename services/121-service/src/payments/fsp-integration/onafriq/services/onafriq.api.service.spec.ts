@@ -91,7 +91,6 @@ describe('OnafriqApiService', () => {
 
   describe('subscribeWebhook', () => {
     it('should call post twice and return the second response on success', async () => {
-      process.env.MOCK_ONAFRIQ = '';
       const firstResponse = {
         status: HttpStatus.OK,
         statusText: 'OK',
@@ -112,7 +111,6 @@ describe('OnafriqApiService', () => {
     });
 
     it('should return after first post if not 200 or message not Success', async () => {
-      process.env.MOCK_ONAFRIQ = '';
       const firstResponse = {
         status: HttpStatus.BAD_REQUEST,
         statusText: 'Bad Request',
