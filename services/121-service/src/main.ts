@@ -26,7 +26,7 @@ import appInsights = require('applicationinsights');
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`
- * The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extention "bierner.markdown-mermaid"
+ * The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extension "bierner.markdown-mermaid"
  * See: https://github.com/jmcdo29/nestjs-spelunker
  */
 function generateModuleDependencyGraph(app: INestApplication): void {

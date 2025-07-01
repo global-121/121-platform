@@ -4,7 +4,7 @@ import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
 export const env = createEnv({
-  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
+  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at least once)
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 
