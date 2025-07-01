@@ -5,7 +5,7 @@ import { z } from 'zod/v4';
 
 // See: https://env.t3.gg/docs/core
 export const env = createEnv({
-  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at leas once)
+  // eslint-disable-next-line n/no-process-env -- We need to give access to the actual values (at least once)
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 
@@ -18,7 +18,7 @@ export const env = createEnv({
    *   See, for built-in possibilities: https://zod.dev/api
    * - Use `.optional()` if the service should be able to start-up without any value set.
    *   This applies to non-critical features, but also for ANY FSP-related variables!
-   *   ANY FSP should be concidered "only optional", so thay each instance of the platform ONLY has to set the FSP-related values that are in use.
+   *   ANY FSP should be considered "only optional", so that each instance of the platform ONLY has to set the FSP-related values that are in use.
    * - Use `.default(value)` ONLY if there is a safe, generic value available that can be used in production.
    * - If a valid/unique value IS required for the service to start-up,
    *   or MUST be set to run all (API/E2E-)tests,
