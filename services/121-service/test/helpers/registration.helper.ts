@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { isMatch } from 'lodash';
 import * as request from 'supertest';
 
@@ -270,7 +271,7 @@ export function getRegistrations({
     .send();
 }
 
-export async function changeRegistrationStatus({
+async function changeRegistrationStatus({
   programId,
   referenceIds,
   status,
@@ -341,6 +342,10 @@ export async function awaitChangeRegistrationStatus({
     accessToken,
     options,
   });
+  // If the changeRegistrationStatus throws an error, it means that the status change is not allowed/succesful so we don't need to wait for it
+  if (result.status !== HttpStatus.ACCEPTED) {
+    return result;
+  }
 
   await waitForStatusChangeToComplete(
     programId,
