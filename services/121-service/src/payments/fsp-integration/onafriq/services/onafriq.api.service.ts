@@ -104,16 +104,15 @@ export class OnafriqApiService {
   private async makeCallServiceCallAndValidateResponse(
     payload: OnafriqApiCallServiceRequestBody,
   ): Promise<OnafriqApiCallServiceResponseBody> {
-    let rawResponse: unknown;
+    let response: unknown;
     try {
       const callServiceUrl = `${onafriqApiUrl}/callService`;
-      rawResponse =
-        await this.httpService.post<OnafriqApiCallServiceResponseBody>(
-          callServiceUrl,
-          payload,
-          undefined, // headers,
-          DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
-        );
+      response = await this.httpService.post<unknown>(
+        callServiceUrl,
+        payload,
+        undefined, // headers,
+        DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+      );
     } catch (error) {
       console.error('Failed to make Onafriq callService API call', error);
       throw new OnafriqError(
@@ -124,15 +123,15 @@ export class OnafriqApiService {
 
     if (
       !this.onafriqApiHelperService.isOnafriqApiCallServiceResponseBody(
-        rawResponse,
+        response,
       )
     ) {
-      const errorMessage = `Error: Invalid Onafriq API response structure. ${this.onafriqApiHelperService.serializeErrorResponseData(rawResponse)}`;
+      const errorMessage = `Error: Invalid Onafriq API response structure. ${this.onafriqApiHelperService.serializeErrorResponseData(response)}`;
       throw new OnafriqError(
         errorMessage,
         OnafriqApiResponseStatusType.genericError,
       );
     }
-    return rawResponse;
+    return response;
   }
 }
