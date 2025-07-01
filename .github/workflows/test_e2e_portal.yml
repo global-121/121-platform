@@ -52,9 +52,8 @@ jobs:
           cp services/.env.example services/.env
 
       - name: Run Services with Docker
-        working-directory: ./services
         run: |
-          docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300
+          npm run start:services:ci
 
       - name: Run Portal
         working-directory: ./interfaces/portal

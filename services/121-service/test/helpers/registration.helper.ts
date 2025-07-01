@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { isMatch } from 'lodash';
 import * as request from 'supertest';
 
@@ -270,7 +271,7 @@ export function getRegistrations({
     .send();
 }
 
-export async function changeRegistrationStatus({
+async function changeRegistrationStatus({
   programId,
   referenceIds,
   status,
@@ -341,6 +342,10 @@ export async function awaitChangeRegistrationStatus({
     accessToken,
     options,
   });
+  // If the changeRegistrationStatus throws an error, it means that the status change is not allowed/succesful so we don't need to wait for it
+  if (result.status !== HttpStatus.ACCEPTED) {
+    return result;
+  }
 
   await waitForStatusChangeToComplete(
     programId,
@@ -363,6 +368,10 @@ export async function waitForStatusChangeToComplete(
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     const eventsResult = await getEvents({ programId, accessToken });
+    if (!eventsResult?.body || !Array.isArray(eventsResult.body)) {
+      await waitFor(200);
+      continue;
+    }
     const filteredEvents = eventsResult.body.filter(
       (event) =>
         event.type === EventEnum.registrationStatusChange &&
@@ -627,14 +636,20 @@ export async function getMessageHistoryUntilX(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
+  paymentNr = 1,
+  amount = 20,
+  completeStatusses: TransactionStatusEnum[] = [
+    TransactionStatusEnum.success,
+    TransactionStatusEnum.waiting,
+  ],
 ): Promise<void> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
 
   await doPayment({
     programId,
-    paymentNr: 1,
-    amount: 20,
+    paymentNr,
+    amount,
     referenceIds: [],
     accessToken,
     filter: {
@@ -649,10 +664,7 @@ export async function seedPaidRegistrations(
     paymentReferenceIds: registrationReferenceIds,
     accessToken,
     maxWaitTimeMs: 30_000,
-    completeStatusses: [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.waiting,
-    ],
+    completeStatusses,
   });
 }
 

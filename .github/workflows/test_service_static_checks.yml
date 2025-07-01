@@ -1,6 +1,6 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
-name: 'Test Service: Code'
+name: 'Test Service: Static Checks'
 
 on:
   workflow_dispatch:
@@ -8,20 +8,19 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - '.github/workflows/test_service_code.yml'
-      - '.github/actions/build-service/action.yml'
-      - 'services/121-service/**'
+      - .github/workflows/test_service_code.yml
+      - .github/actions/build-service/action.yml
+      - services/121-service/**
   push:
     branches:
-      - 'release/*'
-      - 'hotfix/*'
+      - main
     paths:
-      - '.github/workflows/test_service_code.yml'
-      - '.github/actions/build-service/action.yml'
-      - 'services/121-service/**'
+      - .github/workflows/test_service_code.yml
+      - .github/actions/build-service/action.yml
+      - services/121-service/**
 
 env:
-  workingDirectory: 'services/121-service/'
+  workingDirectory: services/121-service/
 
 jobs:
   test:
@@ -53,18 +52,3 @@ jobs:
       - name: Check for TS errors
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run typecheck'
-
-      - name: Unit-Test
-        working-directory: ${{ env.workingDirectory }}
-        env:
-          NODE_ENV: development
-          TWILIO_SID: AC
-          TWILIO_AUTHTOKEN: test
-          TWILIO_WHATSAPP_NUMBER: 15005550006
-          MOCK_TWILIO: TRUE
-          MOCK_INTERSOLVE: TRUE
-          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
-          MOCK_NEDBANK: TRUE
-          NEDBANK_CERTIFICATE_PATH: test
-
-        run: 'npm run test:unit:all'

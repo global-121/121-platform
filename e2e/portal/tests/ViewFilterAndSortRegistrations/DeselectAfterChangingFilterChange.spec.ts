@@ -40,7 +40,10 @@ test('Registration table should clear row selections when filter criteria change
   await test.step('should clear single row selection when applying a filter', async () => {
     await tableComponent.selectRowByName('Jan Janssen');
     expect(await tableComponent.getSelectedRowsCount()).toBe(1);
-    await tableComponent.filterColumnByText('Name', 'Jan');
+    await tableComponent.filterColumnByText({
+      columnName: 'Name',
+      filterText: 'Jan',
+    });
     expect(await tableComponent.getSelectedRowsCount()).toBe(0);
   });
 
@@ -52,7 +55,10 @@ test('Registration table should clear row selections when filter criteria change
   });
 
   await test.step('should clear single row selection when clearing all filters', async () => {
-    await tableComponent.filterColumnByText('Name', 'Jan');
+    await tableComponent.filterColumnByText({
+      columnName: 'Name',
+      filterText: 'Jan',
+    });
     await tableComponent.selectRowByName('Jan Janssen');
     expect(await tableComponent.getSelectedRowsCount()).toBe(1);
     await tableComponent.clearAllFilters();
@@ -62,7 +68,10 @@ test('Registration table should clear row selections when filter criteria change
   await test.step('should clear all rows selection when applying a filter', async () => {
     await tableComponent.selectAll();
     expect(await tableComponent.getSelectedRowsCount()).toBe(4);
-    await tableComponent.filterColumnByText('Name', 'Jan');
+    await tableComponent.filterColumnByText({
+      columnName: 'Name',
+      filterText: 'Jan',
+    });
     expect(await tableComponent.getSelectedRowsCount()).toBe(0);
   });
 });

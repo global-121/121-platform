@@ -307,14 +307,15 @@ export async function waitForPaymentTransactionsToComplete({
       registrationReferenceId: null,
       accessToken,
     });
-
-    // Check if all transactions have a "complete" status
-    allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
-      const transaction = paymentTransactions.body.find(
-        (txn) => txn.registrationReferenceId === referenceId,
-      );
-      return transaction && completeStatusses.includes(transaction.status);
-    });
+    if (Array.isArray(paymentTransactions?.body)) {
+      // Check if all transactions have a "complete" status
+      allTransactionsComplete = paymentReferenceIds.every((referenceId) => {
+        const transaction = paymentTransactions.body.find(
+          (txn) => txn.registrationReferenceId === referenceId,
+        );
+        return transaction && completeStatusses.includes(transaction.status);
+      });
+    }
 
     // If not all transactions are successful, wait for a short interval before checking again
     if (!allTransactionsComplete) {

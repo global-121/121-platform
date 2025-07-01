@@ -45,6 +45,18 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       },
     }),
     BullModule.registerQueue({
+      name: QueueNames.transactionJobsOnafriq,
+      processors: [
+        {
+          path: 'src/transaction-jobs/processors/transaction-jobs-onafriq.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    BullModule.registerQueue({
       name: QueueNames.transactionJobsCommercialBankEthiopia,
       processors: [
         {
@@ -87,6 +99,19 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       processors: [
         {
           path: 'src/payments/reconciliation/safaricom-reconciliation/processors/safaricom-timeout-callback-job.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 20, // Max number of jobs processed
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
+    // Onafriq Callback Queue
+    BullModule.registerQueue({
+      name: QueueNames.paymentCallbackOnafriq,
+      processors: [
+        {
+          path: 'src/payments/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor.ts',
         },
       ],
       limiter: {

@@ -337,6 +337,12 @@ We are using `jasmine` for executing unit tests within `interfaces` and `jest` w
 
 See the [Guide: Writing tests](./guide-Writing-Tests.md)
 
+### Test Coverage
+
+Test coverage is collected and reported to the [QLTY dashboard](https://qlty.sh/gh/global-121/projects/121-platform). This information is then used to determine whether a PR is decreasing test coverage or not.
+
+Refer to the README file of the [121-service](/services/121-service/README.md#test-coverage) or the [portal interface](/interfaces/portal/README.md#test-coverage) for more detailed information on how each coverage report is generated.
+
 ---
 
 ## Releases
@@ -376,7 +382,6 @@ This is how we create and publish a new release of the 121-platform.
   - ⚠️ **Note:**  
     Start with deployment of the "**_Demo_**"-instance.  
     This will **_also_** deploy the Mock-Service to its production-environment.
-  - The "Help a Child" instance should be skipped. They are using an FSP-integration we don't support anymore, so we can't roll out new code to their environment.
 - Send the "Inform stakeholders"-message to Teams in the necessary locations.
 
 ### Patch/Hotfix Checklist

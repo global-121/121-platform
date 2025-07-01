@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as https from 'https';
@@ -63,7 +64,7 @@ describe('NedbankApiClientService', () => {
           Links: { Self: '' },
           Meta: {},
         },
-        status: 201,
+        status: HttpStatus.CREATED,
         statusText: 'OK',
         headers: {},
         config: {},
@@ -120,7 +121,7 @@ describe('NedbankApiClientService', () => {
             { ErrorCode: 'NB.APIM.Field.Invalid', Message: 'Error message' },
           ],
         },
-        status: 400,
+        status: HttpStatus.BAD_REQUEST,
         statusText: 'Bad Request',
         headers: {},
         config: {},

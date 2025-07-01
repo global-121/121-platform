@@ -90,6 +90,25 @@ To update snapshots, amend the `-- -u` option, for example:
 
 If you want all the color output Jest can give set the [`FORCE_COLOR`](https://force-color.org/) environment variable to `true` in your local development environment via the [`services/.env`](../.env.example)-file.
 
+#### Test coverage
+
+For the sake of this section of the documentation, it is assumed that you understand how unit testing and integration testing are setup on the 121-service.
+
+Test coverage is collected for unit and integration tests separately, and then combined.
+
+This can be done manually by following a few steps:
+
+```bash
+cd services/121-service
+# the following two commands can be done in parallel in separate terminals
+npm run test:unit:coverage
+npm run test:integration:coverage
+# generate a report that combines the two coverage reports into a single one
+npm run coverage
+# (optional) open the combined report in your browser
+npm run open-coverage-report
+```
+
 ### Debugging
 
 To enter the 121-service in the terminal use: (Or use the "Exec"-tab inside Docker Desktop)

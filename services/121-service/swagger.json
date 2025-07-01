@@ -837,6 +837,11 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/fsps/onafriq/webhook/subscribe",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
@@ -932,6 +937,11 @@
   {
     "method": "post",
     "path": "/api/fsps/safaricom/timeout-callback",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/fsps/onafriq/callback",
     "params": []
   }
 ]

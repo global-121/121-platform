@@ -15,6 +15,7 @@ export enum FilterOperator {
   ILIKE = '$ilike',
   IN = '$in',
   LT = '$lt',
+  NOT = '$not',
 }
 
 export interface PaginateQuery {
@@ -50,11 +51,17 @@ export class PaginateQueryService {
     matchMode,
     isDate,
   }: { matchMode?: FilterMatchMode; isDate?: boolean } = {}): FilterOperator {
+    if (!matchMode) {
+      return FilterOperator.ILIKE;
+    }
+
     switch (matchMode) {
       case FilterMatchMode.CONTAINS:
         return FilterOperator.ILIKE;
       case FilterMatchMode.EQUALS:
         return isDate ? FilterOperator.BTW : FilterOperator.EQ;
+      case FilterMatchMode.NOT_EQUALS:
+        return FilterOperator.NOT;
       case FilterMatchMode.IN:
         return FilterOperator.IN;
       case FilterMatchMode.GREATER_THAN:
@@ -62,7 +69,8 @@ export class PaginateQueryService {
       case FilterMatchMode.LESS_THAN:
         return FilterOperator.LT;
       default:
-        return FilterOperator.ILIKE;
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string -- false negative
+        throw new Error(`Unsupported match mode: ${matchMode.toString()}`);
     }
   }
 

@@ -16,6 +16,7 @@
   "distributionDuration": 90,
   "fixedTransferValue": 17.5,
   "targetNrRegistrations": 250,
+  "budget": 10000,
   "tryWhatsAppFirst": true,
   "programRegistrationAttributes": [
     {

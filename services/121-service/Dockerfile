@@ -5,6 +5,16 @@ RUN apt-get update && apt-get install -y curl procps
 
 WORKDIR /home/node/app
 
+# This exposed port is technically not the same as the published port using Compose (we use the same number for simplicity)
+EXPOSE ${PORT_121_SERVICE}
+
+HEALTHCHECK \
+  --interval=15s \
+  --retries=15 \
+  --start-period=60s \
+  --timeout=300s \
+  CMD curl --fail http://0.0.0.0:${PORT_121_SERVICE}/api/health/health || exit 1
+
 FROM base AS production
 
 COPY ./package*.json ./
@@ -22,4 +32,4 @@ FROM base AS development
 
 COPY . .
 
-# Starting the node process happens in docker-compose-development.yml
+CMD ["npm", "run", "start:dev"]

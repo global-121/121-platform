@@ -1,20 +1,24 @@
-import { FilterOperator, PaginateConfig } from 'nestjs-paginate';
+import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
 
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 
-export const AllowedFilterOperatorsString = [
+type FilterOperatorOrSuffix = FilterOperator | FilterSuffix;
+
+export const AllowedFiltersString: FilterOperatorOrSuffix[] = [
   FilterOperator.EQ,
   FilterOperator.IN,
   FilterOperator.ILIKE,
   FilterOperator.NULL,
+  FilterSuffix.NOT,
 ];
 
-export const AllowedFilterOperatorsNumber = [
+export const AllowedFiltersNumber: FilterOperatorOrSuffix[] = [
   FilterOperator.EQ,
   FilterOperator.NULL,
   FilterOperator.GT,
   FilterOperator.LT,
   FilterOperator.BTW,
+  FilterSuffix.NOT,
 ];
 
 const dataSearchableColumn = 'data.value';
@@ -44,24 +48,24 @@ export const PaginateConfigRegistrationView: PaginateConfig<RegistrationViewEnti
       'data.value',
     ],
     filterableColumns: {
-      referenceId: AllowedFilterOperatorsString,
-      status: AllowedFilterOperatorsString,
-      id: AllowedFilterOperatorsNumber,
-      created: AllowedFilterOperatorsNumber,
-      phoneNumber: AllowedFilterOperatorsString,
-      preferredLanguage: AllowedFilterOperatorsString,
-      inclusionScore: AllowedFilterOperatorsNumber,
-      paymentAmountMultiplier: AllowedFilterOperatorsNumber,
-      fspName: AllowedFilterOperatorsString,
-      programFspConfigurationName: AllowedFilterOperatorsString,
-      programFspConfigurationLabel: AllowedFilterOperatorsString,
-      registrationProgramId: AllowedFilterOperatorsNumber,
-      maxPayments: AllowedFilterOperatorsNumber,
-      paymentCount: AllowedFilterOperatorsNumber,
-      paymentCountRemaining: AllowedFilterOperatorsNumber,
-      personAffectedSequence: AllowedFilterOperatorsString,
-      lastMessageStatus: AllowedFilterOperatorsString,
-      duplicateStatus: AllowedFilterOperatorsString,
+      referenceId: AllowedFiltersString,
+      status: AllowedFiltersString,
+      id: AllowedFiltersNumber,
+      created: AllowedFiltersNumber,
+      phoneNumber: AllowedFiltersString,
+      preferredLanguage: AllowedFiltersString,
+      inclusionScore: AllowedFiltersNumber,
+      paymentAmountMultiplier: AllowedFiltersNumber,
+      fspName: AllowedFiltersString,
+      programFspConfigurationName: AllowedFiltersString,
+      programFspConfigurationLabel: AllowedFiltersString,
+      registrationProgramId: AllowedFiltersNumber,
+      maxPayments: AllowedFiltersNumber,
+      paymentCount: AllowedFiltersNumber,
+      paymentCountRemaining: AllowedFiltersNumber,
+      personAffectedSequence: AllowedFiltersString,
+      lastMessageStatus: AllowedFiltersString,
+      duplicateStatus: AllowedFiltersString,
     },
   };
 

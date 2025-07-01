@@ -10,15 +10,15 @@
     "test": "dotenv -e ../services/.env -- k6 run"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "eslint": "^9.28.0",
+    "@eslint/js": "^9.30.0",
+    "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-n": "^17.18.0",
+    "eslint-plugin-n": "^17.20.0",
     "eslint-plugin-prettier": "^5.5.1",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.2.0",
-    "prettier": "^3.6.1"
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "dotenv-cli": "^8.0.0"

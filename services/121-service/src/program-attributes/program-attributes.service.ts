@@ -6,8 +6,8 @@ import { Equal, Repository } from 'typeorm';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
-  AllowedFilterOperatorsNumber,
-  AllowedFilterOperatorsString,
+  AllowedFiltersNumber,
+  AllowedFiltersString,
   PaginateConfigRegistrationView,
 } from '@121-service/src/registration/const/filter-operation.const';
 import { FilterAttributeDto } from '@121-service/src/registration/dto/filter-attribute.dto';
@@ -76,14 +76,14 @@ export class ProgramAttributesService {
             ] as FilterOperator[],
             isInteger:
               PaginateConfigRegistrationView.filterableColumns[name] ===
-              AllowedFilterOperatorsNumber,
+              AllowedFiltersNumber,
           });
         } else {
           // If no allowed operators are defined than the attribute is
           // registration data which is stored as a string
           filterableAttributesPerGroup.push({
             name,
-            allowedOperators: AllowedFilterOperatorsString,
+            allowedOperators: AllowedFiltersString,
             isInteger: false,
           });
         }

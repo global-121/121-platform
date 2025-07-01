@@ -23,8 +23,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
-  AllowedFilterOperatorsNumber,
-  AllowedFilterOperatorsString,
+  AllowedFiltersNumber,
+  AllowedFiltersString,
   PaginateConfigRegistrationView,
   PaginateConfigRegistrationViewNoLimit,
 } from '@121-service/src/registration/const/filter-operation.const';
@@ -351,9 +351,9 @@ export class RegistrationsPaginationService {
     const filterObject = {};
     for (const r of attributeRelations) {
       if (r.type === RegistrationAttributeTypes.numeric) {
-        filterObject[r.name] = AllowedFilterOperatorsNumber;
+        filterObject[r.name] = [...AllowedFiltersNumber];
       } else {
-        filterObject[r.name] = AllowedFilterOperatorsString;
+        filterObject[r.name] = [...AllowedFiltersString];
       }
     }
     return filterObject;
@@ -369,116 +369,172 @@ export class RegistrationsPaginationService {
     parsedFilter: ColumnsFilters;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     for (const [filterKey, filters] of Object.entries(parsedFilter)) {
-      const relationInfoArray = attributeRelations.filter(
-        (r) => r.name === filterKey,
-      );
-      const operatorTypes: FindOperatorType[] = [
-        'equal',
-        'in',
-        'ilike',
-        'isNull',
-        'moreThan',
-        'lessThan',
-        'between',
-      ];
-      for (const filter of filters) {
-        if (operatorTypes.includes(filter.findOperator.type)) {
-          const uniqueJoinId = Array.from({ length: 25 }, () =>
-            'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
-          ).join('');
-          queryBuilder.leftJoin('registration.data', uniqueJoinId);
-          queryBuilder = this.applyFilterConditionAttributes({
+      const relationInfo = attributeRelations.find((r) => r.name === filterKey);
+      if (relationInfo) {
+        for (const filter of filters) {
+          queryBuilder = this.applySingleAttributeFilter({
             queryBuilder,
-            filterType: filter.findOperator.type,
-            value: filter.findOperator.value,
-            uniqueJoinId,
+            filter,
+            relationInfo,
           });
-          queryBuilder.andWhere(
-            new Brackets((qb) => {
-              this.whereRegistrationDataIsOneOfIds(
-                relationInfoArray,
-                qb,
-                uniqueJoinId,
-              );
-            }),
-          );
         }
       }
     }
     return queryBuilder;
   }
 
-  private applyFilterConditionAttributes({
+  private applySingleAttributeFilter({
     queryBuilder,
-    filterType,
-    value,
-    uniqueJoinId,
+    filter,
+    relationInfo: relationInfo,
   }: {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    filterType: FindOperatorType;
-    value: any;
+    filter: Filter;
+    relationInfo: RegistrationDataInfo;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
+    const operatorTypes: FindOperatorType[] = [
+      'equal',
+      'in',
+      'ilike',
+      'isNull',
+      'moreThan',
+      'lessThan',
+      'between',
+    ];
+
+    const notOperatorType: FindOperatorType = 'not';
+
+    const findOperator = filter.findOperator;
+
+    const notFilter = findOperator.type === notOperatorType;
+
+    // This is needed to support nested find operators like $not:$ilike
+    const findOperatorType = findOperator.child?.type || findOperator.type;
+
+    if (operatorTypes.includes(findOperatorType)) {
+      const uniqueJoinId = Array.from({ length: 25 }, () =>
+        'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
+      ).join('');
+      queryBuilder.leftJoin(
+        'registration.data', // relation path
+        uniqueJoinId, // alias
+        `${uniqueJoinId}."programRegistrationAttributeId" = ${relationInfo.relation.programRegistrationAttributeId}`,
+      );
+      queryBuilder = this.applyFilterConditionAttributes({
+        queryBuilder,
+        findOperatorType,
+        value: findOperator.value,
+        uniqueJoinId,
+        notFilter,
+      });
+    }
+    return queryBuilder;
+  }
+
+  private applyFilterConditionAttributes({
+    queryBuilder,
+    findOperatorType,
+    value,
+    uniqueJoinId,
+    notFilter,
+  }: {
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
+    findOperatorType: FindOperatorType;
+    value: unknown;
     uniqueJoinId: string;
+    notFilter: boolean;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const columnName = 'value';
-    switch (filterType) {
+    let condition: string;
+    let parameters: Record<string, unknown> = {};
+
+    switch (findOperatorType) {
       case 'equal':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName} = :value${uniqueJoinId}`,
-          { [`value${uniqueJoinId}`]: value },
-        );
+        condition = `${uniqueJoinId}.${columnName} = :value${uniqueJoinId}`;
+        parameters = { [`value${uniqueJoinId}`]: value };
+        break;
       case 'in':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName} IN (:...value${uniqueJoinId})`,
-          { [`value${uniqueJoinId}`]: value },
-        );
+        condition = `${uniqueJoinId}.${columnName} IN (:...value${uniqueJoinId})`;
+        parameters = { [`value${uniqueJoinId}`]: value };
+        break;
       case 'ilike':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName} ILIKE :value${uniqueJoinId}`,
-          { [`value${uniqueJoinId}`]: `%${value}%` },
-        );
+        condition = `${uniqueJoinId}.${columnName} ILIKE :value${uniqueJoinId}`;
+        parameters = { [`value${uniqueJoinId}`]: `%${value}%` };
+        break;
       case 'isNull':
-        return queryBuilder.andWhere(`${uniqueJoinId}.${columnName} IS NULL`);
+        condition = `${uniqueJoinId}.${columnName} IS NULL`;
+        break;
       case 'moreThan':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName}::numeric > :value${uniqueJoinId}`,
-          { [`value${uniqueJoinId}`]: value },
-        );
+        condition = `${uniqueJoinId}.${columnName}::numeric > :value${uniqueJoinId}`;
+        parameters = { [`value${uniqueJoinId}`]: value };
+        break;
       case 'lessThan':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName}::numeric < :value${uniqueJoinId}`,
-          { [`value${uniqueJoinId}`]: value },
-        );
+        condition = `${uniqueJoinId}.${columnName}::numeric < :value${uniqueJoinId}`;
+        parameters = { [`value${uniqueJoinId}`]: value };
+        break;
       case 'between':
-        return queryBuilder.andWhere(
-          `${uniqueJoinId}.${columnName}::numeric BETWEEN :value${uniqueJoinId}1 AND :value${uniqueJoinId}2`,
-          {
-            [`value${uniqueJoinId}1`]: value[0],
-            [`value${uniqueJoinId}2`]: value[1],
-          },
-        );
+        condition = `${uniqueJoinId}.${columnName}::numeric BETWEEN :value${uniqueJoinId}1 AND :value${uniqueJoinId}2`;
+        parameters = {
+          [`value${uniqueJoinId}1`]: (value as [unknown, unknown])[0],
+          [`value${uniqueJoinId}2`]: (value as [unknown, unknown])[1],
+        };
+        break;
       default:
         throw new HttpException(
-          `Filter type ${filterType} is not supported`,
+          `Find operator type ${findOperatorType} is not supported`,
           HttpStatus.BAD_REQUEST,
         );
     }
+    if (notFilter) {
+      // If notFilter is true, we need to wrap the condition in a NOT clause
+      condition = this.wrapNotOrThrow({
+        findOperatorType,
+        condition,
+        uniqueJoinId,
+        columnName,
+      });
+    }
+
+    return queryBuilder.andWhere(condition, parameters);
+  }
+
+  private wrapNotOrThrow({
+    condition,
+    uniqueJoinId,
+    columnName,
+    findOperatorType,
+  }: {
+    condition: string;
+    uniqueJoinId: string;
+    columnName: string;
+    findOperatorType: FindOperatorType;
+  }): string {
+    const nullFindOperators: FindOperatorType = 'isNull';
+    // Special case for $not:$null
+    // We do not support this for registration attribute data filters because some registration attribute data is now stored as empty string
+    // and not as null. Those would be filtered out if we would use $not:$null. Since this functionality is not used in the frontend we can throw an error here.
+    if (findOperatorType === nullFindOperators) {
+      throw new HttpException(
+        'Using $not:$null is not supported for registration attribute data filters.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // Default for all other $not filters
+    return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} IS NULL)`;
   }
 
   private whereRegistrationDataIsOneOfIds(
-    relationInfoArray: RegistrationDataInfo[],
+    relationInfo: RegistrationDataInfo,
     qb: WhereExpressionBuilder,
     uniqueJoinId: string,
   ): void {
-    let i = 0;
-    for (const relationInfo of relationInfoArray) {
-      for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
-        if (i === 0) {
-          qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-        } else {
-          qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-        }
+    const i = 0;
+    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
+      if (i === 0) {
+        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      } else {
+        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
       }
-      i++;
     }
   }
 
@@ -488,13 +544,14 @@ export class RegistrationsPaginationService {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
     attributeRelations: RegistrationDataInfo[],
   ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const relationInfoArray = attributeRelations.filter(
-      (r) => r.name === sortByKey,
-    );
+    const relationInfo = attributeRelations.find((r) => r.name === sortByKey);
+    if (!relationInfo) {
+      return queryBuilder;
+    }
     queryBuilder.leftJoin('registration.data', 'rd');
     queryBuilder.andWhere(
       new Brackets((qb) => {
-        this.whereRegistrationDataIsOneOfIds(relationInfoArray, qb, 'rd');
+        this.whereRegistrationDataIsOneOfIds(relationInfo, qb, 'rd');
       }),
     );
     queryBuilder.orderBy('rd.value', sortByValue);
