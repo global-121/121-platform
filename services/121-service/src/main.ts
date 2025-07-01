@@ -121,7 +121,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule);
 
   app.enableCors({
-    origin: IS_DEVELOPMENT,
+    origin: env.EXTERNAL_121_SERVICE_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
@@ -146,12 +146,9 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(
-      IS_DEVELOPMENT
-        ? `http://localhost:${env.PORT_121_SERVICE}`
-        : env.EXTERNAL_121_SERVICE_URL,
-    )
+    .addServer(env.EXTERNAL_121_SERVICE_URL)
     .build();
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {
     customSiteTitle: APP_TITLE,
