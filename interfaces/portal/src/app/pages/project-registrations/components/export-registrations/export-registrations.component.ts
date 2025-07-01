@@ -104,6 +104,7 @@ export class ExportRegistrationsComponent {
       this.toastService,
     ),
     onSuccess: ({ exportResult: file, filename }) => {
+      console.log('∂ success');
       this.downloadService.downloadFile({ file, filename });
     },
   }));
@@ -134,7 +135,13 @@ export class ExportRegistrationsComponent {
           return;
         }
         this.exportSelectedActionData.set(actionData);
-        this.exportSelectedDialog().askForConfirmation();
+        this.exportSelectedDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'selected-registrations',
+          },
+        });
       },
     },
     {
@@ -147,7 +154,13 @@ export class ExportRegistrationsComponent {
         });
         this.dataChangesFormGroup.controls.fromDate.setValue(undefined);
         this.dataChangesFormGroup.controls.toDate.setValue(undefined);
-        this.exportDataChangesDialog().askForConfirmation();
+        this.exportDataChangesDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'status-and-data-changes',
+          },
+        });
       },
     },
     {
