@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
@@ -53,7 +54,7 @@ describe('OnafriqApiService', () => {
 
     it('should return success status on success response', async () => {
       const validResponse = {
-        status: 200,
+        status: HttpStatus.OK,
         data: {
           totalTxSent: 1,
           noTxAccepted: 1,
@@ -92,12 +93,12 @@ describe('OnafriqApiService', () => {
     it('should call post twice and return the second response on success', async () => {
       process.env.MOCK_ONAFRIQ = '';
       const firstResponse = {
-        status: 200,
+        status: HttpStatus.OK,
         statusText: 'OK',
         data: { message: 'Success' },
       };
       const secondResponse = {
-        status: 200,
+        status: HttpStatus.OK,
         statusText: 'OK',
         data: { message: 'Success' },
       };
@@ -113,7 +114,7 @@ describe('OnafriqApiService', () => {
     it('should return after first post if not 200 or message not Success', async () => {
       process.env.MOCK_ONAFRIQ = '';
       const firstResponse = {
-        status: 400,
+        status: HttpStatus.BAD_REQUEST,
         statusText: 'Bad Request',
         data: { message: 'Error' },
       };
