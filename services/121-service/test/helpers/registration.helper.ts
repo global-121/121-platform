@@ -363,6 +363,10 @@ export async function waitForStatusChangeToComplete(
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
     const eventsResult = await getEvents({ programId, accessToken });
+    if (!eventsResult?.body || !Array.isArray(eventsResult.body)) {
+      await waitFor(200);
+      continue;
+    }
     const filteredEvents = eventsResult.body.filter(
       (event) =>
         event.type === EventEnum.registrationStatusChange &&
