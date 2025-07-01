@@ -162,7 +162,7 @@ export class ExportRegistrationsComponent {
         this.trackingService.trackEvent({
           category: TrackingCategory.export,
           action: TrackingAction.selectDropdownOption,
-          name: 'account-number-nerification',
+          name: 'account-number-verification',
         });
         this.exportAccountVerificationDialog().askForConfirmation();
       },
