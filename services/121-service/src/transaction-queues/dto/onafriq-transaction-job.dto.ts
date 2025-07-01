@@ -3,7 +3,6 @@ import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto
 export interface OnafriqTransactionJobDto extends SharedTransactionJobDto {
   readonly referenceId: string;
   readonly transactionAmount: number;
-  readonly userId: number;
   readonly bulkSize: number;
   readonly phoneNumber: string;
   readonly firstName: string;
