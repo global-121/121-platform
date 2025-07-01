@@ -43,10 +43,9 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
-
   - Install the version specified in the [`.node-version`](.node-version)-file.
-  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
 
+  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
     - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
 
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
@@ -54,13 +53,12 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
     - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows))
 
 - Install Docker
-
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
+
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
-
     - Install WSL2 Linux kernel package.  
       Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
@@ -82,7 +80,6 @@ Then install the required version of Node.js and `npm`:
 - If you use FNM: `fnm use` (And follow the prompts)
 
 - If you use NVM
-
   - On macOS/Linux: `nvm install`
 
   - On Windows: `nvm install <version in .node-version-file>`
@@ -183,18 +180,18 @@ The process is:
 2. To generate a migration-script run: `docker exec 121-service npm run migration:generate src/migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
+
 5. Do NOT import any files from our code base into your migrations. For example, do NOT import seed JSON files to get data to insert into the database, since the migration may break if ever these seed JSON files change. Instead, "hard code" the needed data in your migration file.
 6. Do NOT change migration files anymore after they have been merged to main, like commenting out parts of it, since there is a high probability this will result in bugs or faulty data on production instances. Instead, create a new migration file. The exception is bug fixing a migration file, for example if a file was imported that causes the migration to fail (see 5 above).
 7. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
 8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
 9. If ever running into issues with migrations locally, the reset process is:
-
    - Delete all tables in the `121-service` database schema
    - Restart `121-service` container
    - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
    - (Run seed)
 
-10. When creating new sequences for tables with existing data be sure to also update it using setval ([example](https://github.com/global-121/121-platform/pull/6965/files)) to the current max id.
+10. When creating new sequences for tables with existing data be sure to also update it using `setval` ([example](https://github.com/global-121/121-platform/pull/6965/files)) to the current max id.
 11. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
