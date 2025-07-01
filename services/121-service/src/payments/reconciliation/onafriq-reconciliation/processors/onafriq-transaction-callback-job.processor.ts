@@ -8,10 +8,10 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { PaymentCallbackQueueNames } from '@121-service/src/queues-registry/enum/payment-callback-queue-names.enum';
+import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(PaymentCallbackQueueNames.onafriqTransaction)
+@Processor(QueueNames.paymentCallbackOnafriq)
 export class TransactionCallbackJobProcessorOnafriq {
   constructor(
     private readonly onafriqReconciliationService: OnafriqReconciliationService,
