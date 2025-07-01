@@ -4,7 +4,6 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  changeRegistrationStatus,
   getEvents,
   getRegistrations,
   importRegistrations,
@@ -170,7 +169,7 @@ describe('change the status of a set of registrations', () => {
 
       for (const status of statusesThatRequireReason) {
         // Act
-        const updateStatusResponse = await changeRegistrationStatus({
+        const updateStatusResponse = await awaitChangeRegistrationStatus({
           programId: programIdOCW,
           referenceIds,
           status,
