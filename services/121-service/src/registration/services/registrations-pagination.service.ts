@@ -409,9 +409,9 @@ export class RegistrationsPaginationService {
     const notFilter = findOperator.type === notOperatorType;
 
     // This is needed to support nested find operators like $not:$ilike
-    const findOperatortType = findOperator.child?.type || findOperator.type;
+    const findOperatorType = findOperator.child?.type || findOperator.type;
 
-    if (operatorTypes.includes(findOperatortType)) {
+    if (operatorTypes.includes(findOperatorType)) {
       const uniqueJoinId = Array.from({ length: 25 }, () =>
         'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26)),
       ).join('');
@@ -422,7 +422,7 @@ export class RegistrationsPaginationService {
       );
       queryBuilder = this.applyFilterConditionAttributes({
         queryBuilder,
-        findOperatortType,
+        findOperatorType,
         value: findOperator.value,
         uniqueJoinId,
         notFilter,
@@ -433,13 +433,13 @@ export class RegistrationsPaginationService {
 
   private applyFilterConditionAttributes({
     queryBuilder,
-    findOperatortType,
+    findOperatorType,
     value,
     uniqueJoinId,
     notFilter,
   }: {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    findOperatortType: FindOperatorType;
+    findOperatorType: FindOperatorType;
     value: unknown;
     uniqueJoinId: string;
     notFilter: boolean;
@@ -448,7 +448,7 @@ export class RegistrationsPaginationService {
     let condition: string;
     let parameters: Record<string, unknown> = {};
 
-    switch (findOperatortType) {
+    switch (findOperatorType) {
       case 'equal':
         condition = `${uniqueJoinId}.${columnName} = :value${uniqueJoinId}`;
         parameters = { [`value${uniqueJoinId}`]: value };
@@ -481,28 +481,46 @@ export class RegistrationsPaginationService {
         break;
       default:
         throw new HttpException(
-          `Find operator type ${findOperatortType} is not supported`,
+          `Find operator type ${findOperatorType} is not supported`,
           HttpStatus.BAD_REQUEST,
         );
     }
     if (notFilter) {
       // If notFilter is true, we need to wrap the condition in a NOT clause
-      condition = this.wrapNot({ condition, uniqueJoinId, columnName });
+      condition = this.wrapNotOrThrow({
+        findOperatorType,
+        condition,
+        uniqueJoinId,
+        columnName,
+      });
     }
 
     return queryBuilder.andWhere(condition, parameters);
   }
 
-  private wrapNot({
+  private wrapNotOrThrow({
     condition,
     uniqueJoinId,
     columnName,
+    findOperatorType,
   }: {
     condition: string;
     uniqueJoinId: string;
     columnName: string;
+    findOperatorType: FindOperatorType;
   }): string {
-    return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} is NULL)`;
+    const nullFindOperators: FindOperatorType = 'isNull';
+    // Special case for $not:$null
+    // We do not support this for registration attribute data filters because some registration attribute data is now stored as empty string
+    // and not as null. Those would be filtered out if we would use $not:$null. Since this functionality is not used in the frontend we can throw an error here.
+    if (findOperatorType === nullFindOperators) {
+      throw new HttpException(
+        'Using $not:$null is not supported for registration attribute data filters.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // Default for all other $not filters
+    return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} IS NULL)`;
   }
 
   private whereRegistrationDataIsOneOfIds(

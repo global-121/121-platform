@@ -1,3 +1,5 @@
+import { HttpStatus } from '@nestjs/common';
+
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -261,7 +263,7 @@ describe('Filter registrations', () => {
       expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
     });
 
-    it('should filter on registration attribute data not present in all registrations', async () => {
+    it('should filter on registration attribute data not present in all registrations with an equal filter', async () => {
       // registrationOCW5 does not have addressHouseNumber, so it should not be filtered out
       // in the backend there is some extra logic to handle this, so we test that here
       // Act
@@ -284,6 +286,20 @@ describe('Filter registrations', () => {
         (id) => id !== registrationOCW4.referenceId,
       );
       expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
+    it('should throw bad request for $not:$null filter on registration attribute data', async () => {
+      // Act
+      const response = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.addressCity': `$not:$null`,
+        },
+      });
+      // Assert
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body.message).toMatchSnapshot();
     });
 
     it('should filter on root registration attribute', async () => {
