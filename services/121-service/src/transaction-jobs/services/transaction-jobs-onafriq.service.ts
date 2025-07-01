@@ -58,7 +58,6 @@ export class TransactionJobsOnafriqService {
     // 3. if no onafriq transaction yet, create a 121 transaction, otherwise this has already happened before
     let transactionId: number;
     if (!onafriqTransaction) {
-      const oldRegistration = structuredClone(registration);
       const transaction =
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
@@ -68,7 +67,6 @@ export class TransactionJobsOnafriqService {
             transferAmountInMajorUnit: transactionJob.transactionAmount,
             programFspConfigurationId: transactionJob.programFspConfigurationId,
             registration,
-            oldRegistration,
             isRetry: transactionJob.isRetry,
             status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
           },

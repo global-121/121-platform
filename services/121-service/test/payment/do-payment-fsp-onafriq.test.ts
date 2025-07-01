@@ -40,7 +40,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.onafriqProgram);
+    await resetDB(SeedScript.onafriqProgram, __filename);
     accessToken = await getAccessToken();
     registrationOnafriq = { ...baseRegistrationOnafriq };
   });
