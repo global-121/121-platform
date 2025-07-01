@@ -72,6 +72,9 @@ graph LR
   SafaricomModule-->RedisModule
   SafaricomModule-->QueuesRegistryModule
   PaymentsModule-->NedbankModule
+  PaymentsModule-->OnafriqModule
+  OnafriqModule-->RedisModule
+  OnafriqModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -116,6 +119,7 @@ graph LR
   TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
+  TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->RegistrationsModule
   TransactionJobsModule-->ProgramModule
   TransactionJobsModule-->TransactionsModule
@@ -137,4 +141,8 @@ graph LR
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->OnafriqModule
+  OnafriqReconciliationModule-->RedisModule
+  OnafriqReconciliationModule-->TransactionsModule
+  OnafriqReconciliationModule-->QueuesRegistryModule
 ```

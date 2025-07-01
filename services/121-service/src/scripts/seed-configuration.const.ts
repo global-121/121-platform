@@ -76,6 +76,16 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
     ],
   },
   {
+    name: SeedScript.onafriqProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'program-onafriq.json',
+        messageTemplate: messageTemplateGeneric,
+      },
+    ],
+  },
+  {
     name: SeedScript.testMultiple,
     organization: 'organization-generic.json',
     programs: [
