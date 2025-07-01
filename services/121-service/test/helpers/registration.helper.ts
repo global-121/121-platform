@@ -627,14 +627,20 @@ export async function getMessageHistoryUntilX(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
+  paymentNr = 1,
+  amount = 20,
+  completeStatusses: TransactionStatusEnum[] = [
+    TransactionStatusEnum.success,
+    TransactionStatusEnum.waiting,
+  ],
 ): Promise<void> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
 
   await doPayment({
     programId,
-    paymentNr: 1,
-    amount: 20,
+    paymentNr,
+    amount,
     referenceIds: [],
     accessToken,
     filter: {
@@ -649,10 +655,7 @@ export async function seedPaidRegistrations(
     paymentReferenceIds: registrationReferenceIds,
     accessToken,
     maxWaitTimeMs: 30_000,
-    completeStatusses: [
-      TransactionStatusEnum.success,
-      TransactionStatusEnum.waiting,
-    ],
+    completeStatusses,
   });
 }
 

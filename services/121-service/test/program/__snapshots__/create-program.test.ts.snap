@@ -498,7 +498,6 @@ exports[`Create program should post a program: Create program response for progr
     "en": "This is the OCW program.",
   },
   "allowEmptyPhoneNumber": false,
-  "budget": 2500000,
   "currency": "EUR",
   "description": {
     "en": "",

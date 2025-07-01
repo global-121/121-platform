@@ -739,7 +739,7 @@ export class MetricsService {
         status: Not(TransactionStatusEnum.error),
       })
       .getRawOne();
-    const cashDisbursed = cashDisbursedQueryResult.cashDisbursed;
+    const cashDisbursed = Number(cashDisbursedQueryResult.cashDisbursed);
     const totalBudget = program.budget;
 
     return {
