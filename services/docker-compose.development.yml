@@ -13,6 +13,17 @@
 #
 
 services:
+  mock-service:
+    build:
+      target: development
+    ports:
+      - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
+      - '9230:9230'
+    volumes:
+      - 'mock_service_node_modules:/home/node/app/node_modules'
+      - './mock-service:/home/node/app'
+    restart: unless-stopped
+
   121-service:
     build:
       target: development
@@ -24,16 +35,6 @@ services:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
     command: 'npm run start:dev${WINDOWS_DEV_STARTUP_SUFFIX}'
-    restart: unless-stopped
-  mock-service:
-    build:
-      target: development
-    ports:
-      - '${PORT_MOCK_SERVICE}:${PORT_MOCK_SERVICE}'
-      - '9230:9230'
-    volumes:
-      - 'mock_service_node_modules:/home/node/app/node_modules'
-      - './mock-service:/home/node/app'
     restart: unless-stopped
 
 volumes:
