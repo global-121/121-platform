@@ -61,13 +61,9 @@ export class TransactionJobsOnafriqService {
       const transaction =
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
-            programId: transactionJob.programId,
-            paymentNumber: transactionJob.paymentNumber,
-            userId: transactionJob.userId,
-            transferAmountInMajorUnit: transactionJob.transactionAmount,
-            programFspConfigurationId: transactionJob.programFspConfigurationId,
             registration,
-            isRetry: transactionJob.isRetry,
+            transactionJob,
+            transferAmountInMajorUnit: transactionJob.transactionAmount,
             status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
           },
         );
