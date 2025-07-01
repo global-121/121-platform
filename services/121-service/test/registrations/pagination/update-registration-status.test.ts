@@ -193,7 +193,7 @@ describe('change the status of a set of registrations', () => {
 
       for (const status of statusesThatDoNotRequireReason) {
         // Act
-        const updateStatusResponse = await changeRegistrationStatus({
+        const updateStatusResponse = await awaitChangeRegistrationStatus({
           programId: programIdOCW,
           referenceIds,
           status,
