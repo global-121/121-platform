@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Get program stats should successfully get program stats 1`] = `
+{
+  "cashDisbursed": "200",
+  "includedPeople": 4,
+  "newPeople": 0,
+  "programId": 3,
+  "registeredPeople": 4,
+  "targetedPeople": 100000,
+  "totalBudget": 2500000,
+}
+`;
