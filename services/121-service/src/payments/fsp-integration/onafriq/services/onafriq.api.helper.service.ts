@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { v4 as uuid } from 'uuid';
 
+import { env } from '@121-service/src/env';
 import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
 import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
 import { OnafriqApiCallServiceResponseTransactionStatusCode } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-call-service-response-transaction-status-code.enum';
@@ -19,15 +20,15 @@ export class OnafriqApiHelperService {
   }): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
-      process.env.ONAFRIQ_PASSWORD!,
+      env.ONAFRIQ_PASSWORD!,
       batchId,
-      process.env.ONAFRIQ_UNIQUE_KEY!,
+      env.ONAFRIQ_UNIQUE_KEY!,
     );
-    const currencyCode = process.env.ONAFRIQ_CURRENCY_CODE!;
-    const countryCode = process.env.ONAFRIQ_COUNTRY_CODE!;
+    const currencyCode = env.ONAFRIQ_CURRENCY_CODE!;
+    const countryCode = env.ONAFRIQ_COUNTRY_CODE!;
     const callServicePayload: OnafriqApiCallServiceRequestBody = {
-      corporateCode: process.env.ONAFRIQ_CORPORATE_CODE!,
-      password: process.env.ONAFRIQ_PASSWORD!,
+      corporateCode: env.ONAFRIQ_CORPORATE_CODE!,
+      password: env.ONAFRIQ_PASSWORD!,
       mfsSign,
       batchId,
       requestBody: [
