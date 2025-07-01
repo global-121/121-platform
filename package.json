@@ -11,7 +11,7 @@
     "logs:services": "cd services/ && docker compose logs --follow",
     "start:services": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml up --build",
     "start:services:detach": "npm run start:services -- --detach",
-    "start:services:production": "cd services/ && docker compose --file=docker-compose.yml up --detach --build",
+    "start:services:ci": "cd services/ && docker --log-level='warn' compose --file=docker-compose.yml up --detach --build --quiet-pull --wait --wait-timeout 300",
     "start:services:appmap": "cd services/ && docker compose --file=docker-compose.yml --file=docker-compose.development.yml --file=docker-compose.development-appmap.yml up --detach --build",
     "start:portal": "npm start --prefix interfaces/portal/ -- --port=8888",
     "start:portal:e2e": "npm run start:debug-production --prefix interfaces/portal/ -- --port=8088",
