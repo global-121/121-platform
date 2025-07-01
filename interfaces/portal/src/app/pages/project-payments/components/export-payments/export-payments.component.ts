@@ -142,7 +142,13 @@ export class ExportPaymentsComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'last-payments',
         });
-        this.exportlastPaymentsDialog().askForConfirmation();
+        this.exportlastPaymentsDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'last-payments',
+          },
+        });
       },
     },
     {
@@ -160,7 +166,13 @@ export class ExportPaymentsComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'unused-vouchers',
         });
-        this.exportUnusedVouchersDialog().askForConfirmation();
+        this.exportUnusedVouchersDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'unused-vouchers',
+          },
+        });
       },
     },
     {
@@ -178,7 +190,13 @@ export class ExportPaymentsComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'debit-card-usage',
         });
-        this.exportDebitCardUsageDialog().askForConfirmation();
+        this.exportDebitCardUsageDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'debit-card-usage',
+          },
+        });
       },
     },
   ]);

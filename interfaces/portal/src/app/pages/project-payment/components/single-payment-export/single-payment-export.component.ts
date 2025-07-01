@@ -115,7 +115,13 @@ export class SinglePaymentExportComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'fsp-payment-list',
         });
-        this.exportFspPaymentListDialog().askForConfirmation();
+        this.exportFspPaymentListDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'fsp-payment-list',
+          },
+        });
       },
     },
     {
@@ -134,7 +140,13 @@ export class SinglePaymentExportComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'payment-report',
         });
-        this.paymentReportDialog().askForConfirmation();
+        this.paymentReportDialog().askForConfirmation({
+          event: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'payment-report',
+          },
+        });
       },
     },
   ]);

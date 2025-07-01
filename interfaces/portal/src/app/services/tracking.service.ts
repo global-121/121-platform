@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, isDevMode } from '@angular/core';
 
 import { parseMatomoConnectionString } from '_matomo.utils.mjs';
 import { MatomoTracker, provideMatomo, withRouter } from 'ngx-matomo-client';
@@ -37,7 +37,21 @@ export enum TrackingCategory {
  * - Use "human readable" values (but be concise.)
  */
 export enum TrackingAction {
+  clickProceedButton = 'click: Proceed Button',
   selectDropdownOption = 'select: Dropdown Option',
+}
+
+/**
+ * Matomo tracking Event.
+ *
+ * Contains the information that is sent to the Matomo API.
+ *
+ */
+export interface TrackingEvent {
+  category: TrackingCategory;
+  action: TrackingAction;
+  name?: string; // Optional, but recommended
+  value?: number; // Optional, but recommended
 }
 
 const MATOMO_CONNECTION_INFO = parseMatomoConnectionString(
@@ -104,15 +118,15 @@ export class TrackingService {
    * ```
    *
    */
-  public trackEvent(event: {
-    category: TrackingCategory;
-    action: TrackingAction;
-    name?: string;
-    value?: number;
-  }): void {
+  public trackEvent(event: TrackingEvent): void {
     if (!IS_MATOMO_ENABLED()) {
       return;
     }
+
+    if (!environment.production || isDevMode()) {
+      console.info('Track Event:', event);
+    }
+
     const { category, action, name, value } = event;
     this.tracker.trackEvent(category, action, name, value);
   }
