@@ -120,8 +120,9 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(ApplicationModule);
 
+  // CORS is only enabled for local development; Because the Azure App Service applies its own CORS settings 'on the outside'
   app.enableCors({
-    origin: env.EXTERNAL_121_SERVICE_URL,
+    origin: IS_DEVELOPMENT ? env.EXTERNAL_121_SERVICE_URL : false,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

@@ -34,6 +34,7 @@ export const SWAGGER_CUSTOM_JS = `
 const loc = window.location;
 const currentUrl = loc.origin + '/';
 const envUrl = '${env.EXTERNAL_121_SERVICE_URL}/';
+// Force Swagger UI to only use the configured external URL, to prevent CORS issues
 if (currentUrl !== envUrl ) {
   loc.replace(loc.href.replace(currentUrl,envUrl));
 }
