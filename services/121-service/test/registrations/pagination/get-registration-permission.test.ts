@@ -45,8 +45,7 @@ describe('Load PA table', () => {
         attributes: requestedDynamicAttributes,
         accessToken: accessTokenCvaManager,
       });
-      const data = getRegistrationsResponse.body.data;
-      const meta = getRegistrationsResponse.body.meta;
+      const { data, meta } = getRegistrationsResponse.body;
 
       // Assert
       const expectedValueObject = {
@@ -82,8 +81,7 @@ describe('Load PA table', () => {
         attributes: requestedDynamicAttributes,
         accessToken: accessTokenCvaManager,
       });
-      const data = getRegistrationsResponse.body.data;
-      const meta = getRegistrationsResponse.body.meta;
+      const { data, meta } = getRegistrationsResponse.body;
 
       const expectedValueObject = {
         preferredLanguage: registrationOCW1.preferredLanguage,
@@ -95,8 +93,9 @@ describe('Load PA table', () => {
       expect(meta.totalItems).toBe(1);
     });
   });
+
   // This test is flaky when run separately it always passes but when run with other tests it fails 70% of a time
-  it.skip(`should only return the dynamic attributes requested that are not "personal"`, async () => {
+  it(`should only return the dynamic attributes requested that are not "personal"`, async () => {
     // Arrange
     const accessTokenCvaManager = await getAccessTokenCvaManager();
     const requestedDynamicAttributes = ['phoneNumber', 'preferredLanguage'];
@@ -107,8 +106,7 @@ describe('Load PA table', () => {
       attributes: requestedDynamicAttributes,
       accessToken: accessTokenCvaManager,
     });
-    const data = getRegistrationsResponse.body.data;
-    const meta = getRegistrationsResponse.body.meta;
+    const { data, meta } = getRegistrationsResponse.body;
 
     const expectedValueObject = {
       preferredLanguage: registrationOCW1.preferredLanguage,
