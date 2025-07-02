@@ -25,7 +25,7 @@
     "test:unit:all": "jest --runInBand --config=./jest.unit.config.js",
     "test:unit:watch": "npm run test:unit:all -- --watchAll",
     "test:unit:coverage": "npm run test:unit:all -- --coverage --coverageDirectory=coverage/unit",
-    "test:integration:all": "node --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
+    "test:integration:all": "node --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage program-stats",
     "test:integration:debug": "node --inspect-brk=0.0.0.0:9231 --require=tsconfig-paths/register --expose-gc node_modules/.bin/jest --config=jest.integration.config.js --runInBand --detectOpenHandles --logHeapUsage",
     "test:integration:watch": "npm run test:integration:all -- --watchAll",
     "test:integration:coverage": "npm run test:integration:all -- --coverage --coverageDirectory=coverage/integration",
