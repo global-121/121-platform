@@ -16,6 +16,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
+import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 const mockedRegistration: RegistrationEntity = {
   id: 1,
@@ -123,6 +124,16 @@ describe('TransactionJobsHelperService', () => {
   });
 
   describe('createTransactionAndUpdateRegistration', () => {
+    const transactionJob: SharedTransactionJobDto = {
+      programId: 1,
+      paymentNumber: 5,
+      userId: 1,
+      programFspConfigurationId: 1,
+      isRetry: false,
+      referenceId: 'ref-123',
+      phoneNumber: '1234567890',
+      bulkSize: 10,
+    };
     it('should update the payment count', async () => {
       // Arrange
       const registration = structuredClone(mockedRegistration);
@@ -135,13 +146,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -175,13 +182,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -218,13 +221,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -261,13 +260,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -294,13 +289,12 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 5,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration,
-        isRetry: true,
+        transactionJob: {
+          ...transactionJob,
+          isRetry: true,
+        },
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -338,13 +332,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -384,13 +374,9 @@ describe('TransactionJobsHelperService', () => {
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: localMockedRegistration,
-        isRetry: false,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 
@@ -400,13 +386,12 @@ describe('TransactionJobsHelperService', () => {
 
     it('should not update registration or create event if isRetry is true', async () => {
       await service.createTransactionAndUpdateRegistration({
-        programId: 1,
-        paymentNumber: 1,
-        userId: 1,
-        transferAmountInMajorUnit: 100,
-        programFspConfigurationId: 1,
         registration: mockedRegistration,
-        isRetry: true,
+        transactionJob: {
+          ...transactionJob,
+          isRetry: true,
+        },
+        transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
       });
 

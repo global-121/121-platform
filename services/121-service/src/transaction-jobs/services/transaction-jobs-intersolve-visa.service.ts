@@ -19,11 +19,11 @@ export class TransactionJobsIntersolveVisaService {
   ) {}
 
   public async processIntersolveVisaTransactionJob(
-    input: IntersolveVisaTransactionJobDto,
+    transactionJob: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
     const registration =
       await this.transactionJobsHelperService.getRegistrationOrThrow(
-        input.referenceId,
+        transactionJob.referenceId,
       );
 
     let transferAmountInMajorUnit: number;
@@ -32,20 +32,18 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaService.calculateTransferAmountWithWalletRetrieval(
           {
             registrationId: registration.id,
-            inputTransferAmountInMajorUnit: input.transactionAmountInMajorUnit,
+            inputTransferAmountInMajorUnit:
+              transactionJob.transactionAmountInMajorUnit,
           },
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
-            programId: input.programId,
-            paymentNumber: input.paymentNumber,
-            userId: input.userId,
-            transferAmountInMajorUnit: input.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-            programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            isRetry: input.isRetry,
+            transactionJob,
+            transferAmountInMajorUnit:
+              transactionJob.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
             status: TransactionStatusEnum.error,
             errorText: `Error calculating transfer amount: ${error?.message}`,
           },
@@ -59,20 +57,23 @@ export class TransactionJobsIntersolveVisaService {
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
       const { brandCode, coverLetterCode, fundingTokenCode } =
-        await this.getIntersolveVisaFspConfig(input.programFspConfigurationId);
+        await this.getIntersolveVisaFspConfig(
+          transactionJob.programFspConfigurationId,
+        );
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
-          createCustomerReference: input.referenceId,
-          transferReference: `ReferenceId=${input.referenceId},PaymentNumber=${input.paymentNumber}`,
-          name: input.name!,
+          createCustomerReference: transactionJob.referenceId,
+          transferReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber}`,
+          name: transactionJob.name!,
           contactInformation: {
-            addressStreet: input.addressStreet!,
-            addressHouseNumber: input.addressHouseNumber!,
-            addressHouseNumberAddition: input.addressHouseNumberAddition,
-            addressPostalCode: input.addressPostalCode!,
-            addressCity: input.addressCity!,
-            phoneNumber: input.phoneNumber!,
+            addressStreet: transactionJob.addressStreet!,
+            addressHouseNumber: transactionJob.addressHouseNumber!,
+            addressHouseNumberAddition:
+              transactionJob.addressHouseNumberAddition,
+            addressPostalCode: transactionJob.addressPostalCode!,
+            addressCity: transactionJob.addressCity!,
+            phoneNumber: transactionJob.phoneNumber!,
           },
           transferAmountInMajorUnit,
           brandCode,
@@ -83,13 +84,9 @@ export class TransactionJobsIntersolveVisaService {
       if (error instanceof IntersolveVisaApiError) {
         await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
           {
-            programId: input.programId,
-            paymentNumber: input.paymentNumber,
-            userId: input.userId,
-            transferAmountInMajorUnit,
-            programFspConfigurationId: input.programFspConfigurationId,
             registration,
-            isRetry: input.isRetry,
+            transactionJob,
+            transferAmountInMajorUnit,
             status: TransactionStatusEnum.error,
             errorText: error?.message,
           },
@@ -107,24 +104,20 @@ export class TransactionJobsIntersolveVisaService {
         : ProgramNotificationEnum.visaLoad;
     await this.transactionJobsHelperService.createMessageAndAddToQueue({
       type: messageType,
-      programId: input.programId,
+      programId: transactionJob.programId,
       registration,
       amountTransferred:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-      bulkSize: input.bulkSize,
-      userId: input.userId,
+      bulkSize: transactionJob.bulkSize,
+      userId: transactionJob.userId,
     });
 
     await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
       {
-        programId: input.programId,
-        paymentNumber: input.paymentNumber,
-        userId: input.userId,
+        registration,
+        transactionJob,
         transferAmountInMajorUnit:
           intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        programFspConfigurationId: input.programFspConfigurationId,
-        registration,
-        isRetry: input.isRetry,
         status: TransactionStatusEnum.success,
       },
     );
