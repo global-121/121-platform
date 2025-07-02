@@ -11,6 +11,8 @@ export const env = createEnv({
   /**
    * See explanations for each variable in `services/.env.example`
    * This file follows the same order/structure.
+   *
+   * For guidelines, see: `services/121-service/src/env.ts`
    */
   server: {
     // Environment/Instance specifics
