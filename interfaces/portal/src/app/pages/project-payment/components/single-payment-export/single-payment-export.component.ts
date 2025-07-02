@@ -116,7 +116,7 @@ export class SinglePaymentExportComponent {
           name: 'fsp-payment-list',
         });
         this.exportFspPaymentListDialog().askForConfirmation({
-          event: {
+          trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'fsp-payment-list',
@@ -141,7 +141,7 @@ export class SinglePaymentExportComponent {
           name: 'payment-report',
         });
         this.paymentReportDialog().askForConfirmation({
-          event: {
+          trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'payment-report',

@@ -143,7 +143,7 @@ export class ExportPaymentsComponent {
           name: 'last-payments',
         });
         this.exportlastPaymentsDialog().askForConfirmation({
-          event: {
+          trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'last-payments',
@@ -167,7 +167,7 @@ export class ExportPaymentsComponent {
           name: 'unused-vouchers',
         });
         this.exportUnusedVouchersDialog().askForConfirmation({
-          event: {
+          trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'unused-vouchers',
@@ -191,7 +191,7 @@ export class ExportPaymentsComponent {
           name: 'debit-card-usage',
         });
         this.exportDebitCardUsageDialog().askForConfirmation({
-          event: {
+          trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
             name: 'debit-card-usage',
