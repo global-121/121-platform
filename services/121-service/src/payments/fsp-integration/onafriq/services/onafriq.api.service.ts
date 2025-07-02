@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import * as https from 'https';
 
 import { DEBUG, EXTERNAL_API } from '@121-service/src/config';
@@ -56,7 +56,7 @@ export class OnafriqApiService {
         headers,
         DEBUG ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
       );
-    if (status !== 200 || data?.message !== 'Success') {
+    if (status !== HttpStatus.OK || data?.message !== 'Success') {
       return { status, statusText, data };
     }
 
