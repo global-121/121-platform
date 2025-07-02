@@ -97,7 +97,6 @@ export class TrackingService {
   }
 
   /**
-   * @param name - Prefer the use of specific `enum`-values. Prevent use of PII/Registration-specific data!
    *
    * @example Using only the `name`-property
    * ```ts
