@@ -48,18 +48,18 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
 
   readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 
-  private event: TrackingEvent | undefined = undefined;
+  private trackingEvent: TrackingEvent | undefined;
 
   askForConfirmation({
     resetMutation = true,
-    event = undefined,
+    trackingEvent = undefined,
   }: {
     resetMutation?: boolean;
-    event?: TrackingEvent;
+    trackingEvent?: TrackingEvent;
   } = {}) {
     this.confirmationService.confirm({});
-    if (event) {
-      this.event = event;
+    if (trackingEvent) {
+      this.trackingEvent = trackingEvent;
     }
 
     if (resetMutation) {
@@ -68,10 +68,10 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
   }
 
   onProceed() {
-    if (this.event) {
-      this.trackingService.trackEvent({ ...this.event });
+    if (this.trackingEvent) {
+      this.trackingService.trackEvent(this.trackingEvent);
 
-      this.event = undefined;
+      this.trackingEvent = undefined;
     }
     const formGroup = this.formGroup();
     if (formGroup) {
