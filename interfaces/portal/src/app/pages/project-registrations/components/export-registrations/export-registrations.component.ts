@@ -104,7 +104,6 @@ export class ExportRegistrationsComponent {
       this.toastService,
     ),
     onSuccess: ({ exportResult: file, filename }) => {
-      console.log('∂ success');
       this.downloadService.downloadFile({ file, filename });
     },
   }));
