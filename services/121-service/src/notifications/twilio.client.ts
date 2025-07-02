@@ -20,13 +20,15 @@ class MockTwilioRequestClient extends RequestClient {
   }
 }
 
-// let mockClient: ClientOpts | undefined;
+let mockClient: ClientOpts | undefined;
 
-// if (!!process.env.MOCK_TWILIO) {
-const mockClient: ClientOpts = {
-  httpClient: new MockTwilioRequestClient(`${process.env.MOCK_SERVICE_URL}api`),
-};
-// }
+if (!!process.env.MOCK_TWILIO) {
+  mockClient = {
+    httpClient: new MockTwilioRequestClient(
+      `${process.env.MOCK_SERVICE_URL}api`,
+    ),
+  };
+}
 
 export const twilioClient = twilio(
   process.env.TWILIO_SID,
