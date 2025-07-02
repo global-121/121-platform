@@ -115,7 +115,6 @@ export class TwilioService {
       },
       userId: 1,
     };
-    console.log('twilioMessagesCreateDto: ', twilioMessagesCreateDto);
 
     // 1. First loop through different error rseponses and return early
     if (
