@@ -26,9 +26,11 @@ export class OnafriqApiService {
   ) {
     // NOTE: Adding this was needed to get past an UNABLE_TO_GET_ISSUER_CERT_LOCALLY error on sandbox API. Create a custom HTTPS agent that ignores certificate errors
     // For now, do not use this on production, but first test there without this work-around. If needed, we can add it to production as well.
-    this.httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
+    if (IS_DEVELOPMENT) {
+      this.httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+    }
   }
 
   public async subscribeWebhook(): Promise<
@@ -55,7 +57,7 @@ export class OnafriqApiService {
         webhookSubscribeUrl,
         payload,
         headers,
-        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        this.httpsAgent,
       );
     if (status !== HttpStatus.OK || data?.message !== 'Success') {
       return { status, statusText, data };
@@ -68,7 +70,7 @@ export class OnafriqApiService {
         webhookUpdateUrl,
         payload,
         headers,
-        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        this.httpsAgent,
       ));
     return { status, statusText, data };
   }
@@ -112,7 +114,7 @@ export class OnafriqApiService {
         callServiceUrl,
         payload,
         undefined, // headers,
-        IS_DEVELOPMENT ? this.httpsAgent : undefined, // Use the custom HTTPS agent only in debug mode
+        this.httpsAgent,
       );
     } catch (error) {
       console.error('Failed to make Onafriq callService API call', error);
