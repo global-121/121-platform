@@ -13,8 +13,8 @@ import { OnafriqApiHelperService } from '@121-service/src/payments/fsp-integrati
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 const onafriqApiUrl = env.MOCK_ONAFRIQ
-  ? `${env.MOCK_SERVICE_URL}api/fsp/onafriq`
-  : `${env.ONAFRIQ_API_URL}hub/async`;
+  ? `${env.MOCK_SERVICE_URL}/api/fsp/onafriq`
+  : `${env.ONAFRIQ_API_URL}/hub/async`;
 
 @Injectable()
 export class OnafriqApiService {
