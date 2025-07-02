@@ -13,7 +13,7 @@ import {
   registrationPV7,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-describe('Get program stats', () => {
+describe.only('Get program stats', () => {
   let accessToken: string;
   const paymentNr = 1;
   const amount = 50;
