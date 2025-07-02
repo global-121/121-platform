@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { FilterOperator, FilterSuffix } from 'nestjs-paginate';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -152,7 +153,7 @@ describe('Filter registrations', () => {
       const filterValue = filterAssertionConfig[attribute.name]?.filterValue;
 
       const filter = {
-        [`filter.${attribute.name}`]: `$ilike:${filterValue}`,
+        [`filter.${attribute.name}`]: `${FilterOperator.ILIKE}:${filterValue}`,
       };
 
       // Act
@@ -187,12 +188,12 @@ describe('Filter registrations', () => {
       programId: programIdOCW,
       accessToken,
       filter: {
-        'filter.whatsappPhoneNumber': `$ilike:${registrationOCW3.whatsappPhoneNumber.substring(
+        'filter.whatsappPhoneNumber': `${FilterOperator.ILIKE}:${registrationOCW3.whatsappPhoneNumber.substring(
           0,
           1,
         )}`,
-        'filter.preferredLanguage': `$in:nonExisting,${registrationOCW3.preferredLanguage}`,
-        'filter.addressCity': `$eq:${registrationOCW3.addressCity}`,
+        'filter.preferredLanguage': `${FilterOperator.IN}:nonExisting,${registrationOCW3.preferredLanguage}`,
+        'filter.addressCity': `${FilterOperator.EQ}:${registrationOCW3.addressCity}`,
       },
     });
     const data = getRegistrationsResponse.body.data;
@@ -215,7 +216,7 @@ describe('Filter registrations', () => {
       programId: programIdOCW,
       accessToken,
       filter: {
-        'filter.addressPostalCode': `$ilike:${registrationOCW2.addressPostalCode.substring(
+        'filter.addressPostalCode': `${FilterOperator.ILIKE}:${registrationOCW2.addressPostalCode.substring(
           0,
           1,
         )}`,
@@ -236,42 +237,37 @@ describe('Filter registrations', () => {
   });
 
   describe('not operator filters', () => {
-    it('should filter on regisration attribute data', async () => {
-      // Act
+    it('should filter on registration attribute data using $not:$ilike', async () => {
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         accessToken,
         filter: {
-          'filter.whatsappPhoneNumber': `$not:$ilike:${registrationOCW1.whatsappPhoneNumber}`, // Using $not with $ilike
-          'filter.fullName': `$not:$eq:${registrationOCW3.fullName}`, // Using $not with $eq
+          'filter.whatsappPhoneNumber': `${FilterSuffix.NOT}:${FilterOperator.ILIKE}:${registrationOCW1.whatsappPhoneNumber}`,
         },
       });
       const data = getRegistrationsResponse.body.data;
-      const foundReferenceIds = data.map(
-        (registration) => registration.referenceId,
-      );
+      const foundReferenceIds = data.map((r) => r.referenceId);
 
-      // Assert
       expect(foundReferenceIds).not.toContain(registrationOCW1.referenceId);
-      expect(foundReferenceIds).not.toContain(registrationOCW3.referenceId);
 
-      const expectedReferenceIds = allReferenceIds.filter(
-        (id) =>
-          id !== registrationOCW1.referenceId &&
-          id !== registrationOCW3.referenceId,
-      );
+      const expectedReferenceIds = [
+        registrationOCW2.referenceId,
+        registrationOCW3.referenceId,
+        registrationOCW4.referenceId,
+        registrationOCW5.referenceId,
+      ];
       expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
     });
 
-    it('should filter on registration attribute data not present in all registrations with an equal filter', async () => {
-      // registrationOCW5 does not have addressHouseNumber, so it should not be filtered out
+    it('should filter on registration attribute data using $not:$eq', async () => {
+      // should filter out registrationOCW4, but not registrationOCW5, because registrationOCW5 does not have addressHouseNumber, so it should not be filtered out
       // in the backend there is some extra logic to handle this, so we test that here
       // Act
       const getRegistrationsResponse = await getRegistrations({
         programId: programIdOCW,
         accessToken,
         filter: {
-          'filter.addressHouseNumber': `$not:$eq:${registrationOCW4.addressHouseNumber}`,
+          'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW4.addressHouseNumber}`,
         },
       });
       const data = getRegistrationsResponse.body.data;
@@ -288,13 +284,107 @@ describe('Filter registrations', () => {
       expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
     });
 
+    it('should filter on registration attribute data using $not:$in', async () => {
+      // should filter out registrationOCW3 and registrationOCW4, but not registrationOCW5, because registrationOCW5 does not have addressHouseNumber, so it should not be filtered out
+      // in the backend there is some extra logic to handle this, so we test that here
+      const numbers = [
+        registrationOCW1.whatsappPhoneNumber,
+        registrationOCW2.whatsappPhoneNumber,
+      ];
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.whatsappPhoneNumber': `${FilterSuffix.NOT}:${FilterOperator.IN}:${numbers.join(',')}`,
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+
+      const foundReferenceIds = data.map((r) => r.referenceId);
+
+      // Assert
+      expect(foundReferenceIds).not.toContain(registrationOCW1.referenceId);
+      expect(foundReferenceIds).not.toContain(registrationOCW2.referenceId);
+
+      const expectedReferenceIds = [
+        registrationOCW3.referenceId,
+        registrationOCW4.referenceId,
+        registrationOCW5.referenceId,
+      ];
+      expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
+    it('should filter on registration attribute data using $not:$gt', async () => {
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.GT}:2`,
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const foundReferenceIds = data.map((r) => r.referenceId);
+
+      // Assert
+      const expectedReferenceIds = [
+        registrationOCW1.referenceId,
+        registrationOCW2.referenceId,
+        registrationOCW5.referenceId,
+      ];
+      expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
+    it('should filter on registration attribute data using using $not:$t', async () => {
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.LT}:2`,
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const foundReferenceIds = data.map((r) => r.referenceId);
+
+      // Assert
+      const expectedReferenceIds = [
+        registrationOCW2.referenceId,
+        registrationOCW3.referenceId,
+        registrationOCW4.referenceId,
+        registrationOCW5.referenceId,
+      ];
+      expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
+    it('should filter on registration attribute data using using $not:$btw', async () => {
+      // Act
+      const getRegistrationsResponse = await getRegistrations({
+        programId: programIdOCW,
+        accessToken,
+        filter: {
+          'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.BTW}:1,3`,
+        },
+      });
+      const data = getRegistrationsResponse.body.data;
+      const foundReferenceIds = data.map((r) => r.referenceId);
+
+      // Assert
+      const expectedReferenceIds = [
+        registrationOCW4.referenceId,
+        registrationOCW5.referenceId,
+      ];
+      expect(foundReferenceIds.sort()).toEqual(expectedReferenceIds.sort());
+    });
+
     it('should throw bad request for $not:$null filter on registration attribute data', async () => {
       // Act
       const response = await getRegistrations({
         programId: programIdOCW,
         accessToken,
         filter: {
-          'filter.addressCity': `$not:$null`,
+          'filter.addressCity': `${FilterSuffix.NOT}:${FilterOperator.NULL}`,
         },
       });
       // Assert
@@ -308,8 +398,8 @@ describe('Filter registrations', () => {
         programId: programIdOCW,
         accessToken,
         filter: {
-          'filter.paymentAmountMultiplier': `$not:$eq:${registrationOCW3.paymentAmountMultiplier}`,
-          'filter.programFspConfigurationName': `$not:$eq:${registrationOCW5.programFspConfigurationName}`,
+          'filter.paymentAmountMultiplier': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW3.paymentAmountMultiplier}`,
+          'filter.programFspConfigurationName': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW5.programFspConfigurationName}`,
         },
       });
       const data = getRegistrationsResponse.body.data;
