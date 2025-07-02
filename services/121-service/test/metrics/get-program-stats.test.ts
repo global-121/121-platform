@@ -8,7 +8,6 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationPV5,
   registrationPV6,
   registrationPV7,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -23,11 +22,11 @@ describe('Get program stats', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should successfully get correct program stats, including cashDisbursed only counting latest waiting/success transactions', async () => {
+  it('should successfully get correct program stats, including cashDisbursed only counting latest non-error transactions', async () => {
     // Arrange
-    // Set up 3 registrations of which 1 fails, and of which 1 has first a waiting and then a success transaction (default in AH voucher)
-    registrationPV5.whatsappPhoneNumber = '15005550001'; // trigger an error transaction for an AH voucher whatsapp registration with this magic mock number (MockPhoneNumbers.FailGeneric)
-    const registrationsPV = [registrationPV5, registrationPV6, registrationPV7];
+    // Set up 2 registrations of which 1 fails (visa), and of which 1 has first a waiting and then a success transaction (AH voucher)
+    registrationPV7.fullName = 'mock-fail-create-customer';
+    const registrationsPV = [registrationPV6, registrationPV7];
 
     await seedPaidRegistrations(
       registrationsPV,
@@ -45,7 +44,7 @@ describe('Get program stats', () => {
 
     // Assert
     expect(getProgramStatsResponse.statusCode).toBe(200);
-    const expectedCashDisbursed = 2 * amount; // 2 successful payments, one failed
+    const expectedCashDisbursed = 1 * amount; // 1 successful payments, one failed
     expect(getProgramStatsResponse.body).toEqual(
       expect.objectContaining({
         cashDisbursed: expectedCashDisbursed,
