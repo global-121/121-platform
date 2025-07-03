@@ -66,6 +66,9 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: cp .env.example .env
 
+      - name: Start Local Docker Registry
+        run: docker run --detach -p 5000:5000 --name registry registry:2
+
       - name: Pull Image from Local Registry Using Folder Hash
         run: |
           docker pull localhost:5000/121-service:${{ needs.test_prep.outputs.services_version_hash }}
@@ -73,6 +76,10 @@ jobs:
 
       - name: Run Containers with Docker
         run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
+
+      - name: Check that no new migrations are necessary
+        if: ${{ matrix.batch == '1/4' }}
+        run: docker compose exec 121-service npm run test:migration
 
       - name: Run integration tests with Jest
         run: docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
@@ -85,20 +92,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - test_batches
-
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
-      - name: Set ENV-variables for test-environment
-        run: cp .env.example .env
-
-      - name: Build Containers with Docker
-        run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
-
-      - name: Check that no new migrations are necessary
-        run: docker compose exec 121-service npm run test:migration
-
-      - name: Docker logs
-        if: always()
-        uses: jwalton/gh-docker-logs@v2
+      - name: Finish
+        run: echo 'Done?!'
