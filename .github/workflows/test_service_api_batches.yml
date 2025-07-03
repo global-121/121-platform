@@ -1,0 +1,73 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test Service: Unit & Integration Tests'
+
+on:
+  workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
+  pull_request:
+    paths:
+      - .github/workflows/test_service_api.yml
+      - .github/actions/build-service/action.yml
+      - services/.env.example
+      - services/121-service/**
+      - services/mock-service/**
+      - '!**.md'
+
+env:
+  workingDirectory: services/121-service/
+
+jobs:
+  test_batches:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        batch: ['1/4', '2/4', '3/4', '4/4']
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci
+
+      - name: Run integration tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
+
+      - name: Docker logs
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - test_batches
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci
+
+      - name: Check that no new migrations are necessary
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker compose exec 121-service npm run test:migration
+
+      - name: Docker logs
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
