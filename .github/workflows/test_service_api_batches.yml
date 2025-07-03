@@ -65,14 +65,14 @@ jobs:
           path: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
           key: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}
 
-  test_batches:
+  test_batch:
     runs-on: ubuntu-latest
     needs:
       - test_prep
       - build
     strategy:
       matrix:
-        batch: ['1/4', '2/4', '3/4', '4/4']
+        batch: ['1/5', '2/5', '3/5', '4/5', '5/5']
 
     steps:
       - name: Check out repository code
@@ -102,7 +102,7 @@ jobs:
         run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
 
       - name: Check that no new migrations are necessary
-        if: ${{ matrix.batch == '1/4' }}
+        if: ${{ matrix.batch == '5/4' }}
         run: docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
 
       - name: Run integration tests with Jest
@@ -115,7 +115,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs:
-      - test_batches
+      - test_batch
     steps:
       - name: Finish
         run: echo 'Done?!'
