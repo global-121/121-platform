@@ -8,7 +8,7 @@ on:
     types: [checks_requested]
   pull_request:
     paths:
-      - .github/workflows/test_service_api.yml
+      - .github/workflows/test_service_api_batches.yml
       - .github/actions/build-service/action.yml
       - services/.env.example
       - services/121-service/**
