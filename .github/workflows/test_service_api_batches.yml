@@ -12,35 +12,34 @@ on:
       - services/**
       - '!**.md'
 
-defaults:
-  run:
-    working-directory: services
-
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        batch: ['1/6', '2/6', '3/6', '4/6', '5/6', '6/6']
+        batch: ['migrations', '1/6', '2/6', '3/6', '4/6', '5/6', '6/6']
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
-        run: cp .env.example .env
+        run: cp ./services/.env.example services/.env
 
       - name: Run Containers with Docker
         env:
           COMPOSE_BAKE: true
-        run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --build
+        run: npm run start:services:ci
 
       - name: Check that no new migrations are necessary
-        if: ${{ matrix.batch == '6/6' }}
+        if: ${{ matrix.batch == 'migrations' }}
+        working-directory: services
         run: docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
 
       - name: Run integration tests with Jest
+        if: ${{ matrix.batch != '0' }}
+        working-directory: services
         run: docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
 
       - name: Docker logs
