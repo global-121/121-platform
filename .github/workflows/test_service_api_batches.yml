@@ -31,6 +31,7 @@ jobs:
           cp ./services/.env.example services/.env
 
       - name: Build Containers with Docker
+        working-directory: ${{ env.workingDirectory }}
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml build
 
@@ -55,6 +56,7 @@ jobs:
           cp ./services/.env.example services/.env
 
       - name: Run Services with Docker
+        working-directory: ${{ env.workingDirectory }}
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
@@ -81,6 +83,7 @@ jobs:
           cp ./services/.env.example services/.env
 
       - name: Run Services with Docker
+        working-directory: ${{ env.workingDirectory }}
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
