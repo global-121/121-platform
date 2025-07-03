@@ -19,8 +19,29 @@ env:
   workingDirectory: services/121-service/
 
 jobs:
+  test_prep:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Build Containers with Docker
+        run: |
+          docker --log-level='warn' compose --file=docker-compose.yml --build --quiet-pull
+
+      - name: Docker logs
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
+
   test_batches:
     runs-on: ubuntu-latest
+    needs:
+      - test_prep
     strategy:
       matrix:
         batch: ['1/4', '2/4', '3/4', '4/4']
@@ -35,7 +56,7 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
@@ -61,12 +82,17 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
       - name: Check that no new migrations are necessary
         working-directory: ${{ env.workingDirectory }}
         run: |
           docker compose exec 121-service npm run test:migration
+
+      - name: Run integration tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          docker compose exec 121-service npm run test:integration:all -- --shard=3/3
 
       - name: Docker logs
         if: always()
