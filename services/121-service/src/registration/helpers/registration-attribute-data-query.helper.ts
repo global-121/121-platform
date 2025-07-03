@@ -1,11 +1,15 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { FindOperatorType } from 'typeorm';
+import { FindOperatorType, SelectQueryBuilder } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
+import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { RegistrationDataRelation } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
 export class RegistrationFilterQueryHelpers {
-  static applyFilterConditionAttributes({
+  public static applyFilterConditionAttributes({
     queryBuilder,
     findOperatorType,
     value,
@@ -95,5 +99,27 @@ export class RegistrationFilterQueryHelpers {
     }
     // Default for all other $not filters
     return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} IS NULL)`;
+  }
+
+  // TODO: Add unit tests for this function
+  public static createRegistrationAttributeSubQuery(
+    subQuery: SelectQueryBuilder<any>,
+    relation?: RegistrationDataRelation,
+  ): SelectQueryBuilder<TransactionEntity> {
+    const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
+    subQuery = subQuery
+      .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
+      .from(RegistrationAttributeDataEntity, uniqueSubQueryId);
+    if (relation?.programRegistrationAttributeId) {
+      subQuery = subQuery.andWhere(
+        `"${uniqueSubQueryId}"."programRegistrationAttributeId" = ${relation.programRegistrationAttributeId}`,
+      );
+    }
+
+    // Because of string_agg no distinction between multi-select and other is needed
+    subQuery.addSelect(
+      `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
+    );
+    return subQuery;
   }
 }

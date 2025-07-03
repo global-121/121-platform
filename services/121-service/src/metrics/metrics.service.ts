@@ -29,7 +29,7 @@ import {
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { createRegistrationAttributeSubQuery } from '@121-service/src/registration/helpers/create-registration-attribute-sub-query.helper';
+import { RegistrationFilterQueryHelpers } from '@121-service/src/registration/helpers/registration-attribute-data-query.helper';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
@@ -599,7 +599,10 @@ export class MetricsService {
         generatedUniqueIds.push({ originalName: r.name, newUniqueName: name });
       }
       transactionQuery.select((subQuery) => {
-        return createRegistrationAttributeSubQuery(subQuery, r.relation);
+        return RegistrationFilterQueryHelpers.createRegistrationAttributeSubQuery(
+          subQuery,
+          r.relation,
+        );
       }, name);
     }
     const rawResult = await transactionQuery.getRawMany();
