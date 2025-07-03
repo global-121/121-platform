@@ -9,6 +9,8 @@ WORKDIR /home/node/app
 EXPOSE ${PORT_121_SERVICE}
 
 HEALTHCHECK \
+  --interval=15s \
+  --retries=15 \
   --start-period=60s \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_121_SERVICE}/api/health/health || exit 1

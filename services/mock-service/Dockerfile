@@ -9,6 +9,8 @@ WORKDIR /home/node/app
 EXPOSE ${PORT_MOCK_SERVICE}
 
 HEALTHCHECK \
+  --interval=15s \
+  --retries=15 \
   --start-period=60s \
   --timeout=300s \
   CMD curl --fail http://0.0.0.0:${PORT_MOCK_SERVICE}/api/instance/version || exit 1
