@@ -53,7 +53,7 @@ jobs:
       - name: Build Docker image
         if: steps.cache-docker-image.outputs.cache-hit != 'true'
         run: |
-          docker compose build --target production --tag ${{ matrix.service-container }}:latest ${{ matrix.service-container }}
+          docker compose build --file docker-compose.yml ${{ matrix.service-container }}
           docker save ${{ matrix.service-container }}:latest -o ../${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
 
       - name: Save Docker image to cache
