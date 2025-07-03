@@ -325,9 +325,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     return !!tableFilterMetadata?.value;
   }
 
-  getColumnMatchMode(column: QueryTableColumn<TData>) {
+  getColumnMatchMode(column: QueryTableColumn<TData>): FilterMatchMode {
     if (column.filterMatchMode) {
-      return column.filterMatchMode as string;
+      return column.filterMatchMode;
     }
 
     const type = this.getColumnType(column);
@@ -337,31 +337,48 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       case QueryTableColumnType.DATE:
       case QueryTableColumnType.NUMERIC:
         return FilterMatchMode.EQUALS;
-      default:
+      case QueryTableColumnType.TEXT:
         return FilterMatchMode.CONTAINS;
     }
   }
 
-  getMatchModeOptions(column: QueryTableColumn<TData>) {
+  getColumnMatchModeOptions(
+    column: QueryTableColumn<TData>,
+  ): { label: string; value: FilterMatchMode }[] | undefined {
     const type = this.getColumnType(column);
-    if (QueryTableColumnType.NUMERIC === type) {
-      return [
-        { label: $localize`Equals`, value: FilterMatchMode.EQUALS },
-        { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
-        { label: $localize`Greater than`, value: FilterMatchMode.GREATER_THAN },
-      ];
+    switch (type) {
+      case QueryTableColumnType.TEXT:
+        return [
+          { label: $localize`Contains`, value: FilterMatchMode.CONTAINS },
+          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
+          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
+        ];
+      case QueryTableColumnType.NUMERIC:
+        return [
+          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
+          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
+          { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
+          {
+            label: $localize`Greater than`,
+            value: FilterMatchMode.GREATER_THAN,
+          },
+        ];
+      case QueryTableColumnType.DATE:
+        return [
+          { label: $localize`Date is`, value: FilterMatchMode.EQUALS },
+          {
+            label: $localize`Date is before`,
+            value: FilterMatchMode.LESS_THAN,
+          },
+          {
+            label: $localize`Date is after`,
+            value: FilterMatchMode.GREATER_THAN,
+          },
+        ];
+      case QueryTableColumnType.MULTISELECT:
+        // For multiselect, we do not have multiple match modes
+        return undefined;
     }
-    if (QueryTableColumnType.DATE === type) {
-      return [
-        { label: $localize`Date is`, value: FilterMatchMode.EQUALS },
-        { label: $localize`Date is before`, value: FilterMatchMode.LESS_THAN },
-        {
-          label: $localize`Date is after`,
-          value: FilterMatchMode.GREATER_THAN,
-        },
-      ];
-    }
-    return undefined;
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {
