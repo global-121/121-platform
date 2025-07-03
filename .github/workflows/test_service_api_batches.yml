@@ -15,9 +15,6 @@ on:
       - services/mock-service/**
       - '!**.md'
 
-env:
-  workingDirectory: services/121-service/
-
 jobs:
   test_prep:
     runs-on: ubuntu-latest
@@ -27,11 +24,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
+        working-directory: services
         run: |
-          cp ./services/.env.example services/.env
+          cp .env.example .env
 
       - name: Build Containers with Docker
-        working-directory: ${{ env.workingDirectory }}
+        working-directory: services
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml build
 
@@ -52,16 +50,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
+        working-directory: services
         run: |
-          cp ./services/.env.example services/.env
+          cp .env.example .env
 
-      - name: Run Services with Docker
-        working-directory: ${{ env.workingDirectory }}
+      - name: Build Containers with Docker
+        working-directory: services
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
       - name: Run integration tests with Jest
-        working-directory: ${{ env.workingDirectory }}
+        working-directory: services
         run: |
           docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
 
@@ -79,21 +78,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
+        working-directory: services
         run: |
-          cp ./services/.env.example services/.env
+          cp .env.example .env
 
-      - name: Run Services with Docker
-        working-directory: ${{ env.workingDirectory }}
+      - name: Build Containers with Docker
+        working-directory: services
         run: |
           docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
 
       - name: Check that no new migrations are necessary
-        working-directory: ${{ env.workingDirectory }}
+        working-directory: services
         run: |
           docker compose exec 121-service npm run test:migration
 
       - name: Run integration tests with Jest
-        working-directory: ${{ env.workingDirectory }}
+        working-directory: services
         run: |
           docker compose exec 121-service npm run test:integration:all -- --shard=3/3
 
