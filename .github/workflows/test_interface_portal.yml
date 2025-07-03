@@ -19,7 +19,7 @@ permissions:
   id-token: write
 
 env:
-  interfacePath: interfaces/portal
+  interfacePath: interfaces/portal/
 
 jobs:
   test:
@@ -65,7 +65,7 @@ jobs:
       - uses: qltysh/qlty-action/coverage@v1
         with:
           oidc: true
-          add-prefix: interfaces/portal/
+          add-prefix: ${{ env.interfacePath }}
           tag: portal
           files: ${{ env.interfacePath }}/coverage/lcov.info
 
