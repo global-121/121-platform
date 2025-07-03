@@ -11,6 +11,13 @@ on:
       - .github/workflows/test_interface_portal.yml
       - interfaces/portal/**
       - services/121-service/** # 121-service's code is imported/used
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test_interface_portal.yml
+      - interfaces/portal/**
+      - services/121-service/** # 121-service's code is imported/used
 
 # This is needed for qlty to authenticate with OIDC
 # https://docs.qlty.sh/coverage/quickstart#github-actions
