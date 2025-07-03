@@ -91,7 +91,7 @@ jobs:
       - uses: qltysh/qlty-action/coverage@v1
         with:
           oidc: true
-          add-prefix: services/121-service/
+          add-prefix: ${{ env.workingDirectory }}
           tag: 121-service
           files: ${{ env.workingDirectory }}/coverage/combined/lcov.info
 
