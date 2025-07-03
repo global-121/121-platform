@@ -23,6 +23,7 @@
     "test:all": "npm run knip && npm run lint && npm run typecheck && npm test:ci && npm run extract-i18n",
     "test:deployment-configuration": "node --env-file=.env ./_test-deployment-configuration.mjs",
     "test:ci": "npm test -- --no-watch --no-progress --browsers=ChromeHeadless",
+    "test:coverage": "npm run test:ci -- --code-coverage",
     "test": "ng test",
     "upgrade:angular": "ng update @angular/core @angular/cli --create-commits",
     "verify:deployment-configuration": "node --env-file=.env ./_verify-deployment-configuration.mjs",
