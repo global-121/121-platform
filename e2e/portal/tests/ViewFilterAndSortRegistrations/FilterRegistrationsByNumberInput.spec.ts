@@ -94,8 +94,7 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Max payments',
       filterNumber: 1,
-      filterWithRange: true,
-      range: 'less than',
+      filterMode: 'Less than',
     });
     await tableComponent.assertEmptyTableState();
     await tableComponent.clearAllFilters();
@@ -105,8 +104,7 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Max payments',
       filterNumber: 0,
-      filterWithRange: true,
-      range: 'Greater than',
+      filterMode: 'Greater than',
     });
     registrationName =
       await registrationsPage.getFirstRegistrationNameFromTable();
@@ -119,8 +117,7 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Reg. #',
       filterNumber: 3,
-      filterWithRange: true,
-      range: 'Greater than',
+      filterMode: 'Greater than',
     });
     await tableComponent.validateAllRecordsCount(2);
     await tableComponent.clearAllFilters();
@@ -130,10 +127,19 @@ test('[34948] Filter registrations by Input number', async ({ page }) => {
     await tableComponent.filterColumnByNumber({
       columnName: 'Reg. #',
       filterNumber: 4,
-      filterWithRange: true,
-      range: 'Less than',
+      filterMode: 'Less than',
     });
     await tableComponent.validateAllRecordsCount(3);
+    await tableComponent.clearAllFilters();
+  });
+
+  await test.step('Filter "Reg. #" with "Not equal to" number input', async () => {
+    await tableComponent.filterColumnByNumber({
+      columnName: 'Reg. #',
+      filterNumber: 4,
+      filterMode: 'Not equal to',
+    });
+    await tableComponent.validateAllRecordsCount(4);
     await tableComponent.clearAllFilters();
   });
 });

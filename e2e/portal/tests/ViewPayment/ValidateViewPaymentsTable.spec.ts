@@ -102,7 +102,10 @@ test('[32298] Table should be a filtered list of registrations included in the t
     );
 
     // Apply filter for Transfer value
-    await table.filterColumnByText('Transfer value', '75');
+    await table.filterColumnByText({
+      columnName: 'Transfer value',
+      filterText: '75',
+    });
     await table.validateTableRowCount(2);
 
     // Reset filters

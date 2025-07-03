@@ -62,7 +62,10 @@ test('[36349] Data should be updated according to selected columns and registrat
   });
 
   await test.step('Validate registration is updated', async () => {
-    await registrationsPage.table.filterColumnByText('Name', newName);
+    await registrationsPage.table.filterColumnByText({
+      columnName: 'Name',
+      filterText: newName,
+    });
     await registrationsPage.table.validateTableRowCount(1);
   });
 });
