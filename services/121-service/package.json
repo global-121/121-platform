@@ -33,7 +33,7 @@
     "coverage:merge": "istanbul-merge --out coverage/combined/coverage.json coverage/integration/coverage-final.json coverage/unit/coverage-final.json",
     "coverage:report": "nyc report -t coverage/combined --report-dir coverage/combined --reporter=lcov --reporter=text",
     "coverage": "npm run coverage:fix-paths && npm run coverage:merge && npm run coverage:report",
-    "open-coverage-report": "open coverage/combined/lcov-report/index.html",
+    "coverage:open-report": "open coverage/combined/lcov-report/index.html",
     "typeorm": "ts-node --require=tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:create": "npm run typeorm migration:create",
     "migration:generate": "npm run typeorm migration:generate -- --dataSource=./src/datasource-manage-migrations.ts",
