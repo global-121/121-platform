@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Scope,
-} from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { FilterComparator } from 'nestjs-paginate/lib/filter';
 import {
@@ -20,6 +14,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationFilterQueryHelpers } from '@121-service/src/registration/helpers/registration-attribute-data-query.helper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
@@ -39,135 +34,6 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     @Inject(REQUEST) public request: ScopedUserRequest,
   ) {
     super(RegistrationViewEntity, dataSource);
-  }
-  private applyFilterConditionAttributes({
-    queryBuilder,
-    findOperatorType,
-    value,
-    uniqueJoinId,
-    notFilter,
-  }: {
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    findOperatorType: FindOperatorType;
-    value: unknown;
-    uniqueJoinId: string;
-    notFilter: boolean;
-  }): ScopedQueryBuilder<RegistrationViewEntity> {
-    const columnName = 'value';
-    let condition: string;
-    let parameters: Record<string, unknown> = {};
-
-    switch (findOperatorType) {
-      case 'equal':
-        condition = `${uniqueJoinId}.${columnName} = :value${uniqueJoinId}`;
-        parameters = { [`value${uniqueJoinId}`]: value };
-        break;
-      case 'in':
-        condition = `${uniqueJoinId}.${columnName} IN (:...value${uniqueJoinId})`;
-        parameters = { [`value${uniqueJoinId}`]: value };
-        break;
-      case 'ilike':
-        condition = `${uniqueJoinId}.${columnName} ILIKE :value${uniqueJoinId}`;
-        parameters = { [`value${uniqueJoinId}`]: `%${value}%` };
-        break;
-      case 'isNull':
-        condition = `${uniqueJoinId}.${columnName} IS NULL`;
-        break;
-      case 'moreThan':
-        condition = `${uniqueJoinId}.${columnName}::numeric > :value${uniqueJoinId}`;
-        parameters = { [`value${uniqueJoinId}`]: value };
-        break;
-      case 'lessThan':
-        condition = `${uniqueJoinId}.${columnName}::numeric < :value${uniqueJoinId}`;
-        parameters = { [`value${uniqueJoinId}`]: value };
-        break;
-      case 'between':
-        condition = `${uniqueJoinId}.${columnName}::numeric BETWEEN :value${uniqueJoinId}1 AND :value${uniqueJoinId}2`;
-        parameters = {
-          [`value${uniqueJoinId}1`]: (value as [unknown, unknown])[0],
-          [`value${uniqueJoinId}2`]: (value as [unknown, unknown])[1],
-        };
-        break;
-      default:
-        throw new HttpException(
-          `Find operator type ${findOperatorType} is not supported`,
-          HttpStatus.BAD_REQUEST,
-        );
-    }
-    if (notFilter) {
-      // If notFilter is true, we need to wrap the condition in a NOT clause
-      condition = this.wrapNotOrThrow({
-        findOperatorType,
-        condition,
-        uniqueJoinId,
-        columnName,
-      });
-    }
-
-    return queryBuilder.andWhere(condition, parameters);
-  }
-
-  private wrapNotOrThrow({
-    condition,
-    uniqueJoinId,
-    columnName,
-    findOperatorType,
-  }: {
-    condition: string;
-    uniqueJoinId: string;
-    columnName: string;
-    findOperatorType: FindOperatorType;
-  }): string {
-    const nullFindOperators: FindOperatorType = 'isNull';
-    // Special case for $not:$null
-    // We do not support this for registration attribute data filters because some registration attribute data is now stored as empty string
-    // and not as null. Those would be filtered out if we would use $not:$null. Since this functionality is not used in the frontend we can throw an error here.
-    if (findOperatorType === nullFindOperators) {
-      throw new HttpException(
-        'Using $not:$null is not supported for registration attribute data filters.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    // Default for all other $not filters
-    return `(NOT (${condition}) OR ${uniqueJoinId}.${columnName} IS NULL)`;
-  }
-
-  private whereRegistrationDataIsOneOfIds(
-    relationInfo: RegistrationDataInfo,
-    qb: WhereExpressionBuilder,
-    uniqueJoinId: string,
-  ): void {
-    const i = 0;
-    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
-      if (i === 0) {
-        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-      } else {
-        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-      }
-    }
-  }
-
-  public sortOnRegistrationData(
-    sortByKey: string,
-    sortByValue: 'ASC' | 'DESC',
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    attributeRelations: RegistrationDataInfo[],
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
-    const relationInfo = attributeRelations.find((r) => r.name === sortByKey);
-    if (!relationInfo) {
-      return queryBuilder;
-    }
-    queryBuilder.leftJoin('registration.data', 'rd');
-    queryBuilder.andWhere(
-      new Brackets((qb) => {
-        this.whereRegistrationDataIsOneOfIds(relationInfo, qb, 'rd');
-      }),
-    );
-    queryBuilder.orderBy('rd.value', sortByValue);
-    queryBuilder.addSelect('rd.value');
-    // This is somehow needed (without alias!) to make the orderBy work
-    // These values are not returned because they are not mapped later on
-    return queryBuilder;
   }
 
   public getQueryBuilderForFspInstructions({
@@ -207,6 +73,73 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
         .andWhere('programFspConfiguration.fspName = :fspName', { fspName });
     }
     return query;
+  }
+
+  public createQueryBuilderToGetRegistrationViewsByReferenceIds(
+    referenceIds: string[],
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    if (referenceIds.length === 0) {
+      // Always false condition to return no results
+      return this.createQueryBuilder('registration').andWhere('1=0');
+    }
+    return this.createQueryBuilder('registration')
+      .andWhere({ status: Not(RegistrationStatusEnum.deleted) })
+      .andWhere('registration.referenceId IN (:...referenceIds)', {
+        referenceIds,
+      });
+  }
+
+  public addSearchToQueryBuilder(
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
+    search: string,
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    queryBuilder.leftJoin('registration.data', 'registrationDataSearch');
+    queryBuilder.andWhere('registrationDataSearch.value ILIKE :search', {
+      search: `%${search}%`,
+    });
+    return queryBuilder;
+  }
+
+  public createQueryBuilderExcludeDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
+    return this.createQueryBuilder('registration').andWhere({
+      status: Not(RegistrationStatusEnum.deleted),
+    });
+  }
+
+  public addProgramFilter({
+    queryBuilder,
+    programId,
+  }: {
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
+    programId: number;
+  }): ScopedQueryBuilder<RegistrationViewEntity> {
+    // Adds a filter for programId to the query builder
+    return queryBuilder.andWhere('"registration"."programId" = :programId', {
+      programId,
+    });
+  }
+
+  public sortOnRegistrationData(
+    sortByKey: string,
+    sortByValue: 'ASC' | 'DESC',
+    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
+    attributeRelations: RegistrationDataInfo[],
+  ): ScopedQueryBuilder<RegistrationViewEntity> {
+    const relationInfo = attributeRelations.find((r) => r.name === sortByKey);
+    if (!relationInfo) {
+      return queryBuilder;
+    }
+    queryBuilder.leftJoin('registration.data', 'rd');
+    queryBuilder.andWhere(
+      new Brackets((qb) => {
+        this.whereRegistrationDataIsOneOfIds(relationInfo, qb, 'rd');
+      }),
+    );
+    queryBuilder.orderBy('rd.value', sortByValue);
+    queryBuilder.addSelect('rd.value');
+    // This is somehow needed (without alias!) to make the orderBy work
+    // These values are not returned because they are not mapped later on
+    return queryBuilder;
   }
 
   public filterRegistrationAttributeDataQb({
@@ -270,58 +203,30 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
         uniqueJoinId, // alias
         `${uniqueJoinId}."programRegistrationAttributeId" = ${relationInfo.relation.programRegistrationAttributeId}`,
       );
-      queryBuilder = this.applyFilterConditionAttributes({
-        queryBuilder,
-        findOperatorType,
-        value: findOperator.value,
-        uniqueJoinId,
-        notFilter,
-      });
+      queryBuilder =
+        RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+          queryBuilder,
+          findOperatorType,
+          value: findOperator.value,
+          uniqueJoinId,
+          notFilter,
+        });
     }
     return queryBuilder;
   }
 
-  public addSearchToQueryBuilder(
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
-    search: string,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
-    queryBuilder.leftJoin('registration.data', 'registrationDataSearch');
-    queryBuilder.andWhere('registrationDataSearch.value ILIKE :search', {
-      search: `%${search}%`,
-    });
-    return queryBuilder;
-  }
-
-  public createQueryBuilderToGetRegistrationViewsByReferenceIds(
-    referenceIds: string[],
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
-    if (referenceIds.length === 0) {
-      // Always false condition to return no results
-      return this.createQueryBuilder('registration').andWhere('1=0');
+  private whereRegistrationDataIsOneOfIds(
+    relationInfo: RegistrationDataInfo,
+    qb: WhereExpressionBuilder,
+    uniqueJoinId: string,
+  ): void {
+    const i = 0;
+    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
+      if (i === 0) {
+        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      } else {
+        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      }
     }
-    return this.createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) })
-      .andWhere('registration.referenceId IN (:...referenceIds)', {
-        referenceIds,
-      });
-  }
-
-  public createQueryBuilderExcludeDeleted(): ScopedQueryBuilder<RegistrationViewEntity> {
-    return this.createQueryBuilder('registration').andWhere({
-      status: Not(RegistrationStatusEnum.deleted),
-    });
-  }
-
-  public addProgramFilter({
-    queryBuilder,
-    programId,
-  }: {
-    queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    programId: number;
-  }): ScopedQueryBuilder<RegistrationViewEntity> {
-    // Adds a filter for programId to the query builder
-    return queryBuilder.andWhere('"registration"."programId" = :programId', {
-      programId,
-    });
   }
 }

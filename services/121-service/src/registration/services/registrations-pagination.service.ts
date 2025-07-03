@@ -211,7 +211,6 @@ export class RegistrationsPaginationService {
     return allRegistrations;
   }
 
-  // TODO: Move this function to registration view scoped repository
   public async getRegistrationViewsByReferenceIds({
     programId,
     referenceIds,
@@ -263,7 +262,7 @@ export class RegistrationsPaginationService {
     }
   }
 
-  // TODO: Put this fuction in a user module
+  // TODO: Put this function in a user module
   public async userHasPermissionForProgram(
     userId: number,
     programId: number,
