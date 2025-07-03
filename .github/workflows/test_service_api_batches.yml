@@ -44,19 +44,25 @@ jobs:
         id: cache-docker-images
         uses: actions/cache@v4
         with:
-          path:
-            121-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
-            mock-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          path: |
+            121-service.tar
+            mock-service.tar
           key: ${{ needs.test_prep.outputs.services_version_hash }}
 
-      - name: Build Docker image
+      - name: Build Docker image(s)
         if: steps.cache-docker-images.outputs.cache-hit != 'true'
         env:
           COMPOSE_BAKE: true
         run: |
           docker compose --file docker-compose.yml build
-          docker save services-121-service:latest -o ../121-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
-          docker save services-mock-service:latest -o ../mock-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
+
+      - name: Save Docker image(s)
+        if: steps.cache-docker-images.outputs.cache-hit != 'true'
+        env:
+          COMPOSE_BAKE: true
+        run: |
+          docker save services-121-service:latest -o ../121-service.tar
+          docker save services-mock-service:latest -o ../mock-service.tar
 
   test_batch:
     runs-on: ubuntu-latest
@@ -77,15 +83,15 @@ jobs:
       - name: Restore 121-servoce Docker image from cache
         uses: actions/cache/restore@v4
         with:
-          path:
-            121-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
-            mock-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          path: |
+            121-service.tar
+            mock-service.tar
           key: ${{ needs.test_prep.outputs.services_version_hash }}
 
       - name: Load Docker images
         run: |
-          docker load -i ../121-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
-          docker load -i ../mock-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          docker load -i ../121-service.tar
+          docker load -i ../mock-service.tar
 
       - name: Run Containers with Docker
         run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
