@@ -24,7 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       services_version_hash: ${{ steps.services_version.outputs.hash }}
-
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -33,9 +32,6 @@ jobs:
         id: services_version
         working-directory: ./
         run: echo "hash=${{ hashFiles('services/**') }}" >> $GITHUB_OUTPUT
-
-      - name: Set ENV-variables for test-environment
-        run: cp .env.example .env
 
   build:
     runs-on: ubuntu-latest
@@ -47,6 +43,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - name: Set ENV-variables for test-environment
+        run: cp .env.example .env
+
       - name: Restore Docker image from cache
         id: cache-docker-image
         uses: actions/cache@v4
@@ -57,8 +56,8 @@ jobs:
       - name: Build Docker image
         if: steps.cache-docker-image.outputs.cache-hit != 'true'
         run: |
-          docker build --target production --tag ${{ matrix.service-container }}:${{ needs.test_prep.outputs.services_version_hash }} ${{ matrix.service-container }}
-          docker save ${{ matrix.service-container }}:${{ needs.test_prep.outputs.services_version_hash }} -o ../${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          docker build --target production --tag services-${{ matrix.service-container }}:latest ${{ matrix.service-container }}
+          docker save ${{ matrix.service-container }}:latest -o ../${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
 
       - name: Save Docker image to cache
         if: steps.cache-docker-image.outputs.cache-hit != 'true'
