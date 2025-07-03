@@ -26,6 +26,7 @@ import {
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
+import { env } from '@121-service/src/env';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { KoboConnectService } from '@121-service/src/kobo-connect/kobo-connect.service';
@@ -202,7 +203,7 @@ You can also leave the body empty.`,
     @Body() body: SecretDto,
     @Res() res,
   ): Promise<void> {
-    if (body.secret !== process.env.RESET_SECRET) {
+    if (body.secret !== env.RESET_SECRET) {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
     await this.programService.deleteProgram(programId);

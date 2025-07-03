@@ -8,6 +8,7 @@ import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 
+import { env } from '@121-service/src/env';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
@@ -44,7 +45,7 @@ export class CookieJwtStrategy
         return token;
       },
       ignoreExpiration: false,
-      secretOrKey: process.env.SECRETS_121_SERVICE_SECRET,
+      secretOrKey: env.SECRETS_121_SERVICE_SECRET,
       passReqToCallback: true,
     });
   }

@@ -7,9 +7,10 @@ import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
 import { EmailsService } from '@121-service/src/emails/emails.service';
+import { env } from '@121-service/src/env';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -280,7 +281,7 @@ export class UserService {
       };
 
       // Send SSO template if SSO is enabled
-      if (!!process.env.USE_SSO_AZURE_ENTRA) {
+      if (env.USE_SSO_AZURE_ENTRA) {
         await this.emailsService.sendCreateSSOUserEmail(emailPayload);
       } else {
         await this.emailsService.sendCreateNonSSOUserEmail(emailPayload);
@@ -587,7 +588,7 @@ export class UserService {
         admin: user.admin,
         isOrganizationAdmin: user.isOrganizationAdmin,
       },
-      process.env.SECRETS_121_SERVICE_SECRET!,
+      env.SECRETS_121_SERVICE_SECRET,
     );
 
     return result;
@@ -610,8 +611,8 @@ export class UserService {
     httpOnly: boolean;
   } {
     return {
-      sameSite: DEBUG ? 'Lax' : 'None',
-      secure: !DEBUG,
+      sameSite: IS_DEVELOPMENT ? 'Lax' : 'None',
+      secure: !IS_DEVELOPMENT,
       httpOnly: true,
     };
   }
@@ -634,11 +635,7 @@ export class UserService {
     };
 
     // For SSO-users, token expiration is handled by Azure
-    if (
-      !process.env.USE_SSO_AZURE_ENTRA &&
-      !user.isEntraUser &&
-      tokenExpiration
-    ) {
+    if (!env.USE_SSO_AZURE_ENTRA && !user.isEntraUser && tokenExpiration) {
       userData.expires = new Date(tokenExpiration * 1_000);
     }
 

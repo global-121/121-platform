@@ -8,6 +8,7 @@ import {
   EXTERNAL_API,
   TWILIO_SANDBOX_WHATSAPP_NUMBER,
 } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -63,19 +64,17 @@ export class WhatsappService {
     const payload = {
       body: contentSid ? undefined : message,
       contentSid,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-      from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER!),
+      messagingServiceSid: env.TWILIO_MESSAGING_SID,
+      from: formatWhatsAppNumber(env.TWILIO_WHATSAPP_NUMBER),
       statusCallback:
         EXTERNAL_API.whatsAppStatus +
-        (!!process.env.MOCK_TWILIO
-          ? `?messageContentType=${messageContentType}`
-          : ''),
+        (env.MOCK_TWILIO ? `?messageContentType=${messageContentType}` : ''),
       to: formatWhatsAppNumber(recipientPhoneNr),
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
-    if (!!process.env.MOCK_TWILIO) {
+    if (env.MOCK_TWILIO) {
       payload['messageContentType'] = messageContentType;
     }
 
@@ -120,10 +119,10 @@ export class WhatsappService {
 
       await this.storeSendWhatsapp({
         message: {
-          accountSid: process.env.TWILIO_SID ?? '',
+          accountSid: env.TWILIO_SID,
           body: payload.body ?? '',
           to: payload.to,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID ?? '',
+          messagingServiceSid: env.TWILIO_MESSAGING_SID,
           dateCreated: new Date(),
           sid: `failed-${uuid()}`,
           status: 'failed',
@@ -240,8 +239,8 @@ export class WhatsappService {
     for (const messageTemplate of messageTemplates) {
       const payload = {
         body: messageTemplate.message ?? undefined,
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        from: formatWhatsAppNumber(process.env.TWILIO_WHATSAPP_NUMBER),
+        messagingServiceSid: env.TWILIO_MESSAGING_SID,
+        from: formatWhatsAppNumber(env.TWILIO_WHATSAPP_NUMBER),
         statusCallback: EXTERNAL_API.whatsAppStatusTemplateTest,
         to: formatWhatsAppNumber(TWILIO_SANDBOX_WHATSAPP_NUMBER),
       };

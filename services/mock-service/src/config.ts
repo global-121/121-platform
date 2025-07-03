@@ -1,6 +1,6 @@
 import { env } from '@mock-service/src/env';
 
-export const DEVELOPMENT = env.NODE_ENV === 'development';
+export const IS_DEVELOPMENT = env.NODE_ENV === 'development';
 
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
@@ -30,6 +30,7 @@ export const SWAGGER_CUSTOM_CSS = `
 
 // Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
+export const EXTERNAL_API_ROOT = `${env.EXTERNAL_121_SERVICE_URL}/api`;
 export const API_PATHS = {
   smsStatus: 'notifications/sms/status',
   whatsAppStatus: 'notifications/whatsapp/status',
@@ -38,9 +39,3 @@ export const API_PATHS = {
   safaricomTimeoutCallback: 'fsps/safaricom/timeout-callback',
   onafriqCallback: 'fsps/onafriq/callback',
 };
-
-export const EXTERNAL_API_ROOT = `${
-  DEVELOPMENT
-    ? `http://121-service:${env.PORT_121_SERVICE}/`
-    : env.EXTERNAL_121_SERVICE_URL
-}api`;

@@ -44,6 +44,7 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
   - Install the version specified in the [`.node-version`](.node-version)-file.
+
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
     - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
 
@@ -54,6 +55,7 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 - Install Docker
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
+
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
@@ -92,17 +94,17 @@ npm install
 
 ## Setup Services
 
-Switch to the repository folder
+Copy the centralized `.env`-file
 
-    cd services/
+    cp -i services/.env.example services/.env
 
-Copy the centralized .env file
+Each environment-variable is explained in the [`.env.example`-file](./services/.env.example). See the comments above each variable.
 
-    cp .env.example .env
+The initially set values are the defaults that should enable you to do local development and run all (automated) tests.
 
-Environment variables are explained in the comments of the [`.env.example`-file](./services/.env.example), some already have a value that is safe/good to use for development, some need to be unique/specific for your environment.
-
-Some variables are for credentials or tokens to access third-party services.
+- Some variables _should_ have a unique/specific value for your (local) environment.
+- Some are (sensitive) credentials or tokens to access third-party services. (Reach out to the development-team if you need them.)
+- Some are feature-switches that enable/disable specific features of the platform.
 
 ## Start Services
 
@@ -130,9 +132,9 @@ Install dependencies for the portal, run:
 
     npm run install:portal
 
-Also, make sure to create an env file for each interface. For example:
+Also, make sure to set the environment-variables. Run:
 
-    cp interfaces/portal/.env.example interfaces/portal/.env
+    cp -i interfaces/portal/.env.example interfaces/portal/.env
 
 ## Start Interfaces
 
@@ -140,11 +142,9 @@ To start the portal, from the root of this repository, run:
 
     npm run start:portal
 
-- Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
+Or explore the specific options as defined in the [`package.json`](interfaces/portal/package.json) or [`README.md`](interfaces/portal/README.md).
 
-When started, the portal will be available via:
-
-- Portal: <http://localhost:8888>
+When started, the portal will be available via: <http://localhost:8888>
 
 ---
 
@@ -160,6 +160,16 @@ To start an individual interface/service in VS Code:
 
       npm run code:<package>
 
+### Using environment-variables
+
+See for guidelines on how we work with environment-variables, at the top of: [`.env.example`](services/.env.example).
+
+#### Third party API tokens, credentials, infrastructure-specific values, etc
+
+All (sensitive) tokens, access keys for third party APIs, infrastructure-specific hostnames and similar values should be injected in the application(s) via environment-variables.
+
+⚠️ Make sure never to commit any such sensitive values! Always use the (ignored) local `.env`-file.
+
 ### Process for implementing data-model changes
 
 When making changes to the data-model of the `121-service` (creating/editing any `\*.entity.ts` files), you need to create a migration script to take these changes into affect.
@@ -170,6 +180,7 @@ The process is:
 2. To generate a migration-script run: `docker exec 121-service npm run migration:generate src/migration/<descriptive-name-for-migration-script>`. This will compare the data-model according to your code with the data-model according to your database, and generate any CREATE, ALTER, etc SQL-statements that are needed to make the database align with code again.
 3. Restart the 121-service through `docker restart 121-service`: this will always run any new migration-scripts (and thus update the data-model in the database), so in this case the just generated migration-script.
 4. If more changes required, then follow the above process as often as needed.
+
 5. Do NOT import any files from our code base into your migrations. For example, do NOT import seed JSON files to get data to insert into the database, since the migration may break if ever these seed JSON files change. Instead, "hard code" the needed data in your migration file.
 6. Do NOT change migration files anymore after they have been merged to main, like commenting out parts of it, since there is a high probability this will result in bugs or faulty data on production instances. Instead, create a new migration file. The exception is bug fixing a migration file, for example if a file was imported that causes the migration to fail (see 5 above).
 7. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
@@ -180,7 +191,7 @@ The process is:
    - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
    - (Run seed)
 
-10. When creating new sequences for tables with existing data be sure to also update it using setval ([example](https://github.com/global-121/121-platform/pull/6965/files)) to the current max id.
+10. When creating new sequences for tables with existing data be sure to also update it using `setval` ([example](https://github.com/global-121/121-platform/pull/6965/files)) to the current max id.
 11. See also [TypeORM migration documentation](https://github.com/typeorm/typeorm/blob/master/docs/migrations.md) for more info
 
 NOTE: if you're making many data-model changes at once, or are doing a lot of trial and error, there is an alternative option:
@@ -207,10 +218,6 @@ This script performs the following steps:
 ### Authentication
 
 All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request by the browser via an `access_token` cookie. The JWT authentication middleware handles the validation and authentication of the token.
-
-### Adding third party API tokens
-
-All the tokens and access keys for third party APIs should be added on the `.env`-file and subsequently imported using the environment variables within typescript files.
 
 ### Recommended code-editor/IDE tools/extensions
 

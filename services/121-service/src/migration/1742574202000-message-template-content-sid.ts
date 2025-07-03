@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+import { env } from '@121-service/src/env';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 
 export class MessageTemplateContentSid1742574202000
@@ -23,7 +24,7 @@ export class MessageTemplateContentSid1742574202000
     );
 
     // Migrate NLRC
-    if (process.env.ENV_NAME === 'NLRC') {
+    if (env.ENV_NAME === 'NLRC') {
       const contents = await twilioClient.content.v1.contentAndApprovals.list();
       // filter out content no quick reply and non approved
       const filteredContents = contents.filter(
@@ -71,7 +72,7 @@ export class MessageTemplateContentSid1742574202000
     // Migrate instance that are in mock mode: important for demo and training
     // This will set the contentSid to a mock value related to the language and type
     // It does not take into account the mock message we have for PV and OCW, it seemed not worth the effort
-    if (process.env.MOCK_TWILIO) {
+    if (env.MOCK_TWILIO) {
       for (const messageTemplate of currentMessageTemplates) {
         const language = messageTemplate.language;
         const type =

@@ -4,6 +4,7 @@ import fs from 'fs';
 import https from 'https';
 import * as convert from 'xml-js';
 
+import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
@@ -168,15 +169,15 @@ export class SoapService {
 
     // TODO: REFACTOR: See the NedbankApiClientService for how to handle the certificate, so it works on Azure and locally
     let agent;
-    if (process.env.MOCK_COMMERCIAL_BANK_ETHIOPIA) {
+    if (env.MOCK_COMMERCIAL_BANK_ETHIOPIA) {
       // Mock enabled
       agent = new https.Agent();
     } else {
       // Mock disabled
-      if (!!process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
+      if (!!env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH) {
         try {
           const certificate = fs.readFileSync(
-            process.env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
+            env.COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH,
           );
           agent = new https.Agent({
             ca: certificate,

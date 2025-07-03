@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 interface ExchangeRateApiResponse {
   data: {
@@ -23,9 +24,9 @@ export class ExchangeRatesApiService {
     const yesterday = now.toISOString().split('T')[0];
 
     try {
-      const exchangeRateUrl = !process.env.MOCK_DAILY_EXCHANGE_RATES
-        ? `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`
-        : `${process.env.MOCK_SERVICE_URL}api/exchange-rates`;
+      const exchangeRateUrl = env.MOCK_DAILY_EXCHANGE_RATES
+        ? `${env.MOCK_SERVICE_URL}/api/exchange-rates`
+        : `https://fxds-public-exchange-rates-api.oanda.com/cc-api/currencies?base=${currency}&quote=EUR&data_type=general_currency_pair&start_date=${yesterday}&end_date=${today}`;
       const response: ExchangeRateApiResponse =
         await this.httpService.get(exchangeRateUrl);
 
