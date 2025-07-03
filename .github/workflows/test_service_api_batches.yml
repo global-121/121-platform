@@ -9,10 +9,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/test_service_api_batches.yml
-      - .github/actions/build-service/action.yml
-      - services/.env.example
-      - services/121-service/**
-      - services/mock-service/**
+      - services/**
       - '!**.md'
 
 defaults:
@@ -31,7 +28,7 @@ jobs:
       - name: Generate version-hash of all services code
         id: services_version
         working-directory: ./
-        run: echo "hash=${{ hashFiles('services/**') }}" >> $GITHUB_OUTPUT
+        run: echo "hash=${{ hashFiles('.github/workflows/test_service_api_batches.yml', 'services/**') }}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
