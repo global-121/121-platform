@@ -118,4 +118,5 @@ jobs:
       - test_batch
     steps:
       - name: Finish
+        working-directory: ./
         run: echo 'Done?!'
