@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}
-          path: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          path: services/${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
 
   test_batches:
     runs-on: ubuntu-latest
@@ -77,6 +77,8 @@ jobs:
 
       - name: Download Docker images
         uses: actions/download-artifact@v4
+        with:
+          path: services
 
       - name: Load Docker images
         run: |
