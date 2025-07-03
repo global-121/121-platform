@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-// Test trigger a failure:
-
 exports[`Set/calculate payment amount multiplier should error if paymentAmountMultiplier is set while program has a formula 1`] = `
 {
   "data": [],
@@ -11,7 +9,7 @@ exports[`Set/calculate payment amount multiplier should error if paymentAmountMu
   "meta": {
     "currentPage": 1,
     "filter": {
-      "referenceId": "xxxxxxxxxxxxxxxx",
+      "referenceId": "westeros123456789",
     },
     "itemsPerPage": 20,
     "sortBy": [

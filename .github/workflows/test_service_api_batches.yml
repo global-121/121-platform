@@ -38,7 +38,7 @@ jobs:
         run: docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
 
       - name: Run integration tests with Jest
-        if: ${{ matrix.batch != '0' }}
+        if: ${{ matrix.batch != 'migrations' }}
         working-directory: services
         run: docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
 
