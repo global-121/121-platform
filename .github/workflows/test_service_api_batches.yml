@@ -15,23 +15,37 @@ on:
       - services/mock-service/**
       - '!**.md'
 
+defaults:
+  run:
+    working-directory: services
+
 jobs:
   test_prep:
     runs-on: ubuntu-latest
+    outputs:
+      services_version_hash: ${{ steps.services_version.outputs.hash }}
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Set ENV-variables for test-environment
-        working-directory: services
-        run: |
-          cp .env.example .env
+      - name: Generate version-hash of all services code
+        id: services_version
+        working-directory: ./
+        run: echo "hash=${{ hashFiles('services/**') }}" >> $GITHUB_OUTPUT
 
-      - name: Build Containers with Docker
-        working-directory: services
+      - name: Set ENV-variables for test-environment
+        run: cp .env.example .env
+
+      - name: Start Local Docker Registry
+        run: docker run --detach -p 5000:5000 --name registry registry:2
+
+      - name: Build and Push Docker Images
         run: |
-          docker --log-level='warn' compose --file=docker-compose.yml build
+          docker build --target production --tag localhost:5000/121-service:${{ steps.services_version.outputs.hash }} 121-service
+          docker push localhost:5000/121-service:${{ steps.services_version.outputs.hash }}
+          docker build --target production --tag localhost:5000/mock-service:${{ steps.services_version.outputs.hash }} mock-service
+          docker push localhost:5000/mock-service:${{ steps.services_version.outputs.hash }}
 
       - name: Docker logs
         if: always()
@@ -50,19 +64,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
-        working-directory: services
-        run: |
-          cp .env.example .env
+        run: cp .env.example .env
 
-      - name: Build Containers with Docker
-        working-directory: services
+      - name: Pull Image from Local Registry Using Folder Hash
         run: |
-          docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
+          docker pull localhost:5000/121-service:${{ needs.test_prep.outputs.services_version_hash }}
+          docker pull localhost:5000/mock-service:${{ needs.test_prep.outputs.services_version_hash }}
+
+      - name: Run Containers with Docker
+        run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
 
       - name: Run integration tests with Jest
-        working-directory: services
-        run: |
-          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
+        run: docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
 
       - name: Docker logs
         if: always()
@@ -78,24 +91,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set ENV-variables for test-environment
-        working-directory: services
-        run: |
-          cp .env.example .env
+        run: cp .env.example .env
 
       - name: Build Containers with Docker
-        working-directory: services
-        run: |
-          docker --log-level='warn' compose --file=docker-compose.yml up --detach --wait --wait-timeout 300
+        run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
 
       - name: Check that no new migrations are necessary
-        working-directory: services
-        run: |
-          docker compose exec 121-service npm run test:migration
-
-      - name: Run integration tests with Jest
-        working-directory: services
-        run: |
-          docker compose exec 121-service npm run test:integration:all -- --shard=3/3
+        run: docker compose exec 121-service npm run test:migration
 
       - name: Docker logs
         if: always()
