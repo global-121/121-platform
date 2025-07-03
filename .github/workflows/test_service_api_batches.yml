@@ -37,24 +37,33 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: cp .env.example .env
 
-      - name: Start Local Docker Registry
-        run: docker run --detach -p 5000:5000 --name registry registry:2
+  build:
+    runs-on: ubuntu-latest
+    needs: test_prep
+    strategy:
+      matrix:
+        service-container: ['121-service', 'mock-service']
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
 
-      - name: Build and Push Docker Images
-        run: |
-          docker build --target production --tag localhost:5000/121-service:${{ steps.services_version.outputs.hash }} 121-service
-          docker push localhost:5000/121-service:${{ steps.services_version.outputs.hash }}
-          docker build --target production --tag localhost:5000/mock-service:${{ steps.services_version.outputs.hash }} mock-service
-          docker push localhost:5000/mock-service:${{ steps.services_version.outputs.hash }}
+      - name: Build and Docker Image
+        run: docker build --target production --tag ${{ matrix.service-container }}:${{ needs.test_prep.outputs.services_version_hash }} ${{ matrix.service-container }}
 
-      - name: Docker logs
-        if: always()
-        uses: jwalton/gh-docker-logs@v2
+      - name: Save Docker Image
+        run: docker save ${{ matrix.service-container }}:${{ needs.test_prep.outputs.services_version_hash }} -o ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}
+          path: ${{ matrix.service-container }}-${{ needs.test_prep.outputs.services_version_hash }}.tar
 
   test_batches:
     runs-on: ubuntu-latest
     needs:
       - test_prep
+      - build
     strategy:
       matrix:
         batch: ['1/4', '2/4', '3/4', '4/4']
@@ -66,13 +75,13 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: cp .env.example .env
 
-      - name: Start Local Docker Registry
-        run: docker run --detach -p 5000:5000 --name registry registry:2
+      - name: Download Docker images
+        uses: actions/download-artifact@v4
 
-      - name: Pull Image from Local Registry Using Folder Hash
+      - name: Load Docker images
         run: |
-          docker pull localhost:5000/121-service:${{ needs.test_prep.outputs.services_version_hash }}
-          docker pull localhost:5000/mock-service:${{ needs.test_prep.outputs.services_version_hash }}
+          docker load -i 121-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
+          docker load -i mock-service-${{ needs.test_prep.outputs.services_version_hash }}.tar
 
       - name: Run Containers with Docker
         run: docker compose --file=docker-compose.yml up --detach --wait --wait-timeout 300 --quiet-pull --no-recreate --no-build
