@@ -12,7 +12,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 
 export function getHostname(): string {
-  return 'http://localhost:3000/api';
+  return `${env.EXTERNAL_121_SERVICE_URL}/api`;
 }
 
 export function getServer(): TestAgent<request.Test> {
