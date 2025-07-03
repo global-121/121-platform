@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Containers with Docker
         run: |
-          docker --log-level='warn' compose --file=docker-compose.yml --build --quiet-pull
+          docker --log-level='warn' compose --file=docker-compose.yml build
 
       - name: Docker logs
         if: always()
