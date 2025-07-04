@@ -1,11 +1,12 @@
-import { Process, Processor } from '@nestjs/bull';
+import { Process } from '@nestjs/bull';
 import { Job } from 'bull';
 
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { MessageService } from '@121-service/src/notifications/message.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
+import { RegisteredProcessor } from '@121-service/src/queues-registry/register-processor.decorator';
 
-@Processor(QueueNames.createMessageReplyOnIncoming)
+@RegisteredProcessor(QueueNames.createMessageReplyOnIncoming)
 export class MessageProcessorReplyOnIncoming {
   constructor(private readonly messageService: MessageService) {}
 
@@ -15,7 +16,7 @@ export class MessageProcessorReplyOnIncoming {
   }
 }
 
-@Processor(QueueNames.createMessageSmallBulk)
+@RegisteredProcessor(QueueNames.createMessageSmallBulk)
 export class MessageProcessorSmallBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -25,7 +26,7 @@ export class MessageProcessorSmallBulk {
   }
 }
 
-@Processor(QueueNames.createMessageMediumBulk)
+@RegisteredProcessor(QueueNames.createMessageMediumBulk)
 export class MessageProcessorMediumBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -35,7 +36,7 @@ export class MessageProcessorMediumBulk {
   }
 }
 
-@Processor(QueueNames.createMessageLargeBulk)
+@RegisteredProcessor(QueueNames.createMessageLargeBulk)
 export class MessageProcessorLargeBulk {
   constructor(private readonly messageService: MessageService) {}
 
@@ -45,7 +46,7 @@ export class MessageProcessorLargeBulk {
   }
 }
 
-@Processor(QueueNames.createMessageLowPriority)
+@RegisteredProcessor(QueueNames.createMessageLowPriority)
 export class MessageProcessorLowPriority {
   constructor(private readonly messageService: MessageService) {}
 
