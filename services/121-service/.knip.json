@@ -21,6 +21,7 @@
     "devDependencies": "warn",
     "unlisted": "warn",
     "binaries": "warn",
-    "enumMembers": "warn"
+    "enumMembers": "warn",
+    "types": "warn"
   }
 }
