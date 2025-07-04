@@ -19,8 +19,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
 export class ExcelService implements FspIntegrationInterface {
@@ -33,7 +33,7 @@ export class ExcelService implements FspIntegrationInterface {
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly fileImportService: FileImportService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async sendPayment(
@@ -100,7 +100,7 @@ export class ExcelService implements FspIntegrationInterface {
     // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
     // TODO: Also refactor this so that the excel service does not know about transactions, so than this query should be moved to a repository and be called in another service
     const qb =
-      this.registrationsPaginationService.getQueryBuilderForFspInstructions({
+      this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
         payment,
         programFspConfigurationId,

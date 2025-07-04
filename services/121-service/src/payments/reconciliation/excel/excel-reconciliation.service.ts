@@ -18,6 +18,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
+import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
@@ -34,6 +35,7 @@ export class ExcelRecociliationService {
     private readonly excelService: ExcelService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
+    private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async getImportInstructionsTemplate(
@@ -294,7 +296,7 @@ export class ExcelRecociliationService {
     programFspConfigurationId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
-      this.registrationsPaginationService.getQueryBuilderForFspInstructions({
+      this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
         payment,
         programFspConfigurationId,
