@@ -1,30 +1,42 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
+// Does not need explicit validation decorators on all properties, because we want to accept any payload structure from Safaricom, as we cannot control it.
 export class SafaricomTimeoutCallbackDto {
   @ApiProperty()
-  readonly InitiatorName: string;
+  @IsOptional()
+  readonly InitiatorName?: string;
   @ApiProperty()
-  readonly SecurityCredential: string;
+  @IsOptional()
+  readonly SecurityCredential?: string;
   @ApiProperty()
-  readonly CommandID: string;
+  @IsOptional()
+  readonly CommandID?: string;
   @ApiProperty()
-  readonly Amount: number;
+  @IsOptional()
+  readonly Amount?: number;
   @ApiProperty()
-  readonly PartyA: string;
+  @IsOptional()
+  readonly PartyA?: string;
   @ApiProperty()
-  readonly PartyB: string;
+  @IsOptional()
+  readonly PartyB?: string;
   @ApiProperty()
-  readonly Remarks: string;
+  @IsOptional()
+  readonly Remarks?: string;
   @ApiProperty()
-  readonly QueueTimeOutURL: string;
+  @IsOptional()
+  readonly QueueTimeOutURL?: string;
   @ApiProperty()
-  readonly ResultURL: string;
+  @IsOptional()
+  readonly ResultURL?: string;
   @ApiProperty()
-  @IsNotEmpty()
-  readonly OriginatorConversationID: string;
+  @IsOptional()
+  readonly OriginatorConversationID?: string;
   @ApiProperty()
-  readonly IDType: string;
+  @IsOptional()
+  readonly IDType?: string;
   @ApiProperty()
-  readonly IDNumber: string;
+  @IsOptional()
+  readonly IDNumber?: string;
 }

@@ -13,7 +13,6 @@ import { ProgramAttributesService } from '@121-service/src/program-attributes/pr
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationMapper } from '@121-service/src/program-fsp-configurations/mappers/program-fsp-configuration.mapper';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramFspConfigurationsService } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.service';
 import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { FoundProgramDto } from '@121-service/src/programs/dto/found-program.dto';
 import {
@@ -44,7 +43,6 @@ export class ProgramService {
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly programAttributesService: ProgramAttributesService,
-    private readonly programFspConfigurationService: ProgramFspConfigurationsService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
   ) {}

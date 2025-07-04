@@ -5,7 +5,6 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -14,7 +13,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -94,20 +92,6 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   },
 ];
 
-export class ProgramFspDto {
-  @ApiProperty()
-  @IsEnum(Fsps)
-  fsp: WrapperType<Fsps>;
-
-  @ApiProperty()
-  @IsArray()
-  @IsOptional()
-  configuration?: {
-    name: WrapperType<Fsps>;
-    value: string | string[] | Record<string, string>;
-  }[];
-}
-
 export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
@@ -162,6 +146,7 @@ export class CreateProgramDto {
   public readonly distributionDuration: number;
 
   @ApiProperty({ example: 500 })
+  @IsNumber()
   public readonly fixedTransferValue: number;
 
   @ApiProperty({ example: '0 + 1 * nrOfHouseHoldMembers' })

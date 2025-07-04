@@ -58,6 +58,7 @@ import { RegistrationViewEntity } from '@121-service/src/registration/registrati
 import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 import {
   FILE_UPLOAD_API_FORMAT,
   FILE_UPLOAD_WITH_REASON_API_FORMAT,
@@ -113,7 +114,7 @@ export class RegistrationsController {
   @ApiBody({ isArray: true, type: ImportRegistrationsDto })
   @Post('programs/:programId/registrations')
   public async importRegistrationsJSON(
-    @Body(new ParseArrayPipe({ items: ImportRegistrationsDto }))
+    @AnyValidBody(new ParseArrayPipe({ items: ImportRegistrationsDto })) // Registration can have dynamic attributes, so we cannot use whitelist
     data: ImportRegistrationsDto[],
     @Param('programId', ParseIntPipe)
     programId: number,
@@ -182,7 +183,7 @@ export class RegistrationsController {
   @UseInterceptors(FileInterceptor('file'))
   public async patchRegistrations(
     @UploadedFile() csvFile: Express.Multer.File,
-    @Body('reason') reason: string,
+    @AnyValidBody('reason') reason: string, // Registration can have dynamic attributes, so we cannot use whitelist
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<void> {
@@ -365,7 +366,7 @@ export class RegistrationsController {
   public async updateRegistration(
     @Param('programId', new ParseIntPipe()) programId: number,
     @Param('referenceId') referenceId: string,
-    @Body() updateRegistrationDto: UpdateRegistrationDto,
+    @AnyValidBody() updateRegistrationDto: UpdateRegistrationDto, // Registration can have dynamic attributes, so we cannot use whitelist
     @Req() req: ScopedUserRequest,
   ) {
     const userId = RequestHelper.getUserId(req);

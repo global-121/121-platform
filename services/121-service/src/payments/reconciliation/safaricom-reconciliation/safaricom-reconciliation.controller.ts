@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  Body,
   Controller,
   HttpStatus,
   Post,
@@ -13,6 +12,7 @@ import { validate } from 'class-validator';
 import { SafaricomTimeoutCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-timeout-callback.dto';
 import { SafaricomTransferCallbackDto } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/dtos/safaricom-transfer-callback.dto';
 import { SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
+import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
 @ApiTags('fsps/safaricom')
 @Controller('fsps/safaricom')
@@ -33,7 +33,7 @@ export class SafaricomReconciliationController {
   })
   @Post('transfer-callback')
   public async processTransferCallback(
-    @Body() safaricomTransferCallback: SafaricomTransferCallbackDto,
+    @AnyValidBody() safaricomTransferCallback: SafaricomTransferCallbackDto, // We cannot control the structure of the callback data, so we use AnyValidBody
   ): Promise<void> {
     await this.safaricomReconciliationService.processTransferCallback(
       safaricomTransferCallback,
@@ -51,7 +51,7 @@ export class SafaricomReconciliationController {
   })
   @Post('timeout-callback')
   public async processTimeoutCallback(
-    @Body()
+    @AnyValidBody() // We cannot control the structure of the callback data, so we use AnyValidBody
     safaricomTimeoutCallback: any, // deliberatedly 'any', as we are unsure of the payload structure. This way we can console.log first and then validate.
   ): Promise<void> {
     // console.log so we know what the actual payload looks like and can adjust the DTO accordingly

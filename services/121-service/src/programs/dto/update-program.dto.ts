@@ -1,18 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
-  IsArray,
   IsBoolean,
   IsDateString,
   IsNumber,
   IsOptional,
   IsString,
   Length,
-  ValidateNested,
 } from 'class-validator';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ProgramFspDto } from '@121-service/src/programs/dto/create-program.dto';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 export class UpdateProgramDto {
@@ -71,24 +66,6 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsString()
   public readonly paymentAmountMultiplierFormula?: string;
-
-  @ApiProperty({
-    example: [
-      {
-        fsp: Fsps.intersolveVoucherWhatsapp,
-      },
-      {
-        fsp: Fsps.intersolveVoucherPaper,
-      },
-    ],
-    description:
-      'Use the GET /api/fsps endpoint to find valid fspNames. Any fspName supplied that is not already configured for the program, will be added. Existing FSPs are not removed from a program. Program-fsp-config is not processed. Use specific POST/PUT endpoints for that.',
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested()
-  @Type(() => ProgramFspDto)
-  public readonly fsps?: ProgramFspDto[];
 
   @ApiProperty()
   @IsOptional()
