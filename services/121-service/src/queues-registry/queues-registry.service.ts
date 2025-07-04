@@ -5,7 +5,7 @@ import Redis from 'ioredis';
 
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
-import { getRegisteredProcessors } from '@121-service/src/queues-registry/register-processor.decorator';
+import { REGISTERED_PROCESSORS } from '@121-service/src/queues-registry/register-processor.decorator';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Injectable()
@@ -82,7 +82,7 @@ export class QueuesRegistryService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    const registered = getRegisteredProcessors();
+    const registered = Array.from(REGISTERED_PROCESSORS);
     const expected = Object.keys(this.allQueues);
     const missing = expected.filter((q) => !registered.includes(q));
     if (missing.length) {
