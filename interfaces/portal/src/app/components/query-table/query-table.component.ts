@@ -75,10 +75,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
   field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field is computed and should not be used for filtering or sorting
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
-  disableSorting?: boolean;
-  disableFiltering?: boolean;
   defaultHidden?: boolean;
-  filterMatchMode?: FilterMatchMode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
 } & (
@@ -306,7 +303,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   getColumnFilterField(column: QueryTableColumn<TData>) {
-    if (column.disableFiltering || column.field === 'COMPUTED_FIELD') {
+    if (column.field === 'COMPUTED_FIELD') {
+      // filtering is disabled for computed fields
       return undefined;
     }
     return column.fieldForFilter ?? column.field;
@@ -326,10 +324,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   getColumnMatchMode(column: QueryTableColumn<TData>): FilterMatchMode {
-    if (column.filterMatchMode) {
-      return column.filterMatchMode;
-    }
-
     const type = this.getColumnType(column);
     switch (type) {
       case QueryTableColumnType.MULTISELECT:
@@ -382,7 +376,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {
-    if (column.disableSorting || column.field === 'COMPUTED_FIELD') {
+    if (column.field === 'COMPUTED_FIELD') {
+      // sorting is disabled for computed fields
       return undefined;
     }
     return column.fieldForSort ?? column.field;
