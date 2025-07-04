@@ -9,8 +9,9 @@ import { RegistrationViewEntity } from '@121-service/src/registration/registrati
 
 type RegistrationViewWithoutData = Omit<RegistrationViewEntity, 'data'>;
 
+// TODO: Add unit tests for this mapper class
 export class RegistrationViewsMapper {
-  static mapRootRegistration({
+  static selectRegistrationRootFields({
     registration,
     select,
     hasPersonalReadPermission,
@@ -37,7 +38,7 @@ export class RegistrationViewsMapper {
     return mappedRegistration;
   }
 
-  static mapRegistrationData(
+  static mapAttributeDataToRegistration(
     registrationDataArray: RegistrationAttributeDataEntity[],
     mappedRegistration: RegistrationViewWithoutData,
     registrationDataInfoArray: RegistrationDataInfo[],
@@ -76,7 +77,9 @@ export class RegistrationViewsMapper {
     return mappedRegistration;
   }
 
-  static mapRegistrationName<T extends RegistrationViewWithoutData>({
+  static appendNameUsingNamingConvention<
+    T extends RegistrationViewWithoutData,
+  >({
     registration,
     select,
     orignalSelect,
@@ -87,7 +90,10 @@ export class RegistrationViewsMapper {
     orignalSelect: string[];
     fullnameNamingConvention: string[];
   }): T & { name: string } {
-    const name = this.getName(registration, fullnameNamingConvention);
+    const name = this.mapNameUsingNamingConvention(
+      registration,
+      fullnameNamingConvention,
+    );
     if (select && select.includes('name')) {
       const differenceOrignalSelect = select.filter(
         (x) => !orignalSelect.includes(x),
@@ -102,7 +108,7 @@ export class RegistrationViewsMapper {
     };
   }
 
-  static getName(
+  static mapNameUsingNamingConvention(
     registrationRow: Partial<RegistrationViewEntity>,
     fullnameNamingConvention: string[],
   ): string {

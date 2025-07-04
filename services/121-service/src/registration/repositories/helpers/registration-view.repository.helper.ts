@@ -1,14 +1,21 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { FindOperatorType, SelectQueryBuilder } from 'typeorm';
+import {
+  FindOperatorType,
+  SelectQueryBuilder,
+  WhereExpressionBuilder,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { RegistrationDataRelation } from '@121-service/src/registration/dto/registration-data-relation.model';
+import {
+  RegistrationDataInfo,
+  RegistrationDataRelation,
+} from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
-export class RegistrationFilterQueryHelpers {
+export class RegistrationViewRepositoryHelper {
   public static applyFilterConditionAttributes({
     queryBuilder,
     findOperatorType,
@@ -121,5 +128,21 @@ export class RegistrationFilterQueryHelpers {
       `string_agg("${uniqueSubQueryId}".value,'|' order by value)`,
     );
     return subQuery;
+  }
+
+  // TODO: Add unit tests for this function
+  public static whereRegistrationDataIsOneOfIds(
+    relationInfo: RegistrationDataInfo,
+    qb: WhereExpressionBuilder,
+    uniqueJoinId: string,
+  ): void {
+    const i = 0;
+    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
+      if (i === 0) {
+        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      } else {
+        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
+      }
+    }
   }
 }

@@ -345,14 +345,14 @@ export class RegistrationsPaginationService {
   }): Promise<MappedPaginatedRegistrationDto[]> {
     return paginatedResult.data.map((registration) => {
       const mappedRootRegistration =
-        RegistrationViewsMapper.mapRootRegistration({
+        RegistrationViewsMapper.selectRegistrationRootFields({
           registration,
           select,
           hasPersonalReadPermission,
         });
 
       const mappedRegistration = hasPersonalReadPermission
-        ? RegistrationViewsMapper.mapRegistrationData(
+        ? RegistrationViewsMapper.mapAttributeDataToRegistration(
             registration.data,
             mappedRootRegistration,
             attributeRelations,
@@ -360,7 +360,7 @@ export class RegistrationsPaginationService {
         : mappedRootRegistration;
 
       if ((!select || select.includes('name')) && hasPersonalReadPermission) {
-        return RegistrationViewsMapper.mapRegistrationName({
+        return RegistrationViewsMapper.appendNameUsingNamingConvention({
           registration: mappedRegistration,
           select,
           orignalSelect,

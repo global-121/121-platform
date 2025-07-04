@@ -1,11 +1,11 @@
 import { HttpException } from '@nestjs/common';
 import { FindOperatorType } from 'typeorm';
 
-import { RegistrationFilterQueryHelpers } from '@121-service/src/registration/helpers/registration-attribute-data-query.helper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewRepositoryHelper } from '@121-service/src/registration/repositories/helpers/registration-view.repository.helper';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
-describe('RegistrationFilterQueryHelpers', () => {
+describe('RegistrationViewRepositoryHelper', () => {
   let andWhereMock: jest.Mock;
   let queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
 
@@ -17,7 +17,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "equal" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'equal',
       value: 'foo',
@@ -31,7 +31,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "in" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'in',
       value: [1, 2, 3],
@@ -45,7 +45,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "ilike" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'ilike',
       value: 'bar',
@@ -59,7 +59,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "isNull" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'isNull',
       value: null,
@@ -71,7 +71,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "moreThan" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'moreThan',
       value: 10,
@@ -86,7 +86,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "lessThan" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'lessThan',
       value: 5,
@@ -101,7 +101,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should handle "between" operator', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'between',
       value: [1, 2],
@@ -117,7 +117,7 @@ describe('RegistrationFilterQueryHelpers', () => {
 
   it('should throw for unsupported operator', () => {
     expect(() =>
-      RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+      RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
         queryBuilder,
         findOperatorType: 'unsupported' as FindOperatorType,
         value: 'foo',
@@ -128,7 +128,7 @@ describe('RegistrationFilterQueryHelpers', () => {
   });
 
   it('should wrap condition with NOT for notFilter', () => {
-    RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+    RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
       queryBuilder,
       findOperatorType: 'equal',
       value: 'foo',
@@ -144,7 +144,7 @@ describe('RegistrationFilterQueryHelpers', () => {
 
   it('should throw for $not:$null', () => {
     expect(() =>
-      RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+      RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
         queryBuilder,
         findOperatorType: 'isNull',
         value: null,

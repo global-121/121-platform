@@ -7,15 +7,14 @@ import {
   FindOperator,
   FindOperatorType,
   Not,
-  WhereExpressionBuilder,
 } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationFilterQueryHelpers } from '@121-service/src/registration/helpers/registration-attribute-data-query.helper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewRepositoryHelper } from '@121-service/src/registration/repositories/helpers/registration-view.repository.helper';
 import { RegistrationScopedBaseRepository } from '@121-service/src/registration/repositories/registration-scoped-base.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -26,6 +25,7 @@ interface Filter {
 }
 type ColumnsFilters = Record<string, Filter[]>;
 
+// TODO: Unit tests for this class should be created
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepository<RegistrationViewEntity> {
   constructor(
@@ -132,7 +132,11 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     queryBuilder.leftJoin('registration.data', 'rd');
     queryBuilder.andWhere(
       new Brackets((qb) => {
-        this.whereRegistrationDataIsOneOfIds(relationInfo, qb, 'rd');
+        RegistrationViewRepositoryHelper.whereRegistrationDataIsOneOfIds(
+          relationInfo,
+          qb,
+          'rd',
+        );
       }),
     );
     queryBuilder.orderBy('rd.value', sortByValue);
@@ -204,7 +208,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
         `${uniqueJoinId}."programRegistrationAttributeId" = ${relationInfo.relation.programRegistrationAttributeId}`,
       );
       queryBuilder =
-        RegistrationFilterQueryHelpers.applyFilterConditionAttributes({
+        RegistrationViewRepositoryHelper.applyFilterConditionAttributes({
           queryBuilder,
           findOperatorType,
           value: findOperator.value,
@@ -213,20 +217,5 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
         });
     }
     return queryBuilder;
-  }
-
-  private whereRegistrationDataIsOneOfIds(
-    relationInfo: RegistrationDataInfo,
-    qb: WhereExpressionBuilder,
-    uniqueJoinId: string,
-  ): void {
-    const i = 0;
-    for (const [dataRelKey, id] of Object.entries(relationInfo.relation)) {
-      if (i === 0) {
-        qb.andWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-      } else {
-        qb.orWhere(`${uniqueJoinId}."${dataRelKey}" = ${id}`);
-      }
-    }
   }
 }
