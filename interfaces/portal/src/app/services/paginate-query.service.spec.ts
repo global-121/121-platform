@@ -41,6 +41,15 @@ describe('PaginateQueryService', () => {
       ).toBe(FilterOperator.EQ);
     });
 
+    it('should convert NOT_EQUALS to NOT', () => {
+      expect(
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.NOT_EQUALS,
+        }),
+      ).toBe(FilterOperator.NOT);
+    });
+
     it('should convert IN to IN', () => {
       expect(
         // @ts-expect-error accessing a private method for unit testing purposes
@@ -78,11 +87,20 @@ describe('PaginateQueryService', () => {
       ).toBe(FilterOperator.BTW);
     });
 
-    it('should default to ILIKE', () => {
+    it('should default to ILIKE when matchMode is not provided', () => {
       // @ts-expect-error accessing a private method for unit testing purposes
       expect(service.convertPrimeNGMatchModeToFilterOperator({})).toBe(
         FilterOperator.ILIKE,
       );
+    });
+
+    it('should throw an error for an unsupported match mode', () => {
+      expect(() =>
+        // @ts-expect-error accessing a private method for unit testing purposes
+        service.convertPrimeNGMatchModeToFilterOperator({
+          matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO,
+        }),
+      ).toThrowError('Unsupported match mode: gte');
     });
   });
 

@@ -95,9 +95,9 @@
       @for (column of visibleColumns(); track $index) {
         @let columnSortField = getColumnSortField(column);
         @let columnFilterField = getColumnFilterField(column);
-        @let columnMatchMode = getColumnMatchMode(column);
+        @let columnMatchMode = getColumnMatchMode(column).toString();
+        @let columnMatchModeOptions = getColumnMatchModeOptions(column);
         @let isColumnFiltered = getIsColumnFiltered(column);
-        @let matchModeOptions = getMatchModeOptions(column);
 
         <th [pSortableColumn]="columnSortField">
           <div
@@ -122,8 +122,8 @@
                 display="menu"
                 [showOperator]="false"
                 [showAddButton]="false"
-                [showMatchModes]="!!matchModeOptions"
-                [matchModeOptions]="matchModeOptions"
+                [showMatchModes]="!!columnMatchModeOptions"
+                [matchModeOptions]="columnMatchModeOptions"
                 [ngClass]="{
                   '[&_.p-button]:bg-purple-100 [&_.p-button]:text-purple':
                     isColumnFiltered,

@@ -1511,9 +1511,6 @@
       <trans-unit id="5995604223909447366" datatype="html">
         <source>Less than</source>
       </trans-unit>
-      <trans-unit id="6424246633820870206" datatype="html">
-        <source>Equals</source>
-      </trans-unit>
       <trans-unit id="7732309408488818531" datatype="html">
         <source>Greater than</source>
       </trans-unit>
@@ -1621,6 +1618,15 @@
       </trans-unit>
       <trans-unit id="4775550080689015987" datatype="html">
         <source>Reason</source>
+      </trans-unit>
+      <trans-unit id="4226760758001179924" datatype="html">
+        <source>Not equal to</source>
+      </trans-unit>
+      <trans-unit id="6238291467288576076" datatype="html">
+        <source>Contains</source>
+      </trans-unit>
+      <trans-unit id="7088714514100361567" datatype="html">
+        <source>Equal to</source>
       </trans-unit>
     </body>
   </file>

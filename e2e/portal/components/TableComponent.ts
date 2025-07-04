@@ -21,7 +21,7 @@ class TableComponent {
   readonly sendMessageSwitch: Locator;
   readonly calendar: Locator;
   readonly datePicker: Locator;
-  readonly rangeDropdown: Locator;
+  readonly filterModeDropdown: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -54,7 +54,7 @@ class TableComponent {
     this.sendMessageSwitch = this.page.getByLabel('Send a message to');
     this.calendar = this.page.getByLabel('Choose Date');
     this.datePicker = this.page.getByLabel('Choose Date').locator('tbody');
-    this.rangeDropdown = this.page
+    this.filterModeDropdown = this.page
       .getByRole('dialog')
       .getByRole('combobox')
       .first();
@@ -179,13 +179,28 @@ class TableComponent {
     expect(sortingType).toContain(sort);
   }
 
-  async filterColumnByText(columnName: string, filterText: string) {
+  async filterColumnByText({
+    columnName,
+    filterText,
+    filterMode,
+  }: {
+    columnName: string;
+    filterText: string;
+    filterMode?: 'Equal to' | 'Not equal to' | 'Contains';
+  }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
       .getByLabel('Show Filter Menu');
 
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
+
+    if (filterMode) {
+      await this.filterModeDropdown.click();
+      await this.page
+        .getByRole('option', { name: filterMode, exact: true })
+        .click();
+    }
 
     await this.textboxField.click();
     await this.textboxField.fill(filterText);
@@ -196,13 +211,11 @@ class TableComponent {
   async filterColumnByNumber({
     columnName,
     filterNumber,
-    filterWithRange = false,
-    range,
+    filterMode,
   }: {
     columnName: string;
     filterNumber: number;
-    filterWithRange?: boolean;
-    range?: string;
+    filterMode?: 'Less than' | 'Greater than' | 'Not equal to' | 'Equal to';
   }) {
     const filterMenuButton = this.table
       .getByRole('columnheader', { name: columnName })
@@ -210,9 +223,9 @@ class TableComponent {
 
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
-    if (filterWithRange) {
-      await this.rangeDropdown.click();
-      await this.page.getByRole('option', { name: range }).click();
+    if (filterMode) {
+      await this.filterModeDropdown.click();
+      await this.page.getByRole('option', { name: filterMode }).click();
     }
     await this.page.getByRole('spinbutton').fill(String(filterNumber));
     await this.applyFiltersButton.click();
@@ -254,7 +267,7 @@ class TableComponent {
     await filterMenuButton.scrollIntoViewIfNeeded();
     await filterMenuButton.click();
 
-    await this.rangeDropdown.click();
+    await this.filterModeDropdown.click();
     await this.page
       .getByRole('option', { name: filterMode, exact: true })
       .click();

@@ -75,10 +75,7 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
   field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field is computed and should not be used for filtering or sorting
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
-  disableSorting?: boolean;
-  disableFiltering?: boolean;
   defaultHidden?: boolean;
-  filterMatchMode?: FilterMatchMode;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
 } & (
@@ -306,7 +303,8 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   getColumnFilterField(column: QueryTableColumn<TData>) {
-    if (column.disableFiltering || column.field === 'COMPUTED_FIELD') {
+    if (column.field === 'COMPUTED_FIELD') {
+      // filtering is disabled for computed fields
       return undefined;
     }
     return column.fieldForFilter ?? column.field;
@@ -325,11 +323,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     return !!tableFilterMetadata?.value;
   }
 
-  getColumnMatchMode(column: QueryTableColumn<TData>) {
-    if (column.filterMatchMode) {
-      return column.filterMatchMode as string;
-    }
-
+  getColumnMatchMode(column: QueryTableColumn<TData>): FilterMatchMode {
     const type = this.getColumnType(column);
     switch (type) {
       case QueryTableColumnType.MULTISELECT:
@@ -337,35 +331,53 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       case QueryTableColumnType.DATE:
       case QueryTableColumnType.NUMERIC:
         return FilterMatchMode.EQUALS;
-      default:
+      case QueryTableColumnType.TEXT:
         return FilterMatchMode.CONTAINS;
     }
   }
 
-  getMatchModeOptions(column: QueryTableColumn<TData>) {
+  getColumnMatchModeOptions(
+    column: QueryTableColumn<TData>,
+  ): { label: string; value: FilterMatchMode }[] | undefined {
     const type = this.getColumnType(column);
-    if (QueryTableColumnType.NUMERIC === type) {
-      return [
-        { label: $localize`Equals`, value: FilterMatchMode.EQUALS },
-        { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
-        { label: $localize`Greater than`, value: FilterMatchMode.GREATER_THAN },
-      ];
+    switch (type) {
+      case QueryTableColumnType.TEXT:
+        return [
+          { label: $localize`Contains`, value: FilterMatchMode.CONTAINS },
+          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
+          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
+        ];
+      case QueryTableColumnType.NUMERIC:
+        return [
+          { label: $localize`Equal to`, value: FilterMatchMode.EQUALS },
+          { label: $localize`Not equal to`, value: FilterMatchMode.NOT_EQUALS },
+          { label: $localize`Less than`, value: FilterMatchMode.LESS_THAN },
+          {
+            label: $localize`Greater than`,
+            value: FilterMatchMode.GREATER_THAN,
+          },
+        ];
+      case QueryTableColumnType.DATE:
+        return [
+          { label: $localize`Date is`, value: FilterMatchMode.EQUALS },
+          {
+            label: $localize`Date is before`,
+            value: FilterMatchMode.LESS_THAN,
+          },
+          {
+            label: $localize`Date is after`,
+            value: FilterMatchMode.GREATER_THAN,
+          },
+        ];
+      case QueryTableColumnType.MULTISELECT:
+        // For multiselect, we do not have multiple match modes
+        return undefined;
     }
-    if (QueryTableColumnType.DATE === type) {
-      return [
-        { label: $localize`Date is`, value: FilterMatchMode.EQUALS },
-        { label: $localize`Date is before`, value: FilterMatchMode.LESS_THAN },
-        {
-          label: $localize`Date is after`,
-          value: FilterMatchMode.GREATER_THAN,
-        },
-      ];
-    }
-    return undefined;
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {
-    if (column.disableSorting || column.field === 'COMPUTED_FIELD') {
+    if (column.field === 'COMPUTED_FIELD') {
+      // sorting is disabled for computed fields
       return undefined;
     }
     return column.fieldForSort ?? column.field;
