@@ -9,6 +9,10 @@
     "!src/datasource-manage-migrations.ts",
     "!src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity.ts"
   ],
+  "ignore": [
+    "src/utils/createQueryBuilderMock.helper.ts",
+    "src/utils/unit-test.helpers.ts"
+  ],
   "jest": {
     "entry": []
   },
