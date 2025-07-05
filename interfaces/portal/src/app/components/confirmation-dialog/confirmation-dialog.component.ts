@@ -14,6 +14,7 @@ import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FocusTrapModule } from 'primeng/focustrap';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 
 @Component({
   selector: 'app-confirmation-dialog',
@@ -31,6 +32,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 })
 export class ConfirmationDialogComponent<TMutationData = unknown> {
   private confirmationService = inject(ConfirmationService);
+  private trackingService = inject(TrackingService);
 
   readonly mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
@@ -46,16 +48,31 @@ export class ConfirmationDialogComponent<TMutationData = unknown> {
 
   readonly confirmDialog = viewChild.required<ConfirmDialog>('confirmDialog');
 
+  private trackingEvent: TrackingEvent | undefined;
+
   askForConfirmation({
     resetMutation = true,
-  }: { resetMutation?: boolean } = {}) {
+    trackingEvent = undefined,
+  }: {
+    resetMutation?: boolean;
+    trackingEvent?: TrackingEvent;
+  } = {}) {
     this.confirmationService.confirm({});
+    if (trackingEvent) {
+      this.trackingEvent = trackingEvent;
+    }
+
     if (resetMutation) {
       this.mutation().reset();
     }
   }
 
   onProceed() {
+    if (this.trackingEvent) {
+      this.trackingService.trackEvent(this.trackingEvent);
+
+      this.trackingEvent = undefined;
+    }
     const formGroup = this.formGroup();
     if (formGroup) {
       formGroup.markAllAsTouched();
