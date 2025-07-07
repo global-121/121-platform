@@ -22,6 +22,7 @@ describe('Action mapper', () => {
       username,
       password: 'testPassword',
       programAssignments: [],
+      uploadedAttachments: [],
       actions: [],
       registrations: [],
       notes: [],

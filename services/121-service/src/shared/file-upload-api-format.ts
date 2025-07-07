@@ -37,3 +37,19 @@ export const FILE_UPLOAD_WITH_REASON_API_FORMAT = {
     required: ['file', 'reason'],
   },
 };
+
+export const FILE_UPLOAD_WITH_FILENAME_API_FORMAT = {
+  schema: {
+    type: 'object',
+    properties: {
+      file: {
+        type: 'string',
+        format: 'binary',
+      },
+      filename: {
+        type: 'string',
+      },
+    },
+    required: ['file', 'filename'],
+  },
+};

@@ -922,6 +922,36 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{registrationId}/activities",
     "params": [
