@@ -10,7 +10,7 @@ import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-inte
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 const programId = 3;
 const paymentNr = 5;

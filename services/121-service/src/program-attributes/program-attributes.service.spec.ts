@@ -7,7 +7,7 @@ import { ProgramAttributesService } from '@121-service/src/program-attributes/pr
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { generateMockCreateQueryBuilder } from '@121-service/src/utils/createQueryBuilderMock.helper';
+import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 describe('ProgramAttributesService', () => {
   let programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
