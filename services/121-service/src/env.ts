@@ -36,8 +36,8 @@ export const env = createEnv({
     GLOBAL_121_VERSION: z.string().optional(),
 
     // API set up
-    PORT_121_SERVICE: z.coerce.number(),
-    PORT_MOCK_SERVICE: z.coerce.number(),
+    PORT_121_SERVICE: z.coerce.number().default(8080),
+    PORT_MOCK_SERVICE: z.coerce.number().optional(),
 
     EXTERNAL_121_SERVICE_URL: z
       .url()
