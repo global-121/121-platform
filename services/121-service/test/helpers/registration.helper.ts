@@ -271,7 +271,7 @@ export function getRegistrations({
     .send();
 }
 
-async function changeRegistrationStatus({
+export async function changeRegistrationStatus({
   programId,
   referenceIds,
   status,
@@ -342,9 +342,12 @@ export async function awaitChangeRegistrationStatus({
     accessToken,
     options,
   });
-  // If the changeRegistrationStatus throws an error, it means that the status change is not allowed/succesful so we don't need to wait for it
+  // NOTE: If the changeRegistrationStatus throws an error, it means that the status change is not allowed/successful so we don't need to wait for it.
+  // Only use this method in case success is expected, otherwise use changeRegistrationStatus directly.
   if (result.status !== HttpStatus.ACCEPTED) {
-    return result;
+    throw new Error(
+      `Failed to change registration status. Status: ${result.status}. Body: ${JSON.stringify(result.body)}`,
+    );
   }
 
   await waitForStatusChangeToComplete(
@@ -717,6 +720,10 @@ export async function seedRegistrationsWithStatus(
     throw new Error(
       `Error occured while importing registrations: ${response.text}`,
     );
+  }
+
+  if (status === RegistrationStatusEnum.new) {
+    return;
   }
 
   await awaitChangeRegistrationStatus({

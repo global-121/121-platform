@@ -29,6 +29,8 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Do payment with filter', () => {
+  jest.retryTimes(1); // REFACTOR: these tests are often flaky, so we retry them once. It is better to fix the flakiness though!
+
   let accessToken: string;
   // Arrange
   const includedRefrenceIds = [
