@@ -27,6 +27,12 @@ export const env = createEnv({
 
     EXTERNAL_121_SERVICE_URL: z
       .url()
+      .pipe(
+        z.transform((url: string) =>
+          // For local-development; Make sure the Mock-Service connects to the 'internal' URL of the 121-Service, as the `localhost` is the _host-OS_, not this container's
+          url.replace('http://localhost:', 'http://121-service:'),
+        ),
+      )
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
 
     // FSP-specific configuration:
