@@ -342,6 +342,7 @@ export async function awaitChangeRegistrationStatus({
     accessToken,
     options,
   });
+  console.log('result: ', result);
   // NOTE: If the changeRegistrationStatus throws an error, it means that the status change is not allowed/successful so we don't need to wait for it.
   // Only use this method in case success is expected, otherwise use changeRegistrationStatus directly.
   if (result.status !== HttpStatus.ACCEPTED) {
@@ -718,6 +719,10 @@ export async function seedRegistrationsWithStatus(
     throw new Error(
       `Error occured while importing registrations: ${response.text}`,
     );
+  }
+
+  if (status === RegistrationStatusEnum.new) {
+    return;
   }
 
   await awaitChangeRegistrationStatus({
