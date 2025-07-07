@@ -93,6 +93,7 @@ export class SeedInit implements InterfaceScript {
           PermissionEnum.PaymentVoucherREAD,
           PermissionEnum.FspDebitCardREAD,
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.RegistrationNotificationREAD,
           PermissionEnum.RegistrationPersonalREAD,
           PermissionEnum.RegistrationREAD,
@@ -119,6 +120,8 @@ export class SeedInit implements InterfaceScript {
         permissions: [
           PermissionEnum.ProgramUPDATE,
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
+          PermissionEnum.ProgramAttachmentsCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
@@ -151,6 +154,7 @@ export class SeedInit implements InterfaceScript {
         label: 'Cash Assistance Program Officer',
         permissions: [
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentVoucherREAD,
@@ -176,6 +180,8 @@ export class SeedInit implements InterfaceScript {
         label: 'Finance Manager',
         permissions: [
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
+          PermissionEnum.ProgramAttachmentsCREATE,
           PermissionEnum.PaymentCREATE,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
@@ -195,6 +201,7 @@ export class SeedInit implements InterfaceScript {
         label: 'Finance Officer',
         permissions: [
           PermissionEnum.ProgramMetricsREAD,
+          PermissionEnum.ProgramAttachmentsREAD,
           PermissionEnum.PaymentREAD,
           PermissionEnum.PaymentTransactionREAD,
           PermissionEnum.PaymentFspInstructionREAD,

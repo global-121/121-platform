@@ -64,6 +64,10 @@ export const env = createEnv({
       .regex(/[\w.-]*/)
       .default('dev_'),
 
+    // Azure Blob Storage
+    AZURE_STORAGE_CONNECTION_STRING: z.string(),
+    AZURE_STORAGE_CONTAINER_NAME: z.string(),
+
     // Data management
     RESET_SECRET: z.string().min(8),
     SECRETS_121_SERVICE_SECRET: z.string().min(8),
