@@ -122,7 +122,7 @@ async function bootstrap(): Promise<void> {
 
   // CORS is only enabled for local development; Because the Azure App Service applies its own CORS settings 'on the outside'
   app.enableCors({
-    origin: IS_DEVELOPMENT ? env.EXTERNAL_121_SERVICE_URL : false,
+    origin: IS_DEVELOPMENT,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
