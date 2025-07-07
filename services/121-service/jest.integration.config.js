@@ -17,5 +17,4 @@ module.exports = {
   randomize: true, // TODO: Some tests still depend on the order, but should not. Toggle locally to test + fix.
   verbose: true,
   reporters: ['default', ['github-actions', { silent: false }], 'summary'],
-  setupFilesAfterEnv: ['<rootDir>/test/jest.integration.setup.js'],
 };
