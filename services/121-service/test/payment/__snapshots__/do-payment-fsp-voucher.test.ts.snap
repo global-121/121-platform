@@ -39,7 +39,7 @@ You will receive your Albert Heijn voucher every week on Tuesday. When we end th
 Do you have questions? Send us a message on WhatsApp: https://wa.me/3197010286964",
       "contentType": "payment-voucher",
       "errorCode": null,
-      "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/api/notifications/imageCode/secret",
+      "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/notifications/imageCode/secret",
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
