@@ -343,6 +343,7 @@ export async function awaitChangeRegistrationStatus({
     options,
   });
   // If the changeRegistrationStatus throws an error, it means that the status change is not allowed/succesful so we don't need to wait for it
+  console.log('result.status: ', result.status);
   if (result.status !== HttpStatus.ACCEPTED) {
     return result;
   }

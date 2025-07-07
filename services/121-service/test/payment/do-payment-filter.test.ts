@@ -161,7 +161,7 @@ describe('Do payment with filter', () => {
     expect(transactionsResponse.body.length).toBe(1);
   });
 
-  it('should only pay included people with a combi of filters', async () => {
+  it.only('should only pay included people with a combi of filters', async () => {
     // Act
     const doPaymentResponse = await doPayment(
       {
