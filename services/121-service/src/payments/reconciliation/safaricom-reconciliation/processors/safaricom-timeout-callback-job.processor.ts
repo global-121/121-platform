@@ -1,4 +1,4 @@
-import { Process, Processor } from '@nestjs/bull';
+import { Process } from '@nestjs/bull';
 import { Inject } from '@nestjs/common';
 import { Job } from 'bull';
 import Redis from 'ioredis';
@@ -9,9 +9,10 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
+import { RegisteredProcessor } from '@121-service/src/queues-registry/register-processor.decorator';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
-@Processor(QueueNames.paymentCallbackSafaricomTimeout)
+@RegisteredProcessor(QueueNames.paymentCallbackSafaricomTimeout)
 export class TimeoutCallbackJobProcessorSafaricom {
   constructor(
     private readonly safaricomReconciliationService: SafaricomReconciliationService,
