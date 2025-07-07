@@ -193,7 +193,7 @@ export const env = createEnv({
     SAFARICOM_CONSUMER_KEY: z.string().optional(),
     SAFARICOM_CONSUMER_SECRET: z.string().optional(),
     SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT: z
-      .url()
+      .string()
       .optional()
       .pipe(z.transform((url) => withoutLeadingSlash(url))),
     SAFARICOM_INITIATORNAME: z.string().optional(),
