@@ -30,7 +30,11 @@ export const SWAGGER_CUSTOM_CSS = `
 
 // Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
-export const EXTERNAL_API_ROOT = `${env.EXTERNAL_121_SERVICE_URL}/api`;
+export const EXTERNAL_API_ROOT = `${
+  IS_DEVELOPMENT
+    ? `http://121-service:${env.PORT_121_SERVICE}`
+    : env.EXTERNAL_121_SERVICE_URL
+}/api`;
 export const API_PATHS = {
   smsStatus: 'notifications/sms/status',
   whatsAppStatus: 'notifications/whatsapp/status',
