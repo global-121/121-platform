@@ -85,7 +85,7 @@ export class QueuesRegistryService implements OnModuleInit {
     const registered = Array.from(REGISTERED_PROCESSORS);
     const expected = Object.keys(this.allQueues);
     const missing = expected.filter((q) => !registered.includes(q));
-    if (missing.length) {
+    if (missing.length > 0) {
       throw new Error(
         `Missing processor registrations for: ${missing.join(', ')}`,
       );

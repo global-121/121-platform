@@ -8,7 +8,9 @@ export function RegisteredProcessor(
 ): ClassDecorator {
   return (target) => {
     if (REGISTERED_PROCESSORS.has(queueName)) {
-      return;
+      throw new Error(
+        `Processor for queue "${queueName}" is already registered. Please ensure each queue has a unique processor.`,
+      );
     }
     REGISTERED_PROCESSORS.add(queueName);
     if (scope) {
