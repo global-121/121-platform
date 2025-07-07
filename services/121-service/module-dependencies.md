@@ -109,6 +109,8 @@ graph LR
   NedbankReconciliationModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
+  ProgramAttachmentModule-->RegistrationsModule
+  ProgramAttachmentModule-->UserModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->MessageModule
