@@ -948,5 +948,10 @@
     "method": "post",
     "path": "/api/fsps/onafriq/callback",
     "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/fsps/onafriq/reconciliation-report",
+    "params": []
   }
 ]
