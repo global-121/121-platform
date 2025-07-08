@@ -1,6 +1,14 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
+import { Response } from 'express';
 
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
@@ -34,5 +42,31 @@ export class OnafriqReconciliationController {
     await this.onafriqReconciliationService.processTransactionCallback(
       onafriqTransactionCallback,
     );
+  }
+
+  @Get('reconciliation-report')
+  @ApiOperation({
+    summary: 'Generate Onafriq reconciliation report.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Reconciliation report generated successfully.',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('reconciliation-report')
+  public async generateReconciliationReport(
+    @Res() res: Response,
+  ): Promise<void> {
+    const { filename, content } =
+      await this.onafriqReconciliationService.generateReconciliationReport();
+    const csv =
+      content.length === 0
+        ? ''
+        : Object.keys(content[0]).join(',') +
+          '\n' +
+          content.map((row) => Object.values(row).join(',')).join('\n');
+    res.header('Content-Type', 'text/csv');
+    res.attachment(filename);
+    res.send(csv);
   }
 }
