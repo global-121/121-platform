@@ -65,7 +65,7 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     );
 
-    const messageReponse = await getMessageHistory(
+    const messageResponse = await getMessageHistory(
       programIdVisa,
       testRegistration.referenceId,
       accessToken,
@@ -75,8 +75,11 @@ describe('(Un)Block visa debit card', () => {
     expect(visaWalletResponseAfter.body.cards[0].status).toBe(
       VisaCard121Status.Paused,
     );
-    const lastMessage = messageReponse.body[0];
-    expect(lastMessage.attributes.body).toBe(
+
+    const messages = messageResponse.body.map(
+      (message) => message.attributes.body,
+    );
+    expect(messages).toContain(
       messageTemplateNlrcOcw.pauseVisaCard?.message?.en,
     );
   });
@@ -103,6 +106,14 @@ describe('(Un)Block visa debit card', () => {
       testRegistration.referenceId,
     );
 
+    // wait for "block card" message to be processed before proceeding - to avoid race conditions
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [testRegistration.referenceId],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 4,
+    });
+
     // Act
     const unblockVisaResponse = await unblockVisaCard(
       programIdVisa,
@@ -125,7 +136,7 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     );
 
-    const messageReponse = await getMessageHistory(
+    const messageResponse = await getMessageHistory(
       programIdVisa,
       testRegistration.referenceId,
       accessToken,
@@ -135,8 +146,11 @@ describe('(Un)Block visa debit card', () => {
     expect(visaWalletResponseAfter.body.cards[0].status).not.toBe(
       VisaCard121Status.Blocked,
     );
-    const lastMessage = messageReponse.body[0];
-    expect(lastMessage.attributes.body).toBe(
+
+    const messages = messageResponse.body.map(
+      (message) => message.attributes.body,
+    );
+    expect(messages).toContain(
       messageTemplateNlrcOcw?.unpauseVisaCard?.message?.en,
     );
   });
