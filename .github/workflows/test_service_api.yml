@@ -35,8 +35,14 @@ env:
   workingDirectory: services/121-service/
 
 jobs:
-  test:
+  test_integration:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # if you change the number of shards, you must also change the denominator accordingly in the `--shard` option below
+        shard: ['1', '2', '3', '4', '5', '6']
 
     steps:
       - name: Check out repository code
@@ -51,48 +57,99 @@ jobs:
         run: |
           npm run start:services:ci
 
-      - name: Check that no new migrations are necessary
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          docker compose exec 121-service npm run test:migration
-
-      - name: Run unit tests with Jest
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          npm install
-          npm run test:unit:coverage
-
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:coverage
+          docker compose exec 121-service npm run test:integration:coverage -- --shard=${{ matrix.shard }}/6
 
       - name: Copy coverage report output from Docker container
         working-directory: ${{ env.workingDirectory }}
         run: |
           docker cp 121-service:/home/node/app/coverage .
 
-      - name: Generate combined coverage report
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          npm install
-          npm run coverage
-
-      - uses: qltysh/qlty-action/coverage@v1
+      - uses: actions/upload-artifact@v4
         with:
-          oidc: true
-          add-prefix: ${{ env.workingDirectory }}
-          tag: 121-service
-          files: ${{ env.workingDirectory }}/coverage/combined/lcov.info
+          name: integration-test-coverage-report-${{ matrix.shard }}
+          path: |
+            ${{ env.workingDirectory }}/coverage
 
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
-      - name: Save coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
+  test_static_checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
         with:
-          name: coverage-report
+          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm ci --omit=optional'
+
+      - name: Lint
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run lint'
+
+      - name: Check for dead code
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run knip'
+
+      - name: Check for TS errors
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run typecheck'
+
+      - name: Run unit tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run test:unit:coverage'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage-report
           path: |
             ${{ env.workingDirectory }}/coverage
+
+  upload_coverage_reports:
+    runs-on: ubuntu-latest
+    needs: [test_integration, test_static_checks]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coverage reports from previous jobs
+        uses: actions/download-artifact@v4
+        with:
+          path: 'coverage'
+
+      - name: Save a single artifact with all of the coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-coverage-report
+          path: |
+            coverage
+
+      # Coverage reports will be merged automatically by QLTY
+      # See: https://docs.qlty.sh/coverage/merging#client-side-merging
+      - name: Upload all coverage reports to QLTY
+        uses: qltysh/qlty-action/coverage@v1.1.1
+        with:
+          command: publish
+          oidc: true
+          add-prefix: ${{ env.workingDirectory }}
+          tag: 121-service
+          files: coverage/**/lcov.info
+          verbose: true
+          skip-errors: false
