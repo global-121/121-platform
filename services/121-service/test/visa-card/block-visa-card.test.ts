@@ -7,7 +7,7 @@ import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   blockVisaCard,
   getMessageHistory,
@@ -52,7 +52,12 @@ describe('(Un)Block visa debit card', () => {
     );
 
     // Assert
-    await waitFor(2_000); // the last message otherwise was not in the db yet
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [testRegistration.referenceId],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 4,
+    });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -107,7 +112,12 @@ describe('(Un)Block visa debit card', () => {
     );
 
     // Assert
-    await waitFor(4_000); // the last message otherwise was not in the db yet
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [testRegistration.referenceId],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 6,
+    });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
       programIdVisa,
