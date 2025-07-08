@@ -33,7 +33,7 @@ Clone the repository and run local Docker environment following the general [ins
 From the `./e2e`-folder, run:
 
 ```shell
-npm install && npx playwright install
+npm run setup
 ```
 
 ### Set necessary Environment-variables
