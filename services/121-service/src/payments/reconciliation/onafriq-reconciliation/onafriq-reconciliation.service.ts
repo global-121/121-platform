@@ -142,15 +142,15 @@ export class OnafriqReconciliationService {
         From_MSISDN: '123', // ##TODO: get from env
         To_MSISDN: onafriqTransaction.recipientMsisdn,
         Send_Currency: null, // We use 'Receive' type, so this is  N.A.
-        Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
+        Receive_Currency: env.ONAFRIQ_CURRENCY_CODE!,
         Send_amount: null, // We use 'Receive' type, so this is  N.A.
         Receive_amount: onafriqTransaction.transaction.amount,
         Fee_Amount: null, // We use 'Receive' type, so this is  N.A.
         Balance_before: null, // ##TODO: store and calculated?
         Balance_after: null, // ##TODO: store and calculated?
         Related_Transaction_ID: null, // N.A. for Transaction_Type = 'Transfer'
-        Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
-        Partner_name: env.ONAFRIQ_CORPORATE_CODE,
+        Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE!,
+        Partner_name: env.ONAFRIQ_CORPORATE_CODE!,
       };
       report.push(reportItem);
     }
