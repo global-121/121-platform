@@ -455,10 +455,14 @@ export class IntersolveVisaService implements FspIntegrationInterface {
         intersolveVisaParentWallet.tokenCode,
       );
 
-    // Update the parent wallet in the database
+    // If there is no new last transaction date, we do not update the lastUsedDate
+    // Because we only get transactions information from a certain time period in the past and we do not want to overwrite the lastUsedDate null
+    if (getTransactionInformationResultDto.lastTransactionDate !== null) {
+      intersolveVisaParentWallet.lastUsedDate =
+        getTransactionInformationResultDto.lastTransactionDate;
+    }
+
     intersolveVisaParentWallet.balance = getTokenResult.balance;
-    intersolveVisaParentWallet.lastUsedDate =
-      getTransactionInformationResultDto.lastTransactionDate;
     intersolveVisaParentWallet.spentThisMonth =
       getTransactionInformationResultDto.spentThisMonth;
     intersolveVisaParentWallet.lastExternalUpdate = new Date();
