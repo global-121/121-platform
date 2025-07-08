@@ -256,12 +256,14 @@ export class PaginateQueryService {
     totalCount,
     currentPaginateQuery = {},
     previewItemForSelectAll,
+    select = [],
   }: {
     selection: QueryTableSelectionEvent<TData>;
     fieldForFilter: keyof TData & string;
     totalCount: number;
     currentPaginateQuery?: PaginateQuery;
     previewItemForSelectAll: TData;
+    select?: string[];
   }): ActionDataWithPaginateQuery<TData> {
     if ('selectAll' in selection) {
       // Apply action to all items...
@@ -271,6 +273,7 @@ export class PaginateQueryService {
           // ...including the ones in other pages
           page: undefined,
           limit: undefined,
+          select,
         },
         count: totalCount,
         selection,
@@ -284,6 +287,7 @@ export class PaginateQueryService {
         filter: {
           [fieldForFilter]: `${FilterOperator.IN}:${selection.map((r) => r[fieldForFilter]).join(',')}`,
         },
+        select,
       },
       count: selection.length,
       selection,
