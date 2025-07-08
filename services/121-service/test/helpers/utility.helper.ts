@@ -1,6 +1,8 @@
+import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 import TestAgent from 'supertest/lib/agent';
 
+import { env } from '@121-service/src/env';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
@@ -10,7 +12,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 
 export function getHostname(): string {
-  return 'http://localhost:3000/api';
+  return `${env.EXTERNAL_121_SERVICE_URL}/api`;
 }
 
 export function getServer(): TestAgent<request.Test> {
@@ -29,7 +31,7 @@ export function resetDB(
       resetIdentifier,
     })
     .send({
-      secret: process.env.RESET_SECRET,
+      secret: env.RESET_SECRET,
     });
 }
 
@@ -42,7 +44,7 @@ export function resetDuplicateRegistrations(
       mockPowerNumberRegistrations: mockNumber,
     })
     .send({
-      secret: process.env.RESET_SECRET,
+      secret: env.RESET_SECRET,
     });
 }
 
@@ -57,10 +59,15 @@ export function loginApi(
 }
 
 export async function getAccessToken(
-  username = process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!,
-  password = process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN!,
+  username = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+  password = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
 ): Promise<string> {
   const login = await loginApi(username, password);
+
+  if (login.statusCode !== HttpStatus.CREATED) {
+    throw new Error(`Login failed with status code: ${login.statusCode}`);
+  }
+
   const cookies = login.get('Set-Cookie');
   const accessToken = cookies
     ?.find((cookie: string) => cookie.startsWith(CookieNames.general))
@@ -73,26 +80,19 @@ export async function getAccessToken(
   return accessToken;
 }
 
-export async function getAccessTokenProgramManager(): Promise<string> {
-  return await getAccessToken(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-  );
-}
-
 export async function getAccessTokenScoped(
   defaultScope: DebugScope,
 ): Promise<string> {
   return await getAccessToken(
     `${defaultScope}@example.org`,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   );
 }
 
 export async function getAccessTokenCvaManager(): Promise<string> {
   return await getAccessToken(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+    env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+    env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
   );
 }
 

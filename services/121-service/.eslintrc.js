@@ -3,7 +3,11 @@ module.exports = {
   overrides: [
     {
       files: ['*.js'],
-      extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+      extends: [
+        'eslint:recommended',
+        'plugin:n/recommended',
+        'plugin:prettier/recommended',
+      ],
       env: {
         node: true,
       },
@@ -18,11 +22,11 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       plugins: ['no-relative-import-paths', 'simple-import-sort'],
       extends: [
-        'plugin:jest/recommended',
         'plugin:@typescript-eslint/recommended',
         // 'plugin:@typescript-eslint/recommended-type-checked', // Preferred, but currently to many issues
         'plugin:@typescript-eslint/stylistic',
         // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
+        'plugin:n/recommended',
         'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
@@ -58,6 +62,9 @@ module.exports = {
         // 'promise/prefer-await-to-then': 'warn', // TODO: Enable (locally only) to see if there is something to refactor.
         'promise/valid-params': 'error',
         'prettier/prettier': ['error', { endOfLine: 'auto' }],
+        'n/no-extraneous-import': [0], // Managed by TypeScript
+        'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
+        'n/no-process-env': 'error',
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
@@ -97,14 +104,19 @@ module.exports = {
         ],
         'simple-import-sort/exports': 'error',
       },
-    },
-    {
-      files: ['*.entity.ts'],
-      parser: '@typescript-eslint/parser',
-      plugins: ['custom-rules'],
-      rules: {
-        'custom-rules/typeorm-cascade-ondelete': 'error',
-      },
+      overrides: [
+        {
+          files: ['*.entity.ts'],
+          plugins: ['custom-rules'],
+          rules: {
+            'custom-rules/typeorm-cascade-ondelete': 'error',
+          },
+        },
+        {
+          files: ['*.spec.ts', '*.test.ts'],
+          extends: ['plugin:jest/recommended'],
+        },
+      ],
     },
   ],
 };

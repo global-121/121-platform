@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
@@ -30,7 +31,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig?: SeedConfigurationDto,
   ): Promise<void> {
-    if (!process.env.MOCK_INTERSOLVE || !process.env.MOCK_TWILIO) {
+    if (!env.MOCK_INTERSOLVE || !env.MOCK_TWILIO) {
       throw new HttpException(
         `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
         HttpStatus.BAD_REQUEST,

@@ -2,8 +2,12 @@ import { readFileSync } from 'node:fs';
 import { TlsOptions } from 'node:tls';
 import { DataSourceOptions } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
+
 const createSSLConfig = (): boolean | TlsOptions => {
-  if (process.env.NODE_ENV === 'development') {
+  if (IS_DEVELOPMENT) {
+    // In local development, no SSL-connection is needed
     return false;
   }
   // To make a secure connection to an "Azure Database for PostgreSQL flexible server" in local development:
@@ -27,13 +31,11 @@ const createSSLConfig = (): boolean | TlsOptions => {
 
 export const ORMConfig: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.POSTGRES_HOST,
-  port: !!process.env.POSTGRES_PORT
-    ? parseInt(process.env.POSTGRES_PORT)
-    : 5432,
-  username: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DBNAME,
+  host: env.POSTGRES_HOST,
+  port: env.POSTGRES_PORT,
+  username: env.POSTGRES_USER,
+  password: env.POSTGRES_PASSWORD,
+  database: env.POSTGRES_DBNAME,
   schema: '121-service',
   entities: ['dist/**/*.entity.js'],
   subscribers: ['dist/**/*.subscriber.js'],

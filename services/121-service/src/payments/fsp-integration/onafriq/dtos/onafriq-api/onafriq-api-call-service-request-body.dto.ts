@@ -3,7 +3,7 @@ export interface OnafriqApiCallServiceRequestBody {
   corporateCode: string;
   password: string;
   mfsSign: string;
-  batchId: number;
+  batchId: string;
   requestBody: {
     instructionType: {
       destAcctType: number; // 1 for Mobile Money, 2 for Bank Account

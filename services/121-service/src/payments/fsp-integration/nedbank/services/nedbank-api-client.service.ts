@@ -3,6 +3,7 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import * as https from 'https';
 import { v4 as uuid } from 'uuid';
 
+import { env } from '@121-service/src/env';
 import { NedbankApiError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank-api.error';
 import { NedbankApiHelperService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api.helper.service';
 import {
@@ -10,9 +11,9 @@ import {
   Header,
 } from '@121-service/src/shared/services/custom-http.service';
 
-const nedbankApiUrl = process.env.MOCK_NEDBANK
-  ? `${process.env.MOCK_SERVICE_URL}api/fsp/nedbank`
-  : process.env.NEDBANK_API_URL;
+const nedbankApiUrl = env.MOCK_NEDBANK
+  ? `${env.MOCK_SERVICE_URL}/api/fsp/nedbank`
+  : env.NEDBANK_API_URL;
 
 @Injectable()
 export class NedbankApiClientService {
@@ -73,21 +74,21 @@ export class NedbankApiClientService {
     // We only check here if the NEDBANK_CERTIFICATE_PATH is set and not if the NEDBANK_CERTIFICATE_PASSWORD is set, because:
     // Locally we use .pfx file which is password protected
     // On azure we use .pf12 file which is not password protected
-    if (!process.env.NEDBANK_CERTIFICATE_PATH) {
+    if (!env.NEDBANK_CERTIFICATE_PATH) {
       return;
     }
     return this.httpService.createHttpsAgentWithCertificate(
-      process.env.NEDBANK_CERTIFICATE_PATH!,
-      process.env.NEDBANK_CERTIFICATE_PASSWORD,
+      env.NEDBANK_CERTIFICATE_PATH,
+      env.NEDBANK_CERTIFICATE_PASSWORD,
     );
   }
 
   private createHeaders(): Header[] {
     return [
-      { name: 'x-ibm-client-id', value: process.env.NEDBANK_CLIENT_ID! },
+      { name: 'x-ibm-client-id', value: env.NEDBANK_CLIENT_ID },
       {
         name: 'x-ibm-client-secret',
-        value: process.env.NEDBANK_CLIENT_SECRET!,
+        value: env.NEDBANK_CLIENT_SECRET,
       },
       {
         name: 'x-idempotency-key', // We use OrderCreateReference as 'idempotency' key and therefore set this thing with a random value

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TokenSet } from 'openid-client';
 
+import { env } from '@121-service/src/env';
 import { AuthResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/auth-response-safaricom-api.dto';
 import { TransferRequestSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-request-safaricom-api.dto';
 import { TransferResponseSafaricomApiDto } from '@121-service/src/payments/fsp-integration/safaricom/dtos/safaricom-api/transfer-response-safaricom-api.dto';
@@ -59,11 +60,11 @@ export class SafaricomApiService {
       return;
     }
 
-    const consumerKey = process.env.SAFARICOM_CONSUMER_KEY;
-    const consumerSecret = process.env.SAFARICOM_CONSUMER_SECRET;
-    const accessTokenUrl = !!process.env.MOCK_SAFARICOM
-      ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/authenticate`
-      : `${process.env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
+    const consumerKey = env.SAFARICOM_CONSUMER_KEY;
+    const consumerSecret = env.SAFARICOM_CONSUMER_SECRET;
+    const accessTokenUrl = env.MOCK_SAFARICOM
+      ? `${env.MOCK_SERVICE_URL}/api/fsp/safaricom/authenticate`
+      : `${env.SAFARICOM_API_URL}/oauth/v1/generate?grant_type=client_credentials`;
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString(
       'base64',
     );
@@ -97,9 +98,9 @@ export class SafaricomApiService {
     try {
       await this.authenticate();
 
-      const paymentUrl = !!process.env.MOCK_SAFARICOM
-        ? `${process.env.MOCK_SERVICE_URL}api/fsp/safaricom/transfer`
-        : `${process.env.SAFARICOM_API_URL}/${process.env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
+      const paymentUrl = env.MOCK_SAFARICOM
+        ? `${env.MOCK_SERVICE_URL}/api/fsp/safaricom/transfer`
+        : `${env.SAFARICOM_API_URL}/${env.SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT}`;
 
       const headers = [
         {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { SEED_CONFIGURATION_SETTINGS } from '@121-service/src/scripts/seed-configuration.const';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelper } from '@121-service/src/scripts/seed-helper';
@@ -69,13 +70,8 @@ export class ScriptsService {
     if (!seedConfig) {
       throw new Error(`No seedConfig found with name ${seedScript}`);
     }
-    if (
-      seedConfig.includeMockData &&
-      !['development', 'test'].includes(process.env.NODE_ENV!)
-    ) {
-      throw new Error(
-        `Mock data is only allowed in development and test environments`,
-      );
+    if (seedConfig.includeMockData && IS_PRODUCTION) {
+      throw new Error(`Mock data is NOT allowed in production environments`);
     }
     return seedConfig;
   }

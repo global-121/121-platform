@@ -2,6 +2,8 @@ import twilio, { ClientOpts } from 'twilio';
 import { RequestClient } from 'twilio';
 import { HttpMethod } from 'twilio/lib/interfaces';
 
+import { env } from '@121-service/src/env';
+
 class MockTwilioRequestClient extends RequestClient {
   public mockUrl: string;
 
@@ -22,16 +24,14 @@ class MockTwilioRequestClient extends RequestClient {
 
 let mockClient: ClientOpts | undefined;
 
-if (!!process.env.MOCK_TWILIO) {
+if (env.MOCK_TWILIO) {
   mockClient = {
-    httpClient: new MockTwilioRequestClient(
-      `${process.env.MOCK_SERVICE_URL}api`,
-    ),
+    httpClient: new MockTwilioRequestClient(`${env.MOCK_SERVICE_URL}/api`),
   };
 }
 
 export const twilioClient = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_AUTHTOKEN,
+  env.TWILIO_SID,
+  env.TWILIO_AUTHTOKEN,
   mockClient,
 );

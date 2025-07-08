@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { EXTERNAL_API } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
@@ -37,7 +38,7 @@ export class SmsService {
     try {
       const messageToStore = await twilioClient.messages.create({
         body: message,
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        messagingServiceSid: env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.smsStatus,
         to,
       });
@@ -53,10 +54,10 @@ export class SmsService {
       console.log('Error from Twilio:', error);
       await this.storeSendSms({
         message: {
-          accountSid: process.env.TWILIO_SID ?? '',
+          accountSid: env.TWILIO_SID,
           body: message,
           to,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID ?? '',
+          messagingServiceSid: env.TWILIO_MESSAGING_SID,
           dateCreated: new Date(),
           sid: `failed-${uuid()}`,
           status: 'failed',
