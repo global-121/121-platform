@@ -88,7 +88,10 @@ export class TrackingService {
         ),
       ]
     : [];
-  private readonly tracker = inject(MatomoTracker);
+
+  private readonly tracker = IS_MATOMO_ENABLED()
+    ? inject(MatomoTracker)
+    : undefined;
 
   public get PrivacyCopyComponent() {
     return IS_MATOMO_ENABLED()
@@ -118,15 +121,11 @@ export class TrackingService {
    *
    */
   public trackEvent(event: TrackingEvent): void {
-    if (!IS_MATOMO_ENABLED()) {
-      return;
-    }
-
     if (!environment.production || isDevMode()) {
-      console.info('Track Event:', event);
+      console.info('TrackingEvent:', event);
     }
 
     const { category, action, name, value } = event;
-    this.tracker.trackEvent(category, action, name, value);
+    this.tracker?.trackEvent(category, action, name, value);
   }
 }
