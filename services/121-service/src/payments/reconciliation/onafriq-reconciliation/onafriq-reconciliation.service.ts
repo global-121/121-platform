@@ -10,6 +10,7 @@ import { OnafriqTransactionCallbackJobDto } from '@121-service/src/payments/reco
 import { OnafriqApiCallbackStatusCode } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/enum/onafriq-api-callback-status-code.enum';
 import { OnafriqTransactionStatus } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/enum/onafriq-transaction-status.enum';
 import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
+import { OnafriqReconciliationMapper } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.mapper';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -113,50 +114,43 @@ export class OnafriqReconciliationService {
     return OnafriqTransactionStatus.other;
   }
 
-  public async generateReconciliationReport(): Promise<{
+  public async generateReconciliationReport(isTest?: boolean): Promise<{
     filename: string;
-    content: OnafriqReconciliationReport[];
+    csv: string;
   }> {
-    const report: OnafriqReconciliationReport[] = [];
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStart = new Date();
+    yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - (isTest ? 0 : 1)); // In production use yesterday, in test use todays
+    yesterdayStart.setUTCHours(0, 0, 0, 0);
+
+    const yesterdayEnd = new Date(yesterdayStart);
+    yesterdayEnd.setUTCHours(23, 59, 59, 999);
+
     const onafriqTransactions =
       await this.onafriqTransactionScopedRepository.find({
         where: {
           transaction: {
-            created: Between(yesterday, today),
+            created: Between(yesterdayStart, yesterdayEnd),
           },
         },
         relations: ['transaction'],
       });
 
-    for (const onafriqTransaction of onafriqTransactions) {
-      const reportItem: OnafriqReconciliationReport = {
-        Datestamp: onafriqTransaction.transaction.created.toISOString(),
-        'Transaction ID': onafriqTransaction.thirdPartyTransId,
-        'Onafriq Transaction ID': onafriqTransaction.mfsTransId,
-        Third_PartyID: onafriqTransaction.thirdPartyTransId,
-        Transaction_Type: 'Transfer', // 'Transfer' or 'Reversal'. We use only 'Transfer'.
-        Transaction_Status: onafriqTransaction.transaction.status, // ##TODO: map to 'Success', 'Fail', 'Pending'?
-        From_MSISDN: '123', // ##TODO: get from env
-        To_MSISDN: onafriqTransaction.recipientMsisdn,
-        Send_Currency: null, // We use 'Receive' type, so this is  N.A.
-        Receive_Currency: env.ONAFRIQ_CURRENCY_CODE!,
-        Send_amount: null, // We use 'Receive' type, so this is  N.A.
-        Receive_amount: onafriqTransaction.transaction.amount,
-        Fee_Amount: null, // We use 'Receive' type, so this is  N.A.
-        Balance_before: null, // ##TODO: store and calculated?
-        Balance_after: null, // ##TODO: store and calculated?
-        Related_Transaction_ID: null, // N.A. for Transaction_Type = 'Transfer'
-        Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE!,
-        Partner_name: env.ONAFRIQ_CORPORATE_CODE!,
-      };
-      report.push(reportItem);
-    }
+    const report: OnafriqReconciliationReport[] = onafriqTransactions.map(
+      (onafriqTransaction) =>
+        OnafriqReconciliationMapper.mapTransactionToReportItem(
+          onafriqTransaction,
+        ),
+    );
+
+    const csv =
+      report.length === 0
+        ? ''
+        : Object.keys(report[0]).join(',') +
+          '\n' +
+          report.map((row) => Object.values(row).join(',')).join('\n');
     return {
-      filename: `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(today)}_01.csv`, // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
-      content: report,
+      filename: `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(new Date())}_01.csv`, // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
+      csv,
     };
   }
 

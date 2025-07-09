@@ -947,6 +947,8 @@
   {
     "method": "get",
     "path": "/api/fsps/onafriq/reconciliation-report",
-    "params": []
+    "params": [
+      "isTest"
+    ]
   }
 ]
