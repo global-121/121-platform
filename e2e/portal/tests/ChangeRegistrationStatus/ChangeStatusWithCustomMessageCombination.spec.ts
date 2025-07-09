@@ -59,6 +59,7 @@ test.describe('Change status of registration with and without templated message'
   test('[35840] Change status of registration with custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
@@ -84,7 +85,7 @@ test.describe('Change status of registration with and without templated message'
   test('[35849] Change status of registration without custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
-    // Act
+
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,

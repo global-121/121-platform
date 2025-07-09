@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -14,53 +14,74 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const projectId = 2;
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
-
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-
+// Arrange
+const reset = async () => {
   const accessToken = await getAccessToken();
+
+  await resetDB(SeedScript.nlrcMultiple, __filename);
   await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
+};
 
-  // Login
+const login = async (page: Page, email?: string, password?: string) => {
   const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login();
-});
+  await page.goto(`/`);
+  await loginPage.login(email, password);
+  // Navigate to program
+  await loginPage.selectProgram(projectTitle);
+};
 
-test('Navigation from sidebar', async ({ page }) => {
-  await page.goto('/');
+test.describe('Validate basic navigation of the Portal', () => {
+  let page: Page;
 
-  const homePage = new HomePage(page);
-  await homePage.navigateToPage('Users');
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
+  test.beforeAll(async ({ browser }) => {
+    await reset();
+    page = await browser.newPage();
+    console.log(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
+    await login(
+      page,
+      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
+  });
 
-  await homePage.navigateToPage('User roles');
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/user-roles'));
-});
+  test.afterAll(async () => {
+    await page.close();
+  });
 
-test('Navigation from program header', async ({ page }) => {
-  const homePage = new HomePage(page);
+  test('Navigation from sidebar', async () => {
+    const homePage = new HomePage(page);
 
-  await page.goto('/en-GB/projects');
-  await page.getByRole('link', { name: projectTitle }).click();
-  await page.waitForURL((url) =>
-    url.pathname.startsWith(`/en-GB/project/${projectId}/registrations`),
-  );
-  await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
+    await page.goto('/');
+    await homePage.navigateToPage('Users');
+    await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
 
-  await homePage.navigateToProgramPage('Monitoring');
-  await page.waitForURL((url) =>
-    url.pathname.startsWith(`/en-GB/project/${projectId}/monitoring`),
-  );
-});
+    await homePage.navigateToPage('User roles');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/user-roles'),
+    );
+  });
 
-test('Reload registrations page', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
+  test('Navigation from program header', async () => {
+    const homePage = new HomePage(page);
 
-  await page.goto('/en-GB/projects');
-  await page.getByRole('link', { name: projectTitle }).click();
-  await registrationsPage.waitForLoaded(registrationsPV.length);
+    await page.goto('/en-GB/projects');
+    await page.getByRole('link', { name: projectTitle }).click();
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${projectId}/registrations`),
+    );
+    await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
 
-  await page.reload();
-  await registrationsPage.waitForLoaded(registrationsPV.length);
+    await homePage.navigateToProgramPage('Monitoring');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${projectId}/monitoring`),
+    );
+  });
+
+  test('Reload registrations page', async () => {
+    const registrationsPage = new RegistrationsPage(page);
+
+    await page.goto('/en-GB/projects');
+    await page.getByRole('link', { name: projectTitle }).click();
+    await registrationsPage.waitForLoaded(registrationsPV.length);
+  });
 });
