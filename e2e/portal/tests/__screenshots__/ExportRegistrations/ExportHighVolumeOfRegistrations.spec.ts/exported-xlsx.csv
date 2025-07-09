@@ -1,2 +1,2 @@
-referenceId,id,status,preferredLanguage,paymentAmountMultiplier,paymentCount,programFspConfigurationLabel,scope,namePartnerOrganization,fullName,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-asdf234f4gg4ag64567,1,included,en,1,0,Visa debit card,,,Jack Strong,Teststraat,1,,1234AB,Stad
+id,status,paymentCount,duplicateStatus,created,name
+1,included,0,unique,7/9/25,Jack Strong
