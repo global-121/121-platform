@@ -77,7 +77,7 @@ describe('Registrations - [Scoped]', () => {
 
   it('should get all transactions within the scope of the requesting user', async () => {
     // Arrange
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     const accessTokenScoped = await getAccessTokenScoped(testScope);
 
     // Act
