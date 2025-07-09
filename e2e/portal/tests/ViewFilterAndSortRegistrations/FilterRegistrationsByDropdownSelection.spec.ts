@@ -21,8 +21,8 @@ const toastMessage =
 
 // Arrange
 test.beforeEach(async ({ page }) => {
-  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
 
   await seedRegistrationsWithStatus(
     registrationsPV,

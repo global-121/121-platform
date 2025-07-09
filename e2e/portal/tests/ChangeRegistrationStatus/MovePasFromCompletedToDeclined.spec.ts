@@ -22,8 +22,8 @@ const toastMessage =
   'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 // Arrange
 test.beforeEach(async ({ page }) => {
-  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
 
   await seedRegistrationsWithStatus(
     [registrationPvMaxPayment],

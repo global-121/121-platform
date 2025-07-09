@@ -16,8 +16,8 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
 // Arrange
 test.beforeAll(async () => {
-  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
 
   await importRegistrations(programIdPV, registrationsPV, accessToken);
 });
