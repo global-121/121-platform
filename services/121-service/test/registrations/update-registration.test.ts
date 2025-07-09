@@ -220,7 +220,7 @@ describe('Update attribute of PA', () => {
     const updateDto = {
       scope: newScope,
     };
-    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+    accessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
     // Act
     const updateResponse = await updateRegistration(
@@ -251,7 +251,7 @@ describe('Update attribute of PA', () => {
     const updateDto = {
       scope: newScope,
     };
-    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+    accessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
     // Act
     const updateResponse = await updateRegistration(

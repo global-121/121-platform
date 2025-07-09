@@ -259,7 +259,7 @@ describe('/ Registrations - by phone-number', () => {
       [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
       [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
         '15005550201',
-      scope: DebugScope.ZeelandMiddelburg,
+      scope: DebugScope.KisumuWest,
     };
 
     const registrationInOtherProgramUtrechtHouten = {
@@ -269,7 +269,7 @@ describe('/ Registrations - by phone-number', () => {
       [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
       [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
         '15005550202',
-      scope: DebugScope.UtrechtHouten,
+      scope: DebugScope.TurkanaNorth,
     };
 
     await importRegistrations(
@@ -283,7 +283,7 @@ describe('/ Registrations - by phone-number', () => {
 
     // Act
     const accessTokenZeelandMiddelburg = await getAccessTokenScoped(
-      DebugScope.ZeelandMiddelburg,
+      DebugScope.KisumuWest,
     );
     const response = await searchRegistrationByPhoneNumber(
       testPhoneNumber,
