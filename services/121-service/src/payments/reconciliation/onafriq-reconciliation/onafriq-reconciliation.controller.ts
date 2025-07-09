@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -57,15 +58,12 @@ export class OnafriqReconciliationController {
   @Get('reconciliation-report')
   public async generateReconciliationReport(
     @Res() res: Response,
+    @Query('isTest') isTest?: boolean,
   ): Promise<void> {
-    const { filename, content } =
-      await this.onafriqReconciliationService.generateReconciliationReport();
-    const csv =
-      content.length === 0
-        ? ''
-        : Object.keys(content[0]).join(',') +
-          '\n' +
-          content.map((row) => Object.values(row).join(',')).join('\n');
+    const { filename, csv } =
+      await this.onafriqReconciliationService.generateReconciliationReport(
+        isTest,
+      );
     res.header('Content-Type', 'text/csv');
     res.attachment(filename);
     res.send(csv);
