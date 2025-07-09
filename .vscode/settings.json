@@ -29,5 +29,8 @@
     "class:list"
   ],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "yaml.schemas": {
+    "https://www.artillery.io/schema.json": []
+  }
 }
