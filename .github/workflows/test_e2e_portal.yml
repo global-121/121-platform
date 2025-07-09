@@ -27,6 +27,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: test
 
+    strategy:
+      fail-fast: false
+      matrix:
+        # if you change the number of shards, you must also change the denominator accordingly in the `--shard` option below
+        shard: ['1', '2', '3', '4', '5', '6']
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -86,12 +92,12 @@ jobs:
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npm test
+          npm test -- --shard=${{ matrix.shard }}/6
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-result-artifacts
+          name: test-result-artifacts-${{ matrix.shard }}
           path: |
             ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/portal/run-portal-logs.txt
