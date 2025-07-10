@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -18,7 +19,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[29636] Fill in with invalid Token', async ({ page }) => {
   test.skip(
-    !process.env.KOBO_CONNECT_API_URL ||
+    !env.KOBO_CONNECT_API_URL ||
       !process.env.E2E_TEST_KOBO_ASSET_ID ||
       !process.env.E2E_TEST_KOBO_TOKEN,
     'Disable use of third-party API by default. Can be used by explicitly providing all ENV-values. See AB#30220',
