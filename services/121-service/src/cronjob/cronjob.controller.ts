@@ -209,7 +209,7 @@ export class CronjobController {
     fn: () => Promise<void>,
     res: Response,
   ): Promise<void> {
-    void fn();
+    await fn();
     res.status(202).send();
   }
 }

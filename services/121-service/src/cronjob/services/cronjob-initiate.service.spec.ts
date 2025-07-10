@@ -3,22 +3,22 @@ import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjo
 const exampleApiUrl = 'http://example.com/api';
 const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
-describe('Cronjobs', () => {
-  let cronjobService;
+describe('Cronjob initiation', () => {
+  let cronjobInitiateService;
   const testHeader = { name: 'test name', value: 'test value' };
   beforeAll(() => {
-    cronjobService = new CronjobInitiateService();
+    cronjobInitiateService = new CronjobInitiateService();
     // Make this a noop.
     jest
-      .spyOn(cronjobService.axiosCallsService, 'getAccessToken')
+      .spyOn(cronjobInitiateService.axiosCallsService, 'getAccessToken')
       .mockResolvedValue(true);
     // Make this a noop. We assert on this return value.
     jest
-      .spyOn(cronjobService.axiosCallsService, 'accesTokenToHeaders')
+      .spyOn(cronjobInitiateService.axiosCallsService, 'accesTokenToHeaders')
       .mockResolvedValue(testHeader);
     // We assert on this return value.
     jest
-      .spyOn(cronjobService.axiosCallsService, 'getBaseUrl')
+      .spyOn(cronjobInitiateService.axiosCallsService, 'getBaseUrl')
       .mockResolvedValue(exampleApiUrl);
   });
 
@@ -27,11 +27,11 @@ describe('Cronjobs', () => {
   it('that do PUT requests should call httpService.put and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService.httpService, 'put')
+      .spyOn(cronjobInitiateService.httpService, 'put')
       .mockResolvedValue(true);
 
     // Act
-    await cronjobService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -45,11 +45,11 @@ describe('Cronjobs', () => {
   it('that do PATCH requests should call httpService.patch and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService.httpService, 'patch')
+      .spyOn(cronjobInitiateService.httpService, 'patch')
       .mockResolvedValue(true);
 
     // Act
-    await cronjobService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
+    await cronjobInitiateService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -63,11 +63,11 @@ describe('Cronjobs', () => {
   it('that do POST requests should call httpService.post and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService.httpService, 'post')
+      .spyOn(cronjobInitiateService.httpService, 'post')
       .mockResolvedValue(true);
 
     // Act
-    await cronjobService.cronCancelByRefposIntersolve();
+    await cronjobInitiateService.cronCancelByRefposIntersolve();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -81,11 +81,11 @@ describe('Cronjobs', () => {
   it('that do DELETE requests should call httpService.delete and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService.httpService, 'delete')
+      .spyOn(cronjobInitiateService.httpService, 'delete')
       .mockResolvedValue(true);
 
     // Act
-    await cronjobService.cronRemoveDeprecatedImageCodes();
+    await cronjobInitiateService.cronRemoveDeprecatedImageCodes();
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
@@ -99,7 +99,7 @@ describe('Cronjobs', () => {
   it('should log a useful message when authentication fails', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService, 'getHeaders')
+      .spyOn(cronjobInitiateService, 'getHeaders')
       .mockImplementation(() => {
         throw new Error('could not get headers');
       });
@@ -107,7 +107,7 @@ describe('Cronjobs', () => {
     const cronjobName = 'cronCancelByRefposIntersolve';
     // Act
     // Dynamically call the method and pass it the method as argument.
-    const cronPromise = cronjobService[cronjobName](cronjobName);
+    const cronPromise = cronjobInitiateService[cronjobName](cronjobName);
 
     // Assert
     // Necessary: see https://jestjs.io/docs/asynchronous
@@ -124,7 +124,7 @@ describe('Cronjobs', () => {
   it('should log a useful message when a request fails', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobService.httpService, 'patch')
+      .spyOn(cronjobInitiateService.httpService, 'patch')
       .mockImplementation(() => {
         throw new Error('patch request failed');
       });
@@ -132,7 +132,7 @@ describe('Cronjobs', () => {
     const cronjobName = 'cronRetrieveAndUpdatedUnusedIntersolveVouchers';
     // Act
     // Dynamically call the method and pass it the method as argument.
-    const cronPromise = cronjobService[cronjobName](cronjobName);
+    const cronPromise = cronjobInitiateService[cronjobName](cronjobName);
 
     // Assert
     // Necessary: see https://jestjs.io/docs/asynchronous
