@@ -460,7 +460,7 @@ export async function startCbeValidationProcess(
 ): Promise<request.Response> {
   return await getServer()
     .put(
-      `/programs/${programId}/fsps/commercial-bank-ethiopia/account-enquiries`,
+      `/programs/${programId}/cronjobs/fsps/commercial-bank-ethiopia/account-enquiries`,
     )
     .set('Cookie', [accessToken]);
 }
@@ -568,7 +568,7 @@ export async function removeDeprecatedImageCodes({
     body.mockCurrentDate = mockCurrentDateIsoString;
   }
   return await getServer()
-    .delete('/fsps/intersolve-voucher/deprecated-image-codes')
+    .delete('cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
     .set('Cookie', [accessToken])
     .send(body);
 }

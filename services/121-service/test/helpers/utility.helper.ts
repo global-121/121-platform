@@ -109,7 +109,7 @@ export async function removeProgramAssignment(
 
 export async function runCronJobDoNedbankReconciliation(): Promise<void> {
   const accessToken = await getAccessToken();
-  await getServer().patch('/fsps/nedbank').set('Cookie', [accessToken]);
+  await getServer().patch('cronjobs/fsps/nedbank').set('Cookie', [accessToken]);
 }
 
 export async function updatePermissionsOfRole(

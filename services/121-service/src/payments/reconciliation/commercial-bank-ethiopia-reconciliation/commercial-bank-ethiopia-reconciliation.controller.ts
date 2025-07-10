@@ -37,7 +37,7 @@ export class CommercialBankEthiopiaReconciliationController {
   public async retrieveAndUpsertAccountEnquiriesForProgram(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<void> {
+  ): Promise<number> {
     return this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiriesForProgram(
       programId,
     );

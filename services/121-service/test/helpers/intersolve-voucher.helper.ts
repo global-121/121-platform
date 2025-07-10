@@ -52,6 +52,6 @@ export async function triggerUnusedVouchersCache(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .patch('/fsps/intersolve-voucher/unused-vouchers')
+    .patch('cronjobs/fsps/intersolve-voucher/unused-vouchers')
     .set('Cookie', [accessToken]);
 }
