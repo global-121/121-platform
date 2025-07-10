@@ -1,0 +1,47 @@
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test Service: Unit & Integration Tests'
+
+on:
+  workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
+  pull_request:
+    paths:
+      - .github/workflows/test_service_api_batches.yml
+      - services/**
+      - '!**.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        batch: ['migrations', '1/6', '2/6', '3/6', '4/6', '5/6', '6/6']
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set ENV-variables for test-environment
+        run: cp ./services/.env.example services/.env
+
+      - name: Run Containers with Docker
+        env:
+          COMPOSE_BAKE: true
+        run: npm run start:services:ci
+
+      - name: Check that no new migrations are necessary
+        if: ${{ matrix.batch == 'migrations' }}
+        working-directory: services
+        run: docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
+
+      - name: Run integration tests with Jest
+        if: ${{ matrix.batch != 'migrations' }}
+        working-directory: services
+        run: docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.batch }}
+
+      - name: Docker logs
+        if: always()
+        uses: jwalton/gh-docker-logs@v2
