@@ -36,10 +36,7 @@ test('[34690] User should see a summary of a registration', async ({
 
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
     `/project/${projectId}/registrations/${registrationId}`,

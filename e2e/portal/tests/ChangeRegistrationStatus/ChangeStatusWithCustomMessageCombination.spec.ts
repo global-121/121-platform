@@ -46,11 +46,7 @@ test.describe('Change status of registration with and without templated message'
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
   });
 
   test.afterEach(async () => {

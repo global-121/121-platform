@@ -58,10 +58,7 @@ test.beforeAll(async ({ browser }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   const activityLogPage = new RegistrationActivityLogPage(page);
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(

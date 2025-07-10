@@ -57,11 +57,7 @@ test.describe('View available actions for admin', () => {
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
     activityLogPage = await goToActivityLogPage(page);
     await test.step('Open action menu', async () => {
       await activityLogPage.clickActionDropdown();

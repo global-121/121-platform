@@ -36,10 +36,7 @@ test('[30866] [Admin] View last login', async ({ page }) => {
     // Log out
     await home.selectAccountOption('Logout');
     // Login
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
   });
 
   await test.step('Validate last login', async () => {
