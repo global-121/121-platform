@@ -109,7 +109,7 @@ describe('Metric export list', () => {
 
   it('should return all filtered registrations from 1 program using a filter for included and a scoped user', async () => {
     // Arrange
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
@@ -190,7 +190,7 @@ describe('Metric export list', () => {
 
   it('should export in excel format', async () => {
     // Arrange
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
