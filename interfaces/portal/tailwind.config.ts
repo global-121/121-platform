@@ -112,6 +112,7 @@ export default {
   },
   plugins: [
     pluginGridAreas,
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- This is the recommended way to use Tailwind CSS plugins: https://v3.tailwindcss.com/docs/plugins
     plugin(({ matchUtilities, theme }) => {
       // heading utilities
       matchUtilities(
