@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -13,7 +14,10 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login();
+  await loginPage.login(
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  );
 });
 
 test('[29311] Change password unsuccessfully (Current password incorrect)', async ({
@@ -28,7 +32,7 @@ test('[29311] Change password unsuccessfully (Current password incorrect)', asyn
 
   await test.step('Should type wrong confirm password and recieve error', async () => {
     await changePasswordPage.fillInChangePassword({
-      currentPassword: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      currentPassword: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
       newPassword: 'newPassword',
       confirmPassword: 'newPasswordWrong',
     });

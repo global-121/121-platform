@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -23,7 +24,7 @@ test('[30868] [Admin] Reset users password', async ({ page }) => {
   await test.step('Reset password and validate toast message', async () => {
     await basePage.navigateToPage('Users');
     await users.resetUsersPassword(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW!,
+      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     );
     // Assert
     await users.validateToastMessage('Password reset');

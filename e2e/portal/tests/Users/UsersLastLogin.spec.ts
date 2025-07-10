@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -21,8 +22,8 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
   );
 });
 
@@ -36,14 +37,17 @@ test('[30866] [Admin] View last login', async ({ page }) => {
     // Log out
     await home.selectAccountOption('Logout');
     // Login
-    await loginPage.login();
+    await loginPage.login(
+      env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    );
   });
 
   await test.step('Validate last login', async () => {
     await basePage.navigateToPage('Users');
     // Assert
     await users.validateRowTextContent({
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW!,
+      email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       textContent: loginTimeStamp,
     });
   });

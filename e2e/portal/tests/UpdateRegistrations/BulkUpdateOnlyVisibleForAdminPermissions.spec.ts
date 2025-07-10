@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -24,8 +25,8 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
   );
 });
 
