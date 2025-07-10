@@ -1,7 +1,7 @@
 {
   "name": "e2e",
   "scripts": {
-    "setup": "npm install && npx playwright install",
+    "setup": "npm install && npx playwright install chromium --with-deps",
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
     "test": "playwright test --config=playwright.config.ts"

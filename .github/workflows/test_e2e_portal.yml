@@ -81,7 +81,7 @@ jobs:
       - name: Install E2E-Tests runtime-dependencies
         working-directory: ${{ env.e2eTestsPath }}
         run: |
-          npx playwright install chromium --with-deps --no-shell
+          npm run setup -- --no-shell
 
       - name: Wait for Portal
         run: |
