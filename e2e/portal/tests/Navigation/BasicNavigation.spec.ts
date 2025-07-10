@@ -25,7 +25,6 @@ test.describe('Validate basic navigation of the Portal', () => {
     await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
 
     page = await browser.newPage();
-    console.log(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
 
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
