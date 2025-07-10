@@ -29,9 +29,9 @@ export class RetryTransfersDialogComponent {
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<string>();
 
-  private metricApiService = inject(MetricApiService);
-  private paymentApiService = inject(PaymentApiService);
-  private toastService = inject(ToastService);
+  readonly metricApiService = inject(MetricApiService);
+  readonly paymentApiService = inject(PaymentApiService);
+  readonly toastService = inject(ToastService);
 
   paymentStatus = injectQuery(
     this.paymentApiService.getPaymentStatus(this.projectId),
@@ -57,6 +57,13 @@ export class RetryTransfersDialogComponent {
         this.projectId,
         this.paymentId,
       );
+      setTimeout(() => {
+        void this.metricApiService.invalidateCache(this.projectId);
+        void this.paymentApiService.invalidateCache(
+          this.projectId,
+          this.paymentId,
+        );
+      }, 500);
     },
   }));
 
