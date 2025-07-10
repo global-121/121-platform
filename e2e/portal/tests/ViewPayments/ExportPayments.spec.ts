@@ -20,8 +20,8 @@ const login = async ({
   password,
 }: {
   page: Page;
-  email: string | undefined;
-  password: string | undefined;
+  email?: string;
+  password?: string;
 }) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
@@ -58,8 +58,6 @@ test.beforeAll(async ({ browser }) => {
 
   await login({
     page,
-    email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   });
 
   const paymentsPage = new PaymentsPage(page);

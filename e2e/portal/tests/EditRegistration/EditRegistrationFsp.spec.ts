@@ -40,10 +40,7 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await loginPage.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   // Navigate to program
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
   await loginPage.goto(

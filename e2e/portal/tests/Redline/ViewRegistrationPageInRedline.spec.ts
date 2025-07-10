@@ -18,10 +18,7 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
 
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
 });
 
 test('[35447] View Redline start-page (no search)', async ({ page }) => {
