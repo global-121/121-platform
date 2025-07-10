@@ -3,18 +3,16 @@ import {
   Controller,
   Delete,
   HttpStatus,
-  Patch,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
+import { Patch } from '@nestjs/common';
 import {
   ApiExcludeEndpoint,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { RunCronjobsResponseDto } from '@121-service/src/cronjob/dtos/run-cronjobs-response.dto';
@@ -28,21 +26,20 @@ import { RemoveDeprecatedImageCodesDto } from '@121-service/src/payments/fsp-int
 export class CronjobController {
   constructor(
     private readonly cronjobInitiateService: CronjobInitiateService,
-    private readonly cronjobExecutionService: CronjobExecutionService,
+    private readonly cronjobExecutionService: CronjobExecutionService, // Assuming this is a service to execute cron jobs
   ) {}
 
   @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({ summary: '[CRON] Cancel by refpos' })
+  @ApiOperation({
+    summary: '[CRON] Cancel by refpos',
+  })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.CREATED,
     description: 'Vouchers canceled by refpos',
   })
   @Post('/fsps/intersolve-voucher/cancel')
-  public async cancelByRefPos(@Res() res: Response): Promise<void> {
-    await this.accepted(
-      () => this.cronjobExecutionService.cronCancelByRefposIntersolve(),
-      res,
-    );
+  public async cancelByRefPos(): Promise<void> {
+    await this.cronjobExecutionService.cronCancelByRefposIntersolve();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -51,19 +48,13 @@ export class CronjobController {
       '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.OK,
     description:
-      'Started retrieving and updating/insterting enquiry data for all registrations in all programs.',
+      'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
   })
   @Put('fsps/commercial-bank-ethiopia/account-enquiries')
-  public async retrieveAndUpsertAccountEnquiries(
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.accepted(
-      () =>
-        this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccountEnquiries(),
-      res,
-    );
+  public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
+    await this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccountEnquiries();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -71,18 +62,12 @@ export class CronjobController {
     summary: '[CRON] Cache unused vouchers',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'Caching unused vouchers started',
+    status: HttpStatus.CREATED,
+    description: 'Cached unused vouchers',
   })
   @Patch('/fsps/intersolve-voucher/unused-vouchers')
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.accepted(
-      () =>
-        this.cronjobExecutionService.cronRetrieveAndUpdatedUnusedIntersolveVouchers(),
-      res,
-    );
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
+    await this.cronjobExecutionService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -91,17 +76,13 @@ export class CronjobController {
       '[CRON] Retrieve and update all Visa balance, spent this month and cards data for all programs',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'Visa data retrieval and update process started',
+    status: HttpStatus.OK,
+    description:
+      'Data retrieved from Intersolve and entities updated for all programs.',
   })
   @Patch('programs/:programId/fsps/intersolve-visa/')
-  public async cronRetrieveAndUpdateVisaData(
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.accepted(
-      () => this.cronjobExecutionService.cronRetrieveAndUpdateVisaData(),
-      res,
-    );
+  public async cronRetrieveAndUpdateVisaData(): Promise<void> {
+    await this.cronjobExecutionService.cronRetrieveAndUpdateVisaData();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -109,15 +90,12 @@ export class CronjobController {
     summary: '[CRON] Send WhatsApp reminders',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'Sending of WhatsApp reminders started',
+    status: HttpStatus.CREATED,
+    description: 'Sent WhatsApp reminders',
   })
   @Post('/fsps/intersolve-voucher/send-reminders')
-  public async cronSendWhatsappReminders(@Res() res: Response): Promise<void> {
-    await this.accepted(
-      () => this.cronjobExecutionService.cronSendWhatsappReminders(),
-      res,
-    );
+  public async cronSendWhatsappReminders(): Promise<void> {
+    await this.cronjobExecutionService.cronSendWhatsappReminders();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -126,17 +104,12 @@ export class CronjobController {
       '[CRON] Retrieve and update Nedbank vouchers and update transaction statuses',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.NO_CONTENT,
     description: 'Nedbank vouchers and transaction update process started',
   })
   @Patch('fsps/nedbank')
-  public async cronDoNedbankReconciliation(
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.accepted(
-      () => this.cronjobExecutionService.cronDoNedbankReconciliation(),
-      res,
-    );
+  public async cronDoNedbankReconciliation(): Promise<void> {
+    await this.cronjobExecutionService.cronDoNedbankReconciliation();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -145,16 +118,13 @@ export class CronjobController {
       '[CRON] GET all exchange rates for all programs and store them in the database',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+    status: HttpStatus.OK,
     description:
-      'Get all exchange rates for all programs and store them in the database, job started',
+      'Get all exchange rates for all programs and store them in the database',
   })
-  @Put(`exchange-rates`)
-  public async cronGetDailyExchangeRates(@Res() res: Response): Promise<void> {
-    await this.accepted(
-      () => this.cronjobExecutionService.cronGetDailyExchangeRates(),
-      res,
-    );
+  @Put()
+  public async cronGetDailyExchangeRates(): Promise<void> {
+    await this.cronjobExecutionService.cronGetDailyExchangeRates();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -162,20 +132,15 @@ export class CronjobController {
     summary: '[CRON] Remove deprecated image codes',
   })
   @ApiResponse({
-    status: HttpStatus.ACCEPTED,
-    description: 'Successfully started deprecated image codes job',
+    status: HttpStatus.OK,
+    description: 'Successfully removed deprecated image codes',
   })
   @Delete('/fsps/intersolve-voucher/deprecated-image-codes')
   public async cronRemoveDeprecatedImageCodes(
     @Body() body: RemoveDeprecatedImageCodesDto,
-    @Res() res: Response,
   ): Promise<void> {
-    await this.accepted(
-      () =>
-        this.cronjobExecutionService.cronRemoveDeprecatedImageCodes(
-          body.mockCurrentDate,
-        ),
-      res,
+    await this.cronjobExecutionService.cronRemoveDeprecatedImageCodes(
+      body.mockCurrentDate,
     );
   }
 
@@ -203,13 +168,5 @@ export class CronjobController {
       });
     }
     return responses;
-  }
-
-  private async accepted(
-    fn: () => Promise<void>,
-    res: Response,
-  ): Promise<void> {
-    await fn();
-    res.status(202).send();
   }
 }
