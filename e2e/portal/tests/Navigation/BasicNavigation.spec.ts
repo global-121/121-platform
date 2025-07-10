@@ -14,33 +14,27 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const projectId = 2;
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+
 // Arrange
-const reset = async () => {
-  const accessToken = await getAccessToken();
-
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
-};
-
-const login = async (page: Page, email?: string, password?: string) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(email, password);
-  // Navigate to program
-  await loginPage.selectProgram(projectTitle);
-};
-
 test.describe('Validate basic navigation of the Portal', () => {
   let page: Page;
 
   test.beforeAll(async ({ browser }) => {
-    await reset();
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessToken();
+    await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
+
     page = await browser.newPage();
-    await login(
-      page,
+    console.log(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
+
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
     );
+    // Navigate to program
+    await loginPage.selectProgram(projectTitle);
   });
 
   test.afterAll(async () => {
