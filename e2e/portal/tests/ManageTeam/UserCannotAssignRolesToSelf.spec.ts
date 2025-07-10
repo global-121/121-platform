@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
@@ -15,8 +16,9 @@ const programId = 2;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple, __filename);
-  // remove assignments of all users except admin again, to create the context for this test
   const accessToken = await getAccessToken();
+
+  // remove assignments of all users except admin again, to create the context for this test
   for (let userId = 2; userId <= 10; userId++) {
     await removeProgramAssignment(programId, userId, accessToken);
   }
@@ -25,8 +27,8 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
   );
 });
 
@@ -35,16 +37,19 @@ test('User cannot assign role to self', async ({ page }) => {
   const manageTeam = new ProjectTeam(page);
   const projectTitle = 'Cash program Westeros';
 
+  // Arrange
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
     await basePage.navigateToProgramPage('Team');
   });
 
+  // Act
   await test.step('Check if warning appears that user cannot edit their own roles', async () => {
     await manageTeam.editUser({
-      userEmail: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!,
+      userEmail: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
     });
-    // Expect text: Users cannot change their own roles
+
+    // Assert
     await expect(
       page.getByText('Users cannot change their own roles'),
     ).toBeVisible();

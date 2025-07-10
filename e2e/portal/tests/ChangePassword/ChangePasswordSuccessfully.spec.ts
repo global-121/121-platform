@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
@@ -13,7 +14,10 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login();
+  await loginPage.login(
+    env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+  );
 });
 
 test('[29309] Change password successfully', async ({ page }) => {
@@ -27,7 +31,7 @@ test('[29309] Change password successfully', async ({ page }) => {
 
   await test.step('Should change password successfully', async () => {
     await changePasswordPage.fillInChangePassword({
-      currentPassword: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      currentPassword: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       newPassword: 'newPassword',
       confirmPassword: 'newPassword',
     });
@@ -38,7 +42,7 @@ test('[29309] Change password successfully', async ({ page }) => {
   await test.step('Login with new credentials', async () => {
     await homePage.selectAccountOption('Logout');
     await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
       'newPassword',
     );
   });
@@ -46,8 +50,8 @@ test('[29309] Change password successfully', async ({ page }) => {
   await test.step('Login with old credentials', async () => {
     await homePage.selectAccountOption('Logout');
     await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
       true,
     );
     await loginPage.validateFormError({
