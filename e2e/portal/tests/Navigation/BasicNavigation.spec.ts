@@ -36,7 +36,6 @@ test.describe('Validate basic navigation of the Portal', () => {
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    console.log(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN);
     await login(
       page,
       process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
