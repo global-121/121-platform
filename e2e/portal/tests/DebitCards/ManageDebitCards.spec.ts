@@ -40,10 +40,7 @@ test('[34619] User can view debit cards of a registration with a single active d
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -89,10 +86,7 @@ test('[34620] User does not find debit card of a person without payments', async
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -134,10 +128,7 @@ test('[34621] User can replace a debit card and view both new and old card', asy
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);
@@ -251,10 +242,7 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
   await test.step('Login', async () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
   });
 
   const debitCardPage = new RegistrationDebitCardPage(page);

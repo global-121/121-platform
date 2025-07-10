@@ -1,6 +1,8 @@
 import { expect } from '@playwright/test';
 import { Locator, Page } from 'playwright';
 
+import { env } from '@121-service/src/env';
+
 import BasePage from './BasePage';
 
 class LoginPage extends BasePage {
@@ -17,7 +19,11 @@ class LoginPage extends BasePage {
     this.loginButton = this.page.getByRole('button', { name: 'Log in' });
   }
 
-  async login(username?: string, password?: string, skipUrlCheck = false) {
+  async login(
+    username: string = env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+    password: string = env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
+    skipUrlCheck = false,
+  ) {
     if (!username || !password) {
       throw new Error('Username and password are required');
     }

@@ -56,11 +56,7 @@ test.describe('Edit all the fields in registration Personal Information', () => 
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
     await goToEditPersonalInformationPage(page);
   });
 

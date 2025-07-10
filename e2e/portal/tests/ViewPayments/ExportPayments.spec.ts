@@ -1,5 +1,6 @@
 import { expect, Page, test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
@@ -20,8 +21,8 @@ const login = async ({
   password,
 }: {
   page: Page;
-  email: string | undefined;
-  password: string | undefined;
+  email?: string;
+  password?: string;
 }) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
@@ -58,8 +59,6 @@ test.beforeAll(async ({ browser }) => {
 
   await login({
     page,
-    email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
   });
 
   const paymentsPage = new PaymentsPage(page);
@@ -109,8 +108,8 @@ test('[36126] View available actions for a "view only" user', async () => {
 
   await login({
     page,
-    email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-    password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    email: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+    password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
   });
 
   const paymentsPage = new PaymentsPage(page);
