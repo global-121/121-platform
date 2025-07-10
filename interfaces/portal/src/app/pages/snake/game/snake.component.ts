@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   signal,
   viewChild,
 } from '@angular/core';
@@ -24,6 +25,7 @@ interface Vector {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SnakeComponent implements AfterViewInit {
+  changeDetectorRef = inject(ChangeDetectorRef);
   readonly board = viewChild.required<ElementRef<HTMLDivElement>>('board');
   public readonly isGameStarted = signal(false);
   public readonly isGameOver = signal(false);
@@ -36,8 +38,6 @@ export class SnakeComponent implements AfterViewInit {
   private foodPosition: Vector;
   private SNAKE_SPEED = 6;
   private EXPANSION_RATE = 1;
-
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {

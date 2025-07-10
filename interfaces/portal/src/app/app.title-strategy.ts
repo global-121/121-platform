@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
@@ -6,9 +6,8 @@ import { environment } from '~environment';
 
 @Injectable({ providedIn: 'root' })
 export class CustomPageTitleStrategy extends TitleStrategy {
-  constructor(private readonly title: Title) {
-    super();
-  }
+  title = inject(Title);
+
   override updateTitle(routerState: RouterStateSnapshot) {
     const title = this.buildTitle(routerState);
 
