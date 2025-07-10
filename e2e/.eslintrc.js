@@ -7,7 +7,11 @@ module.exports = {
   overrides: [
     {
       files: ['*.js'],
-      extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+      extends: [
+        'eslint:recommended',
+        'plugin:n/recommended',
+        'plugin:prettier/recommended',
+      ],
       parserOptions: {
         sourceType: 'script',
         ecmaVersion: 2021,
@@ -42,6 +46,7 @@ module.exports = {
             caughtErrors: 'none',
           },
         ],
+        'n/no-process-env': 'error',
         'object-shorthand': 'error',
         'promise/no-nesting': 'error',
         'promise/no-callback-in-promise': 'error',

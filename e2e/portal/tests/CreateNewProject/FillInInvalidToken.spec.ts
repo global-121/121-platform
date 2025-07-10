@@ -20,7 +20,9 @@ test.beforeEach(async ({ page }) => {
 test('[29636] Fill in with invalid Token', async ({ page }) => {
   test.skip(
     !env.KOBO_CONNECT_API_URL ||
+      // eslint-disable-next-line n/no-process-env -- This environment variable `E2E_TEST_KOBO_ASSET_ID` is NOT used in the 121-service, thus not managed via the env.ts file.
       !process.env.E2E_TEST_KOBO_ASSET_ID ||
+      // eslint-disable-next-line n/no-process-env -- This environment variable `E2E_TEST_KOBO_TOKEN` is NOT used in the 121-service, thus not managed via the env.ts file.
       !process.env.E2E_TEST_KOBO_TOKEN,
     'Disable use of third-party API by default. Can be used by explicitly providing all ENV-values. See AB#30220',
   );
@@ -31,6 +33,7 @@ test('[29636] Fill in with invalid Token', async ({ page }) => {
   await test.step('Should navigate to main page and select "Create new project" button and fill in the form with wrong token', async () => {
     await homePage.openCreateNewProject();
     await createProject.fillInForm({
+      // eslint-disable-next-line n/no-process-env -- This environment variable `E2E_TEST_KOBO_ASSET_ID` is NOT used in the 121-service, thus not managed via the env.ts file.
       assetId: process.env.E2E_TEST_KOBO_ASSET_ID,
       token: 'wrongToken',
     });
