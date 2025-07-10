@@ -42,32 +42,4 @@ export class CommercialBankEthiopiaReconciliationController {
       programId,
     );
   }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
-  })
-  @Put('fsps/commercial-bank-ethiopia/account-enquiries')
-  public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
-    console.info('Start: CBE - retrieveAndUpsertAccountEnquiries');
-    // Don't wait for the result, as that can cause a timeout on the API
-    void this.commercialBankEthiopiaReconciliationService
-      .retrieveAndUpsertAccountEnquiries()
-      .catch((error) => {
-        console.error(
-          'Error: CBE - retrieveAndUpsertAccountEnquiries',
-          error.toString(),
-        );
-        this.azureLogService.logError(error, true);
-      })
-      .finally(() => {
-        console.info('Complete: CBE - retrieveAndUpsertAccountEnquiries');
-      });
-  }
 }

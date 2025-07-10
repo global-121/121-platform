@@ -724,7 +724,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
   /**
    * Retrieves and updates all wallets and cards for all customers. Used by cronjob.
    */
-  public async retrieveAndUpdateAllWalletsAndCards(): Promise<void> {
+  public async retrieveAndUpdateAllWalletsAndCards(): Promise<number> {
     const customers =
       await this.intersolveVisaCustomerScopedRepository.findWithWallets();
     for (const customer of customers) {
@@ -740,6 +740,9 @@ export class IntersolveVisaService implements FspIntegrationInterface {
         customer.intersolveVisaParentWallet,
       );
     }
+
+    // Return the number of customers processed which should equal the number of parent wallets updated
+    return customers.length;
   }
 
   /**

@@ -1,10 +1,13 @@
-import { CronjobService } from '@121-service/src/cronjob/cronjob.service';
+import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
+
+const exampleApiUrl = 'http://example.com/api';
+const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
 describe('Cronjobs', () => {
   let cronjobService;
   const testHeader = { name: 'test name', value: 'test value' };
   beforeAll(() => {
-    cronjobService = new CronjobService();
+    cronjobService = new CronjobInitiateService();
     // Make this a noop.
     jest
       .spyOn(cronjobService.axiosCallsService, 'getAccessToken')
@@ -16,7 +19,7 @@ describe('Cronjobs', () => {
     // We assert on this return value.
     jest
       .spyOn(cronjobService.axiosCallsService, 'getBaseUrl')
-      .mockResolvedValue('http://example.com/api');
+      .mockResolvedValue(exampleApiUrl);
   });
 
   afterAll(jest.restoreAllMocks);
@@ -32,8 +35,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl =
-      'http://example.com/api/fsps/commercial-bank-ethiopia/account-enquiries';
+    const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/account-enquiries`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -51,7 +53,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/unused-vouchers`;
+    const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/unused-vouchers`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -69,7 +71,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/cancel`;
+    const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/cancel`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
 
     // Cleanup
@@ -87,7 +89,7 @@ describe('Cronjobs', () => {
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
-    const calledUrl = `http://example.com/api/fsps/intersolve-voucher/deprecated-image-codes`;
+    const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/deprecated-image-codes`;
     expect(mockFn).toHaveBeenCalledWith(calledUrl, testHeader);
 
     // Cleanup

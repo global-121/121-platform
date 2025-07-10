@@ -41,7 +41,7 @@ export class IntersolveVoucherCronService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
-  public async cancelByRefposIntersolve(): Promise<void> {
+  public async cancelByRefposIntersolve(): Promise<number> {
     const tenMinutes = 10 * 60 * 1000;
     const tenMinutesAgo = new Date(Date.now() - tenMinutes);
 
@@ -56,7 +56,7 @@ export class IntersolveVoucherCronService {
         },
       });
     if (failedIntersolveRquests.length === 0) {
-      return;
+      return 0;
     }
 
     // Get the first intersolve programFspConfigurationId that has intersolveVoucherWhatsapp as FSP
@@ -70,7 +70,7 @@ export class IntersolveVoucherCronService {
     });
 
     if (!configId) {
-      return;
+      return 0;
     }
 
     const usernamePassword =
@@ -89,6 +89,7 @@ export class IntersolveVoucherCronService {
         usernamePassword.password,
       );
     }
+    return failedIntersolveRquests.length;
   }
 
   private async cancelRequestRefpos(
@@ -112,7 +113,8 @@ export class IntersolveVoucherCronService {
     }
   }
 
-  public async sendWhatsappReminders(): Promise<void> {
+  public async sendWhatsappReminders(): Promise<number> {
+    let totalWhatsappReminders = 0;
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
     const programs = await this.programRepository.find();
@@ -195,12 +197,15 @@ export class IntersolveVoucherCronService {
         reminderVoucher.reminderCount =
           (reminderVoucher.reminderCount ?? 0) + 1;
         await this.intersolveVoucherRepository.save(reminderVoucher);
+
+        totalWhatsappReminders++;
       }
 
       console.log(
         `sendWhatsappReminders: ${unsentIntersolveVouchers.length} unsent Intersolve vouchers for program: ${program.id}`,
       );
     }
+    return totalWhatsappReminders;
   }
 
   private async getLanguageForRegistration(
