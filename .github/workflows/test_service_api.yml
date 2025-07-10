@@ -41,8 +41,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # if you change the number of shards, you must also change the denominator accordingly in the `--shard` option below
         shard: ['1', '2', '3', '4', '5', '6']
+        shardCount: ['6']
 
     steps:
       - name: Check out repository code
@@ -60,7 +60,7 @@ jobs:
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:coverage -- --shard=${{ matrix.shard }}/6
+          docker compose exec 121-service npm run test:integration:coverage -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
       - name: Copy coverage report output from Docker container
         working-directory: ${{ env.workingDirectory }}

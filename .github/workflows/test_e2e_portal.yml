@@ -30,8 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # if you change the number of shards, you must also change the denominator accordingly in the `--shard` option below
         shard: ['1', '2', '3', '4', '5', '6']
+        shardCount: ['6']
 
     steps:
       - name: Check out repository code
@@ -92,7 +92,7 @@ jobs:
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npm test -- --shard=${{ matrix.shard }}/6
+          npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
       - uses: actions/upload-artifact@v4
         if: always()
