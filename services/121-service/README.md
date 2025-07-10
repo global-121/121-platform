@@ -96,7 +96,7 @@ For the sake of this section of the documentation, it is assumed that you unders
 
 Test coverage is collected for unit and integration tests separately, and then combined in CI by QLTY.
 
-You can however do this on your local machine, manually, by following a few steps:
+You can, however, manually do this on your local machine by following a few steps:
 
 ```bash
 cd services/121-service
