@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';
 import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
@@ -49,6 +50,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVisaModule,
     TransactionsModule,
     SafaricomModule,
+    AirtelModule,
     NedbankModule,
     OnafriqModule,
     ExcelModule,

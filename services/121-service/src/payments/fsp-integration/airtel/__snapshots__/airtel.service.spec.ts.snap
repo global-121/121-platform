@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AirtelService attemptOrCheckDisbursement should throw an AirtelError if disburse returns ambiguous 1`] = `"Airtel Error: Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: mock-transaction-id - Status: Ambiguous - (mock ambiguous message)"`;
+
+exports[`AirtelService attemptOrCheckDisbursement should throw an AirtelError if disburse returns fail 1`] = `"Airtel Error: mock failure message"`;
+
+exports[`AirtelService attemptOrCheckDisbursement should throw an AirtelError if the phoneNumber has the wrong length 1`] = `"Airtel Error: does not have a valid phone number"`;
+
+exports[`AirtelService attemptOrCheckDisbursement when disburse call returns "duplicate" if enquire endpoint returns "fail" we should get an AirtelError 1`] = `"Airtel Error: mock failure message"`;
