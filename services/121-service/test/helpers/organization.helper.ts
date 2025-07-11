@@ -12,6 +12,6 @@ export async function retrieveAndStoreAllExchangeRates(
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .put(`cronbjobs/exchange-rates`)
+    .put(`/cronbjobs/exchange-rates`)
     .set('Cookie', [accessToken]);
 }

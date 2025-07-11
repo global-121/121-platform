@@ -41,17 +41,17 @@
   },
   {
     "method": "put",
-    "path": "/api/cronjobs",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/cronjobs",
+    "path": "/api/cronjobs/exchange-rates",
     "params": []
   },
   {
     "method": "delete",
     "path": "/api/cronjobs/fsps/intersolve-voucher/deprecated-image-codes",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/cronjobs",
     "params": []
   },
   {

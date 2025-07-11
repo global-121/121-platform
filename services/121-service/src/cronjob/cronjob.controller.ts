@@ -122,7 +122,7 @@ export class CronjobController {
     description:
       'Get all exchange rates for all programs and store them in the database',
   })
-  @Put()
+  @Put('exchange-rates')
   public async cronGetDailyExchangeRates(): Promise<void> {
     await this.cronjobExecutionService.cronGetDailyExchangeRates();
   }
