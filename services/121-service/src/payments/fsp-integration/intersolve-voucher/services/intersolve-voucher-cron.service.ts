@@ -48,14 +48,14 @@ export class IntersolveVoucherCronService {
     const twoWeeks = 14 * 24 * 60 * 60 * 1000;
     const twoWeeksAgo = new Date(Date.now() - twoWeeks);
 
-    const failedIntersolveRquests =
+    const failedIntersolveRequests =
       await this.intersolveVoucherRequestRepository.find({
         where: {
           updated: Between(twoWeeksAgo, tenMinutesAgo),
           toCancel: Equal(true),
         },
       });
-    if (failedIntersolveRquests.length === 0) {
+    if (failedIntersolveRequests.length === 0) {
       return 0;
     }
 
@@ -82,14 +82,14 @@ export class IntersolveVoucherCronService {
         'No username or password found for intersolveVoucherWhatsapp in this instance while trying to cancel by refpos',
       );
     }
-    for (const intersolveRequest of failedIntersolveRquests) {
+    for (const intersolveRequest of failedIntersolveRequests) {
       await this.cancelRequestRefpos(
         intersolveRequest,
         usernamePassword.username,
         usernamePassword.password,
       );
     }
-    return failedIntersolveRquests.length;
+    return failedIntersolveRequests.length;
   }
 
   private async cancelRequestRefpos(
