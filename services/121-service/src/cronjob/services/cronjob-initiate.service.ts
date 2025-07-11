@@ -119,6 +119,18 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'delete', headers);
   }
 
+  // Needs to run before 8AM so that the report is ready for the Onafriq reconciliation team to review.
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+    disabled: !env.CRON_ONAFRIQ_RECONCILIATION_REPORT,
+  })
+  public async cronSendReconciliationReport(cronJobMethodName): cronReturn {
+    const { baseUrl, headers } =
+      await this.prepareCronJobRun(cronJobMethodName);
+    // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
+    const url = `${baseUrl}/fsps/onafriq/reconciliation-report`;
+    return await this.callEndpoint(url, 'post', headers);
+  }
+
   // Used for testing and triggering through Swagger UI.
   public getAllCronJobMethodNames(): string[] {
     const prototype = Object.getPrototypeOf(this);
