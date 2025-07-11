@@ -885,6 +885,28 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/programs/{programId}/attachments/meta",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
     "method": "get",
     "path": "/api/programs/{programId}/registrations/{registrationId}/activities",
     "params": [

@@ -17,3 +17,7 @@ node_modules
 
 # created by e2e tests when ran via VSCode extension
 downloads
+
+# Azure Storage Emulator data
+# This is where Azurite stores its data when running in development mode.
+services/azurite_data

@@ -141,7 +141,7 @@ export class IntersolveVoucherController {
   @Post('programs/:programId/fsps/intersolve-voucher/instructions')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
-    @UploadedFile() instructionsFileBlob: Blob,
+    @UploadedFile() instructionsFileBlob: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<void> {
