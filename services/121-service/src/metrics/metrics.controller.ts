@@ -50,7 +50,7 @@ export class MetricsController {
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
   @ApiOperation({
-    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.allRegistrations}. If no "select" is provided, then the default export columns will be returned.`,
+    summary: `[SCOPED] Retrieve data for export. Filters only work for export type ${ExportType.registrations}. If no "select" is provided, then the hardcoded default select for exporting registrations will be returned.`,
   })
   @ApiResponse({
     status: HttpStatus.OK,

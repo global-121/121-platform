@@ -54,9 +54,9 @@ export class ExportService {
     maxPayment?: number;
     format: 'csv' | 'xlsx';
   }) {
-    if (type !== ExportType.allRegistrations && paginateQuery) {
+    if (type !== ExportType.registrations && paginateQuery) {
       throw new Error(
-        `Paginate query is only supported for type: ${ExportType.allRegistrations}`,
+        `Paginate query is only supported for type: ${ExportType.registrations}`,
       );
     }
 
@@ -127,7 +127,7 @@ export class ExportService {
         showSpinner: true,
       });
 
-      if (format !== 'xlsx' && type !== ExportType.allRegistrations) {
+      if (format !== 'xlsx' && type !== ExportType.registrations) {
         throw new Error(
           `Export format ${format} is currently not supported for type: ${type}`,
         );

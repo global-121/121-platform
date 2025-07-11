@@ -40,8 +40,7 @@ import { UserService } from '@121-service/src/user/user.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 const MAX_NUMBER_OF_PAYMENTS_TO_EXPORT = 5;
 const userPermissionMapByExportType = {
-  [ExportType.allRegistrations]: [PermissionEnum.RegistrationPersonalEXPORT],
-  [ExportType.included]: [PermissionEnum.RegistrationPersonalEXPORT],
+  [ExportType.registrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.payment]: [PermissionEnum.RegistrationPaymentExport],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
   [ExportType.vouchersWithBalance]: [PermissionEnum.PaymentVoucherExport],
@@ -101,7 +100,7 @@ export class MetricsService {
     }
 
     switch (type) {
-      case ExportType.allRegistrations: {
+      case ExportType.registrations: {
         if (!paginationQuery) {
           throw new HttpException(
             `paginationQuery is required for export type ${type}`,
@@ -114,9 +113,6 @@ export class MetricsService {
           search: paginationQuery.search,
           select: paginationQuery.select,
         });
-      }
-      case ExportType.included: {
-        return this.getInclusionList(programId);
       }
       case ExportType.payment: {
         if (!minPayment || !maxPayment) {
@@ -168,26 +164,13 @@ export class MetricsService {
   }): Promise<FileDto> {
     const data = await this.getRegistrationsList({
       programId,
-      exportType: ExportType.allRegistrations,
+      exportType: ExportType.registrations,
       filter,
       search,
       select,
     });
     const response = {
-      fileName: ExportType.allRegistrations,
-      data,
-    };
-    return response;
-  }
-
-  private async getInclusionList(programId: number): Promise<FileDto> {
-    const data = await this.getRegistrationsList({
-      programId,
-      exportType: ExportType.included,
-      filter: { status: RegistrationStatusEnum.included },
-    });
-    const response = {
-      fileName: 'inclusion-list',
+      fileName: ExportType.registrations,
       data,
     };
     return response;
@@ -200,7 +183,7 @@ export class MetricsService {
   ): Promise<FileDto> {
     const relationOptions = await this.getRelationOptionsForExport(
       programId,
-      ExportType.included,
+      ExportType.payment,
     );
     const pastPaymentDetails = await this.getPaymentDetailsPayment(
       programId,
@@ -209,9 +192,15 @@ export class MetricsService {
       relationOptions,
     );
     if (pastPaymentDetails.length === 0) {
+      const data = await this.getRegistrationsList({
+        programId,
+        exportType: ExportType.payment,
+        filter: { status: RegistrationStatusEnum.included },
+      });
+
       return {
         fileName: `details-included-people-affected-${minPaymentId}`,
-        data: (await this.getInclusionList(programId)).data,
+        data,
       };
     }
     const fileInput = {
@@ -401,7 +390,7 @@ export class MetricsService {
       .createQueryBuilder('registration')
       .andWhere({ programId });
 
-    if (exportType !== ExportType.allRegistrations && !filter?.['status']) {
+    if (exportType !== ExportType.registrations && !filter?.['status']) {
       queryBuilder = queryBuilder.andWhere(
         'registration."status" != :registrationStatus',
         {
