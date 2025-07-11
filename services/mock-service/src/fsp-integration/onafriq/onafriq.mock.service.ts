@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 
 import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
 import {
@@ -126,6 +127,7 @@ export class OnafriqMockService {
   ): OnafriqCallbackResponseBodyDto {
     return {
       thirdPartyTransId,
+      mfsTransId: `mock-${uuid()}`, // Mock MFS transaction ID
       status: {
         code: mockScenario === MockScenario.success ? 'MR101' : 'ER103',
         message:

@@ -72,6 +72,7 @@ export class TransactionJobsOnafriqService {
       // TODO: combine this with the transaction creation above in one SQL transaction
       const newOnafriqTransaction = new OnafriqTransactionEntity();
       newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
+      newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumber!;
       newOnafriqTransaction.transactionId = transactionId;
       onafriqTransaction = await this.onafriqTransactionScopedRepository.save(
         newOnafriqTransaction,

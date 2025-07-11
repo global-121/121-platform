@@ -1,7 +1,16 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
+import { Response } from 'express';
 
+import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
@@ -34,5 +43,29 @@ export class OnafriqReconciliationController {
     await this.onafriqReconciliationService.processTransactionCallback(
       onafriqTransactionCallback,
     );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      '[CRON] Generate Onafriq reconciliation data and send to Onafriq SFTP (Returned csv is just used for testing purposes)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Reconciliation report generated and sent successfully.',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post('reconciliation-report')
+  public async generateReconciliationReport(
+    @Res() res: Response,
+    @Query() isTest = false,
+  ): Promise<void> {
+    const { filename, csv } =
+      await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
+        isTest,
+      );
+    res.header('Content-Type', 'text/csv');
+    res.attachment(filename);
+    res.send(csv);
   }
 }

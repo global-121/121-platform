@@ -54,6 +54,7 @@ export class OnafriqCallServiceResponseBodyDto {
 
 export class OnafriqCallbackResponseBodyDto {
   thirdPartyTransId: string;
+  mfsTransId: string;
   status: {
     code: string;
     message: string;

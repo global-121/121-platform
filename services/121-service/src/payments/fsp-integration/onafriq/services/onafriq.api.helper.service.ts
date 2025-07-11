@@ -42,15 +42,14 @@ export class OnafriqApiHelperService {
             currencyCode,
           },
           sender: {
-            // NOTE: this can be anything for now in sandbox. Find out production config. See AB#36783
-            msisdn: '1234567890',
+            msisdn: env.ONAFRIQ_SENDER_MSISDN!,
             fromCountry: countryCode,
-            name: 'Red Cross DRC',
-            surname: 'Red Cross DRC',
-            dateOfBirth: '1980-01-01',
+            name: env.ONAFRIQ_SENDER_NAME!,
+            surname: env.ONAFRIQ_SENDER_SURNAME!,
+            dateOfBirth: env.ONAFRIQ_SENDER_DOB!,
             document: {
-              idNumber: '123456789',
-              idType: 'ID1',
+              idNumber: env.ONAFRIQ_SENDER_DOCUMENT_ID!,
+              idType: env.ONAFRIQ_SENDER_DOCUMENT_TYPE!,
             },
           },
           recipient: {
