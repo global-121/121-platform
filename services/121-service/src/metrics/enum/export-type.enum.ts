@@ -1,6 +1,5 @@
 export enum ExportType {
-  allRegistrations = 'all-registrations',
-  included = 'included',
+  registrations = 'registrations',
   payment = 'payment',
   unusedVouchers = 'unused-vouchers',
   vouchersWithBalance = 'vouchers-with-balance',

@@ -13,7 +13,7 @@
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
-    type: ExportType.allRegistrations,
+    type: ExportType.registrations,
     paginateQuery: exportSelectedActionData()?.query,
     format: exportRegistrationsFormGroup.getRawValue().format,
   }"
@@ -50,7 +50,7 @@
 
   <app-latest-export-date
     [projectId]="projectId()"
-    [exportType]="ExportType.allRegistrations"
+    [exportType]="ExportType.registrations"
   />
 </app-confirmation-dialog>
 <app-confirmation-dialog

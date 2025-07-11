@@ -54,7 +54,7 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   public programId: number;
 
   @Column('json', {
-    default: [ExportType.allRegistrations, ExportType.included],
+    default: [ExportType.payment],
   })
   public export: ExportType[];
 
