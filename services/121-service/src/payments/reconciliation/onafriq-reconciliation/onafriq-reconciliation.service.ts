@@ -25,6 +25,8 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 
 @Injectable()
 export class OnafriqReconciliationService {
+  private sftp: any;
+
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
@@ -114,24 +116,29 @@ export class OnafriqReconciliationService {
     return OnafriqTransactionStatus.other;
   }
 
-  public async generateReconciliationReport(isTest?: boolean): Promise<{
+  public async generateAndSendReconciliationReportYesterday(
+    isTest?: boolean,
+  ): Promise<{
     filename: string;
     csv: string;
   }> {
-    const yesterdayStart = new Date();
-    yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - (isTest ? 0 : 1)); // In production use yesterday, in test use todays
-    yesterdayStart.setUTCHours(0, 0, 0, 0);
-
-    const yesterdayEnd = new Date(yesterdayStart);
-    yesterdayEnd.setUTCHours(23, 59, 59, 999);
+    let where = {};
+    if (!isTest) {
+      const yesterdayStart = new Date();
+      yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1); // In production use yesterday
+      yesterdayStart.setUTCHours(0, 0, 0, 0);
+      const yesterdayEnd = new Date(yesterdayStart);
+      yesterdayEnd.setUTCHours(23, 59, 59, 999);
+      where = {
+        transaction: {
+          created: Between(yesterdayStart, yesterdayEnd),
+        },
+      };
+    }
 
     const onafriqTransactions =
       await this.onafriqTransactionScopedRepository.find({
-        where: {
-          transaction: {
-            created: Between(yesterdayStart, yesterdayEnd),
-          },
-        },
+        where,
         relations: ['transaction'],
       });
 
@@ -142,16 +149,52 @@ export class OnafriqReconciliationService {
         ),
     );
 
-    const csv =
+    const csvContent =
       report.length === 0
         ? ''
         : Object.keys(report[0]).join(',') +
           '\n' +
           report.map((row) => Object.values(row).join(',')).join('\n');
-    return {
-      filename: `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(new Date())}_01.csv`, // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
-      csv,
-    };
+    const filename = `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(
+      new Date(), // Use current date for the filename
+    )}_01.csv`; // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
+
+    if (!isTest) {
+      await this.sendCsvToOnafriqSftpLocation(csvContent, filename);
+    }
+
+    // Return for testing purposes only
+    return { filename, csv: csvContent };
+  }
+
+  private async sendCsvToOnafriqSftpLocation(
+    csvContent: string,
+    filename: string,
+  ): Promise<void> {
+    // Initialize SFTP client lazily to prevent error
+    if (!this.sftp) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const Client = require('ssh2-sftp-client');
+      this.sftp = new Client();
+    }
+
+    try {
+      await this.sftp.connect({
+        host: env.ONAFRIQ_SFTP_HOST,
+        port: env.ONAFRIQ_SFTP_PORT,
+        username: env.ONAFRIQ_SFTP_USERNAME,
+        password: env.ONAFRIQ_SFTP_PASSWORD,
+      });
+
+      await this.sftp.put(csvContent, filename);
+      console.log('File uploaded successfully.');
+    } catch (err) {
+      console.error('SFTP upload error:', err);
+      // ##TODO: Store the file somewhere else if SFTP fails?
+      throw err;
+    } finally {
+      this.sftp.end();
+    }
   }
 
   private formatDateToYYYY_MM_DD(date: Date): string {

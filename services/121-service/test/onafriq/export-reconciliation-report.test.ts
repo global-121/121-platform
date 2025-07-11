@@ -46,7 +46,7 @@ describe('Export reconciliation report', () => {
 
     // Act
     const response = await getServer()
-      .get(`/fsps/onafriq/reconciliation-report`)
+      .post(`/fsps/onafriq/reconciliation-report`)
       .set('Cookie', [accessToken])
       .query({ isTest: true }) // Use isTest to generate report with transactions from today
       .send();

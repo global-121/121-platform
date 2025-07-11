@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -48,20 +47,21 @@ export class OnafriqReconciliationController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
-    summary: 'Generate Onafriq reconciliation report.',
+    summary:
+      '[CRON] Generate Onafriq reconciliation data and send to Onafriq SFTP (Returned csv is just used for testing purposes)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Reconciliation report generated successfully.',
+    description: 'Reconciliation report generated and sent successfully.',
   })
   @HttpCode(HttpStatus.OK)
-  @Get('reconciliation-report')
+  @Post('reconciliation-report')
   public async generateReconciliationReport(
     @Res() res: Response,
-    @Query('isTest') isTest?: boolean,
+    @Query() isTest = false,
   ): Promise<void> {
     const { filename, csv } =
-      await this.onafriqReconciliationService.generateReconciliationReport(
+      await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
         isTest,
       );
     res.header('Content-Type', 'text/csv');
