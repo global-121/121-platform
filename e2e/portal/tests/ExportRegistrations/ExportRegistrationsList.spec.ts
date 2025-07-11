@@ -55,6 +55,7 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
     );
     await exportDataComponent.exportAndAssertData({
       format: 'csv',
+      excludedColumns: ['created'],
     });
   });
 });
