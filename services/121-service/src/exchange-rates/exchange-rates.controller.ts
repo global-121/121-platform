@@ -1,4 +1,4 @@
-import { Controller, Put, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { Get, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -30,34 +30,5 @@ export class ExchangeRatesController {
   @Get()
   public async getAll(): Promise<GetExchangeRateDto[]> {
     return this.exchangeRatesService.getAll();
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary:
-      '[CRON] GET all exchange rates for all programs and store them in the database',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Get all exchange rates for all programs and store them in the database',
-  })
-  @Put()
-  public async retrieveAndStoreAllExchangeRates(): Promise<void> {
-    console.info('Start: Exchange-Rates - retrieveAndStoreAllExchangeRates');
-    void this.exchangeRatesService
-      .retrieveAndStoreAllExchangeRates()
-      .catch((error) => {
-        console.error(
-          'Error: Exchange-Rates - retrieveAndStoreAllExchangeRates',
-          error,
-        );
-        this.azureLogService.logError(error, true);
-      })
-      .finally(() => {
-        console.info(
-          'Complete: Exchange-Rates - retrieveAndStoreAllExchangeRates',
-        );
-      });
   }
 }

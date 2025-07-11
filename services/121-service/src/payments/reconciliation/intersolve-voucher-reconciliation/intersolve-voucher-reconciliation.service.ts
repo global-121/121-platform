@@ -72,16 +72,20 @@ export class IntersolveVoucherReconciliationService {
     }
   }
 
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
+  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<number> {
     const programs = await this.programRepository.find();
+    let totalVouchersUpdated = 0;
     for (const program of programs) {
-      await this.retrieveAndUpdateUnusedVouchersForProgram(program.id);
+      const voucherPerProgram =
+        await this.retrieveAndUpdateUnusedVouchersForProgram(program.id);
+      totalVouchersUpdated += voucherPerProgram;
     }
+    return totalVouchersUpdated;
   }
 
   public async retrieveAndUpdateUnusedVouchersForProgram(
     programId: number,
-  ): Promise<void> {
+  ): Promise<number> {
     const maxId = (
       await this.intersolveVoucherScopedRepository
         .createQueryBuilder('voucher')
@@ -95,8 +99,9 @@ export class IntersolveVoucherReconciliationService {
     )?.max;
     if (!maxId) {
       // No vouchers found yet
-      return;
+      return 0;
     }
+    let totalVouchersUpdated = 0;
 
     let id = 1;
     // Run this in batches of 1,000 as it is performance-heavy
@@ -119,7 +124,9 @@ export class IntersolveVoucherReconciliationService {
           await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
             previouslyUnusedVouchers[0].id,
           );
+
         for await (const voucher of previouslyUnusedVouchers) {
+          totalVouchersUpdated++;
           await this.intersolveVoucherService.getAndUpdateBalance(
             voucher,
             programId,
@@ -129,5 +136,6 @@ export class IntersolveVoucherReconciliationService {
       }
       id += 1000;
     }
+    return totalVouchersUpdated;
   }
 }

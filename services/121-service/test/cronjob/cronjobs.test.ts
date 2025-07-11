@@ -23,7 +23,7 @@ describe('Cron jobs', () => {
     // Act
     const response = await getServer()
       .set('Cookie', [accessToken])
-      .patch(`/cronjob`);
+      .patch(`/cronjobs`);
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);

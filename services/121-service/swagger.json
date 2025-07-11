@@ -10,18 +10,48 @@
     "params": []
   },
   {
-    "method": "patch",
-    "path": "/api/cronjob",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/exchange-rates",
+    "method": "post",
+    "path": "/api/cronjobs/fsps/intersolve-voucher/cancel",
     "params": []
   },
   {
     "method": "put",
-    "path": "/api/exchange-rates",
+    "path": "/api/cronjobs/fsps/commercial-bank-ethiopia/account-enquiries",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/cronjobs/fsps/intersolve-voucher/unused-vouchers",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/cronjobs/programs/{programId}/fsps/intersolve-visa",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/cronjobs/fsps/intersolve-voucher/send-reminders",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/cronjobs/fsps/nedbank",
+    "params": []
+  },
+  {
+    "method": "put",
+    "path": "/api/cronjobs/exchange-rates",
+    "params": []
+  },
+  {
+    "method": "delete",
+    "path": "/api/cronjobs/fsps/intersolve-voucher/deprecated-image-codes",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/cronjobs",
     "params": []
   },
   {
@@ -154,30 +184,60 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/scripts/reset",
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers",
     "params": [
-      "mockPowerNumberRegistrations",
-      "resetIdentifier",
-      "mockNumberPayments",
-      "mockPowerNumberMessages",
-      "mockPv",
-      "mockOcw",
-      "isApiTests",
-      "script"
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers/balance",
+    "params": [
+      "programId",
+      "referenceId",
+      "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
+    "params": [
+      "programId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/scripts/duplicate-registrations",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
     "params": [
-      "mockPowerNumberRegistrations"
+      "programId"
     ]
   },
   {
+    "method": "get",
+    "path": "/api/notifications/imageCode/{secret}",
+    "params": [
+      "secret"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/actions",
+    "params": [
+      "programId",
+      "actionType"
+    ],
+    "returnType": "ActionReturnDto"
+  },
+  {
     "method": "post",
-    "path": "/api/scripts/kill-service",
-    "params": []
+    "path": "/api/programs/{programId}/actions",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ActionReturnDto"
   },
   {
     "method": "get",
@@ -212,6 +272,29 @@
       "programId"
     ],
     "returnType": "DeleteResult"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
+    "params": []
   },
   {
     "method": "get",
@@ -289,23 +372,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/actions",
-    "params": [
-      "programId",
-      "actionType"
-    ],
-    "returnType": "ActionReturnDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/actions",
-    "params": [
-      "programId"
-    ],
-    "returnType": "ActionReturnDto"
-  },
-  {
-    "method": "get",
     "path": "/api/fsps",
     "params": [],
     "returnType": "FspDto"
@@ -375,152 +441,19 @@
     ]
   },
   {
-    "method": "get",
-    "path": "/api/organization",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/organization",
-    "params": [],
-    "returnType": "OrganizationEntity"
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/whatsapp/templates",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/notifications/whatsapp/templates",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/whatsapp/templates/{sessionId}",
-    "params": [
-      "sessionId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/notifications/imageCode/{secret}",
-    "params": [
-      "secret"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers/balance",
-    "params": [
-      "programId",
-      "referenceId",
-      "payment"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/fsps/intersolve-voucher/cancel",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/fsps/intersolve-voucher/send-reminders",
-    "params": []
-  },
-  {
-    "method": "delete",
-    "path": "/api/fsps/intersolve-voucher/deprecated-image-codes",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "sortBy",
-      "search",
-      "searchBy",
-      "format",
-      "maxPayment",
-      "minPayment",
-      "toDate",
-      "fromDate",
-      "exportType"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/metrics/to-cancel-vouchers",
-    "params": []
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/metrics/program-stats-summary",
+    "method": "put",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/registration-status",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
       "programId"
-    ]
+    ],
+    "returnType": "CommercialBankEthiopiaValidationReportDto"
   },
   {
     "method": "post",
@@ -760,6 +693,120 @@
   },
   {
     "method": "get",
+    "path": "/api/exchange-rates",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/scripts/reset",
+    "params": [
+      "mockPowerNumberRegistrations",
+      "resetIdentifier",
+      "mockNumberPayments",
+      "mockPowerNumberMessages",
+      "mockPv",
+      "mockOcw",
+      "isApiTests",
+      "script"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/scripts/duplicate-registrations",
+    "params": [
+      "mockPowerNumberRegistrations"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/scripts/kill-service",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/organization",
+    "params": []
+  },
+  {
+    "method": "patch",
+    "path": "/api/organization",
+    "params": [],
+    "returnType": "OrganizationEntity"
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/notifications/whatsapp/templates",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/notifications/whatsapp/templates/{sessionId}",
+    "params": [
+      "sessionId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "sortBy",
+      "search",
+      "searchBy",
+      "format",
+      "maxPayment",
+      "minPayment",
+      "toDate",
+      "fromDate",
+      "exportType"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/metrics/to-cancel-vouchers",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/program-stats-summary",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/registration-status",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/payments",
     "params": [
       "programId"
@@ -842,21 +889,6 @@
     "params": []
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
-    "params": [
-      "programId"
-    ],
-    "returnType": "CommercialBankEthiopiaValidationReportDto"
-  },
-  {
-    "method": "put",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
-    "params": [
-      "programId"
-    ]
-  },
-  {
     "method": "post",
     "path": "/api/notifications/whatsapp/status",
     "params": []
@@ -869,11 +901,6 @@
   {
     "method": "post",
     "path": "/api/notifications/sms/status",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/fsps/nedbank",
     "params": []
   },
   {
@@ -893,11 +920,6 @@
     ]
   },
   {
-    "method": "put",
-    "path": "/api/fsps/commercial-bank-ethiopia/account-enquiries",
-    "params": []
-  },
-  {
     "method": "get",
     "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
     "params": [
@@ -911,23 +933,6 @@
       "programId",
       "payment"
     ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-visa",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
-    "params": []
   },
   {
     "method": "post",

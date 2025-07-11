@@ -42,4 +42,13 @@ export class AzureLogService {
       );
     }
   }
+
+  public consoleLogAndTraceAzure(message: string): void {
+    console.log(message);
+    if (!this.defaultClient) {
+      return;
+    }
+    this.defaultClient.trackTrace({ message });
+    this.flushLogs();
+  }
 }

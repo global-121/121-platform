@@ -24,7 +24,7 @@ export class ExchangeRatesService {
     });
   }
 
-  public async retrieveAndStoreAllExchangeRates(): Promise<void> {
+  public async retrieveAndStoreAllExchangeRates(): Promise<number> {
     const currencies = await this.getAllProgramCurrencies();
 
     for (const currency of currencies) {
@@ -32,6 +32,7 @@ export class ExchangeRatesService {
         await this.exchangeRateApiService.retrieveExchangeRate(currency);
       await this.createExchangeRate(currency, Number(rate), closeTime);
     }
+    return currencies.length;
   }
 
   private async createExchangeRate(

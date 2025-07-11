@@ -16,7 +16,7 @@ export class NedbankReconciliationService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
-  public async doNedbankReconciliation(): Promise<void> {
+  public async doNedbankReconciliation(): Promise<number> {
     const voucherReferences = await this.nedbankVoucherScopedRepository.find({
       select: ['orderCreateReference', 'transactionId'],
       where: [
@@ -36,6 +36,7 @@ export class NedbankReconciliationService {
     for (const voucherReference of voucherReferences) {
       await this.reconcileVoucherAndTransaction(voucherReference);
     }
+    return voucherReferences.length;
   }
 
   private async reconcileVoucherAndTransaction({

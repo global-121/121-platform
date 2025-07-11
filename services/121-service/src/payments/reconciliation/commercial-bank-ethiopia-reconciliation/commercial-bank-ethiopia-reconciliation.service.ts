@@ -31,11 +31,15 @@ export class CommercialBankEthiopiaReconciliationService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
-  public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
+  public async retrieveAndUpsertAccountEnquiries(): Promise<number> {
     const programs = await this.getAllProgramsWithCBE();
+    let totalAccountEnquiries = 0;
     for (const program of programs) {
-      await this.retrieveAndUpsertAccountEnquiriesForProgram(program.id);
+      const accountEnquiriesPerProgram =
+        await this.retrieveAndUpsertAccountEnquiriesForProgram(program.id);
+      totalAccountEnquiries += accountEnquiriesPerProgram;
     }
+    return totalAccountEnquiries;
   }
 
   public async getAllProgramsWithCBE(): Promise<ProgramEntity[]> {
@@ -53,7 +57,7 @@ export class CommercialBankEthiopiaReconciliationService {
 
   public async retrieveAndUpsertAccountEnquiriesForProgram(
     programId: number,
-  ): Promise<void> {
+  ): Promise<number> {
     const credentials =
       await this.commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow(
         { programId },
@@ -133,6 +137,7 @@ export class CommercialBankEthiopiaReconciliationService {
       }
     }
     console.timeEnd('getValidationStatus loop total');
+    return getAllPersonsAffectedData.length;
   }
 
   public async getAllPersonsAffectedData(
