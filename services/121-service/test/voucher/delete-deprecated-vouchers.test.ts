@@ -33,7 +33,7 @@ describe('Delete deprecated vouchers', () => {
       accessToken,
       minimumNumberOfMessagesPerReferenceId: 3,
     });
-    console.log('🚀 ~ it ~ response:', response.body);
+
     // Assert
     // We expect that no image codes are deleted because all of them are still valid
     expect(response.text).toBe('0');

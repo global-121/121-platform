@@ -175,10 +175,6 @@ export class CronjobInitiateService {
         response = await this.httpService[method](url, {}, headers);
       }
     } catch (error) {
-      // Cronjobs can take a long time, so we specifically allow for a timeout.
-      if (error.code === 'ECONNABORTED') {
-        return { url, responseStatus: HttpStatus.REQUEST_TIMEOUT };
-      }
       throw new Error(
         `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request: ${error.toString()}`,
       );
