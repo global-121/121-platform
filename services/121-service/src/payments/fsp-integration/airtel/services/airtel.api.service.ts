@@ -254,29 +254,33 @@ export class AirtelApiService {
       );
     }
 
-    // We don't yet know if it's a parseable response.
-    const potentialResponseCode = (response.data as any)?.status?.response_code;
-
-    const result =
-      this.airtelApiHelperService.getDisbursementResultForResponseCode(
-        potentialResponseCode,
-      );
+    let potentialResponseCode: string | undefined;
 
     if (
       this.airtelApiHelperService.isAirtelDisbursementOrEnquiryResponseBodyDto(
         response.data,
       )
     ) {
-      // We want the response code to be part of the message.
+      potentialResponseCode = response.data.status?.response_code;
+      const result =
+        this.airtelApiHelperService.getDisbursementResultForResponseCode(
+          potentialResponseCode,
+        );
       return {
         result,
         message: `${response.data.status.message} (${potentialResponseCode})`,
       };
-    } else {
-      return {
-        result,
-        message: JSON.stringify(response.data),
-      };
     }
+
+    // If we get here, the response is not the expected Airtel API response. However, we still want to return a result
+    // So this an unexpected response is still shown to the user.
+    const result =
+      this.airtelApiHelperService.getDisbursementResultForResponseCode(
+        potentialResponseCode,
+      );
+    return {
+      result,
+      message: JSON.stringify(response.data),
+    };
   }
 }

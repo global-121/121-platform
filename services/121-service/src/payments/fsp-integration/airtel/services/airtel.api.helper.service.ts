@@ -16,7 +16,7 @@ export class AirtelApiHelperService {
   }
 
   public getDisbursementResultForResponseCode(
-    responseCode: string,
+    responseCode: string | undefined,
   ): AirtelDisbursementResultEnum {
     switch (responseCode) {
       case AirtelApiDisbursementStatusResponseCodeEnum.DP00900001001:

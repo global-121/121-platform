@@ -35,7 +35,8 @@ export class AirtelMockService {
     let error = false;
 
     // Using these headers with @nestjs/swagger''s @ApiHeader decorator is not (easily) possible, so we don't check them. We do want to check them in all other cases.
-    const requestFromSwagger = headers?.origin === 'http://localhost:3001';
+    const requestFromSwagger =
+      headers?.origin === `http://localhost:${env.PORT_MOCK_SERVICE}`;
     if (!requestFromSwagger) {
       if (!(headers['content-type'] === 'application/json')) error = true;
     }
@@ -120,7 +121,7 @@ export class AirtelMockService {
       400,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           message: 'Invalid Country Code',
           success: false,
           response_code: 'DP00900001013',
@@ -134,7 +135,7 @@ export class AirtelMockService {
       200,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           success: false,
           result_code: 'ESB000008',
           message:
@@ -148,7 +149,7 @@ export class AirtelMockService {
       200,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           message: 'Invalid/Missing Currency',
           response_code: 'DP00900001013',
           success: false,
@@ -162,7 +163,7 @@ export class AirtelMockService {
       200,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           message: 'Invalid Msisdn Length. Msisdn Length should be 9',
           response_code: 'DP00900001013',
           result_code: '521002',
@@ -180,7 +181,7 @@ export class AirtelMockService {
       200,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           message:
             'Invalid Amount: The amount must not be null or blank, should contain only numeric characters, be greater than zero, and have a limited number of decimal places',
           response_code: 'DP00900001004',
@@ -204,7 +205,7 @@ export class AirtelMockService {
       200,
       {
         status: {
-          code: '400',
+          code: HttpStatus.BAD_REQUEST,
           message: 'Missing header/body params',
           response_code: 'DP00900001013',
           success: false,
@@ -214,8 +215,6 @@ export class AirtelMockService {
     const encryptedPin = transferDto?.pin;
     if (encryptedPin === undefined) return missingPin;
 
-    // ##TODO: Dry the error responses up.
-
     const generateErrorResponse = ({
       message,
       response_code,
@@ -224,7 +223,7 @@ export class AirtelMockService {
         200,
         {
           status: {
-            code: '400',
+            code: HttpStatus.BAD_REQUEST,
             message,
             response_code,
             result_code: '521050',
@@ -320,7 +319,7 @@ export class AirtelMockService {
         },
         status: {
           response_code: 'DP00900001001',
-          code: '200',
+          code: HttpStatus.OK,
           success: true,
           result_code: 'ESB000010',
           message: `You have sent ${currency} ${amountString} to ${phoneNumber} FirstName LastName. Bal ${currency} 19999.91.Com ${currency} 0 TID: CI250506.1824.H00006`,

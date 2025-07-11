@@ -36,7 +36,7 @@ export class AirtelService implements FspIntegrationInterface {
       zambianCountryCode.length,
     );
 
-    if (!(phoneNumberWithoutCountryCode.length === 9)) {
+    if (phoneNumberWithoutCountryCode.length !== 9) {
       throw new AirtelError(
         'does not have a valid phone number',
         AirtelDisbursementResultEnum.fail,
