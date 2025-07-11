@@ -568,7 +568,7 @@ export async function removeDeprecatedImageCodes({
     body.mockCurrentDate = mockCurrentDateIsoString;
   }
   return await getServer()
-    .delete('cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
+    .delete('/cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
     .set('Cookie', [accessToken])
     .send(body);
 }
