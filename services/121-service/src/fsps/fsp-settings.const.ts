@@ -143,6 +143,21 @@ export const FSP_SETTINGS: FspDto[] = [
     configurationProperties: [],
   },
   {
+    name: Fsps.airtel,
+    integrationType: FspIntegrationType.api,
+    defaultLabel: {
+      en: 'Airtel',
+    },
+    notifyOnTransaction: false,
+    attributes: [
+      {
+        name: FspAttributes.phoneNumber,
+        isRequired: true,
+      },
+    ],
+    configurationProperties: [],
+  },
+  {
     name: Fsps.commercialBankEthiopia,
     integrationType: FspIntegrationType.api,
     defaultLabel: {
