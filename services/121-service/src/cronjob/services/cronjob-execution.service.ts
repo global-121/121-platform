@@ -73,16 +73,16 @@ export class CronjobExecutionService {
 
   public async cronRemoveDeprecatedImageCodes(
     mockCurrentDate?: string | undefined,
-  ): Promise<void> {
-    await this.executeWithLogging('cronRemoveDeprecatedImageCodes', () =>
+  ): Promise<number | undefined> {
+    return await this.executeWithLogging('cronRemoveDeprecatedImageCodes', () =>
       this.intersolveVoucherService.removeDeprecatedImageCodes(mockCurrentDate),
     );
   }
 
-  private async executeWithLogging(
+  private async executeWithLogging<T>(
     methodName: CronjobExecutionMethodName,
-    fn: () => Promise<number>,
-  ): Promise<void> {
+    fn: () => Promise<T>,
+  ): Promise<T | undefined> {
     const startMessage = this.createCronjobStartMessage(methodName);
     this.azureLogService.consoleLogAndTraceAzure(startMessage);
 
@@ -90,13 +90,17 @@ export class CronjobExecutionService {
       // Execute the cron job function and await its result
       const result = await fn();
 
+      // If result is a number set batchSize to it
+      const batchSize = typeof result === 'number' ? result : undefined;
+
       // Handle the result and log the end message
       const cronjobResultMessage = this.createCronjobResultMessage({
         methodName,
-        batchSize: result,
+        batchSize,
         isError: false,
       });
       this.azureLogService.consoleLogAndTraceAzure(cronjobResultMessage);
+      return result;
     } catch (error) {
       // 1. Log the stack trace to the Node logs
       console.error(`Error executing cron job ${methodName}:`, error);

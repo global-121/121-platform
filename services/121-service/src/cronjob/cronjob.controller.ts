@@ -138,8 +138,8 @@ export class CronjobController {
   @Delete('/fsps/intersolve-voucher/deprecated-image-codes')
   public async cronRemoveDeprecatedImageCodes(
     @Body() body: RemoveDeprecatedImageCodesDto,
-  ): Promise<void> {
-    await this.cronjobExecutionService.cronRemoveDeprecatedImageCodes(
+  ): Promise<number | undefined> {
+    return await this.cronjobExecutionService.cronRemoveDeprecatedImageCodes(
       body.mockCurrentDate,
     );
   }

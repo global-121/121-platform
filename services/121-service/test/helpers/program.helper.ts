@@ -460,7 +460,7 @@ export async function startCbeValidationProcess(
 ): Promise<request.Response> {
   return await getServer()
     .put(
-      `/programs/${programId}/cronjobs/fsps/commercial-bank-ethiopia/account-enquiries`,
+      `/programs/${programId}/fsps/commercial-bank-ethiopia/account-enquiries`,
     )
     .set('Cookie', [accessToken]);
 }
