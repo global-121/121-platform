@@ -4,6 +4,11 @@ import { Counter } from 'k6/metrics';
 import { registrationSafaricom } from '../helpers/registration-default.data.js';
 import InitializePaymentModel from '../models/initalize-payment.js';
 
+// For now we decided to k6 test only Safaricom and IntersolveVisa
+// The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
+// Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
+// The other FSPs are simpler or similar to Safaricom so we decided to not test them
+
 const initializePayment = new InitializePaymentModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
