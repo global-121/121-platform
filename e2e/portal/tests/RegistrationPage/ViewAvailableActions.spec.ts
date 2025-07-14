@@ -1,6 +1,7 @@
 import { type Page, test } from '@playwright/test';
 import { expect } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
@@ -57,11 +58,7 @@ test.describe('View available actions for admin', () => {
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
     activityLogPage = await goToActivityLogPage(page);
     await test.step('Open action menu', async () => {
       await activityLogPage.clickActionDropdown();
@@ -118,8 +115,8 @@ test.describe('View available actions for CVA officer', () => {
     page = await browser.newPage();
     await login(
       page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+      env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER ?? '',
+      env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER ?? '',
     );
     activityLogPage = await goToActivityLogPage(page);
     await test.step('Open action menu', async () => {
@@ -181,8 +178,8 @@ test.describe('View available actions for a "view only" user', () => {
     page = await browser.newPage();
     await login(
       page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
     );
     activityLogPage = await goToActivityLogPage(page);
     await test.step('Open action menu', async () => {
