@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { CronjobController } from '@121-service/src/cronjob/cronjob.controller';
 import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronjob-execution.service';
+import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { ExchangeRatesModule } from '@121-service/src/exchange-rates/exchange-rates.module';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
@@ -20,7 +21,12 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     NedbankReconciliationModule,
     ExchangeRatesModule,
   ],
-  providers: [CronjobInitiateService, CronjobExecutionService, AzureLogService],
+  providers: [
+    CronjobInitiateService,
+    CronjobExecutionService,
+    CronjobExecutionHelperService,
+    AzureLogService,
+  ],
   controllers: [CronjobController],
 })
 export class CronjobModule {}
