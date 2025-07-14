@@ -224,9 +224,41 @@ export const env = createEnv({
       .pipe(z.transform((url) => withoutTrailingSlash(url))),
     ONAFRIQ_CURRENCY_CODE: z.string().length(3).optional(),
     ONAFRIQ_COUNTRY_CODE: z.string().length(2).optional(),
+
+    // FSP: Airtel
+    AIRTEL_ENABLED: z.stringbool().default(false),
+    MOCK_AIRTEL: z.stringbool().default(false),
+    AIRTEL_CLIENT_ID: z.string().optional(),
+    AIRTEL_CLIENT_SECRET: z.string().optional(),
+    AIRTEL_API_URL: z
+      .url()
+      .optional()
+      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+    AIRTEL_DISBURSEMENT_PIN: z.string().length(4).optional(),
+    AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
   },
 
   // We don't use client-side ENV-variables in the same way as in the services
   clientPrefix: '',
   client: {},
 });
+
+// Check for valid combination of Airtel environment variables
+if (env.AIRTEL_ENABLED) {
+  const requiredAirtelEnvironmentVariables = [
+    'AIRTEL_CLIENT_ID',
+    'AIRTEL_CLIENT_SECRET',
+    'AIRTEL_API_URL',
+    'AIRTEL_DISBURSEMENT_PIN',
+    'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+  ];
+  const missingAirtelEnvironmentVariables =
+    requiredAirtelEnvironmentVariables.filter(
+      (env_var) => env[env_var] === undefined || env[env_var] === '',
+    );
+  if (missingAirtelEnvironmentVariables.length > 0) {
+    throw new Error(
+      `AIRTEL_ENABLED=true but we are missing required Airtel environment variables: ${missingAirtelEnvironmentVariables.join(', ')}`,
+    );
+  }
+}

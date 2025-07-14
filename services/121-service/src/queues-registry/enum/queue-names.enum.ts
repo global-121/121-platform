@@ -6,6 +6,7 @@ export enum QueueNames {
   transactionJobsSafaricom = 'safaricom-transaction-jobs',
   transactionJobsNedbank = 'nedbank-transaction-jobs',
   transactionJobsOnafriq = 'onafriq-transaction-jobs',
+  transactionJobsAirtel = 'airtel-transaction-jobs',
 
   // payment callback jobs
   paymentCallbackSafaricomTransfer = 'safaricomTransferCallback',

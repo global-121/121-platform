@@ -109,11 +109,12 @@ export class SafaricomApiService {
         },
       ];
 
-      return await this.httpService.post<TransferResponseSafaricomApiDto>(
+      const res = await this.httpService.post<TransferResponseSafaricomApiDto>(
         `${paymentUrl}`,
         payload,
         headers,
       );
+      return res;
     } catch (error) {
       console.error('Failed to make Safaricom B2C payment API call', error);
       throw new SafaricomApiError(`Error: ${error.message}`);

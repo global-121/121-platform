@@ -65,6 +65,12 @@ module.exports = {
         'n/no-extraneous-import': [0], // Managed by TypeScript
         'n/no-missing-import': [0, { ignoreTypeImport: true }], // Disabled to allow for path-aliases via tsconfig.json/below
         'n/no-process-env': 'error',
+        'n/no-unsupported-features/node-builtins': [
+          'error',
+          {
+            ignores: ['Headers'],
+          },
+        ],
         'no-relative-import-paths/no-relative-import-paths': [
           'warn',
           {
