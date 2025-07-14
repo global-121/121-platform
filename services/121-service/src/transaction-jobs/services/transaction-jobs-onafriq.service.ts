@@ -72,7 +72,7 @@ export class TransactionJobsOnafriqService {
       // TODO: combine this with the transaction creation above in one SQL transaction
       const newOnafriqTransaction = new OnafriqTransactionEntity();
       newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
-      newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumber!;
+      newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumber;
       newOnafriqTransaction.transactionId = transactionId;
       onafriqTransaction = await this.onafriqTransactionScopedRepository.save(
         newOnafriqTransaction,
@@ -85,9 +85,9 @@ export class TransactionJobsOnafriqService {
     try {
       await this.onafriqService.createTransaction({
         transferAmount: transactionJob.transactionAmount,
-        phoneNumber: transactionJob.phoneNumber!,
-        firstName: transactionJob.firstName!,
-        lastName: transactionJob.lastName!,
+        phoneNumber: transactionJob.phoneNumber,
+        firstName: transactionJob.firstName,
+        lastName: transactionJob.lastName,
         thirdPartyTransId,
       });
     } catch (error) {

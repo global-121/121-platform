@@ -1,4 +1,8 @@
+import { HttpStatus } from '@nestjs/common';
+
+import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -52,54 +56,28 @@ describe('Export reconciliation report', () => {
       .send();
 
     // Assert
-    expect(response.statusCode).toBe(200);
-    expect(response.headers['content-type']).toBe('text/csv; charset=utf-8');
-    expect(response.headers['content-disposition']).toMatch(
-      /attachment; filename=.*\.csv/,
-    );
-
-    // Verify CSV structure and content
-    const csvLines = response.text.split('\n');
-    expect(csvLines.length).toBeGreaterThan(1); // Header + at least one data row
-
-    // Check CSV header
-    const expectedHeaders = [
-      'Datestamp',
-      'Transaction ID',
-      'Onafriq Transaction ID',
-      'Third_PartyID',
-      'Transaction_Type',
-      'Transaction_Status',
-      'From_MSISDN',
-      'To_MSISDN',
-      'Send_Currency',
-      'Receive_Currency',
-      'Send_amount',
-      'Receive_amount',
-      'Fee_Amount',
-      'Balance_before',
-      'Balance_after',
-      'Related_Transaction_ID',
-      'Wallet_Identifier',
-      'Partner_name',
-    ];
-    expect(csvLines[0]).toBe(expectedHeaders.join(','));
-
-    // Check that we have data rows (filter out empty lines)
-    const dataRows = csvLines.slice(1).filter((line) => line.trim().length > 0);
-    expect(dataRows.length).toBeGreaterThan(0);
-
-    // Verify each data row has the correct number of columns
-    dataRows.forEach((row) => {
-      const columns = row.split(',');
-      expect(columns.length).toBe(expectedHeaders.length);
-    });
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    expect(response.body.length).toBeGreaterThan(0); // Ensure we have some report items
 
     // Check that transaction data contains expected values
-    const firstDataRow = dataRows[0].split(',');
-    expect(firstDataRow[4]).toBe('Transfer'); // Transaction_Type
-    expect(['success', 'error']).toContain(firstDataRow[5]); // Transaction_Status
-    expect(firstDataRow[7]).toBe('24311111111'); // To_MSISDN (phone number)
-    expect(parseFloat(firstDataRow[11])).toBe(amount); // Receive_amount
+    const firstDataRow: OnafriqReconciliationReport = response.body[0];
+    expect(firstDataRow.Transaction_Type).toBe('Transfer');
+    expect(['success', 'error']).toContain(firstDataRow.Transaction_Status);
+    expect(firstDataRow.To_MSISDN).toBe('24311111111');
+    expect(firstDataRow.Receive_amount).toBe(amount);
+    expect(firstDataRow.Receive_Currency).toBe(env.ONAFRIQ_CURRENCY_CODE);
+    expect(firstDataRow.From_MSISDN).toBe(env.ONAFRIQ_SENDER_MSISDN);
+    expect(firstDataRow.Wallet_Identifier).toBe(env.ONAFRIQ_CORPORATE_CODE);
+    expect(firstDataRow.Partner_name).toBe(env.ONAFRIQ_CORPORATE_CODE);
+    expect(typeof firstDataRow.Datestamp).toBe('string');
+    expect(typeof firstDataRow['Transaction ID']).toBe('string');
+    expect(typeof firstDataRow['Onafriq Transaction ID']).toBe('string');
+    expect(typeof firstDataRow.Third_PartyID).toBe('string');
+    expect(firstDataRow.Send_Currency).toBeNull();
+    expect(firstDataRow.Send_amount).toBeNull();
+    expect(firstDataRow.Fee_Amount).toBeNull();
+    expect(firstDataRow.Balance_before).toBeNull();
+    expect(firstDataRow.Balance_after).toBeNull();
+    expect(firstDataRow.Related_Transaction_ID).toBeNull();
   });
 });

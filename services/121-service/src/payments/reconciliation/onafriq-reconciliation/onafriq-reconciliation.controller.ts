@@ -1,17 +1,11 @@
-import {
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Query,
-  Res,
-} from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import { Response } from 'express';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
+import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
 import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
@@ -57,15 +51,15 @@ export class OnafriqReconciliationController {
   @HttpCode(HttpStatus.OK)
   @Post('reconciliation-report')
   public async generateReconciliationReport(
-    @Res() res: Response,
     @Query() isTest = false,
-  ): Promise<void> {
-    const { filename, csv } =
-      await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
-        isTest,
+  ): Promise<OnafriqReconciliationReport[]> {
+    if (isTest && !IS_DEVELOPMENT) {
+      throw new Error(
+        'isTest query parameter can only be used in development environment',
       );
-    res.header('Content-Type', 'text/csv');
-    res.attachment(filename);
-    res.send(csv);
+    }
+    return await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
+      isTest,
+    );
   }
 }

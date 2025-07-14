@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -25,7 +26,7 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 
 @Injectable()
 export class OnafriqReconciliationService {
-  private sftp: any;
+  private sftp: SftpClient;
 
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
@@ -118,10 +119,7 @@ export class OnafriqReconciliationService {
 
   public async generateAndSendReconciliationReportYesterday(
     isTest?: boolean,
-  ): Promise<{
-    filename: string;
-    csv: string;
-  }> {
+  ): Promise<OnafriqReconciliationReport[]> {
     let where = {};
     if (!isTest) {
       const yesterdayStart = new Date();
@@ -164,14 +162,14 @@ export class OnafriqReconciliationService {
     }
 
     // Return for testing purposes only
-    return { filename, csv: csvContent };
+    return report;
   }
 
   private async sendCsvToOnafriqSftpLocation(
     csvContent: string,
     filename: string,
   ): Promise<void> {
-    // Initialize SFTP client lazily to prevent error
+    // Initialize SFTP client lazily to prevent error when injecting this via constructors
     if (!this.sftp) {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const Client = require('ssh2-sftp-client');
@@ -187,13 +185,12 @@ export class OnafriqReconciliationService {
       });
 
       await this.sftp.put(csvContent, filename);
-      console.log('File uploaded successfully.');
     } catch (err) {
       console.error('SFTP upload error:', err);
       // ##TODO: Store the file somewhere else if SFTP fails?
       throw err;
     } finally {
-      this.sftp.end();
+      void this.sftp.end();
     }
   }
 
