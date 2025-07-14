@@ -13,7 +13,7 @@ export class OnafriqReconciliationMapper {
       Third_PartyID: onafriqTransaction.thirdPartyTransId,
       Transaction_Type: 'Transfer', // 'Transfer' or 'Reversal'. We use only 'Transfer'.
       Transaction_Status: onafriqTransaction.transaction.status, // NOTE: map to 'Success', 'Fail', 'Pending'?
-      From_MSISDN: '123', // ##TODO: get from env
+      From_MSISDN: env.ONAFRIQ_SENDER_MSISDN!,
       To_MSISDN: onafriqTransaction.recipientMsisdn,
       Send_Currency: null, // We use 'Receive' type, so this is  N.A.
       Receive_Currency: env.ONAFRIQ_CURRENCY_CODE!,
