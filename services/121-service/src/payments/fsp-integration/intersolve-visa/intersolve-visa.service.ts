@@ -653,7 +653,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
     // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them.
     if (
       intersolveVisaCustomer?.intersolveVisaParentWallet
-        .intersolveVisaChildWallets
+        ?.intersolveVisaChildWallets
     ) {
       intersolveVisaCustomer.intersolveVisaParentWallet =
         await this.retrieveAndUpdateParentWallet(
