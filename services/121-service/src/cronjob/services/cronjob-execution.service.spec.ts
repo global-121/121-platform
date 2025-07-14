@@ -16,6 +16,12 @@ describe('CronjobExecutionService', () => {
   let intersolveVoucherService: IntersolveVoucherService;
   let consoleErrorSpy: jest.SpyInstance;
 
+  beforeAll(() => {
+    // Suppress console.error globally for cleaner test output
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -44,14 +50,10 @@ describe('CronjobExecutionService', () => {
     intersolveVoucherService = module.get<IntersolveVoucherService>(
       IntersolveVoucherService,
     );
-
-    // Suppress console.error for cleaner test output
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    // Restore console.error after each test
+  afterAll(() => {
+    // Restore console.error after all tests
     consoleErrorSpy.mockRestore();
   });
 

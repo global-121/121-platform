@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { CronjobExecutionMethodName } from '@121-service/src/cronjob/interfaces/cronjob-execution-method-name.type';
 import { CronjobResults } from '@121-service/src/cronjob/interfaces/cronjob-results.interface';
+import { CronjobExecutionMethodName } from '@121-service/src/cronjob/types/cronjob-execution-method-name.type';
 import { env } from '@121-service/src/env';
 import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
@@ -79,19 +79,16 @@ export class CronjobExecutionService {
     );
   }
 
-  private async executeWithLogging<T>(
+  private async executeWithLogging(
     methodName: CronjobExecutionMethodName,
-    fn: () => Promise<T>,
-  ): Promise<T | undefined> {
+    fn: () => Promise<number>,
+  ): Promise<number | undefined> {
     const startMessage = this.createCronjobStartMessage(methodName);
     this.azureLogService.consoleLogAndTraceAzure(startMessage);
 
     try {
       // Execute the cron job function and await its result
-      const result = await fn();
-
-      // If result is a number set batchSize to it
-      const batchSize = typeof result === 'number' ? result : undefined;
+      const batchSize = await fn();
 
       // Handle the result and log the end message
       const cronjobResultMessage = this.createCronjobResultMessage({
@@ -100,7 +97,7 @@ export class CronjobExecutionService {
         isError: false,
       });
       this.azureLogService.consoleLogAndTraceAzure(cronjobResultMessage);
-      return result;
+      return batchSize;
     } catch (error) {
       // 1. Log the stack trace to the Node logs
       console.error(`Error executing cron job ${methodName}:`, error);
