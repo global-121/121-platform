@@ -23,5 +23,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     AzureLogService,
   ],
   controllers: [IntersolveVoucherReconciliationController],
+  exports: [IntersolveVoucherReconciliationService],
 })
 export class IntersolveVoucherReconciliationModule {}

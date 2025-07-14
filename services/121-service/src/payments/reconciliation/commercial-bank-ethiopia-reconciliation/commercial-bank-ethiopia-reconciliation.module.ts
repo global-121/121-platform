@@ -27,5 +27,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     AzureLogService,
   ],
   controllers: [CommercialBankEthiopiaReconciliationController],
+  exports: [CommercialBankEthiopiaReconciliationService],
 })
 export class CommercialBankEthiopiaReconciliationModule {}

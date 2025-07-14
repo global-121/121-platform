@@ -11,5 +11,7 @@ export async function getAllExchangeRates(
 export async function retrieveAndStoreAllExchangeRates(
   accessToken: string,
 ): Promise<request.Response> {
-  return await getServer().put(`/exchange-rates`).set('Cookie', [accessToken]);
+  return await getServer()
+    .put(`/cronjobs/exchange-rates`)
+    .set('Cookie', [accessToken]);
 }
