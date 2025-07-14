@@ -238,27 +238,38 @@ export const env = createEnv({
     AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
   },
 
+  createFinalSchema: (shape) =>
+    z.object(shape).transform((env, ctx) => {
+      const fspVariableRequirements = new Map<string, string[]>([
+        [
+          'AIRTEL_ENABLED',
+          [
+            'AIRTEL_CLIENT_ID',
+            'AIRTEL_CLIENT_SECRET',
+            'AIRTEL_API_URL',
+            'AIRTEL_DISBURSEMENT_PIN',
+            'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+          ],
+        ],
+      ]);
+
+      fspVariableRequirements.forEach((requiredVariables, fspFlag) => {
+        if (env[fspFlag] !== true) {
+          return;
+        }
+        for (const variable of requiredVariables) {
+          if (!env[variable]) {
+            ctx.addIssue({
+              message: `ENV-variable: ${variable} is required when ${fspFlag} is ${env[fspFlag]}.`,
+            });
+          }
+        }
+      });
+
+      return env;
+    }),
+
   // We don't use client-side ENV-variables in the same way as in the services
   clientPrefix: '',
   client: {},
 });
-
-// Check for valid combination of Airtel environment variables
-if (env.AIRTEL_ENABLED) {
-  const requiredAirtelEnvironmentVariables = [
-    'AIRTEL_CLIENT_ID',
-    'AIRTEL_CLIENT_SECRET',
-    'AIRTEL_API_URL',
-    'AIRTEL_DISBURSEMENT_PIN',
-    'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
-  ];
-  const missingAirtelEnvironmentVariables =
-    requiredAirtelEnvironmentVariables.filter(
-      (env_var) => env[env_var] === undefined || env[env_var] === '',
-    );
-  if (missingAirtelEnvironmentVariables.length > 0) {
-    throw new Error(
-      `AIRTEL_ENABLED=true but we are missing required Airtel environment variables: ${missingAirtelEnvironmentVariables.join(', ')}`,
-    );
-  }
-}
