@@ -80,7 +80,7 @@ export class CronjobController {
     description:
       'Data retrieved from Intersolve and entities updated for all programs.',
   })
-  @Patch('programs/:programId/fsps/intersolve-visa/')
+  @Patch('/fsps/intersolve-visa/')
   public async cronRetrieveAndUpdateVisaData(): Promise<void> {
     await this.cronjobExecutionService.cronRetrieveAndUpdateVisaData();
   }

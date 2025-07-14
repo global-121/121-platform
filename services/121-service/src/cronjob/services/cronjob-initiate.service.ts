@@ -69,8 +69,8 @@ export class CronjobInitiateService {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const programIdVisa = 3;
-    const url = `${baseCronUrl}/programs/${programIdVisa}/fsps/intersolve-visa`;
+
+    const url = `${baseCronUrl}/fsps/intersolve-visa`;
     return await this.callEndpoint(url, 'patch', headers);
   }
 
