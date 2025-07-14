@@ -18,6 +18,8 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
+// TODO: Consider Refactoring this service as intersolve voucher is the only fsp with a cron-service.
+// Also it makes sense a seperation of concerns that an fsp specic service does not know it's called by a cronjob.
 @Injectable()
 export class IntersolveVoucherCronService {
   @InjectRepository(RegistrationEntity)
