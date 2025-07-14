@@ -650,7 +650,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
       await this.intersolveVisaCustomerScopedRepository.findOneWithWalletsByRegistrationId(
         registrationId,
       );
-    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them.
+    // If there are any child wallets no-matter the status, retrieve latest information of the wallets and card from intersolve before calculating transfer amount from them
     if (
       intersolveVisaCustomer?.intersolveVisaParentWallet
         ?.intersolveVisaChildWallets
