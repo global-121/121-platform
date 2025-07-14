@@ -38,7 +38,7 @@ export class AirtelMockService {
     const requestFromSwagger =
       headers?.origin === `http://localhost:${env.PORT_MOCK_SERVICE}`;
     if (!requestFromSwagger) {
-      if (!(headers['content-type'] === 'application/json')) error = true;
+      if (headers['content-type'] !== 'application/json') error = true;
     }
     if (body?.client_id === undefined) error = true;
     if (body.client_id === '') error = true;
@@ -80,7 +80,7 @@ export class AirtelMockService {
       headers?.origin === `http://localhost:${env.PORT_MOCK_SERVICE}`;
     if (!requestFromSwagger) {
       // 415 Unsupported Media Type
-      if (!(headers['content-type'] === 'application/json')) return [415, {}];
+      if (headers['content-type'] !== 'application/json') return [415, {}];
     }
 
     // We accept Authorization headers under "Authorization" and
