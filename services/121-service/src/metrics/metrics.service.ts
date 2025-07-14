@@ -283,7 +283,7 @@ export class MetricsService {
       };
     });
 
-    return this.filterUnusedColumn(orderedObjects);
+    return orderedObjects;
   }
 
   private async getRelationOptionsForExport(
@@ -501,22 +501,6 @@ export class MetricsService {
         }
       }
     }
-  }
-
-  private filterUnusedColumn(
-    columnDetails: Record<string, unknown>[],
-  ): Record<string, unknown>[] {
-    return columnDetails.map((row) => {
-      const filteredRow: Record<string, unknown> = {};
-
-      for (const key in row) {
-        if (row[key] != null) {
-          filteredRow[key] = row[key];
-        }
-      }
-
-      return filteredRow;
-    });
   }
 
   private async getPaymentDetailsPayment(
