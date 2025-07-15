@@ -253,8 +253,10 @@ export class MetricsService {
     })) as RowType[];
 
     for await (const row of rows) {
-      row['id'] = row['registrationProgramId'] ?? null;
-      delete row['registrationProgramId'];
+      if (row['registrationProgramId']) {
+        row['id'] = row['registrationProgramId'];
+        delete row['registrationProgramId'];
+      }
 
       if (typeof row['programFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
@@ -266,24 +268,41 @@ export class MetricsService {
     await this.replaceValueWithDropdownLabel(rows, relationOptions);
 
     const orderedObjects = rows.map((row) => {
-      // An object which will serve as the order template
-      const objectOrder = {
-        referenceId: null,
-        id: null,
-        status: null,
-        phoneNumber: null,
-        preferredLanguage: null,
-        fsp: null,
-        paymentAmountMultiplier: null,
-        paymentCount: null,
-      };
-      return {
-        ...objectOrder,
-        ...row,
-      };
+      // Enforce this order of keys if present
+      const keyOrder = [
+        'referenceId',
+        'id',
+        'status',
+        'phoneNumber',
+        'preferredLanguage',
+        'fsp',
+        'paymentAmountMultiplier',
+        'paymentCount',
+      ];
+      return this.orderObjectKeys(row, keyOrder);
     });
-
     return orderedObjects;
+  }
+
+  private orderObjectKeys<T extends Record<string, any>>(
+    obj: T,
+    desiredOrder: string[],
+  ): Record<string, any> {
+    const ordered: Record<string, any> = {};
+
+    for (const key of desiredOrder) {
+      if (key in obj) {
+        ordered[key] = obj[key];
+      }
+    }
+
+    for (const key in obj) {
+      if (!desiredOrder.includes(key)) {
+        ordered[key] = obj[key];
+      }
+    }
+
+    return ordered;
   }
 
   private async getRelationOptionsForExport(
@@ -501,6 +520,22 @@ export class MetricsService {
         }
       }
     }
+  }
+
+  private filterUnusedColumn(
+    columnDetails: Record<string, unknown>[],
+  ): Record<string, unknown>[] {
+    return columnDetails.map((row) => {
+      const filteredRow: Record<string, unknown> = {};
+
+      for (const key in row) {
+        if (row[key] != null) {
+          filteredRow[key] = row[key];
+        }
+      }
+
+      return filteredRow;
+    });
   }
 
   private async getPaymentDetailsPayment(
