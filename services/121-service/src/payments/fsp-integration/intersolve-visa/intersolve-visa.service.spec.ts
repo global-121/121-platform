@@ -154,14 +154,6 @@ describe('IntersolveVisaService', () => {
 
       parentWallet.intersolveVisaChildWallets = [childWallet];
 
-      const customerWithParentAndChild = new IntersolveVisaCustomerEntity();
-      customerWithParentAndChild.intersolveVisaParentWallet = parentWallet;
-
-      // Mock repository to return our customer
-      jest
-        .spyOn(customerRepo, 'findOneWithWalletsByRegistrationId')
-        .mockResolvedValue(customerWithParentAndChild);
-
       // Mock parent wallet update
       const customerWithParentWallet = new IntersolveVisaCustomerEntity();
       customerWithParentWallet.intersolveVisaParentWallet = parentWallet;
