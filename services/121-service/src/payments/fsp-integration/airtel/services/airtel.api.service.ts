@@ -58,7 +58,7 @@ export class AirtelApiService {
     this.currencyCode = 'ZMW';
 
     let airtelApiBaseUrl: URL;
-    if (env.MOCK_AIRTEL) {
+    if (env.MOCK_AIRTEL || !env.AIRTEL_API_URL) {
       airtelApiBaseUrl = new URL('api/fsp/airtel/', env.MOCK_SERVICE_URL);
     } else {
       airtelApiBaseUrl = new URL(env.AIRTEL_API_URL);
