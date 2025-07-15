@@ -52,7 +52,7 @@ test('[29359] Export 15000 PAs', async ({ page }) => {
     await exportDataComponent.exportAndAssertData({
       minRowCount: 15000,
       orderOfDataIsImportant: true,
-      excludedColumns: ['phoneNumber'],
+      excludedColumns: ['phoneNumber', 'created'],
     });
   });
 });

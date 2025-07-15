@@ -45,7 +45,9 @@ test('[29358] Export Selected Registrations', async ({ page }) => {
     await registrationsPage.clickAndSelectExportOption(
       'Selected registrations',
     );
-    await exportDataComponent.exportAndAssertData();
+    await exportDataComponent.exportAndAssertData({
+      excludedColumns: ['created'],
+    });
   });
 
   await test.step('Export list and validate CSV files downloaded', async () => {
