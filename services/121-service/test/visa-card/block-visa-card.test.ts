@@ -20,6 +20,8 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+const noWhatsappSetup = null; // Do not use WhatsApp for this test to avoid race conditions - our mock server replies 'yes' on pending whatsapp message a bit too fast
+
 describe('(Un)Block visa debit card', () => {
   let accessToken: string;
 
@@ -33,7 +35,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--block-card',
-      whatsappPhoneNumber: null, // Do not use WhatsApp for this test to avoid race conditions - our api test replies 'yes' on pending whatsapp message a bit too fast
+      whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
@@ -89,7 +91,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--unblock-card',
-      whatsappPhoneNumber: null, // Do not use WhatsApp for this test to avoid race conditions - our api test replies 'yes' on pending whatsapp message a bit too fast
+      whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
 
