@@ -284,11 +284,11 @@ export class MetricsService {
     return orderedObjects;
   }
 
-  private orderObjectKeys<T extends Record<string, any>>(
+  private orderObjectKeys<T extends Record<string, unknown>>(
     obj: T,
     desiredOrder: string[],
-  ): Record<string, any> {
-    const ordered: Record<string, any> = {};
+  ): Record<string, unknown> {
+    const ordered: Record<string, unknown> = {};
 
     for (const key of desiredOrder) {
       if (key in obj) {
