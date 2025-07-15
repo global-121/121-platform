@@ -163,3 +163,16 @@ jobs:
           files: coverage/**/lcov.info
           verbose: true
           skip-errors: false
+
+  # This job is here to make the above jobs "required" in GitHub.
+  # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
+  test-shard-resolution:
+    runs-on: ubuntu-latest
+    needs: [test-shard, test]
+    if: ${{ always() }}
+    steps:
+      - name: Required check failed
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+      - name: Dummy step
+        run: echo "All required checks have successfully passed."
