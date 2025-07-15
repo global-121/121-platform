@@ -24,5 +24,5 @@ export class IntersolveVisaCustomerEntity extends Base121Entity {
       intersolveVisaParentWallet.intersolveVisaCustomer,
     { onDelete: 'NO ACTION' },
   )
-  public intersolveVisaParentWallet: Relation<IntersolveVisaParentWalletEntity>;
+  public intersolveVisaParentWallet?: Relation<IntersolveVisaParentWalletEntity>;
 }
