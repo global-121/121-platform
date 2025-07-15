@@ -1,5 +1,8 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
+# Can't use the top-level "paths" filter because of issues with required checks
+# See: https://github.com/orgs/community/discussions/44490#discussioncomment-10253645
+
 name: 'Test: E2E (Portal)'
 
 on:
@@ -7,24 +10,39 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
-    paths:
-      - '.github/workflows/test_e2e_portal.yml'
-      - 'e2e/**'
-      - 'services/.env.example'
-      - 'services/**'
-      - '!services/**.test.ts'
-      - '!services/**.spec.ts'
-      - 'interfaces/portal/**'
-      - '!interfaces/portal/**.test.ts'
-      - '!interfaces/portal/**.spec.ts'
-      - '!**.md'
 
 env:
   e2eTestsPath: './e2e'
 
 jobs:
-  test_e2e_portal:
+  path-filter:
     runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.filter.outputs.should_skip }}
+    steps:
+      - uses: actions/checkout@v4 # better this action use git diff, so you need checkout the code first
+        with:
+          filter: blob:none # reduce clone size
+          fetch-depth: 0 # need full history, the default is 1, which is not enough. if you limit the pull request' commit length, you can set it to your limit.
+      - uses: leavesster/pull-request-path-filter@v0.2 # v0.2 is the latest version
+        id: 'filter'
+        with:
+          paths:
+            | # notice the `|`, it's required. the left is same as github action's path and paths-ignore
+            - '.github/workflows/test_e2e_portal.yml'
+            - 'e2e/**'
+            - 'services/.env.example'
+            - 'services/**'
+            - '!services/**.test.ts'
+            - '!services/**.spec.ts'
+            - 'interfaces/portal/**'
+            - '!interfaces/portal/**.test.ts'
+            - '!interfaces/portal/**.spec.ts'
+            - '!**.md'
+  test-shard:
+    runs-on: ubuntu-latest
+    needs: path-filter
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     environment: test
 
     strategy:
@@ -110,17 +128,3 @@ jobs:
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
-
-  # This job is here to make the above jobs "required" in GitHub, because
-  # we have informed GitHub that all `test` jobs are required.
-  # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
-  test:
-    runs-on: ubuntu-latest
-    needs: [test_e2e_portal]
-    if: ${{ always() }}
-    steps:
-      - name: Required check failed
-        if: ${{ contains(needs.*.result, 'failure') }}
-        run: exit 1
-      - name: Dummy step
-        run: echo "All required checks have successfully passed."
