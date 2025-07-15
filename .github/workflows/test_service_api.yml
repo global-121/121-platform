@@ -166,7 +166,7 @@ jobs:
 
   # This job is here to make the above jobs "required" in GitHub.
   # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
-  test-shard-resolution:
+  test-shard-resolution-api:
     runs-on: ubuntu-latest
     needs: [test-shard, test]
     if: ${{ always() }}
