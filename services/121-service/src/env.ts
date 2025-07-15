@@ -165,12 +165,12 @@ export const env = createEnv({
     INTERSOLVE_VISA_PROD: z.stringbool().default(false),
     INTERSOLVE_VISA_API_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     INTERSOLVE_VISA_OIDC_ISSUER: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     INTERSOLVE_VISA_ASSET_CODE: z.string().default(''),
     INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION: z
       .stringbool()
@@ -180,16 +180,16 @@ export const env = createEnv({
     MOCK_COMMERCIAL_BANK_ETHIOPIA: z.stringbool().default(false),
     COMMERCIAL_BANK_ETHIOPIA_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
 
     // FSP: Safaricom
     MOCK_SAFARICOM: z.stringbool().default(false),
     SAFARICOM_API_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     SAFARICOM_CONSUMER_KEY: z.string().optional(),
     SAFARICOM_CONSUMER_SECRET: z.string().optional(),
     SAFARICOM_B2C_PAYMENTREQUEST_ENDPOINT: z
@@ -210,8 +210,8 @@ export const env = createEnv({
     NEDBANK_CERTIFICATE_PASSWORD: z.string().optional(),
     NEDBANK_API_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
 
     // FSP: Onafriq
     MOCK_ONAFRIQ: z.stringbool().default(false),
@@ -220,8 +220,8 @@ export const env = createEnv({
     ONAFRIQ_UNIQUE_KEY: z.string().optional(),
     ONAFRIQ_API_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     ONAFRIQ_CURRENCY_CODE: z.string().length(3).optional(),
     ONAFRIQ_COUNTRY_CODE: z.string().length(2).optional(),
 
@@ -232,33 +232,53 @@ export const env = createEnv({
     AIRTEL_CLIENT_SECRET: z.string().optional(),
     AIRTEL_API_URL: z
       .url()
-      .optional()
-      .pipe(z.transform((url) => withoutTrailingSlash(url))),
+      .pipe(z.transform((url) => withoutTrailingSlash(url)))
+      .optional(),
     AIRTEL_DISBURSEMENT_PIN: z.string().length(4).optional(),
     AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY: z.string().optional(),
   },
+
+  createFinalSchema: (shape) =>
+    z.object(shape).transform((env, ctx) => {
+      /**
+       * List of FSP-dependent ENV-variables.
+       * To validate that _all required variables_ are set, ONLY when a specific FSP is enabled.
+       *
+       * - Key: the FSP flag, format: `<FSP-NAME-PREFIX>_ENABLED`
+       * - Value: array of required variable names.
+       */
+      const fspVariableRequirements = new Map<string, string[]>([
+        [
+          'AIRTEL_ENABLED',
+          [
+            'AIRTEL_CLIENT_ID',
+            'AIRTEL_CLIENT_SECRET',
+            'AIRTEL_API_URL',
+            'AIRTEL_DISBURSEMENT_PIN',
+            'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
+          ],
+        ],
+      ]);
+
+      for (const [fspFlag, requiredVariables] of fspVariableRequirements) {
+        if (env[fspFlag] !== true) {
+          continue;
+        }
+        for (const variable of requiredVariables) {
+          if (env[variable]) {
+            continue;
+          }
+          ctx.addIssue({
+            path: [variable],
+            message: `The variable is required when ${fspFlag} is true.`,
+          });
+        }
+      }
+
+      return env;
+    }),
 
   // We don't use client-side ENV-variables in the same way as in the services
   clientPrefix: '',
   client: {},
 });
-
-// Check for valid combination of Airtel environment variables
-if (env.AIRTEL_ENABLED) {
-  const requiredAirtelEnvironmentVariables = [
-    'AIRTEL_CLIENT_ID',
-    'AIRTEL_CLIENT_SECRET',
-    'AIRTEL_API_URL',
-    'AIRTEL_DISBURSEMENT_PIN',
-    'AIRTEL_DISBURSEMENT_V1_PIN_ENCRYPTION_PUBLIC_KEY',
-  ];
-  const missingAirtelEnvironmentVariables =
-    requiredAirtelEnvironmentVariables.filter(
-      (env_var) => env[env_var] === undefined || env[env_var] === '',
-    );
-  if (missingAirtelEnvironmentVariables.length > 0) {
-    throw new Error(
-      `AIRTEL_ENABLED=true but we are missing required Airtel environment variables: ${missingAirtelEnvironmentVariables.join(', ')}`,
-    );
-  }
-}
