@@ -240,6 +240,13 @@ export const env = createEnv({
 
   createFinalSchema: (shape) =>
     z.object(shape).transform((env, ctx) => {
+      /**
+       * List of FSP-dependent ENV-variables.
+       * To validate that _all required variables_ are set, ONLY when a specific FSP is enabled.
+       *
+       * - Key: the FSP flag, format: `<FSP-NAME-PREFIX>_ENABLED`
+       * - Value: array of required variable names.
+       */
       const fspVariableRequirements = new Map<string, string[]>([
         [
           'AIRTEL_ENABLED',
@@ -253,18 +260,20 @@ export const env = createEnv({
         ],
       ]);
 
-      fspVariableRequirements.forEach((requiredVariables, fspFlag) => {
+      for (const [fspFlag, requiredVariables] of fspVariableRequirements) {
         if (env[fspFlag] !== true) {
-          return;
+          continue;
         }
         for (const variable of requiredVariables) {
-          if (!env[variable]) {
-            ctx.addIssue({
-              message: `ENV-variable: ${variable} is required when ${fspFlag} is ${env[fspFlag]}.`,
-            });
+          if (env[variable]) {
+            continue;
           }
+          ctx.addIssue({
+            path: [variable],
+            message: `The variable is required when ${fspFlag} is true.`,
+          });
         }
-      });
+      }
 
       return env;
     }),
