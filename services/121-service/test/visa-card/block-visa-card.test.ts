@@ -33,9 +33,9 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--block-card',
+      whatsappPhoneNumber: null, // Do not use WhatsApp for this test to avoid race conditions - our api test replies 'yes' on pending whatsapp message a bit too fast
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
-
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
       programIdVisa,
       testRegistration.referenceId,
@@ -56,7 +56,7 @@ describe('(Un)Block visa debit card', () => {
       programId: programIdVisa,
       referenceIds: [testRegistration.referenceId],
       accessToken,
-      minimumNumberOfMessagesPerReferenceId: 4,
+      minimumNumberOfMessagesPerReferenceId: 2,
     });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
@@ -89,6 +89,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--unblock-card',
+      whatsappPhoneNumber: null, // Do not use WhatsApp for this test to avoid race conditions - our api test replies 'yes' on pending whatsapp message a bit too fast
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
 
@@ -106,14 +107,6 @@ describe('(Un)Block visa debit card', () => {
       testRegistration.referenceId,
     );
 
-    // wait for "block card" message to be processed before proceeding - to avoid race conditions
-    await waitForMessagesToComplete({
-      programId: programIdVisa,
-      referenceIds: [testRegistration.referenceId],
-      accessToken,
-      minimumNumberOfMessagesPerReferenceId: 4,
-    });
-
     // Act
     const unblockVisaResponse = await unblockVisaCard(
       programIdVisa,
@@ -127,7 +120,7 @@ describe('(Un)Block visa debit card', () => {
       programId: programIdVisa,
       referenceIds: [testRegistration.referenceId],
       accessToken,
-      minimumNumberOfMessagesPerReferenceId: 6,
+      minimumNumberOfMessagesPerReferenceId: 3,
     });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
