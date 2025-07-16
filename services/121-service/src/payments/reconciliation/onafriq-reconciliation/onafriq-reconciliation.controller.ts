@@ -51,7 +51,7 @@ export class OnafriqReconciliationController {
   @HttpCode(HttpStatus.OK)
   @Post('reconciliation-report')
   public async generateReconciliationReport(
-    @Query() isTest = false,
+    @Query('isTest') isTest = false,
   ): Promise<OnafriqReconciliationReport[]> {
     if (isTest && !IS_DEVELOPMENT) {
       throw new Error(

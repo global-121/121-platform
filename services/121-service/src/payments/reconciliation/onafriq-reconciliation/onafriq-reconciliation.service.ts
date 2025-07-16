@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import * as fs from 'fs';
 import { Redis } from 'ioredis';
 import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal } from 'typeorm';
@@ -177,14 +178,20 @@ export class OnafriqReconciliationService {
     }
 
     try {
+      const privateKey =
+        env.ONAFRIQ_SFTP_CERTIFICATE_CONTENT || // remote env
+        fs.readFileSync(env.ONAFRIQ_SFTP_CERTIFICATE_PATH!, 'utf8'); // local env
+
       await this.sftp.connect({
         host: env.ONAFRIQ_SFTP_HOST,
         port: env.ONAFRIQ_SFTP_PORT,
         username: env.ONAFRIQ_SFTP_USERNAME,
-        password: env.ONAFRIQ_SFTP_PASSWORD,
+        privateKey,
+        passphrase: env.ONAFRIQ_SFTP_PASSPHRASE,
       });
 
-      await this.sftp.put(csvContent, filename);
+      const buffer = Buffer.from(csvContent, 'utf8');
+      await this.sftp.put(buffer, `DTR/${filename}`);
     } catch (err) {
       console.error('SFTP upload error:', err);
       // ##TODO: Store the file somewhere else if SFTP fails?
