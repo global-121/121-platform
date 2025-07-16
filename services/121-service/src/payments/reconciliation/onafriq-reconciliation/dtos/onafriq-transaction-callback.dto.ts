@@ -16,5 +16,8 @@ export class OnafriqTransactionCallbackDto {
   readonly thirdPartyTransId: string;
   @ApiProperty()
   @IsOptional()
+  readonly mfsTransId: string;
+  @ApiProperty()
+  @IsOptional()
   readonly status: OnafriqTransactionCallbackStatus;
 }

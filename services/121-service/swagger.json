@@ -50,6 +50,11 @@
     "params": []
   },
   {
+    "method": "post",
+    "path": "/api/cronjobs/fsps/onafriq/reconciliation-report",
+    "params": []
+  },
+  {
     "method": "patch",
     "path": "/api/cronjobs",
     "params": []
@@ -692,6 +697,21 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/fsps/onafriq/callback",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/fsps/onafriq/reconciliation-report",
+    "params": []
+  },
+  {
+    "method": "post",
+    "path": "/api/fsps/onafriq/webhook/subscribe",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/exchange-rates",
     "params": []
@@ -885,11 +905,6 @@
   },
   {
     "method": "post",
-    "path": "/api/fsps/onafriq/webhook/subscribe",
-    "params": []
-  },
-  {
-    "method": "post",
     "path": "/api/notifications/whatsapp/status",
     "params": []
   },
@@ -942,11 +957,6 @@
   {
     "method": "post",
     "path": "/api/fsps/safaricom/timeout-callback",
-    "params": []
-  },
-  {
-    "method": "post",
-    "path": "/api/fsps/onafriq/callback",
     "params": []
   }
 ]

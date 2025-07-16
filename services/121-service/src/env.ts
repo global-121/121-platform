@@ -121,6 +121,7 @@ export const env = createEnv({
     CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS: z.stringbool().default(false),
     CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION: z.stringbool().default(false),
     CRON_NEDBANK_VOUCHERS: z.stringbool().default(false),
+    CRON_ONAFRIQ_RECONCILIATION_REPORT: z.stringbool().default(false),
 
     // Interface(s) configuration
     REDIRECT_PORTAL_URL_HOST: z
@@ -224,6 +225,18 @@ export const env = createEnv({
       .optional(),
     ONAFRIQ_CURRENCY_CODE: z.string().length(3).optional(),
     ONAFRIQ_COUNTRY_CODE: z.string().length(2).optional(),
+    ONAFRIQ_SFTP_HOST: z.string().optional(),
+    ONAFRIQ_SFTP_PORT: z.coerce.number().default(22),
+    ONAFRIQ_SFTP_USERNAME: z.string().optional(),
+    ONAFRIQ_SFTP_PASSPHRASE: z.string().optional(),
+    ONAFRIQ_SFTP_CERTIFICATE_CONTENT: z.string().optional(),
+    ONAFRIQ_SFTP_CERTIFICATE_PATH: z.string().optional(),
+    ONAFRIQ_SENDER_MSISDN: z.string().optional(),
+    ONAFRIQ_SENDER_NAME: z.string().optional(),
+    ONAFRIQ_SENDER_SURNAME: z.string().optional(),
+    ONAFRIQ_SENDER_DOB: z.string().optional(),
+    ONAFRIQ_SENDER_DOCUMENT_ID: z.string().optional(),
+    ONAFRIQ_SENDER_DOCUMENT_TYPE: z.string().optional(),
 
     // FSP: Airtel
     AIRTEL_ENABLED: z.stringbool().default(false),

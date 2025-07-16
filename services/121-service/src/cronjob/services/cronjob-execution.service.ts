@@ -8,6 +8,7 @@ import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/pa
 import { IntersolveVisaReconciliationService } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.service';
 import { IntersolveVoucherReconciliationService } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.service';
 import { NedbankReconciliationService } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.service';
+import { OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 
 @Injectable()
 export class CronjobExecutionService {
@@ -18,6 +19,7 @@ export class CronjobExecutionService {
     private readonly intersolveVisaReconciliationService: IntersolveVisaReconciliationService,
     private readonly commercialBankEthiopiaReconciliationService: CommercialBankEthiopiaReconciliationService,
     private readonly nedbankReconciliationService: NedbankReconciliationService,
+    private readonly onafriqReconciliationService: OnafriqReconciliationService,
     private readonly exchangeRatesService: ExchangeRatesService,
     private readonly cronjobExecutionHelperService: CronjobExecutionHelperService,
   ) {}
@@ -64,6 +66,13 @@ export class CronjobExecutionService {
     await this.cronjobExecutionHelperService.executeWithLogging(
       'cronDoNedbankReconciliation',
       () => this.nedbankReconciliationService.doNedbankReconciliation(),
+    );
+  }
+
+  public async cronSendOnafriqReconciliationReport(): Promise<void> {
+    await this.cronjobExecutionHelperService.executeWithLogging(
+      'cronSendOnafriqReconciliationReport',
+      () => this.onafriqReconciliationService.sendReconciliationReport(),
     );
   }
 

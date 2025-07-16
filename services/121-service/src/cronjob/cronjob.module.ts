@@ -10,6 +10,7 @@ import { CommercialBankEthiopiaReconciliationModule } from '@121-service/src/pay
 import { IntersolveVisaReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-visa-reconciliation/intersolve-visa-reconciliation.module';
 import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments/reconciliation/intersolve-voucher-reconciliation/intersolve-voucher-reconciliation.module';
 import { NedbankReconciliationModule } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
+import { OnafriqReconciliationModule } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
 @Module({
@@ -19,6 +20,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     IntersolveVoucherReconciliationModule,
     CommercialBankEthiopiaReconciliationModule,
     NedbankReconciliationModule,
+    OnafriqReconciliationModule,
     ExchangeRatesModule,
   ],
   providers: [

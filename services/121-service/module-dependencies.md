@@ -65,6 +65,13 @@ graph LR
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionsModule
+  CronjobModule-->OnafriqReconciliationModule
+  OnafriqReconciliationModule-->OnafriqModule
+  OnafriqModule-->RedisModule
+  OnafriqModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->RedisModule
+  OnafriqReconciliationModule-->TransactionsModule
+  OnafriqReconciliationModule-->QueuesRegistryModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
   OrganizationModule-->UserModule
@@ -94,8 +101,6 @@ graph LR
   AirtelModule-->QueuesRegistryModule
   PaymentsModule-->NedbankModule
   PaymentsModule-->OnafriqModule
-  OnafriqModule-->RedisModule
-  OnafriqModule-->QueuesRegistryModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
@@ -151,8 +156,4 @@ graph LR
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
-  OnafriqReconciliationModule-->OnafriqModule
-  OnafriqReconciliationModule-->RedisModule
-  OnafriqReconciliationModule-->TransactionsModule
-  OnafriqReconciliationModule-->QueuesRegistryModule
 ```

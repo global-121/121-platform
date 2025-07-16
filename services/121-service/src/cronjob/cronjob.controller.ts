@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  HttpCode,
   HttpStatus,
   Post,
   Put,
@@ -144,6 +145,21 @@ export class CronjobController {
     );
   }
 
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
+    summary:
+      '[CRON] Generate Onafriq reconciliation data and send to Onafriq SFTP (Returned json is just used for testing purposes)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Reconciliation report generated and sent successfully.',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Post('fsps/onafriq/reconciliation-report')
+  public async generateReconciliationReport(): Promise<void> {
+    return await this.cronjobExecutionService.cronSendOnafriqReconciliationReport();
+  }
+
   @ApiOperation({
     summary: 'Initiate all Cron Jobs. Only used for testing.',
   })
@@ -157,6 +173,7 @@ export class CronjobController {
   public async runAllCronjobs(): Promise<RunCronjobsResponseDto[]> {
     const cronJobMethodNames =
       this.cronjobInitiateService.getAllCronJobMethodNames();
+    console.log('cronJobMethodNames: ', cronJobMethodNames);
     const responses: RunCronjobsResponseDto[] = [];
     for (const cronJobMethodName of cronJobMethodNames) {
       const response =
