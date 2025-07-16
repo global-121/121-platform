@@ -52,7 +52,7 @@ export default class RegistrationsModel {
   }
 
   exportRegistrations(programId, filter) {
-    const url = `${baseUrl}api/programs/${programId}/metrics/export-list/all-registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`;
+    const url = `${baseUrl}api/programs/${programId}/metrics/export-list/registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`;
     return http.get(url);
   }
 
