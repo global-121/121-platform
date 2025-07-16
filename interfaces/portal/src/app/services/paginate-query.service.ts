@@ -256,7 +256,7 @@ export class PaginateQueryService {
     totalCount,
     currentPaginateQuery = {},
     previewItemForSelectAll,
-    select = [],
+    select,
   }: {
     selection: QueryTableSelectionEvent<TData>;
     fieldForFilter: keyof TData & string;
