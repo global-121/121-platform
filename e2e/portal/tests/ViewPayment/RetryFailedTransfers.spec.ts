@@ -74,11 +74,6 @@ test('[32300] Retry failed transfers', async ({ page }) => {
     await paymentsPage.retryFailedTransfers();
   });
 
-  // DO NOT MAKE IT A RULE!!!
-  // Only in this case we need to reload the page to get the updated data of the successful payments.
-  // This is a workaround for the case when the PA is subscribed to the program that uses telecom provider. And the data is updated asynchronously with other payment methods.
-  await page.reload();
-
   await test.step('Check presence of retry button', async () => {
     await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
   });
