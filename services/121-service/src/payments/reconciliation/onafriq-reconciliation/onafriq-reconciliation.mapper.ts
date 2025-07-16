@@ -13,18 +13,18 @@ export class OnafriqReconciliationMapper {
       Third_PartyID: onafriqTransaction.thirdPartyTransId,
       Transaction_Type: 'Transfer', // 'Transfer' or 'Reversal'. We use only 'Transfer'.
       Transaction_Status: onafriqTransaction.transaction.status, // NOTE: map to 'Success', 'Fail', 'Pending'?
-      From_MSISDN: env.ONAFRIQ_SENDER_MSISDN!,
+      From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
       To_MSISDN: onafriqTransaction.recipientMsisdn,
       Send_Currency: null, // We use 'Receive' type, so this is  N.A.
-      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE!,
+      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
       Send_amount: null, // We use 'Receive' type, so this is  N.A.
       Receive_amount: onafriqTransaction.transaction.amount,
       Fee_Amount: null, // We use 'Receive' type, so this is  N.A.
       Balance_before: null, // leave empty for now, take up again if requested
       Balance_after: null, // leave empty for now, take up again if requested
       Related_Transaction_ID: null, // N.A. for Transaction_Type = 'Transfer'
-      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE!,
-      Partner_name: env.ONAFRIQ_CORPORATE_CODE!,
+      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
+      Partner_name: env.ONAFRIQ_CORPORATE_CODE,
     };
   }
 }

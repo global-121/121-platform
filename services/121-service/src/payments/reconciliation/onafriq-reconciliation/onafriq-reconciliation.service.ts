@@ -73,7 +73,6 @@ export class OnafriqReconciliationService {
       });
 
     // Update the Onafriq transaction with the mfsTransId
-    // ##TODO: update this in callback diagram
     await this.onafriqTransactionScopedRepository.update(
       { transactionId: Equal(transactionId) },
       { mfsTransId: onafriqTransactionCallbackJob.mfsTransId },
@@ -131,7 +130,6 @@ export class OnafriqReconciliationService {
   ): Promise<OnafriqReconciliationReport[]> {
     let where = {};
     if (!isTest) {
-      // ##TODO: should we account for how to handel this in acceptance test? As it will require us to wait a day now.
       const yesterdayStart = new Date();
       yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1); // In production use yesterday
       yesterdayStart.setUTCHours(0, 0, 0, 0);
@@ -157,7 +155,6 @@ export class OnafriqReconciliationService {
         ),
     );
 
-    // ##TODO: is it fine to not do this at all in test?
     if (!isTest && report.length > 0) {
       const csvContent =
         report.length === 0
@@ -204,7 +201,6 @@ export class OnafriqReconciliationService {
       await this.sftp.put(buffer, `DTR/${filename}`);
     } catch (err) {
       console.error('SFTP upload error:', err);
-      // ##TODO: Store the file somewhere else if SFTP fails?
       throw err;
     } finally {
       void this.sftp.end();

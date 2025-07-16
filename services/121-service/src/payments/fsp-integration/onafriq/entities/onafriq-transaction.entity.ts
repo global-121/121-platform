@@ -8,8 +8,8 @@ export class OnafriqTransactionEntity extends Base121Entity {
   @Column({ unique: true })
   public thirdPartyTransId: string;
 
-  @Column({ nullable: true })
-  public mfsTransId: string;
+  @Column({ type: 'character varying', nullable: true })
+  public mfsTransId: string | null;
 
   @Column()
   public recipientMsisdn: string;

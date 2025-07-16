@@ -57,27 +57,29 @@ describe('Export reconciliation report', () => {
 
     // Assert
     expect(response.statusCode).toBe(HttpStatus.OK);
-    expect(response.body.length).toBeGreaterThan(0); // Ensure we have some report items
+    expect(response.body.length).toBe(1);
 
     // Check that transaction data contains expected values
     const firstDataRow: OnafriqReconciliationReport = response.body[0];
-    expect(firstDataRow.Transaction_Type).toBe('Transfer');
-    expect(['success', 'error']).toContain(firstDataRow.Transaction_Status);
-    expect(firstDataRow.To_MSISDN).toBe('24311111111');
-    expect(firstDataRow.Receive_amount).toBe(amount);
-    expect(firstDataRow.Receive_Currency).toBe(env.ONAFRIQ_CURRENCY_CODE);
-    expect(firstDataRow.From_MSISDN).toBe(env.ONAFRIQ_SENDER_MSISDN);
-    expect(firstDataRow.Wallet_Identifier).toBe(env.ONAFRIQ_CORPORATE_CODE);
-    expect(firstDataRow.Partner_name).toBe(env.ONAFRIQ_CORPORATE_CODE);
-    expect(typeof firstDataRow.Datestamp).toBe('string');
-    expect(typeof firstDataRow['Transaction ID']).toBe('string');
-    expect(typeof firstDataRow['Onafriq Transaction ID']).toBe('string');
-    expect(typeof firstDataRow.Third_PartyID).toBe('string');
-    expect(firstDataRow.Send_Currency).toBeNull();
-    expect(firstDataRow.Send_amount).toBeNull();
-    expect(firstDataRow.Fee_Amount).toBeNull();
-    expect(firstDataRow.Balance_before).toBeNull();
-    expect(firstDataRow.Balance_after).toBeNull();
-    expect(firstDataRow.Related_Transaction_ID).toBeNull();
+    expect(firstDataRow).toMatchObject({
+      Transaction_Type: 'Transfer',
+      Transaction_Status: expect.stringMatching(/success|error/),
+      To_MSISDN: '24311111111',
+      Receive_amount: amount,
+      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
+      From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
+      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
+      Partner_name: env.ONAFRIQ_CORPORATE_CODE,
+      Datestamp: expect.any(String),
+      'Transaction ID': expect.any(String),
+      'Onafriq Transaction ID': expect.any(String),
+      Third_PartyID: expect.any(String),
+      Send_Currency: null,
+      Send_amount: null,
+      Fee_Amount: null,
+      Balance_before: null,
+      Balance_after: null,
+      Related_Transaction_ID: null,
+    });
   });
 });

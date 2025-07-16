@@ -20,15 +20,15 @@ export class OnafriqApiHelperService {
   }): OnafriqApiCallServiceRequestBody {
     const batchId = uuid(); // Generate a new batch ID for each request
     const mfsSign = this.generateMfsSign(
-      env.ONAFRIQ_PASSWORD!,
+      env.ONAFRIQ_PASSWORD,
       batchId,
-      env.ONAFRIQ_UNIQUE_KEY!,
+      env.ONAFRIQ_UNIQUE_KEY,
     );
-    const currencyCode = env.ONAFRIQ_CURRENCY_CODE!;
-    const countryCode = env.ONAFRIQ_COUNTRY_CODE!;
+    const currencyCode = env.ONAFRIQ_CURRENCY_CODE;
+    const countryCode = env.ONAFRIQ_COUNTRY_CODE;
     const callServicePayload: OnafriqApiCallServiceRequestBody = {
-      corporateCode: env.ONAFRIQ_CORPORATE_CODE!,
-      password: env.ONAFRIQ_PASSWORD!,
+      corporateCode: env.ONAFRIQ_CORPORATE_CODE,
+      password: env.ONAFRIQ_PASSWORD,
       mfsSign,
       batchId,
       requestBody: [
@@ -42,14 +42,14 @@ export class OnafriqApiHelperService {
             currencyCode,
           },
           sender: {
-            msisdn: env.ONAFRIQ_SENDER_MSISDN!,
+            msisdn: env.ONAFRIQ_SENDER_MSISDN,
             fromCountry: countryCode,
-            name: env.ONAFRIQ_SENDER_NAME!,
-            surname: env.ONAFRIQ_SENDER_SURNAME!,
-            dateOfBirth: env.ONAFRIQ_SENDER_DOB!,
+            name: env.ONAFRIQ_SENDER_NAME,
+            surname: env.ONAFRIQ_SENDER_SURNAME,
+            dateOfBirth: env.ONAFRIQ_SENDER_DOB,
             document: {
-              idNumber: env.ONAFRIQ_SENDER_DOCUMENT_ID!,
-              idType: env.ONAFRIQ_SENDER_DOCUMENT_TYPE!,
+              idNumber: env.ONAFRIQ_SENDER_DOCUMENT_ID,
+              idType: env.ONAFRIQ_SENDER_DOCUMENT_TYPE,
             },
           },
           recipient: {
@@ -67,9 +67,9 @@ export class OnafriqApiHelperService {
   }
 
   private generateMfsSign(
-    password: string,
+    password: string | undefined,
     batchId: string,
-    uniqueKey: string,
+    uniqueKey: string | undefined,
   ): string {
     const dataToHash = `${password}${batchId}${uniqueKey}`;
     return crypto.createHash('sha256').update(dataToHash).digest('hex');
