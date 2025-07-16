@@ -5,6 +5,7 @@ import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
@@ -119,7 +120,9 @@ export class OnafriqReconciliationService {
   }
 
   public async sendReconciliationReport(): Promise<number> {
-    const result = await this.generateAndSendReconciliationReportYesterday();
+    const isTest = IS_DEVELOPMENT; // Use this work-around to make cronjob.test.ts work
+    const result =
+      await this.generateAndSendReconciliationReportYesterday(isTest);
     return result.length;
   }
 
