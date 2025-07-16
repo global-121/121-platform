@@ -28,10 +28,7 @@ test.describe('Validate basic navigation of the Portal', () => {
 
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
-    await loginPage.login(
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await loginPage.login();
     // Navigate to program
     await loginPage.selectProgram(projectTitle);
   });
