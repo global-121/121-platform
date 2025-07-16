@@ -353,8 +353,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 29,
       "isRequired": false,
@@ -375,8 +374,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 31,
       "isRequired": false,
@@ -398,8 +396,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 26,
       "isRequired": false,
@@ -420,8 +417,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 30,
       "isRequired": false,
@@ -457,8 +453,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": true,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 28,
       "isRequired": false,
@@ -479,8 +474,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 27,
       "isRequired": false,
@@ -871,8 +865,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 25,
       "isRequired": false,
@@ -892,8 +885,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 22,
       "isRequired": false,
@@ -913,8 +905,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 23,
       "isRequired": false,
@@ -934,8 +925,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 24,
       "isRequired": false,
@@ -955,8 +945,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 21,
       "isRequired": false,
@@ -976,8 +965,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": false,
       "editableInPortal": true,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 18,
       "isRequired": false,
@@ -1017,8 +1005,7 @@ exports[`Create program should post a program: Create program response for progr
       "duplicateCheck": true,
       "editableInPortal": false,
       "export": [
-        "all-registrations",
-        "included",
+        "payment",
       ],
       "id": 20,
       "isRequired": false,

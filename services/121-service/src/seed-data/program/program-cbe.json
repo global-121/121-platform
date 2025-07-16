@@ -27,7 +27,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "scoring": {},
       "editableInPortal": true,
       "duplicateCheck": false,
@@ -45,7 +45,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
@@ -61,7 +61,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": true,
       "placeholder": null,
       "showInPeopleAffectedTable": false
@@ -77,7 +77,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
@@ -108,7 +108,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
@@ -121,7 +121,7 @@
       "placeholder": {
         "en": "Please type your bank account number"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "text",
       "pattern": ".+",
       "options": null,
