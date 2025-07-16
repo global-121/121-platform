@@ -42,7 +42,7 @@ export class OnafriqReconciliationController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      '[CRON] Generate Onafriq reconciliation data and send to Onafriq SFTP (Returned csv is just used for testing purposes)',
+      'Generate Onafriq reconciliation data and send to Onafriq SFTP (Use for testing or manual export). There is a /cronjobs version of this endpoint.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
