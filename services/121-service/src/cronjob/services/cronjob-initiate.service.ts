@@ -124,10 +124,10 @@ export class CronjobInitiateService {
     disabled: !env.CRON_ONAFRIQ_RECONCILIATION_REPORT,
   })
   public async cronSendReconciliationReport(cronJobMethodName): cronReturn {
-    const { baseUrl, headers } =
+    const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
-    const url = `${baseUrl}/fsps/onafriq/reconciliation-report`;
+    const url = `${baseCronUrl}/fsps/onafriq/reconciliation-report`;
     return await this.callEndpoint(url, 'post', headers);
   }
 

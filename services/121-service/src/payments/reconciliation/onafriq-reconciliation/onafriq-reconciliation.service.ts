@@ -118,11 +118,17 @@ export class OnafriqReconciliationService {
     return OnafriqTransactionStatus.other;
   }
 
+  public async sendReconciliationReport(): Promise<number> {
+    const result = await this.generateAndSendReconciliationReportYesterday();
+    return result.length;
+  }
+
   public async generateAndSendReconciliationReportYesterday(
     isTest?: boolean,
   ): Promise<OnafriqReconciliationReport[]> {
     let where = {};
     if (!isTest) {
+      // ##TODO: should we account for how to handel this in acceptance test? As it will require us to wait a day now.
       const yesterdayStart = new Date();
       yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1); // In production use yesterday
       yesterdayStart.setUTCHours(0, 0, 0, 0);
@@ -158,11 +164,12 @@ export class OnafriqReconciliationService {
       new Date(), // Use current date for the filename
     )}_01.csv`; // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
 
+    // ##TODO: is it fine to not do this at all in test?
     if (!isTest) {
       await this.sendCsvToOnafriqSftpLocation(csvContent, filename);
     }
 
-    // Return for testing purposes only
+    // Return for testing and cron batchSize
     return report;
   }
 
