@@ -50,6 +50,11 @@
     "params": []
   },
   {
+    "method": "post",
+    "path": "/api/cronjobs/fsps/onafriq/reconciliation-report",
+    "params": []
+  },
+  {
     "method": "patch",
     "path": "/api/cronjobs",
     "params": []
