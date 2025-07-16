@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import * as https from 'https';
 
-import { EXTERNAL_API, IS_DEVELOPMENT } from '@121-service/src/config';
+import { EXTERNAL_API, IS_DEVELOPMENT, IS_TEST } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { OnafriqApiCallServiceRequestBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-request-body.dto';
 import { OnafriqApiCallServiceResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-call-service-response-body.dto';
@@ -26,7 +26,8 @@ export class OnafriqApiService {
   ) {
     // NOTE: Adding this was needed to get past an UNABLE_TO_GET_ISSUER_CERT_LOCALLY error on sandbox API. Create a custom HTTPS agent that ignores certificate errors
     // For now, do not use this on production, but first test there without this work-around. If needed, we can add it to production as well.
-    if (IS_DEVELOPMENT) {
+    // The IS_TEST assumes that on test we are using the sandbox API, which is not production.
+    if (IS_DEVELOPMENT || IS_TEST) {
       this.httpsAgent = new https.Agent({
         rejectUnauthorized: false,
       });
