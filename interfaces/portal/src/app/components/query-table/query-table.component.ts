@@ -497,6 +497,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       totalCount: this.totalRecords(),
       currentPaginateQuery,
       previewItemForSelectAll: this.items()[0],
+      select: this.visibleColumns().map((column) => column.field),
     });
   }
 

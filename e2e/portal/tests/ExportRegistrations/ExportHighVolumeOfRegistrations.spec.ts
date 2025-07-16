@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
+test('[29359] Export 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
@@ -49,7 +49,7 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
     await exportDataComponent.exportAndAssertData({
       minRowCount: 15000,
       orderOfDataIsImportant: true,
-      excludedColumns: ['phoneNumber', 'whatsappPhoneNumber'],
+      excludedColumns: ['phoneNumber', 'created'],
     });
   });
 });
