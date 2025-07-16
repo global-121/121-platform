@@ -157,18 +157,18 @@ export class OnafriqReconciliationService {
         ),
     );
 
-    const csvContent =
-      report.length === 0
-        ? ''
-        : Object.keys(report[0]).join(',') +
-          '\n' +
-          report.map((row) => Object.values(row).join(',')).join('\n');
-    const filename = `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(
-      new Date(), // Use current date for the filename
-    )}_01.csv`; // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
-
     // ##TODO: is it fine to not do this at all in test?
-    if (!isTest) {
+    if (!isTest && report.length > 0) {
+      const csvContent =
+        report.length === 0
+          ? ''
+          : Object.keys(report[0]).join(',') +
+            '\n' +
+            report.map((row) => Object.values(row).join(',')).join('\n');
+      const filename = `${env.ONAFRIQ_CORPORATE_CODE}_${this.formatDateToYYYY_MM_DD(
+        new Date(), // Use current date for the filename
+      )}_01.csv`; // 01 indicates version-nr per day. We will only have one report per day, so this is always 01.
+
       await this.sendCsvToOnafriqSftpLocation(csvContent, filename);
     }
 
