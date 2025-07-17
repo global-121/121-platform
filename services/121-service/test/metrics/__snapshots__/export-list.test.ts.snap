@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Metric export list should export all registrations of a single program regardless of status 1`] = `
+exports[`Metric export list should export all registration attributes when no "select" is provided 1`] = `
 {
   "addressCity": "AnotherCity",
   "addressHouseNumber": "2",
@@ -33,7 +33,7 @@ exports[`Metric export list should export all registrations of a single program 
 }
 `;
 
-exports[`Metric export list should export all registrations of a single program regardless of status 2`] = `
+exports[`Metric export list should export all registration attributes when no "select" is provided 2`] = `
 {
   "addressCity": "DifferentCity",
   "addressHouseNumber": "3",
@@ -66,7 +66,7 @@ exports[`Metric export list should export all registrations of a single program 
 }
 `;
 
-exports[`Metric export list should export all registrations of a single program regardless of status 3`] = `
+exports[`Metric export list should export all registration attributes when no "select" is provided 3`] = `
 {
   "addressCity": "AnotherCity",
   "addressHouseNumber": "4",
@@ -99,7 +99,7 @@ exports[`Metric export list should export all registrations of a single program 
 }
 `;
 
-exports[`Metric export list should export all registrations of a single program regardless of status 4`] = `
+exports[`Metric export list should export all registration attributes when no "select" is provided 4`] = `
 {
   "addressCity": "",
   "addressHouseNumber": null,
@@ -129,74 +129,6 @@ exports[`Metric export list should export all registrations of a single program 
   "scope": "",
   "status": "new",
   "whatsappPhoneNumber": "14155235556",
-}
-`;
-
-exports[`Metric export list should return all filtered registrations from 1 program using a filter and search query 1`] = `
-{
-  "addressCity": "",
-  "addressHouseNumber": null,
-  "addressHouseNumberAddition": "",
-  "addressPostalCode": "",
-  "addressStreet": "",
-  "created": Any<String>,
-  "duplicateStatus": "unique",
-  "fspName": "Intersolve-voucher-paper",
-  "fullName": "Jane Doe",
-  "id": 2,
-  "inclusionScore": 0,
-  "lastMessageStatus": "no messages yet",
-  "maxPayments": null,
-  "name": "Jane Doe",
-  "namePartnerOrganization": "",
-  "paymentAmountMultiplier": 1,
-  "paymentCount": 0,
-  "paymentCountRemaining": null,
-  "personAffectedSequence": "PA #2",
-  "phoneNumber": "15005550111",
-  "preferredLanguage": "en",
-  "programFspConfigurationId": 2,
-  "programFspConfigurationLabel": "Albert Heijn voucher paper",
-  "programFspConfigurationName": "Intersolve-voucher-paper",
-  "programId": 2,
-  "referenceId": "reference-id-scoped-goes-pv",
-  "scope": "zeeland.goes",
-  "status": "new",
-  "whatsappPhoneNumber": null,
-}
-`;
-
-exports[`Metric export list should return all filtered registrations from 1 program using a filter for included and a scoped user 1`] = `
-{
-  "addressCity": "",
-  "addressHouseNumber": null,
-  "addressHouseNumberAddition": "",
-  "addressPostalCode": "",
-  "addressStreet": "",
-  "created": Any<String>,
-  "duplicateStatus": "unique",
-  "fspName": "Intersolve-voucher-paper",
-  "fullName": "Jane Doe",
-  "id": 2,
-  "inclusionScore": 0,
-  "lastMessageStatus": "no messages yet",
-  "maxPayments": null,
-  "name": "Jane Doe",
-  "namePartnerOrganization": "",
-  "paymentAmountMultiplier": 1,
-  "paymentCount": 0,
-  "paymentCountRemaining": null,
-  "personAffectedSequence": "PA #2",
-  "phoneNumber": "15005550111",
-  "preferredLanguage": "en",
-  "programFspConfigurationId": 2,
-  "programFspConfigurationLabel": "Albert Heijn voucher paper",
-  "programFspConfigurationName": "Intersolve-voucher-paper",
-  "programId": 2,
-  "referenceId": "reference-id-scoped-goes-pv",
-  "scope": "zeeland.goes",
-  "status": "new",
-  "whatsappPhoneNumber": null,
 }
 `;
 
