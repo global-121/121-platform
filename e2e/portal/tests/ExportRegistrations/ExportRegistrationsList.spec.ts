@@ -46,7 +46,7 @@ test('[29358] Export Selected Registrations', async () => {
       'Selected registrations',
     );
     await exportDataComponent.exportAndAssertData({
-      excludedColumns: ['Registration created'],
+      excludedColumns: ['created'],
     });
   });
 
@@ -57,7 +57,7 @@ test('[29358] Export Selected Registrations', async () => {
     );
     await exportDataComponent.exportAndAssertData({
       format: 'csv',
-      excludedColumns: ['Registration created'],
+      excludedColumns: ['created'],
     });
   });
 });
