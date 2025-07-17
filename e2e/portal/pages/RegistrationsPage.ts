@@ -112,7 +112,8 @@ class RegistrationsPage extends BasePage {
 
   async deselectAllColumns() {
     await this.page.getByTitle('Manage table').click();
-    const checkboxes = this.page.getByRole('checkbox');
+    const dialog = this.page.locator('form');
+    const checkboxes = dialog.getByRole('checkbox');
     const checkboxesCount = await checkboxes.count();
     for (let i = 0; i < checkboxesCount; i++) {
       const checkbox = checkboxes.nth(i);
