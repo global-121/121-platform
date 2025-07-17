@@ -63,10 +63,6 @@ export class ImportRegistrationsMenuComponent {
         if (!actionData) {
           return;
         }
-        actionData.query.filter = {
-          ...actionData.query.filter,
-          status: '$not:deleted',
-        };
         this.updateSelectedRegistrationsActionData.set(actionData);
         this.updateExistingRegistrationsDialogVisible.set(true);
       },
