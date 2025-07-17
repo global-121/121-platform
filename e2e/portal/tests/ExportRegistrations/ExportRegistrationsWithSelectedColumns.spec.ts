@@ -30,7 +30,7 @@ test.beforeAll(async ({ browser }) => {
   await loginPage.login();
 });
 
-test('[29358] Export Selected Registrations', async () => {
+test('[37356] Export should only have selected columns', async () => {
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
 
@@ -41,13 +41,20 @@ test('[29358] Export Selected Registrations', async () => {
   });
 
   await test.step('Export list and validate XLSX files downloaded', async () => {
+    // Configure columns to be exported
+    await registrationsPage.deselectAllColumns();
+    await registrationsPage.configureTableColumns([
+      'FSP',
+      'Address street',
+      'Phone Number',
+      'Name',
+    ]);
+
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectExportOption(
       'Selected registrations',
     );
-    await exportDataComponent.exportAndAssertData({
-      excludedColumns: ['Registration created'],
-    });
+    await exportDataComponent.exportAndAssertData({});
   });
 
   await test.step('Export list and validate CSV files downloaded', async () => {
@@ -57,7 +64,6 @@ test('[29358] Export Selected Registrations', async () => {
     );
     await exportDataComponent.exportAndAssertData({
       format: 'csv',
-      excludedColumns: ['Registration created'],
     });
   });
 });
