@@ -29,21 +29,26 @@ jobs:
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
-      - uses: actions/checkout@v4 # better this action use git diff, so you need checkout the code first
+      - uses: actions/checkout@v4
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
         with:
-          filter: blob:none # reduce clone size
-          fetch-depth: 0 # need full history, the default is 1, which is not enough. if you limit the pull request' commit length, you can set it to your limit.
-      - uses: leavesster/pull-request-path-filter@v0.2 # v0.2 is the latest version
+          filter: blob:none # Reduce clone size/speed
+          fetch-depth: 0 # Full history is needed to determine the "changed files in this PR"
+
+      - uses: leavesster/pull-request-path-filter@v0.2
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
         id: 'filter'
         with:
-          paths:
-            | # notice the `|`, it's required. the left is same as github action's path and paths-ignore
+          paths: |
             - .github/workflows/test_service_api.yml
             - .github/actions/build-service/action.yml
             - services/.env.example
             - services/121-service/**
             - services/mock-service/**
             - '!**.md'
+
   test-shard:
     runs-on: ubuntu-latest
     needs: path-filter

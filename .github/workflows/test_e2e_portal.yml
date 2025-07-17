@@ -21,13 +21,14 @@ jobs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
       - uses: actions/checkout@v4
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         with:
           filter: blob:none # Reduce clone size/speed
           fetch-depth: 0 # Full history is needed to determine the "changed files in this PR"
 
       - uses: leavesster/pull-request-path-filter@v0.2
-        # Other events (from the merge-queue) can safely ignore the path-filter
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         id: filter
         with:
