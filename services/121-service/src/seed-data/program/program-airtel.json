@@ -26,7 +26,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": true
@@ -39,7 +39,7 @@
       "placeholder": {
         "en": "+260000000000"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "tel",
       "options": null,
       "showInPeopleAffectedTable": false

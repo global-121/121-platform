@@ -25,7 +25,7 @@
       },
       "name": "namePartnerOrganization",
       "type": "text",
-      "export": ["all-registrations", "included", "payment"],
+      "export": ["payment"],
       "showInPeopleAffectedTable": true
     },
     {
@@ -36,7 +36,7 @@
       "type": "text",
       "pattern": null,
       "options": null,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
@@ -67,7 +67,7 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "tel",
       "options": null,
       "duplicateCheck": true,
@@ -78,7 +78,7 @@
       "label": {
         "en": "Address street"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -88,7 +88,7 @@
       "label": {
         "en": "Address house number"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "numeric",
       "showInPeopleAffectedTable": false
     },
@@ -97,7 +97,7 @@
       "label": {
         "en": "Address house number addition"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "text",
       "showInPeopleAffectedTable": false
     },
@@ -106,7 +106,7 @@
       "label": {
         "en": "Address postal code"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -116,7 +116,7 @@
       "label": {
         "en": "Address city"
       },
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false

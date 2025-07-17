@@ -212,7 +212,7 @@ export class UpdateRegistrationsComponent {
     ];
 
     this.exportRegistrationsMutation.mutate({
-      type: ExportType.allRegistrations,
+      type: ExportType.registrations,
       paginateQuery: {
         ...this.actionData()?.query,
         select: selectedFields,

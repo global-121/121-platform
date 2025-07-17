@@ -27,7 +27,7 @@
       "type": "text",
       "pattern": null,
       "options": null,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
