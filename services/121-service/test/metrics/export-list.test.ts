@@ -81,7 +81,7 @@ describe('Metric export list', () => {
   it('should export all people affected of a single program regardless of status', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .send();
 
@@ -118,7 +118,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -147,7 +147,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -173,7 +173,7 @@ describe('Metric export list', () => {
 
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         select: 'referenceId,fullName,phoneNumber',
@@ -194,7 +194,7 @@ describe('Metric export list', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .responseType('blob')
       .query({
