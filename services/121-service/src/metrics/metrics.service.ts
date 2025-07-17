@@ -399,7 +399,7 @@ export class MetricsService {
       );
     }
 
-    if (!select) {
+    if (!select && exportType === ExportType.payment) {
       select = await this.getDefaultSelectForExportRegistrations({
         programId,
         relationOptions,

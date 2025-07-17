@@ -84,7 +84,9 @@ describe('Metric export list', () => {
       const exportRegistrationFound = data.find(
         (r) => r.referenceId === registration.referenceId,
       );
-      expect(exportRegistrationFound).toMatchSnapshot();
+      expect(exportRegistrationFound).toMatchSnapshot({
+        created: expect.any(String),
+      });
     }
   });
 
@@ -113,7 +115,9 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
 
-    expect(exportRegistration).toMatchSnapshot();
+    expect(exportRegistration).toMatchSnapshot({
+      created: expect.any(String),
+    });
   });
 
   it('should return all filtered registrations from 1 program using a filter and search query', async () => {
@@ -141,7 +145,9 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
 
-    expect(exportRegistration).toMatchSnapshot();
+    expect(exportRegistration).toMatchSnapshot({
+      created: expect.any(String),
+    });
   });
 
   it('should support using "select" to retrieve a specific subset of columns', async () => {
