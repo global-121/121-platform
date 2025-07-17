@@ -1,11 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  registrationScopedGoesPv,
   registrationScopedMiddelburgPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
@@ -27,21 +25,6 @@ import {
   programIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
-
-function createExportObject(
-  registration: Partial<RegistrationEntity> | any,
-): RegistrationEntity | any {
-  const exportObject = {
-    ...registration,
-  };
-  delete exportObject.programFspConfigurationName;
-  // remove empty values
-  Object.keys(exportObject).forEach(
-    (key) => !exportObject[key] && delete exportObject[key],
-  );
-  exportObject.paymentCount = 0;
-  return exportObject;
-}
 
 describe('Metric export list', () => {
   const OcwProgramId = programIdOCW;
@@ -78,7 +61,7 @@ describe('Metric export list', () => {
     });
   });
 
-  it('should export all people affected of a single program regardless of status', async () => {
+  it('should export all registrations of a single program regardless of status', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
       .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
@@ -101,9 +84,7 @@ describe('Metric export list', () => {
       const exportRegistrationFound = data.find(
         (r) => r.referenceId === registration.referenceId,
       );
-      expect(exportRegistrationFound).toMatchObject(
-        createExportObject(registration),
-      );
+      expect(exportRegistrationFound).toMatchSnapshot();
     }
   });
 
@@ -132,9 +113,7 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
 
-    expect(exportRegistration).toMatchObject(
-      createExportObject(registrationScopedGoesPv),
-    );
+    expect(exportRegistration).toMatchSnapshot();
   });
 
   it('should return all filtered registrations from 1 program using a filter and search query', async () => {
@@ -162,9 +141,7 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
 
-    expect(exportRegistration).toMatchObject(
-      createExportObject(registrationScopedGoesPv),
-    );
+    expect(exportRegistration).toMatchSnapshot();
   });
 
   it('should support using "select" to retrieve a specific subset of columns', async () => {
