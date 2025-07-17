@@ -146,7 +146,7 @@ jobs:
           echo "Some checks have failed." >> $GITHUB_STEP_SUMMARY
           exit 1
       - name: Check required job results
-        if: ${{ contains(needs.*.result, 'failure') != 'true' || contains(needs.*.result, 'cancelled') != 'true' || contains(needs.*.result, 'skipped') != 'true' }}
+        if: ${{ contains(needs.*.result, 'failure') != 'true' || contains(needs.*.result, 'cancelled') != 'true' }}
         run: |
           echo "All required checks have successfully passed." >> $GITHUB_STEP_SUMMARY
           exit 0
