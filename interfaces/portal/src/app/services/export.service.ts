@@ -42,16 +42,12 @@ export class ExportService {
     paginateQuery,
     fromDate,
     toDate,
-    minPayment,
-    maxPayment,
     format,
   }: {
     type: 'pa-data-changes' | ExportType;
     paginateQuery?: PaginateQuery;
     fromDate?: Date;
     toDate?: Date;
-    minPayment?: number;
-    maxPayment?: number;
     format: 'csv' | 'xlsx';
   }) {
     if (type !== ExportType.allRegistrations && paginateQuery) {
@@ -71,12 +67,6 @@ export class ExportService {
       // Add one day to include the selected date as the time is otherwise set to 00:00:00
       const toDateAdjusted = addDaysToDate(toDate, 1);
       exportParams.toDate = dateToIsoString(toDateAdjusted);
-    }
-    if (minPayment) {
-      exportParams.minPayment = minPayment;
-    }
-    if (maxPayment) {
-      exportParams.maxPayment = maxPayment;
     }
 
     const paginateQueryParams =
@@ -106,8 +96,6 @@ export class ExportService {
       paginateQuery,
       fromDate,
       toDate,
-      minPayment,
-      maxPayment,
       format = 'xlsx',
       filename,
     }: {
@@ -115,8 +103,6 @@ export class ExportService {
       paginateQuery?: PaginateQuery;
       fromDate?: Date;
       toDate?: Date;
-      minPayment?: number;
-      maxPayment?: number;
       format?: 'csv' | 'xlsx';
       filename?: string;
     }) => {
@@ -138,8 +124,6 @@ export class ExportService {
         paginateQuery,
         fromDate,
         toDate,
-        minPayment,
-        maxPayment,
         format,
       });
 
