@@ -6,18 +6,21 @@ import {
   input,
   viewChild,
 } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
+import { DatePickerModule } from 'primeng/datepicker';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import {
@@ -41,6 +44,9 @@ import {
     ConfirmationDialogComponent,
     ButtonMenuComponent,
     LatestExportDateComponent,
+    DatePickerModule,
+    FormFieldWrapperComponent,
+    ReactiveFormsModule,
   ],
   providers: [ToastService],
   templateUrl: './export-payments.component.html',
@@ -74,44 +80,10 @@ export class ExportPaymentsComponent {
 
   ExportType = ExportType;
 
-  readonly maxLastPaymentsNumber = computed(() => {
-    if (!this.payments.isSuccess()) {
-      return 0;
-    }
-
-    // At max 5 payments can be exported
-    return Math.min(this.payments.data().length, 5);
+  paymentRangeFormGroup = new FormGroup({
+    fromDate: new FormControl<Date | undefined>(undefined, {}),
+    toDate: new FormControl<Date | undefined>(undefined, {}),
   });
-
-  getMutationData = ({
-    type,
-    withPaymentRange = false,
-  }: {
-    type: ExportType;
-    withPaymentRange?: boolean;
-  }) => {
-    const payments = this.payments.data() ?? [];
-    const orderedPayments = [...payments].sort((a, b) => a.payment - b.payment);
-    const l = payments.length;
-
-    if (!withPaymentRange || l === 0) {
-      return { type };
-    }
-
-    const minPayment =
-      orderedPayments[l - this.maxLastPaymentsNumber()].payment;
-    const maxPayment = orderedPayments[l - 1].payment;
-    return {
-      type,
-      minPayment,
-      maxPayment,
-    };
-  };
-
-  readonly lastPaymentsExportLabel = computed(
-    () =>
-      $localize`:@@export-payments-last:Export last ${this.maxLastPaymentsNumber()} payment(s)`,
-  );
 
   exportPaymentsMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
@@ -125,9 +97,9 @@ export class ExportPaymentsComponent {
 
   readonly exportOptions = computed<MenuItem[]>(() => [
     {
-      label: this.lastPaymentsExportLabel(),
+      label: $localize`Payments`,
       visible:
-        this.maxLastPaymentsNumber() > 0 &&
+        (this.payments.data() ?? []).length > 0 &&
         this.authService.hasAllPermissions({
           projectId: this.projectId(),
           requiredPermissions: [
@@ -155,7 +127,7 @@ export class ExportPaymentsComponent {
       label: $localize`:@@export-payments-unused-vouchers:Unused vouchers`,
       visible:
         projectHasVoucherSupport(this.project.data()) &&
-        this.maxLastPaymentsNumber() > 0 &&
+        (this.payments.data() ?? []).length > 0 &&
         this.authService.hasPermission({
           projectId: this.projectId(),
           requiredPermission: PermissionEnum.PaymentVoucherExport,
@@ -179,7 +151,7 @@ export class ExportPaymentsComponent {
       label: $localize`:@@export-payments-debit-card-usage:Debit card usage`,
       visible:
         projectHasPhysicalCardSupport(this.project.data()) &&
-        this.maxLastPaymentsNumber() > 0 &&
+        (this.payments.data() ?? []).length > 0 &&
         this.authService.hasPermission({
           projectId: this.projectId(),
           requiredPermission: PermissionEnum.FspDebitCardEXPORT,
