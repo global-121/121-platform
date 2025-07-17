@@ -111,7 +111,6 @@ export class UpdateProgramDto {
 
   @ApiProperty({ example: { en: 'description' } })
   @IsOptional()
-  @IsString()
   public aboutProgram?: LocalizedString;
 
   @ApiProperty({ example: { en: 'description' } })
@@ -120,10 +119,12 @@ export class UpdateProgramDto {
   public fullnameNamingConvention?: string[] | null;
 
   @ApiProperty({ example: true })
+  @IsOptional()
   @IsBoolean()
-  public readonly tryWhatsAppFirst: boolean;
+  public readonly tryWhatsAppFirst?: boolean;
 
   @ApiProperty({ example: ['en', 'nl'] })
+  @IsOptional()
   @IsArray()
-  public readonly languages: WrapperType<LanguageEnum[]>;
+  public readonly languages?: WrapperType<LanguageEnum[]>;
 }
