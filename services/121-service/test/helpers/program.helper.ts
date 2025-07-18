@@ -213,6 +213,23 @@ export async function getTransactions({
   return response;
 }
 
+export async function exportTransactionsByDateRange({
+  programId,
+  fromDate,
+  toDate,
+  accessToken,
+}: {
+  programId: number;
+  fromDate: string;
+  toDate: string;
+  accessToken: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/transactions`)
+    .query({ fromDate, toDate })
+    .set('Cookie', [accessToken]);
+}
+
 export async function getFspInstructions(
   programId: number,
   paymentNr: number,

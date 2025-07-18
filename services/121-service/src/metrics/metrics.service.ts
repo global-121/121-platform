@@ -322,20 +322,6 @@ export class MetricsService {
     return relationOptions;
   }
 
-  private getRelationOptionsForDuplicates(
-    programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
-  ): RegistrationDataOptions[] {
-    const relationOptions: RegistrationDataOptions[] = [];
-    for (const programRegistrationAttribute of programRegistrationAttributes) {
-      const name = programRegistrationAttribute.name;
-      const relation = {
-        programRegistrationAttributeId: programRegistrationAttribute.id,
-      };
-      relationOptions.push({ name, relation });
-    }
-    return relationOptions;
-  }
-
   private async getUnusedVouchers(programId?: number): Promise<FileDto> {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
