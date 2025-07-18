@@ -192,11 +192,11 @@ class BasePage {
     // remove the first row (header) from the data
     const [headerRow, ...data] = csvSheet.split('\n');
 
-    if (minRowCount) {
+    if (!!minRowCount) {
       expect(data.length).toBeGreaterThanOrEqual(minRowCount);
     }
 
-    if (expectedRowCount) {
+    if (!!expectedRowCount) {
       expect(data.length).toEqual(expectedRowCount);
     }
 
