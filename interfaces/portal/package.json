@@ -99,7 +99,7 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "knip": "^5.61.0",
+    "knip": "^5.62.0",
     "ng-extract-i18n-merge": "^2.15.1",
     "postcss": "^8.5.5",
     "prettier": "^3.6.2",
