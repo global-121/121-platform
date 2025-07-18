@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -36,7 +35,6 @@ import { ToastService } from '~/services/toast.service';
   selector: 'app-project-registration-debit-cards',
   imports: [
     CardModule,
-    CommonModule,
     FormsModule,
     DataListComponent,
     ButtonModule,

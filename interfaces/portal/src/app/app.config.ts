@@ -7,7 +7,7 @@ import {
   ApplicationConfig,
   DEFAULT_CURRENCY_CODE,
   LOCALE_ID,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
@@ -33,7 +33,7 @@ import { Locale } from '~/utils/locale';
 export const getAppConfig = (locale: Locale): ApplicationConfig => ({
   providers: [
     provideRouter(routes, withComponentInputBinding()),
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
     provideAngularSvgIcon(),
