@@ -64,13 +64,13 @@ export class OnafriqReconciliationController {
   @ApiQuery({
     name: 'fromDate',
     required: false,
-    description: new Date().toISOString(),
+    description: `Use format: ${new Date().toISOString()}`,
     type: 'string',
   })
   @ApiQuery({
     name: 'toDate',
     required: false,
-    description: new Date().toISOString(),
+    description: `Use format: ${new Date().toISOString()}`,
     type: 'string',
   })
   @Post('reconciliation-report')
