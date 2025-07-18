@@ -52,7 +52,7 @@ describe('Export reconciliation report', () => {
     const response = await getServer()
       .post(`/fsps/onafriq/reconciliation-report`)
       .set('Cookie', [accessToken])
-      .query({ isTest: true }) // Use isTest to generate report with transactions from today
+      .query({ toDate: new Date() }) // Use toDate to generate report with transactions from today
       .send();
 
     // Assert
