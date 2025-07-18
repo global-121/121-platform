@@ -118,14 +118,9 @@ class TableComponent {
   }
 
   async getSortingTypeOfColumn(columnName: string) {
-    const columnHeader = await this.page.getByRole('columnheader', {
-      name: columnName,
-    });
-
     const sortColumnHeader = await this.table
-      .locator('th')
-      .filter({
-        has: columnHeader,
+      .getByRole('columnheader', {
+        name: columnName,
       })
       .getAttribute('aria-sort');
 
