@@ -269,6 +269,10 @@ svg-icon svg {
     }
   }
 
+  .p-tab {
+    @apply flex items-center;
+  }
+
   // All form-inputs should be full-width, a wrapper should be in control of the width.
   .p-password,
   .p-select,
