@@ -16,7 +16,6 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { SidebarModule } from 'primeng/sidebar';
 
 import { AppRoutes } from '~/app.routes';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
@@ -37,7 +36,6 @@ type CreateProjectFormGroup =
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    SidebarModule,
     FormSidebarComponent,
     ReactiveFormsModule,
     FormFieldWrapperComponent,
