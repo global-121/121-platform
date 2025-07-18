@@ -1628,6 +1628,9 @@
       <trans-unit id="7088714514100361567" datatype="html">
         <source>Equal to</source>
       </trans-unit>
+      <trans-unit id="4874025357079324070" datatype="html">
+        <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
