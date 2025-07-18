@@ -102,11 +102,27 @@ class RegistrationsPage extends BasePage {
     await this.table.validateSelectionCount(0);
   }
 
-  async manageTableColumns(columns: string[]) {
+  async configureTableColumns(columns: string[]) {
     await this.page.getByTitle('Manage table').click();
     for (const column of columns) {
       await this.page.getByLabel(column).check();
     }
+    await this.page.getByRole('button', { name: 'Apply' }).click();
+  }
+
+  async deselectAllColumns() {
+    await this.page.getByTitle('Manage table').click();
+    const dialog = this.page.locator('form');
+    const checkboxes = dialog.getByRole('checkbox');
+    const checkboxesCount = await checkboxes.count();
+    for (let i = 0; i < checkboxesCount; i++) {
+      const checkbox = checkboxes.nth(i);
+      if (await checkbox.isChecked()) {
+        await checkbox.click();
+      }
+    }
+    // Ensure at least one column is selected
+    await this.page.getByLabel('Reg. #').check();
     await this.page.getByRole('button', { name: 'Apply' }).click();
   }
 

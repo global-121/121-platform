@@ -22,12 +22,14 @@ class ExportData extends BasePage {
     excludedColumns,
     orderOfDataIsImportant,
     format = 'xlsx',
+    snapshotName,
   }: {
     minRowCount?: number;
     exactRowCount?: number;
     excludedColumns?: string[];
     orderOfDataIsImportant?: boolean;
     format?: 'xlsx' | 'csv';
+    snapshotName?: string;
   } = {}) {
     if (format === 'csv') {
       await this.page.getByLabel('CSV').click();
@@ -41,6 +43,7 @@ class ExportData extends BasePage {
       format,
       excludedColumns,
       orderOfDataIsImportant,
+      snapshotName,
     });
   }
 }

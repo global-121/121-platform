@@ -46,7 +46,7 @@ test('[34949] Filter registrations by FSP (from the bug)', async ({ page }) => {
   // Act & Assert
   // First ensure the FSP column is visible
   await test.step('Display FSP column in the table', async () => {
-    await registrations.manageTableColumns(['FSP']);
+    await registrations.configureTableColumns(['FSP']);
   });
 
   // Test filtering by Visa FSP
