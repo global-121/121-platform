@@ -172,6 +172,7 @@ class BasePage {
     format,
     orderOfDataIsImportant = false,
     excludedColumns = [],
+    snapshotName,
   }: {
     filePath: string;
     minRowCount?: number;
@@ -179,6 +180,7 @@ class BasePage {
     format: 'xlsx' | 'csv';
     orderOfDataIsImportant?: boolean;
     excludedColumns?: string[];
+    snapshotName?: string;
   }) {
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -190,11 +192,11 @@ class BasePage {
     // remove the first row (header) from the data
     const [headerRow, ...data] = csvSheet.split('\n');
 
-    if (!!minRowCount) {
+    if (minRowCount) {
       expect(data.length).toBeGreaterThanOrEqual(minRowCount);
     }
 
-    if (!!expectedRowCount) {
+    if (expectedRowCount) {
       expect(data.length).toEqual(expectedRowCount);
     }
 
@@ -202,7 +204,8 @@ class BasePage {
 
     if (!orderOfDataIsImportant) {
       // sort the data to make the snapshot more stable
-      dataToValidate = data.sort((a, b) => a.localeCompare(b))[0];
+      data.sort((a, b) => a.localeCompare(b));
+      dataToValidate = data[0];
     }
 
     const headerCells = headerRow.split(',');
@@ -228,7 +231,9 @@ class BasePage {
     }
 
     // make sure we have the expected columns, and also validate the first row of data
-    expect(normalizedDownloadedFile).toMatchSnapshot(`exported-${format}.csv`);
+    expect(normalizedDownloadedFile).toMatchSnapshot(
+      snapshotName ?? `exported-${format}.csv`,
+    );
   }
 }
 
