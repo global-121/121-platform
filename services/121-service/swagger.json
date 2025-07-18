@@ -704,7 +704,10 @@
   {
     "method": "post",
     "path": "/api/fsps/onafriq/reconciliation-report",
-    "params": []
+    "params": [
+      "fromDate",
+      "toDate"
+    ]
   },
   {
     "method": "post",

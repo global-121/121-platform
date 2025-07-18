@@ -1,8 +1,20 @@
-import { Controller, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
-import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
 import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
@@ -49,17 +61,30 @@ export class OnafriqReconciliationController {
     description: 'Reconciliation report generated and sent successfully.',
   })
   @HttpCode(HttpStatus.OK)
+  @ApiQuery({
+    name: 'fromDate',
+    required: false,
+    description: new Date().toISOString(),
+    type: 'string',
+  })
+  @ApiQuery({
+    name: 'toDate',
+    required: false,
+    description: new Date().toISOString(),
+    type: 'string',
+  })
   @Post('reconciliation-report')
   public async generateReconciliationReport(
-    @Query('isTest') isTest = false,
+    @Query('fromDate') fromDate: Date,
+    @Query('toDate') toDate: Date,
   ): Promise<OnafriqReconciliationReport[]> {
-    if (isTest && !IS_DEVELOPMENT) {
-      throw new Error(
-        'isTest query parameter can only be used in development environment',
-      );
+    if (toDate && fromDate && toDate <= fromDate) {
+      const errors = 'toDate must be greater than fromDate';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
     return await this.onafriqReconciliationService.generateAndSendReconciliationReportYesterday(
-      isTest,
+      toDate,
+      fromDate,
     );
   }
 }

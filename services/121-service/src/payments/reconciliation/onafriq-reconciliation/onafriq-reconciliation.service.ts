@@ -5,7 +5,7 @@ import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqTransactionCallbackDto } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/dtos/onafriq-transaction-callback.dto';
@@ -119,17 +119,26 @@ export class OnafriqReconciliationService {
   }
 
   public async sendReconciliationReport(): Promise<number> {
-    const isTest = IS_DEVELOPMENT; // Use this work-around to make cronjob.test.ts work
-    const result =
-      await this.generateAndSendReconciliationReportYesterday(isTest);
+    const result = await this.generateAndSendReconciliationReportYesterday();
     return result.length;
   }
 
   public async generateAndSendReconciliationReportYesterday(
-    isTest?: boolean,
+    toDate?: Date,
+    fromDate?: Date,
   ): Promise<OnafriqReconciliationReport[]> {
     let where = {};
-    if (!isTest) {
+    if (fromDate || toDate) {
+      // if at least one provided, assume date range with open on the other end
+      const fromDateFilter = fromDate || new Date(2000, 1, 1);
+      const toDateFilter = toDate || new Date();
+      where = {
+        transaction: {
+          created: Between(fromDateFilter, toDateFilter),
+        },
+      };
+    } else {
+      // if no date range provide, assume yesterday. This is the cron/production scenario.
       const yesterdayStart = new Date();
       yesterdayStart.setUTCDate(yesterdayStart.getUTCDate() - 1); // In production use yesterday
       yesterdayStart.setUTCHours(0, 0, 0, 0);
@@ -155,7 +164,9 @@ export class OnafriqReconciliationService {
         ),
     );
 
-    if (!isTest && report.length > 0) {
+    // Only send to SFTP if transactions, and only on production (staging also has IS_PRODUCTION, but also MOCK_ONAFRIQ=true. // REFACTOR: this is not full-proof)
+    // NOTE: If you need to touch this code and test locally, make sure to clean up any test results on sftp location.
+    if (report.length > 0 && IS_PRODUCTION && !env.MOCK_ONAFRIQ) {
       const csvContent =
         report.length === 0
           ? ''
