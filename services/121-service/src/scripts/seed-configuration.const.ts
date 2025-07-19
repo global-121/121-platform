@@ -1,5 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { demoMessageTemplateMobileMoney } from '@121-service/src/seed-data/message-template/demo-message-template-mobile-money.const';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
@@ -94,6 +95,17 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         messageTemplate: messageTemplateGeneric,
       },
     ],
+  },
+  {
+    name: SeedScript.demoMobileMoneyProgram,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'demo-program-mobile-money.json',
+        messageTemplate: demoMessageTemplateMobileMoney,
+      },
+    ],
+    includeDebugScopes: true,
   },
   {
     name: SeedScript.testMultiple,

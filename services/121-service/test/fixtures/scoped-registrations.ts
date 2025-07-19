@@ -8,7 +8,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 ////////////////////////
 export const registrationScopedGoesPv = {
   referenceId: 'reference-id-scoped-goes-pv',
-  scope: DebugScope.ZeelandGoes,
+  scope: DebugScope.KisumuEast,
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
   fullName: 'Jane Doe',
@@ -17,7 +17,7 @@ export const registrationScopedGoesPv = {
 
 export const registrationScopedMiddelburgPv = {
   referenceId: 'reference-id-scoped-middelburg-pv',
-  scope: DebugScope.ZeelandMiddelburg,
+  scope: DebugScope.KisumuWest,
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
   fullName: 'Juliet Marsh',
@@ -27,7 +27,7 @@ export const registrationScopedMiddelburgPv = {
 export const registrationScopedUtrechtPv = {
   referenceId: 'reference-id-scoped-utrecht-pv',
   preferredLanguage: LanguageEnum.nl,
-  scope: DebugScope.UtrechtHouten,
+  scope: DebugScope.TurkanaNorth,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
   fullName: 'Sam Winters',
   programFspConfigurationName: Fsps.intersolveVoucherPaper,
