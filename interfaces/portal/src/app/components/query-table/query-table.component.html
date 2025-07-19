@@ -100,10 +100,7 @@
         @let isColumnFiltered = getIsColumnFiltered(column);
 
         <th [pSortableColumn]="columnSortField">
-          <div
-            class="flex items-center text-nowrap"
-            role="columnheader"
-          >
+          <div class="flex items-center text-nowrap">
             <ng-container>{{ column.header }}</ng-container>
 
             @if (columnSortField) {

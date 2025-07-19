@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-monitoring-iframe',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './monitoring-iframe.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
