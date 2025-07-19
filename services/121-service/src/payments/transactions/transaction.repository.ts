@@ -12,6 +12,7 @@ import {
   ScopedRepository,
 } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
 export class TransactionScopedRepository extends ScopedRepository<TransactionEntity> {
   constructor(
@@ -37,14 +38,24 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   }
 
   // TODO: This method should be moved to the payment repository, however we do not have this yet as there is no payment entity
-  public async getTransactionsForPayment({
+  public async getTransactions({
     programId,
     payment,
+    fromDate,
+    toDate,
+    fspSpecificJoinFields,
   }: {
     programId: number;
-    payment: number;
+    payment?: number;
+    fromDate?: Date;
+    toDate?: Date;
+    fspSpecificJoinFields?: {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+      alias: string;
+    }[];
   }): Promise<
-    {
+    ({
       id: number;
       created: Date;
       updated: Date;
@@ -57,7 +68,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       amount: number;
       errorMessage: string | null;
       programFspConfigurationName: string;
-    }[]
+    } & Record<string, string>)[]
   > {
     const query = this.createQueryBuilder('transaction')
       .select([
@@ -79,8 +90,33 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('transaction."programId" = :programId', {
         programId,
-      })
-      .andWhere('transaction.payment = :payment', { payment });
+      });
+
+    if (payment !== undefined && payment !== null) {
+      query.andWhere('transaction.payment = :payment', { payment });
+    }
+    if (fromDate) {
+      query.andWhere('transaction.created >= :fromDate', { fromDate });
+    }
+    if (toDate) {
+      query.andWhere('transaction.created <= :toDate', { toDate });
+    }
+
+    if (!fspSpecificJoinFields) {
+      return query.getRawMany();
+    }
+
+    for (const field of fspSpecificJoinFields) {
+      const joinTableAlias = `joinTable${field.entityJoinedToTransaction.name}${field.attribute}`;
+      query.leftJoin(
+        field.entityJoinedToTransaction,
+        joinTableAlias,
+        `transaction.id = ${joinTableAlias}.transactionId`,
+      );
+      query.addSelect(
+        `"${joinTableAlias}"."${field.attribute}" as "${field.alias}"`,
+      );
+    }
 
     return query.getRawMany();
   }
