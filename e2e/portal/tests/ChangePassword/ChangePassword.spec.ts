@@ -1,150 +1,136 @@
 import { type Page, test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import {
-  getRegistrationIdByReferenceId,
-  seedIncludedRegistrations,
-} from '@121-service/test/helpers/registration.helper';
-import {
-  getAccessToken,
-  resetDB,
-} from '@121-service/test/helpers/utility.helper';
-import {
-  programIdPV,
-  registrationPV5,
-} from '@121-service/test/registrations/pagination/pagination-data';
+import { resetDB } from '@121-service/test/helpers/utility.helper';
 
-import {
-  dropdownInputs,
-  numberInputs,
-  textInputs,
-} from '@121-e2e/portal/helpers/PersonalInformationFields';
+import ChangePasswordPage from '@121-e2e/portal/pages/ChangePasswordPage';
+import HomePage from '@121-e2e/portal/pages/HomePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActivityLogPage';
-import RegistrationPersonalInformationPage from '@121-e2e/portal/pages/RegistrationPersonalInformationPage';
 
-let registrationId: number;
-
-const reset = async () => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
-  registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
-    referenceId: registrationPV5.referenceId,
-    accessToken,
-  });
-};
-
-const login = async (page: Page, email?: string, password?: string) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(email, password);
-};
-
-const goToEditPersonalInformationPage = async (page: Page) => {
-  const activityLogPage = new RegistrationActivityLogPage(page);
-  await activityLogPage.goto(
-    `/project/${programIdPV}/registrations/${registrationId}`,
-  );
-  await activityLogPage.navigateToPersonalInformation();
-};
-
-test.describe('Edit all the fields in registration Personal Information', () => {
+test.describe('Test change password functionality', () => {
+  let password = env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW;
   let page: Page;
 
   test.beforeAll(async ({ browser }) => {
-    await reset();
     page = await browser.newPage();
-    await login(page);
-    await goToEditPersonalInformationPage(page);
+    await resetDB(SeedScript.testMultiple, __filename);
+
+    // Login
+    const loginPage = new LoginPage(page);
+    await page.goto('/');
+    await loginPage.login(
+      env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+      password ?? '',
+    );
   });
 
-  test.beforeEach(async () => {
-    const personalInformationPage = new RegistrationPersonalInformationPage(
-      page,
-    );
-    await personalInformationPage.clickEditInformationButton();
+  test.afterEach(async () => {
+    await page.goto('/');
   });
 
   test.afterAll(async () => {
     await page.close();
   });
 
-  test('[35284] Edit: Dropdown Selection fields', async () => {
-    const personalInformationPage = new RegistrationPersonalInformationPage(
-      page,
-    );
-    await personalInformationPage.selectDropdownOption({
-      dropdownIdName: 'preferredLanguage',
-      dropdownLabel: dropdownInputs.preferredLanguage.fieldName,
-      option: 'Indonesian',
-    });
-    await personalInformationPage.saveChanges();
-    await personalInformationPage.validateToastMessageAndClose(
-      'Personal information edited successfully.',
-    );
-    // Validate the selected option
-    await personalInformationPage.validatePersonalInformationField({
-      fieldName: dropdownInputs.preferredLanguage.fieldName,
-      fieldValue: 'Indonesian',
+  test('Change password redirect', async () => {
+    const changePasswordPage = new ChangePasswordPage(page);
+
+    await test.step('Should bring the user to the Change-Password-page from a well-known URL', async () => {
+      await page.goto('/.well-known/change-password');
+
+      await changePasswordPage.changePasswordButton.isVisible();
     });
   });
 
-  test('[35285] Edit: Text Input fields', async () => {
-    const personalInformationPage = new RegistrationPersonalInformationPage(
-      page,
-    );
-    // Fill all text inputs
-    for (const [textInputIdName, data] of Object.entries(textInputs)) {
-      await personalInformationPage.fillTextInput({
-        textInputIdName,
-        textInputValue: data.textInputValue,
+  test('[29310] Change password unsuccessfully (Non-matching passwords)', async () => {
+    const homePage = new HomePage(page);
+    const changePasswordPage = new ChangePasswordPage(page);
+
+    await test.step('Should navigate to user account dropdown and select change password option', async () => {
+      await homePage.selectAccountOption('Change password');
+    });
+
+    await test.step('Should type wrong current password and recieve error', async () => {
+      await changePasswordPage.fillInChangePassword({
+        currentPassword: `${password ?? ''}-with-a-typo`,
+        newPassword: `${password}-new`,
+        confirmPassword: 'newPassword',
       });
-    }
-    await personalInformationPage.saveChanges();
-    // Validate all text fields
-    // If count is included and is greater than 1, it means that the field is repeated
-    // in the personal information page and should be validated multiple times Scope
-    for (const [_textInputIdName, data] of Object.entries(textInputs)) {
-      if (!('count' in data) || data.count === 1) {
-        await personalInformationPage.validatePersonalInformationField({
-          fieldName: data.fieldName,
-          fieldValue: data.textInputValue,
-        });
-      } else {
-        await personalInformationPage.validateMultiplePersonalInformationFields(
-          {
-            fieldName: data.fieldName,
-            fieldValue: data.textInputValue,
-            expectedCount: data.count,
-          },
-        );
-      }
-    }
-    await personalInformationPage.validateRegistrationTitle(
-      textInputs.name.textInputValue,
-    );
+      await changePasswordPage.submitChangePassword();
+      await changePasswordPage.validateFormError({
+        errorText: 'Something went wrong: Your password was incorrect.',
+      });
+    });
   });
 
-  test('[35286] Edit: Number Input fields', async () => {
-    const personalInformationPage = new RegistrationPersonalInformationPage(
-      page,
-    );
-    // Fill all number inputs
-    for (const [numberInputIdName, data] of Object.entries(numberInputs)) {
-      await personalInformationPage.fillNumberInput({
-        numberInputIdName,
-        numberInputValue: data.numberInputValue,
+  test('[29309] Change password successfully', async () => {
+    const homePage = new HomePage(page);
+    const changePasswordPage = new ChangePasswordPage(page);
+    const loginPage = new LoginPage(page);
+
+    await test.step('Should navigate to user account dropdown and select change password option', async () => {
+      await homePage.selectAccountOption('Change password');
+    });
+
+    await test.step('Should change password successfully', async () => {
+      password = 'newPassword'; // Update password variable to new value
+      await changePasswordPage.fillInChangePassword({
+        currentPassword: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+        newPassword: password,
+        confirmPassword: password,
       });
-    }
-    await personalInformationPage.saveChanges();
-    // Validate all number fields
-    for (const [_numberInputIdName, data] of Object.entries(numberInputs)) {
-      await personalInformationPage.validatePersonalInformationField({
-        fieldName: data.fieldName,
-        fieldValue: String(data.numberInputValue),
+      await changePasswordPage.submitChangePassword();
+      await changePasswordPage.assertChangePasswordSuccessPopUp();
+    });
+
+    await test.step('Login with new credentials', async () => {
+      await homePage.selectAccountOption('Logout');
+      await loginPage.login(
+        env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+        'newPassword',
+      );
+    });
+
+    await test.step('Login with old credentials', async () => {
+      await homePage.selectAccountOption('Logout');
+      await loginPage.login(
+        env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+        env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW ?? '',
+        true,
+      );
+      await loginPage.validateFormError({
+        errorText:
+          'Invalid email or password. Double-check your credentials and try again.',
       });
-    }
+    });
+
+    await test.step('Login with new credentials', async () => {
+      await loginPage.login(
+        env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW ?? '',
+        'newPassword',
+      );
+    });
+  });
+
+  test('[29311] Change password unsuccessfully (Current password incorrect)', async () => {
+    const homePage = new HomePage(page);
+    const changePasswordPage = new ChangePasswordPage(page);
+
+    await test.step('Should navigate to user account dropdown and select change password option', async () => {
+      await homePage.selectAccountOption('Change password');
+    });
+
+    await test.step('Should type wrong confirm password and recieve error', async () => {
+      await changePasswordPage.fillInChangePassword({
+        currentPassword: password,
+        newPassword: `${password}-new`,
+        confirmPassword: 'newPasswordWrong',
+      });
+      await changePasswordPage.submitChangePassword();
+      await changePasswordPage.validateFormError({
+        errorText: 'The confirm password must be equal to the new password.',
+      });
+    });
   });
 });
