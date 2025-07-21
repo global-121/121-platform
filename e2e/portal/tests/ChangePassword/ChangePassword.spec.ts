@@ -54,7 +54,7 @@ test.describe('Test change password functionality', () => {
     await test.step('Should type wrong current password and recieve error', async () => {
       await changePasswordPage.fillInChangePassword({
         currentPassword: `${password ?? ''}-with-a-typo`,
-        newPassword: `${password}-new`,
+        newPassword: 'newPassword',
         confirmPassword: 'newPassword',
       });
       await changePasswordPage.submitChangePassword();
