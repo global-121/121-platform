@@ -11,7 +11,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 test.describe('Test change password functionality', () => {
   let password = env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW;
   let page: Page;
-
+  // Arrange
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     await resetDB(SeedScript.testMultiple, __filename);
@@ -42,7 +42,7 @@ test.describe('Test change password functionality', () => {
       await changePasswordPage.changePasswordButton.isVisible();
     });
   });
-
+  // Act and Assert
   test('[29310] Change password unsuccessfully (Non-matching passwords)', async () => {
     const homePage = new HomePage(page);
     const changePasswordPage = new ChangePasswordPage(page);
