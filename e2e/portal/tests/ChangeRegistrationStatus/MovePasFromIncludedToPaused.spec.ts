@@ -52,6 +52,7 @@ test('[31212] Move PA(s) from status "Included" to "Paused"', async ({
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Pause',
+      sendMessage: false,
     });
     await basePage.validateToastMessageAndClose(toastMessage);
   });

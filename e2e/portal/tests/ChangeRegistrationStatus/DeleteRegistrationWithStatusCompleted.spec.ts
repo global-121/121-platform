@@ -60,6 +60,7 @@ test('[34411] Delete registration with status "Completed"', async ({
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPvMaxPayment.fullName,
       status: 'Delete',
+      sendMessage: false,
     });
     await registrations.validateToastMessageAndClose(toastMessage);
   });

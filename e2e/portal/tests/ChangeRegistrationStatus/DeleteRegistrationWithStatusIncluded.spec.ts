@@ -49,6 +49,7 @@ test('[34409] Delete registration with status "Included"', async ({ page }) => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
+      sendMessage: false,
     });
     await registrations.validateToastMessageAndClose(toastMessage);
   });
