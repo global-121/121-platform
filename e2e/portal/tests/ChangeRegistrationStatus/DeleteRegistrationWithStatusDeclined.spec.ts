@@ -49,6 +49,7 @@ test('[34412] Delete registration with status "Declined"', async ({ page }) => {
     await tableComponent.changeRegistrationStatusByNameWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
+      sendMessage: false,
     });
     await registrations.validateToastMessageAndClose(toastMessage);
   });

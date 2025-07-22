@@ -1,5 +1,6 @@
 import { type Page, test } from '@playwright/test';
 
+import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -17,38 +18,30 @@ const toastMessage =
   'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 const customMessage =
   'Test custom message to change the status of registration';
+
 // Arrange
-const reset = async () => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
-  await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
-};
-
-const login = async (page: Page, email?: string, password?: string) => {
-  const loginPage = new LoginPage(page);
-  await page.goto(`/`);
-  await loginPage.login(email, password);
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
-};
-
-const navigateToRegistrationsAndResetFilters = async (page: Page) => {
-  const registrations = new RegistrationsPage(page);
-
-  await registrations.navigateToProgramPage('Registrations');
-  await registrations.deselectRegistrations();
-};
-
 test.describe('Change status of registration with and without templated message', () => {
   let page: Page;
 
   test.beforeAll(async ({ browser }) => {
-    await reset();
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
     page = await browser.newPage();
-    await login(page);
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login(
+      env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? '',
+      env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN ?? '',
+    );
+    // Navigate to program
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
   });
 
   test.afterEach(async () => {
-    await navigateToRegistrationsAndResetFilters(page);
+    const registrations = new RegistrationsPage(page);
+
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectRegistrations();
   });
 
   test.afterAll(async () => {

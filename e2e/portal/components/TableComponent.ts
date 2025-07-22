@@ -444,6 +444,7 @@ class TableComponent {
     const messageText = await notificationText.textContent();
     // Check message content with snapshot
     expect(messageText).toMatchSnapshot();
+    await messageNotification.getByRole('button').click();
   }
 
   async validateActivityNotPresentByType(notificationType: string) {
