@@ -1,6 +1,12 @@
-import { DOCUMENT } from '@angular/common';
-import { effect, inject, Injectable, Signal, signal } from '@angular/core';
-import { computed } from '@angular/core';
+import {
+  computed,
+  DOCUMENT,
+  effect,
+  inject,
+  Injectable,
+  Signal,
+  signal,
+} from '@angular/core';
 
 type LogicalPosition = 'end' | 'start';
 type PhysicalPosition = 'left' | 'right';

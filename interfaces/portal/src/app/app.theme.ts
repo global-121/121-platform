@@ -1,6 +1,6 @@
 //mypreset.ts
-import { definePreset } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
+import { definePreset } from '@primeuix/themes';
+import Aura from '@primeuix/themes/aura';
 import tailwindConfig from 'tailwind.config';
 
 import { getTailwindConfig } from '~/utils/tailwind';
@@ -26,7 +26,6 @@ const severityVariants = {
   error: severityVariant('red'),
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Aura is typed as any by primeng
 const AppTheme = definePreset(Aura, {
   // Temporary theming, to be replaced with a proper theme created by G&T
   semantic: {
@@ -93,43 +92,35 @@ const AppTheme = definePreset(Aura, {
   },
   components: {
     button: {
-      gap: '0.625rem',
-      paddingX: '1.25rem',
-      paddingY: '0.6rem',
-      sm: {
-        paddingX: '1rem',
-        paddingY: '0.25rem',
-      },
       colorScheme: {
         light: {
-          primary: {
-            hover: {
-              background: colors.purple[600],
+          root: {
+            gap: '0.625rem',
+            paddingX: '1.25rem',
+            paddingY: '0.6rem',
+            sm: {
+              paddingX: '1rem',
+              paddingY: '0.25rem',
             },
-            active: {
-              background: colors.purple[900],
+            lg: {
+              paddingX: '1rem',
+              paddingY: '0.25rem',
+              iconOnlyWidth: '2.5rem',
+            },
+            primary: {
+              hoverBackground: colors.purple[600],
+              activeBackground: colors.purple[900],
             },
           },
           outlined: {
             primary: {
-              hover: {
-                background: colors.purple[100],
-              },
-              active: {
-                background: colors.white,
-                color: colors.purple[900],
-              },
+              hoverBackground: colors.purple[100],
+              activeBackground: colors.white,
             },
             contrast: {
-              border: {
-                color: colors.grey[500],
-              },
-              hover: {
-                background: colors.grey[100],
-              },
-              active: {
-                background: colors.white,
-              },
+              borderColor: colors.grey[500],
+              hoverBackground: colors.grey[100],
+              activeBackground: colors.white,
             },
           },
           text: {
@@ -144,20 +135,22 @@ const AppTheme = definePreset(Aura, {
       },
     },
     card: {
-      shadow: 'none',
-    },
-    datatable: {
-      body: {
-        cell: {
-          padding: '0.625rem 1rem',
-        },
-      },
       colorScheme: {
         light: {
+          root: {
+            shadow: 'none',
+          },
+        },
+      },
+    },
+    datatable: {
+      colorScheme: {
+        light: {
+          bodyCell: {
+            padding: '0.625rem 1rem',
+          },
           row: {
-            hover: {
-              color: colors.black.DEFAULT,
-            },
+            hoverColor: colors.black.DEFAULT,
           },
         },
       },
@@ -170,19 +163,13 @@ const AppTheme = definePreset(Aura, {
     radiobutton: {
       colorScheme: {
         light: {
-          icon: {
-            checked: {
-              color: colors.purple.DEFAULT,
-              hover: {
-                color: colors.purple.DEFAULT,
-              },
-            },
+          root: {
+            checkedBackground: colors.white,
+            checkedHoverBackground: colors.white,
           },
-          checked: {
-            background: colors.white,
-            hover: {
-              background: colors.white,
-            },
+          icon: {
+            checkedColor: colors.purple.DEFAULT,
+            checkedHoverColor: colors.purple.DEFAULT,
           },
         },
       },
@@ -202,10 +189,8 @@ const AppTheme = definePreset(Aura, {
     tabs: {
       tab: {
         color: colors.black.DEFAULT,
-        hover: {
-          color: colors.grey[700],
-          borderColor: colors.grey[700],
-        },
+        hoverColor: colors.grey[700],
+        hoverBorderColor: colors.grey[700],
       },
     },
     toast: {
@@ -216,14 +201,22 @@ const AppTheme = definePreset(Aura, {
     tooltip: {
       colorScheme: {
         light: {
-          background: colors.white,
-          color: colors.black.DEFAULT,
-          shadow: tailwindConfig.theme.extend.boxShadow.tooltip,
+          root: {
+            background: colors.white,
+            color: colors.black.DEFAULT,
+            shadow: tailwindConfig.theme.extend.boxShadow.tooltip,
+          },
         },
       },
     },
     chip: {
-      paddingY: '0.125rem',
+      colorScheme: {
+        light: {
+          root: {
+            paddingY: '0.125rem',
+          },
+        },
+      },
     },
   },
 });
