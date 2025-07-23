@@ -19,6 +19,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPV,
+  registrationPV1,
   registrationPV2,
   registrationPV3,
   registrationPV4,
@@ -48,6 +50,8 @@ const deleteStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Deleted" successfully\. The status change can take up to a minute to process\./;
 const pauseStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Paused" successfully\. The status change can take up to a minute to process\./;
+const validateStatusToastMessage =
+  /The status of \d+ registration\(s\) is being changed to "Validated" successfully\. The status change can take up to a minute to process\./;
 const customMessage =
   'Test custom message to change the status of registration';
 
@@ -752,6 +756,99 @@ test.describe('Change status of registration with different status transitions',
         status: 'Paused',
       });
       await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31206] Move PA(s) from status "New" to "Validated"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV1],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+    // Act
+    await test.step('Change status of first selected registration to "Validated"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV1.fullName,
+        status: 'Validate',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(
+        validateStatusToastMessage,
+      );
+    });
+
+    await test.step('Search for the registration with status "Validated"', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV1.fullName,
+      });
+    });
+    // Assert
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Validated',
+      });
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31220] Move PA(s) from status "Declined" to "Included"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.declined,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    // Act
+    await test.step('Search for the registration with status "Declined"', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: 'Declined',
+      });
+    });
+
+    await test.step('Change status of first selected registration to "Included"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV.fullName,
+        status: 'Include',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(
+        includeStatusToastMessage,
+      );
+      await tableComponent.clearAllFilters();
+    });
+
+    await test.step('Search for the registration with status "Included"', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV.fullName,
+      });
+    });
+
+    // Assert
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Included',
+      });
     });
   });
 });
