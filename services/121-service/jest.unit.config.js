@@ -4,6 +4,7 @@ module.exports = {
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
   coverageReporters: ['json', 'lcov'],
+  collectCoverageFrom: ['src/**/*.ts', '!src/migration/**'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: {
     '^@121-service/(.*)$': '<rootDir>/$1',
