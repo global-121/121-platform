@@ -126,6 +126,36 @@ export const registrationsVisa = [
   registrationOCW4,
 ];
 
+export const registrationPV = {
+  referenceId: '44e62601557597e0d',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Karol Niewiadomski',
+  phoneNumber: '14156935550',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14156935550',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV1 = {
+  referenceId: '54e62869257597e0d',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jan de Boer',
+  phoneNumber: '14155235550',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235550',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
 export const registrationPV2 = {
   referenceId: '54e62864523597e04',
   preferredLanguage: LanguageEnum.nl,
