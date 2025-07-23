@@ -126,6 +126,21 @@ export const registrationsVisa = [
   registrationOCW4,
 ];
 
+export const registrationPV2 = {
+  referenceId: '54e62864523597e04',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Joanna Senyszyn',
+  phoneNumber: '14157635410',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14157635410',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
 export const registrationPV3 = {
   referenceId: '54e62864557597e04',
   preferredLanguage: LanguageEnum.nl,

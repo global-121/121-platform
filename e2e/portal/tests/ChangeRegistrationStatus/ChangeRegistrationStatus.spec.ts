@@ -19,6 +19,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPV2,
   registrationPV3,
   registrationPV4,
   registrationPV5,
@@ -45,6 +46,8 @@ const includeStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Included" successfully\. The status change can take up to a minute to process\./;
 const deleteStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Deleted" successfully\. The status change can take up to a minute to process\./;
+const pauseStatusToastMessage =
+  /The status of \d+ registration\(s\) is being changed to "Paused" successfully\. The status change can take up to a minute to process\./;
 const customMessage =
   'Test custom message to change the status of registration';
 
@@ -608,8 +611,6 @@ test.describe('Change status of registration with different status transitions',
   });
 
   test('[31211] Move PA(s) from status "Included" to "Completed"', async () => {
-    const accessToken = await getAccessToken();
-    const paymentReferenceIds = [registrationPvMaxPayment.referenceId];
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     const loginPage = new LoginPage(page);
@@ -647,7 +648,7 @@ test.describe('Change status of registration with different status transitions',
       // Wait for payment transactions to complete
       await waitForPaymentTransactionsToComplete({
         programId: programIdPV,
-        paymentReferenceIds,
+        paymentReferenceIds: [registrationPV4.referenceId],
         accessToken,
         maxWaitTimeMs: 4_000,
         completeStatusses: Object.values(TransactionStatusEnum),
@@ -709,6 +710,46 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate the status of the registration', async () => {
       await registrations.validateStatusOfFirstRegistration({
         status: 'Declined',
+      });
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31212] Move PA(s) from status "Included" to "Paused"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV2],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+    // Act
+    await test.step('Change status of first selected registration to "Paused"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV2.fullName,
+        status: 'Pause',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(pauseStatusToastMessage);
+    });
+
+    await test.step('Search for the registration with status "Paused"', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV2.fullName,
+      });
+    });
+    // Assert
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Paused',
       });
       await tableComponent.clearAllFilters();
     });
