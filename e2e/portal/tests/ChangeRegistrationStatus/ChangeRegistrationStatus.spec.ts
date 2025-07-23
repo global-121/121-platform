@@ -19,23 +19,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationPV,
-  registrationPV1,
-  registrationPV2,
-  registrationPV3,
-  registrationPV4,
-  registrationPV5,
-  registrationPV6,
-  registrationPV7,
-  registrationPV8,
-  registrationPV9,
-  registrationPV10,
-  registrationPV11,
-  registrationPV12,
-  registrationPV13,
-  registrationPV14,
-  registrationPV15,
-  registrationPvMaxPayment,
+  registrationsPvStatusChange,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
@@ -88,7 +72,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV5],
+      [registrationsPvStatusChange.registrationPV5],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -100,7 +84,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV5.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV5.fullName,
         status: 'Decline',
         sendMessage: true,
         sendCustomMessage: true,
@@ -114,7 +98,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate custom message', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV5.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV5.fullName,
       });
       await tableComponent.validateMessageActivityByTypeAndText({
         notificationType: 'Custom message',
@@ -128,7 +112,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV6],
+      [registrationsPvStatusChange.registrationPV6],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -140,7 +124,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration and do not write a custom message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV6.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV6.fullName,
         status: 'Decline',
         sendMessage: false,
       });
@@ -152,7 +136,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate custom message not present', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV6.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV6.fullName,
       });
       await tableComponent.validateActivityNotPresentByType('Custom message');
     });
@@ -164,7 +148,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV7],
+      [registrationsPvStatusChange.registrationPV7],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -176,7 +160,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration and send templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV7.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV7.fullName,
         status: 'Include',
         sendMessage: true,
         sendTemplatedMessage: true,
@@ -189,7 +173,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate templated message', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV7.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV7.fullName,
       });
       await tableComponent.validateMessageActivityByTypeAndText({
         notificationType: 'Inclusion',
@@ -203,7 +187,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV8],
+      [registrationsPvStatusChange.registrationPV8],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -215,7 +199,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration without templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV8.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV8.fullName,
         status: 'Include',
         sendMessage: false,
       });
@@ -227,7 +211,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate templated message not present', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV8.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV8.fullName,
       });
       await tableComponent.validateActivityNotPresentByType('Inclusion');
     });
@@ -239,7 +223,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPvMaxPayment],
+      [registrationsPvStatusChange.registrationPvMaxPayment],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -249,7 +233,9 @@ test.describe('Change status of registration with different status transitions',
       programId: 2,
       paymentNr: 1,
       amount: 25,
-      referenceIds: [registrationPvMaxPayment.referenceId],
+      referenceIds: [
+        registrationsPvStatusChange.registrationPvMaxPayment.referenceId,
+      ],
       accessToken,
     });
 
@@ -259,7 +245,8 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Delete registration with status "Completed"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPvMaxPayment.fullName,
+        registrationName:
+          registrationsPvStatusChange.registrationPvMaxPayment.fullName,
         status: 'Delete',
         sendMessage: false,
       });
@@ -284,7 +271,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV9],
+      [registrationsPvStatusChange.registrationPV9],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.declined,
@@ -323,7 +310,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV10],
+      [registrationsPvStatusChange.registrationPV10],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -362,7 +349,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV11],
+      [registrationsPvStatusChange.registrationPV11],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -401,7 +388,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV12],
+      [registrationsPvStatusChange.registrationPV12],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -409,7 +396,7 @@ test.describe('Change status of registration with different status transitions',
 
     await changeRegistrationStatus({
       programId: programIdPV,
-      referenceIds: [registrationPV12.referenceId],
+      referenceIds: [registrationsPvStatusChange.registrationPV12.referenceId],
       status: RegistrationStatusEnum.paused,
       accessToken,
     });
@@ -447,7 +434,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV13],
+      [registrationsPvStatusChange.registrationPV13],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.validated,
@@ -487,7 +474,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV14],
+      [registrationsPvStatusChange.registrationPV14],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -508,7 +495,9 @@ test.describe('Change status of registration with different status transitions',
         programId: 2,
         paymentNr: 1,
         amount: 25,
-        referenceIds: [registrationPV14.referenceId],
+        referenceIds: [
+          registrationsPvStatusChange.registrationPV14.referenceId,
+        ],
         accessToken,
       });
       // Wait for the page to reload to reflect the status change from the api call
@@ -547,7 +536,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV15],
+      [registrationsPvStatusChange.registrationPV15],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -557,7 +546,7 @@ test.describe('Change status of registration with different status transitions',
       programId: 2,
       paymentNr: 1,
       amount: 25,
-      referenceIds: [registrationPV15.referenceId],
+      referenceIds: [registrationsPvStatusChange.registrationPV15.referenceId],
       accessToken,
     });
 
@@ -568,7 +557,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate the status of the registration', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV15.fullName,
+        filterText: registrationsPvStatusChange.registrationPV15.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Completed',
@@ -579,7 +568,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Raise amount of max payments for the registration', async () => {
       await updateRegistration(
         2,
-        registrationPV15.referenceId,
+        registrationsPvStatusChange.registrationPV15.referenceId,
         {
           maxPayments: '2',
         },
@@ -620,7 +609,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV4],
+      [registrationsPvStatusChange.registrationPV4],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -634,7 +623,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate the status of the registration', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV4.fullName,
+        filterText: registrationsPvStatusChange.registrationPV4.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Included',
@@ -646,13 +635,15 @@ test.describe('Change status of registration with different status transitions',
         programId: programIdPV,
         paymentNr: 1,
         amount: 100,
-        referenceIds: [registrationPV4.referenceId],
+        referenceIds: [registrationsPvStatusChange.registrationPV4.referenceId],
         accessToken,
       });
       // Wait for payment transactions to complete
       await waitForPaymentTransactionsToComplete({
         programId: programIdPV,
-        paymentReferenceIds: [registrationPV4.referenceId],
+        paymentReferenceIds: [
+          registrationsPvStatusChange.registrationPV4.referenceId,
+        ],
         accessToken,
         maxWaitTimeMs: 4_000,
         completeStatusses: Object.values(TransactionStatusEnum),
@@ -664,7 +655,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Search for the registration with status "Completed"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV4.fullName,
+        filterText: registrationsPvStatusChange.registrationPV4.fullName,
       });
     });
     // Assert
@@ -682,7 +673,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV3],
+      [registrationsPvStatusChange.registrationPV3],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -695,7 +686,7 @@ test.describe('Change status of registration with different status transitions',
     // Act
     await test.step('Change status of first selected registration to "Declined"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV3.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV3.fullName,
         status: 'Decline',
         sendMessage: false,
       });
@@ -707,7 +698,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Search for the registration with status "Declined"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV3.fullName,
+        filterText: registrationsPvStatusChange.registrationPV3.fullName,
       });
     });
     // Assert
@@ -725,7 +716,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV2],
+      [registrationsPvStatusChange.registrationPV2],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -737,7 +728,7 @@ test.describe('Change status of registration with different status transitions',
     // Act
     await test.step('Change status of first selected registration to "Paused"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV2.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV2.fullName,
         status: 'Pause',
         sendMessage: false,
       });
@@ -747,7 +738,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Search for the registration with status "Paused"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV2.fullName,
+        filterText: registrationsPvStatusChange.registrationPV2.fullName,
       });
     });
     // Assert
@@ -765,7 +756,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV1],
+      [registrationsPvStatusChange.registrationPV1],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -777,7 +768,7 @@ test.describe('Change status of registration with different status transitions',
     // Act
     await test.step('Change status of first selected registration to "Validated"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV1.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV1.fullName,
         status: 'Validate',
         sendMessage: false,
       });
@@ -789,7 +780,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Search for the registration with status "Validated"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV1.fullName,
+        filterText: registrationsPvStatusChange.registrationPV1.fullName,
       });
     });
     // Assert
@@ -807,7 +798,7 @@ test.describe('Change status of registration with different status transitions',
     const loginPage = new LoginPage(page);
 
     await seedRegistrationsWithStatus(
-      [registrationPV],
+      [registrationsPvStatusChange.registrationPV],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.declined,
@@ -827,7 +818,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration to "Included"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV.fullName,
         status: 'Include',
         sendMessage: false,
       });
@@ -840,7 +831,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Search for the registration with status "Included"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationPV.fullName,
+        filterText: registrationsPvStatusChange.registrationPV.fullName,
       });
     });
 
