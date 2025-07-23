@@ -37,7 +37,7 @@ test('[31206] Move PA(s) from status "New" to "Validated"', async ({
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Change status of first selected registration to "Validated"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Validate',
     });
