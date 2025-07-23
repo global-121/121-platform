@@ -375,6 +375,26 @@ export const registrationPvMaxPayment = {
   maxPayments: 1,
 };
 
+export const registrationsPvStatusChange = {
+  registrationPV,
+  registrationPV1,
+  registrationPV2,
+  registrationPV3,
+  registrationPV4,
+  registrationPV5,
+  registrationPV6,
+  registrationPV7,
+  registrationPV8,
+  registrationPV9,
+  registrationPV10,
+  registrationPV11,
+  registrationPV12,
+  registrationPV13,
+  registrationPV14,
+  registrationPV15,
+  registrationPvMaxPayment,
+};
+
 export const registrationsPV = [
   registrationPV5,
   registrationPV6,
