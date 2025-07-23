@@ -41,7 +41,7 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          npm run start:services:ci:production
 
       - name: Check that no new migrations are necessary
         working-directory: ${{ env.workingDirectory }}

@@ -74,18 +74,20 @@ jobs:
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:coverage -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
-      - name: Copy coverage report output from Docker container
+      # For more info, see services/121-service/README.md#Integration-test-coverage
+      - name: Generate lcov report from 121-service
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker cp 121-service:/home/node/app/coverage .
+          curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/scripts/kill-service' || true
+          docker compose exec 121-service npm run coverage:report:integration
 
       - uses: actions/upload-artifact@v4
         with:
           name: integration-test-coverage-report-${{ matrix.shard }}
           path: |
-            ${{ env.workingDirectory }}/coverage
+            ${{ env.workingDirectory }}coverage
 
       - name: Docker logs
         if: always()
@@ -147,14 +149,13 @@ jobs:
       - name: Download coverage reports from previous jobs
         uses: actions/download-artifact@v4
         with:
-          path: 'coverage'
+          path: coverage
 
       - name: Save a single artifact with all of the coverage reports
         uses: actions/upload-artifact@v4
         with:
           name: merged-coverage-report
-          path: |
-            coverage
+          path: coverage
 
       # Coverage reports will be merged automatically by QLTY
       # See: https://docs.qlty.sh/coverage/merging#client-side-merging

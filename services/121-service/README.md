@@ -94,19 +94,59 @@ If you want all the color output Jest can give set the [`FORCE_COLOR`](https://f
 
 For the sake of this section of the documentation, it is assumed that you understand how unit testing and integration testing are setup on the 121-service.
 
-Test coverage is collected for unit and integration tests separately, and then combined in CI by QLTY.
-
-You can, however, manually do this on your local machine by following a few steps:
+##### Unit test coverage
 
 ```bash
 cd services/121-service
-# the following two commands can be done in parallel in separate terminals
-npm run test:unit:coverage
-npm run test:integration:coverage
-# generate a report that combines the two coverage reports into a single one
-npm run coverage
+docker exec 121-service npm run test:unit:coverage
+# (optional) open the report in your browser
+npm run coverage:open:unit
+```
+
+##### Integration test coverage
+
+Integration test coverage is slightly more complex. On a conceptual level, we are following the [steps laid out in this GitHub comment](https://github.com/istanbuljs/nyc/issues/548#issuecomment-304352525).
+
+In practice, for us, this looks like this:
+
+1. Instrumenting the 121-service code manually by running the service using `nyc`
+   - This happens whenever you start the dev server, which runs `npm run start:dev`
+2. Running the relevant integration tests
+3. Killing the server
+   - This is necessary because `nyc` generates the code coverage information into the `.nyc_output` directory whenever the server receives a `SIGINT`.
+   - You can do this two ways:
+     1. Manually killing the server
+     2. Saving a file in the `121-service/src` folder will trigger a recompilation, which will implicitly kill the server
+4. Generate a coverage report based on the data in `.nyc_output`
+
+Which translates to these commands:
+
+```bash
+cd services/121-service
+# step #1
+npm run start:dev
+# step #2
+docker exec 121-service  npm run test:integration:all
+# step #3, option a) manually kill the server
+curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST 'http://localhost:3000/api/scripts/kill-service'
+# step #4
+# note: this will not work if the previous steps, for whatever reason, did not generate coverage data in .nyc_output
+docker compose exec 121-service npm run coverage:report:integration
+# (optional) open the report in your browser
+npm run coverage:open:integration
+```
+
+##### Combined test coverage
+
+Test coverage is collected for unit and integration tests separately, and then combined in CI by QLTY.
+
+You can, however, manually do this on your local machine by following a few steps. This assumes that you have already followed the steps for unit and integration tests. You can verify this by trying to open the two relevant reports in your browser, as outlined above.
+
+```bash
+# generate a single report that combines unit & integration coverage reports
+npm run coverage:report:combined
 # (optional) open the combined report in your browser
-npm run open-coverage-report
+npm run coverage:open:combined
 ```
 
 ### Debugging
