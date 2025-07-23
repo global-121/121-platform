@@ -86,9 +86,16 @@ class BasePage {
 
   // To speed tests up we can validate the toast message and close it
   // without waiting for the toast to disappear after 6 seconds
-  async validateToastMessageAndClose(message: string) {
+  async validateToastMessageAndClose(message: string | RegExp) {
     await expect(this.toast).toBeVisible();
-    expect(await this.toast.textContent()).toContain(message);
+
+    if (typeof message === 'string') {
+      expect(await this.toast.textContent()).toContain(message);
+    } else {
+      // For RegExp, use toMatch instead of toContain
+      expect(await this.toast.textContent()).toMatch(message);
+    }
+
     await this.dismissToast();
   }
 
