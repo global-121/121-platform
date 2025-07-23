@@ -1,12 +1,17 @@
 import { type Page, test } from '@playwright/test';
 
 import { env } from '@121-service/src/env';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import {
+  doPayment,
+  waitForPaymentTransactionsToComplete,
+} from '@121-service/test/helpers/program.helper';
 import {
   changeRegistrationStatus,
   seedRegistrationsWithStatus,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -14,6 +19,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPV4,
   registrationPV5,
   registrationPV6,
   registrationPV7,
@@ -23,6 +29,8 @@ import {
   registrationPV11,
   registrationPV12,
   registrationPV13,
+  registrationPV14,
+  registrationPV15,
   registrationPvMaxPayment,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -80,7 +88,6 @@ test.describe('Change status of registration with different status transitions',
 
     await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
     await registrations.navigateToProgramPage('Registrations');
-    await registrations.deselectAllRegistrations();
     await registrations.deselectAllRegistrations();
 
     await test.step('Change status of first selected registration and write a custom message', async () => {
@@ -161,7 +168,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration and send templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV5.fullName,
+        registrationName: registrationPV7.fullName,
         status: 'Include',
         sendMessage: true,
         sendTemplatedMessage: true,
@@ -174,7 +181,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate templated message', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV5.fullName,
+        registrationName: registrationPV7.fullName,
       });
       await tableComponent.validateMessageActivityByTypeAndText({
         notificationType: 'Inclusion',
@@ -200,7 +207,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Change status of first selected registration without templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV6.fullName,
+        registrationName: registrationPV8.fullName,
         status: 'Include',
         sendMessage: false,
       });
@@ -212,7 +219,7 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Find and validate templated message not present', async () => {
       await registrations.goToRegistrationByName({
-        registrationName: registrationPV6.fullName,
+        registrationName: registrationPV8.fullName,
       });
       await tableComponent.validateActivityNotPresentByType('Inclusion');
     });
@@ -234,7 +241,7 @@ test.describe('Change status of registration with different status transitions',
       programId: 2,
       paymentNr: 1,
       amount: 25,
-      referenceIds: [],
+      referenceIds: [registrationPvMaxPayment.referenceId],
       accessToken,
     });
 
@@ -280,11 +287,16 @@ test.describe('Change status of registration with different status transitions',
     await registrations.deselectAllRegistrations();
 
     await test.step('Delete registration with status "Declined"', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: RegistrationStatusEnum.declined,
+      });
       await tableComponent.updateRegistrationStatusWithOptions({
         selectByStatus: true,
         registrationStatus: RegistrationStatusEnum.declined,
         status: 'Delete',
         sendMessage: false,
+        selectAllRows: true,
       });
       await registrations.validateToastMessageAndClose(
         deleteStatusToastMessage,
@@ -292,10 +304,6 @@ test.describe('Change status of registration with different status transitions',
     });
     // Assert
     await test.step('Validate registration was deleted succesfully', async () => {
-      await tableComponent.filterColumnByDropDownSelection({
-        columnName: 'Registration Status',
-        selection: RegistrationStatusEnum.declined,
-      });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
     });
@@ -421,6 +429,7 @@ test.describe('Change status of registration with different status transitions',
         selection: 'Paused',
       });
       await tableComponent.assertEmptyTableState();
+      await tableComponent.clearAllFilters();
     });
   });
 
@@ -442,9 +451,11 @@ test.describe('Change status of registration with different status transitions',
     // Act
     await test.step('Delete registration with status "Validated"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV13.fullName,
+        selectByStatus: true,
+        registrationStatus: RegistrationStatusEnum.validated,
         status: 'Delete',
         sendMessage: false,
+        selectAllRows: true,
       });
       await registrations.validateToastMessageAndClose(
         deleteStatusToastMessage,
@@ -457,6 +468,205 @@ test.describe('Change status of registration with different status transitions',
         selection: 'Validated',
       });
       await tableComponent.assertEmptyTableState();
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31215] Move PA(s) from status "Completed" to "Declined"', async () => {
+    const accessToken = await getAccessToken();
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV14],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Included',
+      });
+    });
+
+    await test.step('Change status of registration to "Completed" with doing a payment', async () => {
+      await doPayment({
+        programId: 2,
+        paymentNr: 1,
+        amount: 25,
+        referenceIds: [registrationPV14.referenceId],
+        accessToken,
+      });
+      // Wait for the page to reload to reflect the status change from the api call
+      await page.reload();
+    });
+
+    await test.step('Change status of registration to "Declined"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        selectByStatus: true,
+        registrationStatus: RegistrationStatusEnum.completed,
+        status: 'Decline',
+        sendMessage: false,
+        selectAllRows: true,
+      });
+      await registrations.validateToastMessageAndClose(
+        declineStatusToastMessage,
+      );
+    });
+    // Assert
+    await test.step('Validate status change', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: 'Declined',
+      });
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Declined',
+      });
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31214] Move PA(s) from status "Completed" to "Included"', async () => {
+    const accessToken = await getAccessToken();
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV15],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+    // Make payment to change status to "Completed"
+    await doPayment({
+      programId: 2,
+      paymentNr: 1,
+      amount: 25,
+      referenceIds: [registrationPV15.referenceId],
+      accessToken,
+    });
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    await test.step('Validate the status of the registration', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV15.fullName,
+      });
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Completed',
+      });
+      await tableComponent.clearAllFilters();
+    });
+
+    await test.step('Raise amount of max payments for the registration', async () => {
+      await updateRegistration(
+        2,
+        registrationPV15.referenceId,
+        {
+          maxPayments: '2',
+        },
+        'automated test',
+        accessToken,
+      );
+      // Wait for the page to reload to reflect the status change from the api call
+      await page.reload();
+    });
+
+    await test.step('Change status of registration to "Included"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        selectByStatus: true,
+        registrationStatus: RegistrationStatusEnum.completed,
+        status: 'Include',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(
+        includeStatusToastMessage,
+      );
+    });
+    // Assert
+    await test.step('Validate status change', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: RegistrationStatusEnum.included,
+      });
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Included',
+      });
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31211] Move PA(s) from status "Included" to "Completed"', async () => {
+    const accessToken = await getAccessToken();
+    const paymentReferenceIds = [registrationPvMaxPayment.referenceId];
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV4],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    // Act
+    await test.step('Validate the status of the registration', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV4.fullName,
+      });
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Included',
+      });
+    });
+
+    await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
+      await doPayment({
+        programId: programIdPV,
+        paymentNr: 1,
+        amount: 100,
+        referenceIds: [registrationPV4.referenceId],
+        accessToken,
+      });
+      // Wait for payment transactions to complete
+      await waitForPaymentTransactionsToComplete({
+        programId: programIdPV,
+        paymentReferenceIds,
+        accessToken,
+        maxWaitTimeMs: 4_000,
+        completeStatusses: Object.values(TransactionStatusEnum),
+      });
+      // Wait for the page to reload to reflect the status change from the api call
+      await page.reload();
+    });
+
+    await test.step('Search for the registration with status "Completed"', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV4.fullName,
+      });
+    });
+    // Assert
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Completed',
+      });
+      await tableComponent.clearAllFilters();
     });
   });
 });

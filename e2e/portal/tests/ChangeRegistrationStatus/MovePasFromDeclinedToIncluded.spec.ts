@@ -59,6 +59,7 @@ test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
     await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Include',
+      sendMessage: false,
     });
     await registrations.validateToastMessageAndClose(toastMessage);
   });

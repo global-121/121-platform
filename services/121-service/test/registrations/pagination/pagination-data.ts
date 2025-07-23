@@ -126,6 +126,22 @@ export const registrationsVisa = [
   registrationOCW4,
 ];
 
+export const registrationPV4 = {
+  referenceId: '54e62864557597e45',
+  preferredLanguage: LanguageEnum.nl,
+  paymentAmountMultiplier: 1,
+  fullName: 'Jan de Vries',
+  phoneNumber: '14155235451',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235451',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+  maxPayments: 1,
+};
+
 export const registrationPV5 = {
   referenceId: '44e62864557597e0d',
   preferredLanguage: LanguageEnum.nl,
@@ -264,6 +280,7 @@ export const registrationPV14 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  maxPayments: 1,
 };
 
 export const registrationPV15 = {
@@ -279,6 +296,7 @@ export const registrationPV15 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  maxPayments: 1,
 };
 
 export const registrationPvMaxPayment = {
