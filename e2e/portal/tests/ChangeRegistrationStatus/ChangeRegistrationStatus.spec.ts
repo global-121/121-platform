@@ -61,9 +61,9 @@ test.describe('Change status of registration with different status transitions',
     await page.goto('/');
   });
 
-  // test.afterAll(async () => {
-  //   await page.close();
-  // });
+  test.afterAll(async () => {
+    await page.close();
+  });
 
   // Act and Assert
   test('[35840] Change status of registration with custom message', async () => {
