@@ -51,6 +51,7 @@ test('[31223] Delete registration with status "Validated"', async ({
     await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
+      sendMessage: false,
     });
     await registrations.validateToastMessageAndClose(toastMessage);
   });
