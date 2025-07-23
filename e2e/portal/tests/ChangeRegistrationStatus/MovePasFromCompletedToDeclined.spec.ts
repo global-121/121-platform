@@ -66,7 +66,7 @@ test('[31215] Move PA(s) from status "Completed" to "Declined"', async ({
   });
 
   await test.step('Change status of registration to "Declined"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPvMaxPayment.fullName,
       status: 'Decline',
     });

@@ -46,7 +46,7 @@ test('[34412] Delete registration with status "Declined"', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Delete registration with status "Declined"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
       sendMessage: false,

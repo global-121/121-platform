@@ -56,7 +56,7 @@ test('[31220] Move PA(s) from status "Declined" to "Included"', async ({
   });
 
   await test.step('Change status of first selected registration to "Included"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Include',
     });

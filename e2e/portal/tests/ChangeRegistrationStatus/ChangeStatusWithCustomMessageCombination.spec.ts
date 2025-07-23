@@ -54,7 +54,7 @@ test.describe('Change status of registration with and without templated message'
     const tableComponent = new TableComponent(page);
 
     await test.step('Change status of first selected registration and write a custom message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithOptions({
+      await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPV5.fullName,
         status: 'Decline',
         sendMessage: true,
@@ -80,7 +80,7 @@ test.describe('Change status of registration with and without templated message'
     const tableComponent = new TableComponent(page);
 
     await test.step('Change status of first selected registration and write a custom message', async () => {
-      await tableComponent.changeRegistrationStatusByNameWithOptions({
+      await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Decline',
         sendMessage: false,

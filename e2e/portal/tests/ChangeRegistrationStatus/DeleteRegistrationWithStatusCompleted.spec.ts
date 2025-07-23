@@ -57,7 +57,7 @@ test('[34411] Delete registration with status "Completed"', async ({
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Delete registration with status "Completed"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPvMaxPayment.fullName,
       status: 'Delete',
       sendMessage: false,

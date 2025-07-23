@@ -46,7 +46,7 @@ test('[34410] Delete registration with status "Paused"', async ({ page }) => {
   const tableComponent = new TableComponent(page);
   // Act
   await test.step('Delete registration with status "Paused"', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationPV5.fullName,
       status: 'Delete',
     });
