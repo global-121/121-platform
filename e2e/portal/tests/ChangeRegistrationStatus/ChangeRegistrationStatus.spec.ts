@@ -19,6 +19,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPV3,
   registrationPV4,
   registrationPV5,
   registrationPV6,
@@ -665,6 +666,49 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate the status of the registration', async () => {
       await registrations.validateStatusOfFirstRegistration({
         status: 'Completed',
+      });
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[31213] Move PA(s) from status "Included" to "Declined"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV3],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    // Act
+    await test.step('Change status of first selected registration to "Declined"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV3.fullName,
+        status: 'Decline',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(
+        declineStatusToastMessage,
+      );
+    });
+
+    await test.step('Search for the registration with status "Declined"', async () => {
+      await tableComponent.filterColumnByText({
+        columnName: 'Name',
+        filterText: registrationPV3.fullName,
+      });
+    });
+    // Assert
+    await test.step('Validate the status of the registration', async () => {
+      await registrations.validateStatusOfFirstRegistration({
+        status: 'Declined',
       });
       await tableComponent.clearAllFilters();
     });
