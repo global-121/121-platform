@@ -4,10 +4,7 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPayment } from '@121-service/test/helpers/program.helper';
-import {
-  seedRegistrations,
-  seedRegistrationsWithStatus,
-} from '@121-service/test/helpers/registration.helper';
+import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -17,6 +14,11 @@ import {
   registrationPV5,
   registrationPV6,
   registrationPV7,
+  registrationPV8,
+  registrationPV9,
+  registrationPV10,
+  registrationPV11,
+  registrationPV12,
   registrationPvMaxPayment,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -36,32 +38,11 @@ const customMessage =
 // Arrange
 test.describe('Change status of registration with different status transitions', () => {
   let page: Page;
+  let accessToken: string;
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessToken();
-
-    await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
-    await seedRegistrationsWithStatus(
-      [registrationPvMaxPayment],
-      programIdPV,
-      accessToken,
-      RegistrationStatusEnum.included,
-    );
-    await seedRegistrationsWithStatus(
-      [registrationPV7],
-      programIdPV,
-      accessToken,
-      RegistrationStatusEnum.declined,
-    );
-    // Make payment to change status to "Completed"
-    await doPayment({
-      programId: 2,
-      paymentNr: 1,
-      amount: 25,
-      referenceIds: [],
-      accessToken,
-    });
+    accessToken = await getAccessToken();
 
     page = await browser.newPage();
     const loginPage = new LoginPage(page);
@@ -70,15 +51,10 @@ test.describe('Change status of registration with different status transitions',
       env.USERCONFIG_121_SERVICE_EMAIL_ADMIN ?? '',
       env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN ?? '',
     );
-    // Navigate to program
-    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
   });
 
   test.afterEach(async () => {
-    const registrations = new RegistrationsPage(page);
-
-    await registrations.navigateToProgramPage('Registrations');
-    await page.reload();
+    await page.goto('/');
   });
 
   // test.afterAll(async () => {
@@ -89,6 +65,19 @@ test.describe('Change status of registration with different status transitions',
   test('[35840] Change status of registration with custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV5],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+    await registrations.deselectAllRegistrations();
 
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
@@ -117,8 +106,20 @@ test.describe('Change status of registration with different status transitions',
   test('[35849] Change status of registration without custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
 
-    await test.step('Change status of first selected registration and write a custom message', async () => {
+    await seedRegistrationsWithStatus(
+      [registrationPV6],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    await test.step('Change status of first selected registration and do not write a custom message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPV6.fullName,
         status: 'Decline',
@@ -141,6 +142,19 @@ test.describe('Change status of registration with different status transitions',
   test('[35912] Change status of registration with templated message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV7],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
     await test.step('Change status of first selected registration and send templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPV5.fullName,
@@ -167,7 +181,19 @@ test.describe('Change status of registration with different status transitions',
   test('[35913] Change status of registration without templated message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
-    // Act
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV8],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
     await test.step('Change status of first selected registration without templated message', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPV6.fullName,
@@ -191,8 +217,27 @@ test.describe('Change status of registration with different status transitions',
   test('[34411] Delete registration with status "Completed"', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
 
-    // Act
+    await seedRegistrationsWithStatus(
+      [registrationPvMaxPayment],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+    // Make payment to change status to "Completed"
+    await doPayment({
+      programId: 2,
+      paymentNr: 1,
+      amount: 25,
+      referenceIds: [],
+      accessToken,
+    });
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
     await test.step('Delete registration with status "Completed"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         registrationName: registrationPvMaxPayment.fullName,
@@ -217,8 +262,19 @@ test.describe('Change status of registration with different status transitions',
   test('[34412] Delete registration with status "Declined"', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
 
-    // Act
+    await seedRegistrationsWithStatus(
+      [registrationPV9],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.declined,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
     await test.step('Delete registration with status "Declined"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         selectByStatus: true,
@@ -244,7 +300,19 @@ test.describe('Change status of registration with different status transitions',
   test('[34409] Delete registration with status "Included"', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
-    // Act
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV10],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.included,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
     await test.step('Delete registration with status "Included"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
         selectByStatus: true,
@@ -262,6 +330,81 @@ test.describe('Change status of registration with different status transitions',
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Registration Status',
         selection: 'Included',
+      });
+      await tableComponent.assertEmptyTableState();
+      await tableComponent.clearAllFilters();
+    });
+  });
+
+  test('[34408] Delete registration with status "New"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV11],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.new,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    await test.step('Delete registration with status "New"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        selectByStatus: true,
+        registrationStatus: RegistrationStatusEnum.new,
+        status: 'Delete',
+        sendMessage: false,
+        selectAllRows: true,
+      });
+      await registrations.validateToastMessageAndClose(
+        deleteStatusToastMessage,
+      );
+    });
+    // Assert
+    await test.step('Validate registration was deleted succesfully', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: 'New',
+      });
+      await tableComponent.assertEmptyTableState();
+    });
+  });
+
+  test('[34410] Delete registration with status "Paused"', async ({ page }) => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV12],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.paused,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+
+    await test.step('Delete registration with status "Paused"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV5.fullName,
+        status: 'Delete',
+        sendMessage: false,
+      });
+      await registrations.validateToastMessageAndClose(
+        deleteStatusToastMessage,
+      );
+    });
+    // Assert
+    await test.step('Validate registration was deleted succesfully', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: 'Paused',
       });
       await tableComponent.assertEmptyTableState();
     });
