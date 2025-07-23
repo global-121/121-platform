@@ -176,6 +176,111 @@ export const registrationPV8 = {
   addressCity: 'Stad',
 };
 
+export const registrationPV9 = {
+  referenceId: 'asdf234f4gg4ag64568',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Maria Hatzipanteli',
+  phoneNumber: '14155235545',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235545',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV10 = {
+  referenceId: 'asdf234f4gg4ag64595',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Andreas Orfanos',
+  phoneNumber: '14155235534',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235534',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV11 = {
+  referenceId: 'asdf234f4gg4ag64570',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Onasis Papadopoulos',
+  phoneNumber: '14155235567',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235567',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV12 = {
+  referenceId: 'asdf234f4gg4ag64571',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Iro Mane',
+  phoneNumber: '14155235578',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235578',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV13 = {
+  referenceId: 'asdf234f4gg4ag64572',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Athinodoros Koukoumavlos',
+  phoneNumber: '14155235512',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235512',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV14 = {
+  referenceId: 'asdf234f4gg4ag64573',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Lela Papadopoulou',
+  phoneNumber: '14155235587',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '14155235587',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
+export const registrationPV15 = {
+  referenceId: 'asdf234f4gg4ag64574',
+  preferredLanguage: LanguageEnum.en,
+  paymentAmountMultiplier: 1,
+  fullName: 'Georgia Athanasiou',
+  phoneNumber: '141552355955',
+  programFspConfigurationName: Fsps.intersolveVisa,
+  whatsappPhoneNumber: '141552355955',
+  addressStreet: 'Teststraat',
+  addressHouseNumber: '1',
+  addressHouseNumberAddition: '',
+  addressPostalCode: '1234AB',
+  addressCity: 'Stad',
+};
+
 export const registrationPvMaxPayment = {
   referenceId: 'asdf234f4gg4ag64569',
   preferredLanguage: LanguageEnum.en,

@@ -126,6 +126,19 @@ class RegistrationsPage extends BasePage {
     await this.page.getByRole('button', { name: 'Apply' }).click();
   }
 
+  async deselectAllRegistrations() {
+    const checkboxes = this.page.getByRole('checkbox');
+    const checkboxesCount = await checkboxes.count();
+    for (let i = 0; i < checkboxesCount; i++) {
+      const checkbox = checkboxes.nth(i);
+      if (await checkbox.isChecked()) {
+        await checkbox.click();
+      } else {
+        continue;
+      }
+    }
+  }
+
   async getFirstRegistrationNameFromTable() {
     await this.page.waitForTimeout(200);
     await this.page.waitForSelector('table tbody tr td');
