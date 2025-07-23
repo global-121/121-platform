@@ -4,7 +4,10 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { doPayment } from '@121-service/test/helpers/program.helper';
-import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
+import {
+  changeRegistrationStatus,
+  seedRegistrationsWithStatus,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -19,6 +22,7 @@ import {
   registrationPV10,
   registrationPV11,
   registrationPV12,
+  registrationPV13,
   registrationPvMaxPayment,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -371,10 +375,11 @@ test.describe('Change status of registration with different status transitions',
         selection: 'New',
       });
       await tableComponent.assertEmptyTableState();
+      await tableComponent.clearAllFilters();
     });
   });
 
-  test('[34410] Delete registration with status "Paused"', async ({ page }) => {
+  test('[34410] Delete registration with status "Paused"', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
     const loginPage = new LoginPage(page);
@@ -383,8 +388,15 @@ test.describe('Change status of registration with different status transitions',
       [registrationPV12],
       programIdPV,
       accessToken,
-      RegistrationStatusEnum.paused,
+      RegistrationStatusEnum.included,
     );
+
+    await changeRegistrationStatus({
+      programId: programIdPV,
+      referenceIds: [registrationPV12.referenceId],
+      status: RegistrationStatusEnum.paused,
+      accessToken,
+    });
 
     await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
     await registrations.navigateToProgramPage('Registrations');
@@ -392,7 +404,45 @@ test.describe('Change status of registration with different status transitions',
 
     await test.step('Delete registration with status "Paused"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV5.fullName,
+        selectByStatus: true,
+        registrationStatus: RegistrationStatusEnum.paused,
+        status: 'Delete',
+        sendMessage: false,
+        selectAllRows: true,
+      });
+      await registrations.validateToastMessageAndClose(
+        deleteStatusToastMessage,
+      );
+    });
+    // Assert
+    await test.step('Validate registration was deleted succesfully', async () => {
+      await tableComponent.filterColumnByDropDownSelection({
+        columnName: 'Registration Status',
+        selection: 'Paused',
+      });
+      await tableComponent.assertEmptyTableState();
+    });
+  });
+
+  test('[31223] Delete registration with status "Validated"', async () => {
+    const registrations = new RegistrationsPage(page);
+    const tableComponent = new TableComponent(page);
+    const loginPage = new LoginPage(page);
+
+    await seedRegistrationsWithStatus(
+      [registrationPV13],
+      programIdPV,
+      accessToken,
+      RegistrationStatusEnum.validated,
+    );
+
+    await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+    await registrations.navigateToProgramPage('Registrations');
+    await registrations.deselectAllRegistrations();
+    // Act
+    await test.step('Delete registration with status "Validated"', async () => {
+      await tableComponent.updateRegistrationStatusWithOptions({
+        registrationName: registrationPV13.fullName,
         status: 'Delete',
         sendMessage: false,
       });
@@ -404,7 +454,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByDropDownSelection({
         columnName: 'Registration Status',
-        selection: 'Paused',
+        selection: 'Validated',
       });
       await tableComponent.assertEmptyTableState();
     });
