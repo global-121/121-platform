@@ -200,7 +200,6 @@ class TableComponent {
     await this.textboxField.click();
     await this.textboxField.fill(filterText);
     await this.applyFiltersButton.click();
-    await this.waitForLoaded();
   }
 
   async filterColumnByNumber({
@@ -316,20 +315,26 @@ class TableComponent {
     await checkbox.click();
   }
 
-  async changeRegistrationStatusByNameWithOptions({
+  async updateRegistrationStatusWithOptions({
     registrationName,
+    registrationStatus,
     status,
     sendMessage,
     sendCustomMessage = false,
     sendTemplatedMessage = false,
     customMessage,
+    selectByStatus = false,
+    selectAllRows = false,
   }: {
-    registrationName: string;
+    registrationName?: string;
+    registrationStatus?: string;
     status: string;
     sendMessage: boolean;
     sendCustomMessage?: boolean;
     sendTemplatedMessage?: boolean;
     customMessage?: string;
+    selectByStatus?: boolean;
+    selectAllRows?: boolean;
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const reasonField = this.page.getByPlaceholder('Enter reason');
@@ -337,8 +342,16 @@ class TableComponent {
       'I understand this action can not be undone',
     );
 
-    await this.selectRowByTextContent(registrationName);
-    await statusButton.click();
+    if (selectByStatus) {
+      await this.selectRowByStatus(registrationStatus ?? '');
+      if (selectAllRows) {
+        await this.selectAll();
+      }
+      await statusButton.click();
+    } else {
+      await this.selectRowByTextContent(registrationName ?? '');
+      await statusButton.click();
+    }
 
     // Check for delete confirmation
     if (await deleteLabel.isVisible()) {
@@ -412,6 +425,15 @@ class TableComponent {
       .click();
   }
 
+  async selectRowByStatus(status: string) {
+    await this.page
+      .getByRole('row')
+      .filter({ hasText: status })
+      .getByRole('checkbox')
+      .first()
+      .click();
+  }
+
   async getSelectedRowsCount(): Promise<number> {
     const checkboxes = this.table.locator('tbody tr input[type="checkbox"]');
     const count = await checkboxes.evaluateAll(
@@ -444,6 +466,7 @@ class TableComponent {
     const messageText = await notificationText.textContent();
     // Check message content with snapshot
     expect(messageText).toMatchSnapshot();
+    await messageNotification.getByRole('button').click();
   }
 
   async validateActivityNotPresentByType(notificationType: string) {

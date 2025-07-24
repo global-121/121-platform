@@ -53,7 +53,7 @@ test('[34946] Filter registrations by dropdown selection', async ({ page }) => {
   });
 
   await test.step('Update status and filter by "Paused" status', async () => {
-    await tableComponent.changeRegistrationStatusByNameWithOptions({
+    await tableComponent.updateRegistrationStatusWithOptions({
       registrationName: registrationsPV[0].fullName,
       status: 'Pause',
     });
