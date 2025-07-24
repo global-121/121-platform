@@ -88,6 +88,7 @@ test.describe('Export registrations with different formats and configurations', 
         'FSP',
         'Address street',
         'Phone Number',
+        'Scope',
         'Name',
       ]);
 
@@ -96,7 +97,7 @@ test.describe('Export registrations with different formats and configurations', 
         'Selected registrations',
       );
       await exportDataComponent.exportAndAssertData({
-        snapshotName: 'exported-registrations-xlsx.csv',
+        snapshotName: 'exported-selected-columns-xlsx.csv',
       });
     });
 
@@ -107,7 +108,7 @@ test.describe('Export registrations with different formats and configurations', 
       );
       await exportDataComponent.exportAndAssertData({
         format: 'csv',
-        snapshotName: 'exported-registrations.csv',
+        snapshotName: 'exported-selected-columns.csv',
       });
     });
   });

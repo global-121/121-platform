@@ -143,12 +143,22 @@ export class RegistrationsTableColumnService {
             },
             {
               field: 'created',
-              fieldForFilter: 'created',
               header: $localize`:@@registration-created:Registration created`,
               type: QueryTableColumnType.DATE,
               defaultHidden: true,
             },
           ];
+
+          if (project.enableScope) {
+            columns.push({
+              field: 'scope',
+              header: $localize`:@@registration-scope:Scope`,
+              type: QueryTableColumnType.TEXT,
+              defaultHidden: true,
+              disableFiltering: true,
+              disableSorting: true,
+            });
+          }
 
           if (project.filterableAttributes) {
             for (const filterableGroup of project.filterableAttributes) {

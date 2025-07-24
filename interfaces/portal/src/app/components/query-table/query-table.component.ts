@@ -76,6 +76,8 @@ export type QueryTableColumn<TData, TField = keyof TData & string> = {
   fieldForSort?: TField; // defaults to field
   fieldForFilter?: TField; // defaults to field
   defaultHidden?: boolean;
+  disableSorting?: boolean;
+  disableFiltering?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
   component?: Type<TableCellComponent<TData, any>>;
 } & (
@@ -303,7 +305,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   });
 
   getColumnFilterField(column: QueryTableColumn<TData>) {
-    if (column.field === 'COMPUTED_FIELD') {
+    if (column.disableFiltering || column.field === 'COMPUTED_FIELD') {
       // filtering is disabled for computed fields
       return undefined;
     }
@@ -376,7 +378,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   }
 
   getColumnSortField(column: QueryTableColumn<TData>) {
-    if (column.field === 'COMPUTED_FIELD') {
+    if (column.disableSorting || column.field === 'COMPUTED_FIELD') {
       // sorting is disabled for computed fields
       return undefined;
     }
