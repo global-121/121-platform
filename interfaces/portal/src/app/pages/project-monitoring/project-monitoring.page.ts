@@ -11,6 +11,7 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TabsModule } from 'primeng/tabs';
 
 import {
   DataListComponent,
@@ -22,6 +23,7 @@ import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
+import { MonitoringFilesComponent } from '~/pages/project-monitoring/components/monitoring-files/monitoring-files.component';
 import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
@@ -38,6 +40,8 @@ import { Locale } from '~/utils/locale';
     DecimalPipe,
     DataListComponent,
     SkeletonInlineComponent,
+    TabsModule,
+    MonitoringFilesComponent,
   ],
   templateUrl: './project-monitoring.page.html',
   styles: ``,
