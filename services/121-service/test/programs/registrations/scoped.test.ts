@@ -38,7 +38,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
@@ -67,7 +67,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
@@ -102,7 +102,7 @@ describe('Registrations - [Scoped]', () => {
     await seedPaidRegistrations(registrationsPV, PvProgramId);
     await seedPaidRegistrations(registrationsOCW, OcwProgramId);
 
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
