@@ -25,6 +25,11 @@ describe('Update program', () => {
       distributionDuration: 100,
       fixedTransferValue: 500,
       budget: 50000,
+      monitoringDashboardUrl: 'https://example.org/new-dashboard',
+      aboutProgram: { en: 'new description' },
+      fullnameNamingConvention: ['new', 'naming', 'convention'],
+      tryWhatsAppFirst: true,
+      languages: ['en', 'fr'],
     };
 
     // Act
@@ -49,5 +54,15 @@ describe('Update program', () => {
       program.fixedTransferValue,
     );
     expect(updateProgramResponse.body.budget).toBe(program.budget);
+    expect(updateProgramResponse.body.monitoringDashboardUrl).toBe(
+      program.monitoringDashboardUrl,
+    );
+    expect(updateProgramResponse.body.aboutProgram).toBe(program.aboutProgram);
+    expect(updateProgramResponse.body.fullnameNamingConvention).toBe(
+      program.fullnameNamingConvention,
+    );
+    expect(updateProgramResponse.body.tryWhatsAppFirst).toBe(
+      program.tryWhatsAppFirst,
+    );
   });
 });
