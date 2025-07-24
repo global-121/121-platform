@@ -122,9 +122,10 @@ describe('PaymentsService - getTransactions', () => {
     const result = await service.getTransactions({ programId, payment });
 
     // Assert
-    expect(
-      transactionScopedRepository.getTransactionsForPayment,
-    ).toHaveBeenCalledWith({ programId, payment });
+    expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
+      programId,
+      payment,
+    });
     expect(result).toEqual([]);
   });
 });

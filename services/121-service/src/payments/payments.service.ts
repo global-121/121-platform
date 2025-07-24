@@ -16,6 +16,8 @@ import {
   getFspConfigurationRequiredProperties,
   getFspSettingByNameOrThrow,
 } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -28,8 +30,10 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
+import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import {
@@ -53,9 +57,11 @@ import {
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -64,6 +70,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -86,7 +93,7 @@ export class PaymentsService {
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
+    private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
@@ -1388,53 +1395,221 @@ export class PaymentsService {
     throw new Error(`FspName ${fspName} not supported in fsp export`);
   }
 
-  public async getTransactions({
+  public async geTransactionsByPaymentId({
     programId,
     payment,
   }: {
     programId: number;
     payment: number;
   }): Promise<GetTransactionResponseDto[]> {
-    const transactions =
-      await this.transactionScopedRepository.getTransactionsForPayment({
+    // For in the portal we always want the name of the registration, so we need to select it
+    const select = [DefaultRegistrationDataAttributeNames.name];
+
+    const transactions = await this.getTransactions({
+      programId,
+      payment,
+      select,
+    });
+
+    return transactions;
+  }
+
+  public async exportTransactionsUsingDateFilter({
+    programId,
+    fromDateString,
+    toDateString,
+  }: {
+    programId: number;
+    fromDateString: string;
+    toDateString: string;
+  }): Promise<FileDto> {
+    // Convert string dates to Date objects
+    const fromDate = new Date(fromDateString);
+    const toDate = new Date(toDateString);
+    const select = await this.getSelectForExport(programId);
+    const formatDateForFilename = (dateString: string) =>
+      new Date(dateString).toISOString().slice(0, 19).replace(/:/g, '-');
+
+    return {
+      data: await this.getTransactions({
+        programId,
+        select,
+        fromDate,
+        toDate,
+      }),
+      fileName: `transactions_${programId}_${formatDateForFilename(fromDateString)}_${formatDateForFilename(toDateString)}`,
+    };
+  }
+
+  public async getTransactions({
+    programId,
+    select,
+    payment,
+    fromDate,
+    toDate,
+  }: {
+    programId: number;
+    select: string[];
+    payment?: number;
+    fromDate?: Date;
+    toDate?: Date;
+  }): Promise<
+    (GetTransactionResponseDto & // This is the type returned by the transaction repository
+      Record<string, unknown>)[] // These are the dynamic fsp specific fields & the dynamic configured fields from the registration as set in 'export' of program registration attributes
+  > {
+    const fspSpecificJoinFields =
+      await this.getFspSpecificJoinFields(programId);
+
+    const transactions = await this.transactionScopedRepository.getTransactions(
+      {
         programId,
         payment,
-      });
+        fromDate,
+        toDate,
+        fspSpecificJoinFields,
+      },
+    );
     if (!transactions || transactions.length === 0) {
       return [];
     }
 
-    const fullnameNamingConvention = (
-      await this.programRepository.findOneOrFail({
-        where: { id: Equal(programId) },
-        select: ['fullnameNamingConvention'],
-      })
-    ).fullnameNamingConvention;
+    const referenceIds = transactions.map((t) => t.registrationReferenceId);
 
-    if (!fullnameNamingConvention || fullnameNamingConvention.length === 0) {
-      return transactions;
-    }
-
-    const registrationIds = transactions.map((t) => t.registrationId);
-    const registrationNames =
-      await this.registrationScopedRepository.getFullNamesByRegistrationIds({
-        registrationIds,
-        fullNameNamingConvention: fullnameNamingConvention,
-        programId,
-      });
+    const registrationViews =
+      (await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds, select },
+      )) as Omit<MappedPaginatedRegistrationDto, 'status'>[];
 
     // Create a map for faster lookups
-    const nameMap = new Map(
-      registrationNames.map((item) => [item.registrationId, item.name]),
+    const registrationViewMap = new Map(
+      registrationViews.map((item) => [item.referenceId, item]),
     );
 
     const result = transactions.map((transaction) => {
+      const registrationView = registrationViewMap.get(
+        transaction.registrationReferenceId,
+      );
+      if (!registrationView) {
+        return { ...transaction };
+      }
+      // Destructure 'name' as 'registrationName', and spread the rest
+      const { name, ...rest } = registrationView;
       return {
         ...transaction,
-        registrationName: nameMap.get(transaction.registrationId),
+        registrationName: name,
+        ...rest,
       };
     });
 
     return result;
+  }
+
+  private async getSelectForExport(programId: number): Promise<string[]> {
+    return [
+      ...(await this.getDefaultSelect({ programId })),
+      ...(await this.geRegistrationSelectFromProgramAttributes(programId)),
+    ];
+  }
+
+  private async geRegistrationSelectFromProgramAttributes(
+    programId: number,
+  ): Promise<string[]> {
+    // Get the dynamic columns based on the program's registration attributes config
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: ['programRegistrationAttributes'],
+    });
+
+    return program.programRegistrationAttributes
+      .filter((attr) => attr.export.includes(ExportType.payment))
+      .map((attr) => attr.name);
+  }
+
+  private async getDefaultSelect({
+    programId,
+  }: {
+    programId: number;
+  }): Promise<string[]> {
+    const defaultSelect = [
+      DefaultRegistrationDataAttributeNames.name,
+      GenericRegistrationAttributes.referenceId,
+      GenericRegistrationAttributes.registrationProgramId,
+      GenericRegistrationAttributes.status,
+      GenericRegistrationAttributes.phoneNumber,
+      GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.paymentAmountMultiplier,
+      GenericRegistrationAttributes.programFspConfigurationLabel,
+      GenericRegistrationAttributes.paymentCount,
+    ];
+
+    const program = await this.programRepository.findOneByOrFail({
+      id: programId,
+    });
+
+    if (program.enableMaxPayments) {
+      defaultSelect.push(GenericRegistrationAttributes.maxPayments);
+    }
+
+    if (program.enableScope) {
+      defaultSelect.push(GenericRegistrationAttributes.scope);
+    }
+
+    return defaultSelect;
+  }
+
+  private async getFspSpecificJoinFields(programId: number): Promise<
+    {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+      alias: string;
+    }[]
+  > {
+    const program = await this.programRepository.findOneOrFail({
+      where: { id: Equal(programId) },
+      relations: ['programFspConfigurations'],
+    });
+    let fields: {
+      entityJoinedToTransaction: EntityClass<any>;
+      attribute: string;
+      alias: string;
+    }[] = [];
+
+    for (const fspConfig of program.programFspConfigurations) {
+      if (fspConfig.fspName === Fsps.safaricom) {
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: SafaricomTransferEntity,
+              attribute: 'mpesaTransactionId',
+              alias: 'mpesaTransactionId',
+            },
+          ],
+        ];
+      }
+      if (fspConfig.fspName === Fsps.nedbank) {
+        fields = [
+          ...fields,
+          ...[
+            {
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
+              attribute: 'status',
+              alias: 'nedbankVoucherStatus',
+            },
+            {
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
+              attribute: 'orderCreateReference',
+              alias: 'nedbankOrderCreateReference',
+            },
+            {
+              entityJoinedToTransaction: NedbankVoucherEntity, //TODO: should we move this to fsps-settings.const.ts?
+              attribute: 'paymentReference',
+              alias: 'nedbankPaymentReference',
+            },
+          ],
+        ];
+      }
+    }
+    return fields;
   }
 }
