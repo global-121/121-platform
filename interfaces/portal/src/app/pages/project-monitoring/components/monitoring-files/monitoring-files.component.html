@@ -1,0 +1,57 @@
+<app-query-table
+  [items]="files()"
+  [isPending]="false"
+  [columns]="columns()"
+  localStorageKey="project-monitoring-files-table"
+  [contextMenuItems]="contextMenuItems()"
+  (updateContextMenuItem)="selectedFile.set($event)"
+  [globalFilterFields]="['type', 'name', 'createdBy', 'createdAt']"
+  [initialSortField]="'createdAt'"
+>
+  <div
+    table-actions
+    class="me-2 flex grow justify-end"
+  >
+    @if (canUploadFiles()) {
+      <app-monitoring-upload-file-dialog [projectId]="projectId()" />
+    }
+  </div>
+</app-query-table>
+
+<app-confirmation-dialog
+  #deleteFileConfirmationDialog
+  header="Delete File"
+  i18n-header
+  headerIcon="pi pi-trash"
+  proceedLabel="Delete file"
+  i18n-proceedLabel
+  [mutation]="deleteFileMutation"
+  [mutationData]="deleteFileFormGroup.getRawValue()"
+  [formGroup]="deleteFileFormGroup"
+>
+  <p i18n>
+    You are about to <b>delete</b> {{ selectedFile()?.name }},
+    <b>this action can not be undone.</b>
+  </p>
+  <p
+    i18n
+    class="mt-4"
+  >
+    Are you sure you want to delete this file?
+  </p>
+  <div class="mt-4 w-full">
+    <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+    <label>
+      <p-checkbox
+        formControlName="confirmAction"
+        [binary]="true"
+      />
+      <span
+        i18n
+        class="ps-2"
+        >I understand this action can not be undone.</span
+      >
+    </label>
+  </div>
+  <app-form-error [error]="deleteFileFormFieldErrors()('confirmAction')" />
+</app-confirmation-dialog>
