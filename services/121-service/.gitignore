@@ -10,6 +10,7 @@ node_modules
 
 # Generated assets / caches
 .npm
+.nyc_output
 dist
 coverage
 swagger-spec.json
