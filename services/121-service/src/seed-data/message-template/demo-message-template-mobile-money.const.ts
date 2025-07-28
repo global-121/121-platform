@@ -1,6 +1,6 @@
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 
-export const demoMessageTemplateMobileMoney: SeedMessageTemplateConfig = {
+export const demoMessageTemplates: SeedMessageTemplateConfig = {
   included: {
     isSendMessageTemplate: true,
     label: {
