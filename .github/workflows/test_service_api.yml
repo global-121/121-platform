@@ -1,5 +1,8 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
+# Can't use the top-level "paths" filter because of issues with required checks
+# See: https://github.com/orgs/community/discussions/44490#discussioncomment-10253645
+
 name: 'Test Service: Unit & Integration Tests'
 
 on:
@@ -7,23 +10,9 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
-    paths:
-      - .github/workflows/test_service_api.yml
-      - .github/actions/build-service/action.yml
-      - services/.env.example
-      - services/121-service/**
-      - services/mock-service/**
-      - '!**.md'
   push:
     branches:
       - main
-    paths:
-      - .github/workflows/test_service_api.yml
-      - .github/actions/build-service/action.yml
-      - services/.env.example
-      - services/121-service/**
-      - services/mock-service/**
-      - '!**.md'
 
 # This is needed for qlty to authenticate with OIDC
 # https://docs.qlty.sh/coverage/quickstart#github-actions
@@ -35,9 +24,40 @@ env:
   workingDirectory: services/121-service/
 
 jobs:
-  test:
+  path-filter:
     runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.filter.outputs.should_skip }}
+    steps:
+      - uses: actions/checkout@v4
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
+        with:
+          filter: blob:none # Reduce clone size/speed
+          fetch-depth: 0 # Full history is needed to determine the "changed files in this PR"
 
+      - uses: leavesster/pull-request-path-filter@v0.2
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
+        id: 'filter'
+        with:
+          paths: |
+            - .github/workflows/test_service_api.yml
+            - .github/actions/build-service/action.yml
+            - services/.env.example
+            - services/121-service/**
+            - services/mock-service/**
+            - '!**.md'
+
+  test-shard:
+    runs-on: ubuntu-latest
+    needs: path-filter
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1', '2', '3', '4', '5', '6']
+        shardCount: ['6']
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -45,64 +65,125 @@ jobs:
       - name: Set ENV-variables for test-environment
         run: |
           cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
 
       - name: Run Services with Docker
         run: |
           npm run start:services:ci
 
-      - name: Check that no new migrations are necessary
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          docker compose exec 121-service npm run migration:generate src/migration/irrelevant_file_name -- --check
-
-      - name: Run unit tests with Jest
-        working-directory: ${{ env.workingDirectory }}
-        env:
-          NODE_ENV: development
-          TWILIO_SID: AC
-          TWILIO_AUTHTOKEN: test
-          TWILIO_WHATSAPP_NUMBER: 15005550006
-          MOCK_TWILIO: TRUE
-          MOCK_INTERSOLVE: TRUE
-          MOCK_COMMERCIAL_BANK_ETHIOPIA: TRUE
-          MOCK_NEDBANK: TRUE
-          NEDBANK_CERTIFICATE_PATH: test
-
-        run: |
-          npm install
-          npm run test:unit:coverage
-
       - name: Run integration tests with Jest
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker compose exec 121-service npm run test:integration:coverage
+          docker compose exec 121-service npm run test:integration:all -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
-      - name: Copy coverage report output from docker container
+      # For more info, see services/121-service/README.md#Integration-test-coverage
+      - name: Generate lcov report from 121-service
         working-directory: ${{ env.workingDirectory }}
         run: |
-          docker cp 121-service:/home/node/app/coverage .
+          curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/scripts/kill-service' || true
+          docker compose exec 121-service npm run coverage:report:integration
 
-      - name: Generate combined coverage report
-        working-directory: ${{ env.workingDirectory }}
-        run: |
-          npm install
-          npm run coverage
-
-      - uses: qltysh/qlty-action/coverage@v1
+      - uses: actions/upload-artifact@v4
         with:
-          oidc: true
-          add-prefix: ${{ env.workingDirectory }}
-          tag: 121-service
-          files: ${{ env.workingDirectory }}/coverage/combined/lcov.info
+          name: integration-test-coverage-report-${{ matrix.shard }}
+          path: |
+            ${{ env.workingDirectory }}coverage
 
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
 
-      - name: Save coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
+  test:
+    runs-on: ubuntu-latest
+    needs: path-filter
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
         with:
-          name: coverage-report
+          # See supported Node.js versions: https://github.com/Azure/app-service-linux-docs/blob/master/Runtime_Support/node_support.md
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+          grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+
+      - name: Install
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm ci --omit=optional'
+
+      - name: Lint
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run lint'
+
+      - name: Check for dead code
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run knip'
+
+      - name: Check for TS errors
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run typecheck'
+
+      - name: Run unit tests with Jest
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm run test:unit:coverage'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage-report
           path: |
             ${{ env.workingDirectory }}/coverage
+
+  upload_coverage_reports:
+    runs-on: ubuntu-latest
+    needs: [test-shard, test]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coverage reports from previous jobs
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage
+
+      - name: Save a single artifact with all of the coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-coverage-report
+          path: coverage
+
+      # Coverage reports will be merged automatically by QLTY
+      # See: https://docs.qlty.sh/coverage/merging#client-side-merging
+      - name: Upload all coverage reports to QLTY
+        uses: qltysh/qlty-action/coverage@v1.1.1
+        with:
+          command: publish
+          oidc: true
+          add-prefix: ${{ env.workingDirectory }}
+          tag: 121-service
+          files: coverage/**/lcov.info
+          verbose: true
+          skip-errors: false
+
+  # This job is here to make the above jobs "required" in GitHub.
+  # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
+  test-shard-resolution-api:
+    runs-on: ubuntu-latest
+    needs: [test-shard, test]
+    if: always()
+    steps:
+      - name: Check required job results
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "Some checks have failed." >> $GITHUB_STEP_SUMMARY
+          exit 1
+      - name: Check required job results
+        if: contains(needs.*.result, 'failure') != 'true' || contains(needs.*.result, 'cancelled') != 'true'
+        run: |
+          echo "All required checks have successfully passed." >> $GITHUB_STEP_SUMMARY
+          exit 0

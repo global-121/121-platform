@@ -22,8 +22,8 @@ const visaFsp = 'Visa debit card';
 
 // Arrange
 test.beforeEach(async ({ page }) => {
-  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
 
   await seedRegistrationsWithStatus(
     registrationsPV,
@@ -35,10 +35,7 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   // Navigate to program
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
@@ -49,7 +46,7 @@ test('[34949] Filter registrations by FSP (from the bug)', async ({ page }) => {
   // Act & Assert
   // First ensure the FSP column is visible
   await test.step('Display FSP column in the table', async () => {
-    await registrations.manageTableColumns(['FSP']);
+    await registrations.configureTableColumns(['FSP']);
   });
 
   // Test filtering by Visa FSP

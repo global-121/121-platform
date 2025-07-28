@@ -9,13 +9,11 @@ dotenv.config({ path: envPath });
 export default defineConfig({
   testDir: './portal/tests',
   snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
-  /* Run tests in files in parallel */
   fullyParallel: false,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  forbidOnly:
+    // eslint-disable-next-line n/no-process-env -- This environment variable `CI` is NOT used in the 121-service, thus not managed via the env.ts file.
+    !!process.env.CI, // Fail the build on CI if you accidentally left test.only in the source code.
   retries: 1,
-  /* Opt out of parallel tests on CI. */
   reporter: [
     ['list'],
     // [
@@ -46,6 +44,7 @@ export default defineConfig({
   outputDir: './test-results',
   timeout: 60_000,
   use: {
+    // eslint-disable-next-line n/no-process-env -- This environment variable `BASE_URL` is NOT used in the 121-service, thus not managed via the env.ts file.
     baseURL: process.env.BASE_URL,
     video: 'on-first-retry',
     screenshot: 'only-on-failure',

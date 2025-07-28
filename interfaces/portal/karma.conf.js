@@ -16,6 +16,7 @@ module.exports = function (config) {
     coverageReporter: {
       // eslint-disable-next-line no-undef -- false negative
       dir: require('path').join(__dirname, './coverage'),
+      includeAllSources: true,
       reporters: [{ type: 'lcov' }, { type: 'text-summary' }],
       subdir: '.',
     },

@@ -18,6 +18,8 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
+// TODO: Consider Refactoring this service as intersolve voucher is the only fsp with a cron-service.
+// Also it makes sense a seperation of concerns that an fsp specic service does not know it's called by a cronjob.
 @Injectable()
 export class IntersolveVoucherCronService {
   @InjectRepository(RegistrationEntity)
@@ -41,22 +43,22 @@ export class IntersolveVoucherCronService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
-  public async cancelByRefposIntersolve(): Promise<void> {
+  public async cancelByRefposIntersolve(): Promise<number> {
     const tenMinutes = 10 * 60 * 1000;
     const tenMinutesAgo = new Date(Date.now() - tenMinutes);
 
     const twoWeeks = 14 * 24 * 60 * 60 * 1000;
     const twoWeeksAgo = new Date(Date.now() - twoWeeks);
 
-    const failedIntersolveRquests =
+    const failedIntersolveRequests =
       await this.intersolveVoucherRequestRepository.find({
         where: {
           updated: Between(twoWeeksAgo, tenMinutesAgo),
           toCancel: Equal(true),
         },
       });
-    if (failedIntersolveRquests.length === 0) {
-      return;
+    if (failedIntersolveRequests.length === 0) {
+      return 0;
     }
 
     // Get the first intersolve programFspConfigurationId that has intersolveVoucherWhatsapp as FSP
@@ -70,7 +72,7 @@ export class IntersolveVoucherCronService {
     });
 
     if (!configId) {
-      return;
+      return 0;
     }
 
     const usernamePassword =
@@ -82,13 +84,14 @@ export class IntersolveVoucherCronService {
         'No username or password found for intersolveVoucherWhatsapp in this instance while trying to cancel by refpos',
       );
     }
-    for (const intersolveRequest of failedIntersolveRquests) {
+    for (const intersolveRequest of failedIntersolveRequests) {
       await this.cancelRequestRefpos(
         intersolveRequest,
         usernamePassword.username,
         usernamePassword.password,
       );
     }
+    return failedIntersolveRequests.length;
   }
 
   private async cancelRequestRefpos(
@@ -112,7 +115,8 @@ export class IntersolveVoucherCronService {
     }
   }
 
-  public async sendWhatsappReminders(): Promise<void> {
+  public async sendWhatsappReminders(): Promise<number> {
+    let totalWhatsappReminders = 0;
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
     const programs = await this.programRepository.find();
@@ -195,12 +199,15 @@ export class IntersolveVoucherCronService {
         reminderVoucher.reminderCount =
           (reminderVoucher.reminderCount ?? 0) + 1;
         await this.intersolveVoucherRepository.save(reminderVoucher);
+
+        totalWhatsappReminders++;
       }
 
       console.log(
         `sendWhatsappReminders: ${unsentIntersolveVouchers.length} unsent Intersolve vouchers for program: ${program.id}`,
       );
     }
+    return totalWhatsappReminders;
   }
 
   private async getLanguageForRegistration(

@@ -8,7 +8,7 @@ export interface CreateOrderRequestBodyNedbankApiDto {
       };
       DebtorAccount: {
         SchemeName: 'account'; // should always be 'account'
-        Identification: string;
+        Identification: string | undefined;
         Name: string;
       };
       CreditorAccount: {

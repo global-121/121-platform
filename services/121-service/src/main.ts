@@ -12,12 +12,11 @@ import {
   APP_FAVICON,
   APP_TITLE,
   APP_VERSION,
-  DEBUG,
-  EXTERNAL_API,
-  PORT,
+  IS_DEVELOPMENT,
   SWAGGER_CUSTOM_CSS,
   SWAGGER_CUSTOM_JS,
 } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
 
@@ -27,7 +26,7 @@ import appInsights = require('applicationinsights');
 
 /**
  * A visualization of module dependencies is generated using `nestjs-spelunker`
- * The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extention "bierner.markdown-mermaid"
+ * The file can be vied with [Mermaid](https://mermaid.live) or the VSCode extension "bierner.markdown-mermaid"
  * See: https://github.com/jmcdo29/nestjs-spelunker
  */
 function generateModuleDependencyGraph(app: INestApplication): void {
@@ -121,17 +120,9 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(ApplicationModule);
 
-  if (!process.env.REDIS_PREFIX) {
-    throw new Error('REDIS_PREFIX not set');
-  }
-
-  const notAllowedRegex = /[\0\n\r :]/;
-  if (notAllowedRegex.test(process.env.REDIS_PREFIX)) {
-    throw new Error('REDIS_PREFIX contains one or more not allowed characters');
-  }
-
+  // CORS is only enabled for local development; Because the Azure App Service applies its own CORS settings 'on the outside'
   app.enableCors({
-    origin: DEBUG,
+    origin: IS_DEVELOPMENT,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
@@ -139,13 +130,13 @@ async function bootstrap(): Promise<void> {
   // Prepare redirects:
   const expressInstance = app.getHttpAdapter().getInstance();
 
-  if (!!process.env.REDIRECT_PORTAL_URL_HOST) {
+  if (!!env.REDIRECT_PORTAL_URL_HOST) {
     expressInstance.get(`/`, (__req: Request, res: Response) => {
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST!);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST);
     });
     expressInstance.get(`/portal*`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
-      res.redirect(process.env.REDIRECT_PORTAL_URL_HOST + newPath);
+      res.redirect(env.REDIRECT_PORTAL_URL_HOST + newPath);
     });
   }
 
@@ -156,8 +147,9 @@ async function bootstrap(): Promise<void> {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
-    .addServer(EXTERNAL_API.root)
+    .addServer(env.EXTERNAL_121_SERVICE_URL)
     .build();
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document, {
     customSiteTitle: APP_TITLE,
@@ -169,16 +161,16 @@ async function bootstrap(): Promise<void> {
       deepLinking: true,
       defaultModelExpandDepth: 10,
       defaultModelsExpandDepth: 1,
-      displayOperationId: DEBUG,
+      displayOperationId: IS_DEVELOPMENT,
       displayRequestDuration: true,
       filter: false,
       operationsSorter: 'alpha',
-      persistAuthorization: DEBUG,
-      queryConfigEnabled: DEBUG,
+      persistAuthorization: IS_DEVELOPMENT,
+      queryConfigEnabled: IS_DEVELOPMENT,
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
-      tryItOutEnabled: DEBUG,
+      tryItOutEnabled: IS_DEVELOPMENT,
     },
   });
 
@@ -192,10 +184,10 @@ async function bootstrap(): Promise<void> {
   );
   app.use(cookieParser());
 
-  const server = await app.listen(PORT);
+  const server = await app.listen(env.PORT_121_SERVICE);
   server.setTimeout(10 * 60 * 1000);
 
-  if (DEBUG) {
+  if (IS_DEVELOPMENT) {
     generateModuleDependencyGraph(app);
     generateSwaggerSummaryJson(app);
   }
@@ -218,14 +210,14 @@ async function bootstrap(): Promise<void> {
       logService.logError(new Error('Uncaught Exception: restarting'), true);
     }
 
-    // Trigger a reboot, as the app is in an unknown state.
+    // eslint-disable-next-line n/no-process-exit -- Trigger a reboot, as the app is in an unknown state.
     process.exit(1);
   });
 }
 
 void bootstrap();
 
-if (!!process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
+if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  appInsights.setup(env.APPLICATIONINSIGHTS_CONNECTION_STRING);
   appInsights.start();
 }

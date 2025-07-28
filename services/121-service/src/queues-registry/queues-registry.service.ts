@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Queue } from 'bull';
 import Redis from 'ioredis';
 
+import { env } from '@121-service/src/env';
 import { createRedisClient } from '@121-service/src/payments/redis/redis-client';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { REGISTERED_PROCESSORS } from '@121-service/src/queues-registry/register-processor.decorator';
@@ -17,37 +18,52 @@ export class QueuesRegistryService implements OnModuleInit {
 
     @InjectQueue(QueueNames.transactionJobsIntersolveVisa)
     public transactionJobIntersolveVisaQueue: Queue,
+
     @InjectQueue(QueueNames.transactionJobsIntersolveVoucher)
     public transactionJobIntersolveVoucherQueue: Queue,
+
     @InjectQueue(QueueNames.transactionJobsCommercialBankEthiopia)
     public transactionJobCommercialBankEthiopiaQueue: Queue,
+
     @InjectQueue(QueueNames.transactionJobsSafaricom)
     public transactionJobSafaricomQueue: Queue,
+
     @InjectQueue(QueueNames.transactionJobsNedbank)
     public transactionJobNedbankQueue: Queue,
+
+    @InjectQueue(QueueNames.transactionJobsAirtel)
+    public transactionJobAirtelQueue: Queue,
+
     @InjectQueue(QueueNames.transactionJobsOnafriq)
     public transactionJobOnafriqQueue: Queue,
 
     @InjectQueue(QueueNames.paymentCallbackSafaricomTransfer)
     public safaricomTransferCallbackQueue: Queue,
+
     @InjectQueue(QueueNames.paymentCallbackSafaricomTimeout)
     public safaricomTimeoutCallbackQueue: Queue,
+
     @InjectQueue(QueueNames.paymentCallbackOnafriq)
     public onafriqCallbackQueue: Queue,
 
     @InjectQueue(QueueNames.createMessageReplyOnIncoming)
     public createMessageReplyOnIncomingQueue: Queue,
+
     @InjectQueue(QueueNames.createMessageSmallBulk)
     public createMessageSmallBulkQueue: Queue,
+
     @InjectQueue(QueueNames.createMessageMediumBulk)
     public createMessageMediumBulkQueue: Queue,
+
     @InjectQueue(QueueNames.createMessageLargeBulk)
     public createMessageLargeBulkQueue: Queue,
+
     @InjectQueue(QueueNames.createMessageLowPriority)
     public createMessageLowPriorityQueue: Queue,
 
     @InjectQueue(QueueNames.messageCallbackIncoming)
     public messageIncomingCallbackQueue: Queue,
+
     @InjectQueue(QueueNames.messageCallbackStatus)
     public messageStatusCallbackQueue: Queue,
 
@@ -63,6 +79,7 @@ export class QueuesRegistryService implements OnModuleInit {
         this.transactionJobCommercialBankEthiopiaQueue,
       [QueueNames.transactionJobsSafaricom]: this.transactionJobSafaricomQueue,
       [QueueNames.transactionJobsNedbank]: this.transactionJobNedbankQueue,
+      [QueueNames.transactionJobsAirtel]: this.transactionJobAirtelQueue,
       [QueueNames.transactionJobsOnafriq]: this.transactionJobOnafriqQueue,
       [QueueNames.paymentCallbackSafaricomTransfer]:
         this.safaricomTransferCallbackQueue,
@@ -136,14 +153,14 @@ export class QueuesRegistryService implements OnModuleInit {
     }
     const redisClient = createRedisClient();
     // Prefix is needed here because .keys does not take into account the prefix of the redis client
-    const keys = await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+    const keys = await redisClient.keys(`${env.REDIS_PREFIX}:*`);
     if (keys.length) {
       const keysWithoutPrefix = keys.map((key) =>
-        key.replace(process.env.REDIS_PREFIX + ':', ''),
+        key.replace(env.REDIS_PREFIX + ':', ''),
       );
       await this.batchDeleteKeys(redisClient, keysWithoutPrefix);
     }
-    await redisClient.keys(`${process.env.REDIS_PREFIX}:*`);
+    await redisClient.keys(`${env.REDIS_PREFIX}:*`);
   }
 
   // This is prevent this error when deleting large amount of keys: RangeError: Maximum call stack size exceeded

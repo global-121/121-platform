@@ -1,16 +1,16 @@
-import globals from 'globals';
 import eslint from '@eslint/js';
-import tsEslint from 'typescript-eslint';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
-import pluginQuery from '@tanstack/eslint-plugin-query';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
 import eslintTailwind from 'eslint-plugin-tailwindcss';
+import globals from 'globals';
+import tsEslint from 'typescript-eslint';
 
 export default tsEslint.config(
   {
@@ -22,14 +22,6 @@ export default tsEslint.config(
     },
   },
   {
-    files: ['**/*.ts'],
-    plugins: {
-      'no-relative-import-paths': eslintPluginNoRelativePaths,
-      perfectionist: eslintPluginPerfectionist,
-      regexp: eslintPluginRegexp,
-      'simple-import-sort': eslintPluginSimpleSort,
-      'eslint-comments': eslintPluginComments,
-    },
     extends: [
       eslint.configs.recommended,
       ...tsEslint.configs.strictTypeChecked,
@@ -41,8 +33,45 @@ export default tsEslint.config(
       ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
+    files: ['**/*.ts'],
+    plugins: {
+      'eslint-comments': eslintPluginComments,
+      'no-relative-import-paths': eslintPluginNoRelativePaths,
+      perfectionist: eslintPluginPerfectionist,
+      regexp: eslintPluginRegexp,
+      'simple-import-sort': eslintPluginSimpleSort,
+    },
     processor: angularEslint.processInlineTemplates,
     rules: {
+      '@angular-eslint/component-max-inline-declarations': [
+        'error',
+        { template: 20 },
+      ],
+      '@angular-eslint/component-selector': [
+        'error',
+        {
+          prefix: 'app',
+          style: 'kebab-case',
+          type: 'element',
+        },
+      ],
+      '@angular-eslint/directive-selector': [
+        'error',
+        {
+          prefix: 'app',
+          style: 'camelCase',
+          type: 'attribute',
+        },
+      ],
+      '@angular-eslint/no-async-lifecycle-method': ['error'],
+      '@angular-eslint/no-conflicting-lifecycle': ['error'],
+      '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
+      '@angular-eslint/prefer-output-readonly': ['error'],
+      '@angular-eslint/prefer-signals': ['error'],
+      '@angular-eslint/prefer-standalone': ['error'],
+      '@angular-eslint/sort-lifecycle-methods': ['error'],
+      '@angular-eslint/use-component-selector': ['error'],
+      '@angular-eslint/use-lifecycle-interface': ['error'],
       '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-extraneous-class': [
         'error',
@@ -50,37 +79,11 @@ export default tsEslint.config(
           allowWithDecorator: true,
         },
       ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
-        },
-      ],
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-max-inline-declarations': [
-        'error',
-        { template: 20 },
-      ],
-      '@angular-eslint/no-async-lifecycle-method': ['error'],
-      '@angular-eslint/no-conflicting-lifecycle': ['error'],
-      '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
-      '@angular-eslint/prefer-output-readonly': ['error'],
-      '@angular-eslint/prefer-standalone': ['error'],
-      '@angular-eslint/prefer-signals': ['error'],
-      '@angular-eslint/sort-lifecycle-methods': ['error'],
-      '@angular-eslint/use-component-selector': ['error'],
-      '@angular-eslint/use-lifecycle-interface': ['error'],
-      'max-params': ['error', 2],
+      'arrow-body-style': 'error',
       'eslint-comments/require-description': 'error',
+      'func-style': 'error',
+      'max-params': ['error', 2],
+      'no-inner-declarations': 'error',
       'no-relative-import-paths/no-relative-import-paths': [
         'error',
         {
@@ -88,10 +91,13 @@ export default tsEslint.config(
           rootDir: './src/app',
         },
       ],
+      'object-shorthand': 'error',
       'perfectionist/sort-array-includes': ['error'],
       'perfectionist/sort-enums': ['error'],
       'perfectionist/sort-intersection-types': ['error'],
       'perfectionist/sort-union-types': ['error'],
+      'prefer-arrow-callback': 'error',
+      'simple-import-sort/exports': 'error',
       'simple-import-sort/imports': [
         'error',
         {
@@ -109,22 +115,16 @@ export default tsEslint.config(
           ],
         },
       ],
-      'simple-import-sort/exports': 'error',
-      'arrow-body-style': 'error',
-      'func-style': 'error',
-      'no-inner-declarations': 'error',
-      'object-shorthand': 'error',
-      'prefer-arrow-callback': 'error',
     },
   },
   {
-    files: ['src/app/**/*.html'],
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
       ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
+    files: ['src/app/**/*.html'],
     rules: {
       '@angular-eslint/template/i18n': [
         'error',
@@ -173,8 +173,14 @@ export default tsEslint.config(
           ],
         },
       ],
-      'tailwindcss/no-contradicting-classname': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          parser: 'angular',
+        },
+      ],
       'tailwindcss/enforces-negative-arbitrary-values': 'error',
+      'tailwindcss/no-contradicting-classname': 'error',
       'tailwindcss/no-custom-classname': [
         'error',
         {
@@ -186,15 +192,15 @@ export default tsEslint.config(
           ],
         },
       ],
-      'prettier/prettier': [
-        'error',
-        {
-          parser: 'angular',
-        },
-      ],
     },
   },
   {
+    extends: [
+      eslint.configs.recommended,
+      eslintPluginRegexp.configs['flat/recommended'],
+      eslintPluginPerfectionist.configs['recommended-natural'],
+      eslintPluginPrettierRecommended,
+    ],
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2022,
@@ -205,18 +211,12 @@ export default tsEslint.config(
       },
     },
     plugins: {
-      regexp: eslintPluginRegexp,
       'eslint-comments': eslintPluginComments,
+      regexp: eslintPluginRegexp,
     },
-    extends: [
-      eslint.configs.recommended,
-      eslintPluginRegexp.configs['flat/recommended'],
-      eslintPluginPerfectionist.configs['recommended-natural'],
-      eslintPluginPrettierRecommended,
-    ],
     rules: {
-      'eslint-comments/require-description': 'error',
       'arrow-body-style': 'error',
+      'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'no-inner-declarations': 'error',
       'object-shorthand': 'error',

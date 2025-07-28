@@ -4,10 +4,15 @@ module.exports = {
   rootDir: '.',
   testMatch: ['<rootDir>/**/*.spec.ts'],
   coverageReporters: ['json', 'lcov'],
+  collectCoverageFrom: ['src/**/*.ts', '!src/migration/**'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: {
     '^@121-service/(.*)$': '<rootDir>/$1',
   },
+  transform: {
+    'node_modules/@t3-oss/.+\\.js$': ['ts-jest'],
+  },
+  transformIgnorePatterns: ['node_modules/(?!@t3-oss)'],
   randomize: true,
   verbose: true,
   reporters: [

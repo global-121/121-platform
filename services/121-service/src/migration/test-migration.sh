@@ -6,6 +6,9 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: ./services/121-service/src/migration/test-migration.sh <old-branch-name> <new-branch-name> [<docker-name-of-database> (optional)] [<docker-name-121-service> (optional)]"
   echo "Example: ./services/121-service/src/migration/test-migration.sh main feat.new-awesome-entity"
   echo "Optional: ./services/121-service/src/migration/test-migration.sh old-branch-name new-branch-name custom-db-name custom-service-name"
+  echo "Note:"
+  echo "  - This script must be run from the root of the 121-platform repository"
+  echo "  - Ensure you have an uncommitted migration script in the migrations folder before running this script"
   exit 1
 fi
 # Set default values for Docker container names if not provided

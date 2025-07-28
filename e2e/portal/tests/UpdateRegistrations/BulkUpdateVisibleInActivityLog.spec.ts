@@ -10,6 +10,7 @@ import {
 import {
   programIdPV,
   registrationPV5,
+  registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
@@ -19,15 +20,16 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations(
+    [registrationPV5, registrationPV6],
+    programIdPV,
+    accessToken,
+  );
 
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
 });
 
 const newName = 'Michael Scarn';
@@ -45,6 +47,15 @@ test('[36352] Data should be updated according to selected columns and registrat
   });
 
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {
+    // adding this extra step to ensure that deleted registrations are excluded from exports
+    // for more info: AB#37336
+    await tableComponent.changeRegistrationStatusByNameWithOptions({
+      registrationName: registrationPV6.fullName,
+      status: 'Delete',
+      sendMessage: false,
+    });
+    await registrationsPage.dismissToast();
+
     await registrationsPage.selectAllRegistrations();
     await registrationsPage.clickAndSelectImportOption(
       'Update selected registrations',

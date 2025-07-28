@@ -1,5 +1,8 @@
 # See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 
+# Can't use the top-level "paths" filter because of issues with required checks
+# See: https://github.com/orgs/community/discussions/44490#discussioncomment-10253645
+
 name: 'Test: E2E (Portal)'
 
 on:
@@ -7,25 +10,51 @@ on:
   merge_group:
     types: [checks_requested]
   pull_request:
-    paths:
-      - '.github/workflows/test_e2e_portal.yml'
-      - 'e2e/**'
-      - 'services/.env.example'
-      - 'services/**'
-      - '!services/**.test.ts'
-      - '!services/**.spec.ts'
-      - 'interfaces/portal/**'
-      - '!interfaces/portal/**.test.ts'
-      - '!interfaces/portal/**.spec.ts'
-      - '!**.md'
 
 env:
   e2eTestsPath: './e2e'
 
 jobs:
-  test:
+  path-filter:
     runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.filter.outputs.should_skip }}
+    steps:
+      - uses: actions/checkout@v4
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
+        with:
+          filter: blob:none # Reduce clone size/speed
+          fetch-depth: 0 # Full history is needed to determine the "changed files in this PR"
+
+      - uses: leavesster/pull-request-path-filter@v0.2
+        # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
+        if: github.event_name == 'pull_request'
+        id: filter
+        with:
+          paths: |
+            - '.github/workflows/test_e2e_portal.yml'
+            - 'e2e/**'
+            - 'services/.env.example'
+            - 'services/**'
+            - '!services/**.test.ts'
+            - '!services/**.spec.ts'
+            - 'interfaces/portal/**'
+            - '!interfaces/portal/**.test.ts'
+            - '!interfaces/portal/**.spec.ts'
+            - '!**.md'
+
+  test-shard:
+    runs-on: ubuntu-latest
+    needs: path-filter
+    if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     environment: test
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1', '2', '3', '4', '5', '6']
+        shardCount: ['6']
 
     steps:
       - name: Check out repository code
@@ -53,7 +82,7 @@ jobs:
 
       - name: Run Services with Docker
         run: |
-          npm run start:services:ci
+          npm run start:services:ci:production
 
       - name: Run Portal
         working-directory: ./interfaces/portal
@@ -65,12 +94,6 @@ jobs:
           npm ci
           cp .env.example .env
           npm run start:debug-production > run-portal-logs.txt 2>&1 &
-
-      - name: Install 121-Service dependencies
-        # This step is necessary because the tests run functions in this folder
-        working-directory: ./services/121-service
-        run: |
-          npm install
 
       - name: Install E2E-Tests runtime-dependencies
         working-directory: ${{ env.e2eTestsPath }}
@@ -86,12 +109,12 @@ jobs:
         env:
           BASE_URL: http://localhost:8088
         run: |
-          npm test
+          npm test -- --shard=${{ matrix.shard }}/${{ matrix.shardCount }}
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-result-artifacts
+          name: test-result-artifacts-${{ matrix.shard }}
           path: |
             ${{ env.e2eTestsPath }}/test-results/
             ./interfaces/portal/run-portal-logs.txt
@@ -104,3 +127,21 @@ jobs:
       - name: Docker logs
         if: always()
         uses: jwalton/gh-docker-logs@v2
+
+  # This job is here to make the above jobs "required" in GitHub.
+  # This is a workaround for this issue: https://github.com/orgs/community/discussions/44490
+  test-shard-resolution-e2e:
+    runs-on: ubuntu-latest
+    needs: [test-shard]
+    if: always()
+    steps:
+      - name: Check required job results
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "Some checks have failed." >> $GITHUB_STEP_SUMMARY
+          exit 1
+      - name: Check required job results
+        if: contains(needs.*.result, 'failure') != 'true' || contains(needs.*.result, 'cancelled') != 'true'
+        run: |
+          echo "All required checks have successfully passed." >> $GITHUB_STEP_SUMMARY
+          exit 0

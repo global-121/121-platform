@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,7 +18,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   selector: 'app-projects-overview',
   imports: [
     ButtonModule,
-    CommonModule,
     PageLayoutComponent,
     ProjectSummaryCardComponent,
     CreateProjectFormComponent,

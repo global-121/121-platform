@@ -20,6 +20,11 @@ import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-single-payment-export',
@@ -41,6 +46,7 @@ export class SinglePaymentExportComponent {
   private exportService = inject(ExportService);
   private toastService = inject(ToastService);
   private downloadService = inject(DownloadService);
+  private trackingService = inject(TrackingService);
 
   readonly exportFspPaymentListDialog =
     viewChild.required<ConfirmationDialogComponent>(
@@ -104,7 +110,18 @@ export class SinglePaymentExportComponent {
       visible:
         this.canExportPaymentInstructions() && this.hasExportFileIntegration(),
       command: () => {
-        this.exportFspPaymentListDialog().askForConfirmation();
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'fsp-payment-list',
+        });
+        this.exportFspPaymentListDialog().askForConfirmation({
+          trackingEvent: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'fsp-payment-list',
+          },
+        });
       },
     },
     {
@@ -118,7 +135,18 @@ export class SinglePaymentExportComponent {
         ],
       }),
       command: () => {
-        this.paymentReportDialog().askForConfirmation();
+        this.trackingService.trackEvent({
+          category: TrackingCategory.export,
+          action: TrackingAction.selectDropdownOption,
+          name: 'payment-report',
+        });
+        this.paymentReportDialog().askForConfirmation({
+          trackingEvent: {
+            category: TrackingCategory.export,
+            action: TrackingAction.clickProceedButton,
+            name: 'payment-report',
+          },
+        });
       },
     },
   ]);

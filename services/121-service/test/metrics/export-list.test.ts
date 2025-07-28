@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -27,21 +26,6 @@ import {
   programIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
-
-function createExportObject(
-  registration: Partial<RegistrationEntity> | any,
-): RegistrationEntity | any {
-  const exportObject = {
-    ...registration,
-  };
-  delete exportObject.programFspConfigurationName;
-  // remove empty values
-  Object.keys(exportObject).forEach(
-    (key) => !exportObject[key] && delete exportObject[key],
-  );
-  exportObject.paymentCount = 0;
-  return exportObject;
-}
 
 describe('Metric export list', () => {
   const OcwProgramId = programIdOCW;
@@ -78,10 +62,10 @@ describe('Metric export list', () => {
     });
   });
 
-  it('should export all people affected of a single program regardless of status', async () => {
+  it('should export all registrations of a single program regardless of status', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .send();
 
@@ -96,15 +80,6 @@ describe('Metric export list', () => {
     expect(data.map((r) => r.referenceId).sort()).toEqual(
       expectedReferenceIds.sort(),
     );
-
-    for (const registration of registrationsOCW.slice(1)) {
-      const exportRegistrationFound = data.find(
-        (r) => r.referenceId === registration.referenceId,
-      );
-      expect(exportRegistrationFound).toMatchObject(
-        createExportObject(registration),
-      );
-    }
   });
 
   it('should return all filtered registrations from 1 program using a filter for included and a scoped user', async () => {
@@ -118,7 +93,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -131,10 +106,10 @@ describe('Metric export list', () => {
     expect(data.length).toBe(1);
 
     const exportRegistration = data[0];
-
-    expect(exportRegistration).toMatchObject(
-      createExportObject(registrationScopedGoesPv),
+    expect(exportRegistration.referenceId).toBe(
+      registrationScopedGoesPv.referenceId,
     );
+    expect(exportRegistration.status).toBe('new');
   });
 
   it('should return all filtered registrations from 1 program using a filter and search query', async () => {
@@ -147,7 +122,7 @@ describe('Metric export list', () => {
     // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -161,10 +136,31 @@ describe('Metric export list', () => {
     expect(data.length).toBe(1);
 
     const exportRegistration = data[0];
-
-    expect(exportRegistration).toMatchObject(
-      createExportObject(registrationScopedGoesPv),
+    expect(exportRegistration.referenceId).toBe(
+      registrationScopedGoesPv.referenceId,
     );
+  });
+
+  it('should export all registration attributes when no "select" is provided', async () => {
+    // Act
+    const getRegistrationsResponse = await getServer()
+      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
+      .set('Cookie', [accessToken])
+      .send();
+
+    // Assert
+    const data = getRegistrationsResponse.body.data;
+    expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
+    expect(data.length).toBe(5);
+
+    for (const registration of registrationsOCW.slice(1)) {
+      const exportRegistrationFound = data.find(
+        (r) => r.referenceId === registration.referenceId,
+      );
+      expect(exportRegistrationFound).toMatchSnapshot({
+        created: expect.any(String),
+      });
+    }
   });
 
   it('should support using "select" to retrieve a specific subset of columns', async () => {
@@ -173,7 +169,7 @@ describe('Metric export list', () => {
 
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         select: 'referenceId,fullName,phoneNumber',
@@ -194,7 +190,7 @@ describe('Metric export list', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/all-registrations`)
+      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .responseType('blob')
       .query({

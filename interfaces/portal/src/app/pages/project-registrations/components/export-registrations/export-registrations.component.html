@@ -13,7 +13,7 @@
   headerIcon="pi pi-upload"
   [mutation]="exportRegistrationsMutation"
   [mutationData]="{
-    type: ExportType.allRegistrations,
+    type: ExportType.registrations,
     paginateQuery: exportSelectedActionData()?.query,
     format: exportRegistrationsFormGroup.getRawValue().format,
   }"
@@ -24,6 +24,23 @@
     <strong
       >{{ exportSelectedActionData()?.count }} selected registration(s)</strong
     >.
+  </p>
+  <p class="mt-2">
+    <ng-container i18n>
+      Only the columns that are currently visible in the table will be included.
+      You can learn how to show or hide columns in the
+    </ng-container>
+    <a
+      href="https://manual.121.global/"
+      target="_blank"
+      title="Opens in a new window"
+      i18n-title="@@generic-opens-in-new-window"
+      class="p-button p-button-link"
+    >
+      <ng-container i18n>manual</ng-container>
+      <span class="p-button-icon pi pi-external-link text-sm"></span>
+    </a>
+    .
   </p>
 
   <strong
@@ -50,7 +67,7 @@
 
   <app-latest-export-date
     [projectId]="projectId()"
-    [exportType]="ExportType.allRegistrations"
+    [exportType]="ExportType.registrations"
   />
 </app-confirmation-dialog>
 <app-confirmation-dialog

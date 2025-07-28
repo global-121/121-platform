@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { SeverityLevel } from 'applicationinsights/out/Declarations/Contracts';
 
+import { env } from '@121-service/src/env';
+
 @Injectable()
 export class AzureLogService {
   defaultClient: TelemetryClient;
 
   public constructor() {
-    if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
       this.defaultClient = defaultClient;
     }
   }
@@ -39,5 +41,14 @@ export class AzureLogService {
         flushError,
       );
     }
+  }
+
+  public consoleLogAndTraceAzure(message: string): void {
+    console.log(message);
+    if (!this.defaultClient) {
+      return;
+    }
+    this.defaultClient.trackTrace({ message });
+    this.flushLogs();
   }
 }

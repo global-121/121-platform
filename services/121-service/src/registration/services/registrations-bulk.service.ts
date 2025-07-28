@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not, Repository } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { EventsService } from '@121-service/src/events/events.service';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -513,7 +514,7 @@ export class RegistrationsBulkService {
             userId,
           });
         } catch (error) {
-          if (process.env.NODE_ENV === 'development') {
+          if (IS_DEVELOPMENT) {
             throw error;
           } else {
             this.azureLogService.logError(error, true);

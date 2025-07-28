@@ -27,13 +27,10 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
 });
 
-test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
+test('[29359] Export 15000 PAs', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrationsPage = new RegistrationsPage(page);
   const exportDataComponent = new ExportData(page);
@@ -52,7 +49,7 @@ test('[29359] Export inclusion list with 15000 PAs', async ({ page }) => {
     await exportDataComponent.exportAndAssertData({
       minRowCount: 15000,
       orderOfDataIsImportant: true,
-      excludedColumns: ['phoneNumber', 'whatsappPhoneNumber'],
+      excludedColumns: ['phoneNumber', 'created'],
     });
   });
 });

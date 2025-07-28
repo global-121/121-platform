@@ -4,7 +4,8 @@ import fs from 'fs';
 import { join } from 'path';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { env } from '@121-service/src/env';
 import {
   FspConfigurationProperties,
   Fsps,
@@ -88,59 +89,56 @@ export class SeedHelper {
     const users = [
       {
         type: 'programAdminUser',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
         roles: [DefaultUserRole.ProgramAdmin],
       },
       {
         type: 'viewOnlyUser',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
         roles: [DefaultUserRole.View],
       },
       {
         type: 'koboRegistrationUser',
-        username:
-          process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
-        password:
-          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_REGISTRATION,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_REGISTRATION,
         roles: [DefaultUserRole.KoboRegistrationUser],
       },
       {
         type: 'koboValidationnUser',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
-        password:
-          process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
         roles: [DefaultUserRole.KoboValidationUser],
       },
       {
         type: 'cvaManager',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_CVA_MANAGER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_MANAGER,
         roles: [DefaultUserRole.CvaManager],
       },
       {
         type: 'cvaOfficer',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_CVA_OFFICER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_CVA_OFFICER,
         roles: [DefaultUserRole.CvaOfficer],
       },
       {
         type: 'financeManager',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_MANAGER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_MANAGER,
         roles: [DefaultUserRole.FinanceManager],
       },
       {
         type: 'financeOfficer',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_FINANCE_OFFICER,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_FINANCE_OFFICER,
         roles: [DefaultUserRole.FinanceOfficer],
       },
       {
         type: 'ViewWithoutPII',
-        username: process.env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
-        password: process.env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
+        username: env.USERCONFIG_121_SERVICE_EMAIL_VIEW_WITHOUT_PII,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_VIEW_WITHOUT_PII,
         roles: [DefaultUserRole.ViewWithoutPII],
       },
     ];
@@ -152,12 +150,12 @@ export class SeedHelper {
       }
     }
 
-    if (debugScopeUsers && DEBUG) {
+    if (debugScopeUsers && IS_DEVELOPMENT) {
       for (const debugScopeUser of debugScopeUsers) {
         const scopedUser = await this.getOrSaveUser({
           type: 'debugScopedUser',
           username: `${debugScopeUser}@example.org`,
-          password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+          password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
         });
         if (scopedUser) {
           await this.assignAidworker(
@@ -223,7 +221,7 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const programFromJSON = JSON.parse(programExampleDump);
 
-    if (DEBUG && !isApiTests) {
+    if (IS_DEVELOPMENT && !isApiTests) {
       programFromJSON.published = true;
     }
 
@@ -317,6 +315,7 @@ export class SeedHelper {
     for (const property of propertiesFromJSON) {
       let fspConfigPropertyValue = property.value;
       if (typeof property.value === 'string') {
+        // eslint-disable-next-line n/no-process-env -- Not all FSP-Config-properties are known in code, so we need to check with the runtime environment
         fspConfigPropertyValue = process.env[property.value] || property.value;
       }
       const fspConfigPropertyEntity =
@@ -364,7 +363,7 @@ export class SeedHelper {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const adminUser = await userRepository.findOneOrFail({
       where: {
-        username: Equal(process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN!),
+        username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN),
       },
     });
     await this.assignAidworker(adminUser.id, programId, [

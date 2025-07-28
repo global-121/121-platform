@@ -35,9 +35,7 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
   const registrations = new RegistrationsPage(page);
 
   await registrations.navigateToProgramPage('Registrations');
-  // Checkboxes are still selected after navigating back to registrations page
-  // Thus reload of the page let's validateif this is correct behavior
-  await page.reload();
+  await registrations.deselectRegistrations();
 };
 
 test.describe('Change status of registration with and without templated message', () => {
@@ -46,11 +44,7 @@ test.describe('Change status of registration with and without templated message'
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
   });
 
   test.afterEach(async () => {
@@ -65,6 +59,7 @@ test.describe('Change status of registration with and without templated message'
   test('[35840] Change status of registration with custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
+
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV5.fullName,
@@ -90,7 +85,7 @@ test.describe('Change status of registration with and without templated message'
   test('[35849] Change status of registration without custom message', async () => {
     const registrations = new RegistrationsPage(page);
     const tableComponent = new TableComponent(page);
-    // Act
+
     await test.step('Change status of first selected registration and write a custom message', async () => {
       await tableComponent.changeRegistrationStatusByNameWithOptions({
         registrationName: registrationPV6.fullName,

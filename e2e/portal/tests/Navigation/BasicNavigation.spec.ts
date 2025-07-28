@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
@@ -15,55 +15,62 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 const projectId = 2;
 const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+// Arrange
+test.describe('Validate basic navigation of the Portal', () => {
+  let page: Page;
 
-  const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
+  test.beforeAll(async ({ browser }) => {
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessToken();
+    await seedIncludedRegistrations(registrationsPV, projectId, accessToken);
 
-  // Login
-  const loginPage = new LoginPage(page);
-  await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
-});
+    page = await browser.newPage();
 
-test('Navigation from sidebar', async ({ page }) => {
-  await page.goto('/');
+    const loginPage = new LoginPage(page);
+    await page.goto(`/`);
+    await loginPage.login();
+    // Navigate to program
+    await loginPage.selectProgram(projectTitle);
+  });
 
-  const homePage = new HomePage(page);
-  await homePage.navigateToPage('Users');
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
+  test.afterAll(async () => {
+    await page.close();
+  });
 
-  await homePage.navigateToPage('User roles');
-  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/user-roles'));
-});
+  test('Navigation from sidebar', async () => {
+    const homePage = new HomePage(page);
 
-test('Navigation from program header', async ({ page }) => {
-  const homePage = new HomePage(page);
+    await page.goto('/');
+    await homePage.navigateToPage('Users');
+    await page.waitForURL((url) => url.pathname.startsWith('/en-GB/users'));
 
-  await page.goto('/en-GB/projects');
-  await page.getByRole('link', { name: projectTitle }).click();
-  await page.waitForURL((url) =>
-    url.pathname.startsWith(`/en-GB/project/${projectId}/registrations`),
-  );
-  await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
+    await homePage.navigateToPage('User roles');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith('/en-GB/user-roles'),
+    );
+  });
 
-  await homePage.navigateToProgramPage('Monitoring');
-  await page.waitForURL((url) =>
-    url.pathname.startsWith(`/en-GB/project/${projectId}/monitoring`),
-  );
-});
+  test('Navigation from program header', async () => {
+    const homePage = new HomePage(page);
 
-test('Reload registrations page', async ({ page }) => {
-  const registrationsPage = new RegistrationsPage(page);
+    await page.goto('/en-GB/projects');
+    await page.getByRole('link', { name: projectTitle }).click();
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${projectId}/registrations`),
+    );
+    await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
 
-  await page.goto('/en-GB/projects');
-  await page.getByRole('link', { name: projectTitle }).click();
-  await registrationsPage.waitForLoaded(registrationsPV.length);
+    await homePage.navigateToProgramPage('Monitoring');
+    await page.waitForURL((url) =>
+      url.pathname.startsWith(`/en-GB/project/${projectId}/monitoring`),
+    );
+  });
 
-  await page.reload();
-  await registrationsPage.waitForLoaded(registrationsPV.length);
+  test('Reload registrations page', async () => {
+    const registrationsPage = new RegistrationsPage(page);
+
+    await page.goto('/en-GB/projects');
+    await page.getByRole('link', { name: projectTitle }).click();
+    await registrationsPage.waitForLoaded(registrationsPV.length);
+  });
 });

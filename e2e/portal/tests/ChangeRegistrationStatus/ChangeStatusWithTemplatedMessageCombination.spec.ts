@@ -33,9 +33,7 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
   const registrations = new RegistrationsPage(page);
 
   await registrations.navigateToProgramPage('Registrations');
-  // Checkboxes are still selected after navigating back to registrations page
-  // Thus reload of the page let's validateif this is correct behavior
-  await page.reload();
+  await registrations.deselectRegistrations();
 };
 
 test.describe('Change status of registration with and without templated message', () => {
@@ -44,11 +42,7 @@ test.describe('Change status of registration with and without templated message'
   test.beforeAll(async ({ browser }) => {
     await reset();
     page = await browser.newPage();
-    await login(
-      page,
-      process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-      process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-    );
+    await login(page);
   });
 
   test.afterEach(async () => {

@@ -1,7 +1,5 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   HttpStatus,
   Param,
@@ -29,7 +27,6 @@ import stream from 'stream';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IdentifyVoucherDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/identify-voucher.dto';
-import { RemoveDeprecatedImageCodesDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
@@ -149,80 +146,5 @@ export class IntersolveVoucherController {
       programId,
       instructionsFileBlob,
     );
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary: '[CRON] Cancel by refpos',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Vouchers canceled by refpos',
-  })
-  @Post('/fsps/intersolve-voucher/cancel')
-  public async cancelByRefPos(): Promise<void> {
-    console.info('Start: Intersolve-Voucher - cancelByRefPos');
-    void this.intersolveVoucherCronService
-      .cancelByRefposIntersolve()
-      .catch((error) => {
-        console.error(
-          'Error: Intersolve-Voucher - cancelByRefPos',
-          error.toString(),
-        );
-        this.azureLogService.logError(error, true);
-      })
-      .finally(() => {
-        console.info('Complete: Intersolve-Voucher - cancelByRefPos');
-      });
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary: '[CRON] Send WhatsApp reminders',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Sent WhatsApp reminders',
-  })
-  @Post('/fsps/intersolve-voucher/send-reminders')
-  public async sendWhatsappReminders(): Promise<void> {
-    console.info('Start: Intersolve-Voucher - cronSendWhatsappReminders');
-    void this.intersolveVoucherCronService
-      .sendWhatsappReminders()
-      .catch((error) => {
-        console.error(
-          'Error: Intersolve-Voucher - cronSendWhatsappReminders',
-          error.toString(),
-        );
-        this.azureLogService.logError(error, true);
-      })
-      .finally(() => {
-        console.info(
-          'Complete: Intersolve-Voucher - cronSendWhatsappReminders',
-        );
-      });
-  }
-
-  @AuthenticatedUser({ isAdmin: true })
-  @ApiOperation({
-    summary: '[CRON] Remove deprecated image codes',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully removed deprecated image codes',
-  })
-  @Delete('/fsps/intersolve-voucher/deprecated-image-codes')
-  public async removeDeprecatedImageCodes(
-    @Body() body: RemoveDeprecatedImageCodesDto,
-  ): Promise<number> {
-    console.info('Start: Intersolve-Voucher - removeDeprecatedImageCodes');
-    const numberOfDeleted =
-      await this.intersolveVoucherService.removeDeprecatedImageCodes(
-        body.mockCurrentDate,
-      );
-    console.info(
-      `Complete: Intersolve-Voucher - removeDeprecatedImageCodes: ${numberOfDeleted} vouchers deleted`,
-    );
-    return numberOfDeleted;
   }
 }

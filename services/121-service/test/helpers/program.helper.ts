@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 
-import { DEBUG } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -425,7 +425,7 @@ export async function waitForMessagesToComplete({
   }
 
   if (referenceIdsWaitingForMessages.length > 0) {
-    if (DEBUG) {
+    if (IS_DEVELOPMENT) {
       console.log('Reference Ids: ', referenceIds);
       console.log(
         'Reference Ids Waiting for Messages: ',
@@ -568,7 +568,7 @@ export async function removeDeprecatedImageCodes({
     body.mockCurrentDate = mockCurrentDateIsoString;
   }
   return await getServer()
-    .delete('/fsps/intersolve-voucher/deprecated-image-codes')
+    .delete('/cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
     .set('Cookie', [accessToken])
     .send(body);
 }

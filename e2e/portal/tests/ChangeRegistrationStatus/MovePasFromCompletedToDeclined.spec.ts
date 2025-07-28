@@ -22,8 +22,8 @@ const toastMessage =
   'The status of 1 registration(s) is being changed to "Declined" successfully. The status change can take up to a minute to process.';
 // Arrange
 test.beforeEach(async ({ page }) => {
-  const accessToken = await getAccessToken();
   await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
 
   await seedRegistrationsWithStatus(
     [registrationPvMaxPayment],
@@ -35,10 +35,7 @@ test.beforeEach(async ({ page }) => {
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   // Navigate to program
   const basePage = new BasePage(page);
   await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');

@@ -2,12 +2,14 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { defaultClient, TelemetryClient } from 'applicationinsights';
 import { NextFunction, Request, Response } from 'express';
 
+import { env } from '@121-service/src/env';
+
 @Injectable()
 export class AzureLoggerMiddleware implements NestMiddleware {
   defaultClient: TelemetryClient;
 
   constructor() {
-    if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+    if (!!env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
       this.defaultClient = defaultClient;
     }
   }

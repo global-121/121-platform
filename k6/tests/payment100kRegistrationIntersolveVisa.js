@@ -1,19 +1,24 @@
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
-import { registrationNedbank } from '../helpers/registration-default.data.js';
+import { registrationVisa } from '../helpers/registration-default.data.js';
 import InitializePaymentModel from '../models/initalize-payment.js';
+
+// For now we decided to k6 test only Safaricom and IntersolveVisa
+// The reasoning behind this is that IntersolveVisa has the most complex logic and most API calls
+// Safaricom is one of the payment providers which uses callbacks and therefore also has heavier/more complex
+// The other FSPs are simpler or similar to Safaricom so we decided to not test them
 
 const initializePayment = new InitializePaymentModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
-const resetScript = 'nedbank-program';
-const programId = 1;
-const paymentNr = 1;
+const resetScript = 'nlrc-multiple';
+const programId = 3;
+const paymentNr = 3;
 const maxTimeoutAttempts = 800;
-const status = 'waiting';
+const status = 'success';
 const minPassRatePercentage = 10;
-const amount = 20;
+const amount = 11.11;
 
 export const options = {
   thresholds: {
@@ -39,7 +44,7 @@ export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
     programId,
-    registrationNedbank,
+    registrationVisa,
     duplicateNumber,
     maxTimeoutAttempts,
     status,
@@ -48,8 +53,8 @@ export default function () {
     amount,
   );
   checkAndFail(monitorPayment, {
-    'Payment progressed successfully status 202': (r) => {
-      if (r.status != 202) {
+    'Payment progressed successfully status 200': (r) => {
+      if (r.status != 200) {
         const responseBody = JSON.parse(r.body);
         console.log(responseBody.error || r.status);
       }

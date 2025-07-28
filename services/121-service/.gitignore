@@ -10,6 +10,7 @@ node_modules
 
 # Generated assets / caches
 .npm
+.nyc_output
 dist
 coverage
 swagger-spec.json
@@ -28,6 +29,8 @@ cert/DigiCert_Global_Root_G2.pem
 cert/DigiCertGlobalRootG2.crt.pem
 # Nedbank integration certificate
 cert/*.pfx
+# Onafriq SFTP certificate
+cert/*.pub
 
 # Compodoc documentation
 documentation

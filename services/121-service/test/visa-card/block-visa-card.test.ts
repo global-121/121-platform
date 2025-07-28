@@ -7,7 +7,7 @@ import {
   programIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { waitFor } from '@121-service/src/utils/waitFor.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   blockVisaCard,
   getMessageHistory,
@@ -19,6 +19,8 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
+
+const noWhatsappSetup = null; // Do not use WhatsApp for this test to avoid race conditions - our mock server replies 'yes' on pending whatsapp message a bit too fast
 
 describe('(Un)Block visa debit card', () => {
   let accessToken: string;
@@ -33,9 +35,9 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--block-card',
+      whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
-
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
       programIdVisa,
       testRegistration.referenceId,
@@ -52,7 +54,12 @@ describe('(Un)Block visa debit card', () => {
     );
 
     // Assert
-    await waitFor(2_000); // the last message otherwise was not in the db yet
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [testRegistration.referenceId],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 2,
+    });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -60,7 +67,7 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     );
 
-    const messageReponse = await getMessageHistory(
+    const messageResponse = await getMessageHistory(
       programIdVisa,
       testRegistration.referenceId,
       accessToken,
@@ -70,8 +77,11 @@ describe('(Un)Block visa debit card', () => {
     expect(visaWalletResponseAfter.body.cards[0].status).toBe(
       VisaCard121Status.Paused,
     );
-    const lastMessage = messageReponse.body[0];
-    expect(lastMessage.attributes.body).toBe(
+
+    const messages = messageResponse.body.map(
+      (message) => message.attributes.body,
+    );
+    expect(messages).toContain(
       messageTemplateNlrcOcw.pauseVisaCard?.message?.en,
     );
   });
@@ -81,6 +91,7 @@ describe('(Un)Block visa debit card', () => {
     const testRegistration = {
       ...registrationVisa,
       referenceId: 'test-registration-visa--unblock-card',
+      whatsappPhoneNumber: noWhatsappSetup,
     };
     await seedPaidRegistrations([testRegistration], programIdVisa);
 
@@ -107,7 +118,12 @@ describe('(Un)Block visa debit card', () => {
     );
 
     // Assert
-    await waitFor(4_000); // the last message otherwise was not in the db yet
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [testRegistration.referenceId],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 3,
+    });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
       programIdVisa,
@@ -115,7 +131,7 @@ describe('(Un)Block visa debit card', () => {
       accessToken,
     );
 
-    const messageReponse = await getMessageHistory(
+    const messageResponse = await getMessageHistory(
       programIdVisa,
       testRegistration.referenceId,
       accessToken,
@@ -125,8 +141,11 @@ describe('(Un)Block visa debit card', () => {
     expect(visaWalletResponseAfter.body.cards[0].status).not.toBe(
       VisaCard121Status.Blocked,
     );
-    const lastMessage = messageReponse.body[0];
-    expect(lastMessage.attributes.body).toBe(
+
+    const messages = messageResponse.body.map(
+      (message) => message.attributes.body,
+    );
+    expect(messages).toContain(
       messageTemplateNlrcOcw?.unpauseVisaCard?.message?.en,
     );
   });

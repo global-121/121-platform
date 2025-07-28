@@ -15,20 +15,21 @@ import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
 // Arrange
-test.beforeAll(async () => {
-  const accessToken = await getAccessToken();
-  await resetDB(SeedScript.nlrcMultiple, __filename);
+// test.beforeAll(async () => {
+//   await resetDB(SeedScript.nlrcMultiple, __filename);
+//   const accessToken = await getAccessToken();
 
-  await importRegistrations(programIdPV, registrationsPV, accessToken);
-});
+//   await importRegistrations(programIdPV, registrationsPV, accessToken);
+// });
 
 test.beforeEach(async ({ page }) => {
+  await resetDB(SeedScript.nlrcMultiple, __filename);
+  const accessToken = await getAccessToken();
+
+  await importRegistrations(programIdPV, registrationsPV, accessToken);
   const loginPage = new LoginPage(page);
   await page.goto('/');
-  await loginPage.login(
-    process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-    process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN,
-  );
+  await loginPage.login();
   await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
 });
 
