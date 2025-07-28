@@ -1,12 +1,12 @@
 {
   "published": true,
   "validation": true,
-  "location": "Kenya",
-  "ngo": "Kenya Red Cross",
+  "location": "Ivory Coast",
+  "ngo": "Ivory Coast Red Cross",
   "titlePortal": {
-    "en": "Flood Response Kenya",
-    "es": "Respuesta a inundaciones Kenia",
-    "fr": "Réponse aux inondations Kenya"
+    "en": "Social protection Ivory Coast - Cash in hand",
+    "es": "Protección social Costa de Marfil - Efectivo en mano",
+    "fr": "Protection sociale Côte d'Ivoire - Espèces"
   },
   "description": {
     "en": "registration form: https://ee.ifrc.org/x/h1ay6vQl, vulnarability: one point per criteria met. Transfer value is 1000 KES per household member.",
@@ -15,19 +15,29 @@
   },
   "startDate": "2025-01-01T12:00:00.000Z",
   "endDate": "2025-01-12T12:00:00.000Z",
-  "currency": "KES",
+  "currency": "XOF",
   "distributionFrequency": "month",
   "distributionDuration": 2,
-  "fixedTransferValue": 1000,
+  "fixedTransferValue": 30000,
   "paymentAmountMultiplierFormula": "0 + 1 * totalHHSize",
   "programFspConfigurations": [
     {
-      "fsp": "Safaricom"
+      "fsp": "Excel",
+      "properties": [
+        {
+          "name": "columnToMatch",
+          "value": "nationalId"
+        },
+        {
+          "name": "columnsToExport",
+          "value": "[\"fullName\",\"nationalId\"]"
+        }
+      ]
     }
   ],
-  "targetNrRegistrations": 1000,
+  "targetNrRegistrations": 100,
   "tryWhatsAppFirst": false,
-  "budget": 12000000,
+  "budget": 6000000,
   "programRegistrationAttributes": [
     {
       "name": "age",
