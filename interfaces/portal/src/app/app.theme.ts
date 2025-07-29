@@ -155,6 +155,11 @@ const AppTheme = definePreset(Aura, {
         },
       },
     },
+    fileupload: {
+      content: {
+        padding: '1rem',
+      },
+    },
     message: {
       colorScheme: {
         light: severityVariants,
