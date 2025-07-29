@@ -43,7 +43,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -78,7 +78,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -96,7 +96,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -114,7 +114,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -134,7 +134,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -154,7 +154,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -174,7 +174,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -194,7 +194,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -214,7 +214,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -234,7 +234,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -254,7 +254,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     },
@@ -272,7 +272,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": true,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": true,
       "placeholder": ""
     },
@@ -290,7 +290,7 @@
       "pattern": "",
       "showInPeopleAffectedTable": false,
       "editableInPortal": true,
-      "export": ["all-registrations", "included"],
+      "export": ["payment"],
       "duplicateCheck": false,
       "placeholder": ""
     }
