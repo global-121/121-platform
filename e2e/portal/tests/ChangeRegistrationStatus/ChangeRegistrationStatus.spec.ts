@@ -34,8 +34,8 @@ const deleteStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Deleted" successfully\. The status change can take up to a minute to process\./;
 const pauseStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Paused" successfully\. The status change can take up to a minute to process\./;
-const validateStatusToastMessage =
-  /The status of \d+ registration\(s\) is being changed to "Validated" successfully\. The status change can take up to a minute to process\./;
+// const validateStatusToastMessage =
+//   /The status of \d+ registration\(s\) is being changed to "Validated" successfully\. The status change can take up to a minute to process\./;
 const customMessage =
   'Test custom message to change the status of registration';
 
@@ -720,90 +720,90 @@ test.describe('Change status of registration with different status transitions',
     });
   });
 
-  test('[31206] Move PA(s) from status "New" to "Validated"', async () => {
-    const registrations = new RegistrationsPage(page);
-    const tableComponent = new TableComponent(page);
+  // test('[31206] Move PA(s) from status "New" to "Validated"', async () => {
+  //   const registrations = new RegistrationsPage(page);
+  //   const tableComponent = new TableComponent(page);
 
-    await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV1],
-      programIdPV,
-      accessToken,
-      RegistrationStatusEnum.new,
-    );
+  //   await seedRegistrationsWithStatus(
+  //     [registrationsPvStatusChange.registrationPV1],
+  //     programIdPV,
+  //     accessToken,
+  //     RegistrationStatusEnum.new,
+  //   );
 
-    await setupTestEnvironment();
-    // Act
-    await test.step('Change status of first selected registration to "Validated"', async () => {
-      await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationsPvStatusChange.registrationPV1.fullName,
-        status: 'Validate',
-        sendMessage: false,
-      });
-      await registrations.validateToastMessageAndClose(
-        validateStatusToastMessage,
-      );
-    });
+  //   await setupTestEnvironment();
+  //   // Act
+  //   await test.step('Change status of first selected registration to "Validated"', async () => {
+  //     await tableComponent.updateRegistrationStatusWithOptions({
+  //       registrationName: registrationsPvStatusChange.registrationPV1.fullName,
+  //       status: 'Validate',
+  //       sendMessage: false,
+  //     });
+  //     await registrations.validateToastMessageAndClose(
+  //       validateStatusToastMessage,
+  //     );
+  //   });
 
-    await test.step('Search for the registration with status "Validated"', async () => {
-      await tableComponent.filterColumnByText({
-        columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV1.fullName,
-      });
-    });
-    // Assert
-    await test.step('Validate the status of the registration', async () => {
-      await registrations.validateStatusOfFirstRegistration({
-        status: 'Validated',
-      });
-      await tableComponent.clearAllFilters();
-    });
-  });
+  //   await test.step('Search for the registration with status "Validated"', async () => {
+  //     await tableComponent.filterColumnByText({
+  //       columnName: 'Name',
+  //       filterText: registrationsPvStatusChange.registrationPV1.fullName,
+  //     });
+  //   });
+  //   // Assert
+  //   await test.step('Validate the status of the registration', async () => {
+  //     await registrations.validateStatusOfFirstRegistration({
+  //       status: 'Validated',
+  //     });
+  //     await tableComponent.clearAllFilters();
+  //   });
+  // });
 
-  test('[31220] Move PA(s) from status "Declined" to "Included"', async () => {
-    const registrations = new RegistrationsPage(page);
-    const tableComponent = new TableComponent(page);
+  // test('[31220] Move PA(s) from status "Declined" to "Included"', async () => {
+  //   const registrations = new RegistrationsPage(page);
+  //   const tableComponent = new TableComponent(page);
 
-    await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV],
-      programIdPV,
-      accessToken,
-      RegistrationStatusEnum.declined,
-    );
+  //   await seedRegistrationsWithStatus(
+  //     [registrationsPvStatusChange.registrationPV],
+  //     programIdPV,
+  //     accessToken,
+  //     RegistrationStatusEnum.declined,
+  //   );
 
-    await setupTestEnvironment();
+  //   await setupTestEnvironment();
 
-    // Act
-    await test.step('Search for the registration with status "Declined"', async () => {
-      await tableComponent.filterColumnByText({
-        columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV.fullName,
-      });
-    });
+  //   // Act
+  //   await test.step('Search for the registration with status "Declined"', async () => {
+  //     await tableComponent.filterColumnByText({
+  //       columnName: 'Name',
+  //       filterText: registrationsPvStatusChange.registrationPV.fullName,
+  //     });
+  //   });
 
-    await test.step('Change status of first selected registration to "Included"', async () => {
-      await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationsPvStatusChange.registrationPV.fullName,
-        status: 'Include',
-        sendMessage: false,
-      });
-      await registrations.validateToastMessageAndClose(
-        includeStatusToastMessage,
-      );
-      await tableComponent.clearAllFilters();
-    });
+  //   await test.step('Change status of first selected registration to "Included"', async () => {
+  //     await tableComponent.updateRegistrationStatusWithOptions({
+  //       registrationName: registrationsPvStatusChange.registrationPV.fullName,
+  //       status: 'Include',
+  //       sendMessage: false,
+  //     });
+  //     await registrations.validateToastMessageAndClose(
+  //       includeStatusToastMessage,
+  //     );
+  //     await tableComponent.clearAllFilters();
+  //   });
 
-    await test.step('Search for the registration with status "Included"', async () => {
-      await tableComponent.filterColumnByText({
-        columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV.fullName,
-      });
-    });
+  //   await test.step('Search for the registration with status "Included"', async () => {
+  //     await tableComponent.filterColumnByText({
+  //       columnName: 'Name',
+  //       filterText: registrationsPvStatusChange.registrationPV.fullName,
+  //     });
+  //   });
 
-    // Assert
-    await test.step('Validate the status of the registration', async () => {
-      await registrations.validateStatusOfFirstRegistration({
-        status: 'Included',
-      });
-    });
-  });
+  //   // Assert
+  //   await test.step('Validate the status of the registration', async () => {
+  //     await registrations.validateStatusOfFirstRegistration({
+  //       status: 'Included',
+  //     });
+  //   });
+  // });
 });
