@@ -16,10 +16,6 @@
     You're about to download an Excel file with the FSP instructions for this
     payment.
   </p>
-  <app-latest-export-date
-    [projectId]="projectId()"
-    [exportType]="ExportType.payment"
-  />
 </app-confirmation-dialog>
 <app-confirmation-dialog
   #paymentReportDialog
@@ -32,8 +28,4 @@
     You're about to download an Excel file with all of the registrations
     included in this payment.
   </p>
-  <app-latest-export-date
-    [projectId]="projectId()"
-    [exportType]="ExportType.payment"
-  />
 </app-confirmation-dialog>

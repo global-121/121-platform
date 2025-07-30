@@ -24,7 +24,6 @@ import {
   projectHasPhysicalCardSupport,
   projectHasVoucherSupport,
 } from '~/domains/project/project.helper';
-import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
@@ -37,11 +36,7 @@ import {
 
 @Component({
   selector: 'app-export-payments',
-  imports: [
-    ConfirmationDialogComponent,
-    ButtonMenuComponent,
-    LatestExportDateComponent,
-  ],
+  imports: [ConfirmationDialogComponent, ButtonMenuComponent],
   providers: [ToastService],
   templateUrl: './export-payments.component.html',
   styles: ``,

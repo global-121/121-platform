@@ -229,23 +229,6 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/actions",
-    "params": [
-      "programId",
-      "actionType"
-    ],
-    "returnType": "ActionReturnDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/actions",
-    "params": [
-      "programId"
-    ],
-    "returnType": "ActionReturnDto"
-  },
-  {
-    "method": "get",
     "path": "/api/notifications/{programId}/message-templates",
     "params": [
       "programId"
