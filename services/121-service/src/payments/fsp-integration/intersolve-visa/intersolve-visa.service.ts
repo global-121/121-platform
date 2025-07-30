@@ -21,6 +21,7 @@ import { ReissueCardParams } from '@121-service/src/payments/fsp-integration/int
 import { SendUpdatedContactInformationParams } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/send-updated-contact-information-params.interface';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { maximumAmountOfSpentCentPerMonth } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.const';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaDtoMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-dto.mapper';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
@@ -733,17 +734,32 @@ export class IntersolveVisaService implements FspIntegrationInterface {
       if (!customer.intersolveVisaParentWallet) {
         continue;
       }
-      for (const childWallet of customer.intersolveVisaParentWallet
-        .intersolveVisaChildWallets) {
-        if (
-          childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
-        ) {
-          await this.retrieveAndUpdateChildWallet(childWallet);
+      try {
+        for (const childWallet of customer.intersolveVisaParentWallet
+          .intersolveVisaChildWallets) {
+          if (
+            childWallet.walletStatus !== IntersolveVisaTokenStatus.Substituted
+          ) {
+            await this.retrieveAndUpdateChildWallet(childWallet);
+          }
+        }
+        await this.retrieveAndUpdateParentWallet(
+          customer.intersolveVisaParentWallet,
+        );
+      } catch (error) {
+        if (error instanceof IntersolveVisaApiError) {
+          // If the error is an IntersolveVisaApiError, we log it and continue with the next customer
+          // We do this because we want to continue processing all customers even if one fails (as the intersolve api is sometimes unreliable)
+          console.error(
+            'IntersolveVisaApiError occurred while retrieving and updating wallets for customer:',
+            customer.registrationId,
+            error.message,
+          );
+        } else {
+          // If the error is not an IntersolveVisaApiError, we rethrow it
+          throw error;
         }
       }
-      await this.retrieveAndUpdateParentWallet(
-        customer.intersolveVisaParentWallet,
-      );
     }
 
     // Return the number of customers processed which should equal the number of parent wallets updated
