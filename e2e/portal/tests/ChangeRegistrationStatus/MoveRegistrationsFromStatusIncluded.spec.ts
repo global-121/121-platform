@@ -28,7 +28,7 @@ const pauseStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Paused" successfully\. The status change can take up to a minute to process\./;
 
 // Arrange
-test.describe('Change status of registration with different status transitions', () => {
+test.describe('Change status of registration with different status "Included"', () => {
   let page: Page;
   let accessToken: string;
 

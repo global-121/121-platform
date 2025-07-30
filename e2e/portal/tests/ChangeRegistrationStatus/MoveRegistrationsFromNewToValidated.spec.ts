@@ -23,7 +23,7 @@ const validatedStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Validated" successfully\. The status change can take up to a minute to process\./;
 
 // Arrange
-test.describe('Change status of registration with different status transitions', () => {
+test.describe('Move registrations from status "New" to "Validated"', () => {
   let page: Page;
   let accessToken: string;
 
