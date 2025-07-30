@@ -25,7 +25,7 @@ const customMessage =
   'Test custom message to change the status of registration';
 
 // Arrange
-test.describe('Change status of registration with different status transitions', () => {
+test.describe('Change status of registration with different message combinations', () => {
   let page: Page;
   let accessToken: string;
 
