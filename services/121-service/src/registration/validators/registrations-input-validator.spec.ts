@@ -443,7 +443,7 @@ describe('RegistrationsInputValidator', () => {
     jest
       .spyOn(
         registrationsPaginationService,
-        'getRegistrationViewsByReferenceIds',
+        'getRegistrationViewsChunkedByReferenceIds',
       )
       .mockResolvedValueOnce([mockRegistration]);
 

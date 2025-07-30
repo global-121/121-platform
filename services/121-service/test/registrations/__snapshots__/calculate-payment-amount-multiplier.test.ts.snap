@@ -4,7 +4,7 @@ exports[`Set/calculate payment amount multiplier should error if paymentAmountMu
 {
   "data": [],
   "links": {
-    "current": `${process.env.EXTERNAL_121_SERVICE_URL}/api/programs/2/registrations?page=1&limit=20&sortBy=id:ASC&filter.referenceId=westeros123456789`,
+    "current": "http://localhost:3000/api/programs/2/registrations?page=1&limit=20&sortBy=id:ASC&filter.referenceId=westeros123456789",
   },
   "meta": {
     "currentPage": 1,

@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -20,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
@@ -43,6 +45,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
+import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
@@ -248,6 +251,33 @@ export class PaymentsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @ApiOperation({
+    summary: '[SCOPED] Gets all transactions for a date range in xlsx format',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'fromDate', required: true, type: 'string' })
+  @ApiQuery({ name: 'toDate', required: true, type: 'string' })
+  // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
+  // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
+  @Get('programs/:programId/transactions')
+  public async exportTransactionsUsingDateFilter(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Query('fromDate') fromDate: string,
+    @Query('toDate') toDate: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const result = await this.paymentsService.exportTransactionsUsingDateFilter(
+      {
+        programId,
+        fromDateString: fromDate,
+        toDateString: toDate,
+      },
+    );
+    sendXlsxReponse(result.data, result.fileName, res);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get all transactions for this payment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -261,7 +291,7 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<GetTransactionResponseDto[]> {
-    return await this.paymentsService.getTransactions({
+    return await this.paymentsService.geTransactionsByPaymentId({
       programId,
       payment: paymentId,
     });

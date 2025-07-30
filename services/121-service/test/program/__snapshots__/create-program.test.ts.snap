@@ -984,7 +984,7 @@ exports[`Create program should post a program: Create program response for progr
     {
       "duplicateCheck": true,
       "editableInPortal": false,
-      "export": [],
+      "includeInTransactionExport": false,
       "id": 19,
       "isRequired": false,
       "label": {

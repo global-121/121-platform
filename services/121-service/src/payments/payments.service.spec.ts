@@ -1,21 +1,24 @@
 import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 
-import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
+import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
+import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 function createMockTransaction(
-  registrationId: number,
+  referenceId: string,
   amount: number,
   status: TransactionStatusEnum,
-): GetTransactionResponseDto {
+) {
   return {
-    id: registrationId,
+    id: 1,
     created: new Date(),
     updated: new Date(),
     payment: 1,
@@ -23,108 +26,171 @@ function createMockTransaction(
     amount,
     errorMessage: null,
     programFspConfigurationName: 'someFsp',
-    registrationProgramId: registrationId + 100,
-    registrationId,
+    registrationProgramId: 2,
+    registrationId: 3,
     registrationStatus: RegistrationStatusEnum.included,
-    registrationReferenceId: `REF-${registrationId}`,
-    registrationName: undefined,
+    registrationReferenceId: referenceId,
   };
 }
 
 const mockTransactions = [
-  createMockTransaction(101, 100, TransactionStatusEnum.success),
-  createMockTransaction(102, 200, TransactionStatusEnum.success),
+  createMockTransaction('101', 100, TransactionStatusEnum.success),
+  createMockTransaction('102', 200, TransactionStatusEnum.success),
 ];
 
 describe('PaymentsService - getTransactions', () => {
   let service: PaymentsService;
   let transactionScopedRepository: TransactionScopedRepository;
   let programRepository: Repository<ProgramEntity>;
-  let registrationScopedRepository: RegistrationScopedRepository;
-
-  const mockFullnameNamingConvention = ['firstName', 'lastName'];
+  let registrationPaginationService: RegistrationsPaginationService;
+  let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
+  let paymentsHelperService: PaymentsHelperService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(PaymentsService).compile();
 
     transactionScopedRepository = unitRef.get(TransactionScopedRepository);
-    registrationScopedRepository = unitRef.get(RegistrationScopedRepository);
     programRepository = unitRef.get('ProgramEntityRepository');
     service = unit;
+    registrationPaginationService = unitRef.get(RegistrationsPaginationService);
 
-    jest.spyOn(transactionScopedRepository, 'getTransactionsForPayment');
+    jest.spyOn(transactionScopedRepository, 'getTransactions');
     jest.spyOn(programRepository, 'findOneOrFail');
-    jest.spyOn(registrationScopedRepository, 'getFullNamesByRegistrationIds');
+    jest.spyOn(
+      registrationPaginationService,
+      'getRegistrationViewsChunkedByReferenceIds',
+    );
+
+    registrationPaginationService = unitRef.get(RegistrationsPaginationService);
+    programRegistrationAttributeRepository = unitRef.get(
+      ProgramRegistrationAttributeRepository,
+    );
+    paymentsHelperService = unitRef.get(PaymentsHelperService);
+
+    jest.spyOn<any, any>(service, 'getTransactions');
+    jest.spyOn(paymentsHelperService, 'getSelectForExport');
+    jest.spyOn(programRegistrationAttributeRepository, 'getDropdownAttributes');
+    jest.spyOn(
+      RegistrationViewsMapper,
+      'replaceDropdownValuesWithEnglishLabel',
+    );
   });
 
-  it('should return transactions with names when fullnameNamingConvention exists', async () => {
-    // Arrange
-    const programId = 1;
-    const payment = 2;
+  describe('geTransactionsByPaymentId', () => {
+    it('should return transactions with names', async () => {
+      // Arrange
+      const programId = 1;
+      const payment = 2;
 
-    const mockRegistrationNames = [
-      { registrationId: 101, name: 'John Doe' },
-      { registrationId: 102, name: 'Jane Smith' },
-    ];
+      const mockRegistrationViews = [
+        { referenceId: '101', name: 'John Doe' },
+        { referenceId: '102', name: 'Jane Smith' },
+      ] as MappedPaginatedRegistrationDto[];
 
-    jest
-      .spyOn(transactionScopedRepository, 'getTransactionsForPayment')
-      .mockResolvedValue(mockTransactions);
-    jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
-      fullnameNamingConvention: mockFullnameNamingConvention,
-    } as ProgramEntity);
-    jest
-      .spyOn(registrationScopedRepository, 'getFullNamesByRegistrationIds')
-      .mockResolvedValue(mockRegistrationNames);
+      jest
+        .spyOn(transactionScopedRepository, 'getTransactions')
+        .mockResolvedValue(mockTransactions);
 
-    // Act
-    const result = await service.getTransactions({ programId, payment });
+      jest
+        .spyOn(
+          registrationPaginationService,
+          'getRegistrationViewsChunkedByReferenceIds',
+        )
+        .mockResolvedValue(mockRegistrationViews);
 
-    // Assert
-    expect(result).toEqual([
-      { ...mockTransactions[0], registrationName: 'John Doe' },
-      { ...mockTransactions[1], registrationName: 'Jane Smith' },
-    ]);
+      // Act
+      const result = await service.geTransactionsByPaymentId({
+        programId,
+        payment,
+      });
+
+      // Assert
+      expect(result).toEqual([
+        { ...mockTransactions[0], registrationName: 'John Doe' },
+        { ...mockTransactions[1], registrationName: 'Jane Smith' },
+      ]);
+    });
+
+    it('should return empty array when no transactions found', async () => {
+      // Arrange
+      const programId = 1;
+      const payment = 2;
+
+      jest
+        .spyOn(transactionScopedRepository, 'getTransactions')
+        .mockResolvedValue([]);
+
+      // Act
+      const result = await service.geTransactionsByPaymentId({
+        programId,
+        payment,
+      });
+
+      // Assert
+      expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
+        programId,
+        payment,
+      });
+      expect(result).toEqual([]);
+    });
   });
 
-  it('should return transactions without names when fullnameNamingConvention is empty', async () => {
-    // Arrange
-    const programId = 1;
-    const payment = 2;
+  describe('exportTransactionsUsingDateFilter', () => {
+    it('should call getTransactions with correct params and return formatted fileDto', async () => {
+      const programId = 1;
+      const fromDateString = '2024-01-01T00:00:00.000Z';
+      const toDateString = '2024-01-31T23:59:59.000Z';
+      const select = ['name', 'foo'];
+      const transactions = [{ registrationReferenceId: 'ref1', name: 'Alice' }];
+      const dropdownAttributes = [
+        { name: 'foo', options: [{ value: 'bar', label: 'Bar' }] },
+      ];
+      const replacedRows = [
+        { registrationReferenceId: 'ref1', name: 'Alice', foo: 'Bar' },
+      ];
 
-    jest
-      .spyOn(transactionScopedRepository, 'getTransactionsForPayment')
-      .mockResolvedValue(mockTransactions);
-    jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
-      fullnameNamingConvention: [],
-    } as unknown as ProgramEntity);
+      (paymentsHelperService.getSelectForExport as jest.Mock).mockResolvedValue(
+        select,
+      );
+      (service as any).getTransactions.mockResolvedValue(transactions);
+      (
+        programRegistrationAttributeRepository.getDropdownAttributes as jest.Mock
+      ).mockResolvedValue(dropdownAttributes);
+      (
+        RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel as jest.Mock
+      ).mockReturnValue(replacedRows);
 
-    // Act
-    const result = await service.getTransactions({ programId, payment });
+      const result = await service.exportTransactionsUsingDateFilter({
+        programId,
+        fromDateString,
+        toDateString,
+      });
 
-    // Assert
-    expect(result).toEqual(mockTransactions);
-  });
-
-  it('should return empty array when no transactions found', async () => {
-    // Arrange
-    const programId = 1;
-    const payment = 2;
-
-    jest
-      .spyOn(transactionScopedRepository, 'getTransactionsForPayment')
-      .mockResolvedValue([]);
-    jest.spyOn(programRepository, 'findOneOrFail').mockResolvedValue({
-      fullnameNamingConvention: mockFullnameNamingConvention,
-    } as ProgramEntity);
-
-    // Act
-    const result = await service.getTransactions({ programId, payment });
-
-    // Assert
-    expect(
-      transactionScopedRepository.getTransactionsForPayment,
-    ).toHaveBeenCalledWith({ programId, payment });
-    expect(result).toEqual([]);
+      expect(paymentsHelperService.getSelectForExport).toHaveBeenCalledWith(
+        programId,
+      );
+      expect((service as any).getTransactions).toHaveBeenCalledWith({
+        programId,
+        select,
+        fromDate: new Date(fromDateString),
+        toDate: new Date(toDateString),
+      });
+      expect(
+        programRegistrationAttributeRepository.getDropdownAttributes,
+      ).toHaveBeenCalledWith({
+        programId,
+        select,
+      });
+      expect(
+        RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel,
+      ).toHaveBeenCalledWith({
+        rows: transactions,
+        attributes: dropdownAttributes,
+      });
+      expect(result.data).toEqual(replacedRows);
+      expect(result.fileName).toContain(`transactions_${programId}_`);
+      expect(result.fileName).toContain('2024-01-01T00-00-00');
+      expect(result.fileName).toContain('2024-01-31T23-59-59');
+    });
   });
 });

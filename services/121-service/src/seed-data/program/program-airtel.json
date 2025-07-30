@@ -26,7 +26,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": true
@@ -39,7 +39,7 @@
       "placeholder": {
         "en": "+260000000000"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "tel",
       "options": null,
       "showInPeopleAffectedTable": false

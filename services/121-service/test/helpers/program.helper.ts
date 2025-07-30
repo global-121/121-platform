@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
+import * as XLSX from 'xlsx';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import {
@@ -211,6 +212,60 @@ export async function getTransactions({
     );
   }
   return response;
+}
+
+export async function exportTransactionsByDateRange({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+}): Promise<request.Response> {
+  if (!fromDate) {
+    // yesterday
+    fromDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  }
+  if (!toDate) {
+    // tomorrow
+    toDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  }
+  return await getServer()
+    .get(`/programs/${programId}/transactions`)
+    .query({ fromDate, toDate })
+    .set('Cookie', [accessToken])
+    .buffer()
+    .parse((res, callback) => {
+      const chunks: Buffer[] = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => callback(null, Buffer.concat(chunks)));
+    });
+}
+
+export async function exportTransactionsByDateRangeJson({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+}): Promise<Record<string, unknown>[]> {
+  const response = await exportTransactionsByDateRange({
+    programId,
+    accessToken,
+    fromDate,
+    toDate,
+  });
+  const workbook = XLSX.read(response.body, { type: 'buffer' });
+  const firstSheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[firstSheetName];
+  return XLSX.utils.sheet_to_json(worksheet);
 }
 
 export async function getFspInstructions(

@@ -25,7 +25,7 @@
       },
       "name": "namePartnerOrganization",
       "type": "text",
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "showInPeopleAffectedTable": true
     },
     {
@@ -36,7 +36,7 @@
       "type": "text",
       "pattern": null,
       "options": null,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
@@ -52,7 +52,7 @@
       "type": "tel",
       "pattern": null,
       "options": null,
-      "export": [],
+      "includeInTransactionExport": false,
       "scoring": {},
       "duplicateCheck": true,
       "editableInPortal": false,
@@ -67,7 +67,7 @@
         "ar": "00 00 00 00 0 00+",
         "en": "+00 0 00 00 00 00"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "tel",
       "options": null,
       "duplicateCheck": true,
@@ -78,7 +78,7 @@
       "label": {
         "en": "Address street"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -88,7 +88,7 @@
       "label": {
         "en": "Address house number"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "numeric",
       "showInPeopleAffectedTable": false
     },
@@ -97,7 +97,7 @@
       "label": {
         "en": "Address house number addition"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "text",
       "showInPeopleAffectedTable": false
     },
@@ -106,7 +106,7 @@
       "label": {
         "en": "Address postal code"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false
@@ -116,7 +116,7 @@
       "label": {
         "en": "Address city"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "text",
       "pattern": ".+",
       "showInPeopleAffectedTable": false

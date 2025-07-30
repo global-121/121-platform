@@ -408,7 +408,8 @@ export class ProgramService {
     programRegistrationAttribute.pattern = dto.pattern ?? null;
     programRegistrationAttribute.editableInPortal =
       dto.editableInPortal ?? false;
-    programRegistrationAttribute.export = dto.export ?? [];
+    programRegistrationAttribute.includeInTransactionExport =
+      dto.includeInTransactionExport ?? false;
     programRegistrationAttribute.duplicateCheck = dto.duplicateCheck ?? false;
     programRegistrationAttribute.placeholder = dto.placeholder ?? null;
     programRegistrationAttribute.isRequired = dto.isRequired ?? false;

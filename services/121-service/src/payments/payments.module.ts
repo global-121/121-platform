@@ -14,6 +14,7 @@ import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
+import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
 import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -27,7 +28,6 @@ import { RegistrationUtilsModule } from '@121-service/src/registration/modules/r
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
@@ -66,9 +66,9 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   ],
   providers: [
     PaymentsService,
+    PaymentsHelperService,
     LookupService,
     InclusionScoreService,
-    RegistrationScopedRepository,
     AzureLogService,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
