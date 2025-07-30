@@ -69,7 +69,7 @@ test.describe('Change status of registration with status "Included"', () => {
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV5],
+      [registrationsPvStatusChange.registrationPvMaxPayment],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -81,7 +81,8 @@ test.describe('Change status of registration with status "Included"', () => {
     await test.step('Validate the status of the registration', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV5.fullName,
+        filterText:
+          registrationsPvStatusChange.registrationPvMaxPayment.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Included',
