@@ -886,7 +886,8 @@
       "programId",
       "fromDate",
       "toDate",
-      "payment"
+      "payment",
+      "format"
     ]
   },
   {

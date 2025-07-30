@@ -26,6 +26,7 @@ import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
@@ -262,6 +263,13 @@ export class PaymentsController {
     required: false,
     type: 'integer',
   })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    enum: ExportFileFormat,
+    description:
+      'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
+  })
   // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
   // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
   @Get('programs/:programId/transactions')
@@ -271,8 +279,9 @@ export class PaymentsController {
     programId: number,
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
+    @Query('format') format = 'json',
     @Query('payment', new ParseIntPipe({ optional: true })) payment?: number,
-  ): Promise<void> {
+  ): Promise<Response | void> {
     const result = await this.paymentsService.exportTransactionsUsingDateFilter(
       {
         programId,
@@ -281,7 +290,10 @@ export class PaymentsController {
         payment,
       },
     );
-    sendXlsxReponse(result.data, result.fileName, res);
+    if (format === ExportFileFormat.xlsx) {
+      return sendXlsxReponse(result.data, result.fileName, res);
+    }
+    return res.send(result);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })

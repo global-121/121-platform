@@ -3,6 +3,7 @@ import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -229,7 +230,7 @@ export async function exportTransactions({
 }): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/transactions`)
-    .query({ fromDate, toDate, payment })
+    .query({ fromDate, toDate, payment, format: ExportFileFormat.xlsx })
     .set('Cookie', [accessToken])
     .buffer()
     .parse((res, callback) => {
