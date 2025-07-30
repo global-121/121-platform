@@ -111,7 +111,7 @@ test.describe('Change status of registration with different status transitions',
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV9],
+      [registrationsPvStatusChange.registrationPV5],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.declined,
@@ -122,7 +122,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Delete registration with status "Declined"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV9.fullName,
+        filterText: registrationsPvStatusChange.registrationPV5.fullName,
       });
       await tableComponent.updateRegistrationStatusWithOptions({
         selectByStatus: true,
@@ -147,7 +147,7 @@ test.describe('Change status of registration with different status transitions',
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV10],
+      [registrationsPvStatusChange.registrationPV6],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -171,7 +171,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV10.fullName,
+        filterText: registrationsPvStatusChange.registrationPV6.fullName,
       });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
@@ -183,7 +183,7 @@ test.describe('Change status of registration with different status transitions',
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV11],
+      [registrationsPvStatusChange.registrationPV7],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.new,
@@ -207,7 +207,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV11.fullName,
+        filterText: registrationsPvStatusChange.registrationPV7.fullName,
       });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
@@ -219,7 +219,7 @@ test.describe('Change status of registration with different status transitions',
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV12],
+      [registrationsPvStatusChange.registrationPV8],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -227,7 +227,7 @@ test.describe('Change status of registration with different status transitions',
 
     await changeRegistrationStatus({
       programId: programIdPV,
-      referenceIds: [registrationsPvStatusChange.registrationPV12.referenceId],
+      referenceIds: [registrationsPvStatusChange.registrationPV8.referenceId],
       status: RegistrationStatusEnum.paused,
       accessToken,
     });
@@ -250,7 +250,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV12.fullName,
+        filterText: registrationsPvStatusChange.registrationPV9.fullName,
       });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
@@ -262,7 +262,7 @@ test.describe('Change status of registration with different status transitions',
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV13],
+      [registrationsPvStatusChange.registrationPV10],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.validated,
@@ -286,7 +286,7 @@ test.describe('Change status of registration with different status transitions',
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV13.fullName,
+        filterText: registrationsPvStatusChange.registrationPV10.fullName,
       });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
