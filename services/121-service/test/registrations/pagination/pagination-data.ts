@@ -204,6 +204,7 @@ export const registrationPV10 = {
   addressHouseNumberAddition: '',
   addressPostalCode: '1234AB',
   addressCity: 'Stad',
+  maxPayments: 1,
 };
 
 export const registrationPvMaxPayment = {
