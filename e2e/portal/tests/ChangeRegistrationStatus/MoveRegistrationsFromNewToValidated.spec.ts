@@ -11,7 +11,6 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
-  registrationPV5,
   registrationsPvStatusChange,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -75,7 +74,7 @@ test.describe('Move registrations from status "New" to "Validated"', () => {
     // Act
     await test.step('Change status of first selected registration to "Validated"', async () => {
       await tableComponent.updateRegistrationStatusWithOptions({
-        registrationName: registrationPV5.fullName,
+        registrationName: registrationsPvStatusChange.registrationPV5.fullName,
         status: 'Validate',
         sendMessage: false,
       });

@@ -250,7 +250,7 @@ test.describe('Delete registration with different allowed statuses', () => {
     await test.step('Validate registration was deleted succesfully', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV9.fullName,
+        filterText: registrationsPvStatusChange.registrationPV8.fullName,
       });
       await tableComponent.assertEmptyTableState();
       await tableComponent.clearAllFilters();
