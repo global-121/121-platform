@@ -68,7 +68,7 @@ test.describe('Change status of registration from status "Completed"', () => {
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV5],
+      [registrationsPvStatusChange.registrationPvMaxPayment],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -79,7 +79,8 @@ test.describe('Change status of registration from status "Completed"', () => {
     await test.step('Validate the status of the registration', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV5.fullName,
+        filterText:
+          registrationsPvStatusChange.registrationPvMaxPayment.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Included',
@@ -91,7 +92,9 @@ test.describe('Change status of registration from status "Completed"', () => {
         programId: 2,
         paymentNr: 1,
         amount: 25,
-        referenceIds: [registrationsPvStatusChange.registrationPV5.referenceId],
+        referenceIds: [
+          registrationsPvStatusChange.registrationPvMaxPayment.referenceId,
+        ],
         accessToken,
       });
       // Wait for the page to reload to reflect the status change from the api call
@@ -114,7 +117,8 @@ test.describe('Change status of registration from status "Completed"', () => {
     await test.step('Validate status change', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV5.fullName,
+        filterText:
+          registrationsPvStatusChange.registrationPvMaxPayment.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Declined',
@@ -129,7 +133,7 @@ test.describe('Change status of registration from status "Completed"', () => {
     const tableComponent = new TableComponent(page);
 
     await seedRegistrationsWithStatus(
-      [registrationsPvStatusChange.registrationPV6],
+      [registrationsPvStatusChange.registrationPV10],
       programIdPV,
       accessToken,
       RegistrationStatusEnum.included,
@@ -139,7 +143,7 @@ test.describe('Change status of registration from status "Completed"', () => {
       programId: 2,
       paymentNr: 1,
       amount: 25,
-      referenceIds: [registrationsPvStatusChange.registrationPV6.referenceId],
+      referenceIds: [registrationsPvStatusChange.registrationPV10.referenceId],
       accessToken,
     });
 
@@ -148,7 +152,7 @@ test.describe('Change status of registration from status "Completed"', () => {
     await test.step('Validate the status of the registration', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV6.fullName,
+        filterText: registrationsPvStatusChange.registrationPV10.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Completed',
@@ -159,7 +163,7 @@ test.describe('Change status of registration from status "Completed"', () => {
     await test.step('Raise amount of max payments for the registration', async () => {
       await updateRegistration(
         2,
-        registrationsPvStatusChange.registrationPV6.referenceId,
+        registrationsPvStatusChange.registrationPV10.referenceId,
         {
           maxPayments: '2',
         },
@@ -185,7 +189,7 @@ test.describe('Change status of registration from status "Completed"', () => {
     await test.step('Validate status change', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV6.fullName,
+        filterText: registrationsPvStatusChange.registrationPV10.fullName,
       });
       await registrations.validateStatusOfFirstRegistration({
         status: 'Included',

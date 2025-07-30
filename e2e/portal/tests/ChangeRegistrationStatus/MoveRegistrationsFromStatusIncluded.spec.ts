@@ -28,7 +28,7 @@ const pauseStatusToastMessage =
   /The status of \d+ registration\(s\) is being changed to "Paused" successfully\. The status change can take up to a minute to process\./;
 
 // Arrange
-test.describe('Change status of registration with different status "Included"', () => {
+test.describe('Change status of registration with status "Included"', () => {
   let page: Page;
   let accessToken: string;
 
@@ -93,17 +93,19 @@ test.describe('Change status of registration with different status "Included"', 
         programId: programIdPV,
         paymentNr: 1,
         amount: 100,
-        referenceIds: [registrationsPvStatusChange.registrationPV5.referenceId],
+        referenceIds: [
+          registrationsPvStatusChange.registrationPvMaxPayment.referenceId,
+        ],
         accessToken,
       });
       // Wait for payment transactions to complete
       await waitForPaymentTransactionsToComplete({
         programId: programIdPV,
         paymentReferenceIds: [
-          registrationsPvStatusChange.registrationPV5.referenceId,
+          registrationsPvStatusChange.registrationPvMaxPayment.referenceId,
         ],
         accessToken,
-        maxWaitTimeMs: 4_000,
+        maxWaitTimeMs: 5_000,
         completeStatusses: Object.values(TransactionStatusEnum),
       });
       // Wait for the page to reload to reflect the status change from the api call
@@ -113,7 +115,8 @@ test.describe('Change status of registration with different status "Included"', 
     await test.step('Search for the registration with status "Completed"', async () => {
       await tableComponent.filterColumnByText({
         columnName: 'Name',
-        filterText: registrationsPvStatusChange.registrationPV5.fullName,
+        filterText:
+          registrationsPvStatusChange.registrationPvMaxPayment.fullName,
       });
     });
     // Assert
