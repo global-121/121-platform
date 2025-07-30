@@ -55,7 +55,7 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
       programId: programIdCbe,
       paymentReferenceIds: registrationsCbe.map((r) => r.referenceId),
       accessToken,
-      maxWaitTimeMs: 40_000,
+      maxWaitTimeMs: 5_000,
       completeStatusses: [TransactionStatusEnum.success],
     });
     // Assert redirection to payment overview page
