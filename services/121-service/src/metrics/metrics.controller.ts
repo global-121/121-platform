@@ -103,7 +103,6 @@ export class MetricsController {
     @Res() res: Response,
   ): Promise<Response | void> {
     const userId = RequestHelper.getUserId(req);
-
     if (
       queryParams.toDate &&
       queryParams.fromDate &&

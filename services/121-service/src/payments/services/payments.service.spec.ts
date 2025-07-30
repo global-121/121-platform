@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 
-import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
-import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';

@@ -33,7 +33,7 @@ import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
-import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
@@ -255,23 +255,30 @@ export class PaymentsController {
     summary: '[SCOPED] Gets all transactions for a date range in xlsx format',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiQuery({ name: 'fromDate', required: true, type: 'string' })
-  @ApiQuery({ name: 'toDate', required: true, type: 'string' })
+  @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
+  @ApiQuery({ name: 'toDate', required: false, type: 'string' })
+  @ApiQuery({
+    name: 'payment',
+    required: false,
+    type: 'integer',
+  })
   // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
   // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
   @Get('programs/:programId/transactions')
   public async exportTransactionsUsingDateFilter(
+    @Res() res: Response,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('fromDate') fromDate: string,
-    @Query('toDate') toDate: string,
-    @Res() res: Response,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+    @Query('payment', new ParseIntPipe({ optional: true })) payment?: number,
   ): Promise<void> {
     const result = await this.paymentsService.exportTransactionsUsingDateFilter(
       {
         programId,
         fromDateString: fromDate,
         toDateString: toDate,
+        payment,
       },
     );
     sendXlsxReponse(result.data, result.fileName, res);

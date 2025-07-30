@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  exportTransactionsByDateRange,
+  exportTransactions,
   patchProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -26,66 +26,6 @@ describe('Export transactions', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should filter transactions based on date range', async () => {
-    // Arrange
-
-    // Payment 1 that should not be exported
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
-
-    const fromDate = new Date().toISOString();
-
-    // Payment 2 that should be exported
-    await doPaymentAndWaitForCompletion({
-      programId,
-      referenceIds: [registrationSafaricom.referenceId],
-      amount,
-      accessToken,
-      paymentNr: 2,
-    });
-    const toDate = new Date().toISOString();
-
-    // Payment 3 that should not be exported
-    await doPaymentAndWaitForCompletion({
-      programId,
-      referenceIds: [registrationSafaricom.referenceId],
-      amount,
-      accessToken,
-      paymentNr: 3,
-    });
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    // Act
-    const transactionsResponse = await exportTransactionsByDateRange({
-      programId,
-      fromDate,
-      toDate,
-      accessToken,
-    });
-
-    const workbook = XLSX.read(transactionsResponse.body, { type: 'buffer' });
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-    const transactionsJson = XLSX.utils.sheet_to_json(worksheet);
-
-    // Check the filename in the Content-Disposition header
-    const contentDisposition =
-      transactionsResponse.headers['content-disposition'];
-    expect(contentDisposition).toContain('attachment; filename=');
-    expect(contentDisposition).toMatch(/transactions_\d+_.+\.xlsx/);
-
-    // Assert
-    expect(transactionsResponse.statusCode).toBe(200);
-    expect(transactionsJson.length).toBe(1);
-    const transactionFromPayment2 = transactionsJson[0];
-    expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
-      paymentCount: 3,
-    });
-  });
-
   it('should export transaction with the correct fields', async () => {
     // Arrange
 
@@ -104,7 +44,7 @@ describe('Export transactions', () => {
     const toDate = new Date().toISOString();
 
     // Act
-    const transactionsResponse = await exportTransactionsByDateRange({
+    const transactionsResponse = await exportTransactions({
       programId,
       fromDate,
       toDate,
@@ -146,6 +86,104 @@ describe('Export transactions', () => {
       registrationStatus: expect.any(String),
       // Safaricom specific fields
       mpesaTransactionId: expect.any(String),
+    });
+  });
+
+  it('should filter transactions based on date range', async () => {
+    // Arrange
+
+    // Payment 1 that should not be exported
+    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+
+    const fromDate = new Date().toISOString();
+
+    // Payment 2 that should be exported
+    await doPaymentAndWaitForCompletion({
+      programId,
+      referenceIds: [registrationSafaricom.referenceId],
+      amount,
+      accessToken,
+      paymentNr: 2,
+    });
+    const toDate = new Date().toISOString();
+
+    // Payment 3 that should not be exported
+    await doPaymentAndWaitForCompletion({
+      programId,
+      referenceIds: [registrationSafaricom.referenceId],
+      amount,
+      accessToken,
+      paymentNr: 3,
+    });
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    // Act
+    const transactionsResponse = await exportTransactions({
+      programId,
+      fromDate,
+      toDate,
+      accessToken,
+    });
+
+    const workbook = XLSX.read(transactionsResponse.body, { type: 'buffer' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const transactionsJson = XLSX.utils.sheet_to_json(worksheet);
+
+    // Check the filename in the Content-Disposition header
+    const contentDisposition =
+      transactionsResponse.headers['content-disposition'];
+    expect(contentDisposition).toContain('attachment; filename=');
+    expect(contentDisposition).toMatch(/transactions_\d+_.+\.xlsx/);
+
+    // Assert
+    expect(transactionsResponse.statusCode).toBe(200);
+    expect(transactionsJson.length).toBe(1);
+    const transactionFromPayment2 = transactionsJson[0];
+    expect(transactionFromPayment2).toMatchObject({
+      payment: 2,
+      paymentCount: 3,
+    });
+  });
+
+  it('should filter transactions based payment', async () => {
+    // Arrange
+
+    // Payment 1
+    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+
+    // Payment 2
+    await doPaymentAndWaitForCompletion({
+      programId,
+      referenceIds: [registrationSafaricom.referenceId],
+      amount,
+      accessToken,
+      paymentNr: 2,
+    });
+
+    // Act: Export only payment 2
+    const transactionsResponse = await exportTransactions({
+      programId,
+      payment: 2,
+      accessToken,
+    });
+
+    const workbook = XLSX.read(transactionsResponse.body, { type: 'buffer' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const transactionsJson =
+      XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
+
+    // Assert
+    expect(transactionsResponse.statusCode).toBe(200);
+    expect(transactionsJson.length).toBe(1);
+    const transactionFromPayment2 = transactionsJson[0];
+    expect(transactionFromPayment2).toMatchObject({
+      payment: 2,
+      paymentCount: 2,
     });
   });
 });

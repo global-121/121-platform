@@ -885,7 +885,8 @@
     "params": [
       "programId",
       "fromDate",
-      "toDate"
+      "toDate",
+      "payment"
     ]
   },
   {

@@ -14,9 +14,9 @@ import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
-import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
-import { PaymentsService } from '@121-service/src/payments/payments.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';

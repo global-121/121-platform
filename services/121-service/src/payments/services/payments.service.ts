@@ -33,11 +33,11 @@ import { NedbankService } from '@121-service/src/payments/fsp-integration/nedban
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
-import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import {
   PaymentReturnDto,
   TransactionReturnDto,
@@ -56,7 +56,10 @@ import {
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -1416,24 +1419,35 @@ export class PaymentsService {
     programId,
     fromDateString,
     toDateString,
+    payment,
   }: {
     programId: number;
-    fromDateString: string;
-    toDateString: string;
+    fromDateString?: string;
+    toDateString?: string;
+    payment?: number;
   }): Promise<FileDto> {
     // Convert string dates to Date objects
-    const fromDate = new Date(fromDateString);
-    const toDate = new Date(toDateString);
+    const fromDate = fromDateString ? new Date(fromDateString) : undefined;
+    const toDate = toDateString ? new Date(toDateString) : undefined;
     const select =
       await this.paymentsHelperService.getSelectForExport(programId);
-    const formatDateForFilename = (dateString: string) =>
-      new Date(dateString).toISOString().slice(0, 19).replace(/:/g, '-');
+    const formatDateForFilename = (dateString?: string) =>
+      dateString
+        ? new Date(dateString).toISOString().slice(0, 19).replace(/:/g, '-')
+        : undefined;
+
+    const fileNameParts = [
+      `transactions_${programId}`,
+      formatDateForFilename(fromDateString),
+      formatDateForFilename(toDateString),
+    ].filter(Boolean);
 
     const transactions = await this.getTransactions({
       programId,
       select,
       fromDate,
       toDate,
+      payment,
     });
 
     // Replace dropped fields with english labels
@@ -1448,7 +1462,7 @@ export class PaymentsService {
         rows: transactions,
         attributes: dropdownAttributes,
       }),
-      fileName: `transactions_${programId}_${formatDateForFilename(fromDateString)}_${formatDateForFilename(toDateString)}`,
+      fileName: fileNameParts.join('_'),
     };
   }
 
@@ -1486,6 +1500,7 @@ export class PaymentsService {
 
     const referenceIds = transactions.map((t) => t.registrationReferenceId);
 
+    select.push(GenericRegistrationAttributes.referenceId);
     const registrationViews =
       (await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
         { programId, referenceIds, select },
@@ -1500,6 +1515,7 @@ export class PaymentsService {
       const registrationView = registrationViewMap.get(
         transaction.registrationReferenceId,
       );
+
       if (!registrationView) {
         return { ...transaction };
       }

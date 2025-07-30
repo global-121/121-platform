@@ -51,7 +51,6 @@ export class PaymentsHelperService {
   }): Promise<string[]> {
     const defaultSelect = [
       DefaultRegistrationDataAttributeNames.name,
-      GenericRegistrationAttributes.referenceId,
       GenericRegistrationAttributes.registrationProgramId,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
