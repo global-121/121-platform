@@ -16,6 +16,7 @@ import {
   getFspConfigurationRequiredProperties,
   getFspSettingByNameOrThrow,
 } from '@121-service/src/fsps/fsp-settings.helpers';
+import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -36,6 +37,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import {
   PaymentReturnDto,
   TransactionReturnDto,
@@ -47,15 +49,19 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
+import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -85,8 +91,10 @@ export class PaymentsService {
   >;
 
   public constructor(
+    private readonly paymentsHelperService: PaymentsHelperService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
+    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+    private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
@@ -1388,50 +1396,131 @@ export class PaymentsService {
     throw new Error(`FspName ${fspName} not supported in fsp export`);
   }
 
-  public async getTransactions({
+  public async geTransactionsByPaymentId({
     programId,
     payment,
   }: {
     programId: number;
     payment: number;
   }): Promise<GetTransactionResponseDto[]> {
-    const transactions =
-      await this.transactionScopedRepository.getTransactionsForPayment({
+    // For in the portal we always want the name of the registration, so we need to select it
+    const select = [DefaultRegistrationDataAttributeNames.name];
+
+    const transactions = await this.getTransactions({
+      programId,
+      payment,
+      select,
+    });
+
+    return transactions;
+  }
+
+  public async exportTransactionsUsingDateFilter({
+    programId,
+    fromDateString,
+    toDateString,
+    payment,
+  }: {
+    programId: number;
+    fromDateString?: string;
+    toDateString?: string;
+    payment?: number;
+  }): Promise<FileDto> {
+    // Convert string dates to Date objects
+    const fromDate = fromDateString ? new Date(fromDateString) : undefined;
+    const toDate = toDateString ? new Date(toDateString) : undefined;
+
+    const fileName =
+      this.paymentsHelperService.createTransactionsExportFilename(
+        programId,
+        fromDate,
+        toDate,
+      );
+
+    const select =
+      await this.paymentsHelperService.getSelectForExport(programId);
+    const transactions = await this.getTransactions({
+      programId,
+      select,
+      fromDate,
+      toDate,
+      payment,
+    });
+
+    const dropdownAttributes =
+      await this.programRegistrationAttributeRepository.getDropdownAttributes({
+        programId,
+        select,
+      });
+
+    return {
+      data: RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel({
+        rows: transactions,
+        attributes: dropdownAttributes,
+      }),
+      fileName,
+    };
+  }
+
+  private async getTransactions({
+    programId,
+    select,
+    payment,
+    fromDate,
+    toDate,
+  }: {
+    programId: number;
+    select: string[];
+    payment?: number;
+    fromDate?: Date;
+    toDate?: Date;
+  }): Promise<
+    (GetTransactionResponseDto & // This is the type returned by the transaction repository
+      Record<string, unknown>)[] // These are the dynamic fsp specific fields & the dynamic configured fields from the registration as set in 'export' of program registration attributes
+  > {
+    const fspSpecificJoinFields =
+      await this.paymentsHelperService.getFspSpecificJoinFields(programId);
+
+    const transactions = await this.transactionScopedRepository.getTransactions(
+      {
         programId,
         payment,
-      });
+        fromDate,
+        toDate,
+        fspSpecificJoinFields,
+      },
+    );
     if (!transactions || transactions.length === 0) {
       return [];
     }
 
-    const fullnameNamingConvention = (
-      await this.programRepository.findOneOrFail({
-        where: { id: Equal(programId) },
-        select: ['fullnameNamingConvention'],
-      })
-    ).fullnameNamingConvention;
+    const referenceIds = transactions.map((t) => t.registrationReferenceId);
 
-    if (!fullnameNamingConvention || fullnameNamingConvention.length === 0) {
-      return transactions;
-    }
-
-    const registrationIds = transactions.map((t) => t.registrationId);
-    const registrationNames =
-      await this.registrationScopedRepository.getFullNamesByRegistrationIds({
-        registrationIds,
-        fullNameNamingConvention: fullnameNamingConvention,
-        programId,
-      });
+    select.push(GenericRegistrationAttributes.referenceId);
+    const registrationViews =
+      (await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds, select },
+      )) as Omit<MappedPaginatedRegistrationDto, 'status'>[];
 
     // Create a map for faster lookups
-    const nameMap = new Map(
-      registrationNames.map((item) => [item.registrationId, item.name]),
+    const registrationViewMap = new Map(
+      registrationViews.map((item) => [item.referenceId, item]),
     );
 
     const result = transactions.map((transaction) => {
+      const registrationView = registrationViewMap.get(
+        transaction.registrationReferenceId,
+      );
+
+      if (!registrationView) {
+        return { ...transaction };
+      }
+      // Destructure 'name' as 'registrationName', and spread the rest
+      const { name, referenceId: _referenceId, ...rest } = registrationView;
       return {
         ...transaction,
-        registrationName: nameMap.get(transaction.registrationId),
+        registrationName: name,
+        ...rest,
       };
     });
 

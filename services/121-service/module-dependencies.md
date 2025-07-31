@@ -119,6 +119,7 @@ graph LR
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->EventsModule
   MetricsModule-->RegistrationDataModule
+  MetricsModule-->ProgramModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule

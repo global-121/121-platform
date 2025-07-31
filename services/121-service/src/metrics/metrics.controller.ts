@@ -65,8 +65,6 @@ export class MetricsController {
   })
   @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
-  @ApiQuery({ name: 'minPayment', required: false, type: 'number' })
-  @ApiQuery({ name: 'maxPayment', required: false, type: 'number' })
   @ApiQuery({
     name: 'limit',
     required: false,
@@ -105,7 +103,6 @@ export class MetricsController {
     @Res() res: Response,
   ): Promise<Response | void> {
     const userId = RequestHelper.getUserId(req);
-
     if (
       queryParams.toDate &&
       queryParams.fromDate &&
@@ -121,8 +118,6 @@ export class MetricsController {
       programId,
       type: exportType,
       userId,
-      minPayment: queryParams.minPayment ?? null,
-      maxPayment: queryParams.maxPayment ?? null,
       paginationQuery,
     });
     if (!result || !Array.isArray(result.data) || result.data.length === 0) {

@@ -26,7 +26,7 @@
       },
       "type": "text",
       "options": null,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": true
@@ -54,7 +54,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": true
@@ -69,7 +69,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": true
@@ -109,7 +109,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "duplicateCheck": false,
       "placeholder": null,
       "showInPeopleAffectedTable": false
@@ -124,7 +124,7 @@
       "scoring": {},
       "pattern": null,
       "editableInPortal": true,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "duplicateCheck": true,
       "placeholder": null,
       "showInPeopleAffectedTable": true
@@ -137,7 +137,7 @@
       "placeholder": {
         "en": "+243000000000"
       },
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "type": "tel",
       "options": null,
       "showInPeopleAffectedTable": false

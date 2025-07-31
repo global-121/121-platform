@@ -785,8 +785,6 @@
       "search",
       "searchBy",
       "format",
-      "maxPayment",
-      "minPayment",
       "toDate",
       "fromDate",
       "exportType"
@@ -879,6 +877,17 @@
     "params": [
       "programId",
       "payment"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions",
+    "params": [
+      "programId",
+      "fromDate",
+      "toDate",
+      "payment",
+      "format"
     ]
   },
   {

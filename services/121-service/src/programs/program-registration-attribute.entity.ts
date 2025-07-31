@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
@@ -53,10 +52,8 @@ export class ProgramRegistrationAttributeEntity extends Base121Entity {
   @Column()
   public programId: number;
 
-  @Column('json', {
-    default: [ExportType.payment],
-  })
-  public export: ExportType[];
+  @Column({ default: false })
+  public includeInTransactionExport: boolean;
 
   @Column({ type: 'character varying', nullable: true })
   public pattern: string | null;

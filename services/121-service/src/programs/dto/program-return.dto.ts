@@ -13,7 +13,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramFspConfigurationResponseDto } from '@121-service/src/program-fsp-configurations/dtos/program-fsp-configuration-response.dto';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -28,7 +27,7 @@ const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
     name: 'nameFirst',
     type: RegistrationAttributeTypes.text,
     options: undefined,
-    export: [ExportType.payment],
+    includeInTransactionExport: true,
     scoring: {},
     showInPeopleAffectedTable: true,
     editableInPortal: false,
@@ -40,7 +39,7 @@ const exampleAttributesReturn: ProgramRegistrationAttributeDto[] = [
     name: 'nameLast',
     type: RegistrationAttributeTypes.text,
     options: undefined,
-    export: [ExportType.payment],
+    includeInTransactionExport: true,
     scoring: {},
     showInPeopleAffectedTable: true,
     editableInPortal: false,

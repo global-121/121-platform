@@ -211,23 +211,36 @@ export class RegistrationsPaginationService {
     return allRegistrations;
   }
 
-  public async getRegistrationViewsByReferenceIds({
+  public async getRegistrationViewsChunkedByReferenceIds({
     programId,
     referenceIds,
+    select,
+    chunkSize = 20000,
   }: {
     programId: number;
     referenceIds: string[];
+    select?: string[];
+    chunkSize?: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    const qb =
-      this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
-        referenceIds,
+    // Ensure that the a new qb is created for a chunk of referenceIds because limited query length
+    const allResults: MappedPaginatedRegistrationDto[] = [];
+
+    for (let i = 0; i < referenceIds.length; i += chunkSize) {
+      const chunk = referenceIds.slice(i, i + chunkSize);
+      const qb =
+        this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
+          chunk,
+        );
+      const chunkResults = await this.getRegistrationsChunked(
+        programId,
+        { limit: chunkSize, path: '', select },
+        chunkSize,
+        qb,
       );
-    return await this.getRegistrationsChunked(
-      programId,
-      { limit: 10000, path: '' },
-      10000,
-      qb,
-    );
+      allResults.push(...chunkResults);
+    }
+
+    return allResults;
   }
 
   public async throwIfNoPersonalReadPermission(

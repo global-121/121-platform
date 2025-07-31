@@ -1,4 +1,3 @@
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 
@@ -22,7 +21,7 @@ export class ProgramRegistrationAttributeMapper {
       pattern: entity.pattern ?? undefined,
       showInPeopleAffectedTable: entity.showInPeopleAffectedTable,
       editableInPortal: entity.editableInPortal,
-      export: entity.export as unknown as ExportType[],
+      includeInTransactionExport: entity.includeInTransactionExport,
       duplicateCheck: entity.duplicateCheck,
       placeholder: entity.placeholder ?? undefined,
     };
@@ -47,7 +46,7 @@ export class ProgramRegistrationAttributeMapper {
       pattern: attribute.pattern ?? null,
       showInPeopleAffectedTable: attribute.showInPeopleAffectedTable,
       editableInPortal: attribute.editableInPortal,
-      export: attribute.export as unknown as ExportType[],
+      includeInTransactionExport: attribute.includeInTransactionExport ?? false,
       duplicateCheck: attribute.duplicateCheck,
       placeholder: attribute.placeholder ?? null,
     };
