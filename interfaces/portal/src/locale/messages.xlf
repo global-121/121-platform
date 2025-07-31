@@ -1000,9 +1000,6 @@
       <trans-unit id="8890553633144307762" datatype="html">
         <source>Back</source>
       </trans-unit>
-      <trans-unit id="1021287001460137349" datatype="html">
-        <source>Exporting FSP Instructions</source>
-      </trans-unit>
       <trans-unit id="2077280297780026969" datatype="html">
         <source>Review payment summary and follow the next steps:</source>
       </trans-unit>

@@ -253,7 +253,8 @@ export class PaymentsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({
-    summary: '[SCOPED] Gets all transactions for a date range in json (default) or xlsx format',
+    summary:
+      '[SCOPED] Gets all transactions for a date range in json (default) or xlsx format',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'fromDate', required: false, type: 'string' })

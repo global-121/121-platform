@@ -130,15 +130,12 @@ export class CreatePaymentComponent {
     () => this.project.data()?.fixedTransferValue ?? 0,
   );
 
-  exportRegistrationsMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportListMutation(
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
       this.projectId,
       this.toastService,
     ),
-    onSuccess: ({ exportResult: file, filename }) => {
-      this.downloadService.downloadFile({ file, filename });
-    },
-  }));
+  );
 
   createPaymentMutation = injectMutation(() => ({
     mutationFn: async ({
@@ -267,7 +264,7 @@ export class CreatePaymentComponent {
       label: $localize`Export payment list`,
       icon: 'pi pi-upload',
       command: () => {
-        this.exportRegistrationsMutation.mutate({
+        this.exportByTypeMutation.mutate({
           type: ExportType.registrations,
           paginateQuery: this.registrationsTable()?.getActionData()?.query,
         });
