@@ -14,6 +14,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -30,6 +31,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[36101] Do failed payment for Cbe fsp', async ({ page }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = CbeProgram.titlePortal.en;
   const numberOfPas = registrationsCbe.length;
@@ -53,13 +55,13 @@ test('[36101] Do failed payment for Cbe fsp', async ({ page }) => {
       url.pathname.startsWith(`/en-GB/project/${programIdCbe}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment card with failed payment data', async () => {
-    await paymentsPage.validateToastMessageAndClose('Payment created.');
-    await paymentsPage.navigateToProgramPage('Payments');
-    await paymentsPage.waitForPaymentToComplete();
+    await paymentPage.validateToastMessageAndClose('Payment created.');
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,

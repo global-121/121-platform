@@ -16,6 +16,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -35,6 +36,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -53,13 +55,13 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payemnt in progress in Payment overview', async () => {
-    await paymentsPage.validateToastMessage('Payment created.');
-    await paymentsPage.waitForPaymentToComplete();
-    await paymentsPage.validateGraphStatus({
+    await paymentPage.validateToastMessage('Payment created.');
+    await paymentPage.validateGraphStatus({
       pending: 0,
       successful: 16,
       failed: 16,

@@ -18,6 +18,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -36,6 +37,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[32300] Retry failed transfers', async ({ page }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
@@ -54,11 +56,11 @@ test('[32300] Retry failed transfers', async ({ page }) => {
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Check presence of retry button', async () => {
-    await paymentsPage.validateRetryFailedTransfersButtonToBeVisible();
+    await paymentPage.validateRetryFailedTransfersButtonToBeVisible();
   });
 
   await test.step('Retry payment with correct PA values', async () => {
@@ -71,10 +73,10 @@ test('[32300] Retry failed transfers', async ({ page }) => {
       'automated test',
       accessToken,
     );
-    await paymentsPage.retryFailedTransfers();
+    await paymentPage.retryFailedTransfers();
   });
 
   await test.step('Check presence of retry button', async () => {
-    await paymentsPage.validateRetryFailedTransfersButtonToBeHidden();
+    await paymentPage.validateRetryFailedTransfersButtonToBeHidden();
   });
 });
