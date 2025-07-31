@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { patchProgram } from '@121-service/test/helpers/program.helper';
 import {
   getAccessToken,
@@ -19,27 +20,28 @@ describe('Update program', () => {
   it('should update a program', async () => {
     // Arrange
     // Test with a few possibly to be changed attributes, not all attributes of a program
-    const program = {
+    const program: UpdateProgramDto = {
       titlePortal: { en: 'new title' },
       published: false,
       distributionDuration: 100,
       fixedTransferValue: 500,
       budget: 50000,
+      monitoringDashboardUrl: 'https://example.org/new-dashboard',
+      aboutProgram: { en: 'new description' },
+      fullnameNamingConvention: ['firstName', 'lastName'],
+      tryWhatsAppFirst: true,
+      languages: [LanguageEnum.en, LanguageEnum.nl],
     };
 
     // Act
     // Call the update function
-    const updateProgramResponse = await patchProgram(
-      2,
-      program as UpdateProgramDto,
-      accessToken,
-    );
+    const updateProgramResponse = await patchProgram(2, program, accessToken);
 
     // Assert
     // Check the response to see if the attributes were actually updated
     expect(updateProgramResponse.statusCode).toBe(HttpStatus.OK);
     expect(updateProgramResponse.body.titlePortal).toMatchObject(
-      program.titlePortal,
+      program.titlePortal!,
     );
     expect(updateProgramResponse.body.published).toBe(program.published);
     expect(updateProgramResponse.body.distributionDuration).toBe(
@@ -49,5 +51,17 @@ describe('Update program', () => {
       program.fixedTransferValue,
     );
     expect(updateProgramResponse.body.budget).toBe(program.budget);
+    expect(updateProgramResponse.body.monitoringDashboardUrl).toBe(
+      program.monitoringDashboardUrl,
+    );
+    expect(updateProgramResponse.body.aboutProgram).toMatchObject(
+      program.aboutProgram!,
+    );
+    expect(updateProgramResponse.body.fullnameNamingConvention).toStrictEqual(
+      program.fullnameNamingConvention,
+    );
+    expect(updateProgramResponse.body.tryWhatsAppFirst).toBe(
+      program.tryWhatsAppFirst,
+    );
   });
 });

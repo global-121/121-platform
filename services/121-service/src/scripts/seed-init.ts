@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { DataSource, Equal } from 'typeorm';
 
-import { IS_DEVELOPMENT, IS_PRODUCTION } from '@121-service/src/config';
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
@@ -24,7 +24,9 @@ export class SeedInit implements InterfaceScript {
 
   public async run(isApiTests = false): Promise<void> {
     await this.clearCallbacksMockService();
-    await this.clearRedisData();
+    if (IS_DEVELOPMENT) {
+      await this.queuesService.emptyAllQueues();
+    }
     if (isApiTests) {
       // Only truncate tables when running the API tests, since API Tests are run asynchronously, it may run into a situation where the migrations are still running and a table does not exist yet
       await this.truncateAll();
@@ -44,15 +46,6 @@ export class SeedInit implements InterfaceScript {
     if (IS_DEVELOPMENT) {
       await this.httpService.get(`${env.MOCK_SERVICE_URL}/api/reset/callbacks`);
     }
-  }
-
-  private async clearRedisData(): Promise<void> {
-    if (IS_PRODUCTION) {
-      throw new Error(
-        `Clearing Redis queue is NOT allowed in production environments`,
-      );
-    }
-    await this.queuesService.emptyAllQueues();
   }
 
   private async addPermissions(): Promise<PermissionEntity[]> {

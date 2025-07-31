@@ -6,6 +6,7 @@ import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-
 import { IntersolveVisaTokenStatus } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-token-status.enum';
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.api.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaChildWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-child-wallet.scoped.repository';
 import { IntersolveVisaCustomerScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-customer.scoped.repository';
 import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/payments/fsp-integration/intersolve-visa/repositories/intersolve-visa-parent-wallet.scoped.repository';
@@ -37,7 +38,7 @@ describe('IntersolveVisaService', () => {
   let apiService: IntersolveVisaApiService;
   let customerRepo: IntersolveVisaCustomerScopedRepository;
   let parentWalletRepo: IntersolveVisaParentWalletScopedRepository;
-  // let childWalletRepo: IntersolveVisaChildWalletScopedRepository;
+  let childWalletRepo: IntersolveVisaChildWalletScopedRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,6 +55,7 @@ describe('IntersolveVisaService', () => {
           provide: IntersolveVisaCustomerScopedRepository,
           useValue: {
             findOneWithWalletsByRegistrationId: jest.fn(),
+            findWithWallets: jest.fn(),
           },
         },
         {
@@ -81,6 +83,9 @@ describe('IntersolveVisaService', () => {
     parentWalletRepo = module.get(
       IntersolveVisaParentWalletScopedRepository,
     ) as jest.Mocked<IntersolveVisaParentWalletScopedRepository>;
+    childWalletRepo = module.get(
+      IntersolveVisaChildWalletScopedRepository,
+    ) as jest.Mocked<IntersolveVisaChildWalletScopedRepository>;
 
     // Set mocks
     jest
@@ -237,6 +242,83 @@ describe('IntersolveVisaService', () => {
       // Assert
       // The expected value should be the input amount as there are no earlier transactions to consider.
       expect(result).toBe(inputTransferAmountInMajorUnit);
+    });
+  });
+
+  describe('retrieveAndUpdateAllWalletsAndCards', () => {
+    const parentWallet = {
+      intersolveVisaChildWallets: [
+        {
+          walletStatus: IntersolveVisaTokenStatus.Active,
+          tokenCode: 'child1',
+        },
+      ],
+    };
+    const customers = [
+      { registrationId: 1, intersolveVisaParentWallet: parentWallet },
+      { registrationId: 2, intersolveVisaParentWallet: parentWallet },
+    ];
+
+    beforeEach(() => {
+      jest
+        .spyOn(customerRepo, 'findWithWallets')
+        .mockResolvedValue(customers as any);
+      jest
+        .spyOn(parentWalletRepo, 'save')
+        .mockResolvedValue(parentWallet as any);
+      jest
+        .spyOn(childWalletRepo, 'save')
+        .mockResolvedValue(parentWallet.intersolveVisaChildWallets[0] as any);
+      jest.spyOn(apiService, 'getToken').mockResolvedValue({
+        status: IntersolveVisaTokenStatus.Active,
+        blocked: false,
+        balance: 100,
+      });
+      jest.spyOn(apiService, 'getTransactionInformation').mockResolvedValue({
+        spentThisMonth: 0,
+        lastTransactionDate: new Date(),
+      });
+    });
+
+    it('should process all customers and update wallets', async () => {
+      const result = await service.retrieveAndUpdateAllWalletsAndCards();
+
+      expect(customerRepo.findWithWallets).toHaveBeenCalled();
+      expect(childWalletRepo.save).toHaveBeenCalledTimes(2);
+      expect(parentWalletRepo.save).toHaveBeenCalledTimes(2);
+      expect(result).toBe(2);
+    });
+
+    it('should log and continue on IntersolveVisaApiError', async () => {
+      // Override only the mocks that differ for this test
+      const childWalletSaveMock = jest
+        .spyOn(childWalletRepo, 'save')
+        .mockResolvedValue(new IntersolveVisaChildWalletEntity() as any);
+
+      jest
+        .spyOn(apiService, 'getToken')
+        .mockImplementationOnce(() => {
+          throw new IntersolveVisaApiError('API error');
+        })
+        .mockResolvedValue({
+          status: IntersolveVisaTokenStatus.Active,
+          blocked: false,
+          balance: 100,
+        });
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      await service.retrieveAndUpdateAllWalletsAndCards();
+
+      expect(customerRepo.findWithWallets).toHaveBeenCalled();
+      expect(childWalletSaveMock).toHaveBeenCalledTimes(1);
+      expect(parentWalletRepo.save).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'IntersolveVisaApiError occurred while retrieving and updating wallets for customer:',
+        1,
+        'API error',
+      );
+      consoleErrorSpy.mockRestore();
     });
   });
 });

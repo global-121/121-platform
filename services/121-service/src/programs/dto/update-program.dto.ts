@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsDateString,
   IsNumber,
@@ -8,7 +9,9 @@ import {
   Length,
 } from 'class-validator';
 
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 export class UpdateProgramDto {
   @ApiProperty()
@@ -100,4 +103,28 @@ export class UpdateProgramDto {
   @IsOptional()
   @IsNumber()
   public readonly budget?: number;
+
+  @ApiProperty({ example: 'https://example.org/dashboard' })
+  @IsOptional()
+  @IsString()
+  public monitoringDashboardUrl?: string;
+
+  @ApiProperty({ example: { en: 'description' } })
+  @IsOptional()
+  public aboutProgram?: LocalizedString;
+
+  @ApiProperty({ example: ['firstName', 'lastName'] })
+  @IsOptional()
+  @IsArray()
+  public fullnameNamingConvention?: string[] | null;
+
+  @ApiProperty({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  public readonly tryWhatsAppFirst?: boolean;
+
+  @ApiProperty({ example: ['en', 'nl'] })
+  @IsOptional()
+  @IsArray()
+  public readonly languages?: WrapperType<LanguageEnum[]>;
 }

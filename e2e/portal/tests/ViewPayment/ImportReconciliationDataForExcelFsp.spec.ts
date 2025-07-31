@@ -15,6 +15,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -35,6 +36,7 @@ test.beforeEach(async ({ page }) => {
 test('[32303] [Excel fsp]: Import reconciliation data should work similar to import registration data', async ({
   page,
 }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
@@ -58,11 +60,11 @@ test('[32303] [Excel fsp]: Import reconciliation data should work similar to imp
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Upload payment reconciliation data via UI', async () => {
-    await paymentsPage.importReconciliationData(reconciliationData);
+    await paymentPage.importReconciliationData(reconciliationData);
   });
 
   // ## TODO: this process downloads a file, assert that that happens and the content is correct

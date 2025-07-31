@@ -3,8 +3,6 @@ import { inject, Injectable, Signal, signal } from '@angular/core';
 import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
-import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -287,21 +285,6 @@ export class ProjectApiService extends DomainApiService {
         projectId,
         'fsps/commercial-bank-ethiopia/account-enquiries',
       ],
-    });
-  }
-
-  getLatestAction({
-    projectId,
-    actionType,
-  }: {
-    projectId: Signal<number | string>;
-    actionType: ExportType;
-  }) {
-    return this.generateQueryOptions<Dto<ActionReturnDto>>({
-      path: [BASE_ENDPOINT, projectId, 'actions'],
-      params: {
-        actionType,
-      },
     });
   }
 

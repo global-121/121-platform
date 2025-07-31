@@ -27,7 +27,6 @@ import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/co
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Registration } from '~/domains/registration/registration.model';
-import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
@@ -43,7 +42,6 @@ import {
   selector: 'app-export-registrations',
   imports: [
     ConfirmationDialogComponent,
-    LatestExportDateComponent,
     ButtonMenuComponent,
     DatePickerModule,
     FloatLabelModule,

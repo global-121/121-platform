@@ -15,7 +15,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
-import { LatestExportDateComponent } from '~/pages/project-registrations/components/latest-export-date/latest-export-date.component';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
@@ -28,11 +27,7 @@ import {
 
 @Component({
   selector: 'app-single-payment-export',
-  imports: [
-    ConfirmationDialogComponent,
-    ButtonMenuComponent,
-    LatestExportDateComponent,
-  ],
+  imports: [ConfirmationDialogComponent, ButtonMenuComponent],
   templateUrl: './single-payment-export.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

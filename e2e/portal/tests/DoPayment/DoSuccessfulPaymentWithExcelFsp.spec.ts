@@ -15,6 +15,7 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Export Excel FSP payment list
@@ -36,6 +37,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[31972] Do payment for excel fsp', async ({ page }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
@@ -73,13 +75,11 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Download payment instructions', async () => {
-    await paymentsPage.openPaymentByDate({ date: lastPaymentDate });
-    await paymentsPage.selectPaymentExportOption({
+    await paymentPage.selectPaymentExportOption({
       option: 'Export FSP payment list',
     });
     await exportDataComponent.exportAndAssertData({
