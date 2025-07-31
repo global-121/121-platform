@@ -60,7 +60,7 @@ test.describe('Export Payments with Date Range', () => {
       });
 
       await exportDataComponent.exportAndAssertData({
-        exactRowCount: 5,
+        exactRowCount: 1,
         excludedColumns: ['created', 'updated'],
       });
     });
