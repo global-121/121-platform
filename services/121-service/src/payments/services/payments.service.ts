@@ -1429,19 +1429,16 @@ export class PaymentsService {
     // Convert string dates to Date objects
     const fromDate = fromDateString ? new Date(fromDateString) : undefined;
     const toDate = toDateString ? new Date(toDateString) : undefined;
+
+    const fileName =
+      this.paymentsHelperService.createTransactionsExportFilename(
+        programId,
+        fromDate,
+        toDate,
+      );
+
     const select =
       await this.paymentsHelperService.getSelectForExport(programId);
-    const formatDateForFilename = (dateString?: string) =>
-      dateString
-        ? new Date(dateString).toISOString().slice(0, 19).replace(/:/g, '-')
-        : undefined;
-
-    const fileNameParts = [
-      `transactions_${programId}`,
-      formatDateForFilename(fromDateString),
-      formatDateForFilename(toDateString),
-    ].filter(Boolean);
-
     const transactions = await this.getTransactions({
       programId,
       select,
@@ -1450,7 +1447,6 @@ export class PaymentsService {
       payment,
     });
 
-    // Replace dropped fields with english labels
     const dropdownAttributes =
       await this.programRegistrationAttributeRepository.getDropdownAttributes({
         programId,
@@ -1462,7 +1458,7 @@ export class PaymentsService {
         rows: transactions,
         attributes: dropdownAttributes,
       }),
-      fileName: fileNameParts.join('_'),
+      fileName,
     };
   }
 

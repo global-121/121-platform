@@ -188,9 +188,7 @@ describe('PaymentsService - getTransactions', () => {
         attributes: dropdownAttributes,
       });
       expect(result.data).toEqual(replacedRows);
-      expect(result.fileName).toContain(`transactions_${programId}_`);
-      expect(result.fileName).toContain('2024-01-01T00-00-00');
-      expect(result.fileName).toContain('2024-01-31T23-59-59');
+      expect(result.fileName).toMatchSnapshot();
     });
   });
 });

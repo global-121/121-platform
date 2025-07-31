@@ -129,4 +129,27 @@ export class PaymentsHelperService {
     }
     return fields;
   }
+
+  public createTransactionsExportFilename(
+    programId: number,
+    fromDate?: Date,
+    toDate?: Date,
+    payment?: number,
+  ): string {
+    const formatDateForFilename = (date?: Date) =>
+      date ? date.toISOString().slice(0, 19).replace(/:/g, '-') : undefined;
+    const fromDateString = fromDate
+      ? formatDateForFilename(fromDate)
+      : undefined;
+    const toDateString = toDate ? formatDateForFilename(toDate) : undefined;
+    const paymentString = payment ? `payment_${payment}` : undefined;
+    const fileNameParts = [
+      `transactions_${programId}`,
+      fromDateString,
+      toDateString,
+      paymentString,
+    ].filter(Boolean);
+
+    return fileNameParts.join('_');
+  }
 }

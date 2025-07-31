@@ -4,10 +4,13 @@ import { Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { PaymentsHelperService } from '@121-service/src/payments/payments.helper.service';
+import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
-import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import {
+  DefaultRegistrationDataAttributeNames,
+  GenericRegistrationAttributes,
+} from '@121-service/src/registration/enum/registration-attribute.enum';
 
 describe('PaymentsHelperService', () => {
   let service: PaymentsHelperService;
@@ -42,7 +45,18 @@ describe('PaymentsHelperService', () => {
   });
 
   describe('getSelectForExport', () => {
-    it('returns default and export attributes', async () => {
+    const defaultSelect = [
+      DefaultRegistrationDataAttributeNames.name,
+      GenericRegistrationAttributes.registrationProgramId,
+      GenericRegistrationAttributes.phoneNumber,
+      GenericRegistrationAttributes.preferredLanguage,
+      GenericRegistrationAttributes.paymentAmountMultiplier,
+      GenericRegistrationAttributes.programFspConfigurationLabel,
+      GenericRegistrationAttributes.paymentCount,
+    ];
+
+    it('returns export attributes', async () => {
+      // Arrange
       const customAttributeName1 = 'custom1';
       const customAttributeName2 = 'custom2';
       (programRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
@@ -55,13 +69,21 @@ describe('PaymentsHelperService', () => {
         { name: customAttributeName1 },
         { name: customAttributeName2 },
       ]);
+
+      // Act
       const result = await service.getSelectForExport(1);
-      expect(result).toContain(customAttributeName1);
-      expect(result).toContain(customAttributeName2);
-      expect(result).toContain(GenericRegistrationAttributes.referenceId);
+
+      // Assert
+      const expectedAttributes = [
+        ...defaultSelect,
+        customAttributeName1,
+        customAttributeName2,
+      ];
+      expect(result).toStrictEqual(expectedAttributes);
     });
 
     it('includes maxPayments and scope if enabled', async () => {
+      // Arrange
       (programRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
         enableMaxPayments: true,
         enableScope: true,
@@ -69,18 +91,31 @@ describe('PaymentsHelperService', () => {
       (
         programRegistrationAttributeRepository.find as jest.Mock
       ).mockResolvedValue([]);
+
+      // Act
       const result = await service.getSelectForExport(1);
-      expect(result).toContain(GenericRegistrationAttributes.maxPayments);
-      expect(result).toContain(GenericRegistrationAttributes.scope);
+
+      // Assert
+      const expectedAttributes = [
+        ...defaultSelect,
+        GenericRegistrationAttributes.maxPayments,
+        GenericRegistrationAttributes.scope,
+      ];
+      expect(result).toStrictEqual(expectedAttributes);
     });
   });
 
   describe('getFspSpecificJoinFields', () => {
     it('returns Safaricom join fields', async () => {
+      // Arrange
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         programFspConfigurations: [{ fspName: Fsps.safaricom }],
       });
+
+      // Act
       const result = await service.getFspSpecificJoinFields(1);
+
+      // Assert
       expect(result).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -93,10 +128,15 @@ describe('PaymentsHelperService', () => {
     });
 
     it('returns Nedbank join fields', async () => {
+      // Arrange
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         programFspConfigurations: [{ fspName: Fsps.nedbank }],
       });
+
+      // Act
       const result = await service.getFspSpecificJoinFields(1);
+
+      // Assert
       expect(result).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -116,11 +156,114 @@ describe('PaymentsHelperService', () => {
     });
 
     it('returns empty array if no matching FSPs', async () => {
+      // Arrange
       (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
         programFspConfigurations: [],
       });
+      // Act
       const result = await service.getFspSpecificJoinFields(1);
+      // Assert
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('createTransactionsExportFilename', () => {
+    it('should include all parts when all arguments are provided', () => {
+      // Arrange
+      const programId = 42;
+      const fromDate = new Date('2024-01-01T12:00:00Z');
+      const toDate = new Date('2024-01-31T18:30:00Z');
+      const payment = 3;
+      const fromDateString = '2024-01-01T12-00-00';
+      const toDateString = '2024-01-31T18-30-00';
+      const paymentString = `payment_${payment}`;
+      const expected = `transactions_${programId}_${fromDateString}_${toDateString}_${paymentString}`;
+
+      // Act
+      const result = service.createTransactionsExportFilename(
+        programId,
+        fromDate,
+        toDate,
+        payment,
+      );
+
+      // Assert
+      expect(result).toBe(expected);
+    });
+
+    it('should omit fromDate if not provided', () => {
+      // Arrange
+      const programId = 1;
+      const toDate = new Date('2024-02-01T00:00:00Z');
+      const payment = 2;
+      const toDateString = '2024-02-01T00-00-00';
+      const paymentString = `payment_${payment}`;
+      const expected = `transactions_${programId}_${toDateString}_${paymentString}`;
+
+      // Act
+      const result = service.createTransactionsExportFilename(
+        programId,
+        undefined,
+        toDate,
+        payment,
+      );
+
+      // Assert
+      expect(result).toBe(expected);
+    });
+
+    it('should omit toDate if not provided', () => {
+      // Arrange
+      const programId = 5;
+      const fromDate = new Date('2024-03-01T10:00:00Z');
+      const payment = 7;
+      const fromDateString = '2024-03-01T10-00-00';
+      const paymentString = `payment_${payment}`;
+      const expected = `transactions_${programId}_${fromDateString}_${paymentString}`;
+
+      // Act
+      const result = service.createTransactionsExportFilename(
+        programId,
+        fromDate,
+        undefined,
+        payment,
+      );
+
+      // Assert
+      expect(result).toBe(expected);
+    });
+
+    it('should omit payment if not provided', () => {
+      // Arrange
+      const programId = 9;
+      const fromDate = new Date('2024-04-01T08:00:00Z');
+      const toDate = new Date('2024-04-30T20:00:00Z');
+      const fromDateString = '2024-04-01T08-00-00';
+      const toDateString = '2024-04-30T20-00-00';
+      const expected = `transactions_${programId}_${fromDateString}_${toDateString}`;
+
+      // Act
+      const result = service.createTransactionsExportFilename(
+        programId,
+        fromDate,
+        toDate,
+        undefined,
+      );
+
+      // Assert
+      expect(result).toBe(expected);
+    });
+
+    it('should only include programId if nothing else is provided', () => {
+      // Arrange
+      const programId = 99;
+      const expected = `transactions_${programId}`;
+
+      // Act
+      const result = service.createTransactionsExportFilename(programId);
+
+      // Assert
+      expect(result).toBe(expected);
     });
   });
 });
