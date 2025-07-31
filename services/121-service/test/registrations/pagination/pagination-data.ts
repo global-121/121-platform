@@ -209,7 +209,7 @@ export const registrationPvScoped = {
   phoneNumber: '14155235554',
   programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235554',
-  scope: 'utrecht',
+  scope: 'turkana',
 };
 
 export const expectedAttributes = [
