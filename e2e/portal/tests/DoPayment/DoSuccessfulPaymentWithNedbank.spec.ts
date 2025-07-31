@@ -15,6 +15,7 @@ import {
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -33,6 +34,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NedbankProgram.titlePortal.en;
   const numberOfPas = registrationsNedbank.length;
@@ -58,17 +60,17 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
     // Run CRON job to process payment
     await runCronJobDoNedbankReconciliation();
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment card', async () => {
-    await paymentsPage.validateToastMessageAndClose('Payment created.');
+    await paymentPage.validateToastMessageAndClose('Payment created.');
     // In case of Nedbank, we need to wait for the payment to be processed
     // before we can validate the payment card
     // This way we can avoid reloading the page
     await page.waitForTimeout(1000);
-    await paymentsPage.navigateToProgramPage('Payments');
-    await paymentsPage.waitForPaymentToComplete();
+    await paymentPage.waitForPaymentToComplete();
+    await paymentPage.navigateToProgramPage('Payments');
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
       paymentAmount: defaultMaxTransferValue,

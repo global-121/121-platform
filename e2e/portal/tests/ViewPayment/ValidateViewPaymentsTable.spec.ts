@@ -13,8 +13,8 @@ import {
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import TableComponent from '@121-e2e/portal/components/TableComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 const registrationIds = ['Reg. #1', 'Reg. #2', 'Reg. #3', 'Reg. #4', 'Reg. #5'];
@@ -50,8 +50,8 @@ test.beforeEach(async ({ page }) => {
 test('[32298] Table should be a filtered list of registrations included in the transfer', async ({
   page,
 }) => {
+  const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const table = new TableComponent(page);
   const projectTitle = NLRCProgram.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
@@ -69,21 +69,21 @@ test('[32298] Table should be a filtered list of registrations included in the t
       url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Validate payment table', async () => {
     // Validate sorting of columns
-    await table.sortAndValidateColumnByName('Reg.');
-    await table.sortAndValidateColumnByName('Name');
-    await table.sortAndValidateColumnByName('Registration status');
-    await table.sortAndValidateColumnByName('Transfer status');
-    await table.sortAndValidateColumnByName('Reason');
-    await table.sortAndValidateColumnByName('Transfer value');
-    await table.sortAndValidateColumnByName('FSP');
+    await paymentPage.table.sortAndValidateColumnByName('Reg.');
+    await paymentPage.table.sortAndValidateColumnByName('Name');
+    await paymentPage.table.sortAndValidateColumnByName('Registration status');
+    await paymentPage.table.sortAndValidateColumnByName('Transfer status');
+    await paymentPage.table.sortAndValidateColumnByName('Reason');
+    await paymentPage.table.sortAndValidateColumnByName('Transfer value');
+    await paymentPage.table.sortAndValidateColumnByName('FSP');
 
     // Validate applied sorting filters for Registration IDs
-    await table.validateSortingOfColumns(
+    await paymentPage.table.validateSortingOfColumns(
       'Reg.',
       2,
       ascedingRegistrationIds,
@@ -91,7 +91,7 @@ test('[32298] Table should be a filtered list of registrations included in the t
     );
 
     // Validate applied sorting filters for Name column
-    await table.validateSortingOfColumns(
+    await paymentPage.table.validateSortingOfColumns(
       'Name',
       3,
       ascedingNames,
@@ -99,20 +99,20 @@ test('[32298] Table should be a filtered list of registrations included in the t
     );
 
     // Apply filter for Transfer value
-    await table.filterColumnByText({
+    await paymentPage.table.filterColumnByText({
       columnName: 'Transfer value',
       filterText: '75',
     });
-    await table.validateTableRowCount(2);
+    await paymentPage.table.validateTableRowCount(2);
 
     // Reset filters
-    await table.clearAllFilters();
+    await paymentPage.table.clearAllFilters();
 
     // Apply filter for FSP
-    await table.filterColumnByDropDownSelection({
+    await paymentPage.table.filterColumnByDropDownSelection({
       columnName: 'FSP',
       selection: 'Albert Heijn voucher WhatsApp',
     });
-    await table.validateTableRowCount(1);
+    await paymentPage.table.validateTableRowCount(1);
   });
 });

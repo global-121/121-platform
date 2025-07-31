@@ -16,6 +16,7 @@ import {
 
 import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
@@ -37,6 +38,7 @@ test('[32304] Retry payments should put failed transactions back in pending and 
   page,
 }) => {
   const paymentsPage = new PaymentsPage(page);
+  const paymentPage = new PaymentPage(page);
   const exportDataComponent = new ExportData(page);
 
   const projectTitle = NLRCProgramPV.titlePortal.en;
@@ -60,22 +62,24 @@ test('[32304] Retry payments should put failed transactions back in pending and 
       url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
-    await paymentsPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
+    await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
   await test.step('Upload payment reconciliation data', async () => {
-    await paymentsPage.importReconciliationData(reconciliationData);
+    await paymentPage.importReconciliationData(reconciliationData);
   });
 
   // ## TODO: this process downloads a file, assert that that happens and the content is correct
 
   await test.step('Retry payment, Export FSP payment data and assert file', async () => {
-    await paymentsPage.validateRetryFailedTransfersButtonToBeVisible();
+    await paymentPage.validateRetryFailedTransfersButtonToBeVisible();
     // Timeout has to be used in this case because choose option is not visible immediately after the dropdown button is clicked
     await page.waitForTimeout(200);
-    await paymentsPage.retryFailedTransfers();
+    await paymentPage.retryFailedTransfers();
     // Start download of the payment instructions file
-    await paymentsPage.exportFspPaymentList();
+    await paymentPage.selectPaymentExportOption({
+      option: 'Export FSP payment list',
+    });
     // Assert excel fsp list it should only include the failed transactions that were retried and are now in status pending
     await exportDataComponent.exportAndAssertData({
       exactRowCount: 2,
