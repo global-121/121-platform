@@ -113,9 +113,9 @@ export class UpdateProgramDto {
   @IsOptional()
   public aboutProgram?: LocalizedString;
 
-  @ApiProperty({ example: { en: 'description' } })
+  @ApiProperty({ example: ['firstName', 'lastName'] })
   @IsOptional()
-  @IsString()
+  @IsArray()
   public fullnameNamingConvention?: string[] | null;
 
   @ApiProperty({ example: true })
