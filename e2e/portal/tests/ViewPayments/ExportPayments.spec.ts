@@ -68,7 +68,7 @@ test.beforeAll(async ({ browser }) => {
   await createFivePayments(paymentsPage);
 });
 
-test('[35621] ExportFivePayments', async () => {
+test('[35621] ExportPayments', async () => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
@@ -78,12 +78,13 @@ test('[35621] ExportFivePayments', async () => {
 
   await test.step('Export and validate file', async () => {
     await paymentsPage.selectPaymentExportOption({
-      option: 'Export last 5 payment(s)',
+      option: 'Payments',
     });
 
     await exportDataComponent.exportAndAssertData({
-      exactRowCount: 25,
+      exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
       excludedColumns: ['created', 'updated'],
+      orderOfDataIsImportant: true,
     });
   });
 });
@@ -97,8 +98,14 @@ test('[36125] View available actions for admin', async () => {
     await paymentsPage.exportButton.click();
 
     const exportOptions = await page.getByRole('menuitem').all();
-    expect(exportOptions.length).toBe(3);
-    await expect(exportOptions[0]).toHaveText('Export last 5 payment(s)');
+    const exportOptionsText = await Promise.all(
+      exportOptions.map((option) => option.textContent()),
+    );
+    expect(exportOptionsText).toEqual([
+      'Payments',
+      'Unused vouchers',
+      'Debit card usage',
+    ]);
   });
 });
 

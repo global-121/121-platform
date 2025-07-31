@@ -42,21 +42,33 @@ export class ExportService {
     paginateQuery,
     fromDate,
     toDate,
-    minPayment,
-    maxPayment,
     format,
+    paymentId,
   }: {
-    type: 'pa-data-changes' | ExportType;
+    type: 'pa-data-changes' | 'payment' | ExportType;
     paginateQuery?: PaginateQuery;
     fromDate?: Date;
     toDate?: Date;
-    minPayment?: number;
-    maxPayment?: number;
+    paymentId?: string;
     format: 'csv' | 'xlsx';
   }) {
+    // TODO: AB#37529 refactor this so that TS can avoid any of these checks being necessary
     if (type !== ExportType.registrations && paginateQuery) {
       throw new Error(
         `Paginate query is only supported for type: ${ExportType.registrations}`,
+      );
+    }
+
+    if (type !== 'payment' && !!paymentId) {
+      throw new Error('PaymentId is only supported for type: payment');
+    }
+
+    if (
+      !['pa-data-changes', 'payment'].includes(type) &&
+      (!!fromDate || !!toDate)
+    ) {
+      throw new Error(
+        'Date filters are only supported for type: pa-data-changes, payment',
       );
     }
 
@@ -72,11 +84,8 @@ export class ExportService {
       const toDateAdjusted = addDaysToDate(toDate, 1);
       exportParams.toDate = dateToIsoString(toDateAdjusted);
     }
-    if (minPayment) {
-      exportParams.minPayment = minPayment;
-    }
-    if (maxPayment) {
-      exportParams.maxPayment = maxPayment;
+    if (paymentId) {
+      exportParams.payment = paymentId;
     }
 
     const paginateQueryParams =
@@ -106,17 +115,15 @@ export class ExportService {
       paginateQuery,
       fromDate,
       toDate,
-      minPayment,
-      maxPayment,
+      paymentId,
       format = 'xlsx',
       filename,
     }: {
-      type: 'pa-data-changes' | ExportType;
+      type: 'pa-data-changes' | 'payment' | ExportType;
       paginateQuery?: PaginateQuery;
       fromDate?: Date;
       toDate?: Date;
-      minPayment?: number;
-      maxPayment?: number;
+      paymentId?: string;
       format?: 'csv' | 'xlsx';
       filename?: string;
     }) => {
@@ -138,17 +145,24 @@ export class ExportService {
         paginateQuery,
         fromDate,
         toDate,
-        minPayment,
-        maxPayment,
+        paymentId,
         format,
       });
 
       try {
         let exportResult: Blob;
 
+        // TODO: AB#37529 refactor this to avoid the hardcoded types and the if
         if (type === 'pa-data-changes') {
           exportResult = await this.queryClient.fetchQuery(
             this.eventApiService.getEvents({
+              projectId,
+              params,
+            })(),
+          );
+        } else if (type === 'payment') {
+          exportResult = await this.queryClient.fetchQuery(
+            this.projectApiService.getTransactions({
               projectId,
               params,
             })(),

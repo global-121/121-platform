@@ -44,19 +44,22 @@ test('[35621] Export Payment Report should contain the right data', async ({
 
   await test.step('Navigate to Program payments', async () => {
     await paymentsPage.selectProgram(projectTitle);
-
-    await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Do payment', async () => {
-    await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
-    // Assert redirection to payment overview page
-    await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
-    );
-    await paymentPage.waitForPaymentToComplete();
-  });
+  for (let i = 1; i <= 2; i++) {
+    // Do 2 payments to make sure that the export only contains the latest payment
+    await test.step(`Do payment ${i}`, async () => {
+      await paymentsPage.navigateToProgramPage('Payments');
+
+      await paymentsPage.createPayment();
+      await paymentsPage.startPayment();
+      // Assert redirection to payment overview page
+      await page.waitForURL((url) =>
+        url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),
+      );
+      await paymentPage.waitForPaymentToComplete();
+    });
+  }
 
   await test.step('Export Payment Report', async () => {
     await paymentPage.selectPaymentExportOption({
