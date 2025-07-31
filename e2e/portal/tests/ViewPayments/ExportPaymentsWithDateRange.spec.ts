@@ -15,10 +15,8 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 // Get current date information
 const currentDate = new Date();
 const day = currentDate.getDate();
-const month = currentDate.getMonth() + 1;
-const year = currentDate.getFullYear();
-const startDate = `${day - 1}/${month}/${year}`;
-const endDate = `${day}/${month}/${year}`;
+const startDate = `${day - 1}`;
+const endDate = `${day}`;
 
 // Arrange
 test.describe('Export Payments with Date Range', () => {
