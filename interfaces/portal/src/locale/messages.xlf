@@ -799,12 +799,6 @@
       <trans-unit id="7463196084306840699" datatype="html">
         <source>The data in this report is based on data that is imported every night from CBE. If you changed data today this will not be reflected in the report.</source>
       </trans-unit>
-      <trans-unit id="330884522576296166" datatype="html">
-        <source>You&apos;re about to download an Excel file with all of the registrations included in the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
-      </trans-unit>
-      <trans-unit id="5408686534414832538" datatype="html">
-        <source>This will download an Excel file showing the balance of every card from the last <x equiv-text="{{ maxLastPaymentsNumber() }}" id="INTERPOLATION"/> payment(s).</source>
-      </trans-unit>
       <trans-unit id="8158073155076214675" datatype="html">
         <source>Important Notice: The unused vouchers available for download are not in real-time. The report includes the date and time of each voucher&apos;s last external update.</source>
       </trans-unit>
@@ -816,9 +810,6 @@
       </trans-unit>
       <trans-unit id="export-payments-debit-card-usage" datatype="html">
         <source>Debit card usage</source>
-      </trans-unit>
-      <trans-unit id="export-payments-last" datatype="html">
-        <source>Export last <x equiv-text="this.maxLastPaymentsNumber()" id="PH"/> payment(s)</source>
       </trans-unit>
       <trans-unit id="export-payments-unused-vouchers" datatype="html">
         <source>Unused vouchers</source>
@@ -1624,6 +1615,21 @@
       </trans-unit>
       <trans-unit id="4874025357079324070" datatype="html">
         <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the</source>
+      </trans-unit>
+      <trans-unit id="1053772170616919441" datatype="html">
+        <source>You&apos;re about to download an Excel file with all of the registrations included in payments.</source>
+      </trans-unit>
+      <trans-unit id="1131264372756277854" datatype="html">
+        <source>Payments</source>
+      </trans-unit>
+      <trans-unit id="4890152856739224001" datatype="html">
+        <source>Optionally pass a start date and/or an end date to filter the payments. The export is limited to 100,000 records. Adapt your dates if needed.</source>
+      </trans-unit>
+      <trans-unit id="856921700208045215" datatype="html">
+        <source>This will download an Excel file showing the balance of every card. The export is limited to 100,000 records.</source>
+      </trans-unit>
+      <trans-unit id="8819989029832903215" datatype="html">
+        <source>Export payments</source>
       </trans-unit>
     </body>
   </file>

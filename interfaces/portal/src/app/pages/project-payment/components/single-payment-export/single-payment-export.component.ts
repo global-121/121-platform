@@ -76,12 +76,6 @@ export class SinglePaymentExportComponent {
     () => $localize`:@@payment-report:Payment report`,
   );
 
-  readonly paymentReportMutationData = computed(() => ({
-    type: ExportType.payment,
-    minPayment: Number(this.paymentId()),
-    maxPayment: Number(this.paymentId()),
-  }));
-
   paymentReportMutation = injectMutation(() => ({
     mutationFn: this.exportService.getExportListMutation(
       this.projectId,

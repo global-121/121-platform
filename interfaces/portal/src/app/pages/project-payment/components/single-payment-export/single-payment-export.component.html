@@ -22,7 +22,10 @@
   [header]="paymentReportLabel()"
   headerIcon="pi pi-upload"
   [mutation]="paymentReportMutation"
-  [mutationData]="paymentReportMutationData()"
+  [mutationData]="{
+    type: 'payment',
+    paymentId: paymentId(),
+  }"
 >
   <p i18n>
     You're about to download an Excel file with all of the registrations

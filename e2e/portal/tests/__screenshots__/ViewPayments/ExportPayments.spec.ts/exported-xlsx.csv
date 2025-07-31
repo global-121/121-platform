@@ -1,2 +1,2 @@
-referenceId,id,registrationId,status,payment,registrationStatus,phoneNumber,paymentAmountMultiplier,amount,errorMessage,fsp,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-22e62864557597e0d,2,4,success,1,included,14155237775,1,25,,Intersolve-visa,Anna Hello,14155237775,Teststeeg,2,,2345AB,AnotherCity
+id,payment,registrationProgramId,registrationReferenceId,registrationId,registrationStatus,status,amount,errorMessage,programFspConfigurationName,registrationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,programFspConfigurationLabel,paymentCount,fullName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+1,1,1,63e62864557597e0d,2,included,success,25,,Intersolve-visa,John Smith,14155236666,en,1,,5,John Smith,14155238886,Teststraat,1,,1234AB,Stad
