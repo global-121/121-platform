@@ -769,14 +769,8 @@
       <trans-unit id="create-payment" datatype="html">
         <source>Create new payment</source>
       </trans-unit>
-      <trans-unit id="1543931596742881836" datatype="html">
-        <source>There has been no export yet.</source>
-      </trans-unit>
       <trans-unit id="2511966165374777397" datatype="html">
         <source>This might take a few minutes. The file will be automatically downloaded when ready. Closing this notification will not cancel the export.</source>
-      </trans-unit>
-      <trans-unit id="4452017686076766931" datatype="html">
-        <source>Latest export has been done on: <x equiv-text="{{ latestExport.data()?.created | date: &apos;medium&apos; }}" id="INTERPOLATION"/></source>
       </trans-unit>
       <trans-unit id="export" datatype="html">
         <source>Export</source>
