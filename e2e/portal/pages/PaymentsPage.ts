@@ -203,6 +203,7 @@ class PaymentsPage extends BasePage {
         .nth(1)
         .click();
       await this.dateRangeEndInput.click();
+      await this.page.waitForTimeout(500); // Wait for the date picker to update
       await this.page
         .getByText(`${dateRange.end}`, { exact: true })
         .nth(1)
