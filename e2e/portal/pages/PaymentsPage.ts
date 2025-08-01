@@ -198,16 +198,10 @@ class PaymentsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
     if (withDateRange && dateRange) {
       await this.dateRangeStartInput.click();
-      await this.page
-        .getByText(`${dateRange.start}`, { exact: true })
-        .nth(1)
-        .click();
+      await this.page.locator(`[data-date="${dateRange.start}"]`).click();
+      await this.page.waitForTimeout(500); // Wait for datePicker to be set
       await this.dateRangeEndInput.click();
-      await this.page.waitForTimeout(500); // Wait for the date picker to update
-      await this.page
-        .getByText(`${dateRange.end}`, { exact: true })
-        .nth(1)
-        .click();
+      await this.page.locator(`[data-date="${dateRange.end}"]`).click();
     }
   }
 
