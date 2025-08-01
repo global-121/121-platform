@@ -198,7 +198,10 @@ class PaymentsPage extends BasePage {
     await this.page.getByRole('menuitem', { name: option }).click();
     if (withDateRange && dateRange) {
       await this.dateRangeStartInput.click();
-      await this.page.getByText(`${dateRange.start}`).nth(1).click();
+      await this.page
+        .getByText(`${dateRange.start}`, { exact: true })
+        .nth(1)
+        .click();
       await this.dateRangeEndInput.click();
       await this.page
         .getByText(`${dateRange.end}`, { exact: true })

@@ -15,7 +15,7 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 // Get current date information
 const currentDate = new Date();
 const day = currentDate.getDate();
-const startDate = `${day - 1}`;
+const startDate = `${day}`;
 const endDate = `${day}`;
 
 // Arrange
