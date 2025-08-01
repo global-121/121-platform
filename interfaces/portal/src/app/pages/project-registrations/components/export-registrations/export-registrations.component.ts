@@ -28,7 +28,6 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { AuthService } from '~/services/auth.service';
-import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
@@ -62,7 +61,6 @@ export class ExportRegistrationsComponent {
     >();
 
   private authService = inject(AuthService);
-  private downloadService = inject(DownloadService);
   private exportService = inject(ExportService);
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
@@ -96,27 +94,19 @@ export class ExportRegistrationsComponent {
     toDate: new FormControl<Date | undefined>(undefined, {}),
   });
 
-  exportRegistrationsMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportListMutation(
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
       this.projectId,
       this.toastService,
     ),
-    onSuccess: ({ exportResult: file, filename }) => {
-      this.downloadService.downloadFile({ file, filename });
-    },
-  }));
+  );
 
-  exportCBEVerificationReportMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportCBEVerificationReportMutation(
+  exportCBEVerificationReportMutation = injectMutation(() =>
+    this.exportService.getExportCBEVerificationReportMutation(
       this.projectId,
+      this.toastService,
     ),
-    onSuccess: ({ data: data, fileName: fileName }) => {
-      void this.downloadService.downloadArrayToXlsx({
-        data,
-        fileName,
-      });
-    },
-  }));
+  );
 
   readonly exportOptions = computed<MenuItem[]>(() => [
     {

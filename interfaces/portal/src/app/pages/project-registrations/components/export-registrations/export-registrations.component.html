@@ -11,7 +11,7 @@
   header="Export selected registrations"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportRegistrationsMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
     type: ExportType.registrations,
     paginateQuery: exportSelectedActionData()?.query,
@@ -70,11 +70,11 @@
   header="Export status & data changes"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportRegistrationsMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
-    type: 'pa-data-changes',
-    fromDate: dataChangesFormGroup.getRawValue().fromDate || undefined,
-    toDate: dataChangesFormGroup.getRawValue().toDate || undefined,
+    type: 'registration-data-changes',
+    fromDate: dataChangesFormGroup.getRawValue().fromDate ?? undefined,
+    toDate: dataChangesFormGroup.getRawValue().toDate ?? undefined,
   }"
   [formGroup]="dataChangesFormGroup"
 >

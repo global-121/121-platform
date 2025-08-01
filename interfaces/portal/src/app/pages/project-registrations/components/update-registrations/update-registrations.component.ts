@@ -124,15 +124,12 @@ export class UpdateRegistrationsComponent {
     },
   );
 
-  exportRegistrationsMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportListMutation(
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
       this.projectId,
       this.toastService,
     ),
-    onSuccess: ({ exportResult: file, filename }) => {
-      this.downloadService.downloadFile({ file, filename });
-    },
-  }));
+  );
 
   updateRegistrationsFormGroup = new FormGroup({
     reason: new FormControl<string>('', {
@@ -231,7 +228,7 @@ export class UpdateRegistrationsComponent {
       ...this.exportCSVFormGroup.getRawValue().fields,
     ];
 
-    this.exportRegistrationsMutation.mutate({
+    this.exportByTypeMutation.mutate({
       type: ExportType.registrations,
       paginateQuery: {
         ...this.actionData()?.query,

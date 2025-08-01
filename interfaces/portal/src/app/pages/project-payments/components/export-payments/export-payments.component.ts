@@ -28,7 +28,6 @@ import {
   projectHasVoucherSupport,
 } from '~/domains/project/project.helper';
 import { AuthService } from '~/services/auth.service';
-import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -55,7 +54,6 @@ export class ExportPaymentsComponent {
   readonly projectId = input.required<string>();
 
   private authService = inject(AuthService);
-  private downloadService = inject(DownloadService);
   private exportService = inject(ExportService);
   private paymentApiService = inject(PaymentApiService);
   private projectApiService = inject(ProjectApiService);
@@ -83,15 +81,12 @@ export class ExportPaymentsComponent {
     toDate: new FormControl<Date | undefined>(undefined, {}),
   });
 
-  exportPaymentsMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportListMutation(
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
       this.projectId,
       this.toastService,
     ),
-    onSuccess: ({ exportResult: file, filename }) => {
-      this.downloadService.downloadFile({ file, filename });
-    },
-  }));
+  );
 
   readonly exportOptions = computed<MenuItem[]>(() => [
     {

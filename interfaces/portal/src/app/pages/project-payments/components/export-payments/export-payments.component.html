@@ -11,9 +11,9 @@
   header="Export payments"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
-    type: 'payment',
+    type: 'payments',
     fromDate: paymentRangeFormGroup.getRawValue().fromDate || undefined,
     toDate: paymentRangeFormGroup.getRawValue().toDate || undefined,
   }"
@@ -62,7 +62,7 @@
   header="Export unused vouchers"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
     type: ExportType.unusedVouchers,
   }"
@@ -82,7 +82,7 @@
   header="Export debit card usage"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
     type: ExportType.intersolveVisaCardDetails,
   }"

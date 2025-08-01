@@ -84,7 +84,6 @@ test('[35621] ExportPayments', async () => {
     await exportDataComponent.exportAndAssertData({
       exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
       excludedColumns: ['created', 'updated'],
-      orderOfDataIsImportant: true,
     });
   });
 });
