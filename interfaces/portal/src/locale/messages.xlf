@@ -1625,6 +1625,48 @@
       <trans-unit id="4874025357079324070" datatype="html">
         <source>Only the columns that are currently visible in the table will be included. You can learn how to show or hide columns in the</source>
       </trans-unit>
+      <trans-unit id="2300247576851644080" datatype="html">
+        <source>File name</source>
+      </trans-unit>
+      <trans-unit id="364992815222871631" datatype="html">
+        <source>Imported by</source>
+      </trans-unit>
+      <trans-unit id="3690602656993506785" datatype="html">
+        <source>Name the file for easy identification</source>
+      </trans-unit>
+      <trans-unit id="3948071530536352020" datatype="html">
+        <source>Are you sure you want to delete this file?</source>
+      </trans-unit>
+      <trans-unit id="4116911651502837995" datatype="html">
+        <source>Files</source>
+      </trans-unit>
+      <trans-unit id="6492639822891776635" datatype="html">
+        <source><x ctype="x-app_monitoring_files" equiv-text="&lt;app-monitoring-files [projectId]=&quot;projectId()&quot; /&gt;" id="START_TAG_APP_MONITORING_FILES"/><x ctype="x-app_monitoring_files" equiv-text="&lt;app-monitoring-files [projectId]=&quot;projectId()&quot; /&gt;" id="CLOSE_TAG_APP_MONITORING_FILES"/></source>
+      </trans-unit>
+      <trans-unit id="6520955503978212296" datatype="html">
+        <source>Delete File</source>
+      </trans-unit>
+      <trans-unit id="6693349469471580292" datatype="html">
+        <source>Delete file</source>
+      </trans-unit>
+      <trans-unit id="7408932238599462499" datatype="html">
+        <source>File type</source>
+      </trans-unit>
+      <trans-unit id="7754888830333824086" datatype="html">
+        <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>delete<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ selectedFile()?.name }}" id="INTERPOLATION"/>, <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/></source>
+      </trans-unit>
+      <trans-unit id="8385037478183071235" datatype="html">
+        <source>PowerBI</source>
+      </trans-unit>
+      <trans-unit id="8605421971099461066" datatype="html">
+        <source>Upload file</source>
+      </trans-unit>
+      <trans-unit id="generic-delete" datatype="html">
+        <source>Delete</source>
+      </trans-unit>
+      <trans-unit id="6254872359497725456" datatype="html">
+        <source>Import PDF, XLSX, PNG, JPG or DOC files to your project. The files will be available for viewing and exporting to users with the permission to view files.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
