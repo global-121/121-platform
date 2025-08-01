@@ -13,6 +13,7 @@ import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -81,4 +82,7 @@ export class UserEntity extends Base121Entity {
 
   @Column({ type: 'character varying', nullable: false })
   public displayName: string;
+
+  @OneToMany(() => ProgramAttachmentEntity, (attachments) => attachments.user)
+  public uploadedAttachments: Relation<ProgramAttachmentEntity[]>;
 }

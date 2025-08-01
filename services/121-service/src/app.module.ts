@@ -29,6 +29,7 @@ import { NedbankReconciliationModule } from '@121-service/src/payments/reconcili
 import { OnafriqReconciliationModule } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
 import { SafaricomReconciliationModule } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramAttachmentModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
@@ -55,6 +56,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     NedbankReconciliationModule,
     NoteModule,
     EmailsModule,
+    ProgramAttachmentModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',

@@ -6,6 +6,7 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -121,4 +122,10 @@ export class ProgramEntity extends Base121Entity {
     (messageTemplates) => messageTemplates.program,
   )
   public messageTemplates: Relation<MessageTemplateEntity[]>;
+
+  @OneToMany(
+    () => ProgramAttachmentEntity,
+    (attachments) => attachments.program,
+  )
+  public attachments: Relation<ProgramAttachmentEntity[]>;
 }
