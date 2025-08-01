@@ -15,6 +15,8 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportButton: Locator;
+  readonly dateRangeStartInput: Locator;
+  readonly dateRangeEndInput: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,6 +41,12 @@ class PaymentsPage extends BasePage {
     );
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
+    });
+    this.dateRangeStartInput = this.page.getByRole('combobox', {
+      name: 'Start Date',
+    });
+    this.dateRangeEndInput = this.page.getByRole('combobox', {
+      name: 'End Date',
     });
   }
 
@@ -176,10 +184,24 @@ class PaymentsPage extends BasePage {
     }
   }
 
-  async selectPaymentExportOption({ option }: { option: string }) {
+  async selectPaymentExportOption({
+    option,
+    dateRange,
+  }: {
+    option: string;
+    withDateRange?: boolean;
+    dateRange?: { start: string; end: string };
+  }) {
     await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
+    if (dateRange) {
+      await this.dateRangeStartInput.click();
+      await this.page.locator(`[data-date="${dateRange.start}"]`).click();
+      await this.page.waitForTimeout(500); // Wait for datePicker to be set
+      await this.dateRangeEndInput.click();
+      await this.page.locator(`[data-date="${dateRange.end}"]`).click();
+    }
   }
 
   async validateExportMessage({ message }: { message: string }) {
