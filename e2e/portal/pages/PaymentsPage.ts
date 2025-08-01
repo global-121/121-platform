@@ -186,7 +186,6 @@ class PaymentsPage extends BasePage {
 
   async selectPaymentExportOption({
     option,
-    withDateRange = false,
     dateRange,
   }: {
     option: string;
@@ -196,7 +195,7 @@ class PaymentsPage extends BasePage {
     await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
-    if (withDateRange && dateRange) {
+    if (dateRange) {
       await this.dateRangeStartInput.click();
       await this.page.locator(`[data-date="${dateRange.start}"]`).click();
       await this.page.waitForTimeout(500); // Wait for datePicker to be set
