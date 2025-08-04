@@ -33,4 +33,7 @@ export class SeedConfigurationProgramDto {
 
   @ApiProperty({ example: 'message-template-generic.json' })
   readonly messageTemplate: SeedMessageTemplateConfig;
+
+  @ApiProperty({ example: 'mobile-money-999.csv' })
+  readonly registrations?: string;
 }

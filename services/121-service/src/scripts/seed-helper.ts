@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import crypto from 'crypto';
-import fs from 'fs';
+import FormData from 'form-data';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { join } from 'path';
+import * as readline from 'readline';
 import { DataSource, DeepPartial, Equal, In } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -25,11 +29,13 @@ import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/r
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
+import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
+import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Injectable()
 export class SeedHelper {
@@ -37,6 +43,8 @@ export class SeedHelper {
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly httpService: CustomHttpService,
+    private readonly axiosCallsService: AxiosCallsService,
   ) {}
 
   public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
@@ -69,17 +77,84 @@ export class SeedHelper {
         programEntity,
         seedConfig.includeDebugScopes ? debugScopes : [],
       );
+
+      // Add registrations if provided this is only for demo purposes
+      if (program.registrations) {
+        await this.importRegistrations({
+          programId: programEntity.id,
+          registrationsFile: program.registrations,
+          isTest: isApiTests,
+        });
+      }
     }
   }
 
-  private importData(subPath: string) {
-    const filePath = join(
-      __dirname,
-      '../seed-data', // TODO: move seed-data folder into scripts folder? Rename scripts folder?
-      subPath,
+  private async importRegistrations({
+    programId,
+    registrationsFile,
+    isTest,
+  }: {
+    programId: number;
+    registrationsFile: string;
+    isTest: boolean;
+  }) {
+    const registrationsSubPath = `registrations/${registrationsFile}`;
+    const registrationsFullPath = this.getSeedDataPath(registrationsSubPath);
+
+    let filePathToUpload = registrationsFullPath;
+    // Handle test mode: trim to first 5 lines
+    // This is to speed up tests and avoid large file uploads
+    if (isTest) {
+      filePathToUpload = await this.getLimitedCsvFile(registrationsFullPath);
+    }
+
+    const form = new FormData();
+    form.append('file', fs.createReadStream(filePathToUpload));
+
+    const accessToken = await this.axiosCallsService.getAccessToken();
+    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const formHeaders = form.getHeaders();
+    for (const key in formHeaders) {
+      if (Object.prototype.hasOwnProperty.call(formHeaders, key)) {
+        headers.push({
+          name: key,
+          value: formHeaders[key],
+        });
+      }
+    }
+
+    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/import`;
+    await this.httpService.post(url, form, headers);
+  }
+
+  private async getLimitedCsvFile(sourcePath: string): Promise<string> {
+    const limit = 5;
+    const tempFilePath = path.join(
+      os.tmpdir(),
+      `test-${Date.now()}-${path.basename(sourcePath)}`,
     );
+    const input = fs.createReadStream(sourcePath);
+    const output = fs.createWriteStream(tempFilePath);
+    const rl = readline.createInterface({ input });
+
+    let lineCount = 0;
+    for await (const line of rl) {
+      output.write(line + '\n');
+      lineCount++;
+      if (lineCount >= limit) break;
+    }
+    output.end();
+    return tempFilePath;
+  }
+
+  private importData(subPath: string) {
+    const filePath = this.getSeedDataPath(subPath);
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(fileContent);
+  }
+
+  private getSeedDataPath(subPath: string): string {
+    return join(__dirname, '../seed-data', subPath);
   }
 
   public async addDefaultUsers(

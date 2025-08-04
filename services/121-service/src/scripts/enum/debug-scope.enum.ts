@@ -1,8 +1,8 @@
 export enum DebugScope {
   Turkana = 'turkana',
-  TurkanaNorth = 'turkana.north',
+  TurkanaNorth = 'turkana.turkana-north',
   Kisumu = 'kisumu',
-  KisumuWest = 'kisumu.west',
-  KisumuEast = 'kisumu.east',
-  KisumuCentral = 'kisumu.central',
+  KisumuWest = 'kisumu.kisumu-west',
+  KisumuEast = 'kisumu.kisumu-east',
+  KisumuCentral = 'kisumu.kisumu-central',
 }

@@ -27,8 +27,8 @@ INSERT
         CASE
             WHEN "programId" = 2 THEN
                 CASE
-                    WHEN random() < 0.5 THEN 'utrecht.houten'
-                    ELSE 'zeeland.goes'
+                    WHEN random() < 0.5 THEN 'kisumu.kisumu-west'
+                    ELSE 'turkana.turkana-north'
                 END
             ELSE scope
         END,

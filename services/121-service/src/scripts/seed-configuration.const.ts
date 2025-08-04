@@ -103,18 +103,22 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
       {
         program: 'demo-program-mobile-money.json',
         messageTemplate: demoMessageTemplates,
+        registrations: 'mobile-money-999.csv',
       },
       {
         program: 'demo-program-bank-transfer.json',
         messageTemplate: demoMessageTemplates,
+        registrations: 'bank-transfer-250.csv',
       },
       {
         program: 'program-nlrc-ocw.json',
         messageTemplate: messageTemplateNlrcOcw,
+        registrations: 'nlrc-ocw-999.csv',
       },
       {
         program: 'demo-program-excel.json',
         messageTemplate: demoMessageTemplates,
+        registrations: 'excel-999.csv',
       },
     ],
     includeDebugScopes: true,

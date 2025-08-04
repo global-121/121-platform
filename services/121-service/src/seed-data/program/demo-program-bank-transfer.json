@@ -7,7 +7,7 @@
     "en": "Drought Ethiopia"
   },
   "description": {
-    "en": "Test program using Commercial Bank of Ethiopia FSP"
+    "en": "Demo program using Commercial Bank of Ethiopia FSP"
   },
   "startDate": "2023-08-01T12:00:00Z",
   "endDate": "2023-12-31T12:00:00Z",
@@ -131,7 +131,7 @@
     }
   ],
   "aboutProgram": {
-    "en": "Test program using Commercial Bank of Ethiopia FSP"
+    "en": "Demo program using Commercial Bank of Ethiopia FSP"
   },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["en", "et_AM"],

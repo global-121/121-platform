@@ -137,17 +137,17 @@ exports[`Metric export list should support using "select" to retrieve a specific
   {
     "fullName": "Juliet Marsh",
     "phoneNumber": "15005550112",
-    "referenceId": "reference-id-scoped-middelburg-pv",
+    "referenceId": "reference-id-scoped-kisumu-west-pv",
   },
   {
     "fullName": "Jane Doe",
     "phoneNumber": "15005550111",
-    "referenceId": "reference-id-scoped-goes-pv",
+    "referenceId": "reference-id-scoped-kisumu-east-pv",
   },
   {
     "fullName": "Sam Winters",
     "phoneNumber": "15005550121",
-    "referenceId": "reference-id-scoped-utrecht-pv",
+    "referenceId": "reference-id-scoped-turkana-north-pv",
   },
   {
     "fullName": "Nick Brouwers",

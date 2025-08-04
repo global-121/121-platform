@@ -6,8 +6,8 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 ////////////////////////
 // PV registrations
 ////////////////////////
-export const registrationScopedGoesPv = {
-  referenceId: 'reference-id-scoped-goes-pv',
+export const registrationScopedKisumuEastPv = {
+  referenceId: 'reference-id-scoped-kisumu-east-pv',
   scope: DebugScope.KisumuEast,
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550111',
@@ -15,8 +15,8 @@ export const registrationScopedGoesPv = {
   programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
-export const registrationScopedMiddelburgPv = {
-  referenceId: 'reference-id-scoped-middelburg-pv',
+export const registrationScopedKisumuWestPv = {
+  referenceId: 'reference-id-scoped-kisumu-west-pv',
   scope: DebugScope.KisumuWest,
   preferredLanguage: LanguageEnum.en,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550112',
@@ -24,8 +24,8 @@ export const registrationScopedMiddelburgPv = {
   programFspConfigurationName: Fsps.intersolveVoucherPaper,
 };
 
-export const registrationScopedUtrechtPv = {
-  referenceId: 'reference-id-scoped-utrecht-pv',
+export const registrationScopedTurkanaNorthPv = {
+  referenceId: 'reference-id-scoped-turkana-north-pv',
   preferredLanguage: LanguageEnum.nl,
   scope: DebugScope.TurkanaNorth,
   [DefaultRegistrationDataAttributeNames.phoneNumber]: '15005550121',
@@ -43,8 +43,8 @@ export const registrationNotScopedPv = {
 };
 
 export const registrationsPV = [
-  registrationScopedMiddelburgPv,
-  registrationScopedGoesPv,
-  registrationScopedUtrechtPv,
+  registrationScopedKisumuWestPv,
+  registrationScopedKisumuEastPv,
+  registrationScopedTurkanaNorthPv,
   registrationNotScopedPv,
 ];

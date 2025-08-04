@@ -5,8 +5,8 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  registrationScopedGoesPv,
-  registrationScopedMiddelburgPv,
+  registrationScopedKisumuEastPv,
+  registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
@@ -57,7 +57,7 @@ describe('Metric export list', () => {
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
     await awaitChangeRegistrationStatus({
       programId: PvProgramId,
-      referenceIds: [registrationScopedMiddelburgPv.referenceId],
+      referenceIds: [registrationScopedKisumuWestPv.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
     });
@@ -108,7 +108,7 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
     expect(exportRegistration.referenceId).toBe(
-      registrationScopedGoesPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
     );
     expect(exportRegistration.status).toBe('new');
   });
@@ -138,7 +138,7 @@ describe('Metric export list', () => {
 
     const exportRegistration = data[0];
     expect(exportRegistration.referenceId).toBe(
-      registrationScopedGoesPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
     );
   });
 

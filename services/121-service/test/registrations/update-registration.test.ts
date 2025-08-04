@@ -216,7 +216,7 @@ describe('Update attribute of PA', () => {
   it('should update scope within current users scope', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
-    const newScope = 'turkana.north';
+    const newScope = 'turkana.turkana-north';
     const reason = 'automated test';
     const updateDto = {
       scope: newScope,
