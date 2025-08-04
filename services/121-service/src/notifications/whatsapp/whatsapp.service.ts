@@ -10,6 +10,7 @@ import {
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -60,7 +61,7 @@ export class WhatsappService {
     existingSidToUpdate?: string;
     userId: number;
     firstAttempt?: boolean; // Controls retry logic for Twilio media errors (63021)
-  }): Promise<string> {
+  }): Promise<string | undefined> {
     const payload = {
       body: contentSid ? undefined : message,
       contentSid,
@@ -99,7 +100,11 @@ export class WhatsappService {
       });
       return messageToStore.sid;
     } catch (error) {
-      if (error.code == 63021 && mediaUrl && firstAttempt) {
+      if (
+        error.code == TwilioErrorCodes.mediaUrlInvalid &&
+        mediaUrl &&
+        firstAttempt
+      ) {
         firstAttempt = false;
         // Retry once due to Twilio bug (error 63021) that randomly occurs when sending messages with mediaUrl
         // Reference: backlog item 34346
@@ -136,7 +141,13 @@ export class WhatsappService {
         messageProcessType,
         existingSidToUpdateDueToFailure: existingSidToUpdate,
       });
-      throw error;
+      if (error.code !== TwilioErrorCodes.toNumberDoesNotExist) {
+        throw error;
+      } else {
+        console.log(
+          `WhatsApp message not sent to ${payload.to}. Error: ${error.message}. Error code: ${error.code}`,
+        );
+      }
     }
   }
 
