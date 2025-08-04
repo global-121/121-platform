@@ -1,4 +1,4 @@
-export enum EventAttributeKeyEnum {
+export enum RegistrationEventAttributeKeyEnum {
   reason = 'reason',
   oldValue = 'oldValue',
   newValue = 'newValue',

@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
-import { EventsService } from '@121-service/src/events/events.service';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
@@ -22,6 +21,7 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 
@@ -31,7 +31,7 @@ describe('RegistrationsService', () => {
   let service: RegistrationsService;
   let registrationScopedRepository: RegistrationScopedRepository;
   let uniqueRegistrationPairRepository: UniqueRegistrationPairRepository;
-  let eventsService: EventsService;
+  let registrationEventsService: RegistrationEventsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -64,7 +64,7 @@ describe('RegistrationsService', () => {
           },
         },
         {
-          provide: EventsService,
+          provide: RegistrationEventsService,
           useValue: {
             createForIgnoredDuplicatePair: jest.fn(),
           },
@@ -175,7 +175,9 @@ describe('RegistrationsService', () => {
       module.get<UniqueRegistrationPairRepository>(
         UniqueRegistrationPairRepository,
       );
-    eventsService = module.get<EventsService>(EventsService);
+    registrationEventsService = module.get<RegistrationEventsService>(
+      RegistrationEventsService,
+    );
   });
 
   describe('createUniques', () => {
@@ -207,7 +209,7 @@ describe('RegistrationsService', () => {
         ]);
 
       jest
-        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .spyOn(registrationEventsService, 'createForIgnoredDuplicatePair')
         .mockResolvedValue(undefined);
 
       await service.createUniques({
@@ -244,7 +246,7 @@ describe('RegistrationsService', () => {
         ]);
 
       jest
-        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .spyOn(registrationEventsService, 'createForIgnoredDuplicatePair')
         .mockResolvedValue(undefined);
 
       await service.createUniques({
@@ -290,7 +292,7 @@ describe('RegistrationsService', () => {
         ]);
 
       jest
-        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .spyOn(registrationEventsService, 'createForIgnoredDuplicatePair')
         .mockResolvedValue(undefined);
 
       await service.createUniques({
@@ -340,7 +342,7 @@ describe('RegistrationsService', () => {
         ]);
     });
 
-    it('should store a new unique pair and create an event', async () => {
+    it('should store a new unique pair and create a registrationEvent', async () => {
       const registrationIds = [11, 12];
       const reason = 'testing';
 
@@ -361,7 +363,7 @@ describe('RegistrationsService', () => {
           registrationProgramId: 102,
         } as RegistrationEntity);
       jest
-        .spyOn(eventsService, 'createForIgnoredDuplicatePair')
+        .spyOn(registrationEventsService, 'createForIgnoredDuplicatePair')
         .mockResolvedValue(undefined);
 
       // Call the service method that uses the repository
@@ -396,7 +398,9 @@ describe('RegistrationsService', () => {
         largerRegistrationId: 2,
       });
 
-      expect(eventsService.createForIgnoredDuplicatePair).toHaveBeenCalledWith({
+      expect(
+        registrationEventsService.createForIgnoredDuplicatePair,
+      ).toHaveBeenCalledWith({
         registration1: {
           id: 1,
           registrationProgramId: 101,
@@ -425,10 +429,10 @@ describe('RegistrationsService', () => {
         reason: 'testing',
       });
 
-      // Verify store and event creation are not called
+      // Verify store and registration event creation are not called
       expect(uniqueRegistrationPairRepository.store).not.toHaveBeenCalled();
       expect(
-        eventsService.createForIgnoredDuplicatePair,
+        registrationEventsService.createForIgnoredDuplicatePair,
       ).not.toHaveBeenCalled();
     });
   });

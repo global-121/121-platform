@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -72,7 +72,7 @@ describe('Delete PA', () => {
 
     // An event should be created
     const expectedDeleteEvent = {
-      type: EventEnum.registrationStatusChange,
+      type: RegistrationEventEnum.registrationStatusChange,
       attributes: {
         oldValue: RegistrationStatusEnum.new,
         newValue: RegistrationStatusEnum.deleted,

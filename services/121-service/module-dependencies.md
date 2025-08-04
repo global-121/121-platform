@@ -22,8 +22,8 @@ graph LR
   MessageTemplateModule-->ProgramAttributesModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
-  TransactionsModule-->EventsModule
-  EventsModule-->UserModule
+  TransactionsModule-->RegistrationEventsModule
+  RegistrationEventsModule-->UserModule
   IntersolveVoucherModule-->MessageQueuesModule
   IntersolveVoucherModule-->MessageTemplateModule
   IntersolveVoucherModule-->RegistrationDataModule
@@ -59,7 +59,7 @@ graph LR
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
-  RegistrationsModule-->EventsModule
+  RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
   CronjobModule-->NedbankReconciliationModule
@@ -117,7 +117,7 @@ graph LR
   PaymentsModule-->RedisModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
-  MetricsModule-->EventsModule
+  MetricsModule-->RegistrationEventsModule
   MetricsModule-->RegistrationDataModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
@@ -132,7 +132,7 @@ graph LR
   ActivitiesModule-->NoteModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->MessageModule
-  ActivitiesModule-->EventsModule
+  ActivitiesModule-->RegistrationEventsModule
   ActivitiesModule-->UserModule
   TransactionJobsModule-->RedisModule
   TransactionJobsModule-->IntersolveVisaModule
@@ -146,7 +146,7 @@ graph LR
   TransactionJobsModule-->TransactionsModule
   TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->FspsModule
-  TransactionJobsModule-->EventsModule
+  TransactionJobsModule-->RegistrationEventsModule
   TransactionJobsModule-->MessageTemplateModule
   ExcelReconcilicationModule-->ActionsModule
   ExcelReconcilicationModule-->TransactionsModule

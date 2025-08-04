@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -84,7 +84,9 @@ describe('Get events', () => {
     // Check if there's 2 events (1 for each registration)
     expect(eventsResult.body.length).toBe(2);
     // Check if the event is of the right type
-    expect(eventsResult.body[0].type).toBe(EventEnum.registrationDataChange);
+    expect(eventsResult.body[0].type).toBe(
+      RegistrationEventEnum.registrationDataChange,
+    );
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
   });
 

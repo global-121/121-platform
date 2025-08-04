@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 class AttributesDto {
   [key: string]: string | null;
 }
 
-export class GetEventDto {
+export class GetRegistrationEventDto {
   @ApiProperty({ example: 1 })
   public readonly id: number;
-  @ApiProperty({ example: EventEnum.registrationDataChange })
-  public readonly type: WrapperType<EventEnum>;
+  @ApiProperty({ example: RegistrationEventEnum.registrationDataChange })
+  public readonly type: WrapperType<RegistrationEventEnum>;
   @ApiProperty({ example: { id: 1, username: 'admin@example.org' } })
   public readonly user: { id: number; username: string } | null;
   @ApiProperty({ example: new Date() })

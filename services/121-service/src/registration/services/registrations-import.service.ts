@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { EventsService } from '@121-service/src/events/events.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
@@ -30,6 +29,7 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
@@ -49,7 +49,7 @@ export class RegistrationsImportService {
     private readonly fileImportService: FileImportService,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
-    private readonly eventsService: EventsService,
+    private readonly registrationEventsService: RegistrationEventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -228,7 +228,7 @@ export class RegistrationsImportService {
     }
 
     // Save registration status change events they changed from null to 'new'
-    await this.eventsService.createFromRegistrationViews(
+    await this.registrationEventsService.createFromRegistrationViews(
       savedRegistrations.map((r) => ({
         id: r.id,
         status: undefined,

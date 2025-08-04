@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { EventsService } from '@121-service/src/events/events.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -15,6 +14,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
@@ -35,7 +35,7 @@ export class TransactionJobsHelperService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
-    private readonly eventsService: EventsService,
+    private readonly registrationEventsService: RegistrationEventsService,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -94,7 +94,7 @@ export class TransactionJobsHelperService {
 
       // Added this check to avoid a bit of processing time if the status is the same
       if (currentStatusIsCompleted) {
-        await this.eventsService.createFromRegistrationViews(
+        await this.registrationEventsService.createFromRegistrationViews(
           {
             id: registration.id,
             status: registration.registrationStatus ?? undefined,

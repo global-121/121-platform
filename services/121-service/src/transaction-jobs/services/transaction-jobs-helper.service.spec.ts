@@ -1,7 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { UpdateResult } from 'typeorm';
 
-import { EventsService } from '@121-service/src/events/events.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -14,6 +13,7 @@ import { ProgramRepository } from '@121-service/src/programs/repositories/progra
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
@@ -43,7 +43,7 @@ describe('TransactionJobsHelperService', () => {
   let transactionScopedRepository: TransactionScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
   let programRepository: ProgramRepository;
-  let eventsService: EventsService;
+  let registrationEventsService: RegistrationEventsService;
   let messageTemplateService: MessageTemplateService;
   let queueMessageService: MessageQueuesService;
 
@@ -63,7 +63,9 @@ describe('TransactionJobsHelperService', () => {
       LatestTransactionRepository,
     );
     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
-    eventsService = unitRef.get<EventsService>(EventsService);
+    registrationEventsService = unitRef.get<RegistrationEventsService>(
+      RegistrationEventsService,
+    );
     messageTemplateService = unitRef.get<MessageTemplateService>(
       MessageTemplateService,
     );
@@ -89,7 +91,7 @@ describe('TransactionJobsHelperService', () => {
       .spyOn(latestTransactionRepository, 'getPaymentCount')
       .mockResolvedValue(1);
     jest
-      .spyOn(eventsService, 'createFromRegistrationViews')
+      .spyOn(registrationEventsService, 'createFromRegistrationViews')
       .mockResolvedValue();
     jest.spyOn(queueMessageService, 'addMessageJob').mockResolvedValue();
     jest
@@ -339,7 +341,9 @@ describe('TransactionJobsHelperService', () => {
       });
 
       // Assert
-      expect(eventsService.createFromRegistrationViews).toHaveBeenCalledWith(
+      expect(
+        registrationEventsService.createFromRegistrationViews,
+      ).toHaveBeenCalledWith(
         { id: 1, status: 'included' },
         { id: 1, status: 'completed' },
         { explicitRegistrationPropertyNames: ['status'] },
@@ -381,7 +385,9 @@ describe('TransactionJobsHelperService', () => {
       });
 
       // Assert
-      expect(eventsService.createFromRegistrationViews).not.toHaveBeenCalled();
+      expect(
+        registrationEventsService.createFromRegistrationViews,
+      ).not.toHaveBeenCalled();
     });
 
     it('should not update registration or create event if isRetry is true', async () => {
@@ -398,7 +404,9 @@ describe('TransactionJobsHelperService', () => {
       expect(
         registrationScopedRepository.updateUnscoped,
       ).not.toHaveBeenCalled();
-      expect(eventsService.createFromRegistrationViews).not.toHaveBeenCalled();
+      expect(
+        registrationEventsService.createFromRegistrationViews,
+      ).not.toHaveBeenCalled();
     });
   });
 

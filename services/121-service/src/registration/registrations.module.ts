@@ -3,8 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventsModule } from '@121-service/src/events/events.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
@@ -40,6 +38,8 @@ import { RegistrationsImportService } from '@121-service/src/registration/servic
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { UniqueRegistrationPairEntity } from '@121-service/src/registration/unique-registration-pair.entity';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -69,7 +69,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
-    EventsModule,
+    RegistrationEventsModule,
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
   ],
@@ -92,7 +92,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
     createScopedRepositoryProvider(NoteEntity),
     createScopedRepositoryProvider(TransactionEntity),
-    createScopedRepositoryProvider(EventEntity),
+    createScopedRepositoryProvider(RegistrationEventEntity),
     UniqueRegistrationPairRepository,
   ],
   controllers: [RegistrationsController],
