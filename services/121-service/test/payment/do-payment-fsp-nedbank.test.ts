@@ -29,7 +29,6 @@ import {
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 1;
-const payment = 1;
 const amount = 200;
 
 enum NedbankMockNumber {
@@ -66,7 +65,6 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -86,7 +84,7 @@ describe('Do payment', () => {
 
         const getTransactionsBeforeCronjob = await getTransactions({
           programId,
-          paymentNr: payment,
+          paymentId: doPaymentResponse.body.id,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
@@ -107,7 +105,7 @@ describe('Do payment', () => {
 
         const getTransactionsAfterCronjob = await getTransactions({
           programId,
-          paymentNr: payment,
+          paymentId: doPaymentResponse.body.id,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
@@ -162,9 +160,8 @@ describe('Do payment', () => {
         );
 
         // Act
-        await doPayment({
+        const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -185,7 +182,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: doPaymentResponse.body.id,
             registrationReferenceId: registrationFailDebitorAccount.referenceId,
             accessToken,
           })
@@ -206,9 +203,8 @@ describe('Do payment', () => {
         );
 
         // Act
-        await doPayment({
+        const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount: amountOver6000,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -229,7 +225,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: doPaymentResponse.body.id,
             registrationReferenceId: registrationNedbank.referenceId,
             accessToken,
           })
@@ -254,9 +250,8 @@ describe('Do payment', () => {
         );
 
         // Act
-        await doPayment({
+        const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -279,7 +274,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: doPaymentResponse.body.id,
             registrationReferenceId: registrationFailPhoneNumber.referenceId,
             accessToken,
           })
@@ -307,7 +302,6 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -362,9 +356,8 @@ describe('Do payment', () => {
           programId,
           accessToken,
         );
-        await doPayment({
+        const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
@@ -392,7 +385,11 @@ describe('Do payment', () => {
           'to make payment work this time',
           accessToken,
         );
-        await retryPayment({ programId, paymentNr: payment, accessToken });
+        await retryPayment({
+          programId,
+          paymentId: doPaymentResponse.body.id,
+          accessToken,
+        });
         await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
@@ -566,7 +563,6 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,

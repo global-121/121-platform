@@ -93,7 +93,7 @@ export class MonitoringPageLayoutComponent {
       return;
     }
 
-    return this.payments.data()[this.payments.data().length - 1].payment;
+    return this.payments.data()[this.payments.data().length - 1].paymentId;
   });
 
   readonly projectDescription = computed(() =>

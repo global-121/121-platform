@@ -6,7 +6,7 @@ export class VoucherWithBalanceDto {
   public whatsappPhoneNumber?: string;
   public paStatus?: RegistrationStatusEnum;
   public partnerName?: string;
-  public payment?: number;
+  public paymentId?: number;
   public issueDate: Date;
   public originalBalance?: number;
   public remainingBalance?: number;

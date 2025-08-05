@@ -78,7 +78,7 @@ export class ActivityLogExpandedRowComponent
   readonly paymentId = computed(() => {
     const activity = this.value();
     return activity.type === ActivityTypeEnum.Transaction
-      ? activity.attributes.payment
+      ? activity.attributes.paymentId
       : undefined;
   });
 
@@ -160,7 +160,7 @@ export class ActivityLogExpandedRowComponent
             type: 'text',
             routerLink: paymentLink({
               projectId: this.context().projectId(),
-              paymentId: attributes.payment,
+              paymentId: attributes.paymentId,
             }),
           },
           {

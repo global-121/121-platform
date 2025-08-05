@@ -10,7 +10,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  paymentNrVisa,
   programIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
@@ -61,7 +60,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -78,7 +76,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -107,7 +105,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -124,7 +121,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -153,7 +150,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -170,7 +166,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -199,7 +195,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -216,7 +211,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -244,9 +239,8 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     // do (successful) payment 1
-    await doPayment({
+    const doPaymentResponse1 = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -257,12 +251,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
+      paymentId: doPaymentResponse1.body.id,
     });
 
     // do payment 2
-    const doPaymentResponse = await doPayment({
+    const doPaymentResponse2 = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -273,19 +267,19 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa + 1,
+      paymentId: doPaymentResponse2.body.id,
     });
 
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
+      paymentId: doPaymentResponse2.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
 
-    expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-    expect(doPaymentResponse.body.applicableCount).toBe(
+    expect(doPaymentResponse2.status).toBe(HttpStatus.ACCEPTED);
+    expect(doPaymentResponse2.body.applicableCount).toBe(
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(
@@ -320,7 +314,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -353,7 +346,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: magicFailOperationReferenceAmount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -364,12 +356,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
     });
 
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });

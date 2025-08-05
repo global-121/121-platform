@@ -107,7 +107,7 @@ export class PaymentApiService extends DomainApiService {
     referenceIds: string[];
   }) {
     const body: Dto<RetryPaymentDto> = {
-      payment: Number(paymentId),
+      paymentId: Number(paymentId),
       referenceIds: {
         referenceIds,
       },

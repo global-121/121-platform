@@ -27,8 +27,6 @@ export class ExcelService implements FspIntegrationInterface {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  private statusColumnName = 'status';
-
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
@@ -39,7 +37,7 @@ export class ExcelService implements FspIntegrationInterface {
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
     programId: number,
-    paymentNr: number,
+    paymentId: number,
   ): Promise<FspTransactionResultDto> {
     const transactionResultObjectList: {
       paTransactionResultDto: PaTransactionResultDto;
@@ -55,7 +53,7 @@ export class ExcelService implements FspIntegrationInterface {
 
       const transactionRelationDetailsDto = {
         programId,
-        paymentNr,
+        paymentId,
         userId: paPaymentList[0].userId,
         programFspConfigurationId: paPayment.programFspConfigurationId,
       };
@@ -84,12 +82,12 @@ export class ExcelService implements FspIntegrationInterface {
   public async getFspInstructions({
     transactions,
     programId,
-    payment,
+    paymentId,
     programFspConfigurationId,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
-    payment: number;
+    paymentId: number;
     programFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
     const exportColumns = await this.getExportColumnsForProgramFspConfig(
@@ -102,7 +100,7 @@ export class ExcelService implements FspIntegrationInterface {
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
-        payment,
+        paymentId,
         programFspConfigurationId,
         status: TransactionStatusEnum.waiting,
       });

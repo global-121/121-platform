@@ -1,7 +1,7 @@
 export interface AirtelTransactionJobDto {
   readonly programId: number;
   readonly programFspConfigurationId: number;
-  readonly paymentNumber: number;
+  readonly paymentId: number;
   readonly referenceId: string;
   readonly transactionAmount: number;
   readonly isRetry: boolean;

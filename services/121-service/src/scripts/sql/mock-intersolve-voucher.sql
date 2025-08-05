@@ -1,6 +1,6 @@
 INSERT INTO "121-service"."intersolve_voucher" (
   created,
-  payment,
+  "paymentId",
   "whatsappPhoneNumber",
   pin,
   barcode,
@@ -15,7 +15,7 @@ INSERT INTO "121-service"."intersolve_voucher" (
 )
 SELECT
   created,
-  payment,
+  "paymentId",
   "whatsappPhoneNumber",
   pin,
   barcode,

@@ -8,7 +8,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 const programId = 3;
-const paymentNr = 5;
+const paymentId = 5;
 const usernameValue = '1234';
 const passwordValue = '4567';
 const sendPaymentData: PaPaymentDataDto[] = [
@@ -26,7 +26,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
 const paymentDetailsResult: IntersolveVoucherJobDto = {
   paymentInfo: sendPaymentData[0],
   useWhatsapp: true,
-  payment: paymentNr,
+  paymentId,
   programId,
 };
 
@@ -81,7 +81,7 @@ describe('IntersolveVoucherService', () => {
     await intersolveVoucherService.sendPayment(
       sendPaymentData,
       programId,
-      paymentNr,
+      paymentId,
       useWhatsapp,
     );
 

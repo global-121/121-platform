@@ -128,7 +128,7 @@ describe('TransactionJobsHelperService', () => {
   describe('createTransactionAndUpdateRegistration', () => {
     const transactionJob: SharedTransactionJobDto = {
       programId: 1,
-      paymentNumber: 5,
+      paymentId: 5,
       userId: 1,
       programFspConfigurationId: 1,
       isRetry: false,

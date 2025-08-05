@@ -22,7 +22,6 @@ import {
 
 describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const programId = 1;
-  const payment = 1;
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
@@ -60,7 +59,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -80,7 +78,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -110,7 +108,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -127,7 +124,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -157,7 +154,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -178,7 +174,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -210,7 +206,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -230,7 +225,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });

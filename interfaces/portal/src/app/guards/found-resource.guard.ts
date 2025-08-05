@@ -44,7 +44,7 @@ export const foundResourceGuard: (
 
         foundResource = !!payments.find(
           (payment) =>
-            payment.payment === parseInt(route.params.paymentId as string),
+            payment.paymentId === parseInt(route.params.paymentId as string),
         );
       } else {
         const project = await queryClient.fetchQuery(

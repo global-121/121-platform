@@ -198,9 +198,9 @@ export class MessageService {
       ? TransactionStatusEnum.waiting
       : TransactionStatusEnum.error;
 
-    if (messageJobDto.customData?.payment) {
+    if (messageJobDto.customData?.paymentId) {
       await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
-        messageJobDto.customData.payment,
+        messageJobDto.customData.paymentId,
         messageJobDto.registrationId,
         status,
         transactionStep,
@@ -239,11 +239,11 @@ export class MessageService {
     const status = TransactionStatusEnum.success;
 
     if (
-      messageJobDto.customData?.payment &&
+      messageJobDto.customData?.paymentId &&
       messageJobDto.customData.amount != undefined
     ) {
       await this.intersolveVoucherService.storeTransactionResult(
-        messageJobDto.customData.payment,
+        messageJobDto.customData.paymentId,
         messageJobDto.customData.amount,
         messageJobDto.registrationId,
         transactionStep,

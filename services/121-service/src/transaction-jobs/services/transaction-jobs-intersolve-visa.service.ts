@@ -64,7 +64,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
           createCustomerReference: transactionJob.referenceId,
-          transferReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber}`,
+          transferReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId}`,
           name: transactionJob.name!,
           contactInformation: {
             addressStreet: transactionJob.addressStreet!,
