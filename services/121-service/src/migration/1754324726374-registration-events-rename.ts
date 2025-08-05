@@ -42,6 +42,43 @@ export class RegistrationEventsRename1754324726374
     await queryRunner.query(
       `ALTER TABLE "121-service"."registration_event" ADD CONSTRAINT "FK_ba196730ca0ca8fba27a9e600a1" FOREIGN KEY ("registrationId") REFERENCES "121-service"."registration"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
+
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_5c7356500932acbd5f76a787ce"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_d747a845fa0f0b4e682dd1994f"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_b35693f96b1b13156954752023"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "121-service"."IDX_b8c3aeeac35ace9d387fb5e142"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."registration_event_attribute_id_seq" OWNED BY "121-service"."registration_event_attribute"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_event_attribute" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."registration_event_attribute_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_event_attribute" DROP CONSTRAINT "FK_8b3f63ab7e5d143a31caf18cbd8"`,
+    );
+    await queryRunner.query(
+      `CREATE SEQUENCE IF NOT EXISTS "121-service"."registration_event_id_seq" OWNED BY "121-service"."registration_event"."id"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_event" ALTER COLUMN "id" SET DEFAULT nextval('"121-service"."registration_event_id_seq"')`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."registration_event_attribute" ADD CONSTRAINT "FK_8b3f63ab7e5d143a31caf18cbd8" FOREIGN KEY ("eventId") REFERENCES "121-service"."registration_event"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `SELECT setval('121-service.registration_event_id_seq', (SELECT MAX(id) FROM "121-service"."registration_event")+ 1)`,
+    );
+    await queryRunner.query(
+      `SELECT setval('121-service.registration_event_attribute_id_seq', (SELECT MAX(id) FROM "121-service"."registration_event_attribute")+ 1)`,
+    );
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
