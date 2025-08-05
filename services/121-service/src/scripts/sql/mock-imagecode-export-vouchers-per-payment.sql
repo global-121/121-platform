@@ -20,4 +20,4 @@ from
 left join "121-service".imagecode_export_vouchers iev on
 	iv.id = iev."voucherId"
 where
-	iv.payment = 1
+	iv."paymentId" = 1

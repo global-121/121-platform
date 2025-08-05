@@ -83,7 +83,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
     programId: number,
-    payment: number,
+    paymentId: number,
     useWhatsapp: boolean,
   ): Promise<void> {
     for (const paymentInfo of paPaymentList) {
@@ -93,7 +93,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
           {
             paymentInfo,
             useWhatsapp,
-            payment,
+            paymentId,
             programId,
           },
         );
@@ -113,7 +113,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       jobData.paymentInfo,
       jobData.useWhatsapp,
       jobData.paymentInfo.transactionAmount,
-      jobData.payment,
+      jobData.paymentId,
       credentials,
     );
     if (!paResult) {
@@ -124,7 +124,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       where: { referenceId: Equal(paResult.referenceId) },
     });
     await this.storeTransactionResult(
-      jobData.payment,
+      jobData.paymentId,
       jobData.paymentInfo.transactionAmount,
       registration.id,
       1,
@@ -143,7 +143,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     paymentInfo: PaPaymentDataDto,
     useWhatsapp: boolean,
     calculatedAmount: number,
-    payment: number,
+    paymentId: number,
     credentials: UsernamePasswordInterface,
   ) {
     const paResult = new PaTransactionResultDto();
@@ -161,14 +161,14 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
     const voucher = await this.getReusableVoucher(
       paymentInfo.referenceId,
-      payment,
+      paymentId,
     );
 
     if (voucher) {
       if (voucher.send) {
         // If an existing voucher is found, but already claimed, then skip this PA (this route should never happen)
         console.log(
-          `Cannot submit payment ${payment} for PA ${paymentInfo.referenceId} as there is already a claimed voucher for this PA and this payment.`,
+          `Cannot submit payment ${paymentId} for PA ${paymentInfo.referenceId} as there is already a claimed voucher for this PA and this payment.`,
         );
         return;
       } else {
@@ -189,7 +189,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
         voucherInfo.voucher = await this.storeVoucher(
           voucherInfo,
           paymentInfo,
-          payment,
+          paymentId,
           calculatedAmount,
         );
         paResult.status = TransactionStatusEnum.success;
@@ -222,7 +222,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       paymentInfo,
       paResult,
       calculatedAmount,
-      payment,
+      paymentId,
     );
   }
 
@@ -230,7 +230,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return parseInt(crypto.randomBytes(5).toString('hex'), 16);
   }
 
-  private async getReusableVoucher(referenceId: string, payment: number) {
+  private async getReusableVoucher(referenceId: string, paymentId: number) {
     const rawVoucher = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       //The .* is to prevent the raw query from prefixing with voucher_
@@ -240,8 +240,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       .andWhere('registration.referenceId = :referenceId', {
         referenceId,
       })
-      .andWhere('voucher.payment = :payment', {
-        payment,
+      .andWhere('voucher."paymentId" = :paymentId', {
+        paymentId,
       })
       .getRawOne();
     if (!rawVoucher) {
@@ -272,14 +272,14 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   private async storeVoucher(
     voucherInfo: IntersolveIssueCardResponse,
     paPaymentData: PaPaymentDataDto,
-    payment: number,
+    paymentId: number,
     amount: number,
   ): Promise<IntersolveVoucherEntity> {
     const voucherData = await this.storeVoucherData(
       voucherInfo.cardId,
       voucherInfo.pin,
       paPaymentData.paymentAddress,
-      payment,
+      paymentId,
       amount,
       paPaymentData.userId,
     );
@@ -296,11 +296,11 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     paymentInfo: PaPaymentDataDto,
     paResult: PaTransactionResultDto,
     amount: number,
-    payment: number,
+    paymentId: number,
   ): Promise<PaTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
       paymentInfo,
-      payment,
+      paymentId,
       amount,
     );
 
@@ -318,7 +318,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataDto,
-    payment: number,
+    paymentId: number,
     calculatedAmount: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
@@ -344,7 +344,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       contentSid: contentSid ?? undefined,
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
-      customData: { payment, amount: calculatedAmount },
+      customData: { paymentId, amount: calculatedAmount },
       bulksize: paymentInfo.bulkSize,
       userId: paymentInfo.userId,
     });
@@ -382,7 +382,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     cardNumber: string,
     pin: string,
     phoneNumber: string,
-    payment: number,
+    paymentId: number,
     amount: number,
     userId: number,
   ): Promise<IntersolveVoucherEntity> {
@@ -391,7 +391,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     voucherData.pin = pin.toString();
     voucherData.whatsappPhoneNumber = phoneNumber;
     voucherData.send = false;
-    voucherData.payment = payment;
+    voucherData.paymentId = paymentId;
     voucherData.amount = amount;
     voucherData.userId = userId;
     return this.intersolveVoucherScopedRepository.save(voucherData);
@@ -435,7 +435,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async updateTransactionBasedTwilioMessageCreate(
-    payment: number,
+    paymentId: number,
     regisrationId: number,
     status: TransactionStatusEnum,
     transactionStep: number,
@@ -443,7 +443,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     errorMessage?: string,
   ): Promise<void> {
     await this.transactionsService.updateWaitingTransaction(
-      payment,
+      paymentId,
       regisrationId,
       status,
       transactionStep,
@@ -454,10 +454,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   public async exportVouchers(
     referenceId: string,
-    payment: number,
+    paymentId: number,
     programId: number,
   ): Promise<any> {
-    const voucher = await this.getVoucher(referenceId, payment, programId);
+    const voucher = await this.getVoucher(referenceId, paymentId, programId);
     const image = await this.imageCodeService.generateVoucherImage({
       dateTime: voucher.created,
       amount: voucher.amount,
@@ -469,7 +469,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   private async getVoucher(
     referenceId: string,
-    payment: number,
+    paymentId: number,
     programId: number,
   ): Promise<IntersolveVoucherEntity> {
     const registration = await this.registrationScopedRepository.findOne({
@@ -487,7 +487,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     }
 
     const imageCodeExportVouchersEntity = registration.images.find(
-      (image) => image.voucher.payment === payment,
+      (image) => image.voucher.paymentId === paymentId,
     );
     if (!imageCodeExportVouchersEntity) {
       throw new HttpException(
@@ -552,10 +552,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   public async getVoucherBalance(
     referenceId: string,
-    payment: number,
+    paymentId: number,
     programId: number,
   ): Promise<number> {
-    const voucher = await this.getVoucher(referenceId, payment, programId);
+    const voucher = await this.getVoucher(referenceId, paymentId, programId);
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
         voucher.id,
@@ -624,7 +624,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       if (voucher.lastRequestedBalance === voucher.amount) {
         const unusedVoucher = new UnusedVoucherDto();
         unusedVoucher.referenceId = voucher.image[0].registration.referenceId;
-        unusedVoucher.payment = voucher.payment ?? undefined;
+        unusedVoucher.paymentId = voucher.paymentId ?? undefined;
         unusedVoucher.issueDate = voucher.created;
         unusedVoucher.whatsappPhoneNumber =
           voucher.whatsappPhoneNumber ?? undefined;
@@ -639,7 +639,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async storeTransactionResult(
-    payment: number,
+    paymentId: number,
     amount: number,
     registrationId: number,
     transactionStep: number,
@@ -671,7 +671,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       const userFspConfigIdObject =
         await this.getUserFspConfigIdForTransactionStep2(
           registrationId,
-          payment,
+          paymentId,
         );
       if (userFspConfigIdObject) {
         userId = userFspConfigIdObject.userId;
@@ -693,7 +693,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
     const transactionRelationDetails = {
       programId,
-      paymentNr: payment,
+      paymentId,
       userId,
       programFspConfigurationId,
     };
@@ -706,7 +706,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   private async getUserFspConfigIdForTransactionStep2(
     registrationId: number,
-    payment: number,
+    paymentId: number,
   ) {
     const transaction: null | {
       userId: number;
@@ -714,7 +714,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     } = await this.transactionRepository.findOne({
       where: {
         registrationId: Equal(registrationId),
-        payment: Equal(payment),
+        paymentId: Equal(paymentId),
       },
       order: { created: 'DESC' },
       select: ['userId', 'programFspConfigurationId'],
@@ -807,7 +807,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
         'namePartnerOrganization',
       )) ?? undefined;
 
-    voucherWithBalance.payment = voucher.payment ?? undefined;
+    voucherWithBalance.paymentId = voucher.paymentId ?? undefined;
     voucherWithBalance.issueDate = voucher.created;
     voucherWithBalance.originalBalance = voucher.amount ?? undefined;
     voucherWithBalance.remainingBalance =

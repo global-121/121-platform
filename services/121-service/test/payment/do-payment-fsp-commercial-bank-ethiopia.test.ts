@@ -16,7 +16,7 @@ import {
 import { registrationCbe } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 1;
-const payment = 1;
+const paymentId = 1;
 const amount = 200;
 
 describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
@@ -35,7 +35,6 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -55,7 +54,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationCbe.referenceId,
       accessToken,
     });
@@ -88,7 +87,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
+
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -108,7 +107,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationCbeWithError.referenceId,
       accessToken,
     });
@@ -142,7 +141,6 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -162,7 +160,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,
     });
@@ -195,7 +193,6 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -214,7 +211,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,
     });
@@ -230,7 +227,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     // Act
     const doPaymentRetryResponse = await retryPayment({
       programId,
-      paymentNr: payment,
+      paymentId,
       accessToken,
     });
 
@@ -244,7 +241,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     const getTransactionsAfterRetryBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,
     });

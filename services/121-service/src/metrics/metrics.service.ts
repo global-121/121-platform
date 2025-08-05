@@ -349,10 +349,11 @@ export class MetricsService {
       .createQueryBuilder('transaction')
       .select('SUM(transaction.amount::numeric)', 'cashDisbursed')
       .innerJoin('transaction.latestTransaction', 'lt')
+      .leftJoin('transaction.payment', 'p')
       .andWhere({
-        programId,
         status: Not(TransactionStatusEnum.error),
       })
+      .andWhere('p."programId" = :programId', { programId })
       .getRawOne();
     const cashDisbursed = Number(cashDisbursedQueryResult.cashDisbursed);
     const totalBudget = program.budget;

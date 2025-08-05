@@ -61,7 +61,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -78,7 +77,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -107,7 +106,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -124,7 +122,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -153,7 +151,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -170,7 +167,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -199,7 +196,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -216,7 +212,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -246,7 +242,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // do (successful) payment 1
     await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -262,7 +257,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // do payment 2
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -273,13 +267,13 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa + 1,
+      paymentId: paymentNrVisa + 1,
     });
 
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
+      paymentId: paymentNrVisa + 1,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -320,7 +314,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -353,7 +346,6 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: magicFailOperationReferenceAmount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -364,12 +356,12 @@ describe('Do failing payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: paymentNrVisa,
     });
 
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });

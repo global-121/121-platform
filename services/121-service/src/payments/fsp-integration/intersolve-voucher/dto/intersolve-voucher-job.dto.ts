@@ -3,6 +3,6 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 export class IntersolveVoucherJobDto {
   paymentInfo: PaPaymentDataDto;
   useWhatsapp: boolean;
-  payment: number;
+  paymentId: number;
   programId: number;
 }

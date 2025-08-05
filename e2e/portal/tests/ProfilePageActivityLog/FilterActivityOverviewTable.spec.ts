@@ -39,7 +39,6 @@ test.beforeAll(async ({ browser }) => {
 
   await doPayment({
     programId: 2,
-    paymentNr: 1,
     amount: 100,
     referenceIds: paymentReferenceId,
     accessToken,

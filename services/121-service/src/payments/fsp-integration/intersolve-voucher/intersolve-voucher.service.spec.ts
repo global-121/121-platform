@@ -26,7 +26,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
 const paymentDetailsResult: IntersolveVoucherJobDto = {
   paymentInfo: sendPaymentData[0],
   useWhatsapp: true,
-  payment: paymentNr,
+  paymentId: paymentNr,
   programId,
 };
 

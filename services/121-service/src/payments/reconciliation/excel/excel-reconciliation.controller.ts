@@ -64,13 +64,13 @@ export class ExcelRecociliationController {
     summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'payment', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
       'Uploaded payment excel reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Post('programs/:programId/payments/:payment/excel-reconciliation')
+  @Post('programs/:programId/payments/:paymentId/excel-reconciliation')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
@@ -78,15 +78,15 @@ export class ExcelRecociliationController {
     @UploadedFile() file: Express.Multer.File,
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('payment', ParseIntPipe)
-    payment: number,
+    @Param('paymentId', ParseIntPipe)
+    paymentId: number,
     @Req() req,
   ): Promise<ImportReconciliationResponseDto> {
     const userId = RequestHelper.getUserId(req);
     return await this.excelReconciliationService.upsertFspReconciliationData(
       file,
       programId,
-      payment,
+      paymentId,
       userId,
     );
   }

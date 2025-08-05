@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
@@ -21,9 +22,20 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 ])
 @Entity('latest_transaction')
 export class LatestTransactionEntity extends Base121Entity {
-  @Column({ default: 1 })
+  @ManyToOne(
+    (_type) => PaymentEntity,
+    (payment) => payment.latestTransactions,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  @JoinColumn({
+    name: 'paymentId',
+  })
+  public payment: Relation<PaymentEntity>;
   @Index()
-  public payment: number;
+  @Column({ type: 'int', nullable: false })
+  public paymentId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,

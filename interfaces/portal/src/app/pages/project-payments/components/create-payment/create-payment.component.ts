@@ -39,7 +39,6 @@ import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/full
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { fspConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
 import { DownloadService } from '~/services/download.service';
@@ -116,16 +115,6 @@ export class CreatePaymentComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  readonly nextPaymentId = computed(() => {
-    const payments = this.payments.data();
-
-    if (!payments) {
-      return -1;
-    }
-
-    return getNextPaymentId(payments);
-  });
-
   readonly paymentAmount = computed(
     () => this.project.data()?.fixedTransferValue ?? 0,
   );
@@ -139,11 +128,9 @@ export class CreatePaymentComponent {
 
   createPaymentMutation = injectMutation(() => ({
     mutationFn: async ({
-      paymentId,
       dryRun,
       paginateQuery,
     }: {
-      paymentId: number;
       dryRun: boolean;
       paginateQuery: PaginateQuery;
     }) => {
@@ -151,7 +138,6 @@ export class CreatePaymentComponent {
         projectId: this.projectId,
         paginateQuery,
         paymentData: {
-          payment: paymentId,
           amount: this.paymentAmount(),
         },
         dryRun,
@@ -164,7 +150,7 @@ export class CreatePaymentComponent {
 
       return paymentResult;
     },
-    onSuccess: async (result, { dryRun, paymentId }) => {
+    onSuccess: async (result, { dryRun }) => {
       if (result.nonApplicableCount > 0) {
         throw new Error(
           $localize`Some of the registrations you have selected are not eligible for this payment. Change your selection and try again`,
@@ -179,19 +165,21 @@ export class CreatePaymentComponent {
       // Do not set dialogVisible to false here, otherwise the addCurrentStepToQueryParams
       // effect will be triggered, blocking the user from navigating away
       // this.dialogVisible.set(false);
+      const paymentId = result.id;
+      if (paymentId) {
+        await this.paymentApiService.invalidateCache(
+          this.projectId,
+          signal(paymentId),
+        );
 
-      await this.paymentApiService.invalidateCache(
-        this.projectId,
-        signal(paymentId),
-      );
-
-      await this.router.navigate([
-        '/',
-        AppRoutes.project,
-        this.projectId(),
-        AppRoutes.projectPayments,
-        paymentId,
-      ]);
+        await this.router.navigate([
+          '/',
+          AppRoutes.project,
+          this.projectId(),
+          AppRoutes.projectPayments,
+          paymentId,
+        ]);
+      }
 
       this.toastService.showToast({
         detail: $localize`Payment created.`,
@@ -319,7 +307,6 @@ export class CreatePaymentComponent {
     this.createPaymentMutation.mutate({
       dryRun: this.currentStep() === 1,
       paginateQuery: actionData.query,
-      paymentId: this.nextPaymentId(),
     });
   }
 

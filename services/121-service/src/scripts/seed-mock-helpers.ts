@@ -175,37 +175,12 @@ export class SeedMockHelper {
     console.log(`**Done updating voucher attributes**`);
   }
 
-  public async multiplyTransactions(nr: number): Promise<void> {
-    // Since there already is 1 transaction
-    nr = nr - 1;
-    const queryTransactions = readSqlFile(
-      '../../src/scripts/sql/mock-payment-transactions.sql',
-    );
-    const queryVoucherPerPayment = readSqlFile(
-      '../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
-    );
-    const queryImageCodeExportVoucherPerPayment = readSqlFile(
-      '../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
-    );
-    for (let i = 1; i <= nr; i++) {
-      console.log(
-        `**CREATING MOCK DATA transactions payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryTransactions, [i + 1, i]);
-      console.log(
-        `**CREATING MOCK DATA vouchers payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryVoucherPerPayment, [i + 1, 1]);
-      console.log(
-        `**CREATING MOCK DATA imagecode payment ${i + 1} of ${
-          nr + 1
-        } payments**`,
-      );
-      await this.dataSource.query(queryImageCodeExportVoucherPerPayment);
+  public async multiplyTransactions(
+    nr: number,
+    programIds: number[],
+  ): Promise<void> {
+    for (const programId of programIds) {
+      await this.multiplyTransactionsPerProgram(nr, programId);
     }
 
     console.log(`**Updating payment count**`);
@@ -229,6 +204,62 @@ export class SeedMockHelper {
     );
     console.log(`**CREATING MOCK DATA unused vouchers**`);
     await this.dataSource.query(queryUnusedVouchers);
+  }
+
+  public async multiplyTransactionsPerProgram(
+    powerNr: number,
+    programId: number,
+  ): Promise<void> {
+    // Since there already is 1 transaction
+    const nr = powerNr - 1;
+    const getMaxPaymentIdQuery = readSqlFile(
+      '../../src/scripts/sql/mock-get-max-payment-id.sql',
+    );
+
+    const createPaymentQuery = readSqlFile(
+      '../../src/scripts/sql/mock-create-payment.sql',
+    );
+    const queryTransactions = readSqlFile(
+      '../../src/scripts/sql/mock-payment-transactions.sql',
+    );
+    const queryVoucherPerPayment = readSqlFile(
+      '../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
+    );
+    const queryImageCodeExportVoucherPerPayment = readSqlFile(
+      '../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
+    );
+
+    for (let i = 1; i <= nr; i++) {
+      const maxPaymentId = await this.dataSource.query(getMaxPaymentIdQuery);
+      const newPaymentId = maxPaymentId[0].id + 1;
+
+      await this.dataSource.query(createPaymentQuery, [
+        newPaymentId,
+        programId,
+      ]);
+
+      console.log(
+        `**CREATING MOCK DATA programId ${programId} transactions payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
+      );
+      await this.dataSource.query(queryTransactions, [newPaymentId, programId]);
+      console.log(
+        `**CREATING MOCK DATA programId ${programId} vouchers payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
+      );
+      await this.dataSource.query(queryVoucherPerPayment, [
+        newPaymentId,
+        programId,
+      ]);
+      console.log(
+        `**CREATING MOCK DATA programId ${programId} imagecode payment ${i + 1} of ${
+          nr + 1
+        } payments**`,
+      );
+      await this.dataSource.query(queryImageCodeExportVoucherPerPayment);
+    }
   }
 
   public async multiplyMessages(powerNr: number): Promise<void> {

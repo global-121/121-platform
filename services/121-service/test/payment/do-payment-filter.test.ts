@@ -61,7 +61,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -75,7 +74,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: null,
       accessToken,
     });
@@ -96,7 +95,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -111,7 +109,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: null,
       accessToken,
     });
@@ -131,7 +129,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -149,7 +146,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: null,
       accessToken,
     });
@@ -166,7 +163,6 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        paymentNr: paymentNrVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -185,7 +181,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: null,
       accessToken,
     });
@@ -203,7 +199,6 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        paymentNr: paymentNrVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -222,7 +217,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: null,
       accessToken,
     });

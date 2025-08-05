@@ -3,10 +3,9 @@ INSERT INTO "121-service"."transaction"
   created,
   status,
   "errorMessage",
-  payment,
+  "paymentId",
   "customData",
   "transactionStep",
-  "programId",
   "registrationId",
   amount,
   updated,
@@ -14,19 +13,18 @@ INSERT INTO "121-service"."transaction"
   "programFspConfigurationId"
 )
 SELECT
-  created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY id),
-  status,
-  "errorMessage",
+  t.created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY t.id),
+  t.status,
+  t."errorMessage",
   $1,
-  "customData",
-  "transactionStep",
-  "programId",
-  "registrationId",
-  amount,
-  updated,
-  "userId",
-  "programFspConfigurationId"
+  t."customData",
+  t."transactionStep",
+  t."registrationId",
+  t.amount,
+  t.updated,
+  t."userId",
+  t."programFspConfigurationId"
 FROM
-  "121-service"."transaction"
+  "121-service"."transaction" t
 WHERE
-  payment = $2;
+  t."paymentId" = (SELECT MIN(id) FROM "121-service"."payment" p2 WHERE p2."programId" = $2)

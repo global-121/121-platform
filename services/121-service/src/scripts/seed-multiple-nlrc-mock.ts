@@ -48,15 +48,18 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // Set up organization and program
     await this.seedHelper.seedData(seedConfig!, isApiTests);
 
+    const programIds: number[] = [];
     // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
       const programIdOcw = 3;
+      programIds.push(programIdOcw);
       await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
     }
+    const programIdPv = 2;
     if (mockPv) {
-      const programIdPV = 2;
+      programIds.push(programIdPv);
       await this.seedRegistrationForProgram(
-        programIdPV,
+        programIdPv,
         registrationAHWhatsapp,
       );
     }
@@ -67,7 +70,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
       powerNrRegistrations,
     );
-    await this.seedMockHelper.multiplyTransactions(nrPayments);
+    await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();

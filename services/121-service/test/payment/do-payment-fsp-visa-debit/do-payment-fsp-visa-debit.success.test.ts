@@ -60,7 +60,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -77,7 +76,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -105,7 +104,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // do 1st payment
     await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -117,13 +115,12 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: paymentNrVisa,
     });
 
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -135,13 +132,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa + 1,
+      paymentId: paymentNrVisa + 1,
     });
 
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa + 1,
+      paymentId: paymentNrVisa + 1,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -189,7 +186,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // do 1st payment
     await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds,
       accessToken,
@@ -201,7 +197,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 6_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: paymentNrVisa,
     });
 
     // Reissue card so both cards have a spend of 6000
@@ -214,7 +210,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     await doPayment({
       programId: programIdVisa,
-      paymentNr: testPaymentNumber,
       amount: amountVisa,
       referenceIds,
       accessToken,
@@ -226,13 +221,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       accessToken,
       maxWaitTimeMs: 6_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: testPaymentNumber,
+      paymentId: testPaymentNumber,
     });
 
     // Assert
     const transactionsResponse1 = await getTransactions({
       programId: programIdVisa,
-      paymentNr: testPaymentNumber,
+      paymentId: testPaymentNumber,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -247,7 +242,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     const transactionsResponse2 = await getTransactions({
       programId: programIdVisa,
-      paymentNr: testPaymentNumber,
+      paymentId: testPaymentNumber,
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
@@ -259,13 +254,13 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     );
     const transactionsResponse3 = await getTransactions({
       programId: programIdVisa,
-      paymentNr: testPaymentNumber,
+      paymentId: testPaymentNumber,
       registrationReferenceId: registrationOCW3.referenceId,
       accessToken,
     });
     const transactionsResponse4 = await getTransactions({
       programId: programIdVisa,
-      paymentNr: testPaymentNumber,
+      paymentId: testPaymentNumber,
       registrationReferenceId: registrationOCW4.referenceId,
       accessToken,
     });

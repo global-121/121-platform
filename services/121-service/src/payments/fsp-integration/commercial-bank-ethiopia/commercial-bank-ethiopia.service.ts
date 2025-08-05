@@ -96,7 +96,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
 
       const jobData: CommercialBankEthiopiaJobDto = {
         paPaymentData: paPayment,
-        paymentNr,
+        paymentId: paymentNr,
         programId,
         payload,
         userId: paPayment.userId,
@@ -127,7 +127,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
 
     const transactionRelationDetails = {
       programId: data.programId,
-      paymentNr: data.paymentNr,
+      paymentId: data.paymentId,
       userId: data.userId,
       programFspConfigurationId: data.paPaymentData.programFspConfigurationId,
     };
