@@ -25,10 +25,20 @@ enum MockPhoneNumbers {
   FailFaultyTemplateError = '16005550003',
   FailNoWhatsAppNumber = '16005550004',
   LookupFail = '16005550005',
+  FailToNumberDoesNotExist = '16005550006',
 }
 
 // See: services/121-service/src/notifications/enum/message-type.enum.ts
 const TemplatedMessages = ['generic-templated', 'payment-templated'];
+
+// This enumm contains only error codes that are relevant to the 121 service
+// It is copy pasted here because we cannot share enums between services
+export enum TwilioErrorCodes {
+  toNumberDoesNotExist = 21211,
+  mediaUrlInvalid = 63021,
+  failedFreeFormMessage = 63016,
+  channelCouldNotFindToAddress = 63003,
+}
 
 @Injectable()
 export class TwilioService {
@@ -141,7 +151,7 @@ export class TwilioService {
       !twilioMessagesCreateDto.StatusCallback.includes('templated') // only return this error on non-templated messages
     ) {
       response.status = TwilioStatus.undelivered;
-      response.error_code = '63016';
+      response.error_code = `${TwilioErrorCodes.failedFreeFormMessage}`;
       response.error_message =
         'Failed to send freeform message because you are outside the allowed window. If you are using WhatsApp, please use a Message Template.';
       this.sendDelayedStatusCallback121({
@@ -158,9 +168,24 @@ export class TwilioService {
       twilioMessagesCreateDto.To.includes('whatsapp') // only return this error on whatsapp
     ) {
       response.status = TwilioStatus.failed;
-      response.error_code = '63003';
+      response.error_code = `${TwilioErrorCodes.channelCouldNotFindToAddress}`;
       response.error_message =
         'Channel could not find To address. You have tried to send a message to a To address that is inactive or invalid.';
+      this.sendDelayedStatusCallback121({
+        twilioMessagesCreateDto,
+        messageSid,
+        response,
+      });
+    }
+
+    if (
+      twilioMessagesCreateDto.To.includes(
+        MockPhoneNumbers.FailToNumberDoesNotExist,
+      )
+    ) {
+      response.status = TwilioStatus.failed;
+      response.error_code = `${TwilioErrorCodes.toNumberDoesNotExist}`;
+      response.error_message = `Channel could not find To address. You have tried to send a message to a To address that is inactive or invalid.`;
       this.sendDelayedStatusCallback121({
         twilioMessagesCreateDto,
         messageSid,

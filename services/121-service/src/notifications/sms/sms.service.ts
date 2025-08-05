@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { EXTERNAL_API } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
@@ -69,7 +70,13 @@ export class SmsService {
         messageContentType,
         messageProcessType,
       });
-      throw error;
+      if (error.code !== TwilioErrorCodes.toNumberDoesNotExist) {
+        throw error;
+      } else {
+        console.log(
+          `SMS not sent to ${to}. Error: ${error.message}. Error code: ${error.code}`,
+        );
+      }
     }
   }
 

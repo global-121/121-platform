@@ -14,6 +14,7 @@ import {
 } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -159,7 +160,7 @@ export class MessageIncomingService {
 
     // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
     if (
-      callbackData.ErrorCode === '63016' &&
+      callbackData.ErrorCode === `${TwilioErrorCodes.failedFreeFormMessage}` &&
       [TwilioStatus.undelivered, TwilioStatus.failed].includes(
         callbackData.MessageStatus,
       )
@@ -274,7 +275,8 @@ export class MessageIncomingService {
     }
     if (
       callbackData.MessageStatus === TwilioStatus.failed &&
-      callbackData.ErrorCode === '63003'
+      callbackData.ErrorCode ===
+        `${TwilioErrorCodes.channelCouldNotFindToAddress}`
     ) {
       // PA does not have whatsapp
       // Send pending message via sms

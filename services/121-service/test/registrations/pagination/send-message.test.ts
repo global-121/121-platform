@@ -1,10 +1,12 @@
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
+import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   getMessageHistory,
   importRegistrations,
   sendMessage,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -145,5 +147,85 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(messageHistory4.length).toBe(2);
     expect(messageHistory3[0].attributes.body).toEqual(message);
     expect(messageHistory4[0].attributes.body).toEqual(message);
+  });
+
+  it('should show an error when sending message to a phone number that does not exist', async () => {
+    // Arrange
+    const toNumberDoesNotExist = '16005550006';
+    const message = 'Long enough test message';
+    const reason = 'test reason';
+
+    // Test sms
+    await updateRegistration(
+      programIdOCW,
+      registrationOCW1.referenceId,
+      {
+        phoneNumber: toNumberDoesNotExist,
+        whatsappPhoneNumber: null,
+      },
+      reason,
+      accessToken,
+    );
+
+    // Test whatsapp
+    await updateRegistration(
+      programIdOCW,
+      registrationOCW2.referenceId,
+      {
+        whatsappPhoneNumber: toNumberDoesNotExist,
+      },
+      reason,
+      accessToken,
+    );
+
+    // Act
+    const sendMessageResponse = await sendMessage(
+      accessToken,
+      programIdOCW,
+      [registrationOCW1.referenceId, registrationOCW2.referenceId],
+      message,
+    );
+
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [
+        registrationOCW1.referenceId,
+        registrationOCW2.referenceId,
+      ],
+      accessToken,
+      minimumNumberOfMessagesPerReferenceId: 1,
+    });
+
+    const messageHistory1 = (
+      await getMessageHistory(
+        programIdOCW,
+        registrationOCW1.referenceId,
+        accessToken,
+      )
+    ).body;
+
+    const messageHistory2 = (
+      await getMessageHistory(
+        programIdOCW,
+        registrationOCW2.referenceId,
+        accessToken,
+      )
+    ).body;
+
+    // Assert
+    expect(sendMessageResponse.body.totalFilterCount).toBe(2);
+    expect(sendMessageResponse.body.applicableCount).toBe(2);
+
+    expect(messageHistory1.length).toBe(1);
+    expect(messageHistory1[0].attributes.status).toBe('failed');
+    expect(messageHistory1[0].attributes.errorCode).toEqual(
+      `${TwilioErrorCodes.toNumberDoesNotExist}`,
+    );
+
+    expect(messageHistory2.length).toBe(1);
+    expect(messageHistory2[0].attributes.status).toBe('failed');
+    expect(messageHistory2[0].attributes.errorCode).toEqual(
+      `${TwilioErrorCodes.toNumberDoesNotExist}`,
+    );
   });
 });
