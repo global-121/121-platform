@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`PaymentsService - getTransactions exportTransactionsUsingDateFilter should call getTransactions with correct params and return formatted fileDto 1`] = `"transactions_1_2024-01-01T00-00-00_2024-01-31T23-59-59"`;

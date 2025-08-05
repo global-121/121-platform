@@ -137,6 +137,7 @@ describe('PaymentsService - getTransactions', () => {
 
   describe('exportTransactionsUsingDateFilter', () => {
     it('should call getTransactions with correct params and return formatted fileDto', async () => {
+      // Arrange
       const programId = 1;
       const fromDateString = '2024-01-01T00:00:00.000Z';
       const toDateString = '2024-01-31T23:59:59.000Z';
@@ -148,6 +149,7 @@ describe('PaymentsService - getTransactions', () => {
       const replacedRows = [
         { registrationReferenceId: 'ref1', name: 'Alice', foo: 'Bar' },
       ];
+      const fileName = 'transactions_1_2024-01-01T00-00-00_2024-01-31T23-59-59';
 
       (paymentsHelperService.getSelectForExport as jest.Mock).mockResolvedValue(
         select,
@@ -160,12 +162,18 @@ describe('PaymentsService - getTransactions', () => {
         RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel as jest.Mock
       ).mockReturnValue(replacedRows);
 
+      (
+        paymentsHelperService.createTransactionsExportFilename as jest.Mock
+      ).mockReturnValue(fileName);
+
+      // Act
       const result = await service.exportTransactionsUsingDateFilter({
         programId,
         fromDateString,
         toDateString,
       });
 
+      // Assert
       expect(paymentsHelperService.getSelectForExport).toHaveBeenCalledWith(
         programId,
       );
@@ -188,7 +196,7 @@ describe('PaymentsService - getTransactions', () => {
         attributes: dropdownAttributes,
       });
       expect(result.data).toEqual(replacedRows);
-      expect(result.fileName).toMatchSnapshot();
+      expect(result.fileName).toEqual(fileName);
     });
   });
 });
