@@ -123,21 +123,7 @@ export class ProgramAttachmentsService {
       `${programAttachment.blobName}`,
     );
 
-    try {
-      await blockBlobClient.delete();
-    } catch (error) {
-      // If the blob does not exist, ignore the error and proceed
-      if (
-        error.statusCode === 404 ||
-        error.code === 'BlobNotFound' ||
-        (error.details && error.details.errorCode === 'BlobNotFound')
-      ) {
-        // Blob already deleted or missing, continue
-      } else {
-        // Other errors should be rethrown
-        throw error;
-      }
-    }
+    await blockBlobClient.deleteIfExists();
 
     // Delete from DB
     return await this.programAttachmentScopedRepository.remove(
