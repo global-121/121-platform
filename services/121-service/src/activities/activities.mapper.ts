@@ -8,14 +8,14 @@ import { NoteActivity } from '@121-service/src/activities/interfaces/note-activi
 import { StatusChangeActivity } from '@121-service/src/activities/interfaces/status-change-activity.interface';
 import { TransactionActivity } from '@121-service/src/activities/interfaces/transaction-activity.interface';
 import { Activity } from '@121-service/src/activities/types/activity.type';
-import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 
 export class ActivitiesMapper {
   static mergeAndMapToActivitiesDto({
@@ -28,7 +28,7 @@ export class ActivitiesMapper {
     transactions: GetAuditedTransactionDto[];
     messages: MessageByRegistrationId[];
     notes: NoteEntity[];
-    events: EventEntity[];
+    events: RegistrationEventEntity[];
     availableTypes: ActivityTypeEnum[];
   }): ActivitiesDto {
     const count: Partial<Record<ActivityTypeEnum, number>> = {};
@@ -74,26 +74,29 @@ export class ActivitiesMapper {
     };
   }
 
-  private static categoriseEvents(events: EventEntity[]) {
-    const dataChanges: GetEventDto[] = [];
-    const statusUpdates: GetEventDto[] = [];
-    const fspChanges: GetEventDto[] = [];
-    const ignoredDuplicates: GetEventDto[] = [];
+  private static categoriseEvents(
+    registrationEvents: RegistrationEventEntity[],
+  ) {
+    const dataChanges: GetRegistrationEventDto[] = [];
+    const statusUpdates: GetRegistrationEventDto[] = [];
+    const fspChanges: GetRegistrationEventDto[] = [];
+    const ignoredDuplicates: GetRegistrationEventDto[] = [];
 
-    events.forEach((event) => {
-      const mappedEvent = EventsMapper.mapEventToJsonDto(event);
+    registrationEvents.forEach((registrationEvent) => {
+      const mappedEvent =
+        RegistrationEventsMapper.mapEventToJsonDto(registrationEvent);
 
-      switch (event.type) {
-        case EventEnum.registrationDataChange:
+      switch (registrationEvent.type) {
+        case RegistrationEventEnum.registrationDataChange:
           dataChanges.push(mappedEvent);
           break;
-        case EventEnum.registrationStatusChange:
+        case RegistrationEventEnum.registrationStatusChange:
           statusUpdates.push(mappedEvent);
           break;
-        case EventEnum.fspChange:
+        case RegistrationEventEnum.fspChange:
           fspChanges.push(mappedEvent);
           break;
-        case EventEnum.ignoredDuplicate:
+        case RegistrationEventEnum.ignoredDuplicate:
           ignoredDuplicates.push(mappedEvent);
           break;
       }
@@ -167,9 +170,9 @@ export class ActivitiesMapper {
     }));
   }
   private static mapDataChangesToActivity(
-    events: GetEventDto[],
+    registrationEvents: GetRegistrationEventDto[],
   ): DataChangeActivity[] {
-    return events.map((event, index) => ({
+    return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.DataChange}${index}`,
       user: {
         id: event.user?.id,
@@ -186,9 +189,9 @@ export class ActivitiesMapper {
     }));
   }
   private static mapStatusUpdatesToActivity(
-    events: GetEventDto[],
+    registrationEvents: GetRegistrationEventDto[],
   ): StatusChangeActivity[] {
-    return events.map((event, index) => ({
+    return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.StatusChange}${index}`,
       user: {
         id: event.user?.id,
@@ -204,9 +207,9 @@ export class ActivitiesMapper {
     }));
   }
   private static mapFinanacialServiceProviderChangesToActivity(
-    events: GetEventDto[],
+    registrationEvents: GetRegistrationEventDto[],
   ): FspChangeActivity[] {
-    return events.map((event, index) => ({
+    return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.FspChange}${index}`,
       user: {
         id: event.user?.id,
@@ -222,9 +225,9 @@ export class ActivitiesMapper {
     }));
   }
   private static mapIgnoredDuplicatesToActivity(
-    events: GetEventDto[],
+    registrationEvents: GetRegistrationEventDto[],
   ): IgnoredDuplicateActivity[] {
-    return events.map((event, index) => ({
+    return registrationEvents.map((event, index) => ({
       id: `${ActivityTypeEnum.IgnoredDuplicate}${index}`,
       user: {
         id: event.user?.id,

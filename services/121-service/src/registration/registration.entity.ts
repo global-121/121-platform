@@ -20,7 +20,6 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -33,6 +32,7 @@ import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-conf
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { ReferenceIdConstraints } from '@121-service/src/shared/const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
@@ -152,8 +152,8 @@ export class RegistrationEntity extends Base121Entity {
   @OneToMany(() => NoteEntity, (notes) => notes.registration)
   public notes: Relation<NoteEntity[]>;
 
-  @OneToMany(() => EventEntity, (events) => events.registration)
-  public events: Relation<EventEntity[]>;
+  @OneToMany(() => RegistrationEventEntity, (events) => events.registration)
+  public events: Relation<RegistrationEventEntity[]>;
 
   // TODO: add some database constraints to make sure that scope is always lowercase
   // TODO: DO not make this nullable but set everything to empty string in migration

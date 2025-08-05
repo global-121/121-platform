@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { EventsModule } from '@121-service/src/events/events.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
@@ -15,6 +14,7 @@ import { TransactionsModule } from '@121-service/src/payments/transactions/trans
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
+import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { TransactionJobsProcessorAirtel } from '@121-service/src/transaction-jobs/processors/transaction-jobs-airtel.processor';
 import { TransactionJobsProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor';
 import { TransactionJobsProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-jobs-nedbank.processor';
@@ -42,7 +42,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionsModule,
     MessageQueuesModule,
     FspsModule,
-    EventsModule,
+    RegistrationEventsModule,
     MessageTemplateModule,
   ],
   providers: [

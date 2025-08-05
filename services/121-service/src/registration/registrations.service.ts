@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOneOptions, In, Repository } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { EventsService } from '@121-service/src/events/events.service';
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import {
   FspConfigurationProperties,
@@ -54,6 +53,7 @@ import { InclusionScoreService } from '@121-service/src/registration/services/in
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
@@ -79,7 +79,7 @@ export class RegistrationsService {
     private readonly userService: UserService,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly eventsService: EventsService,
+    private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
@@ -178,7 +178,7 @@ export class RegistrationsService {
         where: { referenceId: Equal(referenceId) },
         select: ['id', 'status'],
       });
-    await this.eventsService.createFromRegistrationViews(
+    await this.registrationEventsService.createFromRegistrationViews(
       registrationBeforeUpdate,
       registrationAfterUpdate,
       { explicitRegistrationPropertyNames: ['status'] },
@@ -506,7 +506,7 @@ export class RegistrationsService {
 
     if (nrAttributesUpdated > 0) {
       await this.inclusionScoreService.calculateInclusionScore(referenceId);
-      await this.eventsService.createFromRegistrationViews(
+      await this.registrationEventsService.createFromRegistrationViews(
         { ...oldViewRegistration },
         { ...newRegistration },
         { reason },
@@ -895,7 +895,7 @@ export class RegistrationsService {
         },
       });
 
-    // If the pair already exists, do nothing (no need to create a new event or throw an error)
+    // If the pair already exists, do nothing (no need to create a new registration event or throw an error)
     if (existingUniquePair) {
       return;
     }
@@ -905,7 +905,7 @@ export class RegistrationsService {
       largerRegistrationId,
     });
 
-    // Get registration details for the event
+    // Get registration details for the registration event
     const [registration1, registration2] = await Promise.all([
       this.registrationScopedRepository.findOneOrFail({
         where: { id: Equal(smallerRegistrationId) },
@@ -915,8 +915,8 @@ export class RegistrationsService {
       }),
     ]);
 
-    // Create event
-    await this.eventsService.createForIgnoredDuplicatePair({
+    // Create registration event
+    await this.registrationEventsService.createForIgnoredDuplicatePair({
       registration1: {
         id: registration1.id,
         registrationProgramId: registration1.registrationProgramId,

@@ -9,27 +9,27 @@ import {
 } from 'typeorm';
 
 import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
-@Entity('event')
-export class EventEntity extends Base121OptionalAuditedEntity {
+@Entity('registration_event')
+export class RegistrationEventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
   @OneToMany(
-    (_type) => EventAttributeEntity,
+    (_type) => RegistrationEventAttributeEntity,
     (eventAttribute) => eventAttribute.event,
     { cascade: true },
   )
-  public attributes: EventAttributeEntity[];
+  public attributes: RegistrationEventAttributeEntity[];
 
   @Index()
   @Column({ type: 'character varying' })
-  public type: EventEnum;
+  public type: RegistrationEventEnum;
 
   @ManyToOne(() => RegistrationEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'registrationId' })

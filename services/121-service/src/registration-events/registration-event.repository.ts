@@ -3,32 +3,32 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, FindOptionsWhere, Repository } from 'typeorm';
 
-import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
-export class EventScopedRepository extends ScopedRepository<EventEntity> {
+export class RegistrationEventScopedRepository extends ScopedRepository<RegistrationEventEntity> {
   constructor(
     @Inject(REQUEST) request: ScopedUserRequest,
-    @InjectRepository(EventEntity)
-    repository: Repository<EventEntity>,
+    @InjectRepository(RegistrationEventEntity)
+    repository: Repository<RegistrationEventEntity>,
   ) {
     super(request, repository);
   }
 
   async getManyByProgramIdAndSearchOptions(
     programId: number,
-    searchOptions: EventSearchOptionsDto,
+    searchOptions: RegistrationEventSearchOptionsDto,
   ) {
     const exportLimit = 500000;
-    const events: (EventEntity & {
+    const events: (RegistrationEventEntity & {
       registration: RegistrationEntity;
       user: UserEntity;
-      attributes: EventAttributeEntity[];
+      attributes: RegistrationEventAttributeEntity[];
     })[] = await this.find({
       where: this.createWhereClause(programId, searchOptions),
       relations: ['registration', 'user', 'attributes'],
@@ -40,11 +40,11 @@ export class EventScopedRepository extends ScopedRepository<EventEntity> {
 
   private createWhereClause(
     programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): FindOptionsWhere<EventEntity> {
+    searchOptions: RegistrationEventSearchOptionsDto,
+  ): FindOptionsWhere<RegistrationEventEntity> {
     const { registrationId, queryParams } = searchOptions;
 
-    const whereStatement: FindOptionsWhere<EventEntity> & {
+    const whereStatement: FindOptionsWhere<RegistrationEventEntity> & {
       registration: {
         programId: number;
         id?: number;

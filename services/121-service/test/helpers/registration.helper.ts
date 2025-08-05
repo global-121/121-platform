@@ -4,10 +4,10 @@ import * as request from 'supertest';
 
 import { ActivityTypeEnum } from '@121-service/src/activities/enum/activity-type.enum';
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -162,7 +162,7 @@ export async function waitForDeleteRegistrations({
       });
       const deleteEvent = getEventsResponse.body.find(
         (event) =>
-          event.type === EventEnum.registrationStatusChange &&
+          event.type === RegistrationEventEnum.registrationStatusChange &&
           event.attributes?.newValue === RegistrationStatusEnum.deleted,
       );
       if (deleteEvent) {
@@ -377,7 +377,7 @@ export async function waitForStatusChangeToComplete(
     }
     const filteredEvents = eventsResult.body.filter(
       (event) =>
-        event.type === EventEnum.registrationStatusChange &&
+        event.type === RegistrationEventEnum.registrationStatusChange &&
         event.attributes.newValue === status,
     );
     // If not all status change are done check again
@@ -786,7 +786,7 @@ export async function getEvents({
   }
 
   return getServer()
-    .get(`/programs/${programId}/events`)
+    .get(`/programs/${programId}/registration-events`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();

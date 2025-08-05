@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ActionsModule } from '@121-service/src/actions/actions.module';
-import { EventsModule } from '@121-service/src/events/events.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
@@ -15,6 +14,7 @@ import { TransactionsService } from '@121-service/src/payments/transactions/tran
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { UserModule } from '@121-service/src/user/user.module';
 import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -33,7 +33,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     MessageQueuesModule,
     MessageTemplateModule,
     RegistrationUtilsModule,
-    EventsModule,
+    RegistrationEventsModule,
   ],
   providers: [
     TransactionsService,

@@ -1,13 +1,13 @@
 import { TestBed } from '@automock/jest';
 
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventScopedRepository } from '@121-service/src/events/event.repository';
-import { EventsService } from '@121-service/src/events/events.service';
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
@@ -30,12 +30,12 @@ const attributeEntityFieldName = {
   value: FspAttributes.whatsappPhoneNumber,
 };
 
-const mockFindEventResult: EventEntity[] = [
+const mockFindEventResult: RegistrationEventEntity[] = [
   {
     id: 5,
     created: '2024-02-20T11:12:18.597Z',
     userId: 1,
-    type: EventEnum.registrationDataChange,
+    type: RegistrationEventEnum.registrationDataChange,
     registrationId: 1,
     registration: {
       id: 1,
@@ -52,7 +52,7 @@ const mockFindEventResult: EventEntity[] = [
       attributeEntityNewValue,
       attributeEntityFieldName,
     ],
-  } as unknown as EventEntity,
+  } as unknown as RegistrationEventEntity,
 ];
 
 function getViewRegistration(): RegistrationViewEntity {
@@ -90,24 +90,28 @@ function getViewRegistration(): RegistrationViewEntity {
   } as unknown as RegistrationViewEntity;
 }
 
-let eventRepository: jest.Mocked<EventScopedRepository>;
+let registrationEventRepository: jest.Mocked<RegistrationEventScopedRepository>;
 let oldViewRegistration: RegistrationViewEntity;
 let newViewRegistration: RegistrationViewEntity;
 
-describe('EventsService', () => {
-  let eventsService: EventsService;
+describe('RegistrationEventsService', () => {
+  let registrationEventsService: RegistrationEventsService;
   let userService: UserService;
 
   beforeEach(() => {
-    const { unit, unitRef } = TestBed.create(EventsService).compile();
-    eventRepository = unitRef.get(EventScopedRepository);
+    const { unit, unitRef } = TestBed.create(
+      RegistrationEventsService,
+    ).compile();
+    registrationEventRepository = unitRef.get(
+      RegistrationEventScopedRepository,
+    );
     userService = unitRef.get(UserService);
-    eventsService = unit;
+    registrationEventsService = unit;
     // Mock request user id
-    eventsService['request']['user']!['id'] = 2;
+    registrationEventsService['request']['user']!['id'] = 2;
 
     jest
-      .spyOn(eventRepository, 'getManyByProgramIdAndSearchOptions')
+      .spyOn(registrationEventRepository, 'getManyByProgramIdAndSearchOptions')
       .mockResolvedValue(mockFindEventResult);
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
@@ -124,12 +128,12 @@ describe('EventsService', () => {
   });
 
   it('should be defined', () => {
-    expect(eventsService).toBeDefined();
+    expect(registrationEventsService).toBeDefined();
   });
 
   it('should return events in json dto format', async () => {
     // Act
-    const result = await eventsService.getEventsAsJson({
+    const result = await registrationEventsService.getEventsAsJson({
       programId,
       searchOptions: {},
     });
@@ -145,17 +149,17 @@ describe('EventsService', () => {
       mockFindEventResult[0].registration.id,
     );
 
-    const expectedAttriutes = {
+    const expectedAttributes = {
       [attributeEntityFieldName.key]: attributeEntityFieldName.value,
       [attributeEntityOldValue.key]: attributeEntityOldValue.value,
       [attributeEntityNewValue.key]: attributeEntityNewValue.value,
     };
-    expect(resultEvent.attributes).toEqual(expectedAttriutes);
+    expect(resultEvent.attributes).toEqual(expectedAttributes);
   });
 
   it('should return events in flat dto format (which is used for excel export)', async () => {
     // Act
-    const result = await eventsService.getEventsAsXlsx({
+    const result = await registrationEventsService.getEventsAsXlsx({
       programId,
       searchOptions: {},
     });
@@ -171,23 +175,23 @@ describe('EventsService', () => {
     );
   });
 
-  it('should create an event of a data change', async () => {
+  it('should create a registrationEvent of a data change', async () => {
     newViewRegistration.phoneNumber = '1234567890';
     const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.createFromRegistrationViews(
+    await registrationEventsService.createFromRegistrationViews(
       oldViewRegistration,
       newViewRegistration,
       options,
     );
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
+    expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           { key: 'oldValue', value: oldViewRegistration.phoneNumber },
           { key: 'newValue', value: newViewRegistration.phoneNumber },
@@ -198,12 +202,15 @@ describe('EventsService', () => {
       },
     ];
 
-    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
-      chunk: 2000,
-    });
+    expect(registrationEventRepository.save).toHaveBeenCalledWith(
+      expectedEvents,
+      {
+        chunk: 2000,
+      },
+    );
   });
 
-  it('should create events for an FSP change of intersolve visa to voucher whatsapp', async () => {
+  it('should create registration events for an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration[FspAttributes.whatsappPhoneNumber] = '1234567890';
     newViewRegistration['programFspConfigurationLabel'] = {
@@ -220,17 +227,17 @@ describe('EventsService', () => {
       Fsps.intersolveVoucherWhatsapp;
 
     // Act
-    await eventsService.createFromRegistrationViews(
+    await registrationEventsService.createFromRegistrationViews(
       oldViewRegistration,
       newViewRegistration,
     );
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
-    const expectedEvents = [
+    expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
+    const expectedRegistrationEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.fspChange,
+        type: RegistrationEventEnum.fspChange,
         attributes: [
           {
             key: 'oldValue',
@@ -245,7 +252,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'oldValue',
@@ -264,7 +271,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'oldValue',
@@ -279,7 +286,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'oldValue',
@@ -294,7 +301,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'fieldName',
@@ -305,7 +312,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'oldValue',
@@ -320,7 +327,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           {
             key: 'oldValue',
@@ -335,8 +342,8 @@ describe('EventsService', () => {
       },
     ];
 
-    for (const event of expectedEvents) {
-      expect(eventRepository.save).not.toHaveBeenCalledWith(
+    for (const event of expectedRegistrationEvents) {
+      expect(registrationEventRepository.save).not.toHaveBeenCalledWith(
         expect.objectContaining({
           registrationId: event.registrationId,
           type: event.type,
@@ -347,7 +354,7 @@ describe('EventsService', () => {
       );
     }
     // Assert that for the intersolveVoucherWhatsapp change no event is created
-    expect(eventRepository.save).not.toHaveBeenCalledWith(
+    expect(registrationEventRepository.save).not.toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
           attributes: expect.arrayContaining([
@@ -368,18 +375,18 @@ describe('EventsService', () => {
     const options = { reason: 'exampleReason' };
 
     // Act
-    await eventsService.createFromRegistrationViews(
+    await registrationEventsService.createFromRegistrationViews(
       oldViewRegistration,
       newViewRegistration,
       options,
     );
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
+    expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationStatusChange,
+        type: RegistrationEventEnum.registrationStatusChange,
         attributes: [
           { key: 'oldValue', value: RegistrationStatusEnum.new },
           { key: 'newValue', value: RegistrationStatusEnum.included },
@@ -389,7 +396,7 @@ describe('EventsService', () => {
       },
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationDataChange,
+        type: RegistrationEventEnum.registrationDataChange,
         attributes: [
           { key: 'oldValue', value: oldViewRegistration.phoneNumber },
           { key: 'newValue', value: newViewRegistration.phoneNumber },
@@ -399,9 +406,12 @@ describe('EventsService', () => {
         userId: 2,
       },
     ];
-    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
-      chunk: 2000,
-    });
+    expect(registrationEventRepository.save).toHaveBeenCalledWith(
+      expectedEvents,
+      {
+        chunk: 2000,
+      },
+    );
   });
 
   it('should create an event for a registration status change with a create event option', async () => {
@@ -412,18 +422,18 @@ describe('EventsService', () => {
     };
 
     // Act
-    await eventsService.createFromRegistrationViews(
+    await registrationEventsService.createFromRegistrationViews(
       oldViewRegistration,
       newViewRegistration,
       options,
     );
 
     // Assert
-    expect(eventRepository.save).toHaveBeenCalledTimes(1);
+    expect(registrationEventRepository.save).toHaveBeenCalledTimes(1);
     const expectedEvents = [
       {
         registrationId: oldViewRegistration.id,
-        type: EventEnum.registrationStatusChange,
+        type: RegistrationEventEnum.registrationStatusChange,
         attributes: [
           {
             key: 'oldValue',
@@ -441,8 +451,11 @@ describe('EventsService', () => {
         userId: 2,
       },
     ];
-    expect(eventRepository.save).toHaveBeenCalledWith(expectedEvents, {
-      chunk: 2000,
-    });
+    expect(registrationEventRepository.save).toHaveBeenCalledWith(
+      expectedEvents,
+      {
+        chunk: 2000,
+      },
+    );
   });
 });

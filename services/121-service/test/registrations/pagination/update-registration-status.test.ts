@@ -1,5 +1,5 @@
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/program.helper';
 import {
@@ -91,7 +91,7 @@ describe('change the status of a set of registrations', () => {
       expect(event).toBeDefined();
 
       const expectedEvent = {
-        type: EventEnum.registrationStatusChange,
+        type: RegistrationEventEnum.registrationStatusChange,
         attributes: {
           oldValue: RegistrationStatusEnum.new,
           newValue: newStatus,

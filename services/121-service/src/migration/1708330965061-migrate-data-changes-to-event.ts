@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 
 export class MigrateDataChangesToEvent1708330965061
   implements MigrationInterface
@@ -32,24 +32,24 @@ export class MigrateDataChangesToEvent1708330965061
       `DROP INDEX "121-service"."IDX_5c7356500932acbd5f76a787ce"`,
     );
     const manager = queryRunner.manager;
-    const eventRepo = manager.getRepository(EventEntity);
+    const eventRepo = manager.getRepository(RegistrationEventEntity);
     const keysToMigrate = ['fieldName', 'oldValue', 'newValue', 'reason'];
     const registrationDataChanges = await queryRunner.query(
       `SELECT * FROM "121-service".registration_change_log`,
     );
 
     const mappedEvents = registrationDataChanges.map((change) => {
-      const event = new EventEntity();
+      const event = new RegistrationEventEntity();
       event.created = change.created;
       event.updated = change.updated;
       event.userId = change.userId;
       event.registrationId = change.registrationId;
-      event.type = EventEnum.registrationDataChange;
+      event.type = RegistrationEventEnum.registrationDataChange;
       event.attributes = [];
       Object.entries(change).forEach(([key, value]) => {
         if (keysToMigrate.includes(key)) {
-          const attributeEntity = new EventAttributeEntity();
-          attributeEntity.key = key as EventAttributeKeyEnum;
+          const attributeEntity = new RegistrationEventAttributeEntity();
+          attributeEntity.key = key as RegistrationEventAttributeKeyEnum;
           attributeEntity.value = value as string;
           event.attributes.push(attributeEntity);
         }

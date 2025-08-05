@@ -4,7 +4,6 @@ import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { EventsService } from '@121-service/src/events/events.service';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
@@ -30,6 +29,7 @@ import { RegistrationsService } from '@121-service/src/registration/registration
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {
   ScopedQueryBuilder,
   ScopedRepository,
@@ -54,7 +54,7 @@ export class RegistrationsBulkService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: MessageQueuesService,
-    private readonly eventsService: EventsService,
+    private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
@@ -480,7 +480,7 @@ export class RegistrationsBulkService {
       });
 
     const statusKey: keyof RegistrationViewEntity = 'status';
-    await this.eventsService.createFromRegistrationViews(
+    await this.registrationEventsService.createFromRegistrationViews(
       filteredRegistrations,
       registrationsAfterUpdate,
       { explicitRegistrationPropertyNames: [statusKey], reason },

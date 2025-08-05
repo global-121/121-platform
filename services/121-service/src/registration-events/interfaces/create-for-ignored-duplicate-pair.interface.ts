@@ -1,4 +1,4 @@
-import { RegistrationIdentifiers } from '@121-service/src/events/interfaces/registration-identifiers.interface';
+import { RegistrationIdentifiers } from '@121-service/src/registration-events/interfaces/registration-identifiers.interface';
 
 export interface CreateForIgnoredDuplicatePair {
   registration1: RegistrationIdentifiers;

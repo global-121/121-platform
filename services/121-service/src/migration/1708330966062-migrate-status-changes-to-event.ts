@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
 
 export class MigrateStatusChangesToEvent1708330966062
   implements MigrationInterface
@@ -26,7 +26,7 @@ export class MigrateStatusChangesToEvent1708330966062
 
   private async migrateStatusChanges(queryRunner: QueryRunner): Promise<void> {
     const manager = queryRunner.manager;
-    const eventRepo = manager.getRepository(EventEntity);
+    const eventRepo = manager.getRepository(RegistrationEventEntity);
     const adminUser = await queryRunner.query(
       `SELECT * FROM "121-service"."user" WHERE admin = true AND username LIKE '%admin%' ORDER BY id LIMIT 1`,
     );
@@ -45,25 +45,25 @@ export class MigrateStatusChangesToEvent1708330966062
         lastStatus = null; // Reset last status for a new registration
       }
 
-      const event = new EventEntity();
+      const event = new RegistrationEventEntity();
       event.created = change.created;
       event.updated = change.updated;
       event.userId = adminUser[0]?.id ? adminUser[0].id : 1;
       event.registrationId = change.registrationId;
-      event.type = EventEnum.registrationStatusChange;
+      event.type = RegistrationEventEnum.registrationStatusChange;
       event.attributes = [];
 
       // Add oldValue attribute only if lastStatus exists
       if (lastStatus) {
-        const attributeOldValue = new EventAttributeEntity();
-        attributeOldValue.key = EventAttributeKeyEnum.oldValue;
+        const attributeOldValue = new RegistrationEventAttributeEntity();
+        attributeOldValue.key = RegistrationEventAttributeKeyEnum.oldValue;
         attributeOldValue.value = lastStatus;
         event.attributes.push(attributeOldValue);
       }
 
       // Always add newValue attribute
-      const attributeNewValue = new EventAttributeEntity();
-      attributeNewValue.key = EventAttributeKeyEnum.newValue;
+      const attributeNewValue = new RegistrationEventAttributeEntity();
+      attributeNewValue.key = RegistrationEventAttributeKeyEnum.newValue;
       attributeNewValue.value = change.registrationStatus;
       event.attributes.push(attributeNewValue);
 

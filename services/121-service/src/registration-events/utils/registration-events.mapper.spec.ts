@@ -1,18 +1,18 @@
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
-import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
+import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
-describe('EventsMapper', () => {
-  let eventEntity: EventEntity;
-  let eventAttributeEntity: EventAttributeEntity;
+describe('RegistrationEventsMapper', () => {
+  let eventEntity: RegistrationEventEntity;
+  let eventAttributeEntity: RegistrationEventAttributeEntity;
 
   beforeEach(() => {
-    eventAttributeEntity = new EventAttributeEntity();
-    eventAttributeEntity.key = EventAttributeKeyEnum.fieldName;
+    eventAttributeEntity = new RegistrationEventAttributeEntity();
+    eventAttributeEntity.key = RegistrationEventAttributeKeyEnum.fieldName;
     eventAttributeEntity.value = 'value';
 
     const user = new UserEntity();
@@ -24,19 +24,19 @@ describe('EventsMapper', () => {
     registration.referenceId = 'referenceId';
     registration.registrationProgramId = 1;
 
-    eventEntity = new EventEntity();
+    eventEntity = new RegistrationEventEntity();
     eventEntity.id = 1;
     eventEntity.created = new Date();
     eventEntity.userId = 1;
     eventEntity.user = user;
     eventEntity.registrationId = 1;
     eventEntity.registration = registration;
-    eventEntity.type = EventEnum.registrationDataChange;
+    eventEntity.type = RegistrationEventEnum.registrationDataChange;
     eventEntity.attributes = [eventAttributeEntity];
   });
 
-  it('should map EventEntity[] to GetEventDto[]', () => {
-    const result = EventsMapper.mapEventsToJsonDtos([eventEntity]);
+  it('should map RegistrationEventEntity[] to GetRegistrationEventDto[]', () => {
+    const result = RegistrationEventsMapper.mapEventsToJsonDtos([eventEntity]);
     expect(result).toBeInstanceOf(Array);
     expect(result.length).toEqual(1);
     const dto = result[0];
@@ -51,8 +51,8 @@ describe('EventsMapper', () => {
     });
   });
 
-  it('should map EventEntity[] to GetEventXlsxDto[]', () => {
-    const result = EventsMapper.mapEventsToXlsxDtos([eventEntity]);
+  it('should map RegistrationEventEntity[] to GetRegistrationEventXlsxDto[]', () => {
+    const result = RegistrationEventsMapper.mapEventsToXlsxDtos([eventEntity]);
     expect(result).toBeInstanceOf(Array);
     expect(result.length).toEqual(1);
     const dto = result[0];

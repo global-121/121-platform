@@ -1,18 +1,24 @@
-import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
-import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
+import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
+import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
 
-export class EventsMapper {
-  static mapEventsToXlsxDtos(events: EventEntity[]): GetEventXlsxDto[] {
+export class RegistrationEventsMapper {
+  static mapEventsToXlsxDtos(
+    events: RegistrationEventEntity[],
+  ): GetRegistrationEventXlsxDto[] {
     return events.map((event) => this.mapEventToXlsxDto(event));
   }
 
-  static mapEventsToJsonDtos(events: EventEntity[]): GetEventDto[] {
+  static mapEventsToJsonDtos(
+    events: RegistrationEventEntity[],
+  ): GetRegistrationEventDto[] {
     return events.map((event) => this.mapEventToJsonDto(event));
   }
 
-  static mapEventToXlsxDto(event: EventEntity): GetEventXlsxDto {
+  static mapEventToXlsxDto(
+    event: RegistrationEventEntity,
+  ): GetRegistrationEventXlsxDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
       paId: event.registration.registrationProgramId,
@@ -24,7 +30,9 @@ export class EventsMapper {
     };
   }
 
-  static mapEventToJsonDto(event: EventEntity): GetEventDto {
+  static mapEventToJsonDto(
+    event: RegistrationEventEntity,
+  ): GetRegistrationEventDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
       id: event.id,
@@ -40,14 +48,17 @@ export class EventsMapper {
   }
 
   private static createAttributesObject(
-    attributes: EventAttributeEntity[],
-  ): Record<string, EventAttributeEntity['value']> {
+    attributes: RegistrationEventAttributeEntity[],
+  ): Record<string, RegistrationEventAttributeEntity['value']> {
     // sort attribute to make sure the order is always the same
     // this is important for testing purposes but also not bad as a feature
     const attributesSorted = [...attributes].sort((a, b) =>
       a.key.localeCompare(b.key),
     );
-    const attributesObject: Record<string, EventAttributeEntity['value']> = {};
+    const attributesObject: Record<
+      string,
+      RegistrationEventAttributeEntity['value']
+    > = {};
     for (const attribute of attributesSorted) {
       if (attribute.value !== null) {
         attributesObject[attribute.key] = attribute.value;

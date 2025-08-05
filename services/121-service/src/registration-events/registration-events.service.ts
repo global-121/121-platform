@@ -4,20 +4,20 @@ import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isEqual, isMatch, isObject } from 'lodash';
 
-import { EventSearchOptionsDto } from '@121-service/src/events/dto/event-search-options.dto';
-import { GetEventDto } from '@121-service/src/events/dto/get-event.dto';
-import { GetEventXlsxDto } from '@121-service/src/events/dto/get-event-xlsx.dto';
-import { EventEntity } from '@121-service/src/events/entities/event.entity';
-import { EventAttributeEntity } from '@121-service/src/events/entities/event-attribute.entity';
-import { EventEnum } from '@121-service/src/events/enum/event.enum';
-import { EventAttributeKeyEnum } from '@121-service/src/events/enum/event-attribute-key.enum';
-import { EventScopedRepository } from '@121-service/src/events/event.repository';
-import { CreateForIgnoredDuplicatePair } from '@121-service/src/events/interfaces/create-for-ignored-duplicate-pair.interface';
-import { createFromRegistrationViewsOptions } from '@121-service/src/events/interfaces/create-from-registration-views-options.interface';
-import { RegistrationIdentifiers } from '@121-service/src/events/interfaces/registration-identifiers.interface';
-import { ValueExtractor } from '@121-service/src/events/utils/events.helpers';
-import { EventsMapper } from '@121-service/src/events/utils/events.mapper';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
+import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
+import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
+import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
+import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
+import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
+import { RegistrationEventAttributeKeyEnum } from '@121-service/src/registration-events/enum/registration-event-attribute-key.enum';
+import { CreateForIgnoredDuplicatePair } from '@121-service/src/registration-events/interfaces/create-for-ignored-duplicate-pair.interface';
+import { createFromRegistrationViewsOptions } from '@121-service/src/registration-events/interfaces/create-from-registration-views-options.interface';
+import { RegistrationIdentifiers } from '@121-service/src/registration-events/interfaces/registration-identifiers.interface';
+import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
+import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
+import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
@@ -28,9 +28,9 @@ interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {
 }
 
 @Injectable()
-export class EventsService {
+export class RegistrationEventsService {
   constructor(
-    private eventRepository: EventScopedRepository,
+    private registrationEventRepository: RegistrationEventScopedRepository,
     @Inject(REQUEST) private request: ScopedUserRequest,
     @Inject(JOB_REF) private readonly jobRef: Job,
     private readonly userService: UserService,
@@ -41,10 +41,10 @@ export class EventsService {
     searchOptions,
   }: {
     programId: number;
-    searchOptions: EventSearchOptionsDto;
-  }): Promise<GetEventDto[]> {
+    searchOptions: RegistrationEventSearchOptionsDto;
+  }): Promise<GetRegistrationEventDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
-    return EventsMapper.mapEventsToJsonDtos(events);
+    return RegistrationEventsMapper.mapEventsToJsonDtos(events);
   }
 
   public async getEventsAsXlsx({
@@ -52,17 +52,17 @@ export class EventsService {
     searchOptions,
   }: {
     programId: number;
-    searchOptions: EventSearchOptionsDto;
-  }): Promise<GetEventXlsxDto[]> {
+    searchOptions: RegistrationEventSearchOptionsDto;
+  }): Promise<GetRegistrationEventXlsxDto[]> {
     const events = await this.fetchEvents(programId, searchOptions);
-    return EventsMapper.mapEventsToXlsxDtos(events);
+    return RegistrationEventsMapper.mapEventsToXlsxDtos(events);
   }
 
   private async fetchEvents(
     programId: number,
-    searchOptions: EventSearchOptionsDto,
-  ): Promise<EventEntity[]> {
-    return await this.eventRepository.getManyByProgramIdAndSearchOptions(
+    searchOptions: RegistrationEventSearchOptionsDto,
+  ): Promise<RegistrationEventEntity[]> {
+    return await this.registrationEventRepository.getManyByProgramIdAndSearchOptions(
       programId,
       searchOptions,
     );
@@ -73,7 +73,7 @@ export class EventsService {
    *
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} oldRegistrationViews - The old registration view entity or entities before the change.
    * @param {RegistrationViewWithId | RegistrationViewWithId[]} newRegistrationViews - The new registration view entity or entities after the change.
-   * @param {createFromRegistrationViewsOptions} [createEventOptions] - Optional event creation options to specify additional attributes and registration properties to log.
+   * @param {createFromRegistrationViewsOptions} [createRegistrationEventOptions] - Optional registration event creation options to specify additional attributes and registration properties to log.
    * @returns {Promise<void>}
    *
    * @example
@@ -95,7 +95,7 @@ export class EventsService {
    * await createFromRegistrationViews(oldRegistrationViews, newRegistrationViews);
    *
    * @example
-   * // With event creation options
+   * // With registration event creation options
    * const oldRegistrationView = { id: 1, name: 'Old Name' };
    * const newRegistrationView = { id: 1, name: 'New Name' };
    * const eventCreateOptions = {
@@ -107,7 +107,7 @@ export class EventsService {
   public async createFromRegistrationViews(
     oldRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
     newRegistrationViews: RegistrationViewWithId | RegistrationViewWithId[],
-    createEventOptions?: createFromRegistrationViewsOptions,
+    createRegistrationEventOptions?: createFromRegistrationViewsOptions,
   ): Promise<void> {
     const oldEntities = Array.isArray(oldRegistrationViews)
       ? oldRegistrationViews
@@ -116,7 +116,11 @@ export class EventsService {
       ? newRegistrationViews
       : [newRegistrationViews];
 
-    this.validateEntities(oldEntities, newEntities, createEventOptions);
+    this.validateEntities(
+      oldEntities,
+      newEntities,
+      createRegistrationEventOptions,
+    );
 
     // Get userId from request if it exists otherwise this update was done using a queue than get it from the request of the job of the queue
     const requestUserId: number = this.request?.user?.['id']
@@ -132,28 +136,32 @@ export class EventsService {
       }
     }
 
-    const events = this.createEventsForChanges(
+    const registrationEvents = this.createEventsForChanges(
       oldEntities,
       newEntities,
       userIdToStore,
-      createEventOptions?.explicitRegistrationPropertyNames,
+      createRegistrationEventOptions?.explicitRegistrationPropertyNames,
     );
 
-    if (createEventOptions?.reason) {
-      for (const event of events) {
+    if (createRegistrationEventOptions?.reason) {
+      for (const event of registrationEvents) {
         const reasonAttribute = this.createEventAttributeForReason(
-          createEventOptions?.reason,
+          createRegistrationEventOptions?.reason,
         );
         event.attributes.push(reasonAttribute);
       }
     }
 
-    await this.eventRepository.save(events, { chunk: 2000 });
+    await this.registrationEventRepository.save(registrationEvents, {
+      chunk: 2000,
+    });
   }
 
-  private createEventAttributeForReason(reason: string): EventAttributeEntity {
-    const attribute = new EventAttributeEntity();
-    attribute.key = EventAttributeKeyEnum.reason;
+  private createEventAttributeForReason(
+    reason: string,
+  ): RegistrationEventAttributeEntity {
+    const attribute = new RegistrationEventAttributeEntity();
+    attribute.key = RegistrationEventAttributeKeyEnum.reason;
     attribute.value = reason;
     return attribute;
   }
@@ -233,8 +241,8 @@ export class EventsService {
     newEntities: RegistrationViewWithId[],
     userId?: number,
     registrationAttributes?: string[],
-  ): EventEntity[] {
-    const allEventsForChange: EventEntity[] = [];
+  ): RegistrationEventEntity[] {
+    const allEventsForChange: RegistrationEventEntity[] = [];
     for (let i = 0; i < oldEntities.length; i++) {
       const eventsPerRegistration = this.createEventsForEntityChanges(
         oldEntities[i],
@@ -252,7 +260,7 @@ export class EventsService {
     newEntity: RegistrationViewWithId,
     userId?: number,
     registeredAttributes?: string[],
-  ): EventEntity[] {
+  ): RegistrationEventEntity[] {
     let fieldNames = this.getRelevantRegistrationViewKeys(oldEntity, newEntity);
 
     // Filter out the keys that are not in the registeredAttributes
@@ -262,7 +270,7 @@ export class EventsService {
       );
     }
 
-    const events: EventEntity[] = [];
+    const events: RegistrationEventEntity[] = [];
     for (const key of fieldNames) {
       if (
         oldEntity[key] === newEntity[key] ||
@@ -291,21 +299,21 @@ export class EventsService {
 
   private createEventForChange(
     fieldName: string,
-    oldValue: EventAttributeEntity['value'],
-    newValue: EventAttributeEntity['value'],
+    oldValue: RegistrationEventAttributeEntity['value'],
+    newValue: RegistrationEventAttributeEntity['value'],
     registrationId: number,
-  ): EventEntity {
-    const event = new EventEntity();
+  ): RegistrationEventEntity {
+    const event = new RegistrationEventEntity();
     event.type = this.getEventType(fieldName);
     event.registrationId = registrationId;
 
     // Explicitly declare attributesData as Record<string, unknown> to allow dynamic keys
     const attributesData: Record<string, unknown> = {
-      [EventAttributeKeyEnum.oldValue]: oldValue,
-      [EventAttributeKeyEnum.newValue]: newValue,
+      [RegistrationEventAttributeKeyEnum.oldValue]: oldValue,
+      [RegistrationEventAttributeKeyEnum.newValue]: newValue,
     };
-    if (event.type === EventEnum.registrationDataChange) {
-      attributesData[EventAttributeKeyEnum.fieldName] = fieldName;
+    if (event.type === RegistrationEventEnum.registrationDataChange) {
+      attributesData[RegistrationEventAttributeKeyEnum.fieldName] = fieldName;
     }
     event.attributes = this.getAttributesForChange(attributesData);
     return event;
@@ -313,21 +321,27 @@ export class EventsService {
 
   private getAttributesForChange(
     attributesData: Partial<
-      Record<EventAttributeKeyEnum, EventAttributeEntity['value']>
+      Record<
+        RegistrationEventAttributeKeyEnum,
+        RegistrationEventAttributeEntity['value']
+      >
     >,
-  ): EventAttributeEntity[] {
+  ): RegistrationEventAttributeEntity[] {
     return Object.entries(attributesData)
       .filter(([_, value]) => value)
       .map(([key, value]) =>
-        this.createEventAttributeEntity(key as EventAttributeKeyEnum, value!),
+        this.createEventAttributeEntity(
+          key as RegistrationEventAttributeKeyEnum,
+          value!,
+        ),
       );
   }
 
   private createEventAttributeEntity(
-    key: EventAttributeKeyEnum,
-    value: EventAttributeEntity['value'],
-  ): EventAttributeEntity {
-    const eventAttribute = new EventAttributeEntity();
+    key: RegistrationEventAttributeKeyEnum,
+    value: RegistrationEventAttributeEntity['value'],
+  ): RegistrationEventAttributeEntity {
+    const eventAttribute = new RegistrationEventAttributeEntity();
     eventAttribute.key = key;
     eventAttribute.value = value;
     return eventAttribute;
@@ -365,16 +379,16 @@ export class EventsService {
     return mergedArray.filter((key) => !irrelevantKeys.includes(key));
   }
 
-  private getEventType(key: string): EventEnum {
+  private getEventType(key: string): RegistrationEventEnum {
     const fspKey: keyof RegistrationViewEntity = 'programFspConfigurationName';
     if (key === fspKey) {
-      return EventEnum.fspChange;
+      return RegistrationEventEnum.fspChange;
     }
     const statusKey: keyof RegistrationViewEntity = 'status';
     if (key === statusKey) {
-      return EventEnum.registrationStatusChange;
+      return RegistrationEventEnum.registrationStatusChange;
     }
-    return EventEnum.registrationDataChange;
+    return RegistrationEventEnum.registrationDataChange;
   }
 
   public async createForIgnoredDuplicatePair(
@@ -390,7 +404,7 @@ export class EventsService {
       duplicateRegistration: input.registration1,
       reason: input.reason,
     });
-    await this.eventRepository.save([event1, event2]);
+    await this.registrationEventRepository.save([event1, event2]);
   }
 
   private createIgnoredDuplicateEvent({
@@ -401,9 +415,9 @@ export class EventsService {
     registrationId: number;
     duplicateRegistration: RegistrationIdentifiers;
     reason: string;
-  }): EventEntity {
-    const event = new EventEntity();
-    event.type = EventEnum.ignoredDuplicate;
+  }): RegistrationEventEntity {
+    const event = new RegistrationEventEntity();
+    event.type = RegistrationEventEnum.ignoredDuplicate;
     event.registrationId = registrationId;
     event.attributes = this.createIgnoredDuplicateEventAttributes({
       duplicateRegistration,
@@ -419,14 +433,14 @@ export class EventsService {
   }: {
     duplicateRegistration: RegistrationIdentifiers;
     reason: string;
-  }): EventAttributeEntity[] {
+  }): RegistrationEventAttributeEntity[] {
     return [
       this.createEventAttributeEntity(
-        EventAttributeKeyEnum.duplicateWithRegistrationId,
+        RegistrationEventAttributeKeyEnum.duplicateWithRegistrationId,
         String(duplicateRegistration.id),
       ),
       this.createEventAttributeEntity(
-        EventAttributeKeyEnum.duplicateWithRegistrationProgramId,
+        RegistrationEventAttributeKeyEnum.duplicateWithRegistrationProgramId,
         String(duplicateRegistration.registrationProgramId),
       ),
       this.createEventAttributeForReason(reason),

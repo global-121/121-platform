@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { EventsService } from '@121-service/src/events/events.service';
 import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
@@ -25,6 +24,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
@@ -46,7 +46,7 @@ export class TransactionsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly eventsService: EventsService,
+    private readonly registrationEventsService: RegistrationEventsService,
   ) {}
 
   public async getLastTransactions(
@@ -236,7 +236,7 @@ export class TransactionsService {
       registration.registrationStatus = RegistrationStatusEnum.completed;
       const registrationsAfterUpdate =
         await this.registrationUtilsService.save(registration);
-      await this.eventsService.createFromRegistrationViews(
+      await this.registrationEventsService.createFromRegistrationViews(
         {
           id: registrationsBeforeUpdate.id,
           status: registrationsBeforeUpdate.registrationStatus ?? undefined,
