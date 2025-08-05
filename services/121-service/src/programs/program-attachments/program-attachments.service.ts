@@ -130,4 +130,22 @@ export class ProgramAttachmentsService {
       programAttachment,
     );
   }
+
+  public async deleteAllProgramAttachments(programId: number): Promise<void> {
+    const programAttachments =
+      await this.programAttachmentScopedRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    await Promise.all(
+      programAttachments.map(async (attachment) => {
+        const blockBlobClient = this.containerClient.getBlockBlobClient(
+          `${attachment.blobName}`,
+        );
+        await blockBlobClient.deleteIfExists();
+      }),
+    );
+
+    await this.programAttachmentScopedRepository.remove(programAttachments);
+  }
 }

@@ -38,6 +38,7 @@ graph LR
   ProgramModule-->FspsModule
   FspsModule-->UserModule
   ProgramModule-->LookupModule
+  ProgramModule-->ProgramAttachmentModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFspConfigurationsModule
@@ -130,8 +131,6 @@ graph LR
   MessageIncomingModule-->QueuesRegistryModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
-  ProgramAttachmentModule-->RegistrationsModule
-  ProgramAttachmentModule-->UserModule
   ActivitiesModule-->NoteModule
   ActivitiesModule-->TransactionsModule
   ActivitiesModule-->MessageModule

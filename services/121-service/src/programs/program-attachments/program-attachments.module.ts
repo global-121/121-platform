@@ -7,20 +7,12 @@ import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attac
 import { ProgramAttachmentScopedRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
 import { ProgramAttachmentController } from '@121-service/src/programs/program-attachments/program-attachments.controller';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
-import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
-import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ProgramAttachmentEntity]),
-    RegistrationsModule,
-    UserModule,
-  ],
+  imports: [TypeOrmModule.forFeature([ProgramAttachmentEntity])],
   providers: [
     ProgramAttachmentsService,
     ProgramAttachmentScopedRepository,
-    RegistrationScopedRepository,
     {
       provide: ContainerClient,
       useFactory: async () => {
@@ -39,6 +31,6 @@ import { UserModule } from '@121-service/src/user/user.module';
     },
   ],
   controllers: [ProgramAttachmentController],
-  exports: [],
+  exports: [ProgramAttachmentsService],
 })
 export class ProgramAttachmentModule {}

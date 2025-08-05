@@ -23,6 +23,7 @@ import { ProgramReturnDto } from '@121-service/src/programs/dto/program-return.d
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
@@ -42,6 +43,7 @@ export class ProgramService {
   public constructor(
     private readonly dataSource: DataSource,
     private readonly userService: UserService,
+    private readonly programAttachmentsService: ProgramAttachmentsService,
     private readonly programAttributesService: ProgramAttributesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly intersolveVisaService: IntersolveVisaService,
@@ -234,6 +236,7 @@ export class ProgramService {
 
   public async deleteProgram(programId: number): Promise<void> {
     const program = await this.findProgramOrThrow(programId);
+    await this.programAttachmentsService.deleteAllProgramAttachments(programId);
     await this.programRepository.remove(program as ProgramEntity);
   }
 
