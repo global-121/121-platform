@@ -6,7 +6,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
   'programs',
   projectId,
-  'events',
+  'registration-events',
 ];
 
 @Injectable({
