@@ -648,23 +648,47 @@ export async function seedPaidRegistrations(
 ): Promise<void> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
+  const registrationReferenceIds = registrations.map((r) => r.referenceId);
 
+  await doPaymentAndWaitForCompletion({
+    programId,
+    referenceIds: registrationReferenceIds,
+    amount,
+    accessToken,
+    paymentNr,
+    completeStatusses,
+  });
+}
+
+export async function doPaymentAndWaitForCompletion({
+  programId,
+  referenceIds,
+  amount,
+  accessToken,
+  paymentNr = 1,
+  completeStatusses = [
+    TransactionStatusEnum.success,
+    TransactionStatusEnum.waiting,
+  ],
+}: {
+  programId: number;
+  referenceIds: string[];
+  amount: number;
+  accessToken: string;
+  paymentNr?: number;
+  completeStatusses?: TransactionStatusEnum[];
+}): Promise<void> {
   await doPayment({
     programId,
     paymentNr,
     amount,
-    referenceIds: [],
+    referenceIds,
     accessToken,
-    filter: {
-      'filter.status': '$in:included',
-    },
   });
-
-  const registrationReferenceIds = registrations.map((r) => r.referenceId);
 
   await waitForPaymentTransactionsToComplete({
     programId,
-    paymentReferenceIds: registrationReferenceIds,
+    paymentReferenceIds: referenceIds,
     accessToken,
     maxWaitTimeMs: 30_000,
     completeStatusses,

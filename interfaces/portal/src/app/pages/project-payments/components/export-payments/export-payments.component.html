@@ -8,32 +8,64 @@
 />
 <app-confirmation-dialog
   #exportlastPaymentsDialog
-  [header]="lastPaymentsExportLabel()"
+  header="Export payments"
+  i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
-  [mutationData]="
-    getMutationData({
-      type: ExportType.payment,
-      withPaymentRange: true,
-    })
-  "
+  [mutation]="exportByTypeMutation"
+  [mutationData]="{
+    type: 'payments',
+    fromDate: paymentRangeFormGroup.getRawValue().fromDate || undefined,
+    toDate: paymentRangeFormGroup.getRawValue().toDate || undefined,
+  }"
+  [formGroup]="paymentRangeFormGroup"
 >
   <p i18n>
     You're about to download an Excel file with all of the registrations
-    included in the last {{ maxLastPaymentsNumber() }} payment(s).
+    included in payments.
   </p>
+  <p
+    i18n
+    class="mt-2"
+  >
+    Optionally pass a start date and/or an end date to filter the payments. The
+    export is limited to 100,000 records. Adapt your dates if needed.
+  </p>
+
+  <div class="mt-4 flex w-full flex-row gap-4 [&>*]:w-1/2">
+    <app-form-field-wrapper
+      label="Start Date"
+      i18n-label
+    >
+      <p-datepicker
+        formControlName="fromDate"
+        [maxDate]="paymentRangeFormGroup.getRawValue().toDate"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+
+    <app-form-field-wrapper
+      label="End Date"
+      i18n-label
+    >
+      <p-datepicker
+        formControlName="toDate"
+        [minDate]="paymentRangeFormGroup.getRawValue().fromDate"
+        [showClear]="true"
+        appendTo="body"
+      />
+    </app-form-field-wrapper>
+  </div>
 </app-confirmation-dialog>
 <app-confirmation-dialog
   #exportUnusedVouchersDialog
   header="Export unused vouchers"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
-  [mutationData]="
-    getMutationData({
-      type: ExportType.unusedVouchers,
-    })
-  "
+  [mutation]="exportByTypeMutation"
+  [mutationData]="{
+    type: ExportType.unusedVouchers,
+  }"
 >
   <p i18n>This will download an Excel file with all unused voucher(s).</p>
   <p
@@ -50,17 +82,14 @@
   header="Export debit card usage"
   i18n-header
   headerIcon="pi pi-upload"
-  [mutation]="exportPaymentsMutation"
-  [mutationData]="
-    getMutationData({
-      type: ExportType.intersolveVisaCardDetails,
-      withPaymentRange: true,
-    })
-  "
+  [mutation]="exportByTypeMutation"
+  [mutationData]="{
+    type: ExportType.intersolveVisaCardDetails,
+  }"
 >
   <p i18n>
-    This will download an Excel file showing the balance of every card from the
-    last {{ maxLastPaymentsNumber() }} payment(s).
+    This will download an Excel file showing the balance of every card. The
+    export is limited to 100,000 records.
   </p>
   <p
     i18n

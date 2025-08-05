@@ -1,3 +1,4 @@
+import { HttpParamsOptions } from '@angular/common/http';
 import { inject, Injectable, Signal, signal } from '@angular/core';
 
 import { queryOptions } from '@tanstack/angular-query-experimental';
@@ -285,6 +286,20 @@ export class ProjectApiService extends DomainApiService {
         projectId,
         'fsps/commercial-bank-ethiopia/account-enquiries',
       ],
+    });
+  }
+
+  getTransactions({
+    projectId,
+    params,
+  }: {
+    projectId: Signal<number | string>;
+    params: HttpParamsOptions['fromObject'];
+  }) {
+    return this.generateQueryOptions<Blob>({
+      path: [BASE_ENDPOINT, projectId, 'transactions'],
+      params,
+      responseAsBlob: true,
     });
   }
 

@@ -4,14 +4,13 @@ import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   doPayment,
-  exportList,
+  exportTransactionsByDateRangeJson,
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
@@ -114,16 +113,13 @@ describe('Do payment', () => {
         });
         const transactionAfterCronJob = getTransactionsAfterCronjob.body[0];
 
-        const exportPaymentResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const exportPayment = exportPaymentResponse.body.data[0];
+        const exportTransactionResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
+        const transaction = exportTransactionResponse[0];
 
         // Assert
         expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
@@ -144,11 +140,11 @@ describe('Do payment', () => {
         expect(transactionAfterCronJob.status).toBe(
           TransactionStatusEnum.success,
         );
-        expect(exportPayment.nedbankVoucherStatus).toBe(
+        expect(transaction.nedbankVoucherStatus).toBe(
           NedbankVoucherStatus.REDEEMED,
         );
-        expect(exportPayment.nedbankOrderCreateReference).toBeDefined();
-        expect(exportPayment.nedbankPaymentReference).toMatchSnapshot();
+        expect(transaction.nedbankOrderCreateReference).toBeDefined();
+        expect(transaction.nedbankPaymentReference).toMatchSnapshot();
       });
 
       it('should create a transaction with status error when phone number is missing', async () => {
@@ -330,30 +326,19 @@ describe('Do payment', () => {
         });
 
         const paymentExportBeforeReconciliation = (
-          await exportList({
+          await exportTransactionsByDateRangeJson({
             programId,
-            exportType: ExportType.payment,
             accessToken,
-            options: {
-              minPayment: 0,
-              maxPayment: 1,
-            },
           })
-        ).body.data[0];
+        )[0];
 
         await runCronJobDoNedbankReconciliation();
-
         const paymentExportAfterReconciliation = (
-          await exportList({
+          await exportTransactionsByDateRangeJson({
             programId,
-            exportType: ExportType.payment,
             accessToken,
-            options: {
-              minPayment: 0,
-              maxPayment: 1,
-            },
           })
-        ).body.data[0];
+        )[0];
 
         // Assert
         expect(paymentExportAfterReconciliation.status).toBe(
@@ -391,18 +376,14 @@ describe('Do payment', () => {
           maxWaitTimeMs: 5_000,
           completeStatusses: [TransactionStatusEnum.error],
         });
-        const exportPaymentBeforeRetryResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
+        const exportPaymentBeforeRetryResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
         const orderReferenceBeforeRetry =
-          exportPaymentBeforeRetryResponse.body.data[0]
-            .nedbankOrderCreateReference;
+          exportPaymentBeforeRetryResponse[0].nedbankOrderCreateReference;
 
         await updateRegistration(
           programId,
@@ -419,18 +400,14 @@ describe('Do payment', () => {
           maxWaitTimeMs: 5000,
           completeStatusses: [TransactionStatusEnum.waiting],
         });
-        const exportPaymentAfterRetryReponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
+        const exportPaymentAfterRetryReponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
         const orderReferenceAfterRetry =
-          exportPaymentAfterRetryReponse.body.data[0]
-            .nedbankOrderCreateReference;
+          exportPaymentAfterRetryReponse[0].nedbankOrderCreateReference;
         expect(orderReferenceBeforeRetry).not.toBe(orderReferenceAfterRetry);
       });
 
@@ -455,20 +432,17 @@ describe('Do payment', () => {
 
         // Act
         await runCronJobDoNedbankReconciliation();
-        const getExportListResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const exportListData = getExportListResponse.body.data;
+        const getExportTransactionsResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
+        const exportListData = getExportTransactionsResponse;
         for (const exportData of exportListData) {
           const expectedStatus =
             nedbanVoucherStatusToTransactionStatus[
-              exportData.nedbankVoucherStatus
+              exportData.nedbankVoucherStatus as NedbankVoucherStatus
             ];
           expect(exportData.status).toBe(expectedStatus);
         }
@@ -485,17 +459,13 @@ describe('Do payment', () => {
 
         // Act
         await seedPaidRegistrations([registrationFailTimeout], programId);
-        const paymentExportBeforeCronResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const paymentExportBeforeCron =
-          paymentExportBeforeCronResponse.body.data[0];
+        const transactionsExportBeforeCronResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
+        const transactionBeforeCron = transactionsExportBeforeCronResponse[0];
 
         await updateRegistration(
           programId,
@@ -506,32 +476,26 @@ describe('Do payment', () => {
         );
 
         await runCronJobDoNedbankReconciliation();
-        const paymentExportAfterCronResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const paymentExportAfterCron =
-          paymentExportAfterCronResponse.body.data[0];
+        const transactionExportAfterCronResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
+        const transactionAfterCron = transactionExportAfterCronResponse[0];
 
         // Assert
-        expect(paymentExportBeforeCron.nedbankVoucherStatus).toBe(null);
-        expect(paymentExportBeforeCron.status).toBe(
+        expect(transactionBeforeCron.nedbankVoucherStatus).toBe(undefined);
+        expect(transactionBeforeCron.status).toBe(
           TransactionStatusEnum.waiting,
         );
-        expect(paymentExportAfterCron.nedbankOrderCreateReference).toBe(
-          paymentExportBeforeCron.nedbankOrderCreateReference,
+        expect(transactionAfterCron.nedbankOrderCreateReference).toBe(
+          transactionBeforeCron.nedbankOrderCreateReference,
         );
-        expect(paymentExportAfterCron.nedbankVoucherStatus).toBe(
+        expect(transactionAfterCron.nedbankVoucherStatus).toBe(
           NedbankVoucherStatus.REDEEMED,
         );
-        expect(paymentExportAfterCron.status).toBe(
-          TransactionStatusEnum.success,
-        );
+        expect(transactionAfterCron.status).toBe(TransactionStatusEnum.success);
       });
 
       it('should update the transaction status to failed in the nedbank cronjob if the voucher is not found', async () => {
@@ -542,17 +506,13 @@ describe('Do payment', () => {
           referenceId: NebankGetOrderMockReference.orderNotFound, // This referenceId will be copied to the orderCreateReference and this will simulate a not found order in our mock service when we try to get the order
         };
         await seedPaidRegistrations([registrationFailTimeout], programId);
-        const paymentExportBeforeCronResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const paymentExportBeforeCron =
-          paymentExportBeforeCronResponse.body.data[0];
+        const transactionExportBeforeCronResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+
+        const transactionBeforeCron = transactionExportBeforeCronResponse[0];
 
         await updateRegistration(
           programId,
@@ -563,31 +523,26 @@ describe('Do payment', () => {
         );
 
         await runCronJobDoNedbankReconciliation();
-        const paymentExportAfterCronResponse = await exportList({
-          programId,
-          exportType: ExportType.payment,
-          accessToken,
-          options: {
-            minPayment: 0,
-            maxPayment: 1,
-          },
-        });
-        const paymentExportAfterCron =
-          paymentExportAfterCronResponse.body.data[0];
+        const transactionExportAfterCronResponse =
+          await exportTransactionsByDateRangeJson({
+            programId,
+            accessToken,
+          });
+        const transactionAfterCron = transactionExportAfterCronResponse[0];
 
         // Assert
-        expect(paymentExportBeforeCron.nedbankVoucherStatus).toBe(null);
-        expect(paymentExportBeforeCron.status).toBe(
+        expect(transactionBeforeCron.nedbankVoucherStatus).toBe(undefined);
+        expect(transactionBeforeCron.status).toBe(
           TransactionStatusEnum.waiting,
         );
-        expect(paymentExportAfterCron.nedbankOrderCreateReference).toBe(
-          paymentExportBeforeCron.nedbankOrderCreateReference,
+        expect(transactionAfterCron.nedbankOrderCreateReference).toBe(
+          transactionBeforeCron.nedbankOrderCreateReference,
         );
-        expect(paymentExportAfterCron.nedbankVoucherStatus).toBe(
+        expect(transactionAfterCron.nedbankVoucherStatus).toBe(
           NedbankVoucherStatus.FAILED,
         );
-        expect(paymentExportAfterCron.status).toBe(TransactionStatusEnum.error);
-        expect(paymentExportAfterCron.errorMessage).toMatchSnapshot();
+        expect(transactionAfterCron.status).toBe(TransactionStatusEnum.error);
+        expect(transactionAfterCron.errorMessage).toMatchSnapshot();
       });
     });
 

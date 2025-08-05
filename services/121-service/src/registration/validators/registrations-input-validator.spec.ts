@@ -151,7 +151,9 @@ describe('RegistrationsInputValidator', () => {
         {
           provide: RegistrationsPaginationService,
           useValue: {
-            getRegistrationViewsByReferenceIds: jest.fn().mockResolvedValue([]),
+            getRegistrationViewsChunkedByReferenceIds: jest
+              .fn()
+              .mockResolvedValue([]),
           },
         },
         {
@@ -443,7 +445,7 @@ describe('RegistrationsInputValidator', () => {
     jest
       .spyOn(
         registrationsPaginationService,
-        'getRegistrationViewsByReferenceIds',
+        'getRegistrationViewsChunkedByReferenceIds',
       )
       .mockResolvedValueOnce([mockRegistration]);
 

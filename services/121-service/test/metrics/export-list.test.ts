@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -210,7 +211,9 @@ describe('Metric export list', () => {
     const accessTokenCvaManager = await getAccessTokenCvaManager();
 
     const response = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/payment`)
+      .get(
+        `/programs/${PvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
+      )
       .set('Cookie', [accessTokenCvaManager])
       .responseType('blob')
       .query({

@@ -801,7 +801,7 @@ export class RegistrationsService {
     // This is done to avoid duplicating the complex logic of retrieving full names, which is already implemented in the pagination service
     // TODO: In the future, this logic should be refactored to reside in the registration repository
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationViewsByReferenceIds(
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
           programId,
           referenceIds,

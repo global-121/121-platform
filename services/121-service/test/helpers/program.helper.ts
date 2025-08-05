@@ -1,7 +1,9 @@
 import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
+import * as XLSX from 'xlsx';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
   CreateMessageTemplateDto,
   UpdateTemplateBodyDto,
@@ -211,6 +213,54 @@ export async function getTransactions({
     );
   }
   return response;
+}
+
+export async function exportTransactions({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+  payment,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+  payment?: number;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/transactions`)
+    .query({ fromDate, toDate, payment, format: ExportFileFormat.xlsx })
+    .set('Cookie', [accessToken])
+    .buffer()
+    .parse((res, callback) => {
+      const chunks: Buffer[] = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => callback(null, Buffer.concat(chunks)));
+    });
+}
+
+export async function exportTransactionsByDateRangeJson({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+}): Promise<Record<string, unknown>[]> {
+  const response = await exportTransactions({
+    programId,
+    accessToken,
+    fromDate,
+    toDate,
+  });
+  const workbook = XLSX.read(response.body, { type: 'buffer' });
+  const firstSheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[firstSheetName];
+  return XLSX.utils.sheet_to_json(worksheet);
 }
 
 export async function getFspInstructions(

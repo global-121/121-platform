@@ -27,7 +27,7 @@
       "type": "text",
       "pattern": null,
       "options": null,
-      "export": ["payment"],
+      "includeInTransactionExport": true,
       "scoring": {},
       "editableInPortal": true,
       "showInPeopleAffectedTable": false
@@ -43,7 +43,7 @@
       "type": "tel",
       "pattern": null,
       "options": null,
-      "export": [],
+      "includeInTransactionExport": false,
       "scoring": {},
       "duplicateCheck": true,
       "editableInPortal": false,

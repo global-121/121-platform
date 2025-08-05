@@ -16,6 +16,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/pr
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
 import { UserModule } from '@121-service/src/user/user.module';
 
@@ -38,8 +39,17 @@ import { UserModule } from '@121-service/src/user/user.module';
     ProgramFspConfigurationsModule,
     IntersolveVisaModule,
   ],
-  providers: [ProgramService, ProgramRepository, ProgramExistenceInterceptor],
+  providers: [
+    ProgramService,
+    ProgramRepository,
+    ProgramExistenceInterceptor,
+    ProgramRegistrationAttributeRepository,
+  ],
   controllers: [ProgramController],
-  exports: [ProgramService, ProgramRepository],
+  exports: [
+    ProgramService,
+    ProgramRepository,
+    ProgramRegistrationAttributeRepository,
+  ],
 })
 export class ProgramModule {}

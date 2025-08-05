@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsEnum,
   IsIn,
   IsNotEmpty,
   IsOptional,
@@ -11,7 +10,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { CreateOptionsDto } from '@121-service/src/programs/dto/create-options.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
@@ -45,12 +43,12 @@ class BaseProgramRegistrationAttributeDto {
   public readonly editableInPortal?: boolean;
 
   @ApiProperty({
-    example: [ExportType.payment],
+    example: false,
     required: false,
   })
   @IsOptional()
-  @IsEnum(ExportType, { each: true }) // Use @IsEnum decorator to validate each element
-  public readonly export?: WrapperType<ExportType[]>;
+  @IsBoolean()
+  public readonly includeInTransactionExport?: boolean;
 
   @ApiProperty({
     example: {

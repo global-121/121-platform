@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -20,10 +21,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Paginate, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
@@ -31,7 +34,7 @@ import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
-import { PaymentsService } from '@121-service/src/payments/payments.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
@@ -43,6 +46,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
+import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
@@ -248,6 +252,52 @@ export class PaymentsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @ApiOperation({
+    summary:
+      '[SCOPED] Gets all transactions for a date range in json (default) or xlsx format',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
+  @ApiQuery({ name: 'toDate', required: false, type: 'string' })
+  @ApiQuery({
+    name: 'payment',
+    required: false,
+    type: 'integer',
+  })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    enum: ExportFileFormat,
+    description:
+      'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
+  })
+  // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
+  // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
+  @Get('programs/:programId/transactions')
+  public async exportTransactionsUsingDateFilter(
+    @Res() res: Response,
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+    @Query('format') format = 'json',
+    @Query('payment', new ParseIntPipe({ optional: true })) payment?: number,
+  ): Promise<Response | void> {
+    const result = await this.paymentsService.exportTransactionsUsingDateFilter(
+      {
+        programId,
+        fromDateString: fromDate,
+        toDateString: toDate,
+        payment,
+      },
+    );
+    if (format === ExportFileFormat.xlsx) {
+      return sendXlsxReponse(result.data, result.fileName, res);
+    }
+    return res.send(result);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
   @ApiOperation({ summary: '[SCOPED] Get all transactions for this payment' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -261,7 +311,7 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<GetTransactionResponseDto[]> {
-    return await this.paymentsService.getTransactions({
+    return await this.paymentsService.geTransactionsByPaymentId({
       programId,
       payment: paymentId,
     });

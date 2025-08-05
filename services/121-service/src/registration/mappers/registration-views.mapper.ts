@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,
@@ -118,5 +119,34 @@ export class RegistrationViewsMapper {
       fullnameConcat.push(registrationRow[nameColumn]);
     }
     return fullnameConcat.join(' ');
+  }
+
+  static replaceDropdownValuesWithEnglishLabel({
+    rows,
+    attributes,
+  }: {
+    rows: Record<string, unknown>[];
+    attributes: ProgramRegistrationAttributeEntity[];
+  }): Record<string, unknown>[] {
+    for (const attribute of attributes) {
+      for (const row of rows) {
+        row[attribute.name] = this.getDropdownEnglishLabel(
+          attribute,
+          row[attribute.name],
+        );
+      }
+    }
+    return rows;
+  }
+
+  private static getDropdownEnglishLabel(
+    attribute: ProgramRegistrationAttributeEntity,
+    value: unknown,
+  ): unknown {
+    const selectedOption = attribute.options?.find((o) => o.option === value);
+    if (selectedOption && selectedOption.label && selectedOption.label['en']) {
+      return selectedOption.label['en'];
+    }
+    return value;
   }
 }
