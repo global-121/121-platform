@@ -16,7 +16,6 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { AuthService } from '~/services/auth.service';
-import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -40,7 +39,6 @@ export class SinglePaymentExportComponent {
   private authService = inject(AuthService);
   private exportService = inject(ExportService);
   private toastService = inject(ToastService);
-  private downloadService = inject(DownloadService);
   private trackingService = inject(TrackingService);
 
   readonly exportFspPaymentListDialog =
@@ -60,31 +58,23 @@ export class SinglePaymentExportComponent {
     paymentId: this.paymentId().toString(),
   }));
 
-  exportFspPaymentListMutation = injectMutation(() => ({
-    mutationFn: this.exportService.exportFspInstructions({
-      projectId: this.projectId,
-      toastService: this.toastService,
-    }),
-    onSuccess: (filesToExport) => {
-      filesToExport.forEach((fileToExport) => {
-        void this.downloadService.downloadArrayToXlsx(fileToExport);
-      });
-    },
-  }));
+  exportFspPaymentListMutation = injectMutation(() =>
+    this.exportService.getExportFspInstructionsMutation(
+      this.projectId,
+      this.toastService,
+    ),
+  );
 
   readonly paymentReportLabel = computed(
     () => $localize`:@@payment-report:Payment report`,
   );
 
-  paymentReportMutation = injectMutation(() => ({
-    mutationFn: this.exportService.getExportListMutation(
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
       this.projectId,
       this.toastService,
     ),
-    onSuccess: ({ exportResult: file, filename }) => {
-      this.downloadService.downloadFile({ file, filename });
-    },
-  }));
+  );
 
   readonly canExportPaymentInstructions = computed(() =>
     this.authService.hasPermission({

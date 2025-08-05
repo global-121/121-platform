@@ -21,9 +21,9 @@
   #paymentReportDialog
   [header]="paymentReportLabel()"
   headerIcon="pi pi-upload"
-  [mutation]="paymentReportMutation"
+  [mutation]="exportByTypeMutation"
   [mutationData]="{
-    type: 'payment',
+    type: 'payments',
     paymentId: paymentId(),
   }"
 >

@@ -103,14 +103,6 @@ export class MetricsController {
     @Res() res: Response,
   ): Promise<Response | void> {
     const userId = RequestHelper.getUserId(req);
-    if (
-      queryParams.toDate &&
-      queryParams.fromDate &&
-      queryParams.toDate <= queryParams.fromDate
-    ) {
-      const errors = 'toDate must be greater than fromDate';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
     if (queryParams['search']) {
       paginationQuery.search = queryParams['search'];
     }
