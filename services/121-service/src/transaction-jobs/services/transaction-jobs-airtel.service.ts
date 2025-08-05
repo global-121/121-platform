@@ -70,14 +70,14 @@ export class TransactionJobsAirtelService {
       await this.transactionScopedRepository.count({
         where: {
           registrationId: Equal(registration.id),
-          payment: Equal(transactionJob.paymentNumber),
+          paymentId: Equal(transactionJob.paymentId),
           status: Equal(TransactionStatusEnum.error),
         },
       });
 
     const airtelTransactionId = this.generateAirtelTransactionId({
       referenceId: transactionJob.referenceId,
-      paymentNumber: transactionJob.paymentNumber,
+      paymentNumber: transactionJob.paymentId,
       failedTransactionsCount,
     });
 

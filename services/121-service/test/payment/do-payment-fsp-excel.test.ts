@@ -80,7 +80,6 @@ describe('Do payment with Excel FSP', () => {
 
     await doPayment({
       programId: programIdWesteros,
-      paymentNr,
       amount,
       referenceIds: [],
       accessToken,
@@ -114,7 +113,6 @@ describe('Do payment with Excel FSP', () => {
 
     await doPayment({
       programId: programIdCbe,
-      paymentNr,
       amount,
       referenceIds: [],
       accessToken,
@@ -135,7 +133,7 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
-        paymentNr,
+        paymentId: paymentNr,
         registrationReferenceId: null,
         accessToken,
       });
@@ -234,7 +232,7 @@ describe('Do payment with Excel FSP', () => {
       );
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
-        paymentNr,
+        paymentId: paymentNr,
         registrationReferenceId: null,
         accessToken,
       });

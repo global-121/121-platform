@@ -62,7 +62,6 @@ describe('Payment in progress', () => {
     // We do a payment here and wait for it to complete
     await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -85,7 +84,6 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      paymentNr: 2,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -94,7 +92,6 @@ describe('Payment in progress', () => {
 
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -139,7 +136,6 @@ describe('Payment in progress', () => {
     // We do a payment and we do not wait for all transactions to complete
     await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -155,7 +151,6 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultCurrent = await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -164,7 +159,6 @@ describe('Payment in progress', () => {
 
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      paymentNr: 2,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -172,7 +166,6 @@ describe('Payment in progress', () => {
     });
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -181,7 +174,7 @@ describe('Payment in progress', () => {
 
     const retryPaymentPvResult = await retryPayment({
       programId: programIdPV,
-      paymentNr: 1,
+      paymentId: 1,
       accessToken,
     });
 
@@ -229,7 +222,6 @@ describe('Payment in progress', () => {
     // We do a payment only for the PV program and we do not wait for all transactions to complete
     await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -247,7 +239,6 @@ describe('Payment in progress', () => {
     // We expect that doing the same payment again fails since it is already in progress
     const doPaymentPvResultCurrent = await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -257,7 +248,6 @@ describe('Payment in progress', () => {
     // We expect that doing the next payment fails since the previous payment is still in progress
     const doPaymentPvResultPaymentNext = await doPayment({
       programId: programIdPV,
-      paymentNr: 2,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -266,14 +256,13 @@ describe('Payment in progress', () => {
     // We expect that retrying the payment fails since the previous payment is still in progress
     const retryPaymentPvResult = await retryPayment({
       programId: programIdPV,
-      paymentNr: 1,
+      paymentId: 1,
       accessToken,
     });
 
     // We expect that doing the next payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
     const doPaymentOcwResultPaymentNext = await doPayment({
       programId: programIdOCW,
-      paymentNr: 1,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,

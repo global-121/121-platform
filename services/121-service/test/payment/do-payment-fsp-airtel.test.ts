@@ -42,7 +42,6 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -94,7 +93,6 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -113,7 +111,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationAirtelSuccessTransaction.referenceId,
       accessToken,
     });
@@ -143,7 +141,6 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -162,7 +159,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
@@ -194,7 +191,6 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -213,7 +209,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
@@ -242,7 +238,6 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -261,7 +256,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationAirtelAmbiguousError.referenceId,
       accessToken,
     });

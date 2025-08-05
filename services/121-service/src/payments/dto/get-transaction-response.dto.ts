@@ -22,7 +22,7 @@ export class GetTransactionResponseDto {
   public updated: Date;
 
   @ApiProperty({ example: 1, type: 'number' })
-  public payment: number;
+  public paymentId: number;
 
   @ApiProperty({ example: TransactionStatusEnum.success, type: 'string' })
   public status: TransactionStatusEnum;

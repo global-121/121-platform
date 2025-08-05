@@ -66,7 +66,6 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -86,7 +85,7 @@ describe('Do payment', () => {
 
         const getTransactionsBeforeCronjob = await getTransactions({
           programId,
-          paymentNr: payment,
+          paymentId: payment,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
@@ -107,7 +106,7 @@ describe('Do payment', () => {
 
         const getTransactionsAfterCronjob = await getTransactions({
           programId,
-          paymentNr: payment,
+          paymentId: payment,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
         });
@@ -164,7 +163,6 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -185,7 +183,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: payment,
             registrationReferenceId: registrationFailDebitorAccount.referenceId,
             accessToken,
           })
@@ -208,7 +206,6 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          paymentNr: payment,
           amount: amountOver6000,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -229,7 +226,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: payment,
             registrationReferenceId: registrationNedbank.referenceId,
             accessToken,
           })
@@ -256,7 +253,6 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -279,7 +275,7 @@ describe('Do payment', () => {
         const getTransactionsBody = (
           await getTransactions({
             programId,
-            paymentNr: payment,
+            paymentId: payment,
             registrationReferenceId: registrationFailPhoneNumber.referenceId,
             accessToken,
           })
@@ -307,7 +303,6 @@ describe('Do payment', () => {
         // Act
         await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -364,7 +359,6 @@ describe('Do payment', () => {
         );
         await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
@@ -392,7 +386,7 @@ describe('Do payment', () => {
           'to make payment work this time',
           accessToken,
         );
-        await retryPayment({ programId, paymentNr: payment, accessToken });
+        await retryPayment({ programId, paymentId: payment, accessToken });
         await waitForPaymentTransactionsToComplete({
           programId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
@@ -566,7 +560,6 @@ describe('Do payment', () => {
         // Act
         const doPaymentResponse = await doPayment({
           programId,
-          paymentNr: payment,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,

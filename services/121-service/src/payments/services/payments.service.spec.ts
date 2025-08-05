@@ -21,7 +21,7 @@ function createMockTransaction(
     id: 1,
     created: new Date(),
     updated: new Date(),
-    payment: 1,
+    paymentId: 1,
     status,
     amount,
     errorMessage: null,
@@ -101,7 +101,7 @@ describe('PaymentsService - getTransactions', () => {
       // Act
       const result = await service.geTransactionsByPaymentId({
         programId,
-        payment,
+        paymentId: payment,
       });
 
       // Assert
@@ -123,7 +123,7 @@ describe('PaymentsService - getTransactions', () => {
       // Act
       const result = await service.geTransactionsByPaymentId({
         programId,
-        payment,
+        paymentId: payment,
       });
 
       // Assert

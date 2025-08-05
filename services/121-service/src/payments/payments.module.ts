@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';
 import { CommercialBankEthiopiaModule } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.module';
 import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/excel.module';
@@ -15,6 +16,7 @@ import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { PaymentScopedRepository } from '@121-service/src/payments/repositories/payment-scoped.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
@@ -41,6 +43,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
       TransactionEntity,
       RegistrationEntity,
       ProgramRegistrationAttributeEntity,
+      PaymentEntity,
     ]),
     UserModule,
     HttpModule,
@@ -70,6 +73,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     LookupService,
     InclusionScoreService,
     AzureLogService,
+    PaymentScopedRepository,
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],

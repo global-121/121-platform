@@ -60,7 +60,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -80,7 +79,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -110,7 +109,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -127,7 +125,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -157,7 +155,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -178,7 +175,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -210,7 +207,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -230,7 +226,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });

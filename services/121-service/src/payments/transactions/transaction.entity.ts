@@ -9,9 +9,9 @@ import {
 } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
@@ -31,18 +31,16 @@ export class TransactionEntity extends Base121AuditedEntity {
   @Column({ type: 'character varying', nullable: true })
   public errorMessage: string | null;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.transactions, {
+  @ManyToOne((_type) => PaymentEntity, (payment) => payment.transactions, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({
+    name: 'paymentId',
+  })
+  public payment: Relation<PaymentEntity>;
   @Index()
   @Column({ type: 'int' })
-  public programId: number;
-
-  @Column({ default: 1 })
-  @Index()
-  public payment: number;
+  public paymentId: number;
 
   @Column('json', {
     default: {},

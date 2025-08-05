@@ -45,7 +45,6 @@ describe('Get Intersolve voucher balance', () => {
     const paymentReferenceIds = [registrationPV5.referenceId];
     await doPayment({
       programId: programIdPV,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,

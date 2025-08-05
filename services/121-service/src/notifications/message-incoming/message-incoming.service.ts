@@ -386,8 +386,8 @@ export class MessageIncomingService {
       r.images = r.images.filter(
         (image) =>
           !image.voucher.send &&
-          image.voucher.payment &&
-          image.voucher.payment >= minimumPayment,
+          image.voucher.paymentId &&
+          image.voucher.paymentId >= minimumPayment,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
@@ -531,7 +531,7 @@ export class MessageIncomingService {
           messageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           customData: {
-            payment: intersolveVoucher.payment ?? undefined,
+            payment: intersolveVoucher.paymentId ?? undefined,
             amount: intersolveVoucher.amount ?? undefined,
             intersolveVoucherId: intersolveVoucher.id,
           },

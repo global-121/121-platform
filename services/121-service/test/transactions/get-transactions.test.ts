@@ -42,7 +42,7 @@ describe('Registrations - [Scoped]', () => {
     // Act
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: null,
       accessToken,
     });
@@ -86,7 +86,7 @@ describe('Registrations - [Scoped]', () => {
     // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: null,
       accessToken: accessTokenScoped,
     });

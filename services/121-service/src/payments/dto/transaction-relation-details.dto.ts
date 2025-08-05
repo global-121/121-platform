@@ -1,6 +1,6 @@
 export class TransactionRelationDetailsDto {
   programId: number;
-  paymentNr: number;
+  paymentId: number;
   userId: number;
   programFspConfigurationId: number;
 }

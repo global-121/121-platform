@@ -7,7 +7,7 @@ import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function getTransactionsIntersolveVoucher(
   programId: number,
-  payment: number,
+  paymentId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<any[]> {
@@ -18,7 +18,7 @@ export async function getTransactionsIntersolveVoucher(
     getTransactionsBody = (
       await getTransactions({
         programId,
-        paymentNr: payment,
+        paymentId,
         registrationReferenceId: referenceId,
         accessToken,
       })
@@ -38,14 +38,14 @@ export async function getTransactionsIntersolveVoucher(
 
 export async function getVoucherBalance(
   programId: number,
-  payment: number,
+  paymentId: number,
   referenceId: string | null,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/fsps/intersolve-voucher/vouchers/balance`)
     .set('Cookie', [accessToken])
-    .query({ payment, referenceId });
+    .query({ paymentId, referenceId });
 }
 
 export async function triggerUnusedVouchersCache(

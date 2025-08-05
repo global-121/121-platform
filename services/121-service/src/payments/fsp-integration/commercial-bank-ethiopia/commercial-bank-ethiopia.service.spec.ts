@@ -41,7 +41,7 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
 
 const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paPaymentData: sendPaymentData[0],
-  paymentNr,
+  paymentId: paymentNr,
   programId,
   payload: payload[0],
   userId: sendPaymentData[0].userId,

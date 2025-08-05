@@ -6,7 +6,7 @@ import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids
 export class RetryPaymentDto {
   @ApiProperty({ example: 1 })
   @IsNumber()
-  public readonly payment: number;
+  public readonly paymentId: number;
   @ApiProperty()
   @IsOptional()
   public readonly referenceIds?: ReferenceIdsDto;

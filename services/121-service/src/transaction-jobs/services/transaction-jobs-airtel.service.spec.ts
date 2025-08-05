@@ -16,7 +16,7 @@ describe('TransactionJobsAirtelService', () => {
   const transactionJob: AirtelTransactionJobDto = {
     programId: 3,
     programFspConfigurationId: 3,
-    paymentNumber: 3,
+    paymentId: 3,
     referenceId: 'ref-3',
     transactionAmount: 300,
     isRetry: false,

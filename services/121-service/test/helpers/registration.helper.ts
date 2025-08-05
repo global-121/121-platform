@@ -149,7 +149,6 @@ export async function waitForDeleteRegistrations({
   const startTime = Date.now();
   const accessToken = await getAccessToken();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    // Get payment transactions
     let totalRegistrationSuccesfullyDeleted = 0;
 
     for (const referenceId of referenceIds) {
@@ -639,7 +638,6 @@ export async function getMessageHistoryUntilX(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
-  paymentNr = 1,
   amount = 20,
   completeStatusses: TransactionStatusEnum[] = [
     TransactionStatusEnum.success,
@@ -655,7 +653,6 @@ export async function seedPaidRegistrations(
     referenceIds: registrationReferenceIds,
     amount,
     accessToken,
-    paymentNr,
     completeStatusses,
   });
 }
@@ -665,7 +662,6 @@ export async function doPaymentAndWaitForCompletion({
   referenceIds,
   amount,
   accessToken,
-  paymentNr = 1,
   completeStatusses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
@@ -680,7 +676,6 @@ export async function doPaymentAndWaitForCompletion({
 }): Promise<void> {
   await doPayment({
     programId,
-    paymentNr,
     amount,
     referenceIds,
     accessToken,

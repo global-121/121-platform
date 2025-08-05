@@ -254,7 +254,7 @@ describe('Manage Fsp configurations', () => {
 
     const getTranactions = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationOCW5.referenceId,
       accessToken,
     });

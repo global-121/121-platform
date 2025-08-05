@@ -58,7 +58,6 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        paymentNr: payment,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
