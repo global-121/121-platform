@@ -137,16 +137,17 @@ export class PaymentsService {
   public async getPayments(programId: number) {
     // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
     const payments: {
-      payment: number;
+      paymentId: number;
       paymentDate: Date | string;
     }[] = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('payment')
+      .select('"paymentId"')
       .addSelect('MIN(transaction.created)', 'paymentDate')
-      .andWhere('transaction.program.id = :programId', {
+      .leftJoin('transaction.payment', 'p')
+      .andWhere('p."programId" = :programId', {
         programId,
       })
-      .groupBy('payment')
+      .groupBy('"paymentId"')
       .orderBy('MIN(transaction.created)', 'ASC')
       .getRawMany();
     return payments;
@@ -226,7 +227,7 @@ export class PaymentsService {
     };
   }
 
-  public async postPayment(
+  public async createPayment(
     userId: number,
     programId: number,
     amount: number | undefined,
@@ -310,7 +311,7 @@ export class PaymentsService {
       paymentEntity.programId = programId;
       const savedPaymentEntity =
         await this.paymentScopedRepository.save(paymentEntity);
-      bulkActionResultPaymentDto.paymentId = savedPaymentEntity.id;
+      bulkActionResultPaymentDto.id = savedPaymentEntity.id;
 
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({

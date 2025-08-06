@@ -78,12 +78,13 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment({
+    const paymentResponse = await doPayment({
       programId: programIdWesteros,
       amount,
       referenceIds: [],
       accessToken,
     });
+    const pamymentIdWesteros = paymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId: programIdWesteros,
@@ -91,6 +92,7 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
       completeStatusses: [TransactionStatusEnum.waiting],
+      paymentId: pamymentIdWesteros,
     });
 
     ////////////////////////////
@@ -111,18 +113,20 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment({
+    const paymentResponseCbe = await doPayment({
       programId: programIdCbe,
       amount,
       referenceIds: [],
       accessToken,
     });
+    const paymentIdCbe = paymentResponseCbe.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId: programIdCbe,
       paymentReferenceIds: refrenceIdsWithValidation,
       accessToken,
       maxWaitTimeMs: 10_000,
+      paymentId: paymentIdCbe,
     });
   });
 

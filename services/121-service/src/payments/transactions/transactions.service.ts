@@ -220,9 +220,10 @@ export class TransactionsService {
     // Get current amount of payments done to PA
     const { currentPaymentCount } = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
-      .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
+      .select('COUNT(DISTINCT "paymentId")', 'currentPaymentCount')
       .leftJoin('transaction.registration', 'r')
-      .andWhere('transaction.program.id = :programId', {
+      .leftJoin('transaction.payment', 'p')
+      .andWhere('p."programId" = :programId', {
         programId: registration.programId,
       })
       .andWhere('r.id = :registrationId', {

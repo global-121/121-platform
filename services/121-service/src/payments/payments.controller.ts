@@ -181,7 +181,7 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsService.postPayment(
+    const result = await this.paymentsService.createPayment(
       userId,
       programId,
       data.amount,

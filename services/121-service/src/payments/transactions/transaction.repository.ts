@@ -154,8 +154,9 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       ])
       .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
+      .leftJoin('transaction.payment', 'p')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('transaction."programId" = :programId', {
+      .andWhere('p."programId" = :programId', {
         programId,
       });
     if (paymentId) {

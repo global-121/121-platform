@@ -25,5 +25,5 @@ export class BulkActionResultPaymentDto extends BulkActionResultRetryPaymentDto 
   public sumPaymentAmountMultiplier: number;
 
   @ApiProperty({ example: 1 })
-  public paymentId?: number; // Optional, only if payment was created
+  public id?: number; // Optional, only if payment was created
 }
