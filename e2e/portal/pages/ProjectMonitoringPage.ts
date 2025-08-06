@@ -72,6 +72,11 @@ class ProjectMonitoring extends BasePage {
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
   }
+
+  async selectTab({ tabName }: { tabName: string }) {
+    const tabLocator = this.page.getByRole('tablist').getByText(tabName);
+    await tabLocator.click();
+  }
 }
 
 export default ProjectMonitoring;
