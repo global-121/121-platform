@@ -5,8 +5,8 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  registrationScopedGoesPv,
-  registrationScopedUtrechtPv,
+  registrationScopedKisumuEastPv,
+  registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
   patchProgram,
@@ -119,12 +119,12 @@ describe('Import a registration', () => {
   it('should import registration scoped', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
+    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
     // Act
     const response = await importRegistrations(
       programIdPV,
-      [registrationScopedGoesPv],
+      [registrationScopedKisumuEastPv],
       accessToken,
     );
 
@@ -132,26 +132,26 @@ describe('Import a registration', () => {
     expect(response.statusCode).toBe(HttpStatus.CREATED);
 
     const result = await searchRegistrationByReferenceId(
-      registrationScopedGoesPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
       programIdPV,
       accessToken,
     );
     const registrationResult = result.body.data[0];
 
-    for (const key in registrationScopedGoesPv) {
-      expect(registrationResult[key]).toBe(registrationScopedGoesPv[key]);
+    for (const key in registrationScopedKisumuEastPv) {
+      expect(registrationResult[key]).toBe(registrationScopedKisumuEastPv[key]);
     }
   });
 
   it('should not import any registration if one of them has different scope than user', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessTokenScoped(DebugScope.Zeeland);
+    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
     // Act
     const response = await importRegistrations(
       programIdPV,
-      [registrationScopedGoesPv, registrationScopedUtrechtPv],
+      [registrationScopedKisumuEastPv, registrationScopedTurkanaNorthPv],
       accessToken,
     );
 
@@ -159,7 +159,7 @@ describe('Import a registration', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
 
     const result = await searchRegistrationByReferenceId(
-      registrationScopedGoesPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
       programIdPV,
       accessToken,
     );

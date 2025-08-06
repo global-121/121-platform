@@ -3,8 +3,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  registrationScopedGoesPv,
-  registrationScopedMiddelburgPv,
+  registrationScopedKisumuEastPv,
+  registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
@@ -36,7 +36,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     const accessToken = await getAccessToken();
     const fspConfig = getFspSettingByNameOrThrow(
-      registrationScopedMiddelburgPv.programFspConfigurationName,
+      registrationScopedKisumuWestPv.programFspConfigurationName,
     );
 
     // Act
@@ -53,7 +53,7 @@ describe('Registrations - [Scoped]', () => {
     const transaction1 = transactionsResponse.body.find(
       (t) =>
         t.registrationReferenceId ===
-        registrationScopedMiddelburgPv.referenceId,
+        registrationScopedKisumuWestPv.referenceId,
     );
 
     // Check that all expected fields exist with correct types
@@ -62,11 +62,11 @@ describe('Registrations - [Scoped]', () => {
       updated: expect.any(String),
       payment,
       registrationProgramId: expect.any(Number),
-      registrationReferenceId: registrationScopedMiddelburgPv.referenceId,
+      registrationReferenceId: registrationScopedKisumuWestPv.referenceId,
       status: TransactionStatusEnum.success,
       amount: expect.any(Number),
       errorMessage: null,
-      registrationName: registrationScopedMiddelburgPv.fullName,
+      registrationName: registrationScopedKisumuWestPv.fullName,
       programFspConfigurationName: fspConfig.name,
     });
 
@@ -77,7 +77,7 @@ describe('Registrations - [Scoped]', () => {
 
   it('should get all transactions within the scope of the requesting user', async () => {
     // Arrange
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     const accessTokenScoped = await getAccessTokenScoped(testScope);
 
     // Act
@@ -100,8 +100,8 @@ describe('Registrations - [Scoped]', () => {
       (t) => t.registrationReferenceId,
     );
     const registrationsZeelandReferenceIds = [
-      registrationScopedGoesPv.referenceId,
-      registrationScopedMiddelburgPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
+      registrationScopedKisumuWestPv.referenceId,
     ];
     expect(referenceIdsTransactions.sort()).toEqual(
       registrationsZeelandReferenceIds.sort(),

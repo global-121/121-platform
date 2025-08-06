@@ -3,8 +3,8 @@ import { HttpStatus } from '@nestjs/common';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  registrationScopedGoesPv,
-  registrationScopedMiddelburgPv,
+  registrationScopedKisumuEastPv,
+  registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
@@ -38,7 +38,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
@@ -53,8 +53,8 @@ describe('Registrations - [Scoped]', () => {
     expect(data.length).toBe(2);
 
     const expectedReferenceIds = [
-      registrationScopedGoesPv.referenceId,
-      registrationScopedMiddelburgPv.referenceId,
+      registrationScopedKisumuEastPv.referenceId,
+      registrationScopedKisumuWestPv.referenceId,
     ];
 
     // Also check if the right referenceIds are in the transactions
@@ -67,7 +67,7 @@ describe('Registrations - [Scoped]', () => {
     // Arrange
     await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
     await importRegistrations(PvProgramId, registrationsPV, accessToken);
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
@@ -88,7 +88,7 @@ describe('Registrations - [Scoped]', () => {
     expect(getRegistrationsResponse.status).toBe(HttpStatus.OK);
     expect(data.length).toBe(1);
 
-    const expectedReferenceIds = [registrationScopedGoesPv.referenceId];
+    const expectedReferenceIds = [registrationScopedKisumuEastPv.referenceId];
 
     // Also check if the right referenceIds are in the transactions
     expect(data.map((r) => r.referenceId).sort()).toEqual(
@@ -102,7 +102,7 @@ describe('Registrations - [Scoped]', () => {
     await seedPaidRegistrations(registrationsPV, PvProgramId);
     await seedPaidRegistrations(registrationsOCW, OcwProgramId);
 
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act

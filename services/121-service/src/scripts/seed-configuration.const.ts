@@ -1,5 +1,6 @@
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
+import { demoMessageTemplates } from '@121-service/src/seed-data/message-template/demo-message-template-mobile-money.const';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
@@ -94,6 +95,33 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
         messageTemplate: messageTemplateGeneric,
       },
     ],
+  },
+  {
+    name: SeedScript.demoPrograms,
+    organization: 'organization-generic.json',
+    programs: [
+      {
+        program: 'demo-program-mobile-money.json',
+        messageTemplate: demoMessageTemplates,
+        registrations: 'mobile-money-999.csv',
+      },
+      {
+        program: 'demo-program-bank-transfer.json',
+        messageTemplate: demoMessageTemplates,
+        registrations: 'bank-transfer-250.csv',
+      },
+      {
+        program: 'program-nlrc-ocw.json',
+        messageTemplate: messageTemplateNlrcOcw,
+        registrations: 'nlrc-ocw-999.csv',
+      },
+      {
+        program: 'demo-program-excel.json',
+        messageTemplate: demoMessageTemplates,
+        registrations: 'excel-999.csv',
+      },
+    ],
+    includeDebugScopes: true,
   },
   {
     name: SeedScript.testMultiple,

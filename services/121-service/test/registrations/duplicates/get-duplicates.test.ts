@@ -111,10 +111,10 @@ describe('Get duplicate status of registrations', () => {
   });
 
   it(`should return isInScope is false and no name for a duplicate if the duplicate registration is out of the scope of the user`, async () => {
-    const registration1 = { ...registrationPV5, scope: DebugScope.ZeelandGoes };
+    const registration1 = { ...registrationPV5, scope: DebugScope.KisumuEast };
     const registration2 = {
       ...registrationPV6,
-      scope: DebugScope.UtrechtHouten,
+      scope: DebugScope.TurkanaNorth,
     };
 
     registration1.phoneNumber = '1234567890';
@@ -126,7 +126,7 @@ describe('Get duplicate status of registrations', () => {
       accessToken,
     );
 
-    const scopedAccessToken = await getAccessTokenScoped(DebugScope.Zeeland);
+    const scopedAccessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
     const result = await getDuplicates({
       programId,
@@ -139,7 +139,7 @@ describe('Get duplicate status of registrations', () => {
     // Name should not be there if the duplicate registration is out of the scope because the user has no permission to see the name
     expect(duplicates[0]).toMatchObject({
       registrationProgramId: expect.any(Number),
-      scope: DebugScope.UtrechtHouten,
+      scope: DebugScope.TurkanaNorth,
       attributeNames: ['phoneNumber'],
       isInScope: false,
     });

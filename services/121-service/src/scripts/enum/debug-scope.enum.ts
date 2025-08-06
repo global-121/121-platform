@@ -1,7 +1,8 @@
 export enum DebugScope {
-  Utrecht = 'utrecht',
-  UtrechtHouten = 'utrecht.houten',
-  Zeeland = 'zeeland',
-  ZeelandMiddelburg = 'zeeland.middelburg',
-  ZeelandGoes = 'zeeland.goes',
+  Turkana = 'turkana',
+  TurkanaNorth = 'turkana.turkana-north',
+  Kisumu = 'kisumu',
+  KisumuWest = 'kisumu.kisumu-west',
+  KisumuEast = 'kisumu.kisumu-east',
+  KisumuCentral = 'kisumu.kisumu-central',
 }

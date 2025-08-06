@@ -216,12 +216,12 @@ describe('Update attribute of PA', () => {
   it('should update scope within current users scope', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
-    const newScope = 'utrecht.houten';
+    const newScope = 'turkana.turkana-north';
     const reason = 'automated test';
     const updateDto = {
       scope: newScope,
     };
-    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+    accessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
     // Act
     const updateResponse = await updateRegistration(
@@ -252,7 +252,7 @@ describe('Update attribute of PA', () => {
     const updateDto = {
       scope: newScope,
     };
-    accessToken = await getAccessTokenScoped(DebugScope.Utrecht);
+    accessToken = await getAccessTokenScoped(DebugScope.Turkana);
 
     // Act
     const updateResponse = await updateRegistration(

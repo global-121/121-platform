@@ -3,6 +3,8 @@ import { HttpStatus } from '@nestjs/common';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   doPayment,
@@ -14,6 +16,7 @@ import {
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
+  addPermissionToRole,
   getAccessToken,
   getAccessTokenScoped,
   resetDB,
@@ -64,7 +67,12 @@ describe('Registrations - [Scoped]', () => {
 
   it('should payout all registrations within the scope of the requesting user', async () => {
     // Arrange
-    const testScope = DebugScope.Zeeland;
+    // add payment.create permission to the user
+    await addPermissionToRole(DefaultUserRole.CvaManager, [
+      PermissionEnum.PaymentCREATE,
+    ]);
+
+    const testScope = DebugScope.Kisumu;
     const accessTokenScoped = await getAccessTokenScoped(testScope);
 
     // Act

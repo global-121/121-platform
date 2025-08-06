@@ -114,11 +114,11 @@ describe('Get duplicate status of registrations', () => {
   it(`should mark registration as ${DuplicateStatus.duplicate} if it matches with a registration out of the user's scope`, async () => {
     const registration1 = {
       ...registrationPV5,
-      scope: DebugScope.ZeelandMiddelburg,
+      scope: DebugScope.KisumuWest,
     };
     const registration2 = {
       ...registrationPV6,
-      scope: DebugScope.UtrechtHouten,
+      scope: DebugScope.TurkanaNorth,
     };
 
     registration1.phoneNumber = '1234567890';
@@ -129,7 +129,7 @@ describe('Get duplicate status of registrations', () => {
       accessToken,
     );
 
-    const testScope = DebugScope.Zeeland;
+    const testScope = DebugScope.Kisumu;
     const accessTokenScoped = await getAccessTokenScoped(testScope);
 
     const scopedResult = await getRegistrations({

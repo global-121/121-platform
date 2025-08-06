@@ -12,4 +12,5 @@ export enum SeedScript {
   // excelProgram = 'excel-program',
   nedbankProgram = 'nedbank-program',
   onafriqProgram = 'onafriq-program',
+  demoPrograms = 'demo-programs',
 }
