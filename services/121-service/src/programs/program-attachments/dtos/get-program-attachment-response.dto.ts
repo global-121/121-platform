@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetProgramAttachmentDto {
+export class GetProgramAttachmentResponseDto {
   @ApiProperty({ example: 1, type: 'number' })
   public readonly id: number;
 
@@ -12,9 +12,6 @@ export class GetProgramAttachmentDto {
 
   @ApiProperty({ example: 1, type: 'number' })
   public readonly programId: number;
-
-  @ApiProperty({ example: 1, type: 'number' })
-  public readonly userId: number;
 
   @ApiProperty({ example: { id: 1, username: 'user@example.org' } })
   public readonly user: {
@@ -28,7 +25,4 @@ export class GetProgramAttachmentDto {
 
   @ApiProperty({ example: 'image/png', type: 'string' })
   public readonly mimetype: string;
-
-  @ApiProperty({ example: '2/1754048125149-string.png', type: 'string' })
-  public readonly blobName: string;
 }

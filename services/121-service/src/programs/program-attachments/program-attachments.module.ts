@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { env } from '@121-service/src/env';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { ProgramAttachmentScopedRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
-import { ProgramAttachmentController } from '@121-service/src/programs/program-attachments/program-attachments.controller';
+import { ProgramAttachmentsController } from '@121-service/src/programs/program-attachments/program-attachments.controller';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 
 @Module({
@@ -30,7 +30,7 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
       },
     },
   ],
-  controllers: [ProgramAttachmentController],
+  controllers: [ProgramAttachmentsController],
   exports: [ProgramAttachmentsService],
 })
 export class ProgramAttachmentModule {}

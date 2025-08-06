@@ -2,7 +2,6 @@
 
 exports[`Program Attachments should list all attachments for a program 1`] = `
 {
-  "blobName": Any<String>,
   "created": Any<String>,
   "filename": "Test Image.jpg",
   "id": 1,
@@ -10,18 +9,8 @@ exports[`Program Attachments should list all attachments for a program 1`] = `
   "programId": 2,
   "updated": Any<String>,
   "user": {
-    "active": true,
-    "admin": true,
-    "created": Any<String>,
-    "displayName": "admin",
     "id": 1,
-    "isEntraUser": false,
-    "isOrganizationAdmin": true,
-    "lastLogin": Any<String>,
-    "updated": Any<String>,
-    "userType": "aidWorker",
     "username": "admin@example.org",
   },
-  "userId": 1,
 }
 `;

@@ -1,7 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getServer } from '@121-service/test/helpers/utility.helper';
+import {
+  deleteAttachment,
+  getAttachment,
+  getAttachments,
+  uploadAttachment,
+} from '@121-service/test/helpers/program-attachments.helper';
 import {
   getAccessToken,
   resetDB,
@@ -27,34 +32,32 @@ describe('Program Attachments', () => {
     // Arrange
 
     // Act
-    const response = await getServer()
-      .post(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken])
-      .attach('file', testImagePath)
-      .field('filename', testImageFilename);
+    const response = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.CREATED);
     expect(response.body).toHaveProperty('id');
-    expect(response.body.filename).toBe(
-      `${testImageFilename}.${testImageExtension}`,
-    );
-    expect(response.body.mimetype).toBe(testImageMimetype);
-    expect(response.body.programId).toBe(programIdPV);
   });
 
   it('should list all attachments for a program', async () => {
     // Arrange - Upload a test attachment first
-    await getServer()
-      .post(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken])
-      .attach('file', testImagePath)
-      .field('filename', testImageFilename);
+    await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
 
     // Act
-    const response = await getServer()
-      .get(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken]);
+    const response = await getAttachments({
+      programId: programIdPV,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
@@ -65,28 +68,26 @@ describe('Program Attachments', () => {
     expect(attachment).toMatchSnapshot({
       created: expect.any(String),
       updated: expect.any(String),
-      blobName: expect.any(String),
-      user: {
-        created: expect.any(String),
-        updated: expect.any(String),
-        lastLogin: expect.any(String),
-      },
     });
   });
 
   it('should download a specific attachment', async () => {
-    const uploadResponse = await getServer()
-      .post(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken])
-      .attach('file', testImagePath)
-      .field('filename', testImageFilename);
+    // Arrange - Upload a test attachment first
+    const uploadResponse = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
 
     const attachmentId = uploadResponse.body.id;
 
     // Act
-    const response = await getServer()
-      .get(`/programs/${programIdPV}/attachments/${attachmentId}`)
-      .set('Cookie', [accessToken])
+    const response = await getAttachment({
+      programId: programIdPV,
+      attachmentId,
+      accessToken,
+    })
       .buffer()
       .parse((res, callback) => {
         // Collect the response data as a buffer
@@ -109,44 +110,43 @@ describe('Program Attachments', () => {
   });
 
   it('should delete a specific attachment', async () => {
-    const uploadResponse = await getServer()
-      .post(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken])
-      .attach('file', testImagePath)
-      .field('filename', 'Test Image');
+    const uploadResponse = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
 
     const attachmentId = uploadResponse.body.id;
 
-    // Verify the attachment exists before deletion
-    let getResponse = await getServer()
-      .get(`/programs/${programIdPV}/attachments/${attachmentId}`)
-      .set('Cookie', [accessToken]);
-
-    expect(getResponse.status).toBe(HttpStatus.OK);
-
     // Act
-    const deleteResponse = await getServer()
-      .delete(`/programs/${programIdPV}/attachments/${attachmentId}`)
-      .set('Cookie', [accessToken]);
+    const deleteResponse = await deleteAttachment({
+      programId: programIdPV,
+      attachmentId,
+      accessToken,
+    });
 
     // Assert - Deletion successful
-    expect(deleteResponse.status).toBe(HttpStatus.OK);
+    expect(deleteResponse.status).toBe(HttpStatus.NO_CONTENT);
 
     // Verify the attachment is no longer retrievable
-    getResponse = await getServer()
-      .get(`/programs/${programIdPV}/attachments/${attachmentId}`)
-      .set('Cookie', [accessToken]);
+    const getResponse = await getAttachment({
+      programId: programIdPV,
+      attachmentId,
+      accessToken,
+    });
 
     expect(getResponse.status).toBe(HttpStatus.NOT_FOUND);
   });
 
   it('should reject files with invalid mime types', async () => {
     // Act
-    const response = await getServer()
-      .post(`/programs/${programIdPV}/attachments`)
-      .set('Cookie', [accessToken])
-      .attach('file', testCsvPath)
-      .field('filename', 'Test CSV');
+    const response = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testCsvPath,
+      filename: 'Test CSV',
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
@@ -154,9 +154,11 @@ describe('Program Attachments', () => {
 
   it('should handle attachment not found', async () => {
     // Act
-    const response = await getServer()
-      .get(`/programs/${programIdPV}/attachments/999999`)
-      .set('Cookie', [accessToken]);
+    const response = await getAttachment({
+      programId: programIdPV,
+      attachmentId: 999999,
+      accessToken,
+    });
 
     // Assert
     expect(response.status).toBe(HttpStatus.NOT_FOUND);

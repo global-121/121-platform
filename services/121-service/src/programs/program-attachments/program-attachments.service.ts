@@ -1,8 +1,10 @@
-import { ContainerClient } from '@azure/storage-blob';
+import { BlockBlobClient, ContainerClient } from '@azure/storage-blob';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { GetProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dto/get-program-attachment.dto';
+import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment-response.dto';
+import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
+import { ProgramAttachmentMapper } from '@121-service/src/programs/program-attachments/mapper/program-attachment.mapper';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
 import { ProgramAttachmentScopedRepository } from '@121-service/src/programs/program-attachments/program-attachment.repository';
 
@@ -24,7 +26,7 @@ export class ProgramAttachmentsService {
     file: Express.Multer.File;
     filename: string;
     userId: number;
-  }): Promise<ProgramAttachmentEntity> {
+  }): Promise<CreateProgramAttachmentResponseDto> {
     // get extension from original file name
     const extension = file.originalname.split('.').pop();
     const filenameWithExtension = `${filename}.${extension}`;
@@ -43,18 +45,26 @@ export class ProgramAttachmentsService {
     attachment.blobName = blobName;
     attachment.programId = programId;
     attachment.userId = userId;
-    return await this.programAttachmentScopedRepository.save(attachment);
+
+    const savedAttachment =
+      await this.programAttachmentScopedRepository.save(attachment);
+
+    return {
+      id: savedAttachment.id,
+    };
   }
 
   public async getProgramAttachments(
     programId: number,
-  ): Promise<GetProgramAttachmentDto[]> {
-    return this.programAttachmentScopedRepository.find({
+  ): Promise<GetProgramAttachmentResponseDto[]> {
+    const attachments = await this.programAttachmentScopedRepository.find({
       where: { programId: Equal(programId) },
       relations: {
         user: true,
       },
     });
+
+    return ProgramAttachmentMapper.mapEntitiesToDtos(attachments);
   }
 
   public async getProgramAttachmentById(
@@ -64,6 +74,72 @@ export class ProgramAttachmentsService {
     stream: NodeJS.ReadableStream;
     mimetype: string;
     filename: string;
+  }> {
+    const { programAttachment, blockBlobClient } =
+      await this.getProgramAttachmentAndBlockBlobClient({
+        programId,
+        attachmentId,
+      });
+
+    const downloadBlockBlobResponse = await blockBlobClient.download(0);
+
+    if (!downloadBlockBlobResponse.readableStreamBody) {
+      throw new Error(
+        `Attachment with ID ${attachmentId} not found in blob storage for program ${programId}`,
+      );
+    }
+
+    return {
+      mimetype: programAttachment.mimetype,
+      stream: downloadBlockBlobResponse.readableStreamBody,
+      filename: programAttachment.filename,
+    };
+  }
+
+  public async deleteProgramAttachmentById(
+    programId: number,
+    attachmentId: number,
+  ): Promise<void> {
+    const { programAttachment, blockBlobClient } =
+      await this.getProgramAttachmentAndBlockBlobClient({
+        programId,
+        attachmentId,
+      });
+
+    await blockBlobClient.deleteIfExists();
+
+    // Delete from DB
+    await this.programAttachmentScopedRepository.remove(programAttachment);
+  }
+
+  // XXX: add coverage for this
+  public async deleteAllProgramAttachments(programId: number): Promise<void> {
+    const programAttachments =
+      await this.programAttachmentScopedRepository.find({
+        where: { programId: Equal(programId) },
+      });
+
+    await Promise.all(
+      programAttachments.map(async (attachment) => {
+        const blockBlobClient = this.containerClient.getBlockBlobClient(
+          `${attachment.blobName}`,
+        );
+        await blockBlobClient.deleteIfExists();
+      }),
+    );
+
+    await this.programAttachmentScopedRepository.remove(programAttachments);
+  }
+
+  private async getProgramAttachmentAndBlockBlobClient({
+    programId,
+    attachmentId,
+  }: {
+    programId: number;
+    attachmentId: number;
+  }): Promise<{
+    programAttachment: ProgramAttachmentEntity;
+    blockBlobClient: BlockBlobClient;
   }> {
     const programAttachment =
       await this.programAttachmentScopedRepository.findOne({
@@ -83,69 +159,7 @@ export class ProgramAttachmentsService {
     const blockBlobClient = this.containerClient.getBlockBlobClient(
       `${programAttachment.blobName}`,
     );
-    const downloadBlockBlobResponse = await blockBlobClient.download(0);
 
-    if (!downloadBlockBlobResponse.readableStreamBody) {
-      throw new HttpException(
-        `Attachment with ID ${attachmentId} not found for program ${programId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return {
-      mimetype: programAttachment.mimetype,
-      stream: downloadBlockBlobResponse.readableStreamBody,
-      filename: programAttachment.filename,
-    };
-  }
-
-  public async deleteProgramAttachmentById(
-    programId: number,
-    attachmentId: number,
-  ): Promise<ProgramAttachmentEntity> {
-    const programAttachment =
-      await this.programAttachmentScopedRepository.findOne({
-        where: {
-          programId: Equal(programId),
-          id: Equal(attachmentId),
-        },
-      });
-
-    if (!programAttachment) {
-      throw new HttpException(
-        `Attachment with ID ${attachmentId} not found for program ${programId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    // Delete from Blob Storage
-    const blockBlobClient = this.containerClient.getBlockBlobClient(
-      `${programAttachment.blobName}`,
-    );
-
-    await blockBlobClient.deleteIfExists();
-
-    // Delete from DB
-    return await this.programAttachmentScopedRepository.remove(
-      programAttachment,
-    );
-  }
-
-  public async deleteAllProgramAttachments(programId: number): Promise<void> {
-    const programAttachments =
-      await this.programAttachmentScopedRepository.find({
-        where: { programId: Equal(programId) },
-      });
-
-    await Promise.all(
-      programAttachments.map(async (attachment) => {
-        const blockBlobClient = this.containerClient.getBlockBlobClient(
-          `${attachment.blobName}`,
-        );
-        await blockBlobClient.deleteIfExists();
-      }),
-    );
-
-    await this.programAttachmentScopedRepository.remove(programAttachments);
+    return { programAttachment, blockBlobClient };
   }
 }

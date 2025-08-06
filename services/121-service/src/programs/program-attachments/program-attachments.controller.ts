@@ -4,6 +4,7 @@ import {
   Delete,
   FileTypeValidator,
   Get,
+  HttpCode,
   HttpStatus,
   MaxFileSizeValidator,
   Param,
@@ -29,9 +30,9 @@ import { Response } from 'express';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { CreateProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dto/create-program-attachment.dto';
-import { GetProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dto/get-program-attachment.dto';
-import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
+import { CreateProgramAttachmentDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment.dto';
+import { CreateProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/create-program-attachment-response.dto';
+import { GetProgramAttachmentResponseDto } from '@121-service/src/programs/program-attachments/dtos/get-program-attachment-response.dto';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { FILE_UPLOAD_WITH_FILENAME_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -41,7 +42,7 @@ import { RequestHelper } from '@121-service/src/utils/request-helper/request-hel
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('programs/attachments')
 @Controller()
-export class ProgramAttachmentController {
+export class ProgramAttachmentsController {
   private readonly programAttachmentsService: ProgramAttachmentsService;
   public constructor(programAttachmentsService: ProgramAttachmentsService) {
     this.programAttachmentsService = programAttachmentsService;
@@ -76,7 +77,7 @@ export class ProgramAttachmentController {
     @Body() body: CreateProgramAttachmentDto,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
-  ): Promise<ProgramAttachmentEntity> {
+  ): Promise<CreateProgramAttachmentResponseDto> {
     const userId = RequestHelper.getUserId(req);
 
     return await this.programAttachmentsService.createProgramAttachment({
@@ -100,7 +101,7 @@ export class ProgramAttachmentController {
   public async getProgramAttachments(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<GetProgramAttachmentDto[]> {
+  ): Promise<GetProgramAttachmentResponseDto[]> {
     return this.programAttachmentsService.getProgramAttachments(programId);
   }
 
@@ -143,19 +144,18 @@ export class ProgramAttachmentController {
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({ name: 'attachmentId', required: true, type: 'integer' })
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Delete a specific attachment of a program by ID',
+    status: HttpStatus.NO_CONTENT,
+    description: 'Attachment deleted successfully',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('programs/:programId/attachments/:attachmentId')
   public async deleteProgramAttachmentById(
     @Param('programId', ParseIntPipe) programId: number,
     @Param('attachmentId', ParseIntPipe) attachmentId: number,
-    @Res() res: Response,
   ): Promise<void> {
     await this.programAttachmentsService.deleteProgramAttachmentById(
       programId,
       attachmentId,
     );
-    res.status(HttpStatus.OK).send();
   }
 }
