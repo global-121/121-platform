@@ -1137,16 +1137,16 @@ export class PaymentsService {
 
   private failedTransactionForRegistrationAndPayment(
     q: ScopedQueryBuilder<RegistrationEntity>,
-    payment: number,
+    paymentId: number,
   ): ScopedQueryBuilder<RegistrationEntity> {
     q.leftJoin(
       (qb) =>
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("created")', 'created')
-          .addSelect('"payment"', 'payment')
-          .andWhere('"payment" = :payment', { payment })
-          .groupBy('"payment"')
+          .addSelect('"paymentId"', 'paymentId')
+          .andWhere('"paymentId" = :paymentId', { paymentId })
+          .groupBy('"paymentId"')
           .addSelect('"transactionStep"', 'transactionStep')
           .addGroupBy('"transactionStep"')
           .addSelect('"registrationId"', 'registrationId')
@@ -1158,7 +1158,7 @@ export class PaymentsService {
         'registration.transactions',
         'transaction',
         `transaction."registrationId" = transaction_max_created."registrationId"
-      AND transaction.payment = transaction_max_created.payment
+      AND transaction."paymentId" = transaction_max_created."paymentId"
       AND transaction."transactionStep" = transaction_max_created."transactionStep"
       AND transaction."created" = transaction_max_created."created"
       AND transaction.status = '${TransactionStatusEnum.error}'`,

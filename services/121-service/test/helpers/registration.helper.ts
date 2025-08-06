@@ -674,12 +674,13 @@ export async function doPaymentAndWaitForCompletion({
   paymentNr?: number;
   completeStatusses?: TransactionStatusEnum[];
 }): Promise<void> {
-  await doPayment({
+  const doPaymentResponse = await doPayment({
     programId,
     amount,
     referenceIds,
     accessToken,
   });
+  const paymentId = doPaymentResponse.body.id;
 
   await waitForPaymentTransactionsToComplete({
     programId,
@@ -687,6 +688,7 @@ export async function doPaymentAndWaitForCompletion({
     accessToken,
     maxWaitTimeMs: 30_000,
     completeStatusses,
+    paymentId,
   });
 }
 
