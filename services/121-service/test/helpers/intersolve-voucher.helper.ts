@@ -5,12 +5,17 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
-export async function getTransactionsIntersolveVoucher(
-  programId: number,
-  paymentId: number,
-  referenceId: string,
-  accessToken: string,
-): Promise<any[]> {
+export async function getTransactionsIntersolveVoucher({
+  programId,
+  paymentId,
+  referenceId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  referenceId: string;
+  accessToken: string;
+}): Promise<any[]> {
   let getTransactionsBody: any[] = [];
   let attempts = 0;
   while (attempts <= 10) {

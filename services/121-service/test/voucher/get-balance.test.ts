@@ -51,12 +51,12 @@ describe('Get Intersolve voucher balance', () => {
     });
 
     // make sure to wait for the transaction to be completed
-    const getTransactionsBody = await getTransactionsIntersolveVoucher(
-      programIdPV,
-      payment,
-      registrationPV5.referenceId,
+    const getTransactionsBody = await getTransactionsIntersolveVoucher({
+      programId: programIdPV,
+      paymentId: payment,
+      referenceId: registrationPV5.referenceId,
       accessToken,
-    );
+    });
 
     // Act
     const getVoucherBalanceResponse = await getVoucherBalance(
