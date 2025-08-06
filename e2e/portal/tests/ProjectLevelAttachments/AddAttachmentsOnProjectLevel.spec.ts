@@ -40,5 +40,9 @@ test.describe('Export Payments with Date Range', () => {
     await test.step('Upload files', async () => {
       console.log('Uploading files is not implemented in this test.');
     });
+
+    await test.step('Validate uploaded files', async () => {
+      console.log('Validating uploaded files is not implemented in this test.');
+    });
   });
 });
