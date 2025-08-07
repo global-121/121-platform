@@ -96,29 +96,20 @@
     </p-card>
     @if (project.isPending()) {
       <p-skeleton
-        class="grid-in-iframe"
+        class="grid-in-content"
         height="8rem"
       ></p-skeleton>
     } @else {
       <p-card
-        class="grid-in-iframe"
+        class="grid-in-content"
         data-testid="monitoring-iframe"
+        styleClass="[&_.p-card-body]:pt-3"
       >
-        @if (project.data()?.monitoringDashboardUrl) {
-          <app-monitoring-iframe
-            [url]="project.data()!.monitoringDashboardUrl!"
-          />
-        } @else {
-          <p
-            i18n
-            class="py-8 text-center text-grey-500 txt-system-s"
-          >
-            No PowerBI dashboard has been configured for this project, please
-            contact
-            <a href="mailto:support@121.global">support&#64;121.global</a> to
-            set this up
-          </p>
-        }
+        <app-monitoring-menu
+          data-testid="monitoring-menu"
+          [projectId]="projectId()"
+        />
+        <ng-content></ng-content>
       </p-card>
     }
   </div>

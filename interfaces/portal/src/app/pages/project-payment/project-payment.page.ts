@@ -26,6 +26,7 @@ import {
   getChipDataByRegistrationStatus,
   getChipDataByTransactionStatus,
 } from '~/components/colored-chip/colored-chip.helper';
+import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -44,7 +45,6 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
-import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
 import { ImportReconciliationDataComponent } from '~/pages/project-payment/components/import-reconciliation-data/import-reconciliation-data.component';
 import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';

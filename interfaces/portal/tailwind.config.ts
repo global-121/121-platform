@@ -82,12 +82,12 @@ export default {
           'metric1 metric2',
           'metric3 metric4',
           'description description',
-          'iframe iframe',
+          'content content',
         ],
         'project-monitoring-wide': [
           'metric1 metric2 description',
           'metric3 metric4 description',
-          'iframe iframe iframe',
+          'content content content',
         ],
         'project-payment': ['chart chart', 'metric1 metric2', 'table table'],
         'project-payment-wide': [
