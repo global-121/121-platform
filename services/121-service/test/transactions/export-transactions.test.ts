@@ -144,7 +144,7 @@ describe('Export transactions', () => {
     expect(transactionsJson.length).toBe(1);
     const transactionFromPayment2 = transactionsJson[0];
     expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+      paymentId: 2,
       paymentCount: 3,
     });
   });
@@ -182,7 +182,7 @@ describe('Export transactions', () => {
     expect(transactionsJson.length).toBe(1);
     const transactionFromPayment2 = transactionsJson[0];
     expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+      paymentId: 2,
       paymentCount: 2,
     });
   });
