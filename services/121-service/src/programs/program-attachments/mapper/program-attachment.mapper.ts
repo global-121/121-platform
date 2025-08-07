@@ -13,7 +13,6 @@ export class ProgramAttachmentMapper {
   public static mapEntityToDto(
     entity: ProgramAttachmentEntity,
   ): GetProgramAttachmentResponseDto {
-    console.log(entity);
     return {
       id: entity.id,
       created: entity.created,
