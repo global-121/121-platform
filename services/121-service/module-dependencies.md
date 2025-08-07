@@ -38,7 +38,7 @@ graph LR
   ProgramModule-->FspsModule
   FspsModule-->UserModule
   ProgramModule-->LookupModule
-  ProgramModule-->ProgramAttachmentModule
+  ProgramModule-->ProgramAttachmentsModule
   ProgramModule-->ProgramAttributesModule
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFspConfigurationsModule

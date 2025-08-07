@@ -33,4 +33,4 @@ import { ProgramAttachmentsService } from '@121-service/src/programs/program-att
   controllers: [ProgramAttachmentsController],
   exports: [ProgramAttachmentsService],
 })
-export class ProgramAttachmentModule {}
+export class ProgramAttachmentsModule {}
