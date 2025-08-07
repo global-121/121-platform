@@ -14,6 +14,7 @@ class ProjectMonitoring extends BasePage {
   readonly monitoringIframe: Locator;
   readonly importFileButton: Locator;
   readonly uploadFileButton: Locator;
+  readonly formError: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -35,6 +36,7 @@ class ProjectMonitoring extends BasePage {
     this.uploadFileButton = this.page.getByRole('button', {
       name: 'Upload file',
     });
+    this.formError = this.page.getByTestId('form-error');
   }
 
   async assertMonitoringTabElements({
@@ -101,6 +103,14 @@ class ProjectMonitoring extends BasePage {
       .getByPlaceholder('Name the file for easy identification')
       .fill(reason);
     await this.importFileButton.click();
+  }
+
+  async validateFormError({ errorText }: { errorText: string }): Promise<void> {
+    await this.page.waitForLoadState('networkidle');
+    await this.formError.waitFor();
+    const errorString = await this.formError.textContent();
+    expect(await this.formError.isVisible()).toBe(true);
+    expect(errorString).toContain(errorText);
   }
 }
 

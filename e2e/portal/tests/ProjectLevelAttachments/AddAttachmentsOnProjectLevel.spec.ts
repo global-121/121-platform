@@ -25,6 +25,10 @@ const jpgFilePath = path.resolve(
   __dirname,
   '../../../test-file-upload-data/test-photo.jpg',
 );
+const wrongFileFormatPath = path.resolve(
+  __dirname,
+  '../../../test-file-upload-data/wrong-file-format.pages',
+);
 const testFilePaths = [pdfFilePath, docxFilePath, pngFilePath, jpgFilePath];
 const fileTypesNames = ['PDF', 'Document', 'Image', 'Image'];
 
@@ -49,15 +53,12 @@ test.describe('Attachments on Project Level', () => {
     await page.goto('/');
     await projectMonitoring.selectProgram(projectTitle);
     await projectMonitoring.navigateToProgramPage('Monitoring');
+    await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 
   test('[37582] Upload: Word, PDF, JPG and PNG attachments formats', async () => {
     const projectMonitoring = new ProjectMonitoring(page);
     const tableComponent = new TableComponent(page);
-
-    await test.step('Select file tab', async () => {
-      await projectMonitoring.selectTab({ tabName: 'Files' });
-    });
 
     await test.step('Upload files', async () => {
       for (const filePath of testFilePaths) {
@@ -79,6 +80,23 @@ test.describe('Attachments on Project Level', () => {
         expect(fileNamesArray[i]).toContain(expectedFileName);
         expect(fileTypesArray[i]).toContain(fileTypesNames[i]);
       }
+    });
+  });
+
+  test('[37583] Error when uploading not accepted format', async () => {
+    const projectMonitoring = new ProjectMonitoring(page);
+
+    await test.step('Upload file with unsupported format', async () => {
+      await projectMonitoring.uploadAttachment({
+        filePath: wrongFileFormatPath,
+        reason: `Test ${path.basename(wrongFileFormatPath, path.extname(wrongFileFormatPath)).toUpperCase()} file upload`,
+      });
+    });
+
+    await test.step('Validate wrong file format error message', async () => {
+      await projectMonitoring.validateFormError({
+        errorText: 'Something went wrong: Validation failed',
+      });
     });
   });
 });
