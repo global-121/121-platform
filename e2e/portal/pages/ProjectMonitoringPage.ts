@@ -12,6 +12,8 @@ class ProjectMonitoring extends BasePage {
   readonly projectDescriptionTile: Locator;
   readonly metricTileComponent: Locator;
   readonly monitoringIframe: Locator;
+  readonly importFileButton: Locator;
+  readonly uploadFileButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -27,6 +29,12 @@ class ProjectMonitoring extends BasePage {
     );
     this.metricTileComponent = this.page.getByTestId('metric-tile-component');
     this.monitoringIframe = this.page.getByTestId('monitoring-iframe');
+    this.importFileButton = this.page.getByRole('button', {
+      name: 'Import file',
+    });
+    this.uploadFileButton = this.page.getByRole('button', {
+      name: 'Upload file',
+    });
   }
 
   async assertMonitoringTabElements({
@@ -76,6 +84,23 @@ class ProjectMonitoring extends BasePage {
   async selectTab({ tabName }: { tabName: string }) {
     const tabLocator = this.page.getByRole('tablist').getByText(tabName);
     await tabLocator.click();
+  }
+
+  async uploadAttachment({
+    filePath,
+    reason,
+  }: {
+    filePath: string;
+    reason: string;
+  }) {
+    await this.page.waitForLoadState('networkidle');
+    await this.uploadFileButton.waitFor({ state: 'visible' });
+    await this.uploadFileButton.click();
+    await this.chooseAndUploadFile(filePath);
+    await this.page
+      .getByPlaceholder('Name the file for easy identification')
+      .fill(reason);
+    await this.importFileButton.click();
   }
 }
 
