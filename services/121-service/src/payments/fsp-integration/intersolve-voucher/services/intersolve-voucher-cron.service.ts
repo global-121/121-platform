@@ -124,9 +124,10 @@ export class IntersolveVoucherCronService {
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
         .createQueryBuilder('transaction')
-        .select('MAX(transaction.payment)', 'max')
+        .select('MAX(transaction."paymentId")', 'max')
         .addSelect('transaction.userId', 'userId')
-        .where('transaction.programId = :programId', { programId: program.id })
+        .leftJoin('transaction.payment', 'payment')
+        .where('payment.programId = :programId', { programId: program.id })
         .groupBy('transaction.userId')
         .orderBy('max', 'DESC')
         .getRawOne();
@@ -148,7 +149,7 @@ export class IntersolveVoucherCronService {
           sixteenHoursAgo,
         })
         .andWhere('"whatsappPhoneNumber" is not NULL')
-        .andWhere('voucher.payment >= :minimumPayment', {
+        .andWhere('voucher."paymentId" >= :minimumPayment', {
           minimumPayment,
         })
         .andWhere('registration.programId = :programId', {
