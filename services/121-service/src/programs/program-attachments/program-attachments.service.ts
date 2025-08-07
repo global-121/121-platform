@@ -112,7 +112,6 @@ export class ProgramAttachmentsService {
     await this.programAttachmentScopedRepository.remove(programAttachment);
   }
 
-  // XXX: add coverage for this
   public async deleteAllProgramAttachments(programId: number): Promise<void> {
     const programAttachments =
       await this.programAttachmentScopedRepository.find({
