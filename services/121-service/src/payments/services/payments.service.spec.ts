@@ -80,7 +80,7 @@ describe('PaymentsService - getTransactions', () => {
     it('should return transactions with names', async () => {
       // Arrange
       const programId = 1;
-      const payment = 2;
+      const paymentId = 2;
 
       const mockRegistrationViews = [
         { referenceId: '101', name: 'John Doe' },
@@ -101,7 +101,7 @@ describe('PaymentsService - getTransactions', () => {
       // Act
       const result = await service.geTransactionsByPaymentId({
         programId,
-        paymentId: payment,
+        paymentId,
       });
 
       // Assert
@@ -114,7 +114,7 @@ describe('PaymentsService - getTransactions', () => {
     it('should return empty array when no transactions found', async () => {
       // Arrange
       const programId = 1;
-      const payment = 2;
+      const paymentId = 2;
 
       jest
         .spyOn(transactionScopedRepository, 'getTransactions')
@@ -123,13 +123,13 @@ describe('PaymentsService - getTransactions', () => {
       // Act
       const result = await service.geTransactionsByPaymentId({
         programId,
-        paymentId: payment,
+        paymentId,
       });
 
       // Assert
       expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
         programId,
-        payment,
+        paymentId,
       });
       expect(result).toEqual([]);
     });

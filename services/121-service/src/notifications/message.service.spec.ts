@@ -190,7 +190,7 @@ describe('MessageService', () => {
         messageContentType: MessageContentType.paymentTemplated,
         whatsappPhoneNumber: '94287277',
         customData: {
-          payment: 1,
+          paymentId: 1,
           amount: 123,
           intersolveVoucherId: 456,
         },
@@ -220,7 +220,7 @@ describe('MessageService', () => {
       expect(
         intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
       ).toHaveBeenCalledWith(
-        testMessageJob.customData.payment,
+        testMessageJob.customData.paymentId,
         testMessageJob.registrationId,
         TransactionStatusEnum.waiting,
         1,
@@ -241,7 +241,7 @@ describe('MessageService', () => {
         messageContentType: MessageContentType.paymentTemplated,
         whatsappPhoneNumber: '94287277',
         customData: {
-          payment: 1,
+          paymentId: 1,
           amount: 123,
           intersolveVoucherId: 456,
         },
@@ -272,7 +272,7 @@ describe('MessageService', () => {
       expect(
         intersolveVoucherService.storeTransactionResult,
       ).toHaveBeenCalledWith(
-        testMessageJob.customData.payment,
+        testMessageJob.customData.paymentId,
         testMessageJob.customData.amount,
         testMessageJob.registrationId,
         2,
