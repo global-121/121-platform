@@ -249,7 +249,7 @@ export class ProjectApiService extends DomainApiService {
       path: [BASE_ENDPOINT, projectId, 'fsps/intersolve-voucher/vouchers'],
       params: {
         referenceId: voucherReferenceId,
-        payment: paymentId.toString(),
+        paymentId: paymentId.toString(),
       },
       responseAsBlob: true,
     });
@@ -272,7 +272,7 @@ export class ProjectApiService extends DomainApiService {
       ],
       params: {
         referenceId: registrationReferenceId,
-        payment: paymentId,
+        paymentId,
       },
     });
   }

@@ -5,7 +5,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 export interface GetAuditedTransactionDto {
   paymentDate: Date;
   updated: Date;
-  payment: number;
+  paymentId: number;
   referenceId: string;
   status: TransactionStatusEnum;
   amount: number;

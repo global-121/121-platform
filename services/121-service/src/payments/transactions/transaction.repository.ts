@@ -141,7 +141,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .select([
         'transaction.created AS "paymentDate"',
         'transaction.updated AS updated',
-        'transaction.paymentId AS paymentId',
+        'transaction.paymentId AS "paymentId"',
         'r."referenceId"',
         'status',
         'amount',

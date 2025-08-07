@@ -121,7 +121,7 @@ export class ActivitiesMapper {
       created: transaction.paymentDate,
       type: ActivityTypeEnum.Transaction,
       attributes: {
-        payment: transaction.payment,
+        paymentId: transaction.paymentId,
         status: transaction.status,
         amount: transaction.amount,
         paymentDate: transaction.paymentDate,
