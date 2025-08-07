@@ -228,4 +228,15 @@ describe('Metric export list', () => {
       "Forbidden! User doesn't have enough permission to export requested data.",
     );
   });
+
+  it('should return 400 Bad Request for invalid exportType', async () => {
+    const invalidExportType = 'notAValidType';
+    const response = await getServer()
+      .get(`/programs/${programIdPV}/metrics/export-list/${invalidExportType}`)
+      .set('Cookie', [accessToken])
+      .send();
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(response.body.message).toContain(invalidExportType);
+  });
 });
