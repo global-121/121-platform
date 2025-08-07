@@ -157,6 +157,15 @@ export async function retryPayment({
     });
 }
 
+export async function getPayments(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/payments`)
+    .set('Cookie', [accessToken]);
+}
+
 export async function getProgramPaymentsStatus(
   programId: number,
   accessToken: string,
