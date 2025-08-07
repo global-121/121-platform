@@ -1,10 +1,12 @@
 import { expect, Page, test } from '@playwright/test';
+import os from 'os';
 import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
+import { generateLargeTestFile } from '@121-e2e/portal/helpers/largeFileGenerator';
 // import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
@@ -29,6 +31,7 @@ const wrongFileFormatPath = path.resolve(
   __dirname,
   '../../../test-file-upload-data/wrong-file-format.pages',
 );
+let largeFilePath: string;
 const testFilePaths = [pdfFilePath, docxFilePath, pngFilePath, jpgFilePath];
 const fileTypesNames = ['PDF', 'Document', 'Image', 'Image'];
 
@@ -39,6 +42,9 @@ test.describe('Attachments on Project Level', () => {
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
+    // Generate the large file in the OS temp directory
+    largeFilePath = path.join(os.tmpdir(), 'large-test-file.pdf');
+    await generateLargeTestFile(largeFilePath, 105 * 1024 * 1024); // 105MB
 
     page = await browser.newPage();
     // Login
@@ -96,6 +102,24 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Validate wrong file format error message', async () => {
       await projectMonitoring.validateFormError({
         errorText: 'Something went wrong: Validation failed',
+      });
+    });
+  });
+
+  test('[37584] Error when uploading file bigger than 100mb', async () => {
+    const projectMonitoring = new ProjectMonitoring(page);
+
+    await test.step('Upload file bigger than 100mb', async () => {
+      await projectMonitoring.uploadAttachment({
+        filePath: largeFilePath,
+        reason: `Test ${path.basename(largeFilePath, path.extname(largeFilePath)).toUpperCase()} file upload`,
+      });
+    });
+
+    await test.step('Validate file size error message', async () => {
+      await projectMonitoring.validateFormError({
+        errorText:
+          'Something went wrong: Validation failed (expected size is less than 100000000)',
       });
     });
   });
