@@ -83,7 +83,27 @@ test('[35621] ExportPayments', async () => {
 
     await exportDataComponent.exportAndAssertData({
       exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
-      excludedColumns: ['created', 'updated'],
+      excludedColumns: ['id', 'created', 'updated'],
+      // Given that the payments are not consistently sorted,
+      // we need to sort them by registrationProgramId and payment
+      // to ensure the snapshot is stable.
+      sortFunction: (a: string[], b: string[], headerCells: string[]) => {
+        const registrationProgramIdIndex = headerCells.indexOf(
+          'registrationProgramId',
+        );
+        const aId = a[registrationProgramIdIndex];
+        const bId = b[registrationProgramIdIndex];
+
+        if (aId !== bId) {
+          return parseInt(aId, 10) - parseInt(bId, 10);
+        }
+
+        const paymentIdIndex = headerCells.indexOf('payment');
+        const aPaymentId = a[paymentIdIndex];
+        const bPaymentId = b[paymentIdIndex];
+
+        return parseInt(aPaymentId, 10) - parseInt(bPaymentId, 10);
+      },
     });
   });
 });

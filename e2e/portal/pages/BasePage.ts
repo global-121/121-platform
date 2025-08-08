@@ -173,6 +173,7 @@ class BasePage {
     orderOfDataIsImportant = false,
     excludedColumns = [],
     snapshotName,
+    sortFunction,
   }: {
     filePath: string;
     minRowCount?: number;
@@ -181,6 +182,7 @@ class BasePage {
     orderOfDataIsImportant?: boolean;
     excludedColumns?: string[];
     snapshotName?: string;
+    sortFunction?: (a: string[], b: string[], headerCells: string[]) => number;
   }) {
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -200,15 +202,18 @@ class BasePage {
       expect(data.length).toEqual(expectedRowCount);
     }
 
-    let dataToValidate: string | undefined = data[0];
+    const headerCells = headerRow.split(',');
 
-    if (!orderOfDataIsImportant) {
-      // sort the data to make the snapshot more stable
+    // sort the data to make the snapshot more stable
+    if (sortFunction) {
+      data.sort((a, b) =>
+        sortFunction(a.split(','), b.split(','), headerCells),
+      );
+    } else if (!orderOfDataIsImportant) {
       data.sort((a, b) => a.localeCompare(b));
-      dataToValidate = data[0];
     }
 
-    const headerCells = headerRow.split(',');
+    const dataToValidate = data[0];
     const dataCells = dataToValidate?.split(',') ?? [];
 
     // remove excluded columns from the header and data
