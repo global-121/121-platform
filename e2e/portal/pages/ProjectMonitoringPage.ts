@@ -102,19 +102,19 @@ class ProjectMonitoring extends BasePage {
   }
 
   async uploadAttachment({
+    filePath,
     filename,
-    reason,
   }: {
+    filePath: string;
     filename: string;
-    reason: string;
   }) {
     await this.page.waitForLoadState('networkidle');
     await this.uploadFileButton.waitFor({ state: 'visible' });
     await this.uploadFileButton.click();
-    await this.chooseAndUploadFile(filename);
+    await this.chooseAndUploadFile(filePath);
     await this.page
       .getByPlaceholder('Name the file for easy identification')
-      .fill(reason);
+      .fill(filename);
     await this.importFileButton.click();
   }
 

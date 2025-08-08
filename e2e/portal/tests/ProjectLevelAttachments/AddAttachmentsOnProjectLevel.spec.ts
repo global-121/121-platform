@@ -71,8 +71,8 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Upload files', async () => {
       for (const filePath of testFilePaths) {
         await projectMonitoring.uploadAttachment({
-          filename: filePath,
-          reason: `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`,
+          filePath,
+          filename: `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`,
         });
       }
     });
@@ -96,8 +96,8 @@ test.describe('Attachments on Project Level', () => {
 
     await test.step('Upload file with unsupported format', async () => {
       await projectMonitoring.uploadAttachment({
-        filename: wrongFileFormatPath,
-        reason: `Test ${path.basename(wrongFileFormatPath, path.extname(wrongFileFormatPath)).toUpperCase()} file upload`,
+        filePath: wrongFileFormatPath,
+        filename: `Test ${path.basename(wrongFileFormatPath, path.extname(wrongFileFormatPath)).toUpperCase()} file upload`,
       });
     });
 
@@ -113,8 +113,8 @@ test.describe('Attachments on Project Level', () => {
 
     await test.step('Upload file bigger than 100mb', async () => {
       await projectMonitoring.uploadAttachment({
-        filename: largeFilePath,
-        reason: `Test ${path.basename(largeFilePath, path.extname(largeFilePath)).toUpperCase()} file upload`,
+        filePath: largeFilePath,
+        filename: `Test ${path.basename(largeFilePath, path.extname(largeFilePath)).toUpperCase()} file upload`,
       });
     });
 
