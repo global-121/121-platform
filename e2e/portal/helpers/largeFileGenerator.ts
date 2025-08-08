@@ -13,7 +13,9 @@ export async function generateLargeTestFile(
     const remaining = sizeInBytes - written;
     const toWrite = Math.min(chunkSize, remaining);
     if (!writeStream.write(buffer.subarray(0, toWrite))) {
-      await new Promise((resolve) => writeStream.once('drain', resolve));
+      await new Promise<void>((resolve) =>
+        writeStream.once('drain', () => resolve()),
+      );
     }
     written += toWrite;
   }
