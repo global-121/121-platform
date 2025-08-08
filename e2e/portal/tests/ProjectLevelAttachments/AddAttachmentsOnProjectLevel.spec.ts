@@ -7,7 +7,6 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import { generateLargeTestFile } from '@121-e2e/portal/helpers/largeFileGenerator';
-// import ExportData from '@121-e2e/portal/components/ExportData';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
 
