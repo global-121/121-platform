@@ -1631,6 +1631,57 @@
       <trans-unit id="page-title-project-monitoring-powerbi" datatype="html">
         <source>PowerBI</source>
       </trans-unit>
+      <trans-unit id="1670621573113868453" datatype="html">
+        <source>Import PDF, PNG, JPG or DOC files to your project. The files will be available for viewing and exporting to users with the permission to view files.</source>
+      </trans-unit>
+      <trans-unit id="2300247576851644080" datatype="html">
+        <source>File name</source>
+      </trans-unit>
+      <trans-unit id="3347072177705607696" datatype="html">
+        <source>File deleted successfully</source>
+      </trans-unit>
+      <trans-unit id="3550254800553754723" datatype="html">
+        <source>File uploaded successfully</source>
+      </trans-unit>
+      <trans-unit id="364992815222871631" datatype="html">
+        <source>Imported by</source>
+      </trans-unit>
+      <trans-unit id="3690602656993506785" datatype="html">
+        <source>Name the file for easy identification</source>
+      </trans-unit>
+      <trans-unit id="3948071530536352020" datatype="html">
+        <source>Are you sure you want to delete this file?</source>
+      </trans-unit>
+      <trans-unit id="6693349469471580292" datatype="html">
+        <source>Delete file</source>
+      </trans-unit>
+      <trans-unit id="7408932238599462499" datatype="html">
+        <source>File type</source>
+      </trans-unit>
+      <trans-unit id="7724483709075923163" datatype="html">
+        <source>Downloading file</source>
+      </trans-unit>
+      <trans-unit id="8464511475019236506" datatype="html">
+        <source>You are about to <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>delete<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> <x equiv-text="{{ selectedFile()?.filename }}" id="INTERPOLATION"/>., <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/>this action can not be undone.<x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/></source>
+      </trans-unit>
+      <trans-unit id="8605421971099461066" datatype="html">
+        <source>Upload file</source>
+      </trans-unit>
+      <trans-unit id="generic-delete" datatype="html">
+        <source>Delete</source>
+      </trans-unit>
+      <trans-unit id="project-attachment-file-type-document" datatype="html">
+        <source>Document</source>
+      </trans-unit>
+      <trans-unit id="project-attachment-file-type-image" datatype="html">
+        <source>Image</source>
+      </trans-unit>
+      <trans-unit id="project-attachment-file-type-pdf" datatype="html">
+        <source>PDF</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-monitoring-files" datatype="html">
+        <source>Files</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

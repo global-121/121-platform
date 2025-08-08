@@ -5,7 +5,10 @@ import {
   FSPS_WITH_PHYSICAL_CARD_SUPPORT,
   FSPS_WITH_VOUCHER_SUPPORT,
 } from '~/domains/payment/payment.helpers';
-import { Project } from '~/domains/project/project.model';
+import {
+  Project,
+  ProjectAttachmentFileType,
+} from '~/domains/project/project.model';
 
 export const projectHasVoucherSupport = (project?: Project): boolean =>
   project?.programFspConfigurations.some((fsp) =>
@@ -57,4 +60,22 @@ export const fspConfigurationNamesHaveIntegrationType = ({
   return fspSettings.some(
     (fspSetting) => fspSetting?.integrationType === integrationType,
   );
+};
+
+export const PROJECT_ATTACHMENT_FILE_TYPE_LABELS: Record<
+  ProjectAttachmentFileType,
+  string
+> = {
+  [ProjectAttachmentFileType.IMAGE]: $localize`:@@project-attachment-file-type-image:Image`,
+  [ProjectAttachmentFileType.DOCUMENT]: $localize`:@@project-attachment-file-type-document:Document`,
+  [ProjectAttachmentFileType.PDF]: $localize`:@@project-attachment-file-type-pdf:PDF`,
+};
+
+export const PROJECT_ATTACHMENT_FILE_TYPE_ICONS: Record<
+  ProjectAttachmentFileType,
+  string
+> = {
+  [ProjectAttachmentFileType.IMAGE]: 'pi pi-image text-purple-600',
+  [ProjectAttachmentFileType.DOCUMENT]: 'pi pi-file-word text-blue-500',
+  [ProjectAttachmentFileType.PDF]: 'pi pi-file-pdf text-red-500',
 };

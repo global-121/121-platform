@@ -15,6 +15,7 @@ export enum AppRoutes {
   privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
+  projectMonitoringFiles = 'files',
   projectMonitoringPowerBI = 'powerbi',
   projectPayments = 'payments',
   projectRegistrationActivityLog = 'activity-log',
@@ -120,6 +121,20 @@ export const routes: Routes = [
               import(
                 '~/pages/project-monitoring-powerbi/project-monitoring-powerbi.page'
               ).then((x) => x.ProjectMonitoringPowerbiPageComponent),
+          },
+          {
+            path: AppRoutes.projectMonitoringFiles,
+            title:
+              $localize`:@@page-title-project-monitoring-files:Files` +
+              ' | ' +
+              $localize`:@@page-title-project-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-monitoring-files/project-monitoring-files.page'
+              ).then((x) => x.ProjectMonitoringFilesPageComponent),
+            canActivate: [
+              projectPermissionsGuard(PermissionEnum.ProgramAttachmentsREAD),
+            ],
           },
           {
             path: ``,

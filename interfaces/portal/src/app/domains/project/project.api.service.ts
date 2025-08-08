@@ -11,6 +11,8 @@ import {
   Attribute,
   AttributeWithTranslatedLabel,
   Project,
+  ProjectAttachment,
+  ProjectAttachmentFileType,
   ProjectUser,
   ProjectUserAssignment,
   ProjectUserWithRolesLabel,
@@ -117,6 +119,93 @@ export class ProjectApiService extends DomainApiService {
       params: {
         username: searchQuery,
       },
+    });
+  }
+
+  getProjectAttachments(projectId: Signal<number | string>) {
+    return this.generateQueryOptions<
+      Omit<ProjectAttachment, 'fileType'>[],
+      ProjectAttachment[]
+    >({
+      path: [BASE_ENDPOINT, projectId, 'attachments'],
+      processResponse: (attachments) =>
+        attachments.map((attachment) => {
+          const mimetype = attachment.mimetype;
+
+          const fileType = mimetype.startsWith('image/')
+            ? ProjectAttachmentFileType.IMAGE
+            : mimetype === 'application/pdf'
+              ? ProjectAttachmentFileType.PDF
+              : ProjectAttachmentFileType.DOCUMENT;
+
+          return {
+            ...attachment,
+            fileType,
+          };
+        }),
+    });
+  }
+
+  removeProjectAttachment({
+    projectId,
+    attachmentId,
+  }: {
+    projectId: Signal<number | string>;
+    attachmentId: number;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest({
+      method: 'DELETE',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        projectId,
+        'attachments',
+        attachmentId,
+      ]).join('/'),
+    });
+  }
+
+  downloadProjectAttachment({
+    projectId,
+    attachmentId,
+  }: {
+    projectId: Signal<number | string>;
+    attachmentId: number;
+  }) {
+    return this.httpWrapperService.perform121ServiceRequest<Blob>({
+      method: 'GET',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        projectId,
+        'attachments',
+        attachmentId,
+      ]).join('/'),
+      responseAsBlob: true,
+    });
+  }
+
+  uploadProjectAttachment({
+    projectId,
+    file,
+    filename,
+  }: {
+    projectId: Signal<number | string>;
+    file: File;
+    filename: string;
+  }) {
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('filename', filename);
+
+    return this.httpWrapperService.perform121ServiceRequest<unknown>({
+      method: 'POST',
+      endpoint: this.pathToQueryKey([
+        BASE_ENDPOINT,
+        projectId,
+        'attachments',
+      ]).join('/'),
+      body: formData,
+      isUpload: true,
     });
   }
 
