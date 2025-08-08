@@ -16,6 +16,9 @@ class ProjectMonitoring extends BasePage {
   readonly uploadFileButton: Locator;
   readonly formError: Locator;
   readonly downloadOption: Locator;
+  readonly deleteOption: Locator;
+  readonly deleteConfirmationCheckbox: Locator;
+  readonly deleteFileButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,6 +42,13 @@ class ProjectMonitoring extends BasePage {
     });
     this.formError = this.page.getByTestId('form-error');
     this.downloadOption = this.page.getByRole('menuitem', { name: 'Download' });
+    this.deleteOption = this.page.getByRole('menuitem', { name: 'Delete' });
+    this.deleteConfirmationCheckbox = this.page.getByRole('checkbox', {
+      name: 'I understand this action can not be undone.',
+    });
+    this.deleteFileButton = this.page.getByRole('button', {
+      name: 'Delete file',
+    });
   }
 
   async assertMonitoringTabElements({
@@ -122,6 +132,16 @@ class ProjectMonitoring extends BasePage {
       .click();
     const attachment = await this.downloadFile(this.downloadOption.click());
     expect(attachment).toMatchSnapshot(fileName);
+  }
+
+  async deleteAttachmentByName({ fileName }: { fileName: string }) {
+    await this.page
+      .getByRole('row', { name: fileName })
+      .locator('button')
+      .click();
+    await this.deleteOption.click();
+    await this.deleteConfirmationCheckbox.click();
+    await this.deleteFileButton.click();
   }
 }
 
