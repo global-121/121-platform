@@ -33,6 +33,9 @@ const wrongFileFormatPath = path.resolve(
 let largeFilePath: string;
 const testFilePaths = [pdfFilePath, docxFilePath, pngFilePath, jpgFilePath];
 const fileTypesNames = ['PDF', 'Document', 'Image', 'Image'];
+// Get file name from file path for validation
+const getFileName = (filePath: string) =>
+  `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`;
 
 // Arrange
 test.describe('Attachments on Project Level', () => {
@@ -68,7 +71,7 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Upload files', async () => {
       for (const filePath of testFilePaths) {
         await projectMonitoring.uploadAttachment({
-          filePath,
+          filename: filePath,
           reason: `Test ${path.basename(filePath, path.extname(filePath)).toUpperCase()} file upload`,
         });
       }
@@ -81,7 +84,7 @@ test.describe('Attachments on Project Level', () => {
       const fileNamesArray = await tableComponent.getTextArrayFromColumn(2); // Column 2 is the 'Name' column
       const fileTypesArray = await tableComponent.getTextArrayFromColumn(1); // Column 1 is the 'Type' column
       for (let i = 0; i < testFilePaths.length; i++) {
-        const expectedFileName = `Test ${path.basename(testFilePaths[i], path.extname(testFilePaths[i])).toUpperCase()} file upload`;
+        const expectedFileName = getFileName(testFilePaths[i]);
         expect(fileNamesArray[i]).toContain(expectedFileName);
         expect(fileTypesArray[i]).toContain(fileTypesNames[i]);
       }
@@ -93,7 +96,7 @@ test.describe('Attachments on Project Level', () => {
 
     await test.step('Upload file with unsupported format', async () => {
       await projectMonitoring.uploadAttachment({
-        filePath: wrongFileFormatPath,
+        filename: wrongFileFormatPath,
         reason: `Test ${path.basename(wrongFileFormatPath, path.extname(wrongFileFormatPath)).toUpperCase()} file upload`,
       });
     });
@@ -110,7 +113,7 @@ test.describe('Attachments on Project Level', () => {
 
     await test.step('Upload file bigger than 100mb', async () => {
       await projectMonitoring.uploadAttachment({
-        filePath: largeFilePath,
+        filename: largeFilePath,
         reason: `Test ${path.basename(largeFilePath, path.extname(largeFilePath)).toUpperCase()} file upload`,
       });
     });
