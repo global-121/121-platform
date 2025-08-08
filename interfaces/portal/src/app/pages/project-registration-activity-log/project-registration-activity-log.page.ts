@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { unique } from 'radashi';
 
 import {
   QueryTableColumn,
@@ -25,6 +24,7 @@ import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogExpandedRowComponent } from '~/pages/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
 import { TableCellActivityComponent } from '~/pages/project-registration-activity-log/components/table-cell-activity.component';
 import { TableCellOverviewComponent } from '~/pages/project-registration-activity-log/components/table-cell-overview/table-cell-overview.component';
+import { getUniqueUserOptions } from '~/utils/unique-users';
 
 export interface ActivityLogTableCellContext {
   projectId: Signal<string>;
@@ -79,16 +79,6 @@ export class ProjectRegistrationActivityLogPageComponent {
 
   readonly activities = computed(() => this.activityLog.data()?.data ?? []);
 
-  readonly uniqueAuthors = computed(() =>
-    unique(
-      this.activities().map(({ user }) => ({
-        label: user.username ?? $localize`Unknown user`,
-        value: user.username ?? $localize`Unknown user`,
-      })),
-      (activity) => activity.value,
-    ).sort((a, b) => a.label.localeCompare(b.label)),
-  );
-
   readonly availableActivityTypes = computed(
     () => this.activityLog.data()?.meta.availableTypes ?? [],
   );
@@ -118,7 +108,7 @@ export class ProjectRegistrationActivityLogPageComponent {
       field: 'user.username',
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
-      options: this.uniqueAuthors(),
+      options: getUniqueUserOptions(this.activities()),
     },
     {
       field: 'created',

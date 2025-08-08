@@ -84,12 +84,8 @@
         </p>
         @if (project.isPending()) {
           <app-skeleton-inline />
-        } @else if (projectDescription()) {
-          <p class="border-b border-grey-300">
-            {{ projectDescription() }}
-          </p>
         } @else {
-          —
+          {{ projectDescription() || '—' }}
         }
       </div>
       <app-data-list [data]="projectDescriptionData()" />
