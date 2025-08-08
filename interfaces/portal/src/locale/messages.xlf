@@ -1628,6 +1628,9 @@
       <trans-unit id="8819989029832903215" datatype="html">
         <source>Export payments</source>
       </trans-unit>
+      <trans-unit id="page-title-project-monitoring-powerbi" datatype="html">
+        <source>PowerBI</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

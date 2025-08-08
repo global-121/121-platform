@@ -15,6 +15,7 @@ export enum AppRoutes {
   privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
+  projectMonitoringPowerBI = 'powerbi',
   projectPayments = 'payments',
   projectRegistrationActivityLog = 'activity-log',
   projectRegistrationDebitCards = 'debit-cards',
@@ -108,13 +109,23 @@ export const routes: Routes = [
     children: [
       {
         path: AppRoutes.projectMonitoring,
-        title: $localize`:@@page-title-project-monitoring:Monitoring`,
-        loadComponent: () =>
-          import('~/pages/project-monitoring/project-monitoring.page').then(
-            (x) => x.ProjectMonitoringPageComponent,
-          ),
-        canActivate: [
-          projectPermissionsGuard(PermissionEnum.ProgramMetricsREAD),
+        children: [
+          {
+            path: AppRoutes.projectMonitoringPowerBI,
+            title:
+              $localize`:@@page-title-project-monitoring-powerbi:PowerBI` +
+              ' | ' +
+              $localize`:@@page-title-project-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-monitoring-powerbi/project-monitoring-powerbi.page'
+              ).then((x) => x.ProjectMonitoringPowerbiPageComponent),
+          },
+          {
+            path: ``,
+            pathMatch: 'full',
+            redirectTo: AppRoutes.projectMonitoringPowerBI,
+          },
         ],
       },
       {

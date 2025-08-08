@@ -16,36 +16,35 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
+import { MonitoringMenuComponent } from '~/components/monitoring-page-layout/components/monitoring-menu/monitoring-menu.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { MetricTileComponent } from '~/pages/project-monitoring/components/metric-tile/metric-tile.component';
-import { DashboardIframeComponent } from '~/pages/project-monitoring/components/monitoring-iframe/monitoring-iframe.component';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Locale } from '~/utils/locale';
 
 @Component({
-  selector: 'app-project-monitoring',
+  selector: 'app-monitoring-page-layout',
   imports: [
     PageLayoutComponent,
     CurrencyPipe,
     CardModule,
     SkeletonModule,
     MetricTileComponent,
-    DashboardIframeComponent,
     DecimalPipe,
     DataListComponent,
     SkeletonInlineComponent,
+    MonitoringMenuComponent,
   ],
-  templateUrl: './project-monitoring.page.html',
+  templateUrl: './monitoring-page-layout.component.html',
   styles: ``,
   providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMonitoringPageComponent {
-  // this is injected by the router
+export class MonitoringPageLayoutComponent {
   readonly projectId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);
