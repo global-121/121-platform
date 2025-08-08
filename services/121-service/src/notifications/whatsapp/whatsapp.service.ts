@@ -87,8 +87,19 @@ export class WhatsappService {
         const fetchedTemplate = await twilioClient.content.v1
           .contents(contentSid)
           .fetch();
-        messageToStore.body =
-          fetchedTemplate.types['twilio/quick-reply']?.body ?? '';
+        const quickReplyType = fetchedTemplate.types['twilio/quick-reply'];
+        let messageToStoreBody = '';
+        if ('body' in quickReplyType && !!quickReplyType.body) {
+          if (typeof quickReplyType.body !== 'string') {
+            throw new Error(
+              `WhatsApp template body is not a string: ${JSON.stringify(
+                quickReplyType.body,
+              )}`,
+            );
+          }
+          messageToStoreBody = quickReplyType.body;
+        }
+        messageToStore.body = messageToStoreBody;
       }
       await this.storeSendWhatsapp({
         message: messageToStore,
