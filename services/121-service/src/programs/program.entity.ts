@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, Relation } from 'typeorm';
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
@@ -79,9 +79,6 @@ export class ProgramEntity extends Base121Entity {
     ProgramRegistrationAttributeEntity[]
   >;
 
-  @OneToMany(() => TransactionEntity, (transactions) => transactions.program)
-  public transactions: Relation<TransactionEntity[]>;
-
   @OneToMany(() => RegistrationEntity, (registrations) => registrations.program)
   public registrations: Relation<RegistrationEntity[]>;
 
@@ -104,6 +101,9 @@ export class ProgramEntity extends Base121Entity {
 
   @Column({ nullable: true, default: null, type: 'integer' })
   public budget: number | null;
+
+  @OneToMany(() => PaymentEntity, (payment) => payment.program)
+  public payments: Relation<PaymentEntity[]>;
 
   @OneToMany(
     () => ProgramFspConfigurationEntity,

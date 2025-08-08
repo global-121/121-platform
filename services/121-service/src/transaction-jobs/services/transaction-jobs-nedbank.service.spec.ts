@@ -24,7 +24,7 @@ const mockedTransactionId = 1;
 
 const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   programId: 3,
-  paymentNumber: 3,
+  paymentId: 3,
   referenceId: 'ref-123',
   transactionAmount: 25,
   isRetry: false,

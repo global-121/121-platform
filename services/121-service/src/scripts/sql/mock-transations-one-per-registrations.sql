@@ -2,10 +2,9 @@ INSERT INTO "121-service"."transaction" (
   created,
   status,
   "errorMessage",
-  payment,
+  "paymentId",
   "customData",
   "transactionStep",
-  "programId",
   "registrationId",
   amount,
   updated,
@@ -16,10 +15,9 @@ SELECT
   created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY id),
   status,
   "errorMessage",
-  payment,
+  "paymentId",
   "customData",
   "transactionStep",
-  "programId",
   "registrationId" + (SELECT max("registrationId") FROM "121-service"."transaction"),
   amount,
   updated,
@@ -27,5 +25,3 @@ SELECT
   "programFspConfigurationId"
 FROM
   "121-service"."transaction"
-WHERE
-  payment = 1;

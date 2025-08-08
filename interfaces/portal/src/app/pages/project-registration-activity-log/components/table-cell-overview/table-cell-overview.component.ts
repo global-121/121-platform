@@ -89,7 +89,7 @@ export class TableCellOverviewComponent
   readonly paymentId = computed(() => {
     const item = this.value();
     if (item.type === ActivityTypeEnum.Transaction) {
-      return item.attributes.payment.toString();
+      return item.attributes.paymentId.toString();
     }
     return undefined;
   });
@@ -160,7 +160,7 @@ export class TableCellOverviewComponent
 
     return {
       projectId: this.context().projectId(),
-      paymentId: item.attributes.payment,
+      paymentId: item.attributes.paymentId,
       totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
     };

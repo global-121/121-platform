@@ -81,7 +81,6 @@ describe('Registrations - [Scoped]', () => {
     // 2 registrations are in include in program PV and are in the scope of the requesting user
     const doPaymentResponse = await doPayment({
       programId: PvProgramId,
-      paymentNr: payment,
       amount: 25,
       referenceIds: [],
       accessToken: accessTokenScoped,
@@ -97,7 +96,7 @@ describe('Registrations - [Scoped]', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: null,
       accessToken,
     });

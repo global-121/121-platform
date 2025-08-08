@@ -205,7 +205,6 @@ describe('Update program fsp configuration of PA', () => {
     );
     await doPayment({
       programId: programIdPv,
-      paymentNr: payment,
       amount: 15,
       referenceIds: [registrationPvScoped.referenceId],
       accessToken,
@@ -219,7 +218,7 @@ describe('Update program fsp configuration of PA', () => {
 
     const transactionsResponse = await getTransactions({
       programId: programIdPv,
-      paymentNr: payment,
+      paymentId: payment,
       registrationReferenceId: registrationPvScoped.referenceId,
       accessToken,
     });

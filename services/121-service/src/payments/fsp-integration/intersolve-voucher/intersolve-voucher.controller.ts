@@ -49,7 +49,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -64,7 +64,7 @@ export class IntersolveVoucherController {
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
       queryParams.referenceId,
-      Number(queryParams.payment),
+      Number(queryParams.paymentId),
       programId,
     );
     const bufferStream = new stream.PassThrough();
@@ -81,7 +81,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -95,7 +95,7 @@ export class IntersolveVoucherController {
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
       queryParams.referenceId,
-      Number(queryParams.payment),
+      Number(queryParams.paymentId),
       programId,
     );
   }

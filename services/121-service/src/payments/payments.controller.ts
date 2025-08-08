@@ -91,10 +91,10 @@ export class PaymentsController {
   @ApiOperation({ summary: '[SCOPED] Get payment aggregate results' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
-    name: 'payment',
+    name: 'paymentId',
     required: true,
     type: 'integer',
-    description: 'Request transactions from a specific payment index',
+    description: 'Request transactions from a specific payment id',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -102,13 +102,13 @@ export class PaymentsController {
       'Retrieved payment aggregate results - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: PaymentReturnDto,
   })
-  @Get('programs/:programId/payments/:payment')
+  @Get('programs/:programId/payments/:paymentId')
   public async getPaymentAggregation(
     @Param() params: GetPaymentAggregationDto,
   ): Promise<PaymentReturnDto> {
     return await this.paymentsService.getPaymentAggregation(
       Number(params.programId),
-      Number(params.payment),
+      Number(params.paymentId),
     );
   }
 
@@ -181,10 +181,9 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsService.postPayment(
+    const result = await this.paymentsService.createPayment(
       userId,
       programId,
-      data.payment,
       data.amount,
       query,
       dryRunBoolean,
@@ -215,7 +214,7 @@ export class PaymentsController {
     return await this.paymentsService.retryPayment(
       userId,
       programId,
-      data.payment,
+      data.paymentId,
       data.referenceIds,
     );
   }
@@ -228,25 +227,25 @@ export class PaymentsController {
       '[SCOPED] Get payments instructions for past payment to post in Fsp Portal',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiParam({ name: 'payment', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
       'Get payments instructions for past payment to post in Fsp Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/payments/:payment/fsp-instructions')
+  @Get('programs/:programId/payments/:paymentId/fsp-instructions')
   public async getFspInstructions(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('payment', ParseIntPipe)
-    payment: number,
+    @Param('paymentId', ParseIntPipe)
+    paymentId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<FspInstructions[]> {
     const userId = RequestHelper.getUserId(req);
 
     return await this.paymentsService.getFspInstructions(
       programId,
-      payment,
+      paymentId,
       userId,
     );
   }
@@ -260,7 +259,7 @@ export class PaymentsController {
   @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
   @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({
-    name: 'payment',
+    name: 'paymentId',
     required: false,
     type: 'integer',
   })
@@ -281,14 +280,15 @@ export class PaymentsController {
     @Query('fromDate') fromDate?: string,
     @Query('toDate') toDate?: string,
     @Query('format') format = 'json',
-    @Query('payment', new ParseIntPipe({ optional: true })) payment?: number,
+    @Query('paymentId', new ParseIntPipe({ optional: true }))
+    paymentId?: number,
   ): Promise<Response | void> {
     const result = await this.paymentsService.exportTransactionsUsingDateFilter(
       {
         programId,
         fromDateString: fromDate,
         toDateString: toDate,
-        payment,
+        paymentId,
       },
     );
     if (format === ExportFileFormat.xlsx) {
@@ -298,7 +298,7 @@ export class PaymentsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get all transactions for this payment' })
+  @ApiOperation({ summary: '[SCOPED] Get all transactions for this paymentId' })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -313,7 +313,7 @@ export class PaymentsController {
   ): Promise<GetTransactionResponseDto[]> {
     return await this.paymentsService.geTransactionsByPaymentId({
       programId,
-      payment: paymentId,
+      paymentId,
     });
   }
 }

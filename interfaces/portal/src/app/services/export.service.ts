@@ -71,7 +71,7 @@ export class ExportService {
     }
 
     if (paymentId) {
-      exportParams.payment = paymentId;
+      exportParams.paymentId = paymentId;
     }
 
     const paginateQueryParams =

@@ -60,20 +60,14 @@ export class TransactionJobsHelperService {
     status,
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
-    const {
-      programFspConfigurationId,
-      programId,
-      paymentNumber,
-      userId,
-      isRetry,
-    } = transactionJob;
+    const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
+      transactionJob;
 
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
       programFspConfigurationId,
-      programId,
-      paymentNumber,
+      paymentId,
       userId,
       status,
       errorMessage,
@@ -139,8 +133,7 @@ export class TransactionJobsHelperService {
     amount, // transaction entity are always in major unit
     registration,
     programFspConfigurationId,
-    programId,
-    paymentNumber,
+    paymentId,
     userId,
     status,
     errorMessage,
@@ -148,8 +141,7 @@ export class TransactionJobsHelperService {
     amount: number;
     registration: RegistrationEntity;
     programFspConfigurationId: number;
-    programId: number;
-    paymentNumber: number;
+    paymentId: number;
     userId: number;
     status: TransactionStatusEnum;
     errorMessage?: string;
@@ -159,8 +151,7 @@ export class TransactionJobsHelperService {
     transaction.created = new Date();
     transaction.registration = registration;
     transaction.programFspConfigurationId = programFspConfigurationId;
-    transaction.programId = programId;
-    transaction.payment = paymentNumber;
+    transaction.paymentId = paymentId;
     transaction.userId = userId;
     transaction.status = status;
     transaction.transactionStep = 1;

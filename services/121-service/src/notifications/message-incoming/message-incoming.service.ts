@@ -376,8 +376,9 @@ export class MessageIncomingService {
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
       const lastPayment = await this.transactionRepository
         .createQueryBuilder('transaction')
-        .select('MAX(transaction.payment)', 'max')
-        .where('transaction.programId = :programId', {
+        .select('MAX(transaction."paymentId")', 'max')
+        .leftJoin('transaction.payment', 'p')
+        .where('p.programId = :programId', {
           programId: r.programId,
         })
         .getRawOne();
@@ -386,8 +387,8 @@ export class MessageIncomingService {
       r.images = r.images.filter(
         (image) =>
           !image.voucher.send &&
-          image.voucher.payment &&
-          image.voucher.payment >= minimumPayment,
+          image.voucher.paymentId &&
+          image.voucher.paymentId >= minimumPayment,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
@@ -531,7 +532,7 @@ export class MessageIncomingService {
           messageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           customData: {
-            payment: intersolveVoucher.payment ?? undefined,
+            paymentId: intersolveVoucher.paymentId ?? undefined,
             amount: intersolveVoucher.amount ?? undefined,
             intersolveVoucherId: intersolveVoucher.id,
           },

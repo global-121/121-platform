@@ -1,4 +1,4 @@
 export interface GetPaymentsDto {
-  payment: number;
+  paymentId: number;
   paymentDate: Date | string;
 }

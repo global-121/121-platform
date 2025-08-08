@@ -144,7 +144,7 @@ export class ProjectPaymentPageComponent {
     const date = this.payments
       .data()
       .find(
-        (payment) => payment.payment === Number(this.paymentId()),
+        (payment) => payment.paymentId === Number(this.paymentId()),
       )?.paymentDate;
 
     return new DatePipe(this.locale).transform(date, 'short') ?? '';

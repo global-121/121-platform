@@ -40,7 +40,7 @@ describe('Export transactions', () => {
     });
 
     const fromDate = new Date().toISOString();
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    await seedPaidRegistrations([registrationSafaricom], programId, amount);
     const toDate = new Date().toISOString();
 
     // Act
@@ -72,7 +72,7 @@ describe('Export transactions', () => {
       // Default registrationView fields
       created: expect.any(Number),
       updated: expect.any(Number),
-      payment: 1,
+      paymentId: 1,
       paymentCount: 1,
       gender: expect.any(String),
       // Transaction GET fields
@@ -93,7 +93,7 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1 that should not be exported
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    await seedPaidRegistrations([registrationSafaricom], programId, amount);
 
     const fromDate = new Date().toISOString();
 
@@ -144,7 +144,7 @@ describe('Export transactions', () => {
     expect(transactionsJson.length).toBe(1);
     const transactionFromPayment2 = transactionsJson[0];
     expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+      paymentId: 2,
       paymentCount: 3,
     });
   });
@@ -153,7 +153,7 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    await seedPaidRegistrations([registrationSafaricom], programId, amount);
 
     // Payment 2
     await doPaymentAndWaitForCompletion({
@@ -167,7 +167,7 @@ describe('Export transactions', () => {
     // Act: Export only payment 2
     const transactionsResponse = await exportTransactions({
       programId,
-      payment: 2,
+      paymentId: 2,
       accessToken,
     });
 
@@ -182,7 +182,7 @@ describe('Export transactions', () => {
     expect(transactionsJson.length).toBe(1);
     const transactionFromPayment2 = transactionsJson[0];
     expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+      paymentId: 2,
       paymentCount: 2,
     });
   });

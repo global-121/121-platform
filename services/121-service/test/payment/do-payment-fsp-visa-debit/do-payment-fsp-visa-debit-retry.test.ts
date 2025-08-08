@@ -56,7 +56,6 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -68,7 +67,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: paymentNrVisa,
     });
 
     // update PA
@@ -83,7 +82,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // retry payment
     await retryPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       accessToken,
     });
     await waitFor(2_000);
@@ -91,7 +90,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
@@ -119,7 +118,6 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Act
     await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -131,7 +129,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       accessToken,
       maxWaitTimeMs: 4_000,
       completeStatusses: Object.values(TransactionStatusEnum),
-      payment: paymentNrVisa,
+      paymentId: paymentNrVisa,
     });
 
     // update PA
@@ -146,7 +144,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // retry payment
     await retryPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       accessToken,
     });
     await waitFor(2_000);
@@ -154,7 +152,7 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
     // Assert
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentNrVisa,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });

@@ -23,7 +23,7 @@ export class LatestTransactionRepository extends Repository<LatestTransactionEnt
     const latestTransaction =
       new LatestTransactionEntity() as QueryDeepPartialEntity<LatestTransactionEntity>;
     latestTransaction.registrationId = transaction.registrationId;
-    latestTransaction.payment = transaction.payment;
+    latestTransaction.paymentId = transaction.paymentId;
     latestTransaction.transactionId = transaction.id;
     try {
       // Try to insert a new LatestTransactionEntity
@@ -35,7 +35,7 @@ export class LatestTransactionRepository extends Repository<LatestTransactionEnt
         await this.baseRepository.update(
           {
             registrationId: latestTransaction.registrationId ?? undefined,
-            payment: latestTransaction.payment ?? undefined,
+            paymentId: latestTransaction.paymentId ?? undefined,
           },
           latestTransaction,
         );

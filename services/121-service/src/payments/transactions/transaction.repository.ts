@@ -39,13 +39,13 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
 
   public async getTransactions({
     programId,
-    payment,
+    paymentId,
     fromDate,
     toDate,
     fspSpecificJoinFields,
   }: {
     programId: number;
-    payment?: number;
+    paymentId?: number;
     fromDate?: Date;
     toDate?: Date;
     fspSpecificJoinFields?: {
@@ -58,7 +58,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       id: number;
       created: Date;
       updated: Date;
-      payment: number;
+      paymentId: number;
       registrationProgramId: number;
       registrationReferenceId: string;
       registrationId: number;
@@ -74,7 +74,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.id AS "id"',
         'transaction.created AS "created"',
         'transaction.updated AS "updated"',
-        'transaction.payment AS payment',
+        'transaction.paymentId AS "paymentId"',
         'r."registrationProgramId"',
         'r."referenceId" as "registrationReferenceId"',
         'r."id" as "registrationId"',
@@ -86,13 +86,14 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       ])
       .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
+      .leftJoin('transaction.payment', 'p')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('transaction."programId" = :programId', {
+      .andWhere('p."programId" = :programId', {
         programId,
       });
 
-    if (payment !== undefined && payment !== null) {
-      query.andWhere('transaction.payment = :payment', { payment });
+    if (paymentId !== undefined && paymentId !== null) {
+      query.andWhere('transaction.paymentId = :paymentId', { paymentId });
     }
     if (fromDate) {
       query.andWhere('transaction.created >= :fromDate', { fromDate });
@@ -123,14 +124,14 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   // Make this private when all 'querying code' has been moved to this repository
   public getLastTransactionsQuery({
     programId,
-    payment,
+    paymentId: paymentId,
     registrationId,
     referenceId,
     status,
     programFspConfigId,
   }: {
     programId: number;
-    payment?: number;
+    paymentId?: number;
     registrationId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
@@ -140,7 +141,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .select([
         'transaction.created AS "paymentDate"',
         'transaction.updated AS updated',
-        'transaction.payment AS payment',
+        'transaction.paymentId AS "paymentId"',
         'r."referenceId"',
         'status',
         'amount',
@@ -153,14 +154,15 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       ])
       .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
+      .leftJoin('transaction.payment', 'p')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('transaction."programId" = :programId', {
+      .andWhere('p."programId" = :programId', {
         programId,
       });
-    if (payment) {
+    if (paymentId) {
       transactionQuery = transactionQuery.andWhere(
-        'transaction.payment = :payment',
-        { payment },
+        'transaction.paymentId = :paymentId',
+        { paymentId },
       );
     }
     if (referenceId) {
