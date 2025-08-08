@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import { promises as fs } from 'fs';
 import { Locator, Page } from 'playwright';
 
 import BasePage from './BasePage';
@@ -125,13 +126,20 @@ class ProjectMonitoring extends BasePage {
     expect(errorString).toContain(errorText);
   }
 
-  async downloadAttachmentByName({ fileName }: { fileName: string }) {
+  async downloadAttachmentByName({
+    fileName,
+    snapshotName,
+  }: {
+    fileName: string;
+    snapshotName: string;
+  }) {
     await this.page
       .getByRole('row', { name: fileName })
       .locator('button')
       .click();
-    const attachment = await this.downloadFile(this.downloadOption.click());
-    expect(attachment).toMatchSnapshot(fileName);
+    const filePath = await this.downloadFile(this.downloadOption.click());
+    const fileBuffer = await fs.readFile(filePath);
+    expect(fileBuffer).toMatchSnapshot(snapshotName);
   }
 
   async deleteAttachmentByName({ fileName }: { fileName: string }) {

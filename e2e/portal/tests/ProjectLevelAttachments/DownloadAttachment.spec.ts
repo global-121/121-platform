@@ -55,6 +55,7 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Download and validate attachment', async () => {
       await projectMonitoring.downloadAttachmentByName({
         fileName,
+        snapshotName: 'Test-TEST-DOCUMENT-file-upload.pdf',
       });
     });
   });
