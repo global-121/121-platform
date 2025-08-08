@@ -32,5 +32,5 @@ services:
       - '9231:9231'
     volumes:
       - './121-service:/home/node/app'
-    command: 'npm run start:dev${WINDOWS_DEV_STARTUP_SUFFIX}'
+    command: 'npm run start:dev${COVERAGE_DEV_STARTUP_SUFFIX}${WINDOWS_DEV_STARTUP_SUFFIX}'
     restart: unless-stopped

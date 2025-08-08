@@ -110,7 +110,7 @@ Integration test coverage is slightly more complex. On a conceptual level, we ar
 In practice, for us, this looks like this:
 
 1. Instrumenting the 121-service code manually by running the service using `nyc`
-   - This happens whenever you start the dev server, which runs `npm run start:dev`
+   - This happens whenever you start the dev server, so long as you have set the `COVERAGE_DEV_STARTUP_SUFFIX` env variable accordingly in your `.env` file
 2. Running the relevant integration tests
 3. Killing the server
    - This is necessary because `nyc` generates the code coverage information into the `.nyc_output` directory whenever the server receives a `SIGINT`.
@@ -119,13 +119,14 @@ In practice, for us, this looks like this:
      2. Saving a file in the `121-service/src` folder will trigger a recompilation, which will implicitly kill the server
 4. Generate a coverage report based on the data in `.nyc_output`
 
-Which translates to these commands:
+Which translates to these commands (after setting `COVERAGE_DEV_STARTUP_SUFFIX` accordingly in your `.env` file):
 
 ```bash
-cd services/121-service
 # step #1
-npm run start:dev
+cd 121-platform
+npm run start:services:detach
 # step #2
+cd services/121-service
 docker exec 121-service  npm run test:integration:all
 # step #3, option a) manually kill the server
 curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST 'http://localhost:3000/api/scripts/kill-service'
