@@ -433,6 +433,14 @@
     ]
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
     "params": [
