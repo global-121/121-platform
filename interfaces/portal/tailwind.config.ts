@@ -1,4 +1,3 @@
-import pluginGridAreas from '@savvywombat/tailwindcss-grid-areas';
 import type { Config } from 'tailwindcss';
 import plugin from 'tailwindcss/plugin';
 
@@ -77,29 +76,6 @@ export default {
       l: '1.85rem', // ~26px
     },
     extend: {
-      gridTemplateAreas: {
-        'project-monitoring': [
-          'metric1 metric2',
-          'metric3 metric4',
-          'description description',
-          'content content',
-        ],
-        'project-monitoring-wide': [
-          'metric1 metric2 description',
-          'metric3 metric4 description',
-          'content content content',
-        ],
-        'project-payment': ['chart chart', 'metric1 metric2', 'table table'],
-        'project-payment-wide': [
-          'chart metric1',
-          'chart metric2',
-          'table table',
-        ],
-      },
-      gridTemplateColumns: {
-        'project-monitoring-wide': '16rem 16rem 1fr',
-        'project-payment-wide': '1fr 24rem',
-      },
       boxShadow: {
         'clickable-cards': '0px 4px 14px 0px #0000001A',
         menu: '0px 2px 12px 0px #0000001a',
@@ -111,7 +87,6 @@ export default {
     },
   },
   plugins: [
-    pluginGridAreas,
     // eslint-disable-next-line @typescript-eslint/unbound-method -- This is the recommended way to use Tailwind CSS plugins: https://v3.tailwindcss.com/docs/plugins
     plugin(({ matchUtilities, theme }) => {
       // heading utilities

@@ -25,17 +25,19 @@
     </div>
   </p-card>
   <div
-    class="grid gap-5 grid-areas-project-payment md:grid-cols-project-payment-wide md:grid-areas-project-payment-wide"
+    class="grid gap-5 [grid-template-areas:'chart_chart''metric1_metric2''table_table'] md:grid-cols-[1fr_24rem] md:[grid-template-areas:'chart_metric1''chart_metric2''table_table']"
   >
     @let paymentDetails = this.payment.data();
 
     @if (!paymentDetails) {
       <p-skeleton
-        class="grid-in-chart"
+        class="[grid-area:chart]"
         height="100%"
       ></p-skeleton>
     } @else {
-      <p-card class="grid-in-chart [&_.p-card-body]:h-full [&_.p-card]:h-full">
+      <p-card
+        class="[grid-area:chart] [&_.p-card-body]:h-full [&_.p-card]:h-full"
+      >
         <p
           i18n
           class="mb-6 font-medium txt-h-2"
@@ -54,7 +56,7 @@
       paymentStatus.data()?.inProgress
     ) {
       <app-metric-tile
-        class="grid-in-metric1"
+        class="[grid-area:metric1]"
         [pending]="paymentStatus.isPending() || transactions.isPending()"
         [metricValue]="transactions.data()?.length"
         metricLabel="Transfers sent"
@@ -68,7 +70,7 @@
       />
     } @else {
       <app-metric-tile
-        class="grid-in-metric1"
+        class="[grid-area:metric1]"
         [pending]="false"
         [metricValue]="transactions.data()?.length | number"
         metricLabel="Registrations included"
@@ -76,7 +78,7 @@
       />
     }
     <app-metric-tile
-      class="grid-in-metric2"
+      class="[grid-area:metric2]"
       [pending]="false"
       [metricValue]="totalPaymentAmount()"
       metricLabel="Total amount"
@@ -90,7 +92,7 @@
       i18n-metricTooltip
     />
 
-    <p-card class="overflow-x-auto grid-in-table">
+    <p-card class="overflow-x-auto [grid-area:table]">
       <app-query-table
         #table
         [items]="transactions.data() ?? []"

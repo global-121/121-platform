@@ -38,11 +38,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "@savvywombat/tailwindcss-grid-areas",
-              "filesize",
-              "tailwindcss/plugin"
-            ],
+            "allowedCommonJsDependencies": ["filesize", "tailwindcss/plugin"],
             "localize": true,
             "i18nMissingTranslation": "ignore",
             "outputPath": "www",
