@@ -66,6 +66,9 @@ jobs:
         run: |
           cp ./services/.env.example services/.env
           grep -v "^#\|^$" services/.env.example >> $GITHUB_ENV
+          # override the default value for COVERAGE_DEV_STARTUP_SUFFIX from .env.example
+          # this is needed to collect coverage data during integration tests
+          echo "COVERAGE_DEV_STARTUP_SUFFIX=:collect-coverage" >> $GITHUB_ENV
 
       - name: Run Services with Docker
         run: |
