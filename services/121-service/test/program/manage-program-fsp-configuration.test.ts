@@ -395,7 +395,7 @@ describe('Manage Fsp configurations', () => {
     // Act
     const getVisibleProperties = await getFspProgramProperties({
       programId: programIdVisa,
-      configName: 'Intersolve-visa', //This configuration has visible properties
+      configName: Fsps.intersolveVisa, //This configuration has visible properties
       accessToken,
     });
     // Assert
@@ -417,7 +417,7 @@ describe('Manage Fsp configurations', () => {
     // Act
     const getHiddenProperties = await getFspProgramProperties({
       programId: programIdVisa,
-      configName: 'Intersolve-voucher-whatsapp', // This configuration has hidden properties
+      configName: Fsps.intersolveVoucherWhatsapp, // This configuration has hidden properties
       accessToken,
     });
     // Assert
