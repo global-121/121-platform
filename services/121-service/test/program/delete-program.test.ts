@@ -7,6 +7,10 @@ import {
   getProgram,
   startCbeValidationProcess,
 } from '@121-service/test/helpers/program.helper';
+import {
+  getAttachments,
+  uploadAttachment,
+} from '@121-service/test/helpers/program-attachments.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -75,5 +79,44 @@ describe('Delete program', () => {
 
     const getProgramResponseCbe = await getProgram(programIdCbe, accessToken);
     expect(getProgramResponseCbe.statusCode).toBe(HttpStatus.NOT_FOUND);
+  });
+
+  it('should delete a program with attachments', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    accessToken = await getAccessToken();
+
+    const testImagePath = './test-attachment-data/sample.jpg';
+    const testImageFilename = 'Test Image';
+
+    const response = await uploadAttachment({
+      programId: programIdPV,
+      filePath: testImagePath,
+      filename: testImageFilename,
+      accessToken,
+    });
+
+    expect(response.status).toBe(HttpStatus.CREATED);
+
+    // Act + Assert
+    const secretDto = { secret: env.RESET_SECRET };
+
+    const deleteResponsePV = await deleteProgram(
+      programIdPV,
+      accessToken,
+      secretDto,
+    );
+    expect(deleteResponsePV.statusCode).toBe(HttpStatus.NO_CONTENT);
+
+    const getProgramResponsePV = await getProgram(programIdPV, accessToken);
+    expect(getProgramResponsePV.statusCode).toBe(HttpStatus.NOT_FOUND);
+
+    const attachment = await getAttachments({
+      programId: programIdPV,
+      accessToken,
+    });
+
+    // Assert
+    expect(attachment.status).toBe(HttpStatus.FORBIDDEN);
   });
 });
