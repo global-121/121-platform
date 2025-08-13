@@ -171,7 +171,6 @@ export class ProgramFspConfigurationsController {
   @ApiOperation({
     summary: 'Retrieve visible properties for Fsp Configuration.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Get(':programId/fsp-configurations/:name/properties')
   public async getVisibleProperties(
     @Param('programId') programId: number,

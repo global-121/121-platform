@@ -405,8 +405,8 @@ describe('Manage Fsp configurations', () => {
       expect(property.value).not.toBe('[********]'); // Visible properties should not be masked
     });
     properties.forEach((property) => {
-      expect(property.name).not.toBe('username');
-      expect(property.name).not.toBe('password');
+      expect(property.name).not.toBe(FspConfigurationProperties.username);
+      expect(property.name).not.toBe(FspConfigurationProperties.password);
     });
     properties.forEach((property) => {
       expect(enumValues).toContain(property.name);
@@ -426,7 +426,10 @@ describe('Manage Fsp configurations', () => {
     const hiddenPropertyNames = properties.map((property) => property.name);
     // Checks that only hidden properties are returned
     expect(hiddenPropertyNames).toEqual(
-      expect.arrayContaining(['username', 'password']),
+      expect.arrayContaining([
+        FspConfigurationProperties.username,
+        FspConfigurationProperties.password,
+      ]),
     );
     properties.forEach((property) => {
       expect(property.value).toBe('[********]'); // Hidden properties should be masked

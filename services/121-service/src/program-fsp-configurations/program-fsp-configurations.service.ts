@@ -421,13 +421,8 @@ export class ProgramFspConfigurationsService {
         FspConfigPropertyValueVisibility[
           prop.name as FspConfigurationProperties
         ];
-      let value: string;
-      if (isVisible) {
-        value =
-          typeof prop.value === 'string'
-            ? prop.value
-            : JSON.stringify(prop.value);
-      } else {
+      let value = String(prop.value);
+      if (!isVisible) {
         value = '[********]';
       }
       return {
