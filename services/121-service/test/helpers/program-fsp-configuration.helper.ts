@@ -138,3 +138,21 @@ export async function deleteProgramFspConfigurationProperty({
     )
     .set('Cookie', [accessToken]);
 }
+
+export async function getFspProgramProperties({
+  programId,
+  configName,
+  accessToken,
+}: {
+  programId: number;
+  configName: string;
+  accessToken: string;
+}): Promise<
+  Omit<request.Response, 'body'> & {
+    body: ProgramFspConfigurationPropertyResponseDto[];
+  }
+> {
+  return await getServer()
+    .get(`/programs/${programId}/fsp-configurations/${configName}/properties`)
+    .set('Cookie', [accessToken]);
+}

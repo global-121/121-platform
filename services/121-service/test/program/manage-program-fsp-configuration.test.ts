@@ -17,6 +17,7 @@ import { getTransactions } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfiguration,
   deleteProgramFspConfigurationProperty,
+  getFspProgramProperties,
   getProgramFspConfigurations,
   patchProgramFspConfiguration,
   patchProgramFspConfigurationProperty,
@@ -386,5 +387,49 @@ describe('Manage Fsp configurations', () => {
     expect(config?.properties.length).toBe(
       seededFspConfigVoucher.properties.length - 1,
     );
+  });
+
+  it('Should return all visible properties of a program Fsp configuration', async () => {
+    // Arrange
+    const enumValues = Object.values(FspConfigurationProperties);
+    // Act
+    const getVisibleProperties = await getFspProgramProperties({
+      programId: programIdVisa,
+      configName: 'Intersolve-visa', //This configuration has visible properties
+      accessToken,
+    });
+    // Assert
+    expect(getVisibleProperties.statusCode).toBe(HttpStatus.OK);
+    const properties = getVisibleProperties.body;
+    properties.forEach((property) => {
+      expect(property.value).not.toBe('[********]'); // Visible properties should not be masked
+    });
+    properties.forEach((property) => {
+      expect(property.name).not.toBe('username');
+      expect(property.name).not.toBe('password');
+    });
+    properties.forEach((property) => {
+      expect(enumValues).toContain(property.name);
+    });
+  });
+
+  it('Returns masked values for hidden properties of a program Fsp configuration', async () => {
+    // Act
+    const getHiddenProperties = await getFspProgramProperties({
+      programId: programIdVisa,
+      configName: 'Intersolve-voucher-whatsapp', // This configuration has hidden properties
+      accessToken,
+    });
+    // Assert
+    expect(getHiddenProperties.statusCode).toBe(HttpStatus.OK);
+    const properties = getHiddenProperties.body;
+    const hiddenPropertyNames = properties.map((property) => property.name);
+    // Checks that only hidden properties are returned
+    expect(hiddenPropertyNames).toEqual(
+      expect.arrayContaining(['username', 'password']),
+    );
+    properties.forEach((property) => {
+      expect(property.value).toBe('[********]'); // Hidden properties should be masked
+    });
   });
 });

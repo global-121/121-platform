@@ -177,7 +177,7 @@ export class ProgramFspConfigurationsController {
     @Param('programId') programId: number,
     @Param('name') name: string,
   ) {
-    return this.programFspConfigurationsService.getVisibleProperties(
+    return this.programFspConfigurationsService.getProgramFspProperties(
       programId,
       name,
     );

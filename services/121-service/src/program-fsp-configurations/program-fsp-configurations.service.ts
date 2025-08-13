@@ -404,7 +404,7 @@ export class ProgramFspConfigurationsService {
     return property;
   }
 
-  public async getVisibleProperties(
+  public async getProgramFspProperties(
     programId: number,
     name: string,
   ): Promise<{ name: FspConfigurationProperties; value: string }[]> {
