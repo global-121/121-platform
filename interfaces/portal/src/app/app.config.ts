@@ -39,15 +39,13 @@ export const getAppConfig = (locale: Locale): ApplicationConfig => ({
     provideAngularSvgIcon(),
     providePrimeNG({
       theme: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- AppTheme is typed as any in primeng
         preset: AppTheme,
         options: {
           // disable dark mode (for now)
           darkModeSelector: false,
           cssLayer: {
             name: 'primeng',
-            order:
-              'tailwind-base, primeng, primeng-customisations, tailwind-utilities',
+            order: 'theme, base, primeng, primeng-customisations',
           },
         },
       },

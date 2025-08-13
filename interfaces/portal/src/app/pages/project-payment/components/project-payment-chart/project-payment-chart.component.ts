@@ -14,9 +14,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { PaymentAggregate } from '~/domains/payment/payment.model';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import { getTailwindConfig } from '~/utils/tailwind';
-
-const tailwindConfig = getTailwindConfig();
+import tailwindConfig from '~/../../tailwind.config';
 
 @Component({
   selector: 'app-project-payment-chart',

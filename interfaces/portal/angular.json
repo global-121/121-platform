@@ -38,7 +38,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": ["filesize", "tailwindcss/plugin"],
+            "allowedCommonJsDependencies": ["filesize"],
             "localize": true,
             "i18nMissingTranslation": "ignore",
             "outputPath": "www",

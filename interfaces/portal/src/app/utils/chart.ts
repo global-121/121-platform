@@ -1,14 +1,13 @@
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import tailwindConfig from '~/../../tailwind.config';
 
-import { getTailwindConfig } from '~/utils/tailwind';
-
-const tailwindConfig = getTailwindConfig();
 const colors = tailwindConfig.theme.colors;
 
 export const registerChartDefaults = () => {
-  Chart.defaults.font.family =
-    tailwindConfig.theme.fontFamily.display.join(', ');
+  const styles = getComputedStyle(document.documentElement);
+
+  Chart.defaults.font.family = styles.getPropertyValue('--font-display');
   Chart.defaults.font.weight = 500;
 
   Chart.defaults.scale.ticks.color = colors.black.DEFAULT;

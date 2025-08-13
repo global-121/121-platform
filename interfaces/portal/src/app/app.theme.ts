@@ -3,9 +3,7 @@ import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import tailwindConfig from 'tailwind.config';
 
-import { getTailwindConfig } from '~/utils/tailwind';
-
-const colors = getTailwindConfig().theme.colors;
+const colors = tailwindConfig.theme.colors;
 
 const severityVariant = (color: 'blue' | 'green' | 'red' | 'yellow') => ({
   background: colors[color][100],

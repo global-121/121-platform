@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss';
-import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -7,12 +6,6 @@ export default {
   theme: {
     container: {
       center: true,
-    },
-    fontFamily: {
-      // See loading of font-files in: src/fonts.css
-      display: ['Montserrat', 'sans-serif'],
-      body: ['"Open Sans"', 'sans-serif'],
-      mono: ['monospace'],
     },
     colors: {
       transparent: 'transparent',
@@ -65,16 +58,6 @@ export default {
         DEFAULT: '#0F1218',
       },
     },
-    headingSizes: {
-      1: '1.43rem', // ~20px
-      2: '1.28rem', // ~18px
-      3: '1.15rem', // ~16px
-    },
-    typographySizes: {
-      s: '0.85rem', // ~12px
-      m: '1rem', // ~14px
-      l: '1.85rem', // ~26px
-    },
     extend: {
       boxShadow: {
         'clickable-cards': '0px 4px 14px 0px #0000001A',
@@ -86,53 +69,4 @@ export default {
       },
     },
   },
-  plugins: [
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- This is the recommended way to use Tailwind CSS plugins: https://v3.tailwindcss.com/docs/plugins
-    plugin(({ matchUtilities, theme }) => {
-      // heading utilities
-      matchUtilities(
-        {
-          // Use like 'txt-h-1' or 'txt-h-2' or 'txt-h-3'
-          ['txt-h']: (value: string) => ({
-            fontSize: value,
-            fontFamily: theme('fontFamily.display'),
-            lineHeight: '140%',
-          }),
-        },
-        { values: theme('headingSizes') },
-      );
-      matchUtilities(
-        {
-          // body text utilities
-          // Use like 'txt-body-s' or 'txt-body-m'
-          ['txt-body']: (value: string) => ({
-            fontSize: value,
-            fontFamily: theme('fontFamily.body'),
-            lineHeight: value === '1rem' ? '140%' : '120%',
-            letterSpacing: '0px',
-          }),
-          // system text utilities
-          // This is the only one that needs a different variant for bold text
-          // because system texts don't default to 400 font weight
-          // Use like 'txt-system-s' or 'txt-system-m'
-          ['txt-system']: (value: string) => ({
-            fontSize: value,
-            fontFamily: theme('fontFamily.display'),
-            lineHeight: '140%',
-            letterSpacing: '0px',
-            fontWeight: '500',
-          }),
-          // Use like 'txt-system-bold-s' or 'txt-system-bold-m'
-          ['txt-system-bold']: (value: string) => ({
-            fontSize: value,
-            fontFamily: theme('fontFamily.display'),
-            lineHeight: '140%',
-            letterSpacing: '0px',
-            fontWeight: '700',
-          }),
-        },
-        { values: theme('typographySizes') },
-      );
-    }),
-  ],
 } satisfies Config;
