@@ -1,4 +1,4 @@
-<div class="w-full bg-purple-300 px-6 py-5 txt-system-s lg:px-24">
+<div class="txt-system-s w-full bg-purple-300 px-6 py-5 lg:px-24">
   @if (registrations.isPending() || assignedProjects.isPending()) {
     <ng-container i18n>Loading...</ng-container>
   } @else if (registrations.data()?.length) {

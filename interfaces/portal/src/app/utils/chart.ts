@@ -1,5 +1,6 @@
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+
 import tailwindConfig from '~/../../tailwind.config';
 
 const colors = tailwindConfig.theme.colors;

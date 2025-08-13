@@ -22,7 +22,7 @@
         @let parentTitle = parentPageTitle();
         @let parentLink = parentPageLink();
 
-        <div class="flex items-center justify-between pb-6 pt-1">
+        <div class="flex items-center justify-between pt-1 pb-6">
           @if (parentTitle) {
             @if (isPending()) {
               <p-skeleton
@@ -30,7 +30,7 @@
                 height="1.6rem"
               />
             } @else {
-              <span class="me-auto inline-flex items-center txt-body-m">
+              <span class="txt-body-m me-auto inline-flex items-center">
                 @if (parentLink) {
                   <a
                     [routerLink]="parentLink"

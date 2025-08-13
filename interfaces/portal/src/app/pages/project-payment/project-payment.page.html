@@ -36,11 +36,11 @@
       ></p-skeleton>
     } @else {
       <p-card
-        class="[grid-area:chart] [&_.p-card-body]:h-full [&_.p-card]:h-full"
+        class="[grid-area:chart] [&_.p-card]:h-full [&_.p-card-body]:h-full"
       >
         <p
           i18n
-          class="mb-6 font-medium txt-h-2"
+          class="txt-h-2 mb-6 font-medium"
         >
           Transfers data
         </p>
@@ -117,7 +117,7 @@
         >
           <span
             i18n
-            class="me-auto font-medium txt-h-2"
+            class="txt-h-2 me-auto font-medium"
             >Included registrations</span
           >
           @if (canRetryTransfers()) {
