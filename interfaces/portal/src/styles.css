@@ -1,4 +1,4 @@
-// Please take note of the order in which these are imported
+/* Please take note of the order in which these are imported */
 @import 'tailwindcss/base.css' layer(tailwind-base);
 
 @import 'primeicons/primeicons.css';
@@ -15,15 +15,15 @@ body {
 }
 
 :root {
-  // primeng uses this variable on all of its components by default
-  // and it does not work if we set it within the 'primeng' layer
+  /* primeng uses this variable on all of its components by default
+     and it does not work if we set it within the 'primeng' layer */
   --font-family: theme(fontFamily.body);
 }
 
-// Styles only for "local-development" purposes:
-// Classname is set on <html> by the AppComponent.
+/* Styles only for "local-development" purposes:
+   Classname is set on <html> by the AppComponent. */
 .dev {
-  // Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
+  /* Override *-left/*-right named utilities to enforce use of *-start/*-end utilities */
   [class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
       .p-toast-top-left
     ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
@@ -87,8 +87,8 @@ svg-icon svg {
   li {
     .mention-item {
       @apply text-start font-semibold txt-body-m;
-      @apply text-black !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
-      @apply py-2 !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
+      @apply text-black !important; /* Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important} */
+      @apply py-2 !important; /* Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important} */
     }
 
     &.mention-active {
@@ -100,27 +100,29 @@ svg-icon svg {
     }
   }
 
-  // Move the menu from the hard-coded LTR-position to the RTL reading-direction
+  /* Move the menu from the hard-coded LTR-position to the RTL reading-direction */
   &:dir(rtl) {
     transform: translateX(-100%);
   }
 }
 
-// PrimeNG Component overrides
+/* PrimeNG Component overrides */
 
-// Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
-// Following the pattern:
-//
-// .p-component-X {
-//   .p-component-X-element {
-//     // Override styles here
-//   }
-// }
-//
-// So there will only be ONE section/grouping per PrimeNG component.
-//
+/* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
+   Following the pattern:
+
+   .p-component-X {
+     .p-component-X-element {
+       // Override styles here
+     }
+   }
+
+   So there will only be ONE section/grouping per PrimeNG component.
+*/
 @layer primeng-customisations {
-  $toolbar-height: calc(48 / 14 * 1rem);
+  :root {
+    --toolbar-height: calc(48 / 14 * 1rem);
+  }
 
   .p-button {
     .p-button-label {
@@ -188,7 +190,7 @@ svg-icon svg {
 
     .p-drawer-header {
       @apply ps-3;
-      height: calc($toolbar-height - 2px);
+      height: calc(var(--toolbar-height) - 2px);
 
       .p-drawer-icon {
         margin-inline-start: 0;
@@ -205,7 +207,7 @@ svg-icon svg {
 
   .p-toolbar {
     @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
-    height: $toolbar-height;
+    height: var(--toolbar-height);
     flex-wrap: nowrap !important;
 
     .p-toolbar-group-start {
@@ -250,13 +252,13 @@ svg-icon svg {
       }
     }
 
-    // Styling for the filter button when active
-    // Currently broken: https://github.com/primefaces/primeng/issues/16576
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active,
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
-    //   @apply bg-purple-100 text-purple-900;
-    // }
+    /* Styling for the filter button when active
+       Currently broken: https://github.com/primefaces/primeng/issues/16576
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active,
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
+         @apply bg-purple-100 text-purple-900;
+       } */
   }
 
   .p-chip {
@@ -273,7 +275,7 @@ svg-icon svg {
     @apply flex items-center;
   }
 
-  // All form-inputs should be full-width, a wrapper should be in control of the width.
+  /* All form-inputs should be full-width, a wrapper should be in control of the width. */
   .p-password,
   .p-select,
   .p-multiselect {
@@ -291,7 +293,7 @@ svg-icon svg {
 
   .p-password {
     .p-password-input {
-      @apply font-mono; // Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.)
+      @apply font-mono; /* Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.) */
     }
 
     .p-password-toggle-mask-icon .p-icon {
@@ -300,13 +302,13 @@ svg-icon svg {
   }
 
   .p-multiselect {
-    // Prevent contents being cut off, always wrap and align checkboxes to the top
+    /* Prevent contents being cut off, always wrap and align checkboxes to the top */
     .p-multiselect-option {
       @apply items-start text-wrap;
     }
   }
-  // To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
-  // Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180
+  /* To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
+     Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180 */
   .p-inputwrapper,
   .p-textarea,
   .p-checkbox-box,
