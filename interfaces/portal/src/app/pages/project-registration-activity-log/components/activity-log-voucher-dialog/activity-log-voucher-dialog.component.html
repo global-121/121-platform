@@ -16,7 +16,7 @@
 >
   @defer {
     @if (voucher.isSuccess()) {
-      <p-scrollPanel styleClass="h-96 w-full border border-grey-300">
+      <p-scrollPanel styleClass="border-grey-300 h-96 w-full border">
         <iframe
           #voucherIframe
           [src]="sanitizedVoucherUrl()"

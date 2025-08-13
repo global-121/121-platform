@@ -38,7 +38,7 @@
           />
 
           <p-scrollPanel
-            styleClass="max-h-60 w-full border border-grey-300 bg-grey-100 p-4"
+            styleClass="border-grey-300 bg-grey-100 max-h-60 w-full border p-4"
           >
             @for (error of detailedErrors; track $index) {
               <pre class="whitespace-pre-wrap">{{ error | json }}</pre>

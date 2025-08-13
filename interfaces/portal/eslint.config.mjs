@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
 import angularEslint from 'angular-eslint';
+import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import eslintPluginComments from 'eslint-plugin-eslint-comments';
 import eslintPluginNoRelativePaths from 'eslint-plugin-no-relative-import-paths';
 import eslintPluginPerfectionist from 'eslint-plugin-perfectionist';
@@ -8,7 +9,6 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import eslintPluginRegexp from 'eslint-plugin-regexp';
 import eslintPluginSimpleSort from 'eslint-plugin-simple-import-sort';
 import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
-import eslintTailwind from 'eslint-plugin-tailwindcss';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
@@ -30,7 +30,6 @@ export default tsEslint.config(
       ...pluginQuery.configs['flat/recommended'],
       eslintPluginRegexp.configs['flat/recommended'],
       eslintSortClassMembers.configs['flat/recommended'],
-      ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     files: ['**/*.ts'],
@@ -121,11 +120,14 @@ export default tsEslint.config(
     extends: [
       ...angularEslint.configs.templateRecommended,
       ...angularEslint.configs.templateAccessibility,
-      ...eslintTailwind.configs['flat/recommended'],
       eslintPluginPrettierRecommended,
     ],
     files: ['src/app/**/*.html'],
+    plugins: {
+      'better-tailwindcss': eslintPluginBetterTailwindcss,
+    },
     rules: {
+      ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
       '@angular-eslint/template/i18n': [
         'error',
         {
@@ -173,25 +175,37 @@ export default tsEslint.config(
           ],
         },
       ],
+      'better-tailwindcss/enforce-consistent-class-order': 'off', // handled by Prettier
+      'better-tailwindcss/enforce-consistent-important-position': 'error',
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off', // handled by Prettier
+      'better-tailwindcss/no-conflicting-classes': 'error',
+      'better-tailwindcss/no-deprecated-classes': 'error',
+      'better-tailwindcss/no-restricted-classes': 'error',
+      'better-tailwindcss/no-unnecessary-whitespace': 'off', // handled by Prettier
+      'better-tailwindcss/no-unregistered-classes': [
+        'error',
+        {
+          ignore: [
+            // Allow PrimeNG component/icon classes:
+            'p\\-.*',
+            'pi',
+            'pi\\-.*',
+            'ng-invalid',
+            'ng-dirty',
+          ],
+        },
+      ],
       'prettier/prettier': [
         'error',
         {
           parser: 'angular',
         },
       ],
-      'tailwindcss/enforces-negative-arbitrary-values': 'error',
-      'tailwindcss/no-contradicting-classname': 'error',
-      'tailwindcss/no-custom-classname': [
-        'error',
-        {
-          whitelist: [
-            // Allow PrimeNG component/icon classes:
-            'p\\-.*',
-            'pi',
-            'pi\\-.*',
-          ],
-        },
-      ],
+    },
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: 'src/styles.css',
+      },
     },
   },
   {

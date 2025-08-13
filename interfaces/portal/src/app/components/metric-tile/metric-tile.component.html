@@ -1,5 +1,5 @@
 <p-card
-  class="h-full [&_.p-card-body]:h-full [&_.p-card-content]:flex [&_.p-card-content]:h-full [&_.p-card-content]:flex-col [&_.p-card]:h-full"
+  class="h-full [&_.p-card]:h-full [&_.p-card-body]:h-full [&_.p-card-content]:flex [&_.p-card-content]:h-full [&_.p-card-content]:flex-col"
 >
   @if (chipLabel() && !pending()) {
     <app-colored-chip
@@ -10,7 +10,7 @@
       class="ms-auto"
     />
   }
-  <dt class="mb-2 mt-auto pt-11 text-grey-700 txt-body-m">
+  <dt class="text-grey-700 txt-body-m mt-auto mb-2 pt-11">
     {{ metricLabel() }}
     @if (metricTooltip()) {
       <app-info-tooltip [message]="metricTooltip()!" />

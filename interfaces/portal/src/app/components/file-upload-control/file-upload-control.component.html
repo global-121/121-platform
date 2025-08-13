@@ -14,7 +14,7 @@
   >
     @if (files.length === 0) {
       <div class="space-y-3 py-4 text-center">
-        <i class="pi pi-cloud-upload text-4xl text-grey-500"></i>
+        <i class="pi pi-cloud-upload text-grey-500 text-4xl"></i>
         <p
           i18n
           class="text-grey-500 txt-system-s"
@@ -35,8 +35,8 @@
       </div>
     } @else {
       @for (file of files; track $index) {
-        <div class="flex items-center gap-3 bg-grey-100 px-3.5 py-1">
-          <span class="grow txt-system-s">{{ file.name }}</span>
+        <div class="bg-grey-100 flex items-center gap-3 px-3.5 py-1">
+          <span class="txt-system-s grow">{{ file.name }}</span>
           <div class="txt-system-s">{{ file.size | filesize }}</div>
           <p-button
             icon="pi pi-trash"

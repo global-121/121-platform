@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "root": "",
@@ -38,11 +38,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": [
-              "@savvywombat/tailwindcss-grid-areas",
-              "filesize",
-              "tailwindcss/plugin"
-            ],
+            "allowedCommonJsDependencies": ["filesize"],
             "localize": true,
             "i18nMissingTranslation": "ignore",
             "outputPath": "www",
@@ -50,7 +46,7 @@
             "browser": "src/main.ts",
             "polyfills": ["zone.js", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               {
                 "glob": "**/*",
@@ -59,7 +55,7 @@
               },
               "src/favicon.ico"
             ],
-            "styles": ["src/fonts.css", "src/styles.scss"],
+            "styles": ["src/fonts.css", "src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -178,7 +174,7 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "include": ["src/**/*.spec.ts", "../*.spec.ts"],
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "codeCoverage": true,
             "progress": true,
             "assets": [
@@ -188,7 +184,7 @@
                 "output": "/assets/"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/styles.css"],
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }

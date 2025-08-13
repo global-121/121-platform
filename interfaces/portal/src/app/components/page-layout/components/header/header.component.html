@@ -9,7 +9,7 @@
       plain
       rounded
       text
-      class="lg:me-9 [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent [&_button]:text-white"
+      class="lg:me-9 [&_button]:text-white [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent"
       (click)="sidebarVisible.set(true)"
       [attr.aria-controls]="sidebarVisible() ? 'menu' : null"
       [attr.aria-expanded]="sidebarVisible()"
@@ -25,14 +25,14 @@
           i18n-label="Top-right user-menu@@header-user-menu"
           [icon]="'pi pi-user'"
           [menuItems]="userMenuOptions()"
-          class="[&_.p-button-label]:font-semibold [&_.p-button-label]:duration-0 [&_.p-button-label]:txt-body-m [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent [&_button]:text-white"
+          class="[&_.p-button-label]:txt-body-m [&_.p-button-label]:font-semibold [&_.p-button-label]:duration-0 [&_button]:text-white [&_button:focus]:border-white [&_button:focus]:bg-transparent [&_button:hover]:border-white [&_button:hover]:bg-transparent"
           [plain]="true"
           [text]="true"
           size="small"
         >
           <p
             menu-start
-            class="mb-2 border-b border-b-grey-300 px-3 py-2"
+            class="border-b-grey-300 mb-2 border-b px-3 py-2"
           >
             <ng-container i18n>
               Logged in as:<br />{{ userName() }}
@@ -81,7 +81,7 @@
               'focus:text-black',
             ]"
             [ariaCurrentWhenActive]="'page'"
-            class="block w-full rounded-none border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+            class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple block w-full rounded-none border-t px-6 py-4"
           >
             {{ sidebarLink.label }}
           </a>
@@ -89,7 +89,7 @@
         <a
           href="https://manual.121.global/"
           [attr.rel]="'help'"
-          class="inline-flex w-full items-center border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex w-full items-center border-t px-6 py-4"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"
@@ -99,7 +99,7 @@
         </a>
         <a
           href="mailto:support@121.global"
-          class="inline-flex w-full items-center border-t border-grey-300 px-6 py-4 font-display hover:text-purple focus:bg-grey-300 focus:text-purple"
+          class="border-grey-300 font-display hover:text-purple focus:bg-grey-300 focus:text-purple inline-flex w-full items-center border-t px-6 py-4"
           target="_blank"
           title="Opens in a new window"
           i18n-title="@@generic-opens-in-new-window"
@@ -110,7 +110,7 @@
       </div>
       <div class="px-6">
         <app-language-switcher />
-        <small class="block pb-2 text-center text-grey-500">
+        <small class="text-grey-500 block pb-2 text-center">
           <app-health-widget />
         </small>
       </div>

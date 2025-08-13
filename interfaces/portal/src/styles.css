@@ -1,10 +1,54 @@
-// Please take note of the order in which these are imported
-@import 'tailwindcss/base.css' layer(tailwind-base);
-
+@import 'tailwindcss';
 @import 'primeicons/primeicons.css';
 
-@import 'tailwindcss/components.css' layer(tailwind-utilities);
-@import 'tailwindcss/utilities.css' layer(tailwind-utilities);
+@config "../tailwind.config.ts";
+
+@theme {
+  --heading-size-1: 1.43rem; /* ~20px */
+  --heading-size-2: 1.28rem; /* ~18px */
+  --heading-size-3: 1.15rem; /* ~16px */
+
+  --typography-size-s: 0.85rem; /* ~12px */
+  --typography-size-m: 1rem; /* ~14px */
+  --typography-size-l: 1.85rem; /* ~26px */
+
+  --typography-line-height-s: 120%;
+  --typography-line-height-m: 140%;
+  --typography-line-height-l: 140%;
+
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Open Sans', sans-serif;
+  --font-mono: monospace;
+}
+
+@utility txt-h-* {
+  font-size: --value(--heading-size-*);
+  font-family: var(--font-display);
+  line-height: 140%;
+}
+
+@utility txt-body-* {
+  font-size: --value(--typography-size-*);
+  font-family: var(--font-body);
+  line-height: --value(--typography-line-height-*);
+  letter-spacing: 0px;
+}
+
+@utility txt-system-* {
+  font-size: --value(--typography-size-*);
+  font-family: var(--font-display);
+  line-height: 140%;
+  letter-spacing: 0px;
+  font-weight: 500;
+}
+
+@utility txt-system-bold-* {
+  font-size: --value(--typography-size-*);
+  font-family: var(--font-display);
+  line-height: 140%;
+  letter-spacing: 0px;
+  font-weight: 700;
+}
 
 html {
   font-size: calc(14 / 16 * 1rem);
@@ -15,15 +59,15 @@ body {
 }
 
 :root {
-  // primeng uses this variable on all of its components by default
-  // and it does not work if we set it within the 'primeng' layer
-  --font-family: theme(fontFamily.body);
+  /* primeng uses this variable on all of its components by default
+     and it does not work if we set it within the 'primeng' layer */
+  --font-family: var(--font-body);
 }
 
-// Styles only for "local-development" purposes:
-// Classname is set on <html> by the AppComponent.
+/* Styles only for "local-development" purposes:
+   Classname is set on <html> by the AppComponent. */
 .dev {
-  // Override *-left/*-right named utilities to enforce use of *-start/*-end utilities
+  /* Override *-left/*-right named utilities to enforce use of *-start/*-end utilities */
   [class*='-left']:not(.p-button-icon-left):not(.p-drawer-left):not(
       .p-toast-top-left
     ):not(.p-tooltip-left):not(.pi-chevron-left):not(.p-iconfield-left),
@@ -55,15 +99,15 @@ svg-icon svg {
 
 @layer tailwind-base {
   h1 {
-    @apply font-bold txt-h-1;
+    @apply txt-h-1 font-bold;
   }
 
   h2 {
-    @apply font-bold txt-h-2;
+    @apply txt-h-2 font-bold;
   }
 
   h3 {
-    @apply font-bold txt-h-3;
+    @apply txt-h-3 font-bold;
   }
 
   strong,
@@ -86,9 +130,7 @@ svg-icon svg {
 
   li {
     .mention-item {
-      @apply text-start font-semibold txt-body-m;
-      @apply text-black !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
-      @apply py-2 !important; // Specific @apply-rule to be able to use !important, without SCSS-syntax #{!important}
+      @apply txt-body-m !py-2 text-start font-semibold !text-black;
     }
 
     &.mention-active {
@@ -100,27 +142,29 @@ svg-icon svg {
     }
   }
 
-  // Move the menu from the hard-coded LTR-position to the RTL reading-direction
+  /* Move the menu from the hard-coded LTR-position to the RTL reading-direction */
   &:dir(rtl) {
     transform: translateX(-100%);
   }
 }
 
-// PrimeNG Component overrides
+/* PrimeNG Component overrides */
 
-// Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
-// Following the pattern:
-//
-// .p-component-X {
-//   .p-component-X-element {
-//     // Override styles here
-//   }
-// }
-//
-// So there will only be ONE section/grouping per PrimeNG component.
-//
+/* Rule-of-thumb: Override only from any specific component class-name(i.e. `.p-component-X`) 'down'.
+   Following the pattern:
+
+   .p-component-X {
+     .p-component-X-element {
+       // Override styles here
+     }
+   }
+
+   So there will only be ONE section/grouping per PrimeNG component.
+*/
 @layer primeng-customisations {
-  $toolbar-height: calc(48 / 14 * 1rem);
+  :root {
+    --toolbar-height: calc(48 / 14 * 1rem);
+  }
 
   .p-button {
     .p-button-label {
@@ -132,7 +176,7 @@ svg-icon svg {
     }
 
     &.p-button-link {
-      @apply p-0 text-purple underline;
+      @apply text-purple p-0 underline;
 
       .p-button-label {
         @apply font-normal;
@@ -179,7 +223,7 @@ svg-icon svg {
     @apply text-black;
 
     .p-card-title {
-      @apply pb-2 ps-2 font-bold text-black txt-h-2;
+      @apply txt-h-2 ps-2 pb-2 font-bold text-black;
     }
   }
 
@@ -188,7 +232,7 @@ svg-icon svg {
 
     .p-drawer-header {
       @apply ps-3;
-      height: calc($toolbar-height - 2px);
+      height: calc(var(--toolbar-height) - 2px);
 
       .p-drawer-icon {
         margin-inline-start: 0;
@@ -204,8 +248,8 @@ svg-icon svg {
   }
 
   .p-toolbar {
-    @apply rounded-none border-x-0 border-t-0 border-b-purple bg-navy py-0;
-    height: $toolbar-height;
+    @apply border-b-purple bg-navy rounded-none border-x-0 border-t-0 py-0;
+    height: var(--toolbar-height);
     flex-wrap: nowrap !important;
 
     .p-toolbar-group-start {
@@ -216,14 +260,14 @@ svg-icon svg {
 
   .p-datatable {
     .p-datatable-header {
-      @apply px-0 pb-4 pt-0;
+      @apply px-0 pt-0 pb-4;
     }
 
     .p-paginator {
-      @apply border-b-0 pb-0 pt-4;
+      @apply border-b-0 pt-4 pb-0;
 
       .p-paginator-current {
-        @apply me-auto ms-0 ps-0 txt-system-s;
+        @apply txt-system-s ms-0 me-auto ps-0;
       }
     }
 
@@ -239,7 +283,7 @@ svg-icon svg {
 
         &:hover,
         &:focus-within {
-          @apply bg-purple-100 text-purple;
+          @apply text-purple bg-purple-100;
         }
       }
 
@@ -250,13 +294,13 @@ svg-icon svg {
       }
     }
 
-    // Styling for the filter button when active
-    // Currently broken: https://github.com/primefaces/primeng/issues/16576
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active,
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
-    // .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
-    //   @apply bg-purple-100 text-purple-900;
-    // }
+    /* Styling for the filter button when active
+       Currently broken: https://github.com/primefaces/primeng/issues/16576
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active,
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active:hover,
+       .p-datatable-column-filter-button.p-column-filter-menu-button-active:focus {
+         @apply bg-purple-100 text-purple-900;
+       } */
   }
 
   .p-chip {
@@ -265,7 +309,7 @@ svg-icon svg {
     }
 
     .p-chip-label {
-      @apply font-semibold txt-body-m;
+      @apply txt-body-m font-semibold;
     }
   }
 
@@ -273,7 +317,7 @@ svg-icon svg {
     @apply flex items-center;
   }
 
-  // All form-inputs should be full-width, a wrapper should be in control of the width.
+  /* All form-inputs should be full-width, a wrapper should be in control of the width. */
   .p-password,
   .p-select,
   .p-multiselect {
@@ -291,7 +335,7 @@ svg-icon svg {
 
   .p-password {
     .p-password-input {
-      @apply font-mono; // Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.)
+      @apply font-mono; /* Improve readability and spot typos between similar characters (o,O,0 or i,l,L,1 etc.) */
     }
 
     .p-password-toggle-mask-icon .p-icon {
@@ -300,20 +344,20 @@ svg-icon svg {
   }
 
   .p-multiselect {
-    // Prevent contents being cut off, always wrap and align checkboxes to the top
+    /* Prevent contents being cut off, always wrap and align checkboxes to the top */
     .p-multiselect-option {
       @apply items-start text-wrap;
     }
   }
-  // To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
-  // Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180
+  /* To be able to remove this rule we need to be able to mark all form fields as "dirty" instead of "touched" on form submit
+     Waiting for this to be merged & released in angular: https://github.com/angular/angular/pull/58663#issuecomment-2476844180 */
   .p-inputwrapper,
   .p-textarea,
   .p-checkbox-box,
   .p-inputtext {
     &.ng-touched.ng-invalid,
     [formcontrolname].ng-touched.ng-invalid & {
-      border-color: theme('colors.red.500') !important;
+      @apply !border-red-500;
     }
   }
 
@@ -325,7 +369,7 @@ svg-icon svg {
   }
 
   .p-fileupload.p-fileupload-advanced {
-    @apply rounded-[16px] border border-dashed border-grey-500;
+    @apply border-grey-500 rounded-[16px] border border-dashed;
 
     .ng-touched.ng-invalid & {
       @apply border-red-500;
@@ -347,10 +391,10 @@ svg-icon svg {
   }
 
   .p-progressspinner {
-    --p-progressspinner-color-1: theme('colors.purple.700');
-    --p-progressspinner-color-2: theme('colors.purple.700');
-    --p-progressspinner-color-3: theme('colors.purple.700');
-    --p-progressspinner-color-4: theme('colors.purple.700');
+    --p-progressspinner-color-1: var(--color-purple-700);
+    --p-progressspinner-color-2: var(--color-purple-700);
+    --p-progressspinner-color-3: var(--color-purple-700);
+    --p-progressspinner-color-4: var(--color-purple-700);
   }
 
   .p-toast {

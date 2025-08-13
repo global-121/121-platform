@@ -106,7 +106,7 @@
             @if (columnSortField) {
               <p-sortIcon
                 [field]="columnSortField"
-                class="me-0 ms-2 mt-1"
+                class="ms-2 me-0 mt-1"
               />
             }
 
@@ -122,7 +122,7 @@
                 [showMatchModes]="!!columnMatchModeOptions"
                 [matchModeOptions]="columnMatchModeOptions"
                 [ngClass]="{
-                  '[&_.p-button]:bg-purple-100 [&_.p-button]:text-purple':
+                  '[&_.p-button]:text-purple [&_.p-button]:bg-purple-100':
                     isColumnFiltered,
                 }"
               >

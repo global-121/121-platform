@@ -1,8 +1,8 @@
 <div class="flex h-full flex-col">
-  <dt class="px-2 pb-2 pt-5 text-grey-700 txt-body-m">
+  <dt class="text-grey-700 txt-body-m px-2 pt-5 pb-2">
     {{ metric().label }}
   </dt>
-  <dd class="mt-auto border-b border-grey-300 px-2 pb-2 font-bold txt-h-2">
+  <dd class="border-grey-300 txt-h-2 mt-auto border-b px-2 pb-2 font-bold">
     @if (!metric()) {
       <app-skeleton-inline />
     } @else {
