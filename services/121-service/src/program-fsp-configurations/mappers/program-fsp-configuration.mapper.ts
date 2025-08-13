@@ -67,6 +67,7 @@ export class ProgramFspConfigurationMapper {
   ): ProgramFspConfigurationPropertyResponseDto {
     return {
       name: property.name,
+      value: property.value,
       updated: property.updated,
     };
   }
