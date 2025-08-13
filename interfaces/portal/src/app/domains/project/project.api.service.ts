@@ -101,7 +101,6 @@ export class ProjectApiService extends DomainApiService {
           (user) => ({
             ...user,
             allRolesLabel: user.roles.map((role) => role.label).join('; '),
-            lastLogin: user.lastLogin ? new Date(user.lastLogin) : undefined,
           }),
         );
 

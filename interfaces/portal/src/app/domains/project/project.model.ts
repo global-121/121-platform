@@ -23,8 +23,7 @@ export type ProjectUserAssignment = Dto<AssignmentResponseDTO>;
 
 export type ProjectUserWithRolesLabel = {
   allRolesLabel: string;
-  lastLogin?: Date;
-} & Omit<ProjectUser, 'lastLogin'>;
+} & ProjectUser;
 
 export type Attribute = Dto<AttributeFrom121Service>;
 
