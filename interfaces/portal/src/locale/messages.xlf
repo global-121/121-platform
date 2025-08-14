@@ -995,7 +995,7 @@
         <source>Payment created.</source>
       </trans-unit>
       <trans-unit id="7102075992666089988" datatype="html">
-        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
+        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps() }}" id="INTERPOLATION_1"/></source>
       </trans-unit>
       <trans-unit id="8890553633144307762" datatype="html">
         <source>Back</source>
