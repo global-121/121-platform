@@ -66,7 +66,12 @@ export const env = createEnv({
 
     // Azure Blob Storage
     AZURE_STORAGE_CONNECTION_STRING: z.string(),
-    AZURE_STORAGE_CONTAINER_NAME: z.string(),
+    AZURE_STORAGE_CONTAINER_NAME: z
+      .string()
+      .lowercase()
+      .min(3)
+      .max(63)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 
     // Data management
     RESET_SECRET: z.string().min(8),
