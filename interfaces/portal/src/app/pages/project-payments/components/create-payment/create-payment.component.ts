@@ -1,17 +1,15 @@
-import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
-  HostListener,
   inject,
   input,
   model,
   signal,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import {
   injectMutation,
@@ -20,7 +18,7 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Dialog, DialogModule } from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { MenuModule } from 'primeng/menu';
 
 import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
@@ -35,7 +33,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/fullscreen-spinner.component';
+import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -49,8 +47,6 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
-const queryParamStep = 'create-payment-step';
-
 @Component({
   selector: 'app-create-payment',
   imports: [
@@ -59,11 +55,10 @@ const queryParamStep = 'create-payment-step';
     DatePipe,
     RegistrationsTableComponent,
     CardModule,
-    NgClass,
     DataListComponent,
-    FullscreenSpinnerComponent,
     MenuModule,
     ColoredChipComponent,
+    FullscreenStepperDialogComponent,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,
@@ -71,23 +66,21 @@ const queryParamStep = 'create-payment-step';
   providers: [CurrencyPipe, ToastService],
 })
 export class CreatePaymentComponent {
-  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
-  currencyPipe = inject(CurrencyPipe);
-  downloadService = inject(DownloadService);
-  exportService = inject(ExportService);
-  fspConfigurationApiService = inject(FspConfigurationApiService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  paymentApiService = inject(PaymentApiService);
-  projectApiService = inject(ProjectApiService);
-  toastService = inject(ToastService);
-  translatableStringService = inject(TranslatableStringService);
+  readonly currencyPipe = inject(CurrencyPipe);
+  readonly downloadService = inject(DownloadService);
+  readonly exportService = inject(ExportService);
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly rtlHelper = inject(RtlHelperService);
+  readonly router = inject(Router);
+  readonly paymentApiService = inject(PaymentApiService);
+  readonly projectApiService = inject(ProjectApiService);
+  readonly toastService = inject(ToastService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
-  readonly createPaymentDialog = viewChild.required<Dialog>(
-    'createPaymentDialog',
-  );
+  readonly createPaymentDialog =
+    viewChild.required<FullscreenStepperDialogComponent>('createPaymentDialog');
   readonly registrationsTable =
     viewChild<RegistrationsTableComponent>('registrationsTable');
 
@@ -97,7 +90,6 @@ export class CreatePaymentComponent {
   );
 
   today = new Date();
-  totalSteps = 2;
   overrideFilters = {
     // only registrations with status "included" are eligible for payment
     status: RegistrationStatusEnum.included,
@@ -117,6 +109,90 @@ export class CreatePaymentComponent {
 
   readonly paymentAmount = computed(
     () => this.project.data()?.fixedTransferValue ?? 0,
+  );
+
+  readonly currentStep = computed(() => {
+    if (!this.dialogVisible()) {
+      return 0;
+    }
+
+    if (this.dryRunResult()) {
+      return 2;
+    }
+
+    return 1;
+  });
+
+  readonly paymentHasIntegratedFsp = computed(() =>
+    this.paymentHasIntegrationType(FspIntegrationType.api),
+  );
+
+  readonly paymentHasExcelFsp = computed(() =>
+    this.paymentHasIntegrationType(FspIntegrationType.csv),
+  );
+
+  readonly paymentSummaryData = computed(() => {
+    const dryRunResult = this.dryRunResult();
+
+    if (!dryRunResult) {
+      return [];
+    }
+
+    const listData: DataListItem[] = [
+      {
+        label: $localize`Financial Service Provider(s)`,
+        type: 'options',
+        value: dryRunResult.programFspConfigurationNames,
+        options: (this.fspConfigurations.data() ?? []).map((fspConfig) => ({
+          label: fspConfig.label,
+          value: fspConfig.name,
+        })),
+        loading: this.fspConfigurations.isPending(),
+        fullWidth: true,
+      },
+      {
+        label: $localize`Registrations`,
+        value: dryRunResult.applicableCount.toString(),
+      },
+      {
+        label: $localize`Total payment amount`,
+        value: this.currencyPipe.transform(
+          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
+          this.project.data()?.currency,
+          'symbol-narrow',
+          '1.2-2',
+        ),
+        tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+      },
+    ];
+
+    return listData;
+  });
+
+  readonly paymentSummaryMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: $localize`Export payment list`,
+      icon: 'pi pi-upload',
+      command: () => {
+        this.exportByTypeMutation.mutate({
+          type: ExportType.registrations,
+          paginateQuery: this.registrationsTable()?.getActionData()?.query,
+        });
+      },
+    },
+  ]);
+
+  readonly proceedLabel = computed(() =>
+    this.currentStep() === 1
+      ? $localize`Add to payment`
+      : $localize`Start payment`,
+  );
+
+  readonly cannotProceed = computed(
+    () =>
+      this.createPaymentMutation.isPending() ||
+      this.project.isPending() ||
+      this.paymentStatus.isPending(),
   );
 
   exportByTypeMutation = injectMutation(() =>
@@ -193,84 +269,6 @@ export class CreatePaymentComponent {
     },
   }));
 
-  readonly currentStep = computed(() => {
-    if (!this.dialogVisible()) {
-      return 0;
-    }
-
-    if (this.dryRunResult()) {
-      return 2;
-    }
-
-    return 1;
-  });
-  readonly paymentHasIntegratedFsp = computed(() =>
-    this.paymentHasIntegrationType(FspIntegrationType.api),
-  );
-  readonly paymentHasExcelFsp = computed(() =>
-    this.paymentHasIntegrationType(FspIntegrationType.csv),
-  );
-  readonly paymentSummaryData = computed(() => {
-    const dryRunResult = this.dryRunResult();
-
-    if (!dryRunResult) {
-      return [];
-    }
-
-    const listData: DataListItem[] = [
-      {
-        label: $localize`Financial Service Provider(s)`,
-        type: 'options',
-        value: dryRunResult.programFspConfigurationNames,
-        options: (this.fspConfigurations.data() ?? []).map((fspConfig) => ({
-          label: fspConfig.label,
-          value: fspConfig.name,
-        })),
-        loading: this.fspConfigurations.isPending(),
-        fullWidth: true,
-      },
-      {
-        label: $localize`Registrations`,
-        value: dryRunResult.applicableCount.toString(),
-      },
-      {
-        label: $localize`Total payment amount`,
-        value: this.currencyPipe.transform(
-          this.paymentAmount() * dryRunResult.sumPaymentAmountMultiplier,
-          this.project.data()?.currency,
-          'symbol-narrow',
-          '1.2-2',
-        ),
-        tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
-      },
-    ];
-
-    return listData;
-  });
-  readonly paymentSummaryMenuItems = computed<MenuItem[]>(() => [
-    {
-      label: $localize`Export payment list`,
-      icon: 'pi pi-upload',
-      command: () => {
-        this.exportByTypeMutation.mutate({
-          type: ExportType.registrations,
-          paginateQuery: this.registrationsTable()?.getActionData()?.query,
-        });
-      },
-    },
-  ]);
-  readonly proceedLabel = computed(() =>
-    this.currentStep() === 1
-      ? $localize`Add to payment`
-      : $localize`Start payment`,
-  );
-  readonly cannotProceed = computed(
-    () =>
-      this.createPaymentMutation.isPending() ||
-      this.project.isPending() ||
-      this.paymentStatus.isPending(),
-  );
-
   openDialog() {
     if (this.paymentStatus.data()?.inProgress) {
       this.toastService.showToast({
@@ -283,7 +281,6 @@ export class CreatePaymentComponent {
     this.dryRunResult.set(undefined);
     this.registrationsTable()?.resetSelection();
     this.dialogVisible.set(true);
-    this.createPaymentDialog().maximize();
   }
 
   goBack() {
@@ -323,24 +320,5 @@ export class CreatePaymentComponent {
       fspConfigurationNames: dryRunResult.programFspConfigurationNames,
       integrationType,
     });
-  }
-
-  /* the combination of the effect and the host listener allow us to make sure
-     that the user does not navigate away from the page by using the browser "back" button
-     during the payment creation process
-  */
-  // eslint-disable-next-line sort-class-members/sort-class-members -- disabling this eslint rule to keep the effect and the listener together in the code
-  addCurrentStepToQueryParams = effect(() => {
-    void this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { [queryParamStep]: this.currentStep() || null },
-      queryParamsHandling: 'replace',
-    });
-  });
-
-  @HostListener('window:popstate', ['$event'])
-  onPopState() {
-    // triggered when the browser "back" button is pressed
-    this.goBack();
   }
 }
