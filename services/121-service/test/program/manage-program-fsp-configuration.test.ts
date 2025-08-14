@@ -17,7 +17,7 @@ import { getTransactions } from '@121-service/test/helpers/program.helper';
 import {
   deleteProgramFspConfiguration,
   deleteProgramFspConfigurationProperty,
-  getFspProgramProperties,
+  getProgramFspConfigurationProperties,
   getProgramFspConfigurations,
   patchProgramFspConfiguration,
   patchProgramFspConfigurationProperty,
@@ -393,7 +393,7 @@ describe('Manage Fsp configurations', () => {
     // Arrange
     const enumValues = Object.values(FspConfigurationProperties);
     // Act
-    const getVisibleProperties = await getFspProgramProperties({
+    const getVisibleProperties = await getProgramFspConfigurationProperties({
       programId: programIdVisa,
       configName: Fsps.intersolveVisa, //This configuration has visible properties
       accessToken,
@@ -415,7 +415,7 @@ describe('Manage Fsp configurations', () => {
 
   it('Returns masked values for hidden properties of a program Fsp configuration', async () => {
     // Act
-    const getHiddenProperties = await getFspProgramProperties({
+    const getHiddenProperties = await getProgramFspConfigurationProperties({
       programId: programIdVisa,
       configName: Fsps.intersolveVoucherWhatsapp, // This configuration has hidden properties
       accessToken,

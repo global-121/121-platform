@@ -139,7 +139,7 @@ export async function deleteProgramFspConfigurationProperty({
     .set('Cookie', [accessToken]);
 }
 
-export async function getFspProgramProperties({
+export async function getProgramFspConfigurationProperties({
   programId,
   configName,
   accessToken,
