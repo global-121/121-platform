@@ -71,7 +71,7 @@ export const env = createEnv({
       .lowercase()
       .min(3)
       .max(63)
-      .regex(/[a-z0-9]+(?:-[a-z0-9]+)*/),
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
 
     // Data management
     RESET_SECRET: z.string().min(8),
