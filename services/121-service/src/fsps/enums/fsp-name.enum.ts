@@ -21,3 +21,17 @@ export enum FspConfigurationProperties {
   fundingTokenCode = 'fundingTokenCode',
   paymentReferencePrefix = 'paymentReferencePrefix',
 }
+
+export const FspConfigPropertyValueVisibility: Record<
+  FspConfigurationProperties,
+  boolean
+> = {
+  [FspConfigurationProperties.password]: false,
+  [FspConfigurationProperties.username]: false,
+  [FspConfigurationProperties.columnsToExport]: true,
+  [FspConfigurationProperties.columnToMatch]: true,
+  [FspConfigurationProperties.brandCode]: true,
+  [FspConfigurationProperties.coverLetterCode]: true,
+  [FspConfigurationProperties.fundingTokenCode]: true,
+  [FspConfigurationProperties.paymentReferencePrefix]: true,
+};

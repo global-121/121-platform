@@ -169,6 +169,21 @@ export class ProgramFspConfigurationsController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
+    summary: 'Retrieve visible properties for Fsp Configuration.',
+  })
+  @Get(':programId/fsp-configurations/:name/properties')
+  public async getVisibleProperties(
+    @Param('programId') programId: number,
+    @Param('name') name: string,
+  ) {
+    return this.programFspConfigurationsService.getFspConfigurationProperties(
+      programId,
+      name,
+    );
+  }
+
+  @AuthenticatedUser({ isAdmin: true })
+  @ApiOperation({
     summary: `Create properties for a Program FSP Configuration. See ${EXTERNAL_API.rootApi}/fsps for allowed properties per FSP.`,
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
