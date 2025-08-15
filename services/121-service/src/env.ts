@@ -297,6 +297,15 @@ export const env = createEnv({
         }
       }
 
+      // Make sure we do not set the NEDBANK_CERTIFICATE_PASSWORD in production
+      if (env.NODE_ENV === 'production' && env.NEDBANK_CERTIFICATE_PASSWORD) {
+        ctx.addIssue({
+          path: ['NEDBANK_CERTIFICATE_PASSWORD'],
+          message:
+            'The NEDBANK_CERTIFICATE_PASSWORD variable must not be set in production.',
+        });
+      }
+
       return env;
     }),
 
