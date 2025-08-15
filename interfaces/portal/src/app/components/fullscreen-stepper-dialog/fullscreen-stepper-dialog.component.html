@@ -1,0 +1,68 @@
+<p-dialog
+  #dialog
+  [(visible)]="dialogVisible"
+  [draggable]="false"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  [closeOnEscape]="false"
+  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:shadow-payment-stepper [&_.p-dialog-footer]:p-0"
+>
+  <ng-template pTemplate="header">
+    <h3>
+      <ng-container [ngTemplateOutlet]="header()"></ng-container>
+    </h3>
+  </ng-template>
+  <div class="w-full px-6 lg:px-24">
+    @defer (when dialogVisible()) {
+      <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
+      <!-- because this makes the selection in the table persist without saving it to local storage. -->
+      <!-- It also has the advantage of not adding / removing the DOM of the table when going back and forth -->
+      <!-- which makes it more performant on slower devices. -->
+      @for (step of steps(); track $index) {
+        <div
+          [ngClass]="{
+            hidden: currentStep() !== $index + 1,
+          }"
+        >
+          <ng-container [ngTemplateOutlet]="step"></ng-container>
+        </div>
+      }
+    }
+  </div>
+  <app-fullscreen-spinner [loading]="isPending()" />
+  <ng-template pTemplate="footer">
+    <div class="relative w-full">
+      <div
+        class="border-t-2 border-t-purple-300 transition-all"
+        [style]="{
+          width: (currentStep() / totalSteps()) * 100 + '%',
+        }"
+      ></div>
+      <div class="flex items-center justify-end p-4">
+        @if (currentStep() > 1) {
+          <p-button
+            label="Back"
+            i18n-label
+            rounded
+            outlined
+            class="me-auto"
+            (click)="goBack.emit()"
+          />
+        }
+        <span
+          i18n
+          class="absolute start-1/2 -translate-x-1/2"
+          >Step {{ currentStep() }} of {{ totalSteps() }}</span
+        >
+        <p-button
+          [label]="proceedLabel()"
+          rounded
+          [loading]="cannotProceed()"
+          [disabled]="cannotProceed()"
+          (click)="proceed.emit()"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
