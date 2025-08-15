@@ -60,6 +60,7 @@ import {
 } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import { Leaves } from '~/utils/leaves';
 import { Locale } from '~/utils/locale';
 
 export enum QueryTableColumnType {
@@ -69,8 +70,7 @@ export enum QueryTableColumnType {
   TEXT = 'text',
 }
 
-// TODO: AB#30792 TField should also support "leaves" such as "user.name" or "user.address.city"
-export type QueryTableColumn<TData, TField = keyof TData & string> = {
+export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
   header: string;
   field: 'COMPUTED_FIELD' | TField; // 'COMPUTED_FIELD' is a special value that is used to indicate that the field is computed and should not be used for filtering or sorting
   fieldForSort?: TField; // defaults to field

@@ -49,7 +49,7 @@ type ExcludeFuncsFromObj<T> = Pick<
 type Dtoified<T> =
   IsValueType<T> extends true
     ? ReplaceDate<ReplaceMap<ReplaceSet<ReplaceArray<T>>>>
-    : { [K in keyof ExcludeFuncsFromObj<T>]: Dto<T[K]> };
+    : { [K in keyof T]: Dto<T[K]> };
 
 export type Dto<T> =
   IsFunction<T> extends true
