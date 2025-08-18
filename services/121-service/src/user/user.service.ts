@@ -104,12 +104,7 @@ export class UserService {
     return results === 1;
   }
 
-  public async getUserRoles(userId: number): Promise<UserRoleResponseDTO[]> {
-    // TODO: REFACTOR: this checks if the user has this permission for at least 1 program, which is unideal
-    await this.getProgramScopeIdsUserHasPermission(
-      userId,
-      PermissionEnum.AidWorkerProgramREAD,
-    );
+  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
     const userRoles = await this.userRoleRepository.find({
       relations: ['permissions'],
     });

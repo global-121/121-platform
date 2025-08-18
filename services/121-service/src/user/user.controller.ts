@@ -56,7 +56,6 @@ import { throwIfSelfUpdate } from '@121-service/src/user/helpers/throw-if-self-u
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
-import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
@@ -66,8 +65,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  //No permission decorator possible because this endpoint is program-agnostic, instead check in service  @ApiTags('roles')
-  @AuthenticatedUser()
+  @AuthenticatedUser({ isOrganizationAdmin: true })
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
@@ -76,12 +74,8 @@ export class UserController {
     type: [UserRoleResponseDTO],
   })
   @Get('roles')
-  public async getUserRoles(
-    @Req() req: ScopedUserRequest,
-  ): Promise<UserRoleResponseDTO[]> {
-    const userId = RequestHelper.getUserId(req);
-
-    return await this.userService.getUserRoles(userId);
+  public async getUserRoles(): Promise<UserRoleResponseDTO[]> {
+    return await this.userService.getUserRoles();
   }
 
   @AuthenticatedUser({ isAdmin: true })
