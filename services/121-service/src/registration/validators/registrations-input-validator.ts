@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validate } from 'class-validator';
 import { Equal, Repository } from 'typeorm';
+import z from 'zod/v4';
 
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
@@ -889,8 +890,8 @@ export class RegistrationsInputValidator {
     let message = '';
     if (type === RegistrationAttributeTypes.date) {
       const datePattern =
-        /^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$/;
-      isValid = typeof value === 'string' && datePattern.test(value);
+        /^(?:0?[1-9]|[12]\d|3[01])-(?:0?[1-9]|1[0-2])-(?:19[2-9]\d|20[01]\d)$/;
+      isValid = typeof value === 'string' && z.regexes.date.test(value);
     } else if (type === RegistrationAttributeTypes.numeric) {
       isValid = value != null && !isNaN(+value);
     } else if (type === RegistrationAttributeTypes.numericNullable) {
@@ -931,6 +932,9 @@ export class RegistrationsInputValidator {
     return `The value '${valueString}' given for the attribute '${attribute}' does not have the correct format for type '${type}'`;
   }
 
+  /**
+   * @deprecated -- Replace with Zod `stringbool()`
+   */
   private valueIsBool(
     value: string[] | string | number | boolean | undefined | null,
   ): boolean {

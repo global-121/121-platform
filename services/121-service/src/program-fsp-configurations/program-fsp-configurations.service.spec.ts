@@ -219,7 +219,7 @@ describe('ProgramFspConfigurationsService', () => {
       ).rejects.toThrow();
       await expect(
         service.create(programId, invalidPropertiesDto),
-      ).rejects.toThrow(new RegExp(`only the following values are allowed`));
+      ).rejects.toThrow(/only the following values are allowed/);
     });
 
     it('should throw an exception if properties contain a duplicate name', async () => {
@@ -241,7 +241,7 @@ describe('ProgramFspConfigurationsService', () => {
       ).rejects.toThrow();
       await expect(
         service.create(programId, invalidPropertiesDto),
-      ).rejects.toThrow(new RegExp(`Duplicate property names are not allowed`));
+      ).rejects.toThrow(/Duplicate property names are not allowed/);
     });
   });
 

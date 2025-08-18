@@ -177,8 +177,7 @@ export class MessageTemplateService {
     const availablePlaceholders = availableAttributes.map(
       (a) => `{{${a.name}}}`,
     );
-    const regex = /{{[^}]+}}/g;
-    const matches = message.match(regex);
+    const matches = message.match(/\{\{[^}]+\}\}/g);
 
     // This 'if' is needed because matches can be null if no placeholders are found
     if (matches) {

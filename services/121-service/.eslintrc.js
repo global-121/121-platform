@@ -6,6 +6,7 @@ module.exports = {
       extends: [
         'eslint:recommended',
         'plugin:n/recommended',
+        'plugin:regexp/recommended',
         'plugin:prettier/recommended',
       ],
       env: {
@@ -27,6 +28,7 @@ module.exports = {
         'plugin:@typescript-eslint/stylistic',
         // 'plugin:@typescript-eslint/stylistic-type-checked',  // Preferred, but currently to many issues
         'plugin:n/recommended',
+        'plugin:regexp/recommended',
         'plugin:promise/recommended',
         'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
       ],
