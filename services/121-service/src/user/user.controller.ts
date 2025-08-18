@@ -65,7 +65,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @AuthenticatedUser({ isOrganizationAdmin: true })
+  @AuthenticatedUser()
   @ApiTags('roles')
   @ApiOperation({ summary: 'Get all user roles' })
   @ApiResponse({
