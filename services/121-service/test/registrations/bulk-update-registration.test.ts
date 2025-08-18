@@ -1,3 +1,4 @@
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   bulkUpdateRegistrationsCSV,
@@ -145,7 +146,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
 
   it('Should bulk update chosen FSP and validate changed records', async () => {
     const registrationDataThatWillChangePa1 = {
-      fspName: 'Intersolve-voucher-whatsapp',
+      fspName: Fsps.intersolveVoucherWhatsapp,
       programFspConfigurationId: 5,
       programFspConfigurationName: 'Intersolve-voucher-whatsapp',
       programFspConfigurationLabel: {
@@ -153,7 +154,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
       },
     };
     const registrationDataThatWillChangePa2 = {
-      fspName: 'Intersolve-visa',
+      fspName: Fsps.intersolveVisa,
       programFspConfigurationId: 6,
       programFspConfigurationName: 'Intersolve-visa',
       programFspConfigurationLabel: {
