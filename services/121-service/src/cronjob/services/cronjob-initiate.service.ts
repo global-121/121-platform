@@ -18,6 +18,12 @@ type cronReturn = Promise<
   | false
 >;
 
+/*
+NestJS can run actual code inside methods decorated with @Cron. Because of scope
+the 121 Platform cannot do that. So instead, and in kind of a roundabout way, we
+call 121 Platform endpoints that then do the actual work.
+*/
+
 @Injectable()
 export class CronjobInitiateService {
   private httpService = new CustomHttpService(new HttpService());
@@ -179,13 +185,28 @@ export class CronjobInitiateService {
     method: 'put' | 'patch' | 'post' | 'delete',
     headers: Header[],
   ): Promise<cronReturn> {
-    let response: AxiosResponse;
+    // Some cronjobs can take 6+ hours. We get "499" errors when the HTTP
+    // requests to start those jobs takes too long and times out.
+    // Most of the errors in cronjobs will occur in the code doing the actual
+    // work which is separate from here. Here we're actually only interested in
+    // "did we correctly start the cronjob?"
+    // To stop waiting for a response we Promise.race with a 30 second timeout.
+    // If the request takes longer than 30 seconds, we assume *here* it
+    // succeeded. (Errors can still occur ofcourse but they will be logged in
+    // the actual cronjob code)
+    let response: AxiosResponse | undefined;
+    const timeoutMs = 30_000;
     try {
-      if (method === 'delete') {
-        response = await this.httpService[method](url, headers);
-      } else {
-        response = await this.httpService[method](url, {}, headers);
-      }
+      const requestPromise =
+        method === 'delete'
+          ? this.httpService[method](url, headers)
+          : this.httpService[method](url, {}, headers);
+      const timeoutPromise = new Promise<undefined>((resolve) => {
+        setTimeout(() => resolve(undefined), timeoutMs);
+      });
+      response = (await Promise.race([requestPromise, timeoutPromise])) as
+        | AxiosResponse
+        | undefined;
     } catch (error) {
       throw new Error(
         `While running cronjob "${this.currentlyRunningCronjobName}" an error occurred during a request: ${error.toString()}`,
@@ -194,7 +215,8 @@ export class CronjobInitiateService {
     // We could move this to a separate function, but that makes each cronjob a
     // bit uglier.
     this.currentlyRunningCronjobName = '';
+    // If no response, assume success (status 200)
     // Only reason we return something here is because we want to test it.
-    return { url, responseStatus: response.status };
+    return { url, responseStatus: response?.status ?? HttpStatus.OK };
   }
 }
