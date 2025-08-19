@@ -274,11 +274,11 @@ export const env = createEnv({
       ]);
 
       for (const [fspFlag, requiredVariables] of fspVariableRequirements) {
-        if (env[fspFlag] !== true) {
+        if ((env as any)[fspFlag] !== true) {
           continue;
         }
         for (const variable of requiredVariables) {
-          if (env[variable]) {
+          if ((env as any)[variable]) {
             continue;
           }
           ctx.addIssue({

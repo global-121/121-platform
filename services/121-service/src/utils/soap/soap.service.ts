@@ -12,12 +12,12 @@ export class SoapService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async post(
-    soapBodyPayload: any,
+    soapBodyPayload: Record<string, unknown>,
     headerFile: string,
     username: string,
     password: string,
     url: string,
-  ): Promise<any> {
+  ): Promise<unknown> {
     const jsonSoapBody = convert.js2xml(soapBodyPayload);
     const payload = await this.setSoapHeader(
       soapBodyPayload,
@@ -36,64 +36,71 @@ export class SoapService {
       xml,
       timeout: 150000,
     })
-      .then((rawResponse: any) => {
-        const response = rawResponse.response;
-        this.httpService.logMessageRequest(
-          { url, payload: jsonSoapBody },
-          {
-            status: response.statusCode,
-            statusText: undefined,
-            data: response.body,
-          },
-        );
-        const { body } = response;
-        const jsonResponse = convert.xml2js(body, { compact: true });
-        return jsonResponse['soap:Envelope']['soap:Body'];
-      })
-      .catch((err: any) => {
+      .then(
+        (rawResponse: { response: { statusCode: number; body: string } }) => {
+          const response = rawResponse.response;
+          this.httpService.logMessageRequest(
+            { url, payload: jsonSoapBody },
+            {
+              status: response.statusCode,
+              statusText: undefined,
+              data: response.body,
+            },
+          );
+          const { body } = response;
+          const jsonResponse = convert.xml2js(body, { compact: true });
+          return jsonResponse['soap:Envelope']['soap:Body'];
+        },
+      )
+      .catch((error: Error) => {
         this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
           {
-            status: undefined,
-            statusText: undefined,
-            data: { error: err },
+            status: 500,
+            statusText: error.message,
+            data: error,
           },
         );
-        return err;
+        throw error;
       });
   }
 
   private async setSoapHeader(
-    payload: any,
+    payload: Record<string, unknown>,
     headerFile: string,
     username: string,
     password: string,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const header = await this.readXmlAsJs(headerFile);
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(headerPart, [0, 0, 0], username);
     headerPart = this.setValue(headerPart, [0, 1, 0], password);
-    payload['elements'][0]['elements'].unshift(headerPart);
+    (payload['elements'] as unknown[])[0]['elements'].unshift(headerPart);
     return payload;
   }
 
-  public async readXmlAsJs(xmlName: string): Promise<any> {
+  public async readXmlAsJs(xmlName: string): Promise<Record<string, unknown>> {
     const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
-    return jsObject;
+    return jsObject as Record<string, unknown>;
   }
 
-  public findSoapIndex(soapElement: any, q: string): any {
-    return soapElement['elements'].findIndex((x) => x.name === q);
+  public findSoapIndex(
+    soapElement: Record<string, unknown>,
+    q: string,
+  ): number {
+    return (soapElement['elements'] as unknown[]).findIndex(
+      (x: any) => x.name === q,
+    );
   }
 
   public changeSoapBody(
-    payload: any,
+    payload: Record<string, unknown>,
     mainElement: string,
     subElements: string[],
     value: string,
-  ): any {
+  ): Record<string, unknown> {
     const envelopeXML = this.getChild(payload, 0);
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
@@ -117,31 +124,49 @@ export class SoapService {
     return payload;
   }
 
-  private getChild(xml: any, index: number): any {
-    return xml['elements'][index];
+  private getChild(
+    xml: Record<string, unknown>,
+    index: number,
+  ): Record<string, unknown> {
+    return (xml['elements'] as unknown[])[index] as Record<string, unknown>;
   }
 
-  private setValue(xml: any, indices: number[], value: string): any {
+  private setValue(
+    xml: Record<string, unknown>,
+    indices: number[],
+    value: string,
+  ): Record<string, unknown> {
     const firstIndex = indices.shift();
     if (firstIndex == undefined) {
       throw new Error('Invalid indices array.');
     }
     if (indices.length > 0) {
-      xml['elements'][firstIndex] = this.setValue(
+      (xml['elements'] as unknown[])[firstIndex] = this.setValue(
         this.getChild(xml, firstIndex),
         indices,
         value,
       );
     } else {
-      xml['elements'][firstIndex]['text'] = value;
+      ((xml['elements'] as unknown[])[firstIndex] as Record<string, unknown>)[
+        'text'
+      ] = value;
     }
     return xml;
   }
 
-  public setValueByName(xml: any, attributeName: string, value?: string): any {
-    for (const el of xml.elements) {
-      if (el.name === attributeName) {
-        el.elements[0].text = value;
+  public setValueByName(
+    xml: Record<string, unknown>,
+    attributeName: string,
+    value?: string,
+  ): Record<string, unknown> {
+    for (const el of xml.elements as unknown[]) {
+      if ((el as Record<string, unknown>).name === attributeName) {
+        (
+          ((el as Record<string, unknown>).elements as unknown[])[0] as Record<
+            string,
+            unknown
+          >
+        ).text = value;
       }
     }
     return xml;
@@ -153,9 +178,9 @@ export class SoapService {
     soapAction,
   }: {
     apiUrl: string | undefined;
-    payload: any;
+    payload: Record<string, unknown>;
     soapAction: string;
-  }): Promise<any> {
+  }): Promise<unknown> {
     const soapRequestXml = convert.js2xml(payload, {
       compact: false,
       spaces: 4,
@@ -199,44 +224,52 @@ export class SoapService {
         httpsAgent: agent,
       },
     })
-      .then((rawResponse: any) => {
-        const response = rawResponse.response;
-        this.httpService.logMessageRequest(
-          { url: apiUrl, payload: soapRequestXml },
-          {
-            status: response.statusCode,
-            statusText: undefined,
-            data: response.body,
-          },
-        );
+      .then(
+        (rawResponse: { response: { statusCode: number; body: string } }) => {
+          const response = rawResponse.response;
+          this.httpService.logMessageRequest(
+            { url: apiUrl, payload: soapRequestXml },
+            {
+              status: response.statusCode,
+              statusText: undefined,
+              data: response.body,
+            },
+          );
 
-        // Parse the SOAP response if needed
-        const parsedResponse = convert.xml2js(response.body, { compact: true });
+          // Parse the SOAP response if needed
+          const parsedResponse = convert.xml2js(response.body, {
+            compact: true,
+          });
 
-        if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:RMTFundtransferResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ]
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:AccountEnquiryResponse'
-          ];
-        }
-        return null;
-      })
-      .catch((err: any) => {
+          if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:RMTFundtransferResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:RMTFundtransferResponse'
+            ];
+          } else if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:CBERemitanceTransactionStatusResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:CBERemitanceTransactionStatusResponse'
+            ];
+          } else if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:AccountEnquiryResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:AccountEnquiryResponse'
+            ];
+          }
+          return null;
+        },
+      )
+      .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url: apiUrl, payload: soapRequestXml },
           {

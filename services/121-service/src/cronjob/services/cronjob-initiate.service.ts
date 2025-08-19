@@ -3,6 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 
+import { CronjobExecutionMethodName } from '@121-service/src/cronjob/types/cronjob-execution-method-name.type';
 import { env } from '@121-service/src/env';
 import {
   CustomHttpService,
@@ -27,7 +28,9 @@ export class CronjobInitiateService {
   @Cron(CronExpression.EVERY_10_MINUTES, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_CANCEL_FAILED_CARDS,
   })
-  public async cronCancelByRefposIntersolve(cronJobMethodName): cronReturn {
+  public async cronCancelByRefposIntersolve(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // This function periodically checks if some of the IssueCard calls failed and tries to cancel them
@@ -40,7 +43,7 @@ export class CronjobInitiateService {
     disabled: !env.CRON_CBE_ACCOUNT_ENQUIRIES_VALIDATION,
   })
   public async cronValidateCommercialBankEthiopiaAccountEnquiries(
-    cronJobMethodName,
+    cronJobMethodName: CronjobExecutionMethodName,
   ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
@@ -49,11 +52,11 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'put', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+  @Cron(CronExpression.EVERY_HOUR, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
   })
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(
-    cronJobMethodName,
+    cronJobMethodName: CronjobExecutionMethodName,
   ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
@@ -62,10 +65,12 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
     disabled: !env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
   })
-  public async cronRetrieveAndUpdateVisaData(cronJobMethodName): cronReturn {
+  public async cronRetrieveAndUpdateVisaData(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
@@ -74,10 +79,12 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
+  @Cron(CronExpression.EVERY_HOUR, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
   })
-  public async cronSendWhatsappReminders(cronJobMethodName): cronReturn {
+  public async cronSendWhatsappReminders(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl: baseUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
@@ -86,10 +93,12 @@ export class CronjobInitiateService {
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
-  @Cron(CronExpression.EVERY_DAY_AT_4AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     disabled: !env.CRON_NEDBANK_VOUCHERS,
   })
-  public async cronDoNedbankReconciliation(cronJobMethodName): cronReturn {
+  public async cronDoNedbankReconciliation(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
@@ -97,20 +106,24 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     disabled: !env.CRON_GET_DAILY_EXCHANGE_RATES,
   })
-  public async cronGetDailyExchangeRates(cronJobMethodName): cronReturn {
+  public async cronGetDailyExchangeRates(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     const url = `${baseCronUrl}/exchange-rates`;
     return await this.callEndpoint(url, 'put', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
   })
-  public async cronRemoveDeprecatedImageCodes(cronJobMethodName): cronReturn {
+  public async cronRemoveDeprecatedImageCodes(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Removes image codes older than one day as they're no longer needed after Twilio has downloaded them
@@ -119,11 +132,12 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'delete', headers);
   }
 
-  // Needs to run before 8AM so that the report is ready for the Onafriq reconciliation team to review.
-  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     disabled: !env.CRON_ONAFRIQ_RECONCILIATION_REPORT,
   })
-  public async cronSendReconciliationReport(cronJobMethodName): cronReturn {
+  public async cronSendOnafriqReconciliationReport(
+    cronJobMethodName: CronjobExecutionMethodName,
+  ): cronReturn {
     const { baseCronUrl, headers } =
       await this.prepareCronJobRun(cronJobMethodName);
     // Calling via API/HTTP instead of directly the Service so scope-functionality works, which needs a HTTP request to work which a cronjob does not have
