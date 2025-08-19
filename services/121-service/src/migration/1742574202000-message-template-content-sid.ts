@@ -27,21 +27,33 @@ export class MessageTemplateContentSid1742574202000
     if (env.ENV_NAME === 'NLRC') {
       const contents = await twilioClient.content.v1.contentAndApprovals.list();
       // filter out content no quick reply and non approved
-      const filteredContents = contents.filter(
-        (content) =>
-          content.types['twilio/quick-reply'] &&
-          content.types['twilio/quick-reply']?.body &&
-          content.approvalRequests.status === 'approved',
-      );
+      const filteredContents = contents.filter((content) => {
+        const quickReply =
+          content.types &&
+          typeof content.types['twilio/quick-reply'] === 'object' &&
+          content.types['twilio/quick-reply'] !== null
+            ? (content.types['twilio/quick-reply'] as { body?: string })
+            : undefined;
+        const approvalRequests =
+          content.approvalRequests &&
+          typeof content.approvalRequests === 'object' &&
+          content.approvalRequests !== null
+            ? (content.approvalRequests as { status?: string })
+            : undefined;
+        return quickReply?.body && approvalRequests?.status === 'approved';
+      });
 
       // Find the contentSid for each message template
       for (const messageTemplate of currentMessageTemplates) {
         let sid: undefined | string = undefined;
         for (const content of filteredContents) {
-          if (
-            content.types['twilio/quick-reply']?.body ===
-            messageTemplate.message
-          ) {
+          const quickReply =
+            content.types &&
+            typeof content.types['twilio/quick-reply'] === 'object' &&
+            content.types['twilio/quick-reply'] !== null
+              ? (content.types['twilio/quick-reply'] as { body?: string })
+              : undefined;
+          if (quickReply?.body === messageTemplate.message) {
             sid = content.sid;
             await queryRunner.query(
               `UPDATE "121-service"."message_template" SET "contentSid" = '${sid}' WHERE "id" = ${messageTemplate.id}`,
