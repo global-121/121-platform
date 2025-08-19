@@ -12,6 +12,8 @@ import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
+import sortsignals from './eslint-custom-rules/eslint.sort-signals.rule.mjs';
+
 export default tsEslint.config(
   {
     languageOptions: {
@@ -34,6 +36,11 @@ export default tsEslint.config(
     ],
     files: ['**/*.ts'],
     plugins: {
+      custom: {
+        rules: {
+          sortsignals,
+        },
+      },
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
@@ -79,6 +86,25 @@ export default tsEslint.config(
         },
       ],
       'arrow-body-style': 'error',
+      'custom/sortsignals': [
+        'error',
+        {
+          order: [
+            'input',
+            'output',
+            'inject',
+            'viewChild',
+            'viewChildren',
+            'contentChild',
+            'contentChildren',
+            'model',
+            'signal',
+            'computed',
+            'injectQuery',
+            'injectMutation',
+          ],
+        },
+      ],
       'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],

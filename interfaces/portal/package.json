@@ -19,7 +19,7 @@
     "build:stats": "npm run build:production -- --stats-json",
     "watch": "ng build --watch --configuration=development",
     "lint": "ng lint",
-    "fix": "ng lint --fix",
+    "fix": "npm run lint -- --fix",
     "test:all": "npm run knip && npm run lint && npm run typecheck && npm test:ci && npm run extract-i18n",
     "test:deployment-configuration": "node --env-file=.env ./_test-deployment-configuration.mjs",
     "test:ci": "npm test -- --no-watch --no-progress --browsers=ChromeHeadless",
