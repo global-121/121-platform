@@ -52,7 +52,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'put', headers);
   }
 
-  @Cron(CronExpression.EVERY_HOUR, {
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_CACHE_UNUSED_VOUCHERS,
   })
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(
@@ -65,7 +65,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_INTERSOLVE_VISA_UPDATE_WALLET_DETAILS,
   })
   public async cronRetrieveAndUpdateVisaData(
@@ -79,7 +79,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_HOUR, {
+  @Cron(CronExpression.EVERY_DAY_AT_NOON, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_SEND_WHATSAPP_REMINDERS,
   })
   public async cronSendWhatsappReminders(
