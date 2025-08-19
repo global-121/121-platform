@@ -12,60 +12,68 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
       `CREATE INDEX "IDX_c41c74d4a96568569c71cffe88" ON "121-service"."payment" ("created") `,
     );
 
-    // Fill payment entity
-    await queryRunner.query(`
-      INSERT INTO "121-service"."payment" (
-        "created",
-        "updated",
-        "programId"
-      )
-      SELECT
-        MIN(t."created") as "created",
-        MAX(t."updated") as "updated",
-        t."programId"
-      FROM "121-service"."transaction" t
-      WHERE t."payment" IS NOT NULL
-      GROUP BY t."payment", t."programId"
-      ORDER BY t."programId" , MIN(t."created")
-    `);
-
     // Add paymentId column to transaction entity (initially nullable)
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ADD "paymentId" integer`,
     );
 
     // Fill transaction.paymentId with the correct values
-    await queryRunner.query(`
-      UPDATE "121-service"."transaction"
-      SET "paymentId" = (
-        SELECT pp.new_payment_id
-        FROM (
-        select p.id as new_payment_id
-        ,t_agg.payment
-        ,t_agg."programId"
-      FROM "121-service"."payment" p
-      INNER JOIN (
-        SELECT
-              MIN(t."created") as "created",
-              t."programId",
-              t.payment
-            FROM "121-service"."transaction" t
-            WHERE t."payment" IS NOT NULL
-            GROUP BY t."payment", t."programId"
-            ORDER BY t."programId" , MIN(t."created")
-      ) t_agg
-        on p."programId"=t_agg."programId" and p.created = t_agg.created
-        ) pp
-        WHERE pp."programId" = "transaction"."programId"
-          AND pp."payment" = "transaction"."payment"
-        )
+
+    const allProgramIds = await queryRunner.query(`
+      SELECT DISTINCT "id" FROM "121-service"."program"
     `);
+
+    for (const program of allProgramIds) {
+      const programId = program.id;
+      const uniquePayments = await queryRunner.query(
+        `
+        SELECT
+          MIN(t."created") as "created",
+          t."payment" as "payment",
+          MAX(t."updated") as "updated"
+        FROM "121-service"."transaction" t
+        WHERE t."programId" = $1 AND t."payment" IS NOT NULL
+        GROUP BY t."payment"
+        ORDER BY t.payment
+      `,
+        [programId],
+      );
+
+      for (const uniquePayment of uniquePayments) {
+        // insert into payment table
+        await queryRunner.query(
+          `
+        INSERT INTO "121-service"."payment" (
+          "created",
+          "updated",
+          "programId"
+        )
+        VALUES ($1, $2, $3)
+        `,
+          [uniquePayment.created, uniquePayment.updated, programId],
+        );
+        // get the last inserted payment id
+        const paymentId = await queryRunner.query(
+          `
+          SELECT LASTVAL()
+          `,
+        );
+        // update transaction.paymentId with the last inserted payment id
+        await queryRunner.query(
+          `
+          UPDATE "121-service"."transaction"
+          SET "paymentId" = $1
+          WHERE "programId" = $2 AND "payment" = $3
+          `,
+          [paymentId[0].lastval, programId, uniquePayment.payment],
+        );
+      }
+    }
 
     // Set  paymentId to NOT NULL
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" ALTER COLUMN "paymentId" SET NOT NULL`,
     );
-
     // Other datamodel migrations
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d3c35664dbb056d04694819316e"`,
@@ -113,6 +121,10 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
       `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_26ba3b75368b99964d6dea5cc2c" FOREIGN KEY ("paymentId") REFERENCES "121-service"."payment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
 
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" DROP CONSTRAINT IF EXISTS "registrationPaymentLatestTransactionUnique"`,
+    );
+
     // Update paymentId in latest_transaction
     await queryRunner.query(`
       UPDATE "121-service"."latest_transaction"
@@ -120,6 +132,10 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
       FROM "121-service"."transaction" t
       WHERE "latest_transaction"."transactionId" = t."id"
     `);
+
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."latest_transaction" ADD CONSTRAINT "registrationPaymentLatestTransactionUnique" UNIQUE ("paymentId", "registrationId")`,
+    );
 
     // Update paymentId in intersolve_voucher
     await queryRunner.query(`
@@ -141,37 +157,7 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    // NOTE: this only reverts datamodel migrations, not data migrations
-    await queryRunner.query(
-      `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-      ['VIEW', 'registration_view', '121-service'],
-    );
-    await queryRunner.query(`DROP VIEW "121-service"."registration_view"`);
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."payment" DROP CONSTRAINT "FK_0f8f281d1010c17f17ff240328a"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_d3c35664dbb056d04694819316e"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_26ba3b75368b99964d6dea5cc2"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ALTER COLUMN "programId" SET NOT NULL`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" DROP COLUMN "paymentId"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "121-service"."IDX_c41c74d4a96568569c71cffe88"`,
-    );
-    await queryRunner.query(`DROP TABLE "121-service"."payment"`);
-    await queryRunner.query(
-      `CREATE INDEX "IDX_d3c35664dbb056d04694819316" ON "121-service"."transaction" ("programId") `,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d3c35664dbb056d04694819316e" FOREIGN KEY ("programId") REFERENCES "121-service"."program"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
+  public async down(_: QueryRunner): Promise<void> {
+    console.log('We only move forward, never look back');
   }
 }
