@@ -30,14 +30,12 @@ export class CommercialBankEthiopiaApiService {
         payload,
         soapAction: `${cbeApiUrl}?xsd=4`,
       });
-
+      const body = responseBody as any;
       if (
-        responseBody.Status &&
-        responseBody.Status.messages &&
-        responseBody.Status.messages.length > 0 &&
-        responseBody.Status.messages[0]._text.includes(
-          'DUPLICATED Transaction!',
-        )
+        body.Status &&
+        body.Status.messages &&
+        body.Status.messages.length > 0 &&
+        body.Status.messages[0]._text.includes('DUPLICATED Transaction!')
       ) {
         const result = {
           resultDescription: 'Transaction is DUPLICATED',
@@ -84,7 +82,8 @@ export class CommercialBankEthiopiaApiService {
     );
 
     // Find the soapenv:Body element
-    const soapBody = payload.elements
+    const payloadObj = payload as any;
+    const soapBody = payloadObj.elements
       .find((el) => el.name === 'soapenv:Envelope')
       .elements.find((el) => el.name === 'soapenv:Body');
 
@@ -203,7 +202,8 @@ export class CommercialBankEthiopiaApiService {
     );
 
     // Find the soapenv:Body element
-    const soapBody = payload.elements
+    const payloadObj = payload as any;
+    const soapBody = payloadObj.elements
       .find((el) => el.name === 'soapenv:Envelope')
       .elements.find((el) => el.name === 'soapenv:Body');
 
@@ -301,7 +301,8 @@ export class CommercialBankEthiopiaApiService {
     );
 
     // Find the soapenv:Body element
-    const soapBody = payload.elements
+    const payloadObj = payload as any;
+    const soapBody = payloadObj.elements
       .find((el) => el.name === 'soapenv:Envelope')
       .elements.find((el) => el.name === 'soapenv:Body');
 

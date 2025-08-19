@@ -197,11 +197,11 @@ export class IntersolveVoucherApiService {
       password,
       env.INTERSOLVE_URL,
     );
+    const body = responseBody as any;
     const result = {
-      resultCode:
-        responseBody.CancelTransactionByRefPosResponse.ResultCode._text,
+      resultCode: body.CancelTransactionByRefPosResponse.ResultCode._text,
       resultDescription:
-        responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
+        body.CancelTransactionByRefPosResponse.ResultDescription._text,
     };
     const intersolveRequest =
       await this.intersolveVoucherRequestRepo.findOneByOrFail({

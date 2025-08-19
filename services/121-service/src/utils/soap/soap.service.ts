@@ -75,7 +75,7 @@ export class SoapService {
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(headerPart, [0, 0, 0], username);
     headerPart = this.setValue(headerPart, [0, 1, 0], password);
-    (payload['elements'] as unknown[])[0]['elements'].unshift(headerPart);
+    (payload['elements'] as any[])[0]['elements'].unshift(headerPart);
     return payload;
   }
 
@@ -90,7 +90,7 @@ export class SoapService {
     soapElement: Record<string, unknown>,
     q: string,
   ): number {
-    return (soapElement['elements'] as unknown[]).findIndex(
+    return (soapElement['elements'] as any[]).findIndex(
       (x: any) => x.name === q,
     );
   }
@@ -105,7 +105,7 @@ export class SoapService {
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
     const mainElementIndex = this.findSoapIndex(soapBodyXML, mainElement);
-    const mainElementXML = soapBodyXML['elements'][mainElementIndex];
+    const mainElementXML = (soapBodyXML['elements'] as any[])[mainElementIndex];
     let rootElement = mainElementXML;
     const pathIndices: number[] = [0, bodyIndex, mainElementIndex];
     let subElementXMLIndex = -1;

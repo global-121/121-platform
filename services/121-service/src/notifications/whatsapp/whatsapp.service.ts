@@ -87,8 +87,8 @@ export class WhatsappService {
         const fetchedTemplate = await twilioClient.content.v1
           .contents(contentSid)
           .fetch();
-        messageToStore.body =
-          fetchedTemplate.types['twilio/quick-reply']?.body ?? '';
+        const types = (fetchedTemplate as any).types;
+        messageToStore.body = types['twilio/quick-reply']?.body ?? '';
       }
       await this.storeSendWhatsapp({
         message: messageToStore,
