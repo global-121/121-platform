@@ -93,7 +93,7 @@ export class CronjobInitiateService {
   }
 
   // Nedbank's systems are not available between 0:00 and 3:00 at night South Africa time
-  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_4AM, {
     disabled: !env.CRON_NEDBANK_VOUCHERS,
   })
   public async cronDoNedbankReconciliation(
@@ -106,7 +106,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'patch', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_GET_DAILY_EXCHANGE_RATES,
   })
   public async cronGetDailyExchangeRates(
@@ -118,7 +118,7 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'put', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM, {
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, {
     disabled: !env.CRON_INTERSOLVE_VOUCHER_REMOVE_DEPRECATED_IMAGE_CODES,
   })
   public async cronRemoveDeprecatedImageCodes(
@@ -132,7 +132,8 @@ export class CronjobInitiateService {
     return await this.callEndpoint(url, 'delete', headers);
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_3AM, {
+  // Needs to run before 8AM so that the report is ready for the Onafriq reconciliation team to review.
+  @Cron(CronExpression.EVERY_DAY_AT_6AM, {
     disabled: !env.CRON_ONAFRIQ_RECONCILIATION_REPORT,
   })
   public async cronSendOnafriqReconciliationReport(
