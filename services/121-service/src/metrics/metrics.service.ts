@@ -405,11 +405,31 @@ export class MetricsService {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
-      .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
+      .addSelect(`COUNT(registration."registrationStatus") AS "count"`)
       .andWhere({ programId })
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();
+    return res;
+  }
+
+  public async getRegistrationCountByDate(
+    programId: number,
+  ): Promise<Record<string, number>> {
+    const query = this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .select(`registration."created"::date`)
+      .addSelect(`COUNT(registration."referenceId")`)
+      .andWhere({ programId })
+      .groupBy(`"created"`)
+      .orderBy(`"created"`);
+    const res = (await query.getRawMany()).reduce(
+      (dates: Record<string, number>, r) => {
+        dates[new Date(r.created).toISOString()] = r.count;
+        return dates;
+      },
+      {},
+    );
     return res;
   }
 }
