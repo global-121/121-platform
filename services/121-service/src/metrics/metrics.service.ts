@@ -11,6 +11,8 @@ import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -46,6 +48,7 @@ export class MetricsService {
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   public async getExportList({
@@ -452,6 +455,26 @@ export class MetricsService {
       },
       {},
     );
+    return res;
+  }
+
+  public async getAllPaymentsAggregates(
+    programId: number,
+  ): Promise<Record<number, PaymentReturnDto>> {
+    const res: Record<number, PaymentReturnDto> = {};
+
+    const payments = (await this.paymentsService.getPayments(programId)).sort(
+      (pA, pB) => pA.payment - pB.payment,
+    );
+
+    for (const payment of payments) {
+      const aggregate = await this.paymentsService.getPaymentAggregation(
+        programId,
+        payment.payment,
+      );
+      res[payment.payment] = aggregate;
+    }
+
     return res;
   }
 }
