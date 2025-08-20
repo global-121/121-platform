@@ -168,4 +168,18 @@ export class MetricsController {
   ): Promise<RegistrationStatusStats[]> {
     return await this.metricsService.getRegistrationStatusStats(programId);
   }
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
+  @ApiOperation({ summary: 'Get registration count by created date' })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Registration count by created date',
+  })
+  @Get('programs/:programId/metrics/registration-count-by-date')
+  public async getRegistrationCountByDate(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<Record<string, number>> {
+    return await this.metricsService.getRegistrationCountByDate(programId);
+  }
 }
