@@ -171,11 +171,26 @@ export class ProgramFspConfigurationsController {
   @ApiOperation({
     summary: 'Retrieve visible properties for Fsp Configuration.',
   })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({
+    name: 'name',
+    required: true,
+    type: 'string',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'The Fsp Configuration properties have been successfully retrieved.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program does not exist or Fsp Configuration does not exist',
+  })
   @Get(':programId/fsp-configurations/:name/properties')
-  public async getVisibleProperties(
+  public async getFspConfigurationProperties(
     @Param('programId') programId: number,
     @Param('name') name: string,
-  ) {
+  ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
     return this.programFspConfigurationsService.getFspConfigurationProperties(
       programId,
       name,

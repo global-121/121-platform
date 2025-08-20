@@ -1,4 +1,7 @@
-import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
+import {
+  FspConfigPropertyValueVisibility,
+  FspConfigurationProperties,
+} from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration.dto';
 import { CreateProgramFspConfigurationPropertyDto } from '@121-service/src/program-fsp-configurations/dtos/create-program-fsp-configuration-property.dto';
@@ -65,9 +68,11 @@ export class ProgramFspConfigurationMapper {
   public static mapPropertyEntityToDto(
     property: ProgramFspConfigurationPropertyEntity,
   ): ProgramFspConfigurationPropertyResponseDto {
+    const isVisible = FspConfigPropertyValueVisibility[property.name];
+    const value = isVisible ? property.value : '[********]';
     return {
       name: property.name,
-      value: property.value,
+      value,
       updated: property.updated,
     };
   }

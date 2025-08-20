@@ -38,6 +38,8 @@ import { registrationOCW5 } from '@121-service/test/registrations/pagination/pag
 
 // Only tests most of the happy paths, edge cases are mostly covered in the unit tests
 
+const hiddenString = '[********]';
+
 const seededFspConfigVoucher = programOCW.programFspConfigurations.find(
   (fspConfig) => fspConfig.fsp === Fsps.intersolveVoucherWhatsapp,
 )!;
@@ -106,6 +108,7 @@ describe('Manage Fsp configurations', () => {
     result.body.properties.forEach((property) => {
       const date = new Date(property.updated);
       expect(!isNaN(date.getTime())).toBeTruthy();
+      expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
     expect(getResultConfig).toEqual(result.body);
@@ -164,6 +167,7 @@ describe('Manage Fsp configurations', () => {
     result.body.properties.forEach((property) => {
       const date = new Date(property.updated);
       expect(!isNaN(date.getTime())).toBeTruthy();
+      expect(property.value).toBe(hiddenString); // All values from intersolve voucher are hidden
     });
     // Ensure that the update data is reflected in the get response so actually updated in the db
     expect(getResultConfig).toEqual(result.body);
@@ -402,7 +406,7 @@ describe('Manage Fsp configurations', () => {
     expect(getVisibleProperties.statusCode).toBe(HttpStatus.OK);
     const properties = getVisibleProperties.body;
     properties.forEach((property) => {
-      expect(property.value).not.toBe('[********]'); // Visible properties should not be masked
+      expect(property.value).not.toBe(hiddenString); // Visible properties should not be masked
     });
     properties.forEach((property) => {
       expect(property.name).not.toBe(FspConfigurationProperties.username);
@@ -432,7 +436,7 @@ describe('Manage Fsp configurations', () => {
       ]),
     );
     properties.forEach((property) => {
-      expect(property.value).toBe('[********]'); // Hidden properties should be masked
+      expect(property.value).toBe(hiddenString); // Hidden properties should be masked
     });
   });
 });
