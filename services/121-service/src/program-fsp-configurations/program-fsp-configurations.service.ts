@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, In, Repository } from 'typeorm';
 
 import {
-  FspConfigPropertyValueVisibility,
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
@@ -407,7 +406,7 @@ export class ProgramFspConfigurationsService {
   public async getFspConfigurationProperties(
     programId: number,
     name: string,
-  ): Promise<{ name: FspConfigurationProperties; value: string }[]> {
+  ): Promise<ProgramFspConfigurationPropertyResponseDto[]> {
     const config = await this.getProgramFspConfigurationOrThrow(
       programId,
       name,
@@ -416,19 +415,8 @@ export class ProgramFspConfigurationsService {
       await this.programFspConfigurationPropertyRepository.find({
         where: { programFspConfigurationId: Equal(config.id) },
       });
-    return allProperties.map((prop) => {
-      const isVisible =
-        FspConfigPropertyValueVisibility[
-          prop.name as FspConfigurationProperties
-        ];
-      let value = String(prop.value);
-      if (!isVisible) {
-        value = '[********]';
-      }
-      return {
-        name: prop.name as FspConfigurationProperties,
-        value,
-      };
-    });
+    return ProgramFspConfigurationMapper.mapPropertyEntitiesToDtos(
+      allProperties,
+    );
   }
 }
