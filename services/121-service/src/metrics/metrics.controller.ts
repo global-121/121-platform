@@ -29,6 +29,7 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -168,6 +169,7 @@ export class MetricsController {
   ): Promise<RegistrationStatusStats[]> {
     return await this.metricsService.getRegistrationStatusStats(programId);
   }
+
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: 'Get registration count by created date' })
   @ApiParam({ name: 'programId', required: true })
@@ -181,5 +183,22 @@ export class MetricsController {
     programId: number,
   ): Promise<Record<string, number>> {
     return await this.metricsService.getRegistrationCountByDate(programId);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
+  @ApiOperation({
+    summary: 'Get aggregate results for all payments in a program',
+  })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'All payments aggregates',
+  })
+  @Get('programs/:programId/metrics/all-payments-aggregates')
+  public async getAllPaymentsAggregates(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<Record<number, PaymentReturnDto>> {
+    return await this.metricsService.getAllPaymentsAggregates(programId);
   }
 }
