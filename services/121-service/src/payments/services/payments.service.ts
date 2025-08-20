@@ -38,7 +38,6 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { PaymentScopedRepository } from '@121-service/src/payments/repositories/payment-scoped.repository';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import {
   PaymentReturnDto,
@@ -84,8 +83,9 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 export class PaymentsService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
+
+  @InjectRepository(PaymentEntity)
+  private readonly paymentRepository: Repository<PaymentEntity>;
 
   private fspNameToServiceMap: Record<
     Fsps,
@@ -97,7 +97,6 @@ export class PaymentsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly registrationPaginationService: RegistrationsPaginationService,
-    private readonly paymentScopedRepository: PaymentScopedRepository,
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
@@ -135,21 +134,16 @@ export class PaymentsService {
   }
 
   public async getPayments(programId: number) {
-    // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
-    const payments: {
-      paymentId: number;
-      paymentDate: Date | string;
-    }[] = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('"paymentId"')
-      .addSelect('MIN(transaction.created)', 'paymentDate')
-      .leftJoin('transaction.payment', 'p')
-      .andWhere('p."programId" = :programId', {
-        programId,
-      })
-      .groupBy('"paymentId"')
-      .orderBy('MIN(transaction.created)', 'ASC')
-      .getRawMany();
+    const rawPayments = await this.paymentRepository.find({
+      where: {
+        programId: Equal(programId),
+      },
+      select: ['id', 'created'],
+    });
+    const payments = rawPayments.map((payment) => ({
+      paymentId: payment.id,
+      paymentDate: payment.created,
+    }));
     return payments;
   }
 
@@ -310,7 +304,7 @@ export class PaymentsService {
       const paymentEntity = new PaymentEntity();
       paymentEntity.programId = programId;
       const savedPaymentEntity =
-        await this.paymentScopedRepository.save(paymentEntity);
+        await this.paymentRepository.save(paymentEntity);
       bulkActionResultPaymentDto.id = savedPaymentEntity.id;
 
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
@@ -1495,6 +1489,10 @@ export class PaymentsService {
         toDate,
         fspSpecificJoinFields,
       },
+    );
+    console.log(
+      '🚀 ~ PaymentsService ~ getTransactions ~ transactions:',
+      transactions,
     );
     if (!transactions || transactions.length === 0) {
       return [];

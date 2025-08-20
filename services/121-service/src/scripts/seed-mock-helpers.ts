@@ -106,7 +106,7 @@ export class SeedMockHelper {
   ): Promise<void> {
     await this.multiplyRegistrations(powerNr);
     const queryTransactionsOnePerRegistration = readSqlFile(
-      '../../src/scripts/sql/mock-transations-one-per-registrations.sql',
+      '../../src/scripts/sql/mock-transactions-one-per-registration.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(

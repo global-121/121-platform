@@ -63,6 +63,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -78,7 +79,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentId: doPaymentResponse.body.id,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -112,6 +113,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -124,7 +126,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentId: doPaymentResponse.body.id,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -158,6 +160,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     // wait for non-waiting transactions only, to make sure callback came in
     await waitForPaymentTransactionsToComplete({
@@ -174,7 +177,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentId: doPaymentResponse.body.id,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -210,6 +213,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -225,7 +229,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentId: doPaymentResponse.body.id,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });

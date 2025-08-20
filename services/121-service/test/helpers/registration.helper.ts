@@ -671,7 +671,6 @@ export async function doPaymentAndWaitForCompletion({
   referenceIds: string[];
   amount: number;
   accessToken: string;
-  paymentId?: number;
   completeStatusses?: TransactionStatusEnum[];
 }): Promise<number> {
   const doPaymentResponse = await doPayment({

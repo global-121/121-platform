@@ -55,10 +55,11 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     }[];
   }): Promise<
     ({
+      paymentId: number;
       id: number;
+      paymentDate: Date;
       created: Date;
       updated: Date;
-      paymentId: number;
       registrationProgramId: number;
       registrationReferenceId: string;
       registrationId: number;
@@ -71,10 +72,11 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   > {
     const query = this.createQueryBuilder('transaction')
       .select([
+        'transaction.paymentId AS "paymentId"',
+        'p.created AS "paymentDate"',
         'transaction.id AS "id"',
         'transaction.created AS "created"',
         'transaction.updated AS "updated"',
-        'transaction.paymentId AS "paymentId"',
         'r."registrationProgramId"',
         'r."referenceId" as "registrationReferenceId"',
         'r."id" as "registrationId"',
@@ -124,7 +126,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   // Make this private when all 'querying code' has been moved to this repository
   public getLastTransactionsQuery({
     programId,
-    paymentId: paymentId,
+    paymentId,
     registrationId,
     referenceId,
     status,

@@ -85,6 +85,7 @@ describe('Registrations - [Scoped]', () => {
       accessToken: accessTokenScoped,
       filter: { 'filter.status': '$in:included' },
     });
+    const paymentId = doPaymentResponse.body.id;
 
     // Assert
     await waitForPaymentTransactionsToComplete({
@@ -95,7 +96,7 @@ describe('Registrations - [Scoped]', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentId: doPaymentResponse.body.id,
+      paymentId,
       registrationReferenceId: null,
       accessToken,
     });

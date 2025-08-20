@@ -55,8 +55,8 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       programIds.push(programIdOcw);
       await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
     }
-    const programIdPv = 2;
     if (mockPv) {
+      const programIdPv = 2;
       programIds.push(programIdPv);
       await this.seedRegistrationForProgram(
         programIdPv,

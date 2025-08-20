@@ -293,14 +293,14 @@ export class ExcelRecociliationService {
 
   private async getRegistrationsForReconciliation(
     programId: number,
-    payment: number,
+    paymentId: number,
     matchColumn: string,
     programFspConfigurationId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
-        paymentId: payment,
+        paymentId,
         programFspConfigurationId,
         fspName: Fsps.excel,
       });

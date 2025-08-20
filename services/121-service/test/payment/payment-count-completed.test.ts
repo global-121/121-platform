@@ -65,6 +65,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       // Assert
       await waitForPaymentTransactionsToComplete({
@@ -76,7 +77,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       const getTransactionsRes = await getTransactions({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });

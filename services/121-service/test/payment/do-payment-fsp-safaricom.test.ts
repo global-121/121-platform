@@ -81,6 +81,7 @@ describe('Do payment to 1 PA', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
         programId,
@@ -96,7 +97,7 @@ describe('Do payment to 1 PA', () => {
       // Assert
       const getTransactionsBody = await getTransactions({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
@@ -137,6 +138,7 @@ describe('Do payment to 1 PA', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
         programId,
@@ -149,7 +151,7 @@ describe('Do payment to 1 PA', () => {
       // Assert
       const getTransactionsBody = await getTransactions({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
@@ -193,6 +195,7 @@ describe('Do payment to 1 PA', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
         programId,
@@ -215,7 +218,7 @@ describe('Do payment to 1 PA', () => {
       // retry payment
       await retryPayment({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         accessToken,
       });
       await waitFor(2_000);
@@ -223,7 +226,7 @@ describe('Do payment to 1 PA', () => {
       // Assert
       const getTransactionsBody = await getTransactions({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });
@@ -262,6 +265,7 @@ describe('Do payment to 1 PA', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
         programId,
@@ -277,7 +281,7 @@ describe('Do payment to 1 PA', () => {
       // Assert
       const getTransactionsBody = await getTransactions({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
       });

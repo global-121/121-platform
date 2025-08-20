@@ -61,10 +61,11 @@ describe('Do payment to 1 PA', () => {
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       const getTransactionsBody = await getTransactionsIntersolveVoucher({
         programId,
-        paymentId: doPaymentResponse.body.id,
+        paymentId,
         referenceId: registrationAh.referenceId,
         accessToken,
       });

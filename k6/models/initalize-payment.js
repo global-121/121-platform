@@ -33,12 +33,13 @@ export default class InitializePaymentModel {
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
     // Create payment
     const doPaymentResult = paymentsPage.createPayment(programId, amount);
+    const paymentId = doPaymentResult.body.id;
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
       status,
       maxTimeoutAttempts,
-      doPaymentResult.body.id,
+      paymentId,
       duplicateNumber,
       minPassRatePercentage,
     );
