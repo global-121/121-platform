@@ -861,6 +861,13 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/metrics/all-payments-aggregates",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/payments",
     "params": [
       "programId"

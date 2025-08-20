@@ -11,6 +11,8 @@ import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
+import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -45,6 +47,7 @@ export class MetricsService {
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
+    private readonly paymentsReportingService: PaymentsReportingService,
   ) {}
 
   public async getExport({
@@ -430,6 +433,27 @@ export class MetricsService {
       },
       {},
     );
+    return res;
+  }
+
+  public async getAllPaymentsAggregates(
+    programId: number,
+  ): Promise<Record<number, PaymentReturnDto>> {
+    const res: Record<number, PaymentReturnDto> = {};
+
+    const payments = (
+      await this.paymentsReportingService.getPayments(programId)
+    ).sort((pA, pB) => pA.paymentId - pB.paymentId);
+
+    for (const payment of payments) {
+      const aggregate =
+        await this.paymentsReportingService.getPaymentAggregation(
+          programId,
+          payment.paymentId,
+        );
+      res[payment.paymentId] = aggregate;
+    }
+
     return res;
   }
 }
