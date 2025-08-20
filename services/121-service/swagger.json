@@ -861,7 +861,7 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/all-payments-aggregates",
+    "path": "/api/programs/{programId}/metrics/amount-sent-by-month",
     "params": [
       "programId"
     ]
