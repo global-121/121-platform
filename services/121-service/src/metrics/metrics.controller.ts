@@ -29,7 +29,6 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
-import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -187,18 +186,18 @@ export class MetricsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
-    summary: 'Get aggregate results for all payments in a program',
+    summary: 'Get amount sent by month',
   })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'All payments aggregates',
+    description: 'Amount sent by month',
   })
-  @Get('programs/:programId/metrics/all-payments-aggregates')
-  public async getAllPaymentsAggregates(
+  @Get('programs/:programId/metrics/amount-sent-by-month')
+  public async getAmountSentByMonth(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<Record<number, PaymentReturnDto>> {
-    return await this.metricsService.getAllPaymentsAggregates(programId);
+  ): Promise<Record<string, Record<string, number>>> {
+    return await this.metricsService.getAmountSentByMonth(programId);
   }
 }

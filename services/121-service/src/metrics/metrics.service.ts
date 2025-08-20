@@ -456,4 +456,42 @@ export class MetricsService {
 
     return res;
   }
+
+  public async getAmountSentByMonth(
+    programId: number,
+  ): Promise<Record<string, Record<string, number>>> {
+    const res: Record<string, Record<string, number>> = {};
+
+    const payments = (await this.paymentsService.getPayments(programId)).sort(
+      (pA, pB) => pA.payment - pB.payment,
+    );
+
+    const emptyMonth = {
+      success: 0,
+      waiting: 0,
+      failed: 0,
+    };
+
+    for (const payment of payments) {
+      const month = new Date(payment.paymentDate)
+        .toISOString()
+        .split('T')[0]
+        .slice(0, -3);
+
+      if (!res[month]) {
+        res[month] = emptyMonth;
+      }
+
+      const aggregate = await this.paymentsService.getPaymentAggregation(
+        programId,
+        payment.payment,
+      );
+
+      res[month].success += aggregate.success.amount;
+      res[month].waiting += aggregate.waiting.amount;
+      res[month].failed += aggregate.failed.amount;
+    }
+
+    return res;
+  }
 }
