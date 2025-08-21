@@ -43,7 +43,7 @@ export class ScopedQueryBuilder<
 }
 
 type EntityRelations = Record<string, string[]>;
-// Define here any entities that do have an INDIRECT relation to registration
+// Define here any entities that do have an INDIRECT relation to registration. There is an API-test that checks if this is exhaustive.
 export const indirectRelationConfig: EntityRelations = {
   IntersolveVisaChildWalletEntity: [
     'intersolveVisaParentWallet',
