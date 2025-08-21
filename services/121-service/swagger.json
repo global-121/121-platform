@@ -1,6 +1,11 @@
 [
   {
     "method": "get",
+    "path": "/api/development/validate-indirect-relations",
+    "params": []
+  },
+  {
+    "method": "get",
     "path": "/api/health/health",
     "params": []
   },
