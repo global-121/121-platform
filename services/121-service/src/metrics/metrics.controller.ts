@@ -24,6 +24,10 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportDetailsQueryParamsDto } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import {
+  AggregatePerMonth,
+  AggregatePerPayment,
+} from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
@@ -186,6 +190,23 @@ export class MetricsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
+    summary: 'Get aggregate results for all payments in a program',
+  })
+  @ApiParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'All payments aggregates',
+  })
+  @Get('programs/:programId/metrics/all-payments-aggregates')
+  public async getAllPaymentsAggregates(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+  ): Promise<AggregatePerPayment> {
+    return await this.metricsService.getAllPaymentsAggregates(programId);
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
+  @ApiOperation({
     summary: 'Get amount sent by month',
   })
   @ApiParam({ name: 'programId', required: true })
@@ -197,7 +218,7 @@ export class MetricsController {
   public async getAmountSentByMonth(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<Record<string, Record<string, number>>> {
+  ): Promise<AggregatePerMonth> {
     return await this.metricsService.getAmountSentByMonth(programId);
   }
 }

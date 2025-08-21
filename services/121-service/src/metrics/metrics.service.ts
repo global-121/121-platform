@@ -4,6 +4,10 @@ import { Equal, In, Not } from 'typeorm';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import {
+  AggregatePerMonth,
+  AggregatePerPayment,
+} from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -12,7 +16,6 @@ import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-inte
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
-import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -422,13 +425,13 @@ export class MetricsService {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."created"::date`)
-      .addSelect(`COUNT(registration."referenceId")`)
+      .addSelect(`COUNT(*)`)
       .andWhere({ programId })
       .groupBy(`"created"`)
       .orderBy(`"created"`);
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
-        dates[new Date(r.created).toISOString()] = r.count;
+        dates[r.created] = r.count;
         return dates;
       },
       {},
@@ -438,8 +441,8 @@ export class MetricsService {
 
   public async getAllPaymentsAggregates(
     programId: number,
-  ): Promise<Record<number, PaymentReturnDto>> {
-    const res: Record<number, PaymentReturnDto> = {};
+  ): Promise<AggregatePerPayment> {
+    const res: AggregatePerPayment = {};
 
     const payments = (
       await this.paymentsReportingService.getPayments(programId)
@@ -459,12 +462,12 @@ export class MetricsService {
 
   public async getAmountSentByMonth(
     programId: number,
-  ): Promise<Record<string, Record<string, number>>> {
-    const res: Record<string, Record<string, number>> = {};
+  ): Promise<AggregatePerMonth> {
+    const res: AggregatePerMonth = {};
 
-    const payments = (await this.paymentsService.getPayments(programId)).sort(
-      (pA, pB) => pA.payment - pB.payment,
-    );
+    const payments = (
+      await this.paymentsReportingService.getPayments(programId)
+    ).sort((pA, pB) => pA.paymentId - pB.paymentId);
 
     const emptyMonth = {
       success: 0,
@@ -482,10 +485,11 @@ export class MetricsService {
         res[month] = emptyMonth;
       }
 
-      const aggregate = await this.paymentsService.getPaymentAggregation(
-        programId,
-        payment.payment,
-      );
+      const aggregate =
+        await this.paymentsReportingService.getPaymentAggregation(
+          programId,
+          payment.paymentId,
+        );
 
       res[month].success += aggregate.success.amount;
       res[month].waiting += aggregate.waiting.amount;
