@@ -22,6 +22,7 @@ function createMockTransaction(
     created: new Date(),
     updated: new Date(),
     paymentId: 1,
+    paymentDate: new Date(),
     status,
     amount,
     errorMessage: null,
