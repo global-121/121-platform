@@ -372,29 +372,39 @@ export class MessageIncomingService {
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
-    for (const r of registrationWithVouchers) {
+    for (const registration of registrationWithVouchers) {
       // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-      const lastPayment = await this.transactionRepository
-        .createQueryBuilder('transaction')
-        .select('MAX(transaction."paymentId")', 'max')
-        .leftJoin('transaction.payment', 'p')
-        .where('p.programId = :programId', {
-          programId: r.programId,
-        })
-        .getRawOne();
-      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
+      const lastThreePaymentIds =
+        await this.getLastThreePaymentIdsForRegistration(registration.id);
 
-      r.images = r.images.filter(
+      registration.images = registration.images.filter(
         (image) =>
           !image.voucher.send &&
           image.voucher.paymentId &&
-          image.voucher.paymentId >= minimumPayment,
+          lastThreePaymentIds.includes(image.voucher.paymentId),
       );
-      if (r.images.length > 0) {
-        filteredRegistrations.push(r);
+      if (registration.images.length > 0) {
+        filteredRegistrations.push(registration);
       }
     }
     return filteredRegistrations;
+  }
+
+  private async getLastThreePaymentIdsForRegistration(
+    registrationId: number,
+  ): Promise<number[]> {
+    const lastThreePaymentIds = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('DISTINCT transaction."paymentId"', 'paymentId')
+      .addSelect('MAX(payment.created)', 'maxCreated')
+      .leftJoin('transaction.payment', 'payment')
+      .where('transaction.registrationId = :registrationId', { registrationId })
+      .groupBy('transaction."paymentId"')
+      .orderBy('"maxCreated"', 'DESC')
+      .limit(3)
+      .getRawMany();
+
+    return lastThreePaymentIds.map((payment) => payment.paymentId);
   }
 
   private cleanWhatsAppNr(value: string): string {

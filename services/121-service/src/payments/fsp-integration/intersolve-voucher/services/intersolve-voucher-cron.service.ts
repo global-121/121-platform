@@ -119,20 +119,12 @@ export class IntersolveVoucherCronService {
     let totalWhatsappReminders = 0;
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
+    // We only want to send reminders for vouchers that are not older than 2 weeks
+    const twoWeeks = 2 * 7 * 24 * 60 * 60 * 1000;
+    const twoWeeksAgo = new Date(Date.now() - twoWeeks);
+
     const programs = await this.programRepository.find();
     for (const program of programs) {
-      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-      const lastPayment = await this.transactionRepository
-        .createQueryBuilder('transaction')
-        .select('MAX(transaction."paymentId")', 'max')
-        .addSelect('transaction.userId', 'userId')
-        .leftJoin('transaction.payment', 'payment')
-        .where('payment.programId = :programId', { programId: program.id })
-        .groupBy('transaction.userId')
-        .orderBy('max', 'DESC')
-        .getRawOne();
-      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
-
       const unsentIntersolveVouchers = await this.intersolveVoucherRepository
         .createQueryBuilder('voucher')
         .select([
@@ -141,17 +133,19 @@ export class IntersolveVoucherCronService {
           'registration."referenceId" AS "referenceId"',
           'amount',
           '"reminderCount"',
+          'voucher."userId" AS "userId"',
         ])
         .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
+        .leftJoin('voucher.payment', 'payment')
         .where('send = false')
-        .andWhere('voucher.created < :sixteenHoursAgo', {
+        .andWhere('payment.created < :sixteenHoursAgo', {
           sixteenHoursAgo,
         })
-        .andWhere('"whatsappPhoneNumber" is not NULL')
-        .andWhere('voucher."paymentId" >= :minimumPayment', {
-          minimumPayment,
+        .andWhere('payment.created > :twoWeeksAgo', {
+          twoWeeksAgo,
         })
+        .andWhere('"whatsappPhoneNumber" is not NULL')
         .andWhere('registration.programId = :programId', {
           programId: program.id,
         })
@@ -190,7 +184,7 @@ export class IntersolveVoucherCronService {
           messageContentType: MessageContentType.paymentReminder,
           messageProcessType:
             MessageProcessType.whatsappTemplateVoucherReminder,
-          userId: lastPayment.userId,
+          userId: unsentIntersolveVoucher.userId,
         });
         const reminderVoucher =
           await this.intersolveVoucherRepository.findOneOrFail({
