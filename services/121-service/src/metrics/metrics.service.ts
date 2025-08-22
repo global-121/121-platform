@@ -9,6 +9,7 @@ import {
   AggregatePerPayment,
 } from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
@@ -411,7 +412,7 @@ export class MetricsService {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
-      .addSelect(`COUNT(registration."registrationStatus") AS "count"`)
+      .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
       .andWhere({ programId })
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
@@ -421,7 +422,7 @@ export class MetricsService {
 
   public async getRegistrationCountByDate(
     programId: number,
-  ): Promise<Record<string, number>> {
+  ): Promise<RegistrationCountByDate> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."created"::date`)
@@ -444,9 +445,7 @@ export class MetricsService {
   ): Promise<AggregatePerPayment> {
     const res: AggregatePerPayment = {};
 
-    const payments = (
-      await this.paymentsReportingService.getPayments(programId)
-    ).sort((pA, pB) => pA.paymentId - pB.paymentId);
+    const payments = await this.paymentsReportingService.getPayments(programId);
 
     for (const payment of payments) {
       const aggregate =
@@ -465,9 +464,7 @@ export class MetricsService {
   ): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = (
-      await this.paymentsReportingService.getPayments(programId)
-    ).sort((pA, pB) => pA.paymentId - pB.paymentId);
+    const payments = await this.paymentsReportingService.getPayments(programId);
 
     const emptyMonth = {
       success: 0,
