@@ -1,6 +1,7 @@
 import { TestBed } from '@automock/jest';
 import { Repository } from 'typeorm';
 
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -46,6 +47,7 @@ describe('PaymentsService - getTransactions', () => {
   let registrationPaginationService: RegistrationsPaginationService;
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsHelperService;
+  let paymentRepository: Repository<PaymentEntity>;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(PaymentsService).compile();
@@ -67,6 +69,7 @@ describe('PaymentsService - getTransactions', () => {
       ProgramRegistrationAttributeRepository,
     );
     paymentsHelperService = unitRef.get(PaymentsHelperService);
+    paymentRepository = unitRef.get('PaymentEntityRepository');
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
@@ -75,6 +78,7 @@ describe('PaymentsService - getTransactions', () => {
       RegistrationViewsMapper,
       'replaceDropdownValuesWithEnglishLabel',
     );
+    jest.spyOn(paymentRepository, 'findOne').mockResolvedValue({});
   });
 
   describe('geTransactionsByPaymentId', () => {
@@ -110,6 +114,19 @@ describe('PaymentsService - getTransactions', () => {
         { ...mockTransactions[0], registrationName: 'John Doe' },
         { ...mockTransactions[1], registrationName: 'Jane Smith' },
       ]);
+    });
+
+    it('should throw 404 if payment does not exist', async () => {
+      // Arrange
+      const programId = 1;
+      const paymentId = 999;
+      // Simulate paymentRepository.findOne returning undefined
+      (paymentRepository.findOne as jest.Mock).mockResolvedValue(undefined);
+
+      // Act & Assert
+      await expect(
+        service.geTransactionsByPaymentId({ programId, paymentId }),
+      ).rejects.toMatchSnapshot();
     });
 
     it('should return empty array when no transactions found', async () => {
@@ -198,6 +215,20 @@ describe('PaymentsService - getTransactions', () => {
       });
       expect(result.data).toEqual(replacedRows);
       expect(result.fileName).toEqual(fileName);
+    });
+  });
+
+  describe('getPaymentEvents', () => {
+    it('should throw 404 if payment does not exist', async () => {
+      // Arrange
+      const programId = 1;
+      const paymentId = 999;
+      (paymentRepository.findOne as jest.Mock).mockResolvedValue(undefined);
+
+      // Act & Assert
+      await expect(
+        service.getPaymentEvents({ programId, paymentId }),
+      ).rejects.toMatchSnapshot();
     });
   });
 });
