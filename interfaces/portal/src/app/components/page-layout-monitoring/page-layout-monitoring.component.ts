@@ -17,8 +17,8 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
-import { MonitoringMenuComponent } from '~/components/monitoring-page-layout/components/monitoring-menu/monitoring-menu.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { MonitoringMenuComponent } from '~/components/page-layout-monitoring/components/monitoring-menu/monitoring-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
@@ -27,7 +27,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 import { Locale } from '~/utils/locale';
 
 @Component({
-  selector: 'app-monitoring-page-layout',
+  selector: 'app-page-layout-monitoring',
   imports: [
     PageLayoutComponent,
     CurrencyPipe,
@@ -39,12 +39,12 @@ import { Locale } from '~/utils/locale';
     SkeletonInlineComponent,
     MonitoringMenuComponent,
   ],
-  templateUrl: './monitoring-page-layout.component.html',
+  templateUrl: './page-layout-monitoring.component.html',
   styles: ``,
   providers: [CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MonitoringPageLayoutComponent {
+export class PageLayoutMonitoringComponent {
   readonly projectId = input.required<string>();
 
   readonly locale = inject<Locale>(LOCALE_ID);

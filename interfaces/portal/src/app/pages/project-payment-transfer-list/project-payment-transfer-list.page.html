@@ -1,0 +1,46 @@
+<app-page-layout-payment
+  [projectId]="projectId()"
+  [paymentId]="paymentId()"
+>
+  <app-query-table
+    #table
+    [items]="transactions.data() ?? []"
+    [isPending]="transactions.isPending()"
+    [columns]="columns()"
+    [localStorageKey]="localStorageKey()"
+    [enableColumnManagement]="true"
+    [contextMenuItems]="contextMenuItems()"
+    (updateContextMenuItem)="contextMenuSelection.set($event)"
+    [enableSelection]="true"
+    [globalFilterFields]="[
+      'registrationProgramId',
+      'registrationName',
+      'status',
+      'errorMessage',
+      'programFspConfigurationName',
+    ]"
+  >
+    <div
+      table-actions
+      class="me-2 flex grow justify-end"
+    >
+      @if (canRetryTransfers()) {
+        <p-button
+          label="Retry failed transfer(s)"
+          i18n-label="@@retry-failed-transfers"
+          rounded
+          outlined
+          icon="pi pi-refresh"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          (click)="retryFailedTransfers()"
+        />
+      }
+    </div>
+  </app-query-table>
+</app-page-layout-payment>
+
+<app-retry-transfers-dialog
+  #retryTransfersDialog
+  [projectId]="projectId()"
+  [paymentId]="paymentId()"
+/>

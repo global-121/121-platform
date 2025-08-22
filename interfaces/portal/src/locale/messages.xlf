@@ -1682,6 +1682,9 @@
       <trans-unit id="page-title-project-monitoring-files" datatype="html">
         <source>Files</source>
       </trans-unit>
+      <trans-unit id="page-title-project-transfer-list" datatype="html">
+        <source>Transfer list</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

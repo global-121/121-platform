@@ -32,10 +32,10 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { AddNoteFormComponent } from '~/components/registration-page-layout/components/add-note-form/add-note-form.component';
-import { IgnoreDuplicationDialogComponent } from '~/components/registration-page-layout/components/ignore-duplicates-dialog/ignore-duplication-dialog.component';
-import { RegistrationDuplicatesBannerComponent } from '~/components/registration-page-layout/components/registration-duplicates-banner/registration-duplicates-banner.component';
-import { RegistrationMenuComponent } from '~/components/registration-page-layout/components/registration-menu/registration-menu.component';
+import { AddNoteFormComponent } from '~/components/page-layout-registration/components/add-note-form/add-note-form.component';
+import { IgnoreDuplicationDialogComponent } from '~/components/page-layout-registration/components/ignore-duplicates-dialog/ignore-duplication-dialog.component';
+import { RegistrationDuplicatesBannerComponent } from '~/components/page-layout-registration/components/registration-duplicates-banner/registration-duplicates-banner.component';
+import { RegistrationMenuComponent } from '~/components/page-layout-registration/components/registration-menu/registration-menu.component';
 import { SkeletonInlineComponent } from '~/components/skeleton-inline/skeleton-inline.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -49,7 +49,7 @@ import { RegistrationLookupService } from '~/services/registration-lookup.servic
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
 @Component({
-  selector: 'app-registration-page-layout',
+  selector: 'app-page-layout-registration',
   imports: [
     PageLayoutComponent,
     ButtonMenuComponent,
@@ -67,11 +67,11 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ChangeStatusDialogComponent,
     IgnoreDuplicationDialogComponent,
   ],
-  templateUrl: './registration-page-layout.component.html',
+  templateUrl: './page-layout-registration.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationPageLayoutComponent {
+export class PageLayoutRegistrationComponent {
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
 

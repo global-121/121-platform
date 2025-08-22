@@ -27,7 +27,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
-import { MonitoringPageLayoutComponent } from '~/components/monitoring-page-layout/monitoring-page-layout.component';
+import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
@@ -63,7 +63,7 @@ type DeleteFileFormGroup =
     FormErrorComponent,
     ReactiveFormsModule,
     MonitoringUploadFileDialogComponent,
-    MonitoringPageLayoutComponent,
+    PageLayoutMonitoringComponent,
   ],
   templateUrl: './project-monitoring-files.page.html',
   styles: ``,
