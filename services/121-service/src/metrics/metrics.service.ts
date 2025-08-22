@@ -472,9 +472,9 @@ export class MetricsService {
     for (const payment of payments) {
       const aggregate = await this.paymentsService.getPaymentAggregation(
         programId,
-        payment.payment,
+        payment.paymentId,
       );
-      res[payment.payment] = aggregate;
+      res[payment.paymentId] = aggregate;
     }
 
     return res;
@@ -505,7 +505,7 @@ export class MetricsService {
 
       const aggregate = await this.paymentsService.getPaymentAggregation(
         programId,
-        payment.payment,
+        payment.paymentId,
       );
 
       res[month].success += aggregate.success.amount;
