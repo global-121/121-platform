@@ -37,7 +37,7 @@ class PaymentsPage extends BasePage {
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
     this.paymentSummaryWithInstructions = this.page.getByTestId(
-      'create-payment-excel-fsp-instructions',
+      'create-payment-fsp-instructions',
     );
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
@@ -156,6 +156,10 @@ class PaymentsPage extends BasePage {
   }
 
   async validateExcelFspInstructions() {
+    await expect(this.paymentSummaryWithInstructions).toContainText(
+      'Save the exported XLSX-file in the format required by the Financial Service Provider.',
+    );
+
     const paymentSummaryWithInstructions =
       await this.paymentSummaryWithInstructions.textContent();
 
@@ -177,11 +181,7 @@ class PaymentsPage extends BasePage {
       .replace(/Financial Service Provider\(s\):.*/g, '')
       .trim();
 
-    if (actualText !== expectedText) {
-      throw new Error(
-        `Expected payment summary instructions to be:\n${expectedText}\n\nBut received:\n${actualText}`,
-      );
-    }
+    expect(actualText).toBe(expectedText);
   }
 
   async selectPaymentExportOption({
