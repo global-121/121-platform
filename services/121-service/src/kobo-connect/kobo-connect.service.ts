@@ -41,7 +41,7 @@ export class KoboConnectService {
         message: 'Kobo-Connect API did not return a result',
         errors,
       },
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      HttpStatus.BAD_REQUEST,
     );
   }
 }
