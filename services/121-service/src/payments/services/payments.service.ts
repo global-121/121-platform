@@ -1490,10 +1490,7 @@ export class PaymentsService {
         fspSpecificJoinFields,
       },
     );
-    console.log(
-      '🚀 ~ PaymentsService ~ getTransactions ~ transactions:',
-      transactions,
-    );
+
     if (!transactions || transactions.length === 0) {
       return [];
     }
