@@ -1,13 +1,15 @@
 import {
   PaymentEventAttributesDto,
-  PaymentEventReturnDto,
-} from '@121-service/src/payments/payment-events/dtos/payment-event-return.dto';
+  PaymentEventDataDto,
+} from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
+import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventEntity } from '@121-service/src/payments/payment-events/entities/payment-event.entity';
+import { PaymentEventEnum } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 
 export class PaymentEventsMapper {
   static mapToReturnDto(
     paymentEventEntities: PaymentEventEntity[],
-  ): PaymentEventReturnDto[] {
+  ): PaymentEventDataDto[] {
     return paymentEventEntities.map((event) => ({
       id: event.id,
       type: event.type,
@@ -21,6 +23,46 @@ export class PaymentEventsMapper {
           : null,
       attributes: PaymentEventsMapper.mapAttributes(event),
     }));
+  }
+
+  static mapToPaymentEventsDto(
+    paymentEventEntities: PaymentEventEntity[],
+  ): PaymentEventsReturnDto {
+    const data = this.mapToReturnDto(paymentEventEntities);
+    const availableTypes = this.getAvailableTypes(paymentEventEntities);
+    const count = this.getCountByType(paymentEventEntities);
+    const total = paymentEventEntities.length;
+
+    return {
+      meta: {
+        availableTypes,
+        count,
+        total,
+      },
+      data,
+    };
+  }
+
+  private static getAvailableTypes(
+    paymentEventEntities: PaymentEventEntity[],
+  ): PaymentEventEnum[] {
+    const types = new Set<PaymentEventEnum>();
+    paymentEventEntities.forEach((event) => {
+      types.add(event.type);
+    });
+    return Array.from(types);
+  }
+
+  private static getCountByType(
+    paymentEventEntities: PaymentEventEntity[],
+  ): Partial<Record<PaymentEventEnum, number>> {
+    const count: Partial<Record<PaymentEventEnum, number>> = {};
+
+    paymentEventEntities.forEach((event) => {
+      count[event.type] = (count[event.type] || 0) + 1;
+    });
+
+    return count;
   }
 
   private static mapAttributes(
