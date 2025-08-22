@@ -368,27 +368,19 @@ export class MessageIncomingService {
     const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
-      relations: ['images', 'images.voucher'],
+      relations: ['images', 'images.voucher', 'images.voucher.payment'],
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
     for (const r of registrationWithVouchers) {
-      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-      const lastPayment = await this.transactionRepository
-        .createQueryBuilder('transaction')
-        .select('MAX(transaction."paymentId")', 'max')
-        .leftJoin('transaction.payment', 'p')
-        .where('p.programId = :programId', {
-          programId: r.programId,
-        })
-        .getRawOne();
-      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
-
+      // Don't send vouchers of payments older than 4 weeks
+      const fourWeeks = 4 * 7 * 24 * 60 * 60 * 1000;
+      const fourWeeksAgo = new Date(Date.now() - fourWeeks);
       r.images = r.images.filter(
         (image) =>
           !image.voucher.send &&
-          image.voucher.paymentId &&
-          image.voucher.paymentId >= minimumPayment,
+          image.voucher.payment &&
+          image.voucher.payment.created > fourWeeksAgo,
       );
       if (r.images.length > 0) {
         filteredRegistrations.push(r);
