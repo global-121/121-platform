@@ -116,6 +116,7 @@ graph LR
   PaymentsModule-->FspsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->RedisModule
+  PaymentsModule-->PaymentEventsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationEventsModule
