@@ -156,6 +156,13 @@ describe('Do payment to 1 PA', () => {
         ],
       });
 
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAhCopy.referenceId],
+        accessToken,
+        minimumNumberOfMessagesPerReferenceId: 1,
+      });
+
       const getTransactionsBody = await getTransactions({
         programId,
         paymentId,
@@ -192,6 +199,13 @@ describe('Do payment to 1 PA', () => {
           TransactionStatusEnum.error,
           TransactionStatusEnum.waiting,
         ],
+      });
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAhCopy.referenceId],
+        accessToken,
+        minimumNumberOfMessagesPerReferenceId: 1,
       });
 
       const getTransactionsBody = await getTransactions({
