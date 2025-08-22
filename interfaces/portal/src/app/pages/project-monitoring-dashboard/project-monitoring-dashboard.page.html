@@ -1,0 +1,56 @@
+<app-page-layout-monitoring [projectId]="projectId()">
+  <h2>Registration information</h2>
+  <div class="flex flex-row">
+    <p-card>
+      <p-chart
+        type="bar"
+        [data]="registrationStatusData()"
+        [options]="barOptions"
+        responsive
+        class="[&>div]:max-w-full md:[&>div]:h-64"
+      />
+    </p-card>
+    <p-card>
+      <p-chart
+        type="pie"
+        [data]="duplicationData()"
+        [options]="pieOptions"
+        responsive
+        class="[&>div]:max-w-full md:[&>div]:h-64"
+      />
+    </p-card>
+    <p-card>
+      <p-chart
+        type="line"
+        [data]="registrationsByDate()"
+        [options]="lineOptions"
+        responsive
+        class="[&>div]:max-w-full md:[&>div]:h-64"
+      />
+    </p-card>
+  </div>
+  <h2>Payment information</h2>
+  <div class="flex flex-row">
+    <p-chart
+      type="bar"
+      [data]="transfersPerPayment()"
+      [options]="barOptions"
+      responsive
+      class="[&>div]:max-w-full md:[&>div]:h-64"
+    />
+    <p-chart
+      type="bar"
+      [data]="amountSentPerPayment()"
+      [options]="barOptions"
+      responsive
+      class="[&>div]:max-w-full md:[&>div]:h-64"
+    />
+    <p-chart
+      type="bar"
+      [data]="amountSentPerMonthChartData()"
+      [options]="barOptions"
+      responsive
+      class="[&>div]:max-w-full md:[&>div]:h-64"
+    />
+  </div>
+</app-page-layout-monitoring>
