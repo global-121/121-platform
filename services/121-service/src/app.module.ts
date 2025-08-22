@@ -1,6 +1,5 @@
 import { BullModule } from '@nestjs/bull';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
-import { Type } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -38,17 +37,7 @@ import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptor
 import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
-import { DevelopmentController } from '@121-service/src/utils/test-helpers/test.controller';
-
-const getControllers = (): Type<unknown>[] => {
-  const baseControllers: Type<unknown>[] = [AppController];
-
-  if (env.NODE_ENV === 'development') {
-    baseControllers.push(DevelopmentController);
-  }
-
-  return baseControllers;
-};
+import { TestController } from '@121-service/src/utils/test-helpers/test.controller';
 
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
@@ -103,7 +92,7 @@ const getControllers = (): Type<unknown>[] => {
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
   ],
-  controllers: getControllers(),
+  controllers: [AppController, TestController],
   providers: [
     {
       provide: APP_GUARD,

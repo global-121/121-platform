@@ -1,7 +1,12 @@
 [
   {
+    "method": "post",
+    "path": "/api/test/kill-service",
+    "params": []
+  },
+  {
     "method": "get",
-    "path": "/api/development/validate-indirect-relations",
+    "path": "/api/test/validate-indirect-relations",
     "params": []
   },
   {
@@ -765,11 +770,6 @@
     "params": [
       "mockPowerNumberRegistrations"
     ]
-  },
-  {
-    "method": "post",
-    "path": "/api/scripts/kill-service",
-    "params": []
   },
   {
     "method": "get",

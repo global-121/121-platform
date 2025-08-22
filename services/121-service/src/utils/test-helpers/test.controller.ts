@@ -1,58 +1,51 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
 
+import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { indirectRelationConfig } from '@121-service/src/scoped.repository';
+import { SecretDto } from '@121-service/src/scripts/scripts.controller';
 
-@ApiTags('development')
-@Controller('development')
-export class DevelopmentController {
+@ApiTags('test')
+@Controller('test')
+export class TestController {
   constructor(private readonly dataSource: DataSource) {}
 
+  @ApiOperation({
+    summary:
+      'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
+  })
+  @ApiExcludeEndpoint(!IS_DEVELOPMENT)
+  @Post('kill-service')
+  killService(@Body() body: SecretDto, @Res() res): void {
+    if (body.secret !== env.RESET_SECRET) {
+      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
+    }
+    if (!IS_DEVELOPMENT) {
+      return;
+    }
+
+    console.log('Service is being killed...');
+    // eslint-disable-next-line n/no-process-exit -- Exiting the app is the literal purpose of this method/endpoint
+    process.exit(1);
+  }
+
+  @ApiOperation({
+    summary:
+      'WARNING: Only works in DEBUG-mode. Only used for testing purposes.',
+  })
+  @ApiExcludeEndpoint(!IS_DEVELOPMENT)
   @Get('validate-indirect-relations')
-  validateIndirectRelations(): {
-    status: string;
-    message?: string;
-    details?: Record<string, string[]>;
-  } {
-    if (env.NODE_ENV !== 'development') {
-      return { status: 'disabled', message: 'Only available in development' };
-    }
-
-    try {
-      const missing = this.performExhaustivenessCheck();
-      if (Object.keys(missing).length > 0) {
-        const missingDetails = Object.entries(missing)
-          .map(
-            ([entity, path]) =>
-              `${entity}: [${path.map((p) => `'${p}'`).join(', ')}]`,
-          )
-          .join('\n  ');
-
-        console.error(
-          'Missing entities in indirectRelationConfig:',
-          missingDetails,
-        );
-
-        return {
-          status: 'error',
-          message: `Missing entities in indirectRelationConfig:\n  ${missingDetails}`,
-          details: missing,
-        };
-      }
-
-      return { status: 'success' };
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      console.error('Validation error:', errorMessage);
-
-      return {
-        status: 'error',
-        message: errorMessage,
-      };
-    }
+  validateIndirectRelations(): string[] {
+    const missing = this.performExhaustivenessCheck();
+    console.log('missing: ', missing);
+    const missingEntries = Object.entries(missing).map(
+      ([entity, path]) =>
+        `${entity}: [${path.map((p) => `'${p}'`).join(', ')}]`,
+    );
+    console.log('missingEntries: ', missingEntries);
+    return missingEntries;
   }
 
   private performExhaustivenessCheck(): Record<string, string[]> {
