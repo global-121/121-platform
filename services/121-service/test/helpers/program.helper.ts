@@ -113,12 +113,14 @@ export async function doPayment({
   referenceIds,
   accessToken,
   filter = {},
+  note,
 }: {
   programId: number;
   amount: number;
   referenceIds: string[];
   accessToken: string;
   filter?: Record<string, string>;
+  note?: string;
 }): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
@@ -137,6 +139,7 @@ export async function doPayment({
     .query(queryParams)
     .send({
       amount,
+      note,
     });
 }
 
@@ -612,4 +615,18 @@ export async function removeDeprecatedImageCodes({
     .delete('/cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
     .set('Cookie', [accessToken])
     .send(body);
+}
+
+export async function getPaymentEvents({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}) {
+  return await getServer()
+    .get(`/programs/${programId}/payments/${paymentId}/events`)
+    .set('Cookie', [accessToken]);
 }

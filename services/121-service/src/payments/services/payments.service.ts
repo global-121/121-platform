@@ -34,6 +34,8 @@ import { NedbankService } from '@121-service/src/payments/fsp-integration/nedban
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
+import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
+import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import {
   getRedisSetName,
   REDIS_CLIENT,
@@ -115,6 +117,7 @@ export class PaymentsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionQueuesService: TransactionQueuesService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly paymentEventsService: PaymentEventsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
   ) {
@@ -221,13 +224,21 @@ export class PaymentsService {
     };
   }
 
-  public async createPayment(
-    userId: number,
-    programId: number,
-    amount: number | undefined,
-    query: PaginateQuery,
-    dryRun: boolean,
-  ): Promise<BulkActionResultPaymentDto> {
+  public async createPayment({
+    userId,
+    programId,
+    amount,
+    query,
+    dryRun,
+    note,
+  }: {
+    userId: number;
+    programId: number;
+    amount: number | undefined;
+    query: PaginateQuery;
+    dryRun: boolean;
+    note?: string;
+  }): Promise<BulkActionResultPaymentDto> {
     if (!dryRun) {
       await this.checkPaymentInProgressAndThrow(programId);
     }
@@ -300,18 +311,17 @@ export class PaymentsService {
         programId,
         programFspConfigurationNames,
       );
-
-      const paymentEntity = new PaymentEntity();
-      paymentEntity.programId = programId;
-      const savedPaymentEntity =
-        await this.paymentRepository.save(paymentEntity);
-      bulkActionResultPaymentDto.id = savedPaymentEntity.id;
-
+      const paymentId = await this.createPaymentAndEventsEntities({
+        userId,
+        programId,
+        note,
+      });
+      bulkActionResultPaymentDto.id = paymentId;
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
         userId,
         programId,
-        paymentId: savedPaymentEntity.id,
+        paymentId,
         amount,
         referenceIds,
         bulkSize: referenceIds.length,
@@ -329,6 +339,35 @@ export class PaymentsService {
     }
 
     return bulkActionResultPaymentDto;
+  }
+
+  private async createPaymentAndEventsEntities({
+    userId,
+    programId,
+    note,
+  }: {
+    userId: number;
+    programId: number;
+    note?: string;
+  }): Promise<number> {
+    const paymentEntity = new PaymentEntity();
+    paymentEntity.programId = programId;
+    const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
+
+    await this.paymentEventsService.createCreatedEvent({
+      paymentId: savedPaymentEntity.id,
+      userId,
+    });
+
+    if (note) {
+      await this.paymentEventsService.createNoteEvent({
+        paymentId: savedPaymentEntity.id,
+        userId,
+        note,
+      });
+    }
+
+    return savedPaymentEntity.id;
   }
 
   private async checkFspConfigurationsOrThrow(
@@ -1403,6 +1442,7 @@ export class PaymentsService {
     programId: number;
     paymentId: number;
   }): Promise<GetTransactionResponseDto[]> {
+    await this.findPaymentOrThrow(programId, paymentId);
     // For in the portal we always want the name of the registration, so we need to select it
     const select = [DefaultRegistrationDataAttributeNames.name];
 
@@ -1526,5 +1566,31 @@ export class PaymentsService {
     });
 
     return result;
+  }
+
+  public async getPaymentEvents({
+    programId,
+    paymentId,
+  }: {
+    programId: number;
+    paymentId: number;
+  }): Promise<PaymentEventsReturnDto> {
+    await this.findPaymentOrThrow(programId, paymentId);
+    return this.paymentEventsService.getPaymentEvents(paymentId);
+  }
+
+  private async findPaymentOrThrow(
+    programId: number,
+    paymentId: number,
+  ): Promise<void> {
+    const payment = await this.paymentRepository.findOne({
+      where: { id: Equal(paymentId), programId: Equal(programId) },
+    });
+
+    if (!payment) {
+      throw new Error(
+        `Payment with ID ${paymentId} not found in program ${programId}`,
+      );
+    }
   }
 }
