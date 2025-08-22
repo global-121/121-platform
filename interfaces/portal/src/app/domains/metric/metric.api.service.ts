@@ -5,7 +5,13 @@ import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { ProjectMetrics } from '~/domains/metric/metric.model';
+import {
+  ProjectAggregatePerMonth,
+  ProjectAggregatePerPayment,
+  ProjectMetrics,
+  ProjectRegistrationCountByDate,
+  ProjectRegistrationStatusStats,
+} from '~/domains/metric/metric.model';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
@@ -46,6 +52,42 @@ export class MetricApiService extends DomainApiService {
       path: [...BASE_ENDPOINT(projectId), 'export-list', type],
       params,
       responseAsBlob: true,
+    });
+  }
+
+  getRegistrationCountByStatus({
+    projectId,
+  }: {
+    projectId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<ProjectRegistrationStatusStats[]>({
+      path: [...BASE_ENDPOINT(projectId), 'registration-status'],
+    });
+  }
+
+  getAllPaymentsAggregates({
+    projectId,
+  }: {
+    projectId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<ProjectAggregatePerPayment>({
+      path: [...BASE_ENDPOINT(projectId), 'all-payments-aggregates'],
+    });
+  }
+
+  getAmountSentByMonth({ projectId }: { projectId: Signal<number | string> }) {
+    return this.generateQueryOptions<ProjectAggregatePerMonth>({
+      path: [...BASE_ENDPOINT(projectId), 'amount-sent-by-month'],
+    });
+  }
+
+  getRegistrationCountByDate({
+    projectId,
+  }: {
+    projectId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<ProjectRegistrationCountByDate>({
+      path: [...BASE_ENDPOINT(projectId), 'registration-count-by-date'],
     });
   }
 
