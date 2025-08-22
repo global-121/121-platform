@@ -368,25 +368,43 @@ export class MessageIncomingService {
     const registrationIds = registrations.map((c) => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
-      relations: ['images', 'images.voucher', 'images.voucher.payment'],
+      relations: ['images', 'images.voucher'],
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
-    for (const r of registrationWithVouchers) {
-      // Don't send vouchers of payments older than 4 weeks
-      const fourWeeks = 4 * 7 * 24 * 60 * 60 * 1000;
-      const fourWeeksAgo = new Date(Date.now() - fourWeeks);
-      r.images = r.images.filter(
+    for (const registration of registrationWithVouchers) {
+      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+      const lastThreePaymentIds =
+        await this.getLastThreePaymentIdsForRegistration(registration.id);
+
+      registration.images = registration.images.filter(
         (image) =>
           !image.voucher.send &&
-          image.voucher.payment &&
-          image.voucher.payment.created > fourWeeksAgo,
+          image.voucher.paymentId &&
+          lastThreePaymentIds.includes(image.voucher.paymentId),
       );
-      if (r.images.length > 0) {
-        filteredRegistrations.push(r);
+      if (registration.images.length > 0) {
+        filteredRegistrations.push(registration);
       }
     }
     return filteredRegistrations;
+  }
+
+  private async getLastThreePaymentIdsForRegistration(
+    registrationId: number,
+  ): Promise<number[]> {
+    const lastThreePaymentIds = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('DISTINCT transaction."paymentId"', 'paymentId')
+      .addSelect('MAX(payment.created)', 'maxCreated')
+      .leftJoin('transaction.payment', 'payment')
+      .where('transaction.registrationId = :registrationId', { registrationId })
+      .groupBy('transaction."paymentId"')
+      .orderBy('"maxCreated"', 'DESC')
+      .limit(3)
+      .getRawMany();
+
+    return lastThreePaymentIds.map((payment) => payment.paymentId);
   }
 
   private cleanWhatsAppNr(value: string): string {
