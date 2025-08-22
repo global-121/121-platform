@@ -19,6 +19,7 @@ export enum AppRoutes {
   projectMonitoringPowerBI = 'powerbi',
   projectPayments = 'payments',
   projectPaymentTransferList = 'transfer-list',
+  projectPaymentLog = 'payment-log',
   projectRegistrationActivityLog = 'activity-log',
   projectRegistrationDebitCards = 'debit-cards',
   projectRegistrationPersonalInformation = 'personal-information',
@@ -239,6 +240,14 @@ export const routes: Routes = [
                   import(
                     '~/pages/project-payment-transfer-list/project-payment-transfer-list.page'
                   ).then((x) => x.ProjectPaymentTransferListPageComponent),
+              },
+              {
+                path: AppRoutes.projectPaymentLog,
+                title: $localize`:@@page-title-project-payment-log:Payment log`,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-payment-log/project-payment-log.page'
+                  ).then((x) => x.ProjectPaymentLogPageComponent),
               },
               {
                 path: ``,

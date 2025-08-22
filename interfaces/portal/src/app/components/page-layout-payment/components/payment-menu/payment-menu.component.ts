@@ -31,5 +31,10 @@ export class PaymentMenuComponent {
       routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}/${this.paymentId().toString()}/${AppRoutes.projectPaymentTransferList}`,
       icon: 'pi pi-table',
     },
+    {
+      label: $localize`:@@page-title-project-payment-log:Payment log`,
+      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}/${this.paymentId().toString()}/${AppRoutes.projectPaymentLog}`,
+      icon: 'pi pi-list',
+    },
   ]);
 }

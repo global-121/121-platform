@@ -1685,6 +1685,9 @@
       <trans-unit id="page-title-project-transfer-list" datatype="html">
         <source>Transfer list</source>
       </trans-unit>
+      <trans-unit id="page-title-project-payment-log" datatype="html">
+        <source>Payment log</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
