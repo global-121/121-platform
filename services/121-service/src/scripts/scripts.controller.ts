@@ -1,14 +1,8 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import {
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiProperty,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { IS_DEVELOPMENT, IS_PRODUCTION } from '@121-service/src/config';
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { ScriptsService } from '@121-service/src/scripts/scripts.service';
@@ -153,24 +147,5 @@ export class ScriptsController {
     return res
       .status(HttpStatus.CREATED)
       .send('Request received. Data should have been duplicated.');
-  }
-
-  @ApiOperation({
-    summary:
-      'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
-  })
-  @ApiExcludeEndpoint(!IS_DEVELOPMENT)
-  @Post('kill-service')
-  killService(@Body() body: SecretDto, @Res() res): void {
-    if (body.secret !== env.RESET_SECRET) {
-      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
-    }
-    if (!IS_DEVELOPMENT) {
-      return;
-    }
-
-    console.log('Service is being killed...');
-    // eslint-disable-next-line n/no-process-exit -- Exiting the app is the literal purpose of this method/endpoint
-    process.exit(1);
   }
 }

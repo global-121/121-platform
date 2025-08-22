@@ -129,7 +129,7 @@ npm run start:services:detach
 cd services/121-service
 docker exec 121-service  npm run test:integration:all
 # step #3, option a) manually kill the server
-curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST 'http://localhost:3000/api/scripts/kill-service'
+curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST 'http://localhost:3000/api/test/kill-service'
 # step #4
 # note: this will not work if the previous steps, for whatever reason, did not generate coverage data in .nyc_output
 docker compose exec 121-service npm run coverage:report:integration

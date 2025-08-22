@@ -49,7 +49,7 @@ export default class ResetModel {
   }
 
   kill121Service() {
-    const url = `${baseUrl}api/scripts/kill-service`;
+    const url = `${baseUrl}api/test/kill-service`;
     const payload = JSON.stringify({
       secret: 'fill_in_secret',
     });
