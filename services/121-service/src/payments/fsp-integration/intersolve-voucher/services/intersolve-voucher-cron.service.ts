@@ -119,9 +119,9 @@ export class IntersolveVoucherCronService {
     let totalWhatsappReminders = 0;
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
-    // We only want to send reminders for vouchers that are not older than 4 weeks
-    const fourWeeks = 4 * 7 * 24 * 60 * 60 * 1000;
-    const fourWeeksAgo = new Date(Date.now() - fourWeeks);
+    // We only want to send reminders for vouchers that are not older than 2 weeks
+    const twoWeeks = 2 * 7 * 24 * 60 * 60 * 1000;
+    const twoWeeksAgo = new Date(Date.now() - twoWeeks);
 
     const programs = await this.programRepository.find();
     for (const program of programs) {
@@ -142,8 +142,8 @@ export class IntersolveVoucherCronService {
         .andWhere('payment.created < :sixteenHoursAgo', {
           sixteenHoursAgo,
         })
-        .andWhere('payment.created > :fourWeeksAgo', {
-          fourWeeksAgo,
+        .andWhere('payment.created > :twoWeeksAgo', {
+          twoWeeksAgo,
         })
         .andWhere('"whatsappPhoneNumber" is not NULL')
         .andWhere('registration.programId = :programId', {
