@@ -92,53 +92,15 @@
       i18n-metricTooltip
     />
 
-    <p-card class="overflow-x-auto [grid-area:table]">
-      <app-query-table
-        #table
-        [items]="transactions.data() ?? []"
-        [isPending]="transactions.isPending()"
-        [columns]="columns()"
-        [localStorageKey]="localStorageKey()"
-        [enableColumnManagement]="true"
-        [contextMenuItems]="contextMenuItems()"
-        (updateContextMenuItem)="contextMenuSelection.set($event)"
-        [enableSelection]="true"
-        [globalFilterFields]="[
-          'registrationProgramId',
-          'registrationName',
-          'status',
-          'errorMessage',
-          'programFspConfigurationName',
-        ]"
-      >
-        <div
-          table-actions
-          class="me-2 flex grow"
-        >
-          <span
-            i18n
-            class="txt-h-2 me-auto font-medium"
-            >Included registrations</span
-          >
-          @if (canRetryTransfers()) {
-            <p-button
-              label="Retry failed transfer(s)"
-              i18n-label="@@retry-failed-transfers"
-              rounded
-              outlined
-              icon="pi pi-refresh"
-              [iconPos]="rtlHelper.createPosition('start')()"
-              (click)="retryFailedTransfers()"
-            />
-          }
-        </div>
-      </app-query-table>
+    <p-card
+      class="overflow-x-auto [grid-area:table]"
+      styleClass="[&_.p-card-body]:pt-3"
+    >
+      <app-payment-menu
+        [projectId]="projectId()"
+        [paymentId]="paymentId()"
+      />
+      <ng-content></ng-content>
     </p-card>
   </div>
 </app-page-layout>
-
-<app-retry-transfers-dialog
-  #retryTransfersDialog
-  [projectId]="projectId()"
-  [paymentId]="paymentId()"
-/>

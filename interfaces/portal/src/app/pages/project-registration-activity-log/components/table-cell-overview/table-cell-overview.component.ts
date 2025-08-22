@@ -33,7 +33,7 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { RetryTransfersDialogComponent } from '~/pages/project-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';

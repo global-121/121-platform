@@ -5,7 +5,6 @@ import {
   computed,
   inject,
   input,
-  LOCALE_ID,
   signal,
   viewChild,
 } from '@angular/core';
@@ -21,34 +20,25 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AppRoutes } from '~/app.routes';
 import {
   getChipDataByRegistrationStatus,
   getChipDataByTransactionStatus,
 } from '~/components/colored-chip/colored-chip.helper';
-import { MetricTileComponent } from '~/components/metric-tile/metric-tile.component';
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import {
-  PaymentAggregate,
-  PaymentTransaction,
-} from '~/domains/payment/payment.model';
+import { PaymentTransaction } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { projectHasFspWithExportFileIntegration } from '~/domains/project/project.helper';
 import {
   REGISTRATION_STATUS_LABELS,
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
-import { ImportReconciliationDataComponent } from '~/pages/project-payment/components/import-reconciliation-data/import-reconciliation-data.component';
-import { ProjectPaymentChartComponent } from '~/pages/project-payment/components/project-payment-chart/project-payment-chart.component';
-import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
-import { SinglePaymentExportComponent } from '~/pages/project-payment/components/single-payment-export/single-payment-export.component';
+import { RetryTransfersDialogComponent } from '~/pages/project-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -56,39 +46,33 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
-  selector: 'app-project-payment',
+  selector: 'app-project-payment-transfer-list',
   imports: [
-    PageLayoutComponent,
+    PageLayoutPaymentComponent,
     CardModule,
     QueryTableComponent,
-    DecimalPipe,
     ButtonModule,
-    MetricTileComponent,
-    ProjectPaymentChartComponent,
     SkeletonModule,
     RetryTransfersDialogComponent,
-    SinglePaymentExportComponent,
-    ImportReconciliationDataComponent,
   ],
-  templateUrl: './project-payment.page.html',
+  templateUrl: './project-payment-transfer-list.page.html',
   styles: ``,
   providers: [CurrencyPipe, DatePipe, DecimalPipe, ToastService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectPaymentPageComponent {
-  readonly rtlHelper = inject(RtlHelperService);
+export class ProjectPaymentTransferListPageComponent {
   // this is injected by the router
   readonly projectId = input.required<string>();
   readonly paymentId = input.required<string>();
 
-  private authService = inject(AuthService);
-  private currencyPipe = inject(CurrencyPipe);
-  private locale = inject(LOCALE_ID);
-  private paymentApiService = inject(PaymentApiService);
-  private projectApiService = inject(ProjectApiService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
-  private translatableStringService = inject(TranslatableStringService);
+  readonly authService = inject(AuthService);
+  readonly currencyPipe = inject(CurrencyPipe);
+  readonly paymentApiService = inject(PaymentApiService);
+  readonly projectApiService = inject(ProjectApiService);
+  readonly rtlHelper = inject(RtlHelperService);
+  readonly router = inject(Router);
+  readonly toastService = inject(ToastService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
   readonly table =
     viewChild.required<QueryTableComponent<PaymentTransaction, never>>('table');
@@ -100,26 +84,6 @@ export class ProjectPaymentPageComponent {
   );
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
-  paymentStatus = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
-  );
-  payment = injectQuery(() => ({
-    ...this.paymentApiService.getPayment({
-      projectId: this.projectId,
-      paymentId: this.paymentId,
-    })(),
-    // Refetch the data every second if a payment count !== transactions count
-    refetchInterval: this.refetchPayment() ? 1000 : undefined,
-    success: (data: PaymentAggregate) => {
-      if (
-        data.success.count + data.failed.count + data.waiting.count ===
-        this.transactions.data()?.length
-      ) {
-        this.refetchPayment.set(false);
-      }
-    },
-  }));
-  payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
   transactions = injectQuery(
     this.paymentApiService.getPaymentTransactions({
       projectId: this.projectId,
@@ -128,66 +92,6 @@ export class ProjectPaymentPageComponent {
   );
 
   readonly refetchPayment = signal(true);
-
-  readonly allPaymentsLink = computed(() => [
-    '/',
-    AppRoutes.project,
-    this.projectId(),
-    AppRoutes.projectPayments,
-  ]);
-
-  readonly paymentDate = computed(() => {
-    if (!this.payments.isSuccess()) {
-      return '';
-    }
-
-    const date = this.payments
-      .data()
-      .find(
-        (payment) => payment.paymentId === Number(this.paymentId()),
-      )?.paymentDate;
-
-    return new DatePipe(this.locale).transform(date, 'short') ?? '';
-  });
-
-  readonly paymentTitle = computed(
-    () => $localize`Payment` + ' ' + this.paymentDate(),
-  );
-
-  readonly totalPaymentAmount = computed(() => {
-    if (!this.payment.isSuccess()) {
-      return '-';
-    }
-
-    const totalAmount =
-      this.payment.data().failed.amount +
-      this.payment.data().success.amount +
-      this.payment.data().waiting.amount;
-
-    return (
-      this.currencyPipe.transform(
-        totalAmount,
-        this.project.data()?.currency,
-        'symbol-narrow',
-        '1.2-2',
-      ) ?? '0'
-    );
-  });
-
-  readonly successfulPaymentsAmount = computed(() => {
-    if (!this.payment.isSuccess()) {
-      return '-';
-    }
-
-    return (
-      this.currencyPipe.transform(
-        this.payment.data().success.amount,
-        this.project.data()?.currency,
-        'symbol-narrow',
-        '1.0-0',
-      ) ?? '0'
-    );
-  });
 
   readonly columns = computed(() => {
     if (!this.project.isSuccess()) {
@@ -338,10 +242,6 @@ export class ProjectPaymentPageComponent {
       .data()
       .some((payment) => payment.status === TransactionStatusEnum.error);
   });
-
-  readonly hasFspWithExportFileIntegration = computed(() =>
-    projectHasFspWithExportFileIntegration(this.project.data()),
-  );
 
   retryFailedTransfers({
     triggeredFromContextMenu = false,

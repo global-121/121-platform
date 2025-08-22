@@ -25,7 +25,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
+import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
@@ -41,7 +41,7 @@ import { ToastService } from '~/services/toast.service';
     AccordionModule,
     ColoredChipComponent,
     ConfirmationDialogComponent,
-    RegistrationPageLayoutComponent,
+    PageLayoutRegistrationComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-registration-debit-cards.page.html',
