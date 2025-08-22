@@ -14,6 +14,7 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.module';
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
+import { PaymentEventsModule } from '@121-service/src/payments/payment-events/payment-events.module';
 import { PaymentsController } from '@121-service/src/payments/payments.controller';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
@@ -65,6 +66,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     FspsModule,
     ProgramFspConfigurationsModule,
     RedisModule,
+    PaymentEventsModule,
   ],
   providers: [
     PaymentsService,
