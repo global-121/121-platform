@@ -9,6 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
@@ -19,6 +20,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 
 import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
@@ -33,6 +35,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
@@ -59,6 +62,8 @@ import { Dto } from '~/utils/dto-type';
     MenuModule,
     ColoredChipComponent,
     FullscreenStepperDialogComponent,
+    FormFieldWrapperComponent,
+    InputText,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,
@@ -97,6 +102,11 @@ export class CreatePaymentComponent {
   includedChipData = getChipDataByRegistrationStatus(
     RegistrationStatusEnum.included,
   );
+  paymentFormGroup = new FormGroup({
+    note: new FormControl('', {
+      nonNullable: true,
+    }),
+  });
 
   fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.projectId),
@@ -148,7 +158,6 @@ export class CreatePaymentComponent {
           value: fspConfig.name,
         })),
         loading: this.fspConfigurations.isPending(),
-        fullWidth: true,
       },
       {
         label: $localize`Registrations`,
@@ -163,6 +172,7 @@ export class CreatePaymentComponent {
           '1.2-2',
         ),
         tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+        fullWidth: true,
       },
     ];
 
@@ -215,6 +225,8 @@ export class CreatePaymentComponent {
         paginateQuery,
         paymentData: {
           amount: this.paymentAmount(),
+          // @ts-expect-error -- XXX: TS should not complain once note is part of the DTO ---
+          note: this.paymentFormGroup.get('note')?.value,
         },
         dryRun,
       });

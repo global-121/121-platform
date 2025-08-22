@@ -1685,6 +1685,12 @@
       <trans-unit id="page-title-project-transfer-list" datatype="html">
         <source>Transfer list</source>
       </trans-unit>
+      <trans-unit id="3915966149686975421" datatype="html">
+        <source>Optional</source>
+      </trans-unit>
+      <trans-unit id="8433732438274024544" datatype="html">
+        <source>Add note</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
