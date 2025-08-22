@@ -98,10 +98,10 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       query.andWhere('transaction.paymentId = :paymentId', { paymentId });
     }
     if (fromDate) {
-      query.andWhere('transaction.created >= :fromDate', { fromDate });
+      query.andWhere('p.created >= :fromDate', { fromDate });
     }
     if (toDate) {
-      query.andWhere('transaction.created <= :toDate', { toDate });
+      query.andWhere('p.created <= :toDate', { toDate });
     }
 
     if (!fspSpecificJoinFields) {
