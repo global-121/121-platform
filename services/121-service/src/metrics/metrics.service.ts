@@ -4,13 +4,19 @@ import { Equal, In, Not } from 'typeorm';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import {
+  AggregatePerMonth,
+  AggregatePerPayment,
+} from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -46,6 +52,7 @@ export class MetricsService {
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
+    private readonly paymentsService: PaymentsService,
   ) {}
 
   public async getExportList({
@@ -432,6 +439,80 @@ export class MetricsService {
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();
+    return res;
+  }
+
+  public async getRegistrationCountByDate(
+    programId: number,
+  ): Promise<RegistrationCountByDate> {
+    const query = this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
+      .addSelect(`COUNT(*)`)
+      .andWhere({ programId })
+      .groupBy(`"created"`)
+      .orderBy(`"created"`);
+    const res = (await query.getRawMany()).reduce(
+      (dates: Record<string, number>, r) => {
+        dates[r.created] = r.count;
+        return dates;
+      },
+      {},
+    );
+    return res;
+  }
+
+  public async getAllPaymentsAggregates(
+    programId: number,
+  ): Promise<AggregatePerPayment> {
+    const res: AggregatePerPayment = {};
+
+    const payments = await this.paymentsService.getPayments(programId);
+
+    for (const payment of payments) {
+      const aggregate = await this.paymentsService.getPaymentAggregation(
+        programId,
+        payment.paymentId,
+      );
+      res[payment.paymentId] = aggregate;
+    }
+
+    return res;
+  }
+
+  public async getAmountSentByMonth(
+    programId: number,
+  ): Promise<AggregatePerMonth> {
+    const res: AggregatePerMonth = {};
+
+    const payments = await this.paymentsService.getPayments(programId);
+
+    const emptyMonth = {
+      success: 0,
+      waiting: 0,
+      failed: 0,
+    };
+
+    for (const payment of payments) {
+      const month = new Date(payment.paymentDate)
+        .toISOString()
+        .split('T')[0]
+        .slice(0, -3);
+
+      if (!res[month]) {
+        res[month] = emptyMonth;
+      }
+
+      const aggregate = await this.paymentsService.getPaymentAggregation(
+        programId,
+        payment.paymentId,
+      );
+
+      res[month].success += aggregate.success.amount;
+      res[month].waiting += aggregate.waiting.amount;
+      res[month].failed += aggregate.failed.amount;
+    }
+
     return res;
   }
 }
