@@ -13,7 +13,7 @@ import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
 const programId = 3;
-const paymentNr = 5;
+const paymentId = 5;
 const userId = 1;
 const sendPaymentData: PaPaymentDataDto[] = [
   {
@@ -41,7 +41,7 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
 
 const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paPaymentData: sendPaymentData[0],
-  paymentNr,
+  paymentId,
   programId,
   payload: payload[0],
   userId: sendPaymentData[0].userId,
@@ -118,7 +118,7 @@ describe('CommercialBankEthiopiaService', () => {
     await commercialBankEthiopiaService.sendPayment(
       sendPaymentData,
       programId,
-      paymentNr,
+      paymentId,
     );
 
     // Assert

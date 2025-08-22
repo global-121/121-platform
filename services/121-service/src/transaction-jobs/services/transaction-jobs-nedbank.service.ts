@@ -46,7 +46,7 @@ export class TransactionJobsNedbankService {
     let transactionId: number;
     const voucherWithoutStatus =
       await this.nedbankVoucherScopedRepository.getVoucherWhereStatusNull({
-        paymentId: transactionJob.paymentNumber,
+        paymentId: transactionJob.paymentId,
         registrationId: registration.id,
       });
 
@@ -73,16 +73,16 @@ export class TransactionJobsNedbankService {
         await this.transactionScopedRepository.count({
           where: {
             registrationId: Equal(registration.id),
-            payment: Equal(transactionJob.paymentNumber),
+            paymentId: Equal(transactionJob.paymentId),
             status: Equal(TransactionStatusEnum.error),
           },
         });
-      // orderCreateReference is generated using: (referenceId + paymentNr + current failed transactions)
+      // orderCreateReference is generated using: (referenceId + paymentId + current failed transactions)
       // Using this count to generate the OrderReferenceId ensures that:
       // a. On payment retry, a new reference is generated (needed because a new reference is required by nedbank if a failed order was created).
       // b. Queue Retry: on queue retry, the same OrderReferenceId is generated, which is beneficial because the old successful/failed Order response would be returned.
       orderCreateReference = generateUUIDFromSeed(
-        `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`,
+        `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
       ).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONONALITY FOR TESTING PURPOSES ONLY

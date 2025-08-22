@@ -15,8 +15,6 @@ const metricsPage = new metricstsModel();
 
 const duplicateNumber = 5;
 const programId = 3;
-const paymentId = 3;
-const paymentNr = 3;
 const maxTimeoutAttempts = 600;
 const minPassRatePercentage = 50;
 const amount = 11.11;
@@ -61,7 +59,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount, paymentNr);
+  const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
@@ -75,7 +73,7 @@ export default function () {
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
     maxTimeoutAttempts,
-    paymentId,
+    doPayment.body.id,
     duplicateNumber,
     minPassRatePercentage,
     amount,

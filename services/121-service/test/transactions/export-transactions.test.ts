@@ -40,7 +40,11 @@ describe('Export transactions', () => {
     });
 
     const fromDate = new Date().toISOString();
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    const paymentId = await seedPaidRegistrations(
+      [registrationSafaricom],
+      programId,
+      amount,
+    );
     const toDate = new Date().toISOString();
 
     // Act
@@ -72,7 +76,8 @@ describe('Export transactions', () => {
       // Default registrationView fields
       created: expect.any(Number),
       updated: expect.any(Number),
-      payment: 1,
+      paymentId,
+      paymentDate: expect.any(Number),
       paymentCount: 1,
       gender: expect.any(String),
       // Transaction GET fields
@@ -92,34 +97,28 @@ describe('Export transactions', () => {
   it('should filter transactions based on date range', async () => {
     // Arrange
 
-    // Payment 1 that should not be exported
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    // Payment that should not be exported
+    await seedPaidRegistrations([registrationSafaricom], programId, amount);
 
     const fromDate = new Date().toISOString();
 
-    // Payment 2 that should be exported
-    await doPaymentAndWaitForCompletion({
+    // Paymentthat should be exported
+    const paymentIdOfMiddlePayment = await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
-      paymentNr: 2,
     });
     const toDate = new Date().toISOString();
 
-    // Payment 3 that should not be exported
+    // Payment that should not be exported
     await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
-      paymentNr: 3,
     });
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
     // Act
     const transactionsResponse = await exportTransactions({
       programId,
@@ -144,7 +143,7 @@ describe('Export transactions', () => {
     expect(transactionsJson.length).toBe(1);
     const transactionFromPayment2 = transactionsJson[0];
     expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+      paymentId: paymentIdOfMiddlePayment,
       paymentCount: 3,
     });
   });
@@ -153,21 +152,20 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1
-    await seedPaidRegistrations([registrationSafaricom], programId, 1, amount);
+    await seedPaidRegistrations([registrationSafaricom], programId, amount);
 
     // Payment 2
-    await doPaymentAndWaitForCompletion({
+    const paymentIdOfSecondPayment = await doPaymentAndWaitForCompletion({
       programId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
-      paymentNr: 2,
     });
 
     // Act: Export only payment 2
     const transactionsResponse = await exportTransactions({
       programId,
-      payment: 2,
+      paymentId: paymentIdOfSecondPayment,
       accessToken,
     });
 
@@ -180,9 +178,9 @@ describe('Export transactions', () => {
     // Assert
     expect(transactionsResponse.statusCode).toBe(200);
     expect(transactionsJson.length).toBe(1);
-    const transactionFromPayment2 = transactionsJson[0];
-    expect(transactionFromPayment2).toMatchObject({
-      payment: 2,
+    const transactionFromSecondPayment = transactionsJson[0];
+    expect(transactionFromSecondPayment).toMatchObject({
+      paymentId: paymentIdOfSecondPayment,
       paymentCount: 2,
     });
   });

@@ -24,12 +24,12 @@ describe('Registrations - [Scoped]', () => {
   const OcwProgramId = programIdOCW;
   const PvProgramId = programIdPV;
 
-  const payment = 1;
+  let paymentIdPv: number;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-    await seedPaidRegistrations(registrationsPV, PvProgramId);
+    paymentIdPv = await seedPaidRegistrations(registrationsPV, PvProgramId);
   });
 
   it('should return transactions with all expected fields and correct data types', async () => {
@@ -42,7 +42,7 @@ describe('Registrations - [Scoped]', () => {
     // Act
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId: paymentIdPv,
       registrationReferenceId: null,
       accessToken,
     });
@@ -60,7 +60,7 @@ describe('Registrations - [Scoped]', () => {
     expect(transaction1).toMatchObject({
       created: expect.any(String),
       updated: expect.any(String),
-      payment,
+      paymentId: paymentIdPv,
       registrationProgramId: expect.any(Number),
       registrationReferenceId: registrationScopedKisumuWestPv.referenceId,
       status: TransactionStatusEnum.success,
@@ -86,7 +86,7 @@ describe('Registrations - [Scoped]', () => {
     // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId: paymentIdPv,
       registrationReferenceId: null,
       accessToken: accessTokenScoped,
     });

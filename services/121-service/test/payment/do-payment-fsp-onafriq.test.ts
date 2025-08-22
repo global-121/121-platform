@@ -22,7 +22,6 @@ import {
 
 describe('Do payment to 1 PA with Fsp Onafriq', () => {
   const programId = 1;
-  const payment = 1;
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
@@ -60,11 +59,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -80,7 +79,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -110,11 +109,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -127,7 +126,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -157,11 +156,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     // wait for non-waiting transactions only, to make sure callback came in
     await waitForPaymentTransactionsToComplete({
@@ -178,7 +177,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Assert
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });
@@ -210,11 +209,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
@@ -230,7 +229,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionsBody = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
     });

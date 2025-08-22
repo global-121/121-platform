@@ -194,7 +194,7 @@
     "params": [
       "programId",
       "referenceId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -203,7 +203,7 @@
     "params": [
       "programId",
       "referenceId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -902,19 +902,19 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{payment}",
+    "path": "/api/programs/{programId}/payments/{paymentId}",
     "params": [
-      "payment",
+      "paymentId",
       "programId"
     ],
     "returnType": "PaymentReturnDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{payment}/fsp-instructions",
+    "path": "/api/programs/{programId}/payments/{paymentId}/fsp-instructions",
     "params": [
       "programId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -924,7 +924,7 @@
       "programId",
       "fromDate",
       "toDate",
-      "payment",
+      "paymentId",
       "format"
     ]
   },
@@ -976,10 +976,10 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/payments/{payment}/excel-reconciliation",
+    "path": "/api/programs/{programId}/payments/{paymentId}/excel-reconciliation",
     "params": [
       "programId",
-      "payment"
+      "paymentId"
     ]
   },
   {

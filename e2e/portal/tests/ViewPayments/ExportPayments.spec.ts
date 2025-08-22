@@ -83,7 +83,7 @@ test('[35621] ExportPayments', async () => {
 
     await exportDataComponent.exportAndAssertData({
       exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
-      excludedColumns: ['id', 'created', 'updated'],
+      excludedColumns: ['id', 'created', 'updated', 'paymentDate'],
       // Given that the payments are not consistently sorted,
       // we need to sort them by registrationProgramId and payment
       // to ensure the snapshot is stable.

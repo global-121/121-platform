@@ -68,7 +68,7 @@ test('[35621] Export Payment Report should contain the right data', async ({
 
     await exportDataComponent.exportAndAssertData({
       exactRowCount: 2,
-      excludedColumns: ['created', 'updated'],
+      excludedColumns: ['paymentDate', 'created', 'updated'],
     });
   });
 });

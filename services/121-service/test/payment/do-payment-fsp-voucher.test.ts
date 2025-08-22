@@ -23,7 +23,6 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
-  const payment = 1;
   const amount = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
@@ -58,18 +57,18 @@ describe('Do payment to 1 PA', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        paymentNr: payment,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
-      const getTransactionsBody = await getTransactionsIntersolveVoucher(
+      const getTransactionsBody = await getTransactionsIntersolveVoucher({
         programId,
-        payment,
-        registrationAh.referenceId,
+        paymentId,
+        referenceId: registrationAh.referenceId,
         accessToken,
-      );
+      });
 
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);

@@ -40,7 +40,6 @@ describe('Registrations - [Scoped]', () => {
   const registrationsPvFirst2ReferenceIds = registrationsPvFirst2.map(
     (r) => r.referenceId,
   );
-  const payment = 1;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -81,12 +80,12 @@ describe('Registrations - [Scoped]', () => {
     // 2 registrations are in include in program PV and are in the scope of the requesting user
     const doPaymentResponse = await doPayment({
       programId: PvProgramId,
-      paymentNr: payment,
       amount: 25,
       referenceIds: [],
       accessToken: accessTokenScoped,
       filter: { 'filter.status': '$in:included' },
     });
+    const paymentId = doPaymentResponse.body.id;
 
     // Assert
     await waitForPaymentTransactionsToComplete({
@@ -97,7 +96,7 @@ describe('Registrations - [Scoped]', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdPV,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: null,
       accessToken,
     });

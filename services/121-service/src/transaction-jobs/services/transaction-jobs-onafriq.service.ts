@@ -35,16 +35,16 @@ export class TransactionJobsOnafriqService {
       await this.transactionScopedRepository.count({
         where: {
           registrationId: Equal(registration.id),
-          payment: Equal(transactionJob.paymentNumber),
+          paymentId: Equal(transactionJob.paymentId),
           status: Equal(TransactionStatusEnum.error),
         },
       });
-    // thirdPartyTransId is generated using: (referenceId + paymentNr + failedTransactionsCount)
+    // thirdPartyTransId is generated using: (referenceId + paymentId + failedTransactionsCount)
     // Using this count to generate the thirdPartyTransId ensures that on:
     // a. Payment retry, a new thirdPartyTransId is generated, which will not be blocked by Onafriq API, as desired.
     // b. Queue retry: on queue retry, the same thirdPartyTransId is generated, which will be blocked by Onafriq API, as desired.
     const thirdPartyTransId = generateUUIDFromSeed(
-      `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`,
+      `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
     );
 
     // 2. Check for existing Onafriq Transaction with the same thirdPartyTransId, because that means this job has already been (partly) processed. In case of a server crash, jobs that were in process are processed again.

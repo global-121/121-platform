@@ -66,7 +66,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
     programId: number,
-    paymentNr: number,
+    paymentId: number,
   ): Promise<FspTransactionResultDto> {
     const program = await this.programRepository.findOneByOrFail({
       id: programId,
@@ -96,7 +96,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
 
       const jobData: CommercialBankEthiopiaJobDto = {
         paPaymentData: paPayment,
-        paymentNr,
+        paymentId,
         programId,
         payload,
         userId: paPayment.userId,
@@ -127,7 +127,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
 
     const transactionRelationDetails = {
       programId: data.programId,
-      paymentNr: data.paymentNr,
+      paymentId: data.paymentId,
       userId: data.userId,
       programFspConfigurationId: data.paPaymentData.programFspConfigurationId,
     };

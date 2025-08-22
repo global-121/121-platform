@@ -19,7 +19,7 @@ export class OnafriqService implements FspIntegrationInterface {
   public async sendPayment(
     _paymentList: PaPaymentDataDto[],
     _programId: number,
-    _paymentNr: number,
+    _paymentId: number,
   ): Promise<void> {
     throw new Error('Method should not be called anymore.');
   }

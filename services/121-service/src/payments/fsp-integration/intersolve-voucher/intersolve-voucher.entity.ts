@@ -15,7 +15,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
-  public payment: number | null;
+  public paymentId: number | null;
 
   @Column({ type: 'character varying', nullable: true })
   public whatsappPhoneNumber: string | null;

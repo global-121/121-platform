@@ -82,7 +82,7 @@ export class RegistrationEntity extends Base121Entity {
   @JoinColumn({
     name: 'programFspConfigurationId',
   })
-  public programFspConfiguration: ProgramFspConfigurationEntity;
+  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
   @Column({ type: 'integer', nullable: true })
   public programFspConfigurationId: number;
 

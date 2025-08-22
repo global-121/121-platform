@@ -7,7 +7,7 @@ import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dt
 
 const mockPaymentJob: OnafriqTransactionJobDto = {
   programId: 1,
-  paymentNumber: 1,
+  paymentId: 1,
   referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
   transactionAmount: 25,
   isRetry: false,

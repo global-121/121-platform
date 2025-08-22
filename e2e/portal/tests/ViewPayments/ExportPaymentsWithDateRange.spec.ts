@@ -68,7 +68,7 @@ test.describe('Export Payments with Date Range', () => {
 
       await exportDataComponent.exportAndAssertData({
         exactRowCount: 1,
-        excludedColumns: ['created', 'updated'],
+        excludedColumns: ['created', 'updated', 'paymentDate'],
         snapshotName: 'export-payments-current-date-range',
       });
     });

@@ -38,13 +38,13 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
 
   public getQueryBuilderForFspInstructions({
     programId,
-    payment,
+    paymentId,
     programFspConfigurationId,
     fspName,
     status,
   }: {
     programId: number;
-    payment: number;
+    paymentId: number;
     programFspConfigurationId?: number;
     fspName?: Fsps;
     status?: TransactionStatusEnum;
@@ -53,7 +53,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       .innerJoin('registration.latestTransactions', 'latestTransaction')
       .innerJoin('latestTransaction.transaction', 'transaction')
       .andWhere('registration.programId = :programId', { programId })
-      .andWhere('transaction.payment = :payment', { payment })
+      .andWhere('transaction.paymentId = :paymentId', { paymentId })
       .orderBy('registration.referenceId', 'ASC');
     if (status) {
       query.andWhere('transaction.status = :status', { status });

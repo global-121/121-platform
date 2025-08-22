@@ -23,6 +23,7 @@ import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.
 import { PaPaymentRetryDataDto } from '@121-service/src/payments/dto/pa-payment-retry-data.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { SplitPaymentListDto } from '@121-service/src/payments/dto/split-payment-lists.dto';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
@@ -82,8 +83,9 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 export class PaymentsService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(TransactionEntity)
-  private readonly transactionRepository: Repository<TransactionEntity>;
+
+  @InjectRepository(PaymentEntity)
+  private readonly paymentRepository: Repository<PaymentEntity>;
 
   private fspNameToServiceMap: Record<
     Fsps,
@@ -132,26 +134,22 @@ export class PaymentsService {
   }
 
   public async getPayments(programId: number) {
-    // Use unscoped repository, as you might not be able to select the correct payment in the portal otherwise
-    const payments: {
-      payment: number;
-      paymentDate: Date | string;
-    }[] = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('payment')
-      .addSelect('MIN(transaction.created)', 'paymentDate')
-      .andWhere('transaction.program.id = :programId', {
-        programId,
-      })
-      .groupBy('payment')
-      .orderBy('MIN(transaction.created)', 'ASC')
-      .getRawMany();
+    const rawPayments = await this.paymentRepository.find({
+      where: {
+        programId: Equal(programId),
+      },
+      select: ['id', 'created'],
+    });
+    const payments = rawPayments.map((payment) => ({
+      paymentId: payment.id,
+      paymentDate: payment.created,
+    }));
     return payments;
   }
 
   private async aggregateTransactionsByStatus(
     programId: number,
-    payment: number,
+    paymentId: number,
   ): Promise<any[]> {
     return await this.dataSource
       .createQueryBuilder()
@@ -164,14 +162,14 @@ export class PaymentsService {
       .from(
         '(' +
           this.transactionScopedRepository
-            .getLastTransactionsQuery({ programId, payment })
+            .getLastTransactionsQuery({ programId, paymentId })
             .getQuery() +
           ')',
         'transactions',
       )
       .setParameters(
         this.transactionScopedRepository
-          .getLastTransactionsQuery({ programId, payment })
+          .getLastTransactionsQuery({ programId, paymentId })
           .getParameters(),
       )
       .groupBy('status')
@@ -180,12 +178,12 @@ export class PaymentsService {
 
   public async getPaymentAggregation(
     programId: number,
-    payment: number,
+    paymentId: number,
   ): Promise<PaymentReturnDto> {
     // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
     const statusAggregation = await this.aggregateTransactionsByStatus(
       programId,
-      payment,
+      paymentId,
     );
 
     const totalAmountPerStatus: Record<
@@ -223,10 +221,9 @@ export class PaymentsService {
     };
   }
 
-  public async postPayment(
+  public async createPayment(
     userId: number,
     programId: number,
-    payment: number,
     amount: number | undefined,
     query: PaginateQuery,
     dryRun: boolean,
@@ -247,7 +244,7 @@ export class PaymentsService {
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
         programId,
-        this.getPaymentBaseQuery(payment), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getPaymentBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
     // If amount is not defined do not calculate the totalMultiplierSum
@@ -263,11 +260,7 @@ export class PaymentsService {
 
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
-      await this.getRegistrationsForPaymentChunked(
-        programId,
-        payment,
-        paginateQuery,
-      );
+      await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
@@ -291,7 +284,7 @@ export class PaymentsService {
     );
 
     // Fill bulkActionResultPaymentDto with bulkActionResultDto and additional payment specific data
-    const bulkActionResultPaymentDto = {
+    const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
       programFspConfigurationNames,
@@ -308,15 +301,21 @@ export class PaymentsService {
         programFspConfigurationNames,
       );
 
+      const paymentEntity = new PaymentEntity();
+      paymentEntity.programId = programId;
+      const savedPaymentEntity =
+        await this.paymentRepository.save(paymentEntity);
+      bulkActionResultPaymentDto.id = savedPaymentEntity.id;
+
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
-      void this.initiatePayment(
+      void this.initiatePayment({
         userId,
         programId,
-        payment,
+        paymentId: savedPaymentEntity.id,
         amount,
         referenceIds,
-        referenceIds.length,
-      )
+        bulkSize: referenceIds.length,
+      })
         .catch((e) => {
           this.azureLogService.logError(e, true);
         })
@@ -394,7 +393,6 @@ export class PaymentsService {
 
   private async getRegistrationsForPaymentChunked(
     programId: number,
-    payment: number,
     paginateQuery: PaginateQuery,
   ) {
     const chunkSize = 4000;
@@ -403,36 +401,33 @@ export class PaymentsService {
       programId,
       paginateQuery,
       chunkSize,
-      this.getPaymentBaseQuery(payment),
+      this.getPaymentBaseQuery(),
     );
   }
 
-  private getPaymentBaseQuery(
-    payment: number,
-  ): ScopedQueryBuilder<RegistrationViewEntity> {
-    // Do not do payment if a registration has already one transaction for that payment number
+  private getPaymentBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.registrationsBulkService
       .getBaseQuery()
-      .leftJoin(
-        'registration.latestTransactions',
-        'latest_transaction_join',
-        'latest_transaction_join.payment = :payment',
-        { payment },
-      )
-      .andWhere('latest_transaction_join.id is null')
       .andWhere('registration.status = :status', {
         status: RegistrationStatusEnum.included,
       });
   }
 
-  public async initiatePayment(
-    userId: number,
-    programId: number,
-    payment: number,
-    amount: number,
-    referenceIds: string[],
-    bulkSize: number,
-  ): Promise<number> {
+  public async initiatePayment({
+    userId,
+    programId,
+    paymentId,
+    amount,
+    referenceIds,
+    bulkSize,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+    amount: number;
+    referenceIds: string[];
+    bulkSize: number;
+  }): Promise<number> {
     await this.actionService.saveAction(
       userId,
       programId,
@@ -457,7 +452,7 @@ export class PaymentsService {
       const result = await this.payout({
         paPaymentDataList,
         programId,
-        payment,
+        paymentId,
         isRetry: false,
       });
 
@@ -469,7 +464,7 @@ export class PaymentsService {
   public async retryPayment(
     userId: number,
     programId: number,
-    payment: number,
+    paymentId: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<BulkActionResultRetryPaymentDto> {
     await this.checkPaymentInProgressAndThrow(programId);
@@ -478,7 +473,7 @@ export class PaymentsService {
 
     const paPaymentDataList = await this.getPaymentListForRetry(
       programId,
-      payment,
+      paymentId,
       userId,
       referenceIdsDto?.referenceIds,
     );
@@ -494,7 +489,12 @@ export class PaymentsService {
       AdditionalActionType.paymentStarted,
     );
 
-    void this.payout({ paPaymentDataList, programId, payment, isRetry: true })
+    void this.payout({
+      paPaymentDataList,
+      programId,
+      paymentId,
+      isRetry: true,
+    })
       .catch((e) => {
         this.azureLogService.logError(e, true);
       })
@@ -545,12 +545,12 @@ export class PaymentsService {
   public async payout({
     paPaymentDataList,
     programId,
-    payment,
+    paymentId,
     isRetry = false,
   }: {
     paPaymentDataList: PaPaymentDataDto[];
     programId: number;
-    payment: number;
+    paymentId: number;
     isRetry?: boolean;
   }): Promise<number> {
     // Create an object with an array of PA data for each FSP
@@ -559,7 +559,7 @@ export class PaymentsService {
     await this.initiatePaymentPerFsp({
       paLists,
       programId,
-      payment,
+      paymentId,
       isRetry,
     });
 
@@ -656,12 +656,12 @@ export class PaymentsService {
   private async initiatePaymentPerFsp({
     paLists,
     programId,
-    payment,
+    paymentId,
     isRetry,
   }: {
     paLists: SplitPaymentListDto;
     programId: number;
-    payment: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     await Promise.all(
@@ -686,7 +686,7 @@ export class PaymentsService {
             ),
             userId: paPaymentList[0].userId,
             programId,
-            paymentNumber: payment,
+            paymentId,
             isRetry,
           });
         }
@@ -703,7 +703,7 @@ export class PaymentsService {
             ),
             userId: paPaymentList[0].userId,
             programId,
-            paymentNumber: payment,
+            paymentId,
             isRetry,
           });
         }
@@ -720,7 +720,7 @@ export class PaymentsService {
             ),
             userId: paPaymentList[0].userId,
             programId,
-            paymentNumber: payment,
+            paymentId,
             isRetry,
           });
         }
@@ -737,7 +737,7 @@ export class PaymentsService {
             ),
             userId: paPaymentList[0].userId,
             programId,
-            paymentNumber: payment,
+            paymentId,
             isRetry,
           });
         }
@@ -754,7 +754,7 @@ export class PaymentsService {
             ),
             userId: paPaymentList[0].userId,
             programId,
-            paymentNumber: payment,
+            paymentId,
             isRetry,
           });
         }
@@ -763,7 +763,7 @@ export class PaymentsService {
         return await paymentService.sendPayment(
           paPaymentList,
           programId,
-          payment,
+          paymentId,
           useWhatsapp,
         );
       }),
@@ -779,7 +779,7 @@ export class PaymentsService {
    * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
    * @param {number} programId - The ID of the program.
    * @param {number} paymentAmount - The amount to be transferred.
-   * @param {number} paymentNumber - The payment number.
+   * @param {number} paymentId - The payment number.
    * @param {boolean} isRetry - Whether this is a retry.
    *
    * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
@@ -789,13 +789,13 @@ export class PaymentsService {
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
     programId,
     userId,
-    paymentNumber,
+    paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
-    paymentNumber: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     //  TODO: REFACTOR: This 'ugly' code is now also in registrations.service.reissueCardAndSendMessage. This should be refactored when there's a better way of getting registration data.
@@ -829,7 +829,7 @@ export class PaymentsService {
           return {
             programId,
             userId,
-            paymentNumber,
+            paymentId,
             referenceId: registrationView.referenceId,
             programFspConfigurationId:
               registrationView.programFspConfigurationId,
@@ -870,13 +870,13 @@ export class PaymentsService {
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
     programId,
     userId,
-    paymentNumber,
+    paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
-    paymentNumber: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     const safaricomAttributes = getFspSettingByNameOrThrow(
@@ -901,7 +901,7 @@ export class PaymentsService {
       registrationViews.map((registrationView): SafaricomTransactionJobDto => {
         return {
           programId,
-          paymentNumber,
+          paymentId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
@@ -933,13 +933,13 @@ export class PaymentsService {
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
     programId,
     userId,
-    paymentNumber,
+    paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
-    paymentNumber: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     // Some code to make linter happy.
@@ -964,7 +964,7 @@ export class PaymentsService {
       (registrationView): AirtelTransactionJobDto => {
         return {
           programId,
-          paymentNumber,
+          paymentId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
@@ -995,13 +995,13 @@ export class PaymentsService {
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
     programId,
     userId,
-    paymentNumber,
+    paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
-    paymentNumber: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     const nedbankAttributes = getFspSettingByNameOrThrow(
@@ -1026,7 +1026,7 @@ export class PaymentsService {
       registrationViews.map((registrationView): NedbankTransactionJobDto => {
         return {
           programId,
-          paymentNumber,
+          paymentId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
@@ -1056,13 +1056,13 @@ export class PaymentsService {
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
     programId,
     userId,
-    paymentNumber,
+    paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
     programId: number;
     userId: number;
-    paymentNumber: number;
+    paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
     const onafriqAttributes = getFspSettingByNameOrThrow(
@@ -1087,7 +1087,7 @@ export class PaymentsService {
       registrationViews.map((registrationView): OnafriqTransactionJobDto => {
         return {
           programId,
-          paymentNumber,
+          paymentId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
@@ -1131,16 +1131,16 @@ export class PaymentsService {
 
   private failedTransactionForRegistrationAndPayment(
     q: ScopedQueryBuilder<RegistrationEntity>,
-    payment: number,
+    paymentId: number,
   ): ScopedQueryBuilder<RegistrationEntity> {
     q.leftJoin(
       (qb) =>
         qb
           .from(TransactionEntity, 'transactions')
           .select('MAX("created")', 'created')
-          .addSelect('"payment"', 'payment')
-          .andWhere('"payment" = :payment', { payment })
-          .groupBy('"payment"')
+          .addSelect('"paymentId"', 'paymentId')
+          .andWhere('"paymentId" = :paymentId', { paymentId })
+          .groupBy('"paymentId"')
           .addSelect('"transactionStep"', 'transactionStep')
           .addGroupBy('"transactionStep"')
           .addSelect('"registrationId"', 'registrationId')
@@ -1152,7 +1152,7 @@ export class PaymentsService {
         'registration.transactions',
         'transaction',
         `transaction."registrationId" = transaction_max_created."registrationId"
-      AND transaction.payment = transaction_max_created.payment
+      AND transaction."paymentId" = transaction_max_created."paymentId"
       AND transaction."transactionStep" = transaction_max_created."transactionStep"
       AND transaction."created" = transaction_max_created."created"
       AND transaction.status = '${TransactionStatusEnum.error}'`,
@@ -1195,12 +1195,12 @@ export class PaymentsService {
 
   private async getPaymentListForRetry(
     programId: number,
-    payment: number,
+    paymentId: number,
     userId: number,
     referenceIds?: string[],
   ): Promise<PaPaymentRetryDataDto[]> {
     let q = this.getPaymentRegistrationsQuery(programId);
-    q = this.failedTransactionForRegistrationAndPayment(q, payment);
+    q = this.failedTransactionForRegistrationAndPayment(q, paymentId);
 
     q.addSelect('"fspConfig"."name" as "programFspConfigurationName"');
 
@@ -1221,12 +1221,12 @@ export class PaymentsService {
       // If no referenceIds passed, retry all failed transactions for this payment
       // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
-        await this.transactionsService.getLastTransactions(
+        await this.transactionsService.getLastTransactions({
           programId,
-          payment,
-          undefined,
-          TransactionStatusEnum.error,
-        )
+          paymentId,
+          referenceId: undefined,
+          status: TransactionStatusEnum.error,
+        })
       ).map((t) => t.referenceId);
       // .. if nothing found, throw an error
       if (!failedReferenceIds.length) {
@@ -1277,13 +1277,13 @@ export class PaymentsService {
 
   public async getFspInstructions(
     programId: number,
-    payment: number,
+    paymentId: number,
     userId: number,
   ): Promise<FspInstructions[]> {
-    const transactions = await this.transactionsService.getLastTransactions(
+    const transactions = await this.transactionsService.getLastTransactions({
       programId,
-      payment,
-    );
+      paymentId,
+    });
 
     const programFspConfigEntitiesWithFspInstruction =
       await this.programFspConfigurationRepository.find({
@@ -1315,7 +1315,7 @@ export class PaymentsService {
       const fspInstructions =
         await this.getFspInstructionsPerProgramFspConfiguration({
           programId,
-          payment,
+          paymentId,
           transactions: transactionsWithFspInstruction.filter(
             (t) => t.programFspConfigurationName === fspConfigEntity.name,
           ),
@@ -1369,14 +1369,14 @@ export class PaymentsService {
   private async getFspInstructionsPerProgramFspConfiguration({
     transactions,
     programId,
-    payment,
+    paymentId,
     programFspConfigurationName,
     programFspConfigurationId,
     fspName,
   }: {
     transactions: TransactionReturnDto[];
     programId: number;
-    payment: number;
+    paymentId: number;
     programFspConfigurationName: string;
     programFspConfigurationId: number;
     fspName: Fsps;
@@ -1386,7 +1386,7 @@ export class PaymentsService {
         data: await this.excelService.getFspInstructions({
           transactions,
           programId,
-          payment,
+          paymentId,
           programFspConfigurationId,
         }),
         fileNamePrefix: programFspConfigurationName,
@@ -1398,17 +1398,17 @@ export class PaymentsService {
 
   public async geTransactionsByPaymentId({
     programId,
-    payment,
+    paymentId,
   }: {
     programId: number;
-    payment: number;
+    paymentId: number;
   }): Promise<GetTransactionResponseDto[]> {
     // For in the portal we always want the name of the registration, so we need to select it
     const select = [DefaultRegistrationDataAttributeNames.name];
 
     const transactions = await this.getTransactions({
       programId,
-      payment,
+      paymentId,
       select,
     });
 
@@ -1419,12 +1419,12 @@ export class PaymentsService {
     programId,
     fromDateString,
     toDateString,
-    payment,
+    paymentId,
   }: {
     programId: number;
     fromDateString?: string;
     toDateString?: string;
-    payment?: number;
+    paymentId?: number;
   }): Promise<FileDto> {
     // Convert string dates to Date objects
     const fromDate = fromDateString ? new Date(fromDateString) : undefined;
@@ -1444,7 +1444,7 @@ export class PaymentsService {
       select,
       fromDate,
       toDate,
-      payment,
+      paymentId,
     });
 
     const dropdownAttributes =
@@ -1465,13 +1465,13 @@ export class PaymentsService {
   private async getTransactions({
     programId,
     select,
-    payment,
+    paymentId,
     fromDate,
     toDate,
   }: {
     programId: number;
     select: string[];
-    payment?: number;
+    paymentId?: number;
     fromDate?: Date;
     toDate?: Date;
   }): Promise<
@@ -1484,12 +1484,13 @@ export class PaymentsService {
     const transactions = await this.transactionScopedRepository.getTransactions(
       {
         programId,
-        payment,
+        paymentId,
         fromDate,
         toDate,
         fspSpecificJoinFields,
       },
     );
+
     if (!transactions || transactions.length === 0) {
       return [];
     }

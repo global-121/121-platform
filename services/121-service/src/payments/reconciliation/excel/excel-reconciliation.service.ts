@@ -80,7 +80,7 @@ export class ExcelRecociliationService {
   public async upsertFspReconciliationData(
     file: Express.Multer.File,
     programId: number,
-    payment: number,
+    paymentId: number,
     userId: number,
   ): Promise<{
     importResult: ReconciliationFeedbackDto[];
@@ -111,7 +111,7 @@ export class ExcelRecociliationService {
 
     const importResults = await this.processReconciliationData({
       file,
-      payment,
+      paymentId,
       programId,
       fspConfigs: fspConfigsExcel,
     });
@@ -126,7 +126,7 @@ export class ExcelRecociliationService {
         transactions,
         {
           programId,
-          paymentNr: payment,
+          paymentId,
           userId,
           programFspConfigurationId: fspConfig.id,
         },
@@ -178,12 +178,12 @@ export class ExcelRecociliationService {
 
   public async processReconciliationData({
     file,
-    payment,
+    paymentId,
     programId,
     fspConfigs,
   }: {
     file: Express.Multer.File;
-    payment: number;
+    paymentId: number;
     programId: number;
     fspConfigs: ProgramFspConfigurationEntity[];
   }): Promise<ReconciliationResult[]> {
@@ -220,7 +220,7 @@ export class ExcelRecociliationService {
       });
       const importResultForFspConfig = await this.reconciliatePayments({
         programId,
-        payment,
+        paymentId,
         validatedExcelImport,
         fspConfig,
         matchColumn,
@@ -251,13 +251,13 @@ export class ExcelRecociliationService {
 
   private async reconciliatePayments({
     programId,
-    payment,
+    paymentId,
     validatedExcelImport,
     fspConfig,
     matchColumn,
   }: {
     programId: number;
-    payment: number;
+    paymentId: number;
     validatedExcelImport: object[];
     fspConfig: ProgramFspConfigurationEntity;
     matchColumn: string;
@@ -265,7 +265,7 @@ export class ExcelRecociliationService {
     const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
         programId,
-        payment,
+        paymentId,
         matchColumn,
         fspConfig.id,
       );
@@ -273,11 +273,13 @@ export class ExcelRecociliationService {
       return [];
     }
     const lastTransactions = await this.transactionsService.getLastTransactions(
-      programId,
-      payment,
-      undefined,
-      undefined,
-      fspConfig.id,
+      {
+        programId,
+        paymentId,
+        referenceId: undefined,
+        status: undefined,
+        programFspConfigId: fspConfig.id,
+      },
     );
     // Join registration data with the imported CSV records
     return this.joinRegistrationsAndImportRecords(
@@ -291,14 +293,14 @@ export class ExcelRecociliationService {
 
   private async getRegistrationsForReconciliation(
     programId: number,
-    payment: number,
+    paymentId: number,
     matchColumn: string,
     programFspConfigurationId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
         programId,
-        payment,
+        paymentId,
         programFspConfigurationId,
         fspName: Fsps.excel,
       });

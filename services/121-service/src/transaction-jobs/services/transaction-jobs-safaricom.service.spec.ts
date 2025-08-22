@@ -21,7 +21,7 @@ const mockedTransactionId = 1;
 
 const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   programId: 3,
-  paymentNumber: 3,
+  paymentId: 3,
   referenceId: 'ref-123',
   transactionAmount: 25,
   isRetry: false,
