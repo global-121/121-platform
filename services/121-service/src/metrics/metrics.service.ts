@@ -447,7 +447,7 @@ export class MetricsService {
   ): Promise<RegistrationCountByDate> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
-      .select(`registration."created"::date`)
+      .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
       .addSelect(`COUNT(*)`)
       .andWhere({ programId })
       .groupBy(`"created"`)
