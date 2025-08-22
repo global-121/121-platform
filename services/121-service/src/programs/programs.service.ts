@@ -220,7 +220,7 @@ export class ProgramService {
       } else {
         throw new HttpException(
           'Error creating new program',
-          HttpStatus.INTERNAL_SERVER_ERROR,
+          HttpStatus.BAD_GATEWAY,
         );
       }
     } finally {
