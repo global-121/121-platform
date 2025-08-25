@@ -40,6 +40,7 @@ import {
   TrackingCategory,
   TrackingService,
 } from '~/services/tracking.service';
+import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
   selector: 'app-project-registrations',
@@ -121,6 +122,7 @@ export class ProjectRegistrationsPageComponent {
       command: () => {
         const registration =
           this.registrationsTable().contextMenuRegistration();
+
         if (!registration) {
           this.toastService.showGenericError();
           return;
@@ -133,7 +135,14 @@ export class ProjectRegistrationsPageComponent {
             }),
           ),
         );
+
         window.open(getOriginUrl() + url, '_blank');
+
+        this.trackingService.trackEvent({
+          category: TrackingCategory.manageRegistrations,
+          action: TrackingAction.clickContextMenuOption,
+          name: `open-in-new-tab`,
+        });
       },
     },
     this.registrationMenuService.createContextItemForMessage({
