@@ -118,22 +118,35 @@ export class ProjectRegistrationsPageComponent {
     {
       label: $localize`Open in new tab`,
       icon: 'pi pi-user',
+      url: (() => {
+        const registration =
+          this.registrationsTable().contextMenuRegistration();
+
+        return this.router.serializeUrl(
+          this.router.createUrlTree(
+            registrationLink({
+              projectId: this.projectId(),
+              registrationId: registration?.id ?? '',
+            }),
+            { relativeTo: null },
+          ),
+        );
+      })(),
+      target: '_blank',
       command: () => {
         const registration =
           this.registrationsTable().contextMenuRegistration();
+
         if (!registration) {
           this.toastService.showGenericError();
           return;
         }
-        const url = this.router.serializeUrl(
-          this.router.createUrlTree(
-            registrationLink({
-              projectId: this.projectId(),
-              registrationId: registration.id,
-            }),
-          ),
-        );
-        window.open(getOriginUrl() + url, '_blank');
+
+        this.trackingService.trackEvent({
+          category: TrackingCategory.manageRegistrations,
+          action: TrackingAction.clickContextMenuOption,
+          name: `open-in-new-tab`,
+        });
       },
     },
     this.registrationMenuService.createContextItemForMessage({
