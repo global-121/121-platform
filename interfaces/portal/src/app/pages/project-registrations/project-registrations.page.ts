@@ -35,7 +35,11 @@ import { AuthService } from '~/services/auth.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
-import { getOriginUrl } from '~/utils/url-helper';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-project-registrations',
@@ -66,6 +70,7 @@ export class ProjectRegistrationsPageComponent {
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
   readonly registrationMenuService = inject(RegistrationActionMenuService);
+  readonly trackingService = inject(TrackingService);
 
   readonly registrationsTable =
     viewChild.required<RegistrationsTableComponent>('registrationsTable');
@@ -169,8 +174,24 @@ export class ProjectRegistrationsPageComponent {
     });
 
     if (!actionData) {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.manageRegistrations,
+        action: triggeredFromContextMenu
+          ? TrackingAction.clickContextMenuOption
+          : TrackingAction.clickBulkActionButton,
+        name: `send-message for:none`,
+      });
       return;
     }
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageRegistrations,
+      action: triggeredFromContextMenu
+        ? TrackingAction.clickContextMenuOption
+        : TrackingAction.clickBulkActionButton,
+      name: `send-message for:${actionData.selectAll ? 'all' : 'selection'}`,
+      value: actionData.count > 0 ? actionData.count : undefined,
+    });
 
     this.sendMessageDialog().triggerAction(actionData);
   }
@@ -187,8 +208,24 @@ export class ProjectRegistrationsPageComponent {
     });
 
     if (!actionData) {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.manageRegistrations,
+        action: triggeredFromContextMenu
+          ? TrackingAction.clickContextMenuOption
+          : TrackingAction.clickBulkActionButton,
+        name: `change-status:${status} for:none `,
+      });
       return;
     }
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageRegistrations,
+      action: triggeredFromContextMenu
+        ? TrackingAction.clickContextMenuOption
+        : TrackingAction.clickBulkActionButton,
+      name: `change-status:${status} for:${actionData.selectAll ? 'all' : 'selection'}`,
+      value: actionData.count > 0 ? actionData.count : undefined,
+    });
 
     this.changeStatusDialog().triggerAction(actionData, status);
   }
