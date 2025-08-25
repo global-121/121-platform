@@ -25,6 +25,7 @@ import { environment } from '~environment';
  */
 export enum TrackingCategory {
   export = 'Export',
+  manageRegistrations = 'Manage Registrations',
 }
 
 /**
@@ -37,6 +38,8 @@ export enum TrackingCategory {
  * - Use "human readable" values (but be concise.)
  */
 export enum TrackingAction {
+  clickBulkActionButton = 'click: Bulk Action Button',
+  clickContextMenuOption = 'click: Context-menu Option',
   clickProceedButton = 'click: Proceed Button',
   selectDropdownOption = 'select: Dropdown Option',
 }
