@@ -33,7 +33,6 @@ export class KoboConnectService {
       errors.push(result.detail);
     }
 
-    // Log the error details for debugging else we get a 500 email without context
     console.error('KoboConnectService ~ errors:', errors);
 
     throw new HttpException(
@@ -41,7 +40,7 @@ export class KoboConnectService {
         message: 'Kobo-Connect API did not return a result',
         errors,
       },
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      HttpStatus.BAD_GATEWAY,
     );
   }
 }

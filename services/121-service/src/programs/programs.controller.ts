@@ -176,7 +176,7 @@ You can also leave the body empty.`,
     const errors = await validate(plainToClass(CreateProgramDto, programData));
 
     if (errors.length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+      throw new HttpException(errors, HttpStatus.BAD_GATEWAY);
     }
 
     return this.programService.create(programData as CreateProgramDto, userId);
