@@ -17,7 +17,6 @@ export default class InitializePaymentModel {
     registration,
     duplicateNumber,
     maxTimeoutAttempts,
-    status,
     minPassRatePercentage,
     amount,
   ) {
@@ -37,7 +36,6 @@ export default class InitializePaymentModel {
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
-      status,
       maxTimeoutAttempts,
       paymentId,
       duplicateNumber,
