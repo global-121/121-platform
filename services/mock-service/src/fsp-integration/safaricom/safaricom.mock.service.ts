@@ -3,7 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { setTimeout } from 'node:timers/promises';
 import { lastValueFrom } from 'rxjs';
 
-import { API_PATHS, EXTERNAL_API_ROOT } from '@mock-service/src/config';
+import {
+  API_PATHS,
+  EXTERNAL_API_ROOT,
+  IS_DEVELOPMENT,
+} from '@mock-service/src/config';
 import {
   SafaricomTransferPayload,
   SafaricomTransferResponseBodyDto,
@@ -140,8 +144,13 @@ export class SafaricomMockService {
     const httpService = new HttpService();
 
     // Switch between mock scenarios
+
     let response = {};
-    let url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`;
+
+    // ResultURL cannot be use in development environment due to the internal docker network
+    let url = IS_DEVELOPMENT
+      ? `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`
+      : transferDto.ResultURL;
     if (mockScenario === MockScenario.success) {
       response = {
         Result: successStatus.Result,
@@ -154,7 +163,9 @@ export class SafaricomMockService {
       // Based on Job Kipngetich reponse from safaricom,
       // The initial request payload has been returned on the QueueTimeoutURL if the transaction times out on M-PESA.
       response = transferDto;
-      url = `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`;
+      url = IS_DEVELOPMENT
+        ? `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTimeoutCallback}`
+        : transferDto.QueueTimeOutURL;
     }
 
     await lastValueFrom(httpService.post(url, response)).catch((error) =>
