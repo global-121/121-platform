@@ -65,7 +65,8 @@ export class ScriptsController {
       'Optional identifier for this reset action, will be logged by the server.',
   })
   @ApiOperation({
-    summary: `Reset instance database. When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
+    summary: `Reset instance database.`,
+    description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
   })
   @Post('/reset')
   public async resetDb(
