@@ -232,7 +232,9 @@ export class MessageService {
           return;
         },
         (error) => {
-          errorMessage = error;
+          // Twilio errors have a 'code' property if it's not a twilio error we do not want to store the stacktrace as
+          // it can contains credentials and it means nothing to our users
+          errorMessage = !!error.code ? error : `Unknown error occurred`;
         },
       );
     const transactionStep = 2;
