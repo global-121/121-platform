@@ -25,7 +25,7 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
   const amount = 22;
-  let registrationAhCopy = {
+  const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
@@ -35,14 +35,15 @@ describe('Do payment to 1 PA', () => {
     programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
   };
-  const paymentReferenceIds = [registrationAhCopy.referenceId];
+  const paymentReferenceIds = [registrationAh.referenceId];
   let accessToken: string;
+  let registrationAhCopy;
 
   describe('with FSP: Intersolve Voucher WhatsApp', () => {
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple, __filename);
       accessToken = await getAccessToken();
-      registrationAhCopy = { ...registrationAhCopy };
+      registrationAhCopy = { ...registrationAh };
     });
 
     it('should succesfully pay-out', async () => {
