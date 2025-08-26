@@ -64,7 +64,7 @@ export class KoboConnectApiService {
             message: 'Kobo-Connect API did not return a valid response',
             errors,
           },
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_GATEWAY,
         );
       });
   }
