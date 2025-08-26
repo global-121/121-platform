@@ -147,6 +147,7 @@ export class SafaricomMockService {
 
     let response = {};
 
+    // ResultURL cannot be use in development environment due to the internal docker network
     let url = IS_DEVELOPMENT
       ? `${EXTERNAL_API_ROOT}/${API_PATHS.safaricomTransferCallback}`
       : transferDto.ResultURL;
