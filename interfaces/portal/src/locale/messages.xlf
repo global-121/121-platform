@@ -1685,6 +1685,15 @@
       <trans-unit id="page-title-project-transfer-list" datatype="html">
         <source>Transfer list</source>
       </trans-unit>
+      <trans-unit id="page-title-project-payment-log" datatype="html">
+        <source>Payment log</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-created" datatype="html">
+        <source>Created</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-note" datatype="html">
+        <source>Note</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

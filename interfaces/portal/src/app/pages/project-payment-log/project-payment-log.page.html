@@ -1,0 +1,14 @@
+<app-page-layout-payment
+  [projectId]="projectId()"
+  [paymentId]="paymentId()"
+>
+  <app-query-table
+    [items]="paymentEvents()"
+    [isPending]="false"
+    [columns]="columns()"
+    localStorageKey="activity-log-table"
+    [tableCellContext]="tableCellContext()"
+    [initialSortField]="'created'"
+    [initialSortOrder]="-1"
+  />
+</app-page-layout-payment>
