@@ -3,6 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -20,6 +21,20 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     repository: Repository<TransactionEntity>,
   ) {
     super(request, repository);
+  }
+
+  async getLatestTransactionsByRegistrationIdAndProgramId(
+    registrationId: number,
+    programId: number,
+  ) {
+    const query = this.getLastTransactionsQuery({
+      programId,
+      registrationId,
+    })
+      .leftJoin('transaction.user', 'user')
+      .addSelect('user.id', 'userId')
+      .addSelect('user.username', 'username');
+    return await query.getRawMany<GetAuditedTransactionDto>(); // Leaving this as getRawMany for now, as it is not a plain entity. It's a concatenation of multiple entities.
   }
 
   public async getTransactions({
