@@ -129,6 +129,7 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   MessageIncomingModule-->QueuesRegistryModule
+  MessageIncomingModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule

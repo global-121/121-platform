@@ -29,7 +29,7 @@ import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsap
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -46,8 +46,6 @@ export class MessageIncomingService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(TransactionEntity)
-  private transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
@@ -70,6 +68,7 @@ export class MessageIncomingService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async getGenericNotificationText(
@@ -373,9 +372,11 @@ export class MessageIncomingService {
 
     const filteredRegistrations: RegistrationEntity[] = [];
     for (const registration of registrationWithVouchers) {
-      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
+      // Don't send more then 3 vouchers per registration. This is unscoped, as not request-based.
       const lastThreePaymentIds =
-        await this.getLastThreePaymentIdsForRegistration(registration.id);
+        await this.transactionRepository.getLastThreePaymentIdsForRegistration(
+          registration.id,
+        );
 
       registration.images = registration.images.filter(
         (image) =>
@@ -388,23 +389,6 @@ export class MessageIncomingService {
       }
     }
     return filteredRegistrations;
-  }
-
-  private async getLastThreePaymentIdsForRegistration(
-    registrationId: number,
-  ): Promise<number[]> {
-    const lastThreePaymentIds = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('DISTINCT transaction."paymentId"', 'paymentId')
-      .addSelect('MAX(payment.created)', 'maxCreated')
-      .leftJoin('transaction.payment', 'payment')
-      .where('transaction.registrationId = :registrationId', { registrationId })
-      .groupBy('transaction."paymentId"')
-      .orderBy('"maxCreated"', 'DESC')
-      .limit(3)
-      .getRawMany();
-
-    return lastThreePaymentIds.map((payment) => payment.paymentId);
   }
 
   private cleanWhatsAppNr(value: string): string {

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
 import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';

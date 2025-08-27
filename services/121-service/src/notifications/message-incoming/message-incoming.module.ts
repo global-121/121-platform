@@ -21,6 +21,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
@@ -48,6 +49,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     MessageTemplateModule,
     RegistrationDataModule,
     QueuesRegistryModule,
+    TransactionsModule,
   ],
   providers: [
     MessageIncomingService,

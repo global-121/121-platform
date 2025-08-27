@@ -8,7 +8,7 @@ import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
