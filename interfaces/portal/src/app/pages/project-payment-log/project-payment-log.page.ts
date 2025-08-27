@@ -138,13 +138,13 @@ export class ProjectPaymentLogPageComponent {
     }),
   });
 
-  activityLog = this.createMockActivityLog();
-  // activityLog = injectQuery(
-  //   this.paymentApiService.getPaymentEvents({
-  //     projectId: this.projectId,
-  //     paymentId: this.paymentId,
-  //   }),
-  // );
+  // activityLog = this.createMockActivityLog();
+  activityLog = injectQuery(
+    this.paymentApiService.getPaymentEvents({
+      projectId: this.projectId,
+      paymentId: this.paymentId,
+    }),
+  );
 
   readonly activities = computed(() => this.activityLog.data()?.data ?? []);
   readonly availableActivityTypes = computed(

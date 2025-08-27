@@ -11,6 +11,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import {
   Payment,
   PaymentAggregate,
+  PaymentEventsResponse,
   PaymentStatus,
   PaymentTransaction,
 } from '~/domains/payment/payment.model';
@@ -54,7 +55,7 @@ export class PaymentApiService extends DomainApiService {
     projectId: Signal<number | string | undefined>;
     paymentId: Signal<number | string | undefined>;
   }) {
-    return this.generateQueryOptions<PaymentAggregate>({
+    return this.generateQueryOptions<PaymentEventsResponse>({
       path: [
         ...BASE_ENDPOINT(projectId as Signal<number | string>),
         paymentId,
