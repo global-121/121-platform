@@ -6,7 +6,7 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-inte
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';

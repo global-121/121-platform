@@ -18,7 +18,7 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';

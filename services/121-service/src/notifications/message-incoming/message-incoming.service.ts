@@ -29,7 +29,7 @@ import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsap
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -46,8 +46,6 @@ export class MessageIncomingService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(TransactionEntity)
-  private transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   private programRepository: Repository<ProgramEntity>;
   @InjectRepository(TryWhatsappEntity)
@@ -70,6 +68,7 @@ export class MessageIncomingService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
 
   public async getGenericNotificationText(
@@ -372,26 +371,21 @@ export class MessageIncomingService {
     });
 
     const filteredRegistrations: RegistrationEntity[] = [];
-    for (const r of registrationWithVouchers) {
-      // Don't send more then 3 vouchers, so no vouchers of more than 2 payments ago
-      const lastPayment = await this.transactionRepository
-        .createQueryBuilder('transaction')
-        .select('MAX(transaction."paymentId")', 'max')
-        .leftJoin('transaction.payment', 'p')
-        .where('p.programId = :programId', {
-          programId: r.programId,
-        })
-        .getRawOne();
-      const minimumPayment = lastPayment ? lastPayment.max - 2 : 0;
+    for (const registration of registrationWithVouchers) {
+      // Don't send more then 3 vouchers per registration. This is unscoped, as not request-based.
+      const lastThreePaymentIds =
+        await this.transactionRepository.getLastThreePaymentIdsForRegistration(
+          registration.id,
+        );
 
-      r.images = r.images.filter(
+      registration.images = registration.images.filter(
         (image) =>
           !image.voucher.send &&
           image.voucher.paymentId &&
-          image.voucher.paymentId >= minimumPayment,
+          lastThreePaymentIds.includes(image.voucher.paymentId),
       );
-      if (r.images.length > 0) {
-        filteredRegistrations.push(r);
+      if (registration.images.length > 0) {
+        filteredRegistrations.push(registration);
       }
     }
     return filteredRegistrations;

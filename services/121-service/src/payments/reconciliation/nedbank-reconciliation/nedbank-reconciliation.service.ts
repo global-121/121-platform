@@ -6,7 +6,7 @@ import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 
 @Injectable()
 export class NedbankReconciliationService {
