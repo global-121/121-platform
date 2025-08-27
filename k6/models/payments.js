@@ -22,12 +22,12 @@ export default class paymentsModel {
 
   getPaymentResults(
     programId,
-    status,
     maxTimeoutAttempts,
     paymentId,
     totalAmountPowerOfTwo,
     passRate,
   ) {
+    const status = 'success';
     const maxAttempts = maxTimeoutAttempts;
     let attempts = 0;
     let selectedStatusPercentage = 0;
