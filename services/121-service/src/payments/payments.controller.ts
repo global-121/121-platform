@@ -34,6 +34,8 @@ import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
+import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
+import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentsService } from '@121-service/src/payments/services/payments.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
@@ -181,13 +183,14 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsService.createPayment(
+    const result = await this.paymentsService.createPayment({
       userId,
       programId,
-      data.amount,
+      amount: data.amount,
       query,
-      dryRunBoolean,
-    );
+      dryRun: dryRunBoolean,
+      note: data.note,
+    });
 
     if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothing is going to change (202)
@@ -315,5 +318,30 @@ export class PaymentsController {
       programId,
       paymentId,
     });
+  }
+
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
+  @ApiOperation({
+    summary: 'Get all Payment Events for a Payment.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return Payment Events by Payment Id.',
+    type: [PaymentEventDataDto],
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program or Payment does not exist',
+  })
+  @Get('programs/:programId/payments/:paymentId/events')
+  public async getPaymentEvents(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('paymentId', ParseIntPipe)
+    paymentId: number,
+  ): Promise<PaymentEventsReturnDto> {
+    return this.paymentsService.getPaymentEvents({ programId, paymentId });
   }
 }
