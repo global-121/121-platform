@@ -88,9 +88,6 @@ export class PaymentEntity1754399322187 implements MigrationInterface {
       `CREATE INDEX "IDX_26ba3b75368b99964d6dea5cc2" ON "121-service"."transaction" ("paymentId") `,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "FK_d3c35664dbb056d04694819316e" FOREIGN KEY ("programId") REFERENCES "121-service"."payment"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP COLUMN "programId"`,
     );
     await queryRunner.query(
