@@ -16,7 +16,7 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 
 // The functionality in this service was meant a generic implementation of FSPs that work by importing and exporting files like vodacash
 // but in the end we converged to using it only for a generically configurable excel based FSP integration
-// TODO: REFACTOR: This should be refactored to be only for the excel FSP and it should be evaluated of code can moved to the ExcelModule
+// TODO: REFACTOR: This should be refactored to be only for the excel FSP and it should be evaluated if code can be moved to the ExcelModule
 
 @Injectable()
 export class PaymentsExcelFspService {
