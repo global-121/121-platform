@@ -1690,6 +1690,14 @@
       </trans-unit>
       <trans-unit id="8433732438274024544" datatype="html">
         <source>Add note</source>
+      <trans-unit id="page-title-project-payment-log" datatype="html">
+        <source>Payment log</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-created" datatype="html">
+        <source>Created</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-note" datatype="html">
+        <source>Note</source>
       </trans-unit>
     </body>
   </file>
