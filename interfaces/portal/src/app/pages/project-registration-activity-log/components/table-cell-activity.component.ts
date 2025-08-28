@@ -17,7 +17,7 @@ import { Activity } from '~/domains/registration/registration.model';
   imports: [],
   template: `
     <span class="inline-flex items-center">
-      <span class="inline w-8 leading-[0]"
+      <span class="me-4 inline leading-[0]"
         ><i [class]="icon() + ' text-xl'"></i>
       </span>
       <span>{{ label() }}</span>
