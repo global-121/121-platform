@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { PaymentsHelperService } from '@121-service/src/payments/services/payments.helper.service';
+import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import {
@@ -12,15 +12,15 @@ import {
   GenericRegistrationAttributes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 
-describe('PaymentsHelperService', () => {
-  let service: PaymentsHelperService;
+describe('PaymentsReportingHelperService', () => {
+  let service: PaymentsReportingHelperService;
   let programRepository: Repository<ProgramEntity>;
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PaymentsHelperService,
+        PaymentsReportingHelperService,
         {
           provide: getRepositoryToken(ProgramEntity),
           useValue: {
@@ -37,7 +37,7 @@ describe('PaymentsHelperService', () => {
       ],
     }).compile();
 
-    service = module.get(PaymentsHelperService);
+    service = module.get(PaymentsReportingHelperService);
     programRepository = module.get(getRepositoryToken(ProgramEntity));
     programRegistrationAttributeRepository = module.get(
       ProgramRegistrationAttributeRepository,
