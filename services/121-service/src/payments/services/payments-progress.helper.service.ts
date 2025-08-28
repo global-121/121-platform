@@ -29,8 +29,6 @@ export class PaymentsProgressHelperService {
   }
 
   public async isPaymentInProgress(programId: number): Promise<boolean> {
-    // TODO: REFACTOR: Remove this call, as we want to remove the Actions Module altogether.
-    // Ruben: I would be careful with this refactor. The action table is update much earlies than the queue. So for a big payment it can take while for the queue to start. So if we remove the actions table we need something else..
     // check progress based on actions-table first
     // Check if there are any actions in progress
     const actionsInProgress =
@@ -50,8 +48,6 @@ export class PaymentsProgressHelperService {
       programId,
       AdditionalActionType.paymentStarted,
     );
-    // TODO: REFACTOR: Use the Redis way of determining if a payment is in progress, see function this.checkFspQueueProgress
-    // Ruben: I would be careful with this refactor. The action table is update much earlier in the payment api call than the queue. So for a big payment it can take while for the queue to start and a browser/person could potentially start the same payment twice
     // If never started, then not in progress, return early
     if (!latestPaymentStartedAction) {
       return false;
