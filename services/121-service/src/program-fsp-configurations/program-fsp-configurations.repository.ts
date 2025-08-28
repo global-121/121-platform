@@ -102,6 +102,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
         id: programFspConfigurationId,
       })
       .andWhere('properties.name = :name', { name })
+      .orderBy('properties.name', 'ASC')
       .getOne();
     return configuration?.properties.find((property) => property.name === name)
       ?.value;
