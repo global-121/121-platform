@@ -226,7 +226,7 @@ export class CreatePaymentComponent {
         paginateQuery,
         paymentData: {
           amount: this.paymentAmount(),
-          note: this.paymentFormGroup.get('note')?.value,
+          note: this.paymentFormGroup.value.note,
         },
         dryRun,
       });
