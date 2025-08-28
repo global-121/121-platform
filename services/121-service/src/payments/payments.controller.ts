@@ -319,7 +319,7 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<GetTransactionResponseDto[]> {
-    return await this.paymentsReportingService.geTransactionsByPaymentId({
+    return await this.paymentsReportingService.getTransactionsByPaymentId({
       programId,
       paymentId,
     });

@@ -6,7 +6,6 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -43,7 +42,6 @@ const mockTransactions = [
 describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
   let transactionScopedRepository: TransactionScopedRepository;
-  let programRepository: Repository<ProgramEntity>;
   let registrationPaginationService: RegistrationsPaginationService;
   let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsReportingHelperService;
@@ -55,12 +53,11 @@ describe('PaymentsReportingService - getTransactions', () => {
     ).compile();
 
     transactionScopedRepository = unitRef.get(TransactionScopedRepository);
-    programRepository = unitRef.get('ProgramEntityRepository');
+
     service = unit;
     registrationPaginationService = unitRef.get(RegistrationsPaginationService);
 
     jest.spyOn(transactionScopedRepository, 'getTransactions');
-    jest.spyOn(programRepository, 'findOneOrFail');
     jest.spyOn(
       registrationPaginationService,
       'getRegistrationViewsChunkedByReferenceIds',
@@ -106,7 +103,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         .mockResolvedValue(mockRegistrationViews);
 
       // Act
-      const result = await service.geTransactionsByPaymentId({
+      const result = await service.getTransactionsByPaymentId({
         programId,
         paymentId,
       });
@@ -127,7 +124,7 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act & Assert
       await expect(
-        service.geTransactionsByPaymentId({ programId, paymentId }),
+        service.getTransactionsByPaymentId({ programId, paymentId }),
       ).rejects.toMatchSnapshot();
     });
 
@@ -141,7 +138,7 @@ describe('PaymentsReportingService - getTransactions', () => {
         .mockResolvedValue([]);
 
       // Act
-      const result = await service.geTransactionsByPaymentId({
+      const result = await service.getTransactionsByPaymentId({
         programId,
         paymentId,
       });

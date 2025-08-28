@@ -277,7 +277,7 @@ export class PaymentsReportingService {
     }
   }
 
-  public async geTransactionsByPaymentId({
+  public async getTransactionsByPaymentId({
     programId,
     paymentId,
   }: {
