@@ -521,6 +521,28 @@ export class IntersolveVisaApiService {
     });
   }
 
+  public async updateCustomerIndividualName({
+    holderId,
+    name,
+  }: {
+    holderId: string;
+    name: string;
+  }): Promise<void> {
+    // Create the request
+    const requestBody = {
+      lastName: name, // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name and last name seperately, so here we just update the last name with our full name
+    };
+
+    // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
+    await this.intersolveApiRequest<void>({
+      errorPrefix: IntersolveVisa121ErrorText.updateCustomerIndividualNameError,
+      method: 'PUT',
+      payload: requestBody,
+      apiPath: 'customer',
+      endpoint: `customers/${holderId}/individual`,
+    });
+  }
+
   public async updateCustomerAddress({
     holderId,
     addressStreet,

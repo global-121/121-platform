@@ -136,6 +136,15 @@ export class IntersolveVisaMockController {
     return this.intersolveVisaMockService.updateCustomerAddress(payload);
   }
 
+  @ApiOperation({ summary: 'Update customer name' })
+  @Put('customer/v1/customers/:holderId/individual')
+  public updateCustomerName(
+    @Body() payload: Record<string, string>,
+    @Param('holderId') _holderId: string,
+  ): { status: number } {
+    return this.intersolveVisaMockService.updateCustomerName(payload);
+  }
+
   @ApiOperation({ summary: 'Link token' })
   @Post('wallet/v1/tokens/:childTokenCode/link-token')
   public linkToken(
