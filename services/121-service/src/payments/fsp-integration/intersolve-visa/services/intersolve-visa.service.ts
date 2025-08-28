@@ -759,9 +759,10 @@ export class IntersolveVisaService {
    * @throws {Error} Throws an Error if no customer is found for the given registration ID.
    * @returns {Promise<void>}
    */
-  public async sendUpdatedContactInformation({
+  public async sendUpdatedCustomerInformation({
     registrationId,
     contactInformation,
+    name,
   }: SendUpdatedContactInformationParams): Promise<void> {
     const customer =
       await this.intersolveVisaCustomerScopedRepository.findOneByRegistrationIdOrFail(
@@ -771,6 +772,13 @@ export class IntersolveVisaService {
       await this.intersolveVisaApiService.updateCustomerPhoneNumber({
         holderId: customer.holderId,
         phoneNumber: contactInformation.phoneNumber,
+      });
+    }
+
+    if (name) {
+      await this.intersolveVisaApiService.updateCustomerIndividualName({
+        holderId: customer.holderId,
+        name,
       });
     }
 

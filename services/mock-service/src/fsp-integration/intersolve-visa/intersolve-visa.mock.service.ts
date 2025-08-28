@@ -642,6 +642,35 @@ export class IntersolveVisaMockService {
     };
   }
 
+  public updateCustomerName(
+    payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    const requiredKey = 'lastName';
+    if (!payload[requiredKey] || payload[requiredKey].includes('undefined')) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'INVALID_PARAMETERS',
+              field: requiredKey,
+              description: `The ${requiredKey} field is required.`,
+            },
+          ],
+        },
+      };
+    }
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+    };
+  }
+
   public linkToken(parentTokenCode: string): IntersolveVisaMockResponseDto {
     if (parentTokenCode.includes('mock-fail-link-token')) {
       return {
