@@ -17,6 +17,7 @@ class PaymentsPage extends BasePage {
   readonly exportButton: Locator;
   readonly dateRangeStartInput: Locator;
   readonly dateRangeEndInput: Locator;
+  readonly noteInput: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -48,6 +49,7 @@ class PaymentsPage extends BasePage {
     this.dateRangeEndInput = this.page.getByRole('combobox', {
       name: 'End Date',
     });
+    this.noteInput = this.page.locator('input[formControlName="note"]');
   }
 
   async selectAllRegistrations() {
@@ -82,8 +84,15 @@ class PaymentsPage extends BasePage {
     await this.addToPaymentButton.click();
   }
 
-  async startPayment() {
+  async startPayment(note?: string) {
+    if (note) {
+      await this.addPaymentNote(note);
+    }
     await this.startPaymentButton.click();
+  }
+
+  async addPaymentNote(note: string) {
+    await this.noteInput.fill(note);
   }
 
   async validateInProgressBannerIsPresent() {

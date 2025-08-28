@@ -6,9 +6,10 @@
     [items]="paymentEvents()"
     [isPending]="false"
     [columns]="columns()"
-    localStorageKey="activity-log-table"
+    localStorageKey="payment-log-table"
     [tableCellContext]="tableCellContext()"
     [initialSortField]="'created'"
     [initialSortOrder]="-1"
+    data-testid="payment-log-table"
   />
 </app-page-layout-payment>
