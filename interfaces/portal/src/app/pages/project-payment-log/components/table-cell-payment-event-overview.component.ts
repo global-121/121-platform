@@ -19,6 +19,7 @@ import { PaymentEventType } from '~/domains/payment/payment.model';
 @Component({
   selector: 'app-table-cell-payment-event-overview',
   imports: [],
+  // TODO: Come up with elegant solution for naming this component + preventing too much duplication for the template/HTML
   template: `
     <span class="inline-flex items-center">
       <span class="me-4 inline leading-[0]"
