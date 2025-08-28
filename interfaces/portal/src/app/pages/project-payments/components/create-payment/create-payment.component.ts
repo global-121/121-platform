@@ -9,7 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
@@ -53,6 +53,7 @@ import { Dto } from '~/utils/dto-type';
 @Component({
   selector: 'app-create-payment',
   imports: [
+    ReactiveFormsModule,
     ButtonModule,
     DialogModule,
     DatePipe,
@@ -225,7 +226,6 @@ export class CreatePaymentComponent {
         paginateQuery,
         paymentData: {
           amount: this.paymentAmount(),
-          // @ts-expect-error -- XXX: TS should not complain once note is part of the DTO ---
           note: this.paymentFormGroup.get('note')?.value,
         },
         dryRun,
