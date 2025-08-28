@@ -157,7 +157,7 @@ class PaymentPage extends BasePage {
     await expect(createdRow).toBeVisible();
   }
 
-  async validatePaymentNote(expectedNote: string): Promise<void> {
+  async validatePaymentLog(expectedNote: string): Promise<void> {
     await this.navigateToPaymentLog();
     await this.validatePaymentLogEntries(expectedNote);
   }

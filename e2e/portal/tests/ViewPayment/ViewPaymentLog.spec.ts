@@ -34,7 +34,9 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[37781] Add note to payment and view payment log', async ({ page }) => {
+test('[37781] View payment log, including note added to payment', async ({
+  page,
+}) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
   const projectTitle = NLRCProgram.titlePortal.en;
@@ -60,7 +62,7 @@ test('[37781] Add note to payment and view payment log', async ({ page }) => {
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate note is visible on payment page', async () => {
-    await paymentPage.validatePaymentNote(note);
+  await test.step('Validate payment log, including note', async () => {
+    await paymentPage.validatePaymentLog(note);
   });
 });
