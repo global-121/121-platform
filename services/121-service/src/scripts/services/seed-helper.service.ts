@@ -38,7 +38,7 @@ import { UserType } from '@121-service/src/user/user-type-enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Injectable()
-export class SeedHelper {
+export class SeedHelperService {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
@@ -154,7 +154,7 @@ export class SeedHelper {
   }
 
   private getSeedDataPath(subPath: string): string {
-    return join(__dirname, '../seed-data', subPath);
+    return join(__dirname, '../../seed-data', subPath);
   }
 
   public async addDefaultUsers(

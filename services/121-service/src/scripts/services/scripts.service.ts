@@ -3,16 +3,16 @@ import { Injectable } from '@nestjs/common';
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { SEED_CONFIGURATION_SETTINGS } from '@121-service/src/scripts/seed-configuration.const';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
-import { SeedHelper } from '@121-service/src/scripts/seed-helper';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
-import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
+import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
+import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 
 @Injectable()
 export class ScriptsService {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelper,
-    private readonly seedHelper: SeedHelper,
+    private readonly seedMockHelper: SeedMockHelperService,
+    private readonly seedHelper: SeedHelperService,
     private readonly seedInit: SeedInit,
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
   ) {}

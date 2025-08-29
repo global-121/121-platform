@@ -8,9 +8,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
+import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappController } from '@121-service/src/notifications/whatsapp/whatsapp.controller';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';

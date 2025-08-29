@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelApiService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.api.service';
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 
 const responseSuccess = {
   result: AirtelDisbursementResultEnum.success,

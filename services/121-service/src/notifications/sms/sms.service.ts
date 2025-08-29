@@ -8,8 +8,8 @@ import { EXTERNAL_API } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import {
   NotificationType,

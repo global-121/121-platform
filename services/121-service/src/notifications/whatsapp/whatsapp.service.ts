@@ -11,10 +11,10 @@ import {
 import { env } from '@121-service/src/env';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
 import {

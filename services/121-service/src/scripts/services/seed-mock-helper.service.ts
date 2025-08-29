@@ -15,7 +15,7 @@ const readSqlFile = (filepath: string): string => {
     .toString()
     .replace(/\r?\n|\r/g, ' ');
 };
-export class SeedMockHelper {
+export class SeedMockHelperService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
   private dataSource = AppDataSource;
@@ -76,7 +76,7 @@ export class SeedMockHelper {
 
   public async multiplyRegistrations(powerNr: number): Promise<void> {
     const queryRegistrations = readSqlFile(
-      '../../src/scripts/sql/mock-registrations.sql',
+      '../../../src/scripts/sql/mock-registrations.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -85,7 +85,7 @@ export class SeedMockHelper {
       await this.dataSource.query(queryRegistrations);
     }
     const queryRegistrationData = readSqlFile(
-      '../../src/scripts/sql/mock-registration-data.sql',
+      '../../../src/scripts/sql/mock-registration-data.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -95,7 +95,7 @@ export class SeedMockHelper {
     }
 
     const queryPhoneUnique = readSqlFile(
-      '../../src/scripts/sql/mock-make-phone-unique.sql',
+      '../../../src/scripts/sql/mock-make-phone-unique.sql',
     );
     console.log(`**CREATING MOCK DATA making phoneNr unique**`);
     await this.dataSource.query(queryPhoneUnique);
@@ -106,7 +106,7 @@ export class SeedMockHelper {
   ): Promise<void> {
     await this.multiplyRegistrations(powerNr);
     const queryTransactionsOnePerRegistration = readSqlFile(
-      '../../src/scripts/sql/mock-transactions-one-per-registration.sql',
+      '../../../src/scripts/sql/mock-transactions-one-per-registration.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -116,7 +116,7 @@ export class SeedMockHelper {
     }
 
     const queryMessagesOnePerRegistration = readSqlFile(
-      '../../src/scripts/sql/mock-messages-one-per-registration.sql',
+      '../../../src/scripts/sql/mock-messages-one-per-registration.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -126,13 +126,13 @@ export class SeedMockHelper {
     }
 
     const queryAllVisaCustomers = readSqlFile(
-      '../../src/scripts/sql/mock-visa-customers.sql',
+      '../../../src/scripts/sql/mock-visa-customers.sql',
     );
     console.log(`**CREATING MOCK DATA match Visa customers to registrations**`);
     await this.dataSource.query(queryAllVisaCustomers);
 
     const queryAllVisaParentWallets = readSqlFile(
-      '../../src/scripts/sql/mock-visa-parent-wallets.sql',
+      '../../../src/scripts/sql/mock-visa-parent-wallets.sql',
     );
     console.log(
       `**CREATING MOCK DATA match Visa parent wallets to registrations**`,
@@ -140,7 +140,7 @@ export class SeedMockHelper {
     await this.dataSource.query(queryAllVisaParentWallets);
 
     const queryAllVisaChildWallets = readSqlFile(
-      '../../src/scripts/sql/mock-visa-child-wallets.sql',
+      '../../../src/scripts/sql/mock-visa-child-wallets.sql',
     );
     console.log(
       `**CREATING MOCK DATA match Visa child wallets to registrations**`,
@@ -148,7 +148,7 @@ export class SeedMockHelper {
     await this.dataSource.query(queryAllVisaChildWallets);
 
     const queryDuplicateVouchers = readSqlFile(
-      '../../src/scripts/sql/mock-intersolve-voucher.sql',
+      '../../../src/scripts/sql/mock-intersolve-voucher.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -158,7 +158,7 @@ export class SeedMockHelper {
     }
 
     const queryDuplicateImageCodeExportVoucher = readSqlFile(
-      '../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
+      '../../../src/scripts/sql/mock-imagecode-export-vouchers.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -169,7 +169,7 @@ export class SeedMockHelper {
 
     console.log(`**Updating voucher attributes**`);
     const queryUpdateVoucherAttributes = readSqlFile(
-      '../../src/scripts/sql/mock-intersolve-voucher-attributes.sql',
+      '../../../src/scripts/sql/mock-intersolve-voucher-attributes.sql',
     );
     await this.dataSource.query(queryUpdateVoucherAttributes);
     console.log(`**Done updating voucher attributes**`);
@@ -185,7 +185,7 @@ export class SeedMockHelper {
 
     console.log(`**Updating payment count**`);
     const queryUpdatePaymentCount = readSqlFile(
-      '../../src/scripts/sql/mock-update-payment-count.sql',
+      '../../../src/scripts/sql/mock-update-payment-count.sql',
     );
     await this.dataSource.query(queryUpdatePaymentCount);
 
@@ -194,13 +194,13 @@ export class SeedMockHelper {
       `truncate table "121-service"."latest_transaction"`,
     );
     const queryUpdateLatestTransaction = readSqlFile(
-      '../../src/scripts/sql/mock-latest-transactions.sql',
+      '../../../src/scripts/sql/mock-latest-transactions.sql',
     );
     await this.dataSource.query(queryUpdateLatestTransaction);
     console.log(`**Done updating latest transactions**`);
 
     const queryUnusedVouchers = readSqlFile(
-      '../../src/scripts/sql/mock-unused-vouchers.sql',
+      '../../../src/scripts/sql/mock-unused-vouchers.sql',
     );
     console.log(`**CREATING MOCK DATA unused vouchers**`);
     await this.dataSource.query(queryUnusedVouchers);
@@ -213,20 +213,20 @@ export class SeedMockHelper {
     // Since there already is 1 transaction
     const nr = powerNr - 1;
     const getMaxPaymentIdQuery = readSqlFile(
-      '../../src/scripts/sql/mock-get-max-payment-id.sql',
+      '../../../src/scripts/sql/mock-get-max-payment-id.sql',
     );
 
     const createPaymentQuery = readSqlFile(
-      '../../src/scripts/sql/mock-create-payment.sql',
+      '../../../src/scripts/sql/mock-create-payment.sql',
     );
     const queryTransactions = readSqlFile(
-      '../../src/scripts/sql/mock-payment-transactions.sql',
+      '../../../src/scripts/sql/mock-payment-transactions.sql',
     );
     const queryVoucherPerPayment = readSqlFile(
-      '../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
+      '../../../src/scripts/sql/mock-intersolve-voucher-per-payment.sql',
     );
     const queryImageCodeExportVoucherPerPayment = readSqlFile(
-      '../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
+      '../../../src/scripts/sql/mock-imagecode-export-vouchers-per-payment.sql',
     );
 
     for (let i = 1; i <= nr; i++) {
@@ -264,7 +264,7 @@ export class SeedMockHelper {
 
   public async multiplyMessages(powerNr: number): Promise<void> {
     const queryNrMessageBulk = readSqlFile(
-      '../../src/scripts/sql/mock-messages.sql',
+      '../../../src/scripts/sql/mock-messages.sql',
     );
     for (let i = 1; i <= powerNr; i++) {
       console.log(
@@ -278,7 +278,7 @@ export class SeedMockHelper {
       `truncate table "121-service"."latest_message"`,
     );
     const queryUpdateLatestMessage = readSqlFile(
-      '../../src/scripts/sql/mock-latest-message.sql',
+      '../../../src/scripts/sql/mock-latest-message.sql',
     );
     await this.dataSource.query(queryUpdateLatestMessage);
     console.log(`**Done updating latest message**`);
@@ -333,7 +333,7 @@ export class SeedMockHelper {
       id,
     } of selectProgramRegistrationAttributesWithDuplicateCheck) {
       const queryIntroduceDuplicates = readSqlFile(
-        '../../src/scripts/sql/mock-introduce-duplicates.sql',
+        '../../../src/scripts/sql/mock-introduce-duplicates.sql',
       );
       // TODO: Could not get proper parameter to work here so resorted to string replace
       const qWithParam = queryIntroduceDuplicates.replace('$1', id);

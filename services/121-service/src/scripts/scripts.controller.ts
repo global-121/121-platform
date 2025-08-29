@@ -5,7 +5,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { ScriptsService } from '@121-service/src/scripts/scripts.service';
+import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })

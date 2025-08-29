@@ -6,8 +6,8 @@ import { NedbankErrorCode } from '@121-service/src/payments/fsp-integration/nedb
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
 import { NedbankApiError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank-api.error';
-import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
+import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api.service';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 

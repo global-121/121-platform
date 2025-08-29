@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
-import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 
 @Injectable()
 export class NotesService {
