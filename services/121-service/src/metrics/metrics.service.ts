@@ -58,6 +58,18 @@ export class MetricsService {
     type: ExportType;
     paginationQuery?: PaginateQuery;
   }): Promise<FileDto> {
+    const validExportType = [
+      ExportType.registrations,
+      ExportType.unusedVouchers,
+      ExportType.vouchersWithBalance,
+      ExportType.intersolveVisaCardDetails,
+    ];
+    if (type === undefined || !validExportType.includes(type)) {
+      throw new HttpException(
+        `Invalid export type: ${type}. Valid types are: ${validExportType.join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     await this.actionService.saveAction(userId, programId, type);
 
     const permission =
@@ -100,16 +112,7 @@ export class MetricsService {
         return this.getIntersolveVisaBalancesExport(programId);
       }
       default:
-        const validExportType = [
-          ExportType.registrations,
-          ExportType.unusedVouchers,
-          ExportType.vouchersWithBalance,
-          ExportType.intersolveVisaCardDetails,
-        ];
-        throw new HttpException(
-          `Invalid export type: ${type}. Valid types are: ${validExportType.join(', ')}`,
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new Error(`Unsupported export type: ${type}`);
     }
   }
 
@@ -188,18 +191,10 @@ export class MetricsService {
     paginationQuery: PaginateQuery;
   }): Promise<MappedPaginatedRegistrationDto[]> {
     // Create an empty scoped querybuilder object
-    let queryBuilder = this.registrationScopedViewRepository
+    const queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
       .andWhere({ programId });
 
-    if (!paginationQuery.filter?.['status']) {
-      queryBuilder = queryBuilder.andWhere(
-        'registration."status" != :registrationStatus',
-        {
-          registrationStatus: RegistrationStatusEnum.deleted,
-        },
-      );
-    }
     const chunkSize = 10000;
     const paginateQueryForBulk = {
       path: 'registration',
