@@ -19,8 +19,8 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('programs')
-@Controller('programs')
+@ApiTags('projects')
+@Controller('projects')
 export class NoteController {
   private readonly notesService: NotesService;
   public constructor(notesService: NotesService) {
@@ -34,19 +34,19 @@ export class NoteController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
-      'Created new note for registration - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Created new note for registration - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description:
-      'ReferenceId is not known - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'ReferenceId is not known - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({ name: 'referenceId', required: true, type: 'string' })
-  @Post(':programId/registrations/:referenceId/notes')
+  @Post(':projectId/registrations/:referenceId/notes')
   public async createNote(
     @Req() req: ScopedUserRequest,
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
     @Param('referenceId') referenceId: string,
     @Body() createNote: CreateNoteDto,
   ): Promise<void> {
@@ -57,7 +57,7 @@ export class NoteController {
       referenceId,
       createNote.text,
       userId,
-      programId,
+      projectId,
     );
   }
 }

@@ -10,7 +10,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  programIdVisa,
+  projectIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -18,8 +18,8 @@ import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+} from '@121-service/test/helpers/project.helper';
+import { deleteProjectFspConfigurationProperty } from '@121-service/test/helpers/project-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -48,9 +48,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE CUSTOMER ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-customer';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -59,7 +59,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -67,7 +67,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -76,7 +76,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -94,9 +94,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -105,7 +105,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -113,7 +113,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -122,7 +122,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -140,9 +140,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (LINK CUSTOMER ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-link-customer-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -151,7 +151,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -159,7 +159,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -168,7 +168,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -186,9 +186,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CREATE DEBIT CARD ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-create-debit-card';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -197,7 +197,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -205,7 +205,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -214,7 +214,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -232,9 +232,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
   it('should fail pay-out Visa Debit (CALCULATE TOPUP AMOUNT ERROR)', async () => {
     // Arrange
     registrationVisa.fullName = 'mock-fail-get-wallet';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -244,14 +244,14 @@ describe('Do failing payment with FSP Visa Debit', () => {
     // Act
     // do (successful) payment 1
     const doPaymentResponse1 = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
     const paymentId1 = doPaymentResponse1.body.id;
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -261,14 +261,14 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // do payment 2
     const doPaymentResponse2 = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
     const paymentId2 = doPaymentResponse2.body.id;
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -278,7 +278,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -293,25 +293,25 @@ describe('Do failing payment with FSP Visa Debit', () => {
     );
   });
 
-  it('should fail pay-out by visa debit if coverletterCode or fundingToken is not configured for the program', async () => {
+  it('should fail pay-out by visa debit if coverletterCode or fundingToken is not configured for the project', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
     });
     const paymentReferenceIds = [registrationVisa.referenceId];
 
-    await deleteProgramFspConfigurationProperty({
-      programId: programIdVisa,
+    await deleteProjectFspConfigurationProperty({
+      projectId: projectIdVisa,
       configName: Fsps.intersolveVisa,
       propertyName: FspConfigurationProperties.coverLetterCode,
       accessToken,
     });
-    await deleteProgramFspConfigurationProperty({
-      programId: programIdVisa,
+    await deleteProjectFspConfigurationProperty({
+      projectId: projectIdVisa,
       configName: Fsps.intersolveVisa,
       propertyName: FspConfigurationProperties.fundingTokenCode,
       accessToken,
@@ -319,7 +319,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -340,9 +340,9 @@ describe('Do failing payment with FSP Visa Debit', () => {
     const magicFailOperationReferenceAmount = 15.15;
 
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -351,14 +351,14 @@ describe('Do failing payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: magicFailOperationReferenceAmount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
     const paymentId = doPaymentResponse.body.id;
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -367,7 +367,7 @@ describe('Do failing payment with FSP Visa Debit', () => {
     });
 
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,

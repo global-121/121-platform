@@ -28,10 +28,10 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
-import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { RequiredUsernamePasswordInterface } from '@121-service/src/project-fsp-configurations/interfaces/required-username-password.interface';
+import { UsernamePasswordInterface } from '@121-service/src/project-fsp-configurations/interfaces/username-password.interface';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -45,8 +45,8 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   public registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public projectRepository: Repository<ProjectEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -60,16 +60,16 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     private readonly transactionsService: TransactionsService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
-    public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    public readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
   ) {}
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    programId: number,
+    projectId: number,
     paymentId: number,
   ): Promise<FspTransactionResultDto> {
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
 
     const fspTransactionResult = new FspTransactionResultDto();
@@ -91,13 +91,13 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
       const payload = this.createPayloadPerPa(
         paPayment,
         paRegistrationData,
-        program,
+        project,
       );
 
       const jobData: CommercialBankEthiopiaJobDto = {
         paPaymentData: paPayment,
         paymentId,
-        programId,
+        projectId,
         payload,
         userId: paPayment.userId,
       };
@@ -106,7 +106,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
           JobNames.default,
           jobData,
         );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
     return fspTransactionResult;
   }
@@ -115,8 +115,8 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     data: CommercialBankEthiopiaJobDto,
   ): Promise<void> {
     const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        data.paPaymentData.programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getUsernamePasswordProperties(
+        data.paPaymentData.projectFspConfigurationId,
       );
 
     const paymentRequestResultPerPa = await this.sendPaymentPerPa(
@@ -126,10 +126,10 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     );
 
     const transactionRelationDetails = {
-      programId: data.programId,
+      projectId: data.projectId,
       paymentId: data.paymentId,
       userId: data.userId,
-      programFspConfigurationId: data.paPaymentData.programFspConfigurationId,
+      projectFspConfigurationId: data.paPaymentData.projectFspConfigurationId,
     };
     // Storing the per payment so you can continiously seed updates of transactions in Portal
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -173,18 +173,18 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
       .select([
         'registration.referenceId AS "referenceId"',
         'data.value AS value',
-        '"programRegistrationAttribute".name AS "fieldName"',
+        '"projectRegistrationAttribute".name AS "fieldName"',
       ])
       .where('registration.referenceId IN (:...referenceIds)', {
         referenceIds,
       })
-      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
+      .andWhere('(projectRegistrationAttribute.name IN (:...names))', {
         names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
       })
       .leftJoin('registration.data', 'data')
       .leftJoin(
-        'data.programRegistrationAttribute',
-        'programRegistrationAttribute',
+        'data.projectRegistrationAttribute',
+        'projectRegistrationAttribute',
       )
       .getRawMany();
 
@@ -209,7 +209,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   public createPayloadPerPa(
     payment: PaPaymentDataDto,
     paRegistrationData: CommercialBankEthiopiaRegistrationData[],
-    program: ProgramEntity,
+    project: ProjectEntity,
   ): CommercialBankEthiopiaTransferPayload {
     let fullName = '';
     let bankAccountNumber;
@@ -236,12 +236,12 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
         `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`
       ).substring(0, 16),
       creditTheirRef:
-        program.titlePortal && program.titlePortal.en
-          ? program.titlePortal.en.replaceAll(/\W/g, '').substring(0, 16)
+        project.titlePortal && project.titlePortal.en
+          ? project.titlePortal.en.replaceAll(/\W/g, '').substring(0, 16)
           : null,
       creditAcctNo: bankAccountNumber,
-      creditCurrency: program.currency,
-      remitterName: program.ngo ? program.ngo.substring(0, 35) : null,
+      creditCurrency: project.currency,
+      remitterName: project.ngo ? project.ngo.substring(0, 35) : null,
       beneficiaryName: fullName.substring(0, 35),
     };
   }
@@ -261,7 +261,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     if (credentials.password == null || credentials.username == null) {
       paTransactionResult.status = TransactionStatusEnum.error;
       paTransactionResult.message =
-        'Missing username or password for program Fsp configuration of the registration';
+        'Missing username or password for project Fsp configuration of the registration';
       return paTransactionResult;
     } else {
       requiredCredentials = {
@@ -310,32 +310,32 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   }
 
   public async getCommercialBankEthiopiaCredentialsOrThrow({
-    programId,
+    projectId,
   }: {
-    programId: number;
+    projectId: number;
   }): Promise<RequiredUsernamePasswordInterface> {
     const configs =
-      await this.programFspConfigurationRepository.getByProgramIdAndFspName({
-        programId,
+      await this.projectFspConfigurationRepository.getByProjectIdAndFspName({
+        projectId,
         fspName: Fsps.commercialBankEthiopia,
       });
 
-    // For now we only support one CBE FSP configuration per program
+    // For now we only support one CBE FSP configuration per project
     if (configs.length !== 1) {
       throw new HttpException(
-        `Expected exactly one program Fsp configuration for program ${programId} and Fsp ${Fsps.commercialBankEthiopia}`,
+        `Expected exactly one project Fsp configuration for project ${projectId} and Fsp ${Fsps.commercialBankEthiopia}`,
         HttpStatus.NOT_FOUND,
       );
     }
 
     const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
+      await this.projectFspConfigurationRepository.getUsernamePasswordProperties(
         configs[0].id,
       );
 
     if (credentials.password == null || credentials.username == null) {
       throw new HttpException(
-        'Missing username or password for program Fsp configuration of the registration',
+        'Missing username or password for project Fsp configuration of the registration',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -350,21 +350,21 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   }
 
   public async getAllPaValidations(
-    programId: number,
+    projectId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
-    const programPAs =
+    const projectPAs =
       await this.commercialBankEthiopiaAccountEnquiriesScopedRepo
         .createQueryBuilder('cbe')
         .innerJoin('cbe.registration', 'registration')
-        .andWhere('registration.programId = :programId', {
-          programId,
+        .andWhere('registration.projectId = :projectId', {
+          projectId,
         })
         .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
           statusValues: ['deleted', 'paused'],
         })
         .select([
           `registration."referenceId" as "referenceId"`,
-          'registration.registrationProgramId as "registrationProgramId"',
+          'registration.registrationProjectId as "registrationProjectId"',
           'cbe.fullNameUsedForTheMatch as "fullNameUsedForTheMatch"',
           'cbe.cbeName as "cbeName"',
           'cbe.bankAccountNumberUsedForCall as "bankAccountNumberUsedForCall"',
@@ -374,7 +374,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
         ])
         .getRawMany();
 
-    return { data: programPAs, fileName: 'cbe-validation-report' };
+    return { data: projectPAs, fileName: 'cbe-validation-report' };
   }
 
   private generateRandomNumerics(length: number): string {

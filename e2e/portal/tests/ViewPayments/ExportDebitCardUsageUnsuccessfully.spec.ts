@@ -1,11 +1,11 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -16,7 +16,7 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 // Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  await seedPaidRegistrations([registrationPV5], programIdPV); // Seeds a registration that does not have Visa as fsp so there is not debit card usage to export
+  await seedPaidRegistrations([registrationPV5], projectIdPV); // Seeds a registration that does not have Visa as fsp so there is not debit card usage to export
 
   // Login
   const loginPage = new LoginPage(page);
@@ -29,8 +29,8 @@ test('[36880] Export debit card usage unsuccessfully', async ({ page }) => {
   const exportDataComponent = new ExportData(page);
 
   // Act
-  await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
-  await paymentsPage.navigateToProgramPage('Payments');
+  await paymentsPage.selectProject(NLRCProject.titlePortal.en);
+  await paymentsPage.navigateToProjectPage('Payments');
   await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
   // Click on Proceed button
   await exportDataComponent.clickProceedToExport();

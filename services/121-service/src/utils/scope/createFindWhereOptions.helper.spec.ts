@@ -11,7 +11,7 @@ describe('createFindWhereOptions helper', () => {
     // Arrange
     const options: FindOptionsCombined<RegistrationAttributeDataEntity> = {
       where: {
-        program: { id: Equal(3) },
+        project: { id: Equal(3) },
         registrationStatus: Equal('included'),
       },
     } as unknown as FindOptionsCombined<RegistrationAttributeDataEntity>;
@@ -19,12 +19,12 @@ describe('createFindWhereOptions helper', () => {
     const requestScope = 'utrecht';
 
     const expectedWhereQueryScope = {
-      program: { id: 3 },
+      project: { id: 3 },
       registrationStatus: 'included',
       scope: new FindOperator('like', 'utrecht%', true, false),
     };
     const expectedWhereQueryScopeEnabled = {
-      program: { id: 3, enableScope: false },
+      project: { id: 3, enableScope: false },
       registrationStatus: 'included',
     };
     const expectedOptions: FindOptionsCombined<RegistrationAttributeDataEntity> =

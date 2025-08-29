@@ -1,4 +1,4 @@
-referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,programFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,projectFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
 00dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 01dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 02dc9451-1273-484c-b2e8-ae21b51a96ab,en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag

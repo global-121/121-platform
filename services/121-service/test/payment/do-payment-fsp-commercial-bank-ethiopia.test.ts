@@ -7,7 +7,7 @@ import {
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -15,7 +15,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationCbe } from '@121-service/test/registrations/pagination/pagination-data';
 
-const programId = 1;
+const projectId = 1;
 const paymentId = 1;
 const amount = 200;
 
@@ -23,25 +23,25 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.cbeProgram, __filename);
+    await resetDB(SeedScript.cbeProject, __filename);
     accessToken = await getAccessToken();
   });
 
   it('when credit transfer API call gives a success response should successfully do a payment', async () => {
     // Arrange
     const paymentReferenceIds = [registrationCbe.referenceId];
-    await seedIncludedRegistrations([registrationCbe], programId, accessToken);
+    await seedIncludedRegistrations([registrationCbe], projectId, accessToken);
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
@@ -53,7 +53,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationCbe.referenceId,
       accessToken,
@@ -80,13 +80,13 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     await seedIncludedRegistrations(
       [registrationCbeWithError],
-      programId,
+      projectId,
       accessToken,
     );
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
 
       amount,
       referenceIds: paymentReferenceIds,
@@ -94,7 +94,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
@@ -106,7 +106,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationCbeWithError.referenceId,
       accessToken,
@@ -134,20 +134,20 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     await seedIncludedRegistrations(
       [registrationCbeWithTimeout],
-      programId,
+      projectId,
       accessToken,
     );
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
@@ -159,7 +159,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,
@@ -187,19 +187,19 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     await seedIncludedRegistrations(
       [registrationCbeWithTimeout],
-      programId,
+      projectId,
       accessToken,
     );
 
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
@@ -210,7 +210,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,
@@ -226,13 +226,13 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
 
     // Act
     const doPaymentRetryResponse = await retryPayment({
-      programId,
+      projectId,
       paymentId,
       accessToken,
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4000,
@@ -240,7 +240,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     });
 
     const getTransactionsAfterRetryBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationCbeWithTimeout.referenceId,
       accessToken,

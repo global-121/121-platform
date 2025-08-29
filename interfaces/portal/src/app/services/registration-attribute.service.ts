@@ -46,13 +46,13 @@ const getGenericAttributeType = (
     case GenericRegistrationAttributes.paymentCountRemaining:
       return RegistrationAttributeTypes.numeric;
     case GenericRegistrationAttributes.preferredLanguage:
-    case GenericRegistrationAttributes.programFspConfigurationName:
+    case GenericRegistrationAttributes.projectFspConfigurationName:
       return RegistrationAttributeTypes.dropdown;
-    case GenericRegistrationAttributes.programFspConfigurationLabel:
+    case GenericRegistrationAttributes.projectFspConfigurationLabel:
     case GenericRegistrationAttributes.referenceId:
     case GenericRegistrationAttributes.scope:
     case GenericRegistrationAttributes.status:
-    case GenericRegistrationAttributes.registrationProgramId:
+    case GenericRegistrationAttributes.registrationProjectId:
       return RegistrationAttributeTypes.text;
     case GenericRegistrationAttributes.created:
       return RegistrationAttributeTypes.date;
@@ -106,7 +106,7 @@ export class RegistrationAttributeService {
           PermissionEnum.RegistrationAttributeFinancialUPDATE;
       } else if (
         attributeName ===
-        GenericRegistrationAttributes.programFspConfigurationName
+        GenericRegistrationAttributes.projectFspConfigurationName
       ) {
         requiredPermission = PermissionEnum.RegistrationFspConfigUPDATE;
       }
@@ -150,8 +150,8 @@ export class RegistrationAttributeService {
           value: language,
           label: LANGUAGE_ENUM_LABEL[language],
         }));
-      case GenericRegistrationAttributes.programFspConfigurationName:
-        return project.programFspConfigurations.map((fspConfig) => ({
+      case GenericRegistrationAttributes.projectFspConfigurationName:
+        return project.projectFspConfigurations.map((fspConfig) => ({
           value: fspConfig.name,
           label: this.translatableStringService.translate(fspConfig.label),
         }));
@@ -166,7 +166,7 @@ export class RegistrationAttributeService {
   ): NormalizedRegistrationAttribute[] {
     const genericAttributeNames: GenericRegistrationAttributes[] = [
       GenericRegistrationAttributes.phoneNumber,
-      GenericRegistrationAttributes.programFspConfigurationName,
+      GenericRegistrationAttributes.projectFspConfigurationName,
       GenericRegistrationAttributes.paymentAmountMultiplier,
       GenericRegistrationAttributes.preferredLanguage,
     ];
@@ -216,14 +216,14 @@ export class RegistrationAttributeService {
     const projectAttributes = await this.queryClient.fetchQuery(
       this.projectApiService.getProjectAttributes({
         projectId: signal(project.id),
-        includeProgramRegistrationAttributes: true,
+        includeProjectRegistrationAttributes: true,
         includeTemplateDefaultAttributes: false,
       })(),
     );
 
     return projectAttributes.map((attribute) => {
       const { isRequired, name, label, pattern, type } = attribute;
-      const options = project.programRegistrationAttributes
+      const options = project.projectRegistrationAttributes
         .find((a) => a.name === name)
         ?.options?.map((option) => ({
           value: option.option,

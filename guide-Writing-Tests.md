@@ -58,10 +58,10 @@ it("Test when xyz !== 'some-value'", () => {});
 
 ## Testing Async methods (i.e. methods which make an API call)
 
-- Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
+- Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.projectsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
+let spy = spyOn(component.projectsService, 'changePassword').and.returnValue(
   Promise.resolve(true),
 );
 ```

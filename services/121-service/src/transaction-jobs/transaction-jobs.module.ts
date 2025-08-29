@@ -11,8 +11,8 @@ import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectFspConfigurationsModule } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.module';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { TransactionJobsProcessorAirtel } from '@121-service/src/transaction-jobs/processors/transaction-jobs-airtel.processor';
@@ -35,10 +35,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     SafaricomModule,
     AirtelModule,
     NedbankModule,
-    ProgramFspConfigurationsModule,
+    ProjectFspConfigurationsModule,
     OnafriqModule,
     RegistrationsModule,
-    ProgramModule,
+    ProjectModule,
     TransactionsModule,
     MessageQueuesModule,
     FspsModule,

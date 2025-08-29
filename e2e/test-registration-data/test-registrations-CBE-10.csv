@@ -1,4 +1,4 @@
-referenceId,phoneNumber,preferredLanguage,paymentAmountMultiplier,programFspConfigurationName,maxPayments,fullName,idNumber,age,gender,bankAccountNumber
+referenceId,phoneNumber,preferredLanguage,paymentAmountMultiplier,projectFspConfigurationName,maxPayments,fullName,idNumber,age,gender,bankAccountNumber
 osV3YlTAv5dJ0AV$X5sdBd^$8va5QZZsV@!C,5.22645E+13,en,1,Commercial-bank-ethiopia,3,example name for CBE mock mode,39231855170,48,Male,4.07952E+14
 0lO[ZX6tsEZfA6Ga8VyRNHCn%&AQ[^LakJ#(,5.22645E+13,en,1,Commercial-bank-ethiopia,3,Barbara Floyd,32622403964,31,Female,4.07952E+14
 J%%jEbUvNQ]D3E)3*S5i^vQX1^*YZdKO6[)D,5.22645E+13,en,1,Commercial-bank-ethiopia,3,Rebecca Rodgers,72798209938,62,Male,4.07952E+14

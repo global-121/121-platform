@@ -6,9 +6,9 @@ import { Equal, In, Repository } from 'typeorm';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -25,7 +25,7 @@ import { RegistrationEventsService } from '@121-service/src/registration-events/
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 
-const programId = 10001;
+const projectId = 10001;
 
 describe('RegistrationsService', () => {
   let service: RegistrationsService;
@@ -44,9 +44,9 @@ describe('RegistrationsService', () => {
             findOne: jest.fn(),
             findOneOrFail: jest.fn().mockImplementation(({ where }) => {
               const id = where.id;
-              return Promise.resolve({ id, registrationProgramId: 9999 });
+              return Promise.resolve({ id, registrationProjectId: 9999 });
             }),
-            getWithRelationsByReferenceIdAndProgramId: jest.fn(),
+            getWithRelationsByReferenceIdAndProjectId: jest.fn(),
           },
         },
         {
@@ -74,11 +74,11 @@ describe('RegistrationsService', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(ProgramEntity),
+          provide: getRepositoryToken(ProjectEntity),
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(ProgramRegistrationAttributeEntity),
+          provide: getRepositoryToken(ProjectRegistrationAttributeEntity),
           useClass: Repository,
         },
         {
@@ -111,7 +111,7 @@ describe('RegistrationsService', () => {
           provide: RegistrationDataService,
           useValue: {
             saveData: jest.fn(),
-            deleteProgramRegistrationAttributeData: jest.fn(),
+            deleteProjectRegistrationAttributeData: jest.fn(),
           },
         },
         {
@@ -131,7 +131,7 @@ describe('RegistrationsService', () => {
         {
           provide: UserService,
           useValue: {
-            getProgramScopeIdsUserHasPermission: jest.fn(),
+            getProjectScopeIdsUserHasPermission: jest.fn(),
           },
         },
         {
@@ -141,7 +141,7 @@ describe('RegistrationsService', () => {
           },
         },
         {
-          provide: ProgramFspConfigurationRepository,
+          provide: ProjectFspConfigurationRepository,
           useValue: {
             findOne: jest.fn(),
             getPropertiesByNamesOrThrow: jest.fn(),
@@ -188,7 +188,7 @@ describe('RegistrationsService', () => {
       await expect(
         service.createUniques({
           registrationIds,
-          programId,
+          projectId,
           reason,
         }),
       ).rejects.toThrow(HttpException);
@@ -198,7 +198,7 @@ describe('RegistrationsService', () => {
 
     it('should create 1 pair for 2 registrations', async () => {
       const registrationIds = [1, 2];
-      const programId = 1;
+      const projectId = 1;
       const reason = 'testing';
 
       jest
@@ -214,14 +214,14 @@ describe('RegistrationsService', () => {
 
       await service.createUniques({
         registrationIds,
-        programId,
+        projectId,
         reason,
       });
 
       expect(registrationScopedRepository.find).toHaveBeenCalledWith({
         where: {
           id: In(registrationIds),
-          programId: Equal(programId),
+          projectId: Equal(projectId),
         },
         select: ['id'],
       });
@@ -251,14 +251,14 @@ describe('RegistrationsService', () => {
 
       await service.createUniques({
         registrationIds,
-        programId,
+        projectId,
         reason,
       });
 
       expect(registrationScopedRepository.find).toHaveBeenCalledWith({
         where: {
           id: In(registrationIds),
-          programId: Equal(programId),
+          projectId: Equal(projectId),
         },
         select: ['id'],
       });
@@ -297,14 +297,14 @@ describe('RegistrationsService', () => {
 
       await service.createUniques({
         registrationIds,
-        programId,
+        projectId,
         reason,
       });
 
       expect(registrationScopedRepository.find).toHaveBeenCalledWith({
         where: {
           id: In(registrationIds),
-          programId: Equal(programId),
+          projectId: Equal(projectId),
         },
         select: ['id'],
       });
@@ -337,8 +337,8 @@ describe('RegistrationsService', () => {
       jest
         .spyOn(registrationScopedRepository, 'find')
         .mockResolvedValue([
-          { id: 1, registrationProgramId: 101 } as RegistrationEntity,
-          { id: 2, registrationProgramId: 102 } as RegistrationEntity,
+          { id: 1, registrationProjectId: 101 } as RegistrationEntity,
+          { id: 2, registrationProjectId: 102 } as RegistrationEntity,
         ]);
     });
 
@@ -356,11 +356,11 @@ describe('RegistrationsService', () => {
         .spyOn(registrationScopedRepository, 'findOneOrFail')
         .mockResolvedValueOnce({
           id: 1,
-          registrationProgramId: 101,
+          registrationProjectId: 101,
         } as RegistrationEntity)
         .mockResolvedValueOnce({
           id: 2,
-          registrationProgramId: 102,
+          registrationProjectId: 102,
         } as RegistrationEntity);
       jest
         .spyOn(registrationEventsService, 'createForIgnoredDuplicatePair')
@@ -369,7 +369,7 @@ describe('RegistrationsService', () => {
       // Call the service method that uses the repository
       await service.createUniques({
         registrationIds,
-        programId,
+        projectId,
         reason,
       });
 
@@ -403,11 +403,11 @@ describe('RegistrationsService', () => {
       ).toHaveBeenCalledWith({
         registration1: {
           id: 1,
-          registrationProgramId: 101,
+          registrationProjectId: 101,
         },
         registration2: {
           id: 2,
-          registrationProgramId: 102,
+          registrationProjectId: 102,
         },
         reason: 'testing',
       });
@@ -425,7 +425,7 @@ describe('RegistrationsService', () => {
 
       await service.createUniques({
         registrationIds: [1, 2],
-        programId,
+        projectId,
         reason: 'testing',
       });
 

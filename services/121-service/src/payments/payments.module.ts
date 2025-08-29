@@ -25,10 +25,10 @@ import { PaymentsReportingService } from '@121-service/src/payments/services/pay
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectFspConfigurationsModule } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.module';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -43,10 +43,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      ProgramEntity,
+      ProjectEntity,
       TransactionEntity,
       RegistrationEntity,
-      ProgramRegistrationAttributeEntity,
+      ProjectRegistrationAttributeEntity,
       PaymentEntity,
     ]),
     UserModule,
@@ -63,12 +63,12 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ExcelModule,
     CommercialBankEthiopiaModule,
     RegistrationsModule,
-    ProgramModule,
+    ProjectModule,
     RegistrationUtilsModule,
     RegistrationDataModule,
     TransactionQueuesModule,
     FspsModule,
-    ProgramFspConfigurationsModule,
+    ProjectFspConfigurationsModule,
     RedisModule,
     PaymentEventsModule,
   ],

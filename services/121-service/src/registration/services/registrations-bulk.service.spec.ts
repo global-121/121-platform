@@ -14,7 +14,7 @@ describe('RegistrationBulkService', () => {
   const paginateQuery = {
     path: 'test',
   };
-  const programId = 2;
+  const projectId = 2;
   const userId = 1;
 
   let registrationsBulkService: RegistrationsBulkService;
@@ -36,11 +36,11 @@ describe('RegistrationBulkService', () => {
     jest
       .spyOn(messageTemplateRepository as any, 'findOne')
       .mockImplementation((arg: any) => {
-        const programIdValue = arg.where.programId._value;
+        const projectIdValue = arg.where.projectId._value;
         const typeValue = arg.where.type._value;
 
         if (
-          programIdValue === programId &&
+          projectIdValue === projectId &&
           typeValue === RegistrationStatusEnum.new
         ) {
           return Promise.resolve({
@@ -49,7 +49,7 @@ describe('RegistrationBulkService', () => {
             language: LanguageEnum.en,
             type: RegistrationStatusEnum.new,
             message: 'test message',
-            programId: 2,
+            projectId: 2,
           });
         }
         return Promise.resolve(null);
@@ -116,7 +116,7 @@ describe('RegistrationBulkService', () => {
       await expect(
         registrationsBulkService.postMessages(
           paginateQuery,
-          programId,
+          projectId,
           'randomMessage',
           'randomNotDefinedStatus',
           false,
@@ -131,7 +131,7 @@ describe('RegistrationBulkService', () => {
       // Act
       const postMessageResult = await registrationsBulkService.postMessages(
         paginateQuery,
-        programId,
+        projectId,
         'randomMessage',
         RegistrationStatusEnum.new,
         true,
@@ -151,7 +151,7 @@ describe('RegistrationBulkService', () => {
       // Act
       const postMessageResult = await registrationsBulkService.postMessages(
         paginateQuery,
-        programId,
+        projectId,
         'randomMessage',
         RegistrationStatusEnum.new,
         false,

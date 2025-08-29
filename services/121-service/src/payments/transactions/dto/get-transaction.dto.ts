@@ -35,9 +35,9 @@ export class TransactionReturnDto {
   @ApiProperty({ example: Fsps.excel })
   public fspName: Relation<Fsps>;
   @ApiProperty({ example: 'ironBank' })
-  public programFspConfigurationLabel: Relation<LocalizedString>;
+  public projectFspConfigurationLabel: Relation<LocalizedString>;
   @ApiProperty({ example: { en: 'Iron bank' }, type: 'string' })
-  public programFspConfigurationName: string;
+  public projectFspConfigurationName: string;
   @ApiProperty({
     example: FspIntegrationType.api,
     type: 'string',

@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
-import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
-import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
+import { RequiredUsernamePasswordInterface } from '@121-service/src/project-fsp-configurations/interfaces/required-username-password.interface';
+import { UsernamePasswordInterface } from '@121-service/src/project-fsp-configurations/interfaces/username-password.interface';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 const cbeApiUrl = env.MOCK_COMMERCIAL_BANK_ETHIOPIA

@@ -4,7 +4,7 @@ import { FspTransactionResultDto } from '@121-service/src/payments/dto/payment-t
 export interface FspIntegrationInterface {
   sendPayment(
     paymentList: PaPaymentDataDto[],
-    programId: number,
+    projectId: number,
     paymentId: number,
     useWhatsapp?: boolean,
   ): Promise<void | FspTransactionResultDto>;

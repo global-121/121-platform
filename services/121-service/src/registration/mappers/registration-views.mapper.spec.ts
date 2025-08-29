@@ -1,4 +1,4 @@
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 
 describe('RegistrationViewsMapper', () => {
@@ -12,7 +12,7 @@ describe('RegistrationViewsMapper', () => {
       const nlRedLabel = 'Rood';
       const nlBlueLabel = 'Blauw';
 
-      const attributes: ProgramRegistrationAttributeEntity[] = [
+      const attributes: ProjectRegistrationAttributeEntity[] = [
         {
           name: colorAttrName,
           options: [
@@ -56,7 +56,7 @@ describe('RegistrationViewsMapper', () => {
       const nlMaybeLabel = 'Misschien';
       const noLabel = 'No';
 
-      const attributes: ProgramRegistrationAttributeEntity[] = [
+      const attributes: ProjectRegistrationAttributeEntity[] = [
         {
           name: statusAttrName,
           options: [

@@ -10,7 +10,7 @@ import {
 } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -32,7 +32,7 @@ const defaultMessageJob = {
 describe('MessageQueuesService', () => {
   let queueMessageService: MessageQueuesService;
   let queuesService: QueuesRegistryService;
-  let programAttributesService: ProgramAttributesService;
+  let projectAttributesService: ProjectAttributesService;
   let messageTemplateRepository: Repository<MessageTemplateEntity>;
   let registrationDataService: RegistrationDataService;
 
@@ -48,7 +48,7 @@ describe('MessageQueuesService', () => {
 
     queueMessageService = unit;
     queuesService = unitRef.get(QueuesRegistryService);
-    programAttributesService = unitRef.get(ProgramAttributesService);
+    projectAttributesService = unitRef.get(ProjectAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
       getRepositoryToken(MessageTemplateEntity) as any,
@@ -66,7 +66,7 @@ describe('MessageQueuesService', () => {
     registration.referenceId = 'refview';
     registration.preferredLanguage = LanguageEnum.fr;
     registration.phoneNumber = '234567891';
-    registration.programId = 1;
+    registration.projectId = 1;
     registration[DefaultRegistrationDataAttributeNames.whatsappPhoneNumber] =
       '0987654321';
 
@@ -92,7 +92,7 @@ describe('MessageQueuesService', () => {
         phoneNumber: registration.phoneNumber,
         preferredLanguage: registration.preferredLanguage,
         registrationId: registration.id,
-        programId: registration.programId,
+        projectId: registration.projectId,
         referenceId: registration.referenceId,
         customData: undefined,
         mediaUrl: undefined,
@@ -109,7 +109,7 @@ describe('MessageQueuesService', () => {
     registration.referenceId = 'ref';
     registration.preferredLanguage = LanguageEnum.en;
     registration.phoneNumber = '1234567890';
-    registration.programId = 1;
+    registration.projectId = 1;
 
     const mockGetRegistrationDataValueByName = jest
       .spyOn(registrationDataService, 'getRegistrationDataValueByName')
@@ -136,7 +136,7 @@ describe('MessageQueuesService', () => {
         preferredLanguage: registration.preferredLanguage,
         registrationId: registration.id,
         referenceId: registration.referenceId,
-        programId: registration.programId,
+        projectId: registration.projectId,
         customData: undefined,
         mediaUrl: undefined,
         messageProcessType: MessageProcessType.whatsappTemplateGeneric,
@@ -148,7 +148,7 @@ describe('MessageQueuesService', () => {
     it('should get the placeholders from custom message text', async () => {
       // Arrange
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(projectAttributesService as any, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });
@@ -167,7 +167,7 @@ describe('MessageQueuesService', () => {
 
     it('should get the placeholders from a message that comes from messageTemplateRepository', async () => {
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(projectAttributesService as any, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });
@@ -179,7 +179,7 @@ describe('MessageQueuesService', () => {
           language: LanguageEnum.en,
           type: 'test',
           label: null,
-          programId: 2,
+          projectId: 2,
           created: new Date(),
           updated: new Date(),
           isWhatsappTemplate: false,

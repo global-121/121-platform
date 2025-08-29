@@ -5,10 +5,10 @@ import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  patchProgram,
-  patchProgramRegistrationAttribute,
-  setAllProgramsRegistrationAttributesNonRequired,
-} from '@121-service/test/helpers/program.helper';
+  patchProject,
+  patchProjectRegistrationAttribute,
+  setAllProjectsRegistrationAttributesNonRequired,
+} from '@121-service/test/helpers/project.helper';
 import {
   importRegistrations,
   searchRegistrationByReferenceId,
@@ -20,21 +20,21 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdWesteros,
+  projectIdWesteros,
   registrationPvScoped,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 const updatePhoneNumber = '15005550099';
-const programIdPv = 2;
-const programIdOcw = 3;
+const projectIdPv = 2;
+const projectIdOcw = 3;
 
 async function setupNlrcEnvironment() {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
 
-  await importRegistrations(programIdOcw, [registrationVisa], accessToken);
-  await importRegistrations(programIdPv, [registrationPvScoped], accessToken);
+  await importRegistrations(projectIdOcw, [registrationVisa], accessToken);
+  await importRegistrations(projectIdPv, [registrationPvScoped], accessToken);
 
   return accessToken;
 }
@@ -53,7 +53,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       wrongReferenceId,
       updatePhoneData,
       reason,
@@ -77,7 +77,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       dataUpdateSucces,
       reason,
@@ -89,7 +89,7 @@ describe('Update attribute of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -118,7 +118,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataUpdatePhoneFail,
       reason,
@@ -129,7 +129,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -157,7 +157,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataUpdateFinanancialFail,
       reason,
@@ -169,7 +169,7 @@ describe('Update attribute of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -194,7 +194,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataUpdateNonFinanancialFail,
       reason,
@@ -206,7 +206,7 @@ describe('Update attribute of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -225,7 +225,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const updateResponse = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       updateDto,
       reason,
@@ -233,7 +233,7 @@ describe('Update attribute of PA', () => {
     );
     const getRegistrationResult = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
     const registration = getRegistrationResult.body.data[0];
@@ -256,7 +256,7 @@ describe('Update attribute of PA', () => {
 
     // Act
     const updateResponse = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       updateDto,
       reason,
@@ -264,7 +264,7 @@ describe('Update attribute of PA', () => {
     );
     const getRegistrationResult = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
     const registration = getRegistrationResult.body.data[0];
@@ -274,7 +274,7 @@ describe('Update attribute of PA', () => {
     expect(registration.scope).toBe(oldScope);
   });
 
-  it('should fail on removing a program registration attribute which is part of the fsp config and required', async () => {
+  it('should fail on removing a project registration attribute which is part of the fsp config and required', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateStreetFail = {
@@ -285,7 +285,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataUpdateStreetFail,
       reason,
@@ -296,7 +296,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -306,7 +306,7 @@ describe('Update attribute of PA', () => {
     expect(registration.addressCity).toBe(registrationVisa.addressCity);
   });
 
-  it('should succeed on removing a program registration attribute which is part of the fsp config but not-required', async () => {
+  it('should succeed on removing a project registration attribute which is part of the fsp config but not-required', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const dataUpdateAdditionSuccess = {
@@ -316,7 +316,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataUpdateAdditionSuccess,
       reason,
@@ -327,7 +327,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.OK);
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -335,22 +335,22 @@ describe('Update attribute of PA', () => {
     expect(registration.addressHouseNumberAddition == null).toBe(true);
   });
 
-  it('should succeed on removing all program registration attributes of test program', async () => {
+  it('should succeed on removing all project registration attributes of test project', async () => {
     // Arrange
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesteros1],
       accessToken,
     );
-    const programUpdate = {
+    const projectUpdate = {
       allowEmptyPhoneNumber: true,
     };
-    await patchProgram(programIdWesteros, programUpdate, accessToken);
+    await patchProject(projectIdWesteros, projectUpdate, accessToken);
 
-    await setAllProgramsRegistrationAttributesNonRequired(
-      programIdWesteros,
+    await setAllProjectsRegistrationAttributesNonRequired(
+      projectIdWesteros,
       accessToken,
     );
 
@@ -368,7 +368,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programIdWesteros,
+      projectIdWesteros,
       registrationWesteros1.referenceId,
       dataUpdateToEmpty,
       reason,
@@ -379,7 +379,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.OK);
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -389,20 +389,20 @@ describe('Update attribute of PA', () => {
     }
   });
 
-  it('should fail when removing a required program registration attribute', async () => {
+  it('should fail when removing a required project registration attribute', async () => {
     // Arrange
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesteros1],
       accessToken,
     );
 
-    await patchProgramRegistrationAttribute({
-      programRegistrationAttributeName: 'motto',
-      programRegistrationAttribute: { isRequired: true },
-      programId: programIdWesteros,
+    await patchProjectRegistrationAttribute({
+      projectRegistrationAttributeName: 'motto',
+      projectRegistrationAttribute: { isRequired: true },
+      projectId: projectIdWesteros,
       accessToken,
     });
 
@@ -413,7 +413,7 @@ describe('Update attribute of PA', () => {
     const reason = 'automated test';
     // Act
     const response = await updateRegistration(
-      programIdWesteros,
+      projectIdWesteros,
       registrationWesteros1.referenceId,
       dataUpdateToEmpty,
       reason,

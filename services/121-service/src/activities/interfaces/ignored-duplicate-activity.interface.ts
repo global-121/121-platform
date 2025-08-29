@@ -5,7 +5,7 @@ export interface IgnoredDuplicateActivity extends BaseActivity {
   type: ActivityTypeEnum.IgnoredDuplicate;
   attributes: {
     duplicateWithRegistrationId: number;
-    duplicateWithRegistrationProgramId: number;
+    duplicateWithRegistrationProjectId: number;
     reason: string | null;
   };
 }

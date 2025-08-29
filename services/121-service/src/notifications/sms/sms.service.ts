@@ -34,7 +34,7 @@ export class SmsService {
   ): Promise<void> {
     const to = recipientPhoneNr
       ? formatPhoneNumber(recipientPhoneNr)
-      : 'not available'; // When allowEmptyPhoneNumber is true in a program, the to number can be empty and an error will be stored
+      : 'not available'; // When allowEmptyPhoneNumber is true in a project, the to number can be empty and an error will be stored
 
     try {
       const messageToStore = await twilioClient.messages.create({

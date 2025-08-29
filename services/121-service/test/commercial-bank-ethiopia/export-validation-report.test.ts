@@ -3,7 +3,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getCbeValidationReport,
   startCbeValidationProcess,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { importRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -12,22 +12,22 @@ import {
 import { registrationCbe } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Export CBE validation report', () => {
-  const programId = 1;
+  const projectId = 1;
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.cbeProgram, __filename);
+    await resetDB(SeedScript.cbeProject, __filename);
     accessToken = await getAccessToken();
     await waitFor(1_000);
   });
 
   it('should succesfully generate a report of CBE validation data', async () => {
     // // Arrange
-    await importRegistrations(programId, [registrationCbe], accessToken);
-    await startCbeValidationProcess(programId, accessToken);
+    await importRegistrations(projectId, [registrationCbe], accessToken);
+    await startCbeValidationProcess(projectId, accessToken);
 
     // Act
-    const exportResult = await getCbeValidationReport(programId, accessToken);
+    const exportResult = await getCbeValidationReport(projectId, accessToken);
 
     // Assert
     expect(exportResult.body.fileName).toBe('cbe-validation-report');

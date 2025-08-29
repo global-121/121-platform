@@ -216,7 +216,7 @@
       <trans-unit id="7203225042973794131" datatype="html">
         <source>&lt;UNNAMED TEMPLATE&gt;</source>
       </trans-unit>
-      <trans-unit id="attribute-label-programFspConfigurationLabel" datatype="html">
+      <trans-unit id="attribute-label-projectFspConfigurationLabel" datatype="html">
         <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-paymentAmountMultiplier" datatype="html">
@@ -1093,7 +1093,7 @@
       <trans-unit id="attribute-label-preferredLanguage" datatype="html">
         <source>Preferred Language</source>
       </trans-unit>
-      <trans-unit id="attribute-label-programFspConfigurationName" datatype="html">
+      <trans-unit id="attribute-label-projectFspConfigurationName" datatype="html">
         <source>FSP</source>
       </trans-unit>
       <trans-unit id="attribute-label-referenceId" datatype="html">
@@ -1102,7 +1102,7 @@
       <trans-unit id="attribute-label-created" datatype="html">
         <source>Registration Created Date</source>
       </trans-unit>
-      <trans-unit id="attribute-label-registrationProgramId" datatype="html">
+      <trans-unit id="attribute-label-registrationProjectId" datatype="html">
         <source>Registration ID</source>
       </trans-unit>
       <trans-unit id="attribute-label-scope" datatype="html">
@@ -1253,7 +1253,7 @@
         <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
       </trans-unit>
       <trans-unit id="8209340100752123472" datatype="html">
-        <source>When you receive a task, any information linked to the person&apos;s phone number found in active programs in the 121 Platform will appear here.</source>
+        <source>When you receive a task, any information linked to the person&apos;s phone number found in active projects in the 121 Platform will appear here.</source>
       </trans-unit>
       <trans-unit id="5709449651238206423" datatype="html">
         <source>Gotcha!</source>
@@ -1316,10 +1316,10 @@
         <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
       </trans-unit>
       <trans-unit id="337088933774172577" datatype="html">
-        <source>We retain your e-mail address for as long as a project/program is stored on the 121 Platform.</source>
+        <source>We retain your e-mail address for as long as a project/project is stored on the 121 Platform.</source>
       </trans-unit>
       <trans-unit id="3619477798940026244" datatype="html">
-        <source>We retain your e-mail address and name for as long as you are a user associated with a project/program on the 121 Platform.</source>
+        <source>We retain your e-mail address and name for as long as you are a user associated with a project/project on the 121 Platform.</source>
       </trans-unit>
       <trans-unit id="3805310091097915389" datatype="html">
         <source>How long we keep information</source>
@@ -1506,7 +1506,7 @@
         <source>Date is before</source>
       </trans-unit>
       <trans-unit id="843850389382133020" datatype="html">
-        <source>Duplication ignored with Reg. #<x equiv-text="item.attributes.duplicateWithRegistrationProgramId" id="PH"/></source>
+        <source>Duplication ignored with Reg. #<x equiv-text="item.attributes.duplicateWithRegistrationProjectId" id="PH"/></source>
       </trans-unit>
       <trans-unit id="9163695541488660450" datatype="html">
         <source>Update reason</source>

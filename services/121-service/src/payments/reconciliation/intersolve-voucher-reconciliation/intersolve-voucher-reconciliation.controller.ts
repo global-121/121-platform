@@ -28,21 +28,21 @@ export class IntersolveVoucherReconciliationController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Start a retrieve and update of voucher balances of a program. Can be manually used my admin user if needed',
+      'Start a retrieve and update of voucher balances of a project. Can be manually used my admin user if needed',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Voucher update job started',
   })
-  @Patch('/programs/:programId/fsps/intersolve-voucher/all')
+  @Patch('/projects/:projectId/fsps/intersolve-voucher/all')
   public async createJob(
     @Body() jobDetails: IntersolveVoucherJobDetails,
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<void> {
-    await this.intersolveVoucherReconciliationService.getAndUpdateBalancesForProgram(
-      programId,
+    await this.intersolveVoucherReconciliationService.getAndUpdateBalancesForProject(
+      projectId,
       jobDetails.name,
     );
   }

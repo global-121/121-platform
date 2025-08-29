@@ -80,9 +80,9 @@ export class ImportRegistrationsDto extends BulkImportDto {
   })
   @IsString()
   // Should we change this to a more specific name?
-  // It could also be programFspConfigurationName (which is a good name for us programmers)
+  // It could also be projectFspConfigurationName (which is a good name for us projectmers)
   // However this name is also used by users in the csv file, so it should be a name that is understandable for them
-  public programFspConfigurationName: string;
+  public projectFspConfigurationName: string;
 
   @ApiProperty()
   @IsOptional()

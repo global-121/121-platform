@@ -2,12 +2,12 @@ import { test } from '@playwright/test';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import {
   doPayment,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   getAllActivitiesCount,
   seedIncludedRegistrations,
@@ -18,7 +18,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -35,10 +35,10 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
 
   const paymentResponse = await doPayment({
-    programId: 2,
+    projectId: 2,
     amount: 100,
     referenceIds: [referenceIdPV5],
     accessToken,
@@ -46,7 +46,7 @@ test.beforeEach(async ({ page }) => {
   const paymentId = paymentResponse.body.id;
 
   await waitForPaymentTransactionsToComplete({
-    programId: programIdPV,
+    projectId: projectIdPV,
     paymentId,
     paymentReferenceIds: [referenceIdPV5],
     accessToken,
@@ -68,14 +68,14 @@ test.beforeEach(async ({ page }) => {
   );
 
   await waitForMessagesToComplete({
-    programId: programIdPV,
+    projectId: projectIdPV,
     referenceIds: [referenceIdPV5],
     accessToken,
     minimumNumberOfMessagesPerReferenceId: 3,
   });
 
   activitiesCount = (
-    await getAllActivitiesCount(programIdPV, referenceIdPV5, accessToken)
+    await getAllActivitiesCount(projectIdPV, referenceIdPV5, accessToken)
   ).totalCount;
 
   // Login
@@ -90,7 +90,7 @@ test('[34462] Expand rows of activity overview', async ({ page }) => {
   const registrationsPage = new RegistrationsPage(page);
   // Act
   await test.step('Navigate to registration activity log', async () => {
-    await activityLogPage.selectProgram(NLRCProgram.titlePortal.en);
+    await activityLogPage.selectProject(NLRCProject.titlePortal.en);
     await registrationsPage.goToRegistrationByName({
       registrationName: registrationPV5.fullName,
     });

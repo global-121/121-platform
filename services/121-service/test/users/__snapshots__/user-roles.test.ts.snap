@@ -2,4 +2,4 @@
 
 exports[`/ Users / Roles should not create a role when the role already exists 1`] = `"{"statusCode":409,"message":"Role already exists: test-manager"}"`;
 
-exports[`/ Users / Roles should not create a role when using a permission that does not exist 1`] = `"{"statusCode":400,"message":"Permission not valid: program.make-up-my-own-permission"}"`;
+exports[`/ Users / Roles should not create a role when using a permission that does not exist 1`] = `"{"statusCode":400,"message":"Permission not valid: project.make-up-my-own-permission"}"`;

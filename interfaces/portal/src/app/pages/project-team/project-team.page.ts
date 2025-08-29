@@ -118,7 +118,7 @@ export class ProjectTeamPageComponent {
   readonly canManageAidworkers = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
-      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+      requiredPermission: PermissionEnum.AidWorkerProjectUPDATE,
     }),
   );
 

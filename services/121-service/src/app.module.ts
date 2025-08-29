@@ -28,12 +28,12 @@ import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments
 import { NedbankReconciliationModule } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
 import { OnafriqReconciliationModule } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
 import { SafaricomReconciliationModule } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/project-aidworker.entity';
+import { ProjectAttachmentsModule } from '@121-service/src/projects/project-attachments/project-attachments.module';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
-import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
+import { ProjectExistenceInterceptor } from '@121-service/src/shared/interceptors/project-existence.interceptor';
 import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
@@ -44,20 +44,20 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
   imports: [
     QueuesRegistryModule,
     TypeOrmModule,
-    TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
+    TypeORMNestJS.forFeature([ProjectAidworkerAssignmentEntity]),
     HealthModule,
     CronjobModule,
     ExchangeRatesModule,
     ScriptsModule,
     OrganizationModule,
-    ProgramModule,
+    ProjectModule,
     MessageModule,
     MetricsModule,
     MessageIncomingModule,
     NedbankReconciliationModule,
     NoteModule,
     EmailsModule,
-    ProgramAttachmentsModule,
+    ProjectAttachmentsModule,
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './files',
@@ -100,7 +100,7 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ProgramExistenceInterceptor,
+      useClass: ProjectExistenceInterceptor,
     },
   ],
 })

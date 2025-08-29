@@ -8,7 +8,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
@@ -31,7 +31,7 @@ describe('Load PA table', () => {
         referenceIdInterpretableAsNumber;
 
       await importRegistrations(
-        programIdOCW,
+        projectIdOCW,
         [
           registrationOCW1,
           registrationOCW2,
@@ -46,7 +46,7 @@ describe('Load PA table', () => {
     it('should filter using a referenceId string', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.referenceId': referenceIdInterpretableAsNumber,
@@ -62,7 +62,7 @@ describe('Load PA table', () => {
     it('should filter with $eq', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.referenceId': `$eq:${referenceIdInterpretableAsNumber}`,
@@ -78,7 +78,7 @@ describe('Load PA table', () => {
     it('should filter with $ilike', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.referenceId': `$ilike:${referenceIdInterpretableAsNumber}`,
@@ -94,7 +94,7 @@ describe('Load PA table', () => {
     it('should filter with $in', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.referenceId': `$in:${referenceIdInterpretableAsNumber}`,

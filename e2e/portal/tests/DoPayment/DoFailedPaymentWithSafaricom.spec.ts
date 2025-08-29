@@ -2,14 +2,14 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import KRCSProgram from '@121-service/src/seed-data/program/program-safaricom.json';
+import KRCSProject from '@121-service/src/seed-data/project/project-safaricom.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdSafaricom,
+  projectIdSafaricom,
   registrationsSafaricom,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -18,13 +18,13 @@ import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.safaricomProgram, __filename);
+  await resetDB(SeedScript.safaricomProject, __filename);
   const accessToken = await getAccessToken();
   // Phone number is set to 254000000000 to create a failed payment
   registrationsSafaricom[0].phoneNumber = '254000000000';
   await seedIncludedRegistrations(
     registrationsSafaricom,
-    programIdSafaricom,
+    projectIdSafaricom,
     accessToken,
   );
 
@@ -37,9 +37,9 @@ test.beforeEach(async ({ page }) => {
 test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = KRCSProgram.titlePortal.en;
+  const projectTitle = KRCSProject.titlePortal.en;
   const numberOfPas = registrationsSafaricom.length;
-  const defaultTransferValue = KRCSProgram.fixedTransferValue;
+  const defaultTransferValue = KRCSProject.fixedTransferValue;
   const defaultMaxTransferValue = registrationsSafaricom.reduce(
     (output, pa) => {
       return output + pa.paymentAmountMultiplier * defaultTransferValue;
@@ -48,10 +48,10 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
   );
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
 
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   await test.step('Do payment', async () => {
@@ -60,7 +60,7 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
       url.pathname.startsWith(
-        `/en-GB/project/${programIdSafaricom}/payments/1`,
+        `/en-GB/project/${projectIdSafaricom}/payments/1`,
       ),
     );
     // Assert payment overview page by payment date/ title
@@ -70,7 +70,7 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
   await test.step('Validate payment card with failed payment data', async () => {
     await paymentPage.validateToastMessageAndClose('Payment created.');
     await paymentPage.waitForPaymentToComplete();
-    await paymentPage.navigateToProgramPage('Payments');
+    await paymentPage.navigateToProjectPage('Payments');
     // First try to validate the payment card where system still waits for the response from the PA with Voucher payment method.
     await paymentsPage.validatePaymentCard({
       date: lastPaymentDate,
@@ -78,7 +78,7 @@ test('[36096] Do failed payment for Safaricom fsp', async ({ page }) => {
       registrationsNumber: numberOfPas,
       successfulTransfers: 0,
       failedTransfers: numberOfPas,
-      currency: KRCSProgram.currency,
+      currency: KRCSProject.currency,
     });
   });
 });

@@ -2,14 +2,14 @@ import { test } from '@playwright/test';
 
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProjectPV from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -19,7 +19,7 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -35,10 +35,10 @@ test('[36347] User does not have sufficient Role to bulk update with CSV (import
 }) => {
   const registrationsPage = new RegistrationsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const projectTitle = NLRCProjectPV.titlePortal.en;
 
-  await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+  await test.step('Select project', async () => {
+    await registrationsPage.selectProject(projectTitle);
   });
 
   await test.step('Select all registrations, open "Update registrations" dialog and validate "Update selected registrations" are not visible', async () => {

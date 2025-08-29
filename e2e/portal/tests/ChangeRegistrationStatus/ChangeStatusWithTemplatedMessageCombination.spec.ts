@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
   registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -18,21 +18,21 @@ const toastMessage =
 // Arrange
 const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
+  await seedRegistrations([registrationPV5, registrationPV6], projectIdPV);
 };
 
 const login = async (page: Page, email?: string, password?: string) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
   await loginPage.login(email, password);
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  // Navigate to project
+  await loginPage.selectProject('NLRC Direct Digital Aid Project (PV)');
 };
 
 const navigateToRegistrationsAndResetFilters = async (page: Page) => {
   const registrations = new RegistrationsPage(page);
 
-  await registrations.navigateToProgramPage('Registrations');
+  await registrations.navigateToProjectPage('Registrations');
   await registrations.deselectRegistrations();
 };
 

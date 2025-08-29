@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdWesteros,
+  projectIdWesteros,
   registrationWesteros1,
   registrationWesteros2,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -29,7 +29,7 @@ test('[35447] View Redline start-page (no search)', async ({ page }) => {
 
   // Assert
   await expect(page.locator('body')).toContainText(
-    "When you receive a task, any information linked to the person's phone number found in active programs in the 121 Platform will appear here.",
+    "When you receive a task, any information linked to the person's phone number found in active projects in the 121 Platform will appear here.",
   );
 });
 
@@ -52,8 +52,8 @@ test('[35450] View search-result with single matched registration', async ({
   // Arrange
   const testRegistrations = [registrationWesteros1];
   const testPhoneNumber = registrationWesteros1.phoneNumber;
-  const testProgramRegistrationId = 2;
-  await seedRegistrations(testRegistrations, programIdWesteros);
+  const testProjectRegistrationId = 2;
+  await seedRegistrations(testRegistrations, projectIdWesteros);
 
   // Act
   await page.goto(`/en-GB/registration-lookup?phonenumber=${testPhoneNumber}`);
@@ -65,7 +65,7 @@ test('[35450] View search-result with single matched registration', async ({
   await page.waitForURL((url) => {
     return (
       url.pathname.endsWith(
-        `/en-GB/project/${programIdWesteros}/registrations/${testProgramRegistrationId}/activity-log`,
+        `/en-GB/project/${projectIdWesteros}/registrations/${testProjectRegistrationId}/activity-log`,
       ) && url.search.endsWith(`?phonenumber=${testPhoneNumber}`)
     );
   });
@@ -75,7 +75,7 @@ test('[35449] View search-results with multiple matched registrations', async ({
   page,
 }) => {
   // Arrange
-  const projectTitle = 'Cash program Westeros';
+  const projectTitle = 'Cash project Westeros';
   const testPhoneNumber = registrationWesteros1.phoneNumber;
   const registrationWithSamePhoneNumber = {
     ...registrationWesteros2,
@@ -85,7 +85,7 @@ test('[35449] View search-results with multiple matched registrations', async ({
     registrationWesteros1,
     registrationWithSamePhoneNumber,
   ];
-  await seedRegistrations(testRegistrations, programIdWesteros);
+  await seedRegistrations(testRegistrations, projectIdWesteros);
 
   // Act
   await page.goto(`/en-GB/registration-lookup?phonenumber=${testPhoneNumber}`);

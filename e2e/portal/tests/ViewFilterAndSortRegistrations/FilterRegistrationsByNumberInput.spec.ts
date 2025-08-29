@@ -2,14 +2,14 @@ import { expect, test } from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/project.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPvMaxPayment,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -28,13 +28,13 @@ test.beforeEach(async ({ page }) => {
   registrationsPV.push(registrationPvMaxPayment);
   await seedRegistrationsWithStatus(
     registrationsPV,
-    programIdPV,
+    projectIdPV,
     accessToken,
     RegistrationStatusEnum.included,
   );
 
   await doPayment({
-    programId: 2,
+    projectId: 2,
     amount: 25,
     referenceIds: [registrationsPV[0].referenceId],
     accessToken,
@@ -44,8 +44,8 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  // Navigate to project
+  await loginPage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 
 test('[34948] Filter registrations by Input number', async ({ page }) => {

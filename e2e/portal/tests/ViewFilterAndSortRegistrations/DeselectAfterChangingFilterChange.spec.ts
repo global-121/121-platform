@@ -7,7 +7,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -19,18 +19,18 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 //   await resetDB(SeedScript.nlrcMultiple, __filename);
 //   const accessToken = await getAccessToken();
 
-//   await importRegistrations(programIdPV, registrationsPV, accessToken);
+//   await importRegistrations(projectIdPV, registrationsPV, accessToken);
 // });
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
 
-  await importRegistrations(programIdPV, registrationsPV, accessToken);
+  await importRegistrations(projectIdPV, registrationsPV, accessToken);
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await loginPage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 
 test('Registration table should clear row selections when filter criteria change', async ({

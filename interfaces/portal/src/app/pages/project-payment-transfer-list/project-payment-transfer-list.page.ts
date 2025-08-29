@@ -99,10 +99,10 @@ export class ProjectPaymentTransferListPageComponent {
     }
     const projectPaymentColumns: QueryTableColumn<PaymentTransaction>[] = [
       {
-        field: 'registrationProgramId',
+        field: 'registrationProjectId',
         header: $localize`Reg. #`,
         getCellText: (transaction) =>
-          $localize`Reg. #` + transaction.registrationProgramId.toString(),
+          $localize`Reg. #` + transaction.registrationProjectId.toString(),
         getCellRouterLink: (transaction) =>
           registrationLink({
             projectId: this.projectId(),
@@ -156,10 +156,10 @@ export class ProjectPaymentTransferListPageComponent {
           ) ?? '',
       },
       {
-        field: 'programFspConfigurationName',
+        field: 'projectFspConfigurationName',
         header: $localize`FSP`,
         type: QueryTableColumnType.MULTISELECT,
-        options: this.project.data().programFspConfigurations.map((config) => ({
+        options: this.project.data().projectFspConfigurations.map((config) => ({
           label: this.translatableStringService.translate(config.label) ?? '',
           value: config.name,
         })),

@@ -17,15 +17,15 @@ export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
     super(request, repository);
   }
 
-  async getManyByRegistrationIdAndProgramId(
+  async getManyByRegistrationIdAndProjectId(
     registrationId: number,
-    programId: number,
+    projectId: number,
   ) {
     const result: (NoteEntity & { user: UserEntity })[] = await this.find({
       where: {
         registration: {
           id: Equal(registrationId),
-          programId: Equal(programId),
+          projectId: Equal(projectId),
         },
       },
       relations: ['user'],

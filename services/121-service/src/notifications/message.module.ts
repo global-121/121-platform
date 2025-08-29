@@ -19,7 +19,7 @@ import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-w
 import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp.module';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 
@@ -37,7 +37,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
     MessageQueuesModule,
     IntersolveVoucherModule,
     MessageTemplateModule,
-    ProgramModule,
+    ProjectModule,
   ],
   providers: [
     MessageService,

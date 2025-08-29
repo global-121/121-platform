@@ -14,8 +14,8 @@ import {
   getTransactions,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
+} from '@121-service/test/helpers/project.helper';
+import { deleteProjectFspConfigurationProperty } from '@121-service/test/helpers/project-fsp-configuration.helper';
 import {
   seedIncludedRegistrations,
   seedPaidRegistrations,
@@ -28,7 +28,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
-const programId = 1;
+const projectId = 1;
 const amount = 200;
 
 enum NedbankMockNumber {
@@ -48,7 +48,7 @@ describe('Do payment', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.nedbankProgram, __filename);
+      await resetDB(SeedScript.nedbankProject, __filename);
       accessToken = await getAccessToken();
     });
 
@@ -58,13 +58,13 @@ describe('Do payment', () => {
         const paymentReferenceIds = [registrationNedbank.referenceId];
         await seedIncludedRegistrations(
           [registrationNedbank],
-          programId,
+          projectId,
           accessToken,
         );
 
         // Act
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -72,7 +72,7 @@ describe('Do payment', () => {
         const paymentId = doPaymentResponse.body.id;
 
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
@@ -84,7 +84,7 @@ describe('Do payment', () => {
         });
 
         const getTransactionsBeforeCronjob = await getTransactions({
-          programId,
+          projectId,
           paymentId,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
@@ -94,7 +94,7 @@ describe('Do payment', () => {
         // Cronjob should update the status of the transaction
         await runCronJobDoNedbankReconciliation();
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 6_000,
@@ -105,7 +105,7 @@ describe('Do payment', () => {
         });
 
         const getTransactionsAfterCronjob = await getTransactions({
-          programId,
+          projectId,
           paymentId,
           registrationReferenceId: registrationNedbank.referenceId,
           accessToken,
@@ -114,7 +114,7 @@ describe('Do payment', () => {
 
         const exportTransactionResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
@@ -156,13 +156,13 @@ describe('Do payment', () => {
         ];
         await seedIncludedRegistrations(
           [registrationFailDebitorAccount],
-          programId,
+          projectId,
           accessToken,
         );
 
         // Act
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -170,7 +170,7 @@ describe('Do payment', () => {
         const paymentId = doPaymentResponse.body.id;
 
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
@@ -183,7 +183,7 @@ describe('Do payment', () => {
 
         const getTransactionsBody = (
           await getTransactions({
-            programId,
+            projectId,
             paymentId,
             registrationReferenceId: registrationFailDebitorAccount.referenceId,
             accessToken,
@@ -200,13 +200,13 @@ describe('Do payment', () => {
         const paymentReferenceIds = [registrationNedbank.referenceId];
         await seedIncludedRegistrations(
           [registrationNedbank],
-          programId,
+          projectId,
           accessToken,
         );
 
         // Act
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount: amountOver6000,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -214,7 +214,7 @@ describe('Do payment', () => {
         const paymentId = doPaymentResponse.body.id;
 
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
@@ -227,7 +227,7 @@ describe('Do payment', () => {
 
         const getTransactionsBody = (
           await getTransactions({
-            programId,
+            projectId,
             paymentId,
             registrationReferenceId: registrationNedbank.referenceId,
             accessToken,
@@ -248,13 +248,13 @@ describe('Do payment', () => {
         const paymentReferenceIds = [registrationFailPhoneNumber.referenceId];
         await seedIncludedRegistrations(
           [registrationFailPhoneNumber],
-          programId,
+          projectId,
           accessToken,
         );
 
         // Act
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
@@ -262,7 +262,7 @@ describe('Do payment', () => {
         const paymentId = doPaymentResponse.body.id;
 
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
@@ -277,7 +277,7 @@ describe('Do payment', () => {
 
         const getTransactionsBody = (
           await getTransactions({
-            programId,
+            projectId,
             paymentId,
             registrationReferenceId: registrationFailPhoneNumber.referenceId,
             accessToken,
@@ -299,20 +299,20 @@ describe('Do payment', () => {
         const paymentReferenceIds = [registrationTooManyRequest.referenceId];
         await seedIncludedRegistrations(
           [registrationTooManyRequest],
-          programId,
+          projectId,
           accessToken,
         );
 
         // Act
         await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
         });
 
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds,
           accessToken,
           maxWaitTimeMs: 30_000,
@@ -325,7 +325,7 @@ describe('Do payment', () => {
 
         const paymentExportBeforeReconciliation = (
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           })
         )[0];
@@ -333,7 +333,7 @@ describe('Do payment', () => {
         await runCronJobDoNedbankReconciliation();
         const paymentExportAfterReconciliation = (
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           })
         )[0];
@@ -357,18 +357,18 @@ describe('Do payment', () => {
         };
         await seedIncludedRegistrations(
           [registrationFailDebitorAccount],
-          programId,
+          projectId,
           accessToken,
         );
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
         });
         const paymentId = doPaymentResponse.body.id;
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
           maxWaitTimeMs: 5_000,
@@ -376,7 +376,7 @@ describe('Do payment', () => {
         });
         const exportPaymentBeforeRetryResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
@@ -384,19 +384,19 @@ describe('Do payment', () => {
           exportPaymentBeforeRetryResponse[0].nedbankOrderCreateReference;
 
         await updateRegistration(
-          programId,
+          projectId,
           registrationFailDebitorAccount.referenceId,
           { phoneNumber: '27000000000' },
           'to make payment work this time',
           accessToken,
         );
         await retryPayment({
-          programId,
+          projectId,
           paymentId,
           accessToken,
         });
         await waitForPaymentTransactionsToComplete({
-          programId,
+          projectId,
           paymentReferenceIds: [registrationFailDebitorAccount.referenceId],
           accessToken,
           maxWaitTimeMs: 5000,
@@ -404,7 +404,7 @@ describe('Do payment', () => {
         });
         const exportPaymentAfterRetryReponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
@@ -430,13 +430,13 @@ describe('Do payment', () => {
           };
           registrations.push(registration);
         }
-        await seedPaidRegistrations(registrations, programId);
+        await seedPaidRegistrations(registrations, projectId);
 
         // Act
         await runCronJobDoNedbankReconciliation();
         const getExportTransactionsResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
@@ -460,17 +460,17 @@ describe('Do payment', () => {
         };
 
         // Act
-        await seedPaidRegistrations([registrationFailTimeout], programId);
+        await seedPaidRegistrations([registrationFailTimeout], projectId);
         const transactionsExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
         const transactionBeforeCron = transactionsExportBeforeCronResponse[0];
 
         await updateRegistration(
-          programId,
+          projectId,
           registrationFailTimeout.referenceId,
           { phoneNumber: '27000000000' },
           'to make payment work this time',
@@ -480,7 +480,7 @@ describe('Do payment', () => {
         await runCronJobDoNedbankReconciliation();
         const transactionExportAfterCronResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
@@ -507,17 +507,17 @@ describe('Do payment', () => {
           phoneNumber: NedbankMockNumber.failTimoutSimulate, // This phone number will simulate a time-out in our mock service
           referenceId: NebankGetOrderMockReference.orderNotFound, // This referenceId will be copied to the orderCreateReference and this will simulate a not found order in our mock service when we try to get the order
         };
-        await seedPaidRegistrations([registrationFailTimeout], programId);
+        await seedPaidRegistrations([registrationFailTimeout], projectId);
         const transactionExportBeforeCronResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
 
         const transactionBeforeCron = transactionExportBeforeCronResponse[0];
 
         await updateRegistration(
-          programId,
+          projectId,
           registrationFailTimeout.referenceId,
           { phoneNumber: '27000000000' },
           'to make payment work this time',
@@ -527,7 +527,7 @@ describe('Do payment', () => {
         await runCronJobDoNedbankReconciliation();
         const transactionExportAfterCronResponse =
           await exportTransactionsByDateRangeJson({
-            programId,
+            projectId,
             accessToken,
           });
         const transactionAfterCron = transactionExportAfterCronResponse[0];
@@ -548,18 +548,18 @@ describe('Do payment', () => {
       });
     });
 
-    describe('when program financial service configuration is not set properly', () => {
-      it('should fail payment by nedbank if paymentReferencePrefix is not configured for the program', async () => {
+    describe('when project financial service configuration is not set properly', () => {
+      it('should fail payment by nedbank if paymentReferencePrefix is not configured for the project', async () => {
         // Arrange
         await seedIncludedRegistrations(
           [registrationNedbank],
-          programId,
+          projectId,
           accessToken,
         );
         const paymentReferenceIds = [registrationNedbank.referenceId];
 
-        await deleteProgramFspConfigurationProperty({
-          programId,
+        await deleteProjectFspConfigurationProperty({
+          projectId,
           configName: Fsps.nedbank,
           propertyName: FspConfigurationProperties.paymentReferencePrefix,
           accessToken,
@@ -567,7 +567,7 @@ describe('Do payment', () => {
 
         // Act
         const doPaymentResponse = await doPayment({
-          programId,
+          projectId,
           amount,
           referenceIds: paymentReferenceIds,
           accessToken,
