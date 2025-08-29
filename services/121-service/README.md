@@ -1,6 +1,6 @@
 # 121-Service
 
-The 121-Service is the backend where 121-programs can be created and monitored, etc.
+The 121-Service is the backend where 121-projects can be created and monitored, etc.
 
 ---
 
@@ -82,7 +82,7 @@ To run the API/Integration tests: (replace `:all` with `:watch` to run during de
 
 To run a single test suite, amend the name of the test file, for example:
 
-    docker exec 121-service  npm run test:integration:all update-program.test.ts
+    docker exec 121-service  npm run test:integration:all update-project.test.ts
 
 To update snapshots, amend the `-- -u` option, for example:
 

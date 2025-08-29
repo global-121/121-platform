@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { AppDataSource } from '@121-service/src/appdatasource';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -177,10 +177,10 @@ export class SeedMockHelperService {
 
   public async multiplyTransactions(
     nr: number,
-    programIds: number[],
+    projectIds: number[],
   ): Promise<void> {
-    for (const programId of programIds) {
-      await this.multiplyTransactionsPerProgram(nr, programId);
+    for (const projectId of projectIds) {
+      await this.multiplyTransactionsPerProject(nr, projectId);
     }
 
     console.log(`**Updating payment count**`);
@@ -206,9 +206,9 @@ export class SeedMockHelperService {
     await this.dataSource.query(queryUnusedVouchers);
   }
 
-  public async multiplyTransactionsPerProgram(
+  public async multiplyTransactionsPerProject(
     powerNr: number,
-    programId: number,
+    projectId: number,
   ): Promise<void> {
     // Since there already is 1 transaction
     const nr = powerNr - 1;
@@ -235,26 +235,26 @@ export class SeedMockHelperService {
 
       await this.dataSource.query(createPaymentQuery, [
         newPaymentId,
-        programId,
+        projectId,
       ]);
 
       console.log(
-        `**CREATING MOCK DATA programId ${programId} transactions payment ${i + 1} of ${
+        `**CREATING MOCK DATA projectId ${projectId} transactions payment ${i + 1} of ${
           nr + 1
         } payments**`,
       );
-      await this.dataSource.query(queryTransactions, [newPaymentId, programId]);
+      await this.dataSource.query(queryTransactions, [newPaymentId, projectId]);
       console.log(
-        `**CREATING MOCK DATA programId ${programId} vouchers payment ${i + 1} of ${
+        `**CREATING MOCK DATA projectId ${projectId} vouchers payment ${i + 1} of ${
           nr + 1
         } payments**`,
       );
       await this.dataSource.query(queryVoucherPerPayment, [
         newPaymentId,
-        programId,
+        projectId,
       ]);
       console.log(
-        `**CREATING MOCK DATA programId ${programId} imagecode payment ${i + 1} of ${
+        `**CREATING MOCK DATA projectId ${projectId} imagecode payment ${i + 1} of ${
           nr + 1
         } payments**`,
       );
@@ -299,12 +299,13 @@ export class SeedMockHelperService {
     for (const table of tables) {
       const tableName = table.table_name;
       if (!['custom_migration', 'typeorm_metadata'].includes(tableName)) {
-        let sequenceName = `${tableName}_id_seq`;
-        // this sequences is created with an abbreviated name automatically, so this exception is needed here
-        if (tableName === 'program_fsp_configuration_property') {
-          sequenceName = 'program_financial_service_pro_id_seq';
-        }
-
+        // We used to have problems with long sequence names, that were
+        // abbreviated. They basically did not adhere to the
+        // '${tableName}_id_seq' format but used an abbreviated tableName and
+        // then added "_id_seq". If that happens again, either manually set the
+        // abbreviated sequence name here or set a custom sequence name in the
+        // Entity for that table.
+        const sequenceName = `${tableName}_id_seq`;
         const maxIdQuery = `SELECT MAX(id) FROM "121-service"."${tableName}"`;
 
         const maxIdResult = await this.dataSource.query(maxIdQuery);
@@ -321,17 +322,17 @@ export class SeedMockHelperService {
 
   public async introduceDuplicates(): Promise<void> {
     console.log('**Introducing duplicates **');
-    const selectProgramRegistrationAttributesWithDuplicateCheck =
+    const selectProjectRegistrationAttributesWithDuplicateCheck =
       await this.dataSource.manager
-        .getRepository(ProgramRegistrationAttributeEntity)
-        .createQueryBuilder('program_registration_attribute')
+        .getRepository(ProjectRegistrationAttributeEntity)
+        .createQueryBuilder('project_registration_attribute')
         .select('id')
         .where('"duplicateCheck" = true')
         .getRawMany();
 
     for (const {
       id,
-    } of selectProgramRegistrationAttributesWithDuplicateCheck) {
+    } of selectProjectRegistrationAttributesWithDuplicateCheck) {
       const queryIntroduceDuplicates = readSqlFile(
         '../../../src/scripts/sql/mock-introduce-duplicates.sql',
       );
@@ -343,11 +344,11 @@ export class SeedMockHelperService {
   }
 
   public async importRegistrations(
-    programId: number,
+    projectId: number,
     registrations: object[],
     accessToken: string,
   ): Promise<any> {
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/projects/${projectId}/registrations`;
     const body = registrations;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
 
@@ -355,7 +356,7 @@ export class SeedMockHelperService {
   }
 
   public async awaitChangePaStatus(
-    programId: number,
+    projectId: number,
     referenceIds: string[],
     status: RegistrationStatusEnum,
     accessToken: string,
@@ -371,7 +372,7 @@ export class SeedMockHelperService {
       }
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/status?${queryParams.slice(
+    const url = `${this.axiosCallsService.getBaseUrl()}/projects/${projectId}/registrations/status?${queryParams.slice(
       0,
       -1,
     )}`;
@@ -383,7 +384,7 @@ export class SeedMockHelperService {
 
     const result = await this.httpService.patch(url, body, headers);
     await this.waitForStatusChangeToComplete(
-      programId,
+      projectId,
       referenceIds.length,
       status,
       8000,
@@ -394,7 +395,7 @@ export class SeedMockHelperService {
   }
 
   public async waitForStatusChangeToComplete(
-    programId: number,
+    projectId: number,
     amountOfRegistrations: number,
     status: string,
     maxWaitTimeMs: number,
@@ -404,7 +405,7 @@ export class SeedMockHelperService {
     while (Date.now() - startTime < maxWaitTimeMs) {
       // Get payment transactions
       const paginatedRegistrations = await this.getRegistrations(
-        programId,
+        projectId,
         ['status'],
         accessToken,
         1,
@@ -426,7 +427,7 @@ export class SeedMockHelperService {
   }
 
   public async getRegistrations(
-    programId: number,
+    projectId: number,
     attributes: string[],
     accessToken: string,
     page?: number,
@@ -439,14 +440,14 @@ export class SeedMockHelperService {
     if (limit) queryParams.append('limit', limit.toString());
     Object.keys(filter).forEach((key) => queryParams.append(key, filter[key]));
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/projects/${projectId}/registrations?${queryParams}`;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
 
     return await this.httpService.get(url, headers);
   }
 
   public async doPayment(
-    programId: number,
+    projectId: number,
     amount: number,
     referenceIds: string[],
     accessToken: string,
@@ -463,7 +464,7 @@ export class SeedMockHelperService {
       queryParams += `filter.referenceId=$in:${referenceIds.join(',')}&`;
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/payments?${queryParams.slice(
+    const url = `${this.axiosCallsService.getBaseUrl()}/projects/${projectId}/payments?${queryParams.slice(
       0,
       -1,
     )}`;

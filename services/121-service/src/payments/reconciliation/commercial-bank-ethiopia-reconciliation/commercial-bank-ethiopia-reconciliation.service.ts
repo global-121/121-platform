@@ -9,15 +9,15 @@ import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/p
 import { CommercialBankEthiopiaValidationData } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaReconciliationService {
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public projectRepository: Repository<ProjectEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -32,39 +32,39 @@ export class CommercialBankEthiopiaReconciliationService {
   ) {}
 
   public async retrieveAndUpsertAccountEnquiries(): Promise<number> {
-    const programs = await this.getAllProgramsWithCBE();
+    const projects = await this.getAllProjectsWithCBE();
     let totalAccountEnquiries = 0;
-    for (const program of programs) {
-      const accountEnquiriesPerProgram =
-        await this.retrieveAndUpsertAccountEnquiriesForProgram(program.id);
-      totalAccountEnquiries += accountEnquiriesPerProgram;
+    for (const project of projects) {
+      const accountEnquiriesPerProject =
+        await this.retrieveAndUpsertAccountEnquiriesForProject(project.id);
+      totalAccountEnquiries += accountEnquiriesPerProject;
     }
     return totalAccountEnquiries;
   }
 
-  public async getAllProgramsWithCBE(): Promise<ProgramEntity[]> {
-    const programs = await this.programRepository
-      .createQueryBuilder('program')
-      .select('program.id')
-      .innerJoin('program.programFspConfigurations', 'programFspConfigurations')
-      .where('programFspConfigurations.fspName = :fsp', {
+  public async getAllProjectsWithCBE(): Promise<ProjectEntity[]> {
+    const projects = await this.projectRepository
+      .createQueryBuilder('project')
+      .select('project.id')
+      .innerJoin('project.projectFspConfigurations', 'projectFspConfigurations')
+      .where('projectFspConfigurations.fspName = :fsp', {
         fsp: Fsps.commercialBankEthiopia,
       })
       .getMany();
 
-    return programs;
+    return projects;
   }
 
-  public async retrieveAndUpsertAccountEnquiriesForProgram(
-    programId: number,
+  public async retrieveAndUpsertAccountEnquiriesForProject(
+    projectId: number,
   ): Promise<number> {
     const credentials =
       await this.commercialBankEthiopiaService.getCommercialBankEthiopiaCredentialsOrThrow(
-        { programId },
+        { projectId },
       );
 
     const getAllPersonsAffectedData =
-      await this.getAllPersonsAffectedData(programId);
+      await this.getAllPersonsAffectedData(projectId);
 
     console.time('getValidationStatus loop total');
 
@@ -141,17 +141,17 @@ export class CommercialBankEthiopiaReconciliationService {
   }
 
   public async getAllPersonsAffectedData(
-    programId: number,
+    projectId: number,
   ): Promise<CommercialBankEthiopiaValidationData[]> {
     const registrationData = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select([
         'registration.id AS "id"',
         'ARRAY_AGG(data.value) AS "values"',
-        'ARRAY_AGG("programRegistrationAttribute".name) AS "fieldNames"',
+        'ARRAY_AGG("projectRegistrationAttribute".name) AS "fieldNames"',
       ])
-      .andWhere('registration.programId = :programId', { programId })
-      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
+      .andWhere('registration.projectId = :projectId', { projectId })
+      .andWhere('(projectRegistrationAttribute.name IN (:...names))', {
         names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
       })
       .andWhere('registration.registrationStatus NOT IN (:...statusValues)', {
@@ -159,8 +159,8 @@ export class CommercialBankEthiopiaReconciliationService {
       })
       .leftJoin('registration.data', 'data')
       .leftJoin(
-        'data.programRegistrationAttribute',
-        'programRegistrationAttribute',
+        'data.projectRegistrationAttribute',
+        'projectRegistrationAttribute',
       )
       .groupBy('registration.id')
       .getRawMany();

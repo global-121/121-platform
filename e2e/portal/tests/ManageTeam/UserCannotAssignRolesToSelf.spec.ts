@@ -4,7 +4,7 @@ import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
-  removeProgramAssignment,
+  removeProjectAssignment,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -12,7 +12,7 @@ import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
 
-const programId = 2;
+const projectId = 2;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple, __filename);
@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
 
   // remove assignments of all users except admin again, to create the context for this test
   for (let userId = 2; userId <= 10; userId++) {
-    await removeProgramAssignment(programId, userId, accessToken);
+    await removeProjectAssignment(projectId, userId, accessToken);
   }
 
   // Login
@@ -32,12 +32,12 @@ test.beforeEach(async ({ page }) => {
 test('User cannot assign role to self', async ({ page }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeam(page);
-  const projectTitle = 'Cash program Westeros';
+  const projectTitle = 'Cash project Westeros';
 
   // Arrange
-  await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Team');
+  await test.step('Select project and navigate to Manage team', async () => {
+    await basePage.selectProject(projectTitle);
+    await basePage.navigateToProjectPage('Team');
   });
 
   // Act

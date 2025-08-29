@@ -13,7 +13,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   getAccessToken,
   getServer,
@@ -29,7 +29,7 @@ export function createOcwRegistrationForImport({
   addressStreet,
   addressPostalCode,
   addressCity,
-  programFspConfigurationName,
+  projectFspConfigurationName,
 }: {
   referenceId?: string;
   paymentAmountMultiplier?: number;
@@ -40,7 +40,7 @@ export function createOcwRegistrationForImport({
   addressStreet?: string | null;
   addressPostalCode?: string | null;
   addressCity?: string | null;
-  programFspConfigurationName?: string;
+  projectFspConfigurationName?: string;
 }) {
   return {
     referenceId:
@@ -52,8 +52,8 @@ export function createOcwRegistrationForImport({
       paymentAmountMultiplier !== undefined ? paymentAmountMultiplier : 1,
     fullName: fullName !== undefined ? fullName : 'Default Name',
     phoneNumber: phoneNumber !== undefined ? phoneNumber : '14155236666',
-    programFspConfigurationName: programFspConfigurationName
-      ? programFspConfigurationName
+    projectFspConfigurationName: projectFspConfigurationName
+      ? projectFspConfigurationName
       : Fsps.intersolveVisa,
     whatsappPhoneNumber:
       whatsappPhoneNumber !== undefined ? whatsappPhoneNumber : '14155236666',
@@ -69,48 +69,48 @@ export function createOcwRegistrationForImport({
 }
 
 export function importRegistrations(
-  programId: number,
+  projectId: number,
   registrations: object[],
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations`)
+    .post(`/projects/${projectId}/registrations`)
     .set('Cookie', [accessToken])
     .send(registrations);
 }
 
 export function importRegistrationsCSV(
-  programId: number,
+  projectId: number,
   filePath: string,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .post(`/programs/${programId}/registrations/import`)
+    .post(`/projects/${projectId}/registrations/import`)
     .set('Cookie', [accessToken])
     .attach('file', filePath);
 }
 
 export function bulkUpdateRegistrationsCSV(
-  programId: number,
+  projectId: number,
   filePath: string,
   accessToken: string,
   reason: string,
 ): Promise<request.Response> {
   return getServer()
-    .patch(`/programs/${programId}/registrations`)
+    .patch(`/projects/${projectId}/registrations`)
     .set('Cookie', [accessToken])
     .attach('file', filePath)
     .field('reason', reason);
 }
 
 export function deleteRegistrations({
-  programId,
+  projectId,
   referenceIds,
   accessToken,
   reason = 'default reason',
   filter = {},
 }: {
-  programId: number;
+  projectId: number;
   referenceIds: string[];
   accessToken: string;
   reason?: string;
@@ -129,7 +129,7 @@ export function deleteRegistrations({
   }
 
   return getServer()
-    .delete(`/programs/${programId}/registrations`)
+    .delete(`/projects/${projectId}/registrations`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
@@ -138,11 +138,11 @@ export function deleteRegistrations({
 }
 
 export async function waitForDeleteRegistrations({
-  programId,
+  projectId,
   referenceIds,
   maxWaitTimeMs = 8000,
 }: {
-  programId: number;
+  projectId: number;
   referenceIds: string[];
   maxWaitTimeMs?: number;
 }) {
@@ -153,7 +153,7 @@ export async function waitForDeleteRegistrations({
 
     for (const referenceId of referenceIds) {
       const getEventsResponse = await getEvents({
-        programId,
+        projectId,
         fromDate: undefined,
         toDate: undefined,
         referenceId,
@@ -179,7 +179,7 @@ export async function waitForDeleteRegistrations({
 
 export function searchRegistrationByReferenceId(
   referenceId: string,
-  programId: number,
+  projectId: number,
   accessToken: string,
 ): Promise<request.Response> {
   const queryParams = {
@@ -187,24 +187,24 @@ export function searchRegistrationByReferenceId(
   };
 
   return getServer()
-    .get(`/programs/${programId}/registrations`)
+    .get(`/projects/${projectId}/registrations`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();
 }
 
 export async function getRegistrationIdByReferenceId({
-  programId,
+  projectId,
   referenceId,
   accessToken,
 }: {
-  programId: number;
+  projectId: number;
   referenceId: string;
   accessToken: string;
 }): Promise<number> {
   const searchRegistrationResponse = await searchRegistrationByReferenceId(
     referenceId,
-    programId,
+    projectId,
     accessToken,
   );
 
@@ -227,7 +227,7 @@ export function searchRegistrationByPhoneNumber(
 }
 
 export function getRegistrations({
-  programId,
+  projectId,
   attributes,
   accessToken,
   page,
@@ -235,7 +235,7 @@ export function getRegistrations({
   filter = {},
   sort,
 }: {
-  programId: number;
+  projectId: number;
   attributes?: string[];
   accessToken: string;
   page?: number;
@@ -264,14 +264,14 @@ export function getRegistrations({
   }
 
   return getServer()
-    .get(`/programs/${programId}/registrations`)
+    .get(`/projects/${projectId}/registrations`)
     .query(queryParams)
     .set('Cookie', [accessToken])
     .send();
 }
 
 export async function changeRegistrationStatus({
-  programId,
+  projectId,
   referenceIds,
   status,
   accessToken,
@@ -281,7 +281,7 @@ export async function changeRegistrationStatus({
     reason = 'default reason',
   } = {},
 }: {
-  programId: number;
+  projectId: number;
   referenceIds: string[];
   status: RegistrationStatusEnum;
   accessToken: string;
@@ -304,7 +304,7 @@ export async function changeRegistrationStatus({
   }
 
   const result = await getServer()
-    .patch(`/programs/${programId}/registrations/status`)
+    .patch(`/projects/${projectId}/registrations/status`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
@@ -318,13 +318,13 @@ export async function changeRegistrationStatus({
 }
 
 export async function awaitChangeRegistrationStatus({
-  programId,
+  projectId,
   referenceIds,
   status,
   accessToken,
   options = {},
 }: {
-  programId: number;
+  projectId: number;
   referenceIds: string[];
   status: RegistrationStatusEnum;
   accessToken: string;
@@ -335,7 +335,7 @@ export async function awaitChangeRegistrationStatus({
   };
 }): Promise<request.Response> {
   const result = await changeRegistrationStatus({
-    programId,
+    projectId,
     referenceIds,
     status,
     accessToken,
@@ -350,7 +350,7 @@ export async function awaitChangeRegistrationStatus({
   }
 
   await waitForStatusChangeToComplete(
-    programId,
+    projectId,
     referenceIds.length,
     status,
     8_000,
@@ -361,7 +361,7 @@ export async function awaitChangeRegistrationStatus({
 }
 
 export async function waitForStatusChangeToComplete(
-  programId: number,
+  projectId: number,
   amountOfRegistrations: number,
   status: string,
   maxWaitTimeMs: number,
@@ -369,7 +369,7 @@ export async function waitForStatusChangeToComplete(
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    const eventsResult = await getEvents({ programId, accessToken });
+    const eventsResult = await getEvents({ projectId, accessToken });
     if (!eventsResult?.body || !Array.isArray(eventsResult.body)) {
       await waitFor(200);
       continue;
@@ -395,7 +395,7 @@ export async function waitForBulkRegistrationChanges(
     referenceId: string;
     expectedPatch: Record<string, any>;
   }[],
-  programId: number,
+  projectId: number,
   accessToken: string,
   maxWaitTimeMs = 10000,
   pollIntervalMs = 500,
@@ -407,7 +407,7 @@ export async function waitForBulkRegistrationChanges(
       expectedChanges.map(async ({ referenceId, expectedPatch }) => {
         const result = await searchRegistrationByReferenceId(
           referenceId,
-          programId,
+          projectId,
           accessToken,
         );
         const registration = result.body.data[0];
@@ -432,7 +432,7 @@ export async function waitForBulkRegistrationChanges(
 
 export function sendMessage(
   accessToken: string,
-  programId: number,
+  projectId: number,
   referenceIds: string[],
   message?: string,
   messageTemplateKey?: string,
@@ -451,21 +451,21 @@ export function sendMessage(
   }
 
   return getServer()
-    .post(`/programs/${programId}/registrations/message`)
+    .post(`/projects/${projectId}/registrations/message`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({ message, messageTemplateKey });
 }
 
 export function updateRegistration(
-  programId: number,
+  projectId: number,
   referenceId: string,
   data: object,
   reason: string,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .patch(`/programs/${programId}/registrations/${referenceId}`)
+    .patch(`/projects/${projectId}/registrations/${referenceId}`)
     .set('Cookie', [accessToken])
     .send({
       data,
@@ -474,7 +474,7 @@ export function updateRegistration(
 }
 
 export function getRegistrationChangeLog(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
@@ -483,92 +483,92 @@ export function getRegistrationChangeLog(
   };
 
   return getServer()
-    .get(`/programs/${programId}/registration-change-logs`)
+    .get(`/projects/${projectId}/registration-change-logs`)
     .query(queryParams)
     .set('Cookie', [accessToken])
     .send();
 }
 
 export function getVisaWalletsAndDetails(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
     .get(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
+      `/projects/${projectId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
     )
     .set('Cookie', [accessToken])
     .send();
 }
 
 export function retrieveAndUpdateVisaWalletsAndDetails(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
+      `/projects/${projectId}/registrations/${referenceId}/fsps/intersolve-visa/wallet`,
     )
     .set('Cookie', [accessToken])
     .send();
 }
 
 export function issueNewVisaCard(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
     .post(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards`,
+      `/projects/${projectId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards`,
     )
     .set('Cookie', [accessToken])
     .send();
 }
 
 export function blockVisaCard(
-  programId: number,
+  projectId: number,
   tokenCode: string,
   accessToken: string,
   referenceId: string,
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
+      `/projects/${projectId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=true`,
     )
     .set('Cookie', [accessToken])
     .send({});
 }
 
 export function unblockVisaCard(
-  programId: number,
+  projectId: number,
   tokenCode: string,
   accessToken: string,
   referenceId: string,
 ): Promise<request.Response> {
   return getServer()
     .patch(
-      `/programs/${programId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
+      `/projects/${projectId}/registrations/${referenceId}/fsps/intersolve-visa/wallet/cards/${tokenCode}?pause=false`,
     )
     .set('Cookie', [accessToken])
     .send({});
 }
 
 export async function getMessageHistory(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<{ body: MessageActivity[] }> {
   const registrationId = await getRegistrationIdByReferenceId({
-    programId,
+    projectId,
     referenceId,
     accessToken,
   });
 
   const activities = await getActivities({
-    programId,
+    projectId,
     registrationId,
     accessToken,
   });
@@ -583,18 +583,18 @@ export async function getMessageHistory(
 }
 
 export async function getAllActivitiesCount(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
 ): Promise<{ body: any; totalCount: number }> {
   const registrationId = await getRegistrationIdByReferenceId({
-    programId,
+    projectId,
     referenceId,
     accessToken,
   });
 
   const activities = await getActivities({
-    programId,
+    projectId,
     registrationId,
     accessToken,
   });
@@ -618,12 +618,12 @@ export async function getAllActivitiesCount(
 }
 
 export async function getMessageHistoryUntilX(
-  programId: number,
+  projectId: number,
   referenceId: string,
   accessToken: string,
   x: number,
 ): Promise<{ body: MessageActivity[] }> {
-  const response = await getMessageHistory(programId, referenceId, accessToken);
+  const response = await getMessageHistory(projectId, referenceId, accessToken);
 
   if (Array.isArray(response.body) && response.body.length >= x) {
     return response;
@@ -632,12 +632,12 @@ export async function getMessageHistoryUntilX(
   // Wait for a second before making the next request to avoid overloading the server
   await waitFor(400);
 
-  return getMessageHistoryUntilX(programId, referenceId, accessToken, x);
+  return getMessageHistoryUntilX(projectId, referenceId, accessToken, x);
 }
 
 export async function seedPaidRegistrations(
   registrations: any[],
-  programId: number,
+  projectId: number,
   amount = 20,
   completeStatusses: TransactionStatusEnum[] = [
     TransactionStatusEnum.success,
@@ -645,11 +645,11 @@ export async function seedPaidRegistrations(
   ],
 ): Promise<number> {
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrations, programId, accessToken);
+  await seedIncludedRegistrations(registrations, projectId, accessToken);
   const registrationReferenceIds = registrations.map((r) => r.referenceId);
 
   return await doPaymentAndWaitForCompletion({
-    programId,
+    projectId,
     referenceIds: registrationReferenceIds,
     amount,
     accessToken,
@@ -658,7 +658,7 @@ export async function seedPaidRegistrations(
 }
 
 export async function doPaymentAndWaitForCompletion({
-  programId,
+  projectId,
   referenceIds,
   amount,
   accessToken,
@@ -668,7 +668,7 @@ export async function doPaymentAndWaitForCompletion({
   ],
   note,
 }: {
-  programId: number;
+  projectId: number;
   referenceIds: string[];
   amount: number;
   accessToken: string;
@@ -676,7 +676,7 @@ export async function doPaymentAndWaitForCompletion({
   note?: string;
 }): Promise<number> {
   const doPaymentResponse = await doPayment({
-    programId,
+    projectId,
     amount,
     referenceIds,
     accessToken,
@@ -685,7 +685,7 @@ export async function doPaymentAndWaitForCompletion({
   const paymentId = doPaymentResponse.body.id;
 
   await waitForPaymentTransactionsToComplete({
-    programId,
+    projectId,
     paymentReferenceIds: referenceIds,
     accessToken,
     maxWaitTimeMs: 30_000,
@@ -697,19 +697,19 @@ export async function doPaymentAndWaitForCompletion({
 
 export async function seedRegistrations(
   registrations: any[],
-  programId: number,
+  projectId: number,
 ): Promise<void> {
   const accessToken = await getAccessToken();
-  await importRegistrations(programId, registrations, accessToken);
+  await importRegistrations(projectId, registrations, accessToken);
 }
 
 export async function seedIncludedRegistrations(
   registrations: any[],
-  programId: number,
+  projectId: number,
   accessToken: string,
 ): Promise<void> {
   const response = await importRegistrations(
-    programId,
+    projectId,
     registrations,
     accessToken,
   );
@@ -721,7 +721,7 @@ export async function seedIncludedRegistrations(
   }
 
   await awaitChangeRegistrationStatus({
-    programId,
+    projectId,
     referenceIds: registrations.map((r) => r.referenceId),
     status: RegistrationStatusEnum.included,
     accessToken,
@@ -730,12 +730,12 @@ export async function seedIncludedRegistrations(
 
 export async function seedRegistrationsWithStatus(
   registrations: any[],
-  programId: number,
+  projectId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
 ): Promise<void> {
   const response = await importRegistrations(
-    programId,
+    projectId,
     registrations,
     accessToken,
   );
@@ -751,7 +751,7 @@ export async function seedRegistrationsWithStatus(
   }
 
   await awaitChangeRegistrationStatus({
-    programId,
+    projectId,
     referenceIds: registrations.map((r) => r.referenceId),
     status,
     accessToken,
@@ -759,13 +759,13 @@ export async function seedRegistrationsWithStatus(
 }
 
 export async function getEvents({
-  programId,
+  projectId,
   accessToken,
   fromDate,
   toDate,
   referenceId,
 }: {
-  programId: number;
+  projectId: number;
   accessToken: string;
   fromDate?: string;
   toDate?: string;
@@ -786,77 +786,77 @@ export async function getEvents({
   }
 
   return getServer()
-    .get(`/programs/${programId}/registration-events`)
+    .get(`/projects/${projectId}/registration-events`)
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send();
 }
 
 export async function getImportRegistrationsTemplate(
-  programId: number,
+  projectId: number,
 ): Promise<any> {
   const accessToken = await getAccessToken();
 
   return getServer()
-    .get(`/programs/${programId}/registrations/import/template`)
+    .get(`/projects/${projectId}/registrations/import/template`)
     .set('Cookie', [accessToken])
     .send();
 }
 
 export async function getImportFspReconciliationTemplate(
-  programId: number,
+  projectId: number,
 ): Promise<any> {
   const accessToken = await getAccessToken();
 
   return getServer()
-    .get(`/programs/${programId}/payments/excel-reconciliation/template`)
+    .get(`/projects/${projectId}/payments/excel-reconciliation/template`)
     .set('Cookie', [accessToken])
     .send();
 }
 
 export async function getDuplicates({
-  programId,
+  projectId,
   referenceId,
   accessToken,
 }: {
-  programId: number;
+  projectId: number;
   referenceId: string;
   accessToken: string;
 }): Promise<any> {
   return getServer()
-    .get(`/programs/${programId}/registrations/${referenceId}/duplicates`)
+    .get(`/projects/${projectId}/registrations/${referenceId}/duplicates`)
     .set('Cookie', [accessToken])
     .send();
 }
 
 export async function createRegistrationUniques({
-  programId,
+  projectId,
   registrationIds,
   accessToken,
   reason = 'default reason',
 }: {
-  programId: number;
+  projectId: number;
   registrationIds: number[];
   accessToken: string;
   reason?: string;
 }): Promise<any> {
   return getServer()
-    .post(`/programs/${programId}/registrations/uniques`)
+    .post(`/projects/${projectId}/registrations/uniques`)
     .set('Cookie', [accessToken])
     .send({ registrationIds, reason });
 }
 
 export async function getActivities({
-  programId,
+  projectId,
   registrationId,
   accessToken,
 }: {
-  programId: number;
+  projectId: number;
   registrationId: number;
   accessToken: string;
 }): Promise<any> {
   return getServer()
-    .get(`/programs/${programId}/registrations/${registrationId}/activities`)
+    .get(`/projects/${projectId}/registrations/${registrationId}/activities`)
     .set('Cookie', [accessToken])
     .send();
 }

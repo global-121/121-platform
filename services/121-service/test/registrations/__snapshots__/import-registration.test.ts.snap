@@ -11,7 +11,7 @@ exports[`Import a registration should give me a CSV template when I request it 1
   "paymentAmountMultiplier",
   "phoneNumber",
   "preferredLanguage",
-  "programFspConfigurationName",
+  "projectFspConfigurationName",
   "referenceId",
   "whatsappPhoneNumber",
 ]

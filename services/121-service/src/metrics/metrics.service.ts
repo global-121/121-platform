@@ -4,7 +4,7 @@ import { Equal, In, Not } from 'typeorm';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
-import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { ProjectStats } from '@121-service/src/metrics/dto/project-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
@@ -13,8 +13,6 @@ import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integr
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
@@ -25,6 +23,8 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+import { ProjectRegistrationAttributeRepository } from '../projects/repositories/project-registration-attribute.repository';
+import { ProjectRepository } from '../projects/repositories/project.repository';
 const userPermissionMapByExportType = {
   [ExportType.registrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
@@ -36,8 +36,8 @@ const userPermissionMapByExportType = {
 export class MetricsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
-    private readonly programRepository: ProgramRepository,
+    private readonly projectRegistrationAttributeRepository: ProjectRegistrationAttributeRepository,
+    private readonly projectRepository: ProjectRepository,
     private readonly registrationScopedViewRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
     private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
@@ -48,12 +48,12 @@ export class MetricsService {
   ) {}
 
   public async getExport({
-    programId,
+    projectId,
     type,
     userId,
     paginationQuery,
   }: {
-    programId: number;
+    projectId: number;
     userId: number;
     type: ExportType;
     paginationQuery?: PaginateQuery;
@@ -70,7 +70,7 @@ export class MetricsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    await this.actionService.saveAction(userId, programId, type);
+    await this.actionService.saveAction(userId, projectId, type);
 
     const permission =
       userPermissionMapByExportType[
@@ -79,7 +79,7 @@ export class MetricsService {
 
     const hasPermission = await this.userService.canActivate(
       permission,
-      programId,
+      projectId,
       userId,
     );
     if (!hasPermission) {
@@ -98,18 +98,18 @@ export class MetricsService {
           );
         }
         return this.getRegistrationsExport({
-          programId,
+          projectId,
           paginationQuery,
         });
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchersExport(programId);
+        return this.getUnusedVouchersExport(projectId);
       }
       case ExportType.vouchersWithBalance: {
-        return this.getVouchersWithBalanceExport(programId);
+        return this.getVouchersWithBalanceExport(projectId);
       }
       case ExportType.intersolveVisaCardDetails: {
-        return this.getIntersolveVisaBalancesExport(programId);
+        return this.getIntersolveVisaBalancesExport(projectId);
       }
       default:
         throw new Error(`Unsupported export type: ${type}`);
@@ -117,14 +117,14 @@ export class MetricsService {
   }
 
   private async getRegistrationsExport({
-    programId,
+    projectId,
     paginationQuery,
   }: {
-    programId: number;
+    projectId: number;
     paginationQuery: PaginateQuery;
   }): Promise<FileDto> {
     const data = await this.getRegistrationsData({
-      programId,
+      projectId,
       paginationQuery,
     });
     const response = {
@@ -135,35 +135,35 @@ export class MetricsService {
   }
 
   private async getRegistrationsData({
-    programId,
+    projectId,
     paginationQuery,
   }: {
-    programId: number;
+    projectId: number;
     paginationQuery: PaginateQuery;
   }): Promise<object[]> {
     let rows: Record<string, unknown>[] =
       await this.getRegistrationsGenericFields({
-        programId,
+        projectId,
         paginationQuery,
       });
 
     for await (const row of rows) {
-      if (row['registrationProgramId']) {
-        row['id'] = row['registrationProgramId'];
-        delete row['registrationProgramId'];
+      if (row['registrationProjectId']) {
+        row['id'] = row['registrationProjectId'];
+        delete row['registrationProjectId'];
       }
 
-      if (typeof row['programFspConfigurationLabel'] === 'object') {
+      if (typeof row['projectFspConfigurationLabel'] === 'object') {
         const preferredLanguage = 'en';
-        row['programFspConfigurationLabel'] = row[
-          'programFspConfigurationLabel'
+        row['projectFspConfigurationLabel'] = row[
+          'projectFspConfigurationLabel'
         ]?.[preferredLanguage] as string | undefined;
       }
     }
     rows = await this.replaceValueWithDropdownLabel({
       rows,
       select: paginationQuery.select,
-      programId,
+      projectId,
     });
 
     const orderedObjects = rows.map((row) => {
@@ -184,16 +184,16 @@ export class MetricsService {
   }
 
   private async getRegistrationsGenericFields({
-    programId,
+    projectId,
     paginationQuery,
   }: {
-    programId: number;
+    projectId: number;
     paginationQuery: PaginateQuery;
   }): Promise<MappedPaginatedRegistrationDto[]> {
     // Create an empty scoped querybuilder object
     const queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
-      .andWhere({ programId });
+      .andWhere({ projectId });
 
     const chunkSize = 10000;
     const paginateQueryForBulk = {
@@ -207,7 +207,7 @@ export class MetricsService {
 
     const data =
       await this.registrationsPaginationsService.getRegistrationsChunked(
-        programId,
+        projectId,
         paginateQueryForBulk,
         chunkSize,
         queryBuilder,
@@ -236,9 +236,9 @@ export class MetricsService {
     return ordered;
   }
 
-  private async getUnusedVouchersExport(programId?: number): Promise<FileDto> {
+  private async getUnusedVouchersExport(projectId?: number): Promise<FileDto> {
     const unusedVouchers =
-      await this.intersolveVoucherService.getUnusedVouchers(programId);
+      await this.intersolveVoucherService.getUnusedVouchers(projectId);
 
     const response = {
       fileName: ExportType.unusedVouchers,
@@ -249,10 +249,10 @@ export class MetricsService {
   }
 
   private async getVouchersWithBalanceExport(
-    programId: number,
+    projectId: number,
   ): Promise<FileDto> {
     const vouchersWithBalance =
-      await this.intersolveVoucherService.getVouchersWithBalance(programId);
+      await this.intersolveVoucherService.getVouchersWithBalance(projectId);
     const response = {
       fileName: ExportType.vouchersWithBalance,
       data: vouchersWithBalance,
@@ -273,17 +273,17 @@ export class MetricsService {
   }
 
   private async replaceValueWithDropdownLabel({
-    programId,
+    projectId,
     rows,
     select,
   }: {
-    programId: number;
+    projectId: number;
     rows: Record<string, unknown>[];
     select?: string[];
   }): Promise<Record<string, unknown>[]> {
     const dropdownAttributes =
-      await this.programRegistrationAttributeRepository.getDropdownAttributes({
-        programId,
+      await this.projectRegistrationAttributeRepository.getDropdownAttributes({
+        projectId,
         select,
       });
 
@@ -294,29 +294,29 @@ export class MetricsService {
     });
   }
 
-  public async getProgramStats(programId: number): Promise<ProgramStats> {
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+  public async getProjectStats(projectId: number): Promise<ProjectStats> {
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
-    const targetedPeople = program.targetNrRegistrations;
+    const targetedPeople = project.targetNrRegistrations;
 
     const includedPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(projectId) },
         registrationStatus: Equal(RegistrationStatusEnum.included),
       },
     });
 
     const newPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(projectId) },
         registrationStatus: Equal(RegistrationStatusEnum.new),
       },
     });
 
     const registeredPeople = await this.registrationScopedRepository.count({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(projectId) },
         registrationStatus: Not(
           In([RegistrationStatusEnum.declined, RegistrationStatusEnum.deleted]),
         ),
@@ -331,13 +331,13 @@ export class MetricsService {
       .andWhere({
         status: Not(TransactionStatusEnum.error),
       })
-      .andWhere('p."programId" = :programId', { programId })
+      .andWhere('p."projectId" = :projectId', { projectId })
       .getRawOne();
     const cashDisbursed = Number(cashDisbursedQueryResult.cashDisbursed);
-    const totalBudget = program.budget;
+    const totalBudget = project.budget;
 
     return {
-      programId,
+      projectId,
       targetedPeople,
       includedPeople,
       newPeople,
@@ -347,13 +347,13 @@ export class MetricsService {
     };
   }
 
-  private async getIntersolveVisaBalancesExport(programId: number): Promise<{
+  private async getIntersolveVisaBalancesExport(projectId: number): Promise<{
     fileName: ExportType;
     data: ExportVisaCardDetails[];
   }> {
     const rawDebitCardDetails =
       await this.registrationScopedRepository.getDebitCardsDetailsForExport(
-        programId,
+        projectId,
       );
 
     const mappedDebitCardDetails =
@@ -368,11 +368,11 @@ export class MetricsService {
   private mapIntersolveVisaBalancesDataToDto(
     exportVisaCardRawDetails: ExportVisaCardDetailsRawData[],
   ): ExportVisaCardDetails[] {
-    let previousRegistrationProgramId: number | null = null;
+    let previousRegistrationProjectId: number | null = null;
     const exportCardDetailsArray: ExportVisaCardDetails[] = [];
     for (const cardRawData of exportVisaCardRawDetails) {
       const isCurrentWallet =
-        previousRegistrationProgramId !== cardRawData.paId;
+        previousRegistrationProjectId !== cardRawData.paId;
 
       const statusInfo =
         IntersolveVisaStatusMapper.determineVisaCard121StatusInformation({
@@ -394,19 +394,19 @@ export class MetricsService {
         spentThisMonth: cardRawData.spentThisMonth / 100,
         isCurrentWallet,
       });
-      previousRegistrationProgramId = cardRawData.paId;
+      previousRegistrationProjectId = cardRawData.paId;
     }
     return exportCardDetailsArray;
   }
 
   public async getRegistrationStatusStats(
-    programId: number,
+    projectId: number,
   ): Promise<RegistrationStatusStats[]> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`registration."registrationStatus" AS status`)
       .addSelect(`COUNT(registration."registrationStatus") AS "statusCount"`)
-      .andWhere({ programId })
+      .andWhere({ projectId })
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();

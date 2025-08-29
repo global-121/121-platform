@@ -62,4 +62,4 @@ exports[`Unsuccessfully mark registrations as unqiue from each other should fail
 ]
 `;
 
-exports[`Unsuccessfully mark registrations as unqiue from each other should fail to create an ignored duplicate registration pair if a registration id does not exist 1`] = `"Not all registrations were found in program 2. Expected 2 but found 1. Missing registraitonIds: 200"`;
+exports[`Unsuccessfully mark registrations as unqiue from each other should fail to create an ignored duplicate registration pair if a registration id does not exist 1`] = `"Not all registrations were found in project 2. Expected 2 but found 1. Missing registraitonIds: 200"`;

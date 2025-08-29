@@ -4,10 +4,10 @@ import { VisaCard121Status } from '@121-service/src/payments/fsp-integration/int
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import {
-  programIdVisa,
+  projectIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
-import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/project.helper';
 import {
   blockVisaCard,
   getMessageHistory,
@@ -37,9 +37,9 @@ describe('(Un)Block visa debit card', () => {
       referenceId: 'test-registration-visa--block-card',
       whatsappPhoneNumber: noWhatsappSetup,
     };
-    await seedPaidRegistrations([testRegistration], programIdVisa);
+    await seedPaidRegistrations([testRegistration], projectIdVisa);
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );
@@ -47,7 +47,7 @@ describe('(Un)Block visa debit card', () => {
 
     // Act
     const blockVisaResponse = await blockVisaCard(
-      programIdVisa,
+      projectIdVisa,
       tokencode,
       accessToken,
       testRegistration.referenceId,
@@ -55,20 +55,20 @@ describe('(Un)Block visa debit card', () => {
 
     // Assert
     await waitForMessagesToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [testRegistration.referenceId],
       accessToken,
       minimumNumberOfMessagesPerReferenceId: 2,
     });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );
 
     const messageResponse = await getMessageHistory(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );
@@ -93,17 +93,17 @@ describe('(Un)Block visa debit card', () => {
       referenceId: 'test-registration-visa--unblock-card',
       whatsappPhoneNumber: noWhatsappSetup,
     };
-    await seedPaidRegistrations([testRegistration], programIdVisa);
+    await seedPaidRegistrations([testRegistration], projectIdVisa);
 
     const visaWalletResponseBefore = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );
     const tokencode = visaWalletResponseBefore.body.cards[0].tokenCode;
 
     await blockVisaCard(
-      programIdVisa,
+      projectIdVisa,
       tokencode,
       accessToken,
       testRegistration.referenceId,
@@ -111,7 +111,7 @@ describe('(Un)Block visa debit card', () => {
 
     // Act
     const unblockVisaResponse = await unblockVisaCard(
-      programIdVisa,
+      projectIdVisa,
       tokencode,
       accessToken,
       testRegistration.referenceId,
@@ -119,20 +119,20 @@ describe('(Un)Block visa debit card', () => {
 
     // Assert
     await waitForMessagesToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [testRegistration.referenceId],
       accessToken,
       minimumNumberOfMessagesPerReferenceId: 3,
     });
 
     const visaWalletResponseAfter = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );
 
     const messageResponse = await getMessageHistory(
-      programIdVisa,
+      projectIdVisa,
       testRegistration.referenceId,
       accessToken,
     );

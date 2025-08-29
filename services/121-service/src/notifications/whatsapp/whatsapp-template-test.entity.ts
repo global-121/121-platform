@@ -10,7 +10,7 @@ export class WhatsappTemplateTestEntity extends Base121Entity {
   public sid: string;
 
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @Column()
   public language: string;

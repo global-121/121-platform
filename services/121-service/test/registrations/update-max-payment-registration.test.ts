@@ -14,7 +14,7 @@ import {
 import { registrationPvScoped } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Update maxPayments of PA', () => {
-  const programIdPv = 2;
+  const projectIdPv = 2;
   const reason = 'automated test';
   const testPayments = 3;
   const dataUpdateSucces = {
@@ -31,7 +31,7 @@ describe('Update maxPayments of PA', () => {
       { maxPayments: testPayments },
       registrationPvScoped,
     );
-    await seedPaidRegistrations([registration], programIdPv);
+    await seedPaidRegistrations([registration], projectIdPv);
   });
 
   it('should succesfully update maxPayments without status change', async () => {
@@ -40,7 +40,7 @@ describe('Update maxPayments of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       dataUpdateSucces,
       reason,
@@ -52,7 +52,7 @@ describe('Update maxPayments of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -68,7 +68,7 @@ describe('Update maxPayments of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       dataUpdateMaxPaymentsFail,
       reason,
@@ -79,7 +79,7 @@ describe('Update maxPayments of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     const result = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
 
@@ -98,7 +98,7 @@ describe('Update maxPayments of PA', () => {
 
     // Act
     const response = await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationPvScoped.referenceId,
       dataUpdateMaxPaymentsSuccess,
       reason,
@@ -110,7 +110,7 @@ describe('Update maxPayments of PA', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationPvScoped.referenceId,
-      programIdPv,
+      projectIdPv,
       accessToken,
     );
 

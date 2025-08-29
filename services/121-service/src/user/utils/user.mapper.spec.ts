@@ -13,7 +13,7 @@ describe('User mapper', () => {
       id: userId,
       username,
       password: 'testPassword',
-      programAssignments: [],
+      projectAssignments: [],
       uploadedAttachments: [],
       actions: [],
       registrations: [],

@@ -17,10 +17,10 @@ import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/project-aidworker.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
@@ -40,9 +40,9 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       IntersolveVoucherInstructionsEntity,
       RegistrationEntity,
       TransactionEntity,
-      ProgramEntity,
-      ProgramFspConfigurationEntity,
-      ProgramAidworkerAssignmentEntity,
+      ProjectEntity,
+      ProjectFspConfigurationEntity,
+      ProjectAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
     ]),
     ImageCodeModule,
@@ -66,7 +66,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     PaymentProcessorIntersolveVoucher,
-    ProgramFspConfigurationRepository,
+    ProjectFspConfigurationRepository,
   ],
   controllers: [IntersolveVoucherController],
   exports: [

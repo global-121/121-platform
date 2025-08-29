@@ -2,19 +2,19 @@ import { test } from '@playwright/test';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { triggerUnusedVouchersCache } from '@121-service/test/helpers/intersolve-voucher.helper';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -26,17 +26,17 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
 
   await doPayment({
-    programId: programIdPV,
+    projectId: projectIdPV,
     amount: 12.5,
     referenceIds: [registrationPV5.referenceId],
     accessToken,
   });
 
   await waitForPaymentTransactionsToComplete({
-    programId: programIdPV,
+    projectId: projectIdPV,
     paymentReferenceIds: [registrationPV5.referenceId],
     accessToken,
     maxWaitTimeMs: 2_000,
@@ -59,8 +59,8 @@ test('[36847] Export unused vouchers successfully', async ({ page }) => {
   const exportDataComponent = new ExportData(page);
 
   // Act
-  await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
-  await paymentsPage.navigateToProgramPage('Payments');
+  await paymentsPage.selectProject(NLRCProject.titlePortal.en);
+  await paymentsPage.navigateToProjectPage('Payments');
   await paymentsPage.selectPaymentExportOption({ option: 'Unused vouchers' });
 
   // Assert

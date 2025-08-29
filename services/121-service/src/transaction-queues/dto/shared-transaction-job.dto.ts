@@ -1,6 +1,6 @@
 export interface SharedTransactionJobDto {
-  readonly programFspConfigurationId: number;
-  readonly programId: number;
+  readonly projectFspConfigurationId: number;
+  readonly projectId: number;
   readonly paymentId: number;
   readonly userId: number;
   readonly referenceId: string;

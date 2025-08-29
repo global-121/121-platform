@@ -27,7 +27,7 @@ function filterUnchangedProperties(
 }
 
 describe('Update attribute of multiple PAs via Bulk update', () => {
-  const programIdOcw = 3;
+  const projectIdOcw = 3;
 
   let accessToken: string;
   const referenceId1 = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
@@ -38,7 +38,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     accessToken = await getAccessToken();
 
     await importRegistrationsCSV(
-      programIdOcw,
+      projectIdOcw,
       './test-registration-data/test-registrations-OCW.csv',
       accessToken,
     );
@@ -66,7 +66,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdBeforePatchPa1 =
       await searchRegistrationByReferenceId(
         referenceId1,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
     const pa1BeforePatch = searchByReferenceIdBeforePatchPa1.body.data[0];
@@ -74,14 +74,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdBeforePatchPa2 =
       await searchRegistrationByReferenceId(
         referenceId2,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
     const pa2BeforePatch = searchByReferenceIdBeforePatchPa2.body.data[0];
 
     // Act
     const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
-      programIdOcw,
+      projectIdOcw,
       './test-registration-data/test-registrations-patch-OCW.csv',
       accessToken,
       'test-reason',
@@ -99,14 +99,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
         referenceId1,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
 
@@ -115,7 +115,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdAfterPatchPa2 =
       await searchRegistrationByReferenceId(
         referenceId2,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
 
@@ -146,17 +146,17 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
   it('Should bulk update chosen FSP and validate changed records', async () => {
     const registrationDataThatWillChangePa1 = {
       fspName: 'Intersolve-voucher-whatsapp',
-      programFspConfigurationId: 5,
-      programFspConfigurationName: 'Intersolve-voucher-whatsapp',
-      programFspConfigurationLabel: {
+      projectFspConfigurationId: 5,
+      projectFspConfigurationName: 'Intersolve-voucher-whatsapp',
+      projectFspConfigurationLabel: {
         en: 'Albert Heijn voucher WhatsApp',
       },
     };
     const registrationDataThatWillChangePa2 = {
       fspName: 'Intersolve-visa',
-      programFspConfigurationId: 6,
-      programFspConfigurationName: 'Intersolve-visa',
-      programFspConfigurationLabel: {
+      projectFspConfigurationId: 6,
+      projectFspConfigurationName: 'Intersolve-visa',
+      projectFspConfigurationLabel: {
         en: 'Visa debit card',
       },
     };
@@ -165,7 +165,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdBeforePatchPa1 =
       await searchRegistrationByReferenceId(
         referenceId1,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
     const pa1BeforePatch = searchByReferenceIdBeforePatchPa1.body.data[0];
@@ -173,14 +173,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdBeforePatchPa2 =
       await searchRegistrationByReferenceId(
         referenceId2,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
     const pa2BeforePatch = searchByReferenceIdBeforePatchPa2.body.data[0];
 
     // Act
     const bulkUpdateResult = await bulkUpdateRegistrationsCSV(
-      programIdOcw,
+      projectIdOcw,
       './test-registration-data/test-registrations-patch-OCW-chosen-FSP.csv',
       accessToken,
       'test-reason',
@@ -198,14 +198,14 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
           expectedPatch: registrationDataThatWillChangePa2,
         },
       ],
-      programIdOcw,
+      projectIdOcw,
       accessToken,
     );
 
     const searchByReferenceIdAfterPatchPa1 =
       await searchRegistrationByReferenceId(
         referenceId1,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
 
@@ -214,7 +214,7 @@ describe('Update attribute of multiple PAs via Bulk update', () => {
     const searchByReferenceIdAfterPatchPa2 =
       await searchRegistrationByReferenceId(
         referenceId2,
-        programIdOcw,
+        projectIdOcw,
         accessToken,
       );
 

@@ -52,14 +52,14 @@ class BasePage {
     await this.sidebar.getByRole('link', { name: pageName }).click();
   }
 
-  async navigateToProgramPage(
+  async navigateToProjectPage(
     pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Team',
   ) {
     await this.projectHeader.getByRole('tab', { name: pageName }).click();
   }
 
-  async selectProgram(programName: string) {
-    await this.page.getByRole('link', { name: programName }).click();
+  async selectProject(projectName: string) {
+    await this.page.getByRole('link', { name: projectName }).click();
   }
 
   async changeLanguage(language: string) {

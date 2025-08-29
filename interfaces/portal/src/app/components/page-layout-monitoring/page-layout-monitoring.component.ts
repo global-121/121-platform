@@ -123,9 +123,9 @@ export class PageLayoutMonitoringComponent {
       {
         label: $localize`FSP(s)`,
         value:
-          projectData?.programFspConfigurations.map((fsp) => fsp.name) ?? [],
+          projectData?.projectFspConfigurations.map((fsp) => fsp.name) ?? [],
         type: 'options',
-        options: projectData?.programFspConfigurations.map((config) => ({
+        options: projectData?.projectFspConfigurations.map((config) => ({
           label: config.label,
           value: config.name,
         })),

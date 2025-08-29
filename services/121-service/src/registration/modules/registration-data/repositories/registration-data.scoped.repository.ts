@@ -25,7 +25,7 @@ export class RegistrationDataScopedRepository extends ScopedRepository<Registrat
   ): Promise<RegistrationDataByNameDto[] | null> {
     const query = this.getRegistrationDataArrayQuery(registration, names);
     const queryWithSelect = query.select(
-      ` "programRegistrationAttribute"."name" as name,
+      ` "projectRegistrationAttribute"."name" as name,
         value, "registrationData".id`,
     );
     const result = await queryWithSelect.getRawMany();
@@ -39,10 +39,10 @@ export class RegistrationDataScopedRepository extends ScopedRepository<Registrat
     return this.createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin(
-        'registrationData.programRegistrationAttribute',
-        'programRegistrationAttribute',
+        'registrationData.projectRegistrationAttribute',
+        'projectRegistrationAttribute',
       )
       .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere(`programRegistrationAttribute.name IN (:...names)`, { names });
+      .andWhere(`projectRegistrationAttribute.name IN (:...names)`, { names });
   }
 }

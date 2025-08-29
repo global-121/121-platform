@@ -39,7 +39,7 @@ test('[34688] User can view the registration data of registration that has all d
   );
 
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationWesteros4.referenceId,
     accessToken,
   });
@@ -81,8 +81,8 @@ test('[34689] User can view the registration data of registration that has only 
 }) => {
   const registrationWithOnlyRequiredData = {
     referenceId: registrationWesteros4.referenceId,
-    programFspConfigurationName:
-      registrationWesteros4.programFspConfigurationName,
+    projectFspConfigurationName:
+      registrationWesteros4.projectFspConfigurationName,
     phoneNumber: registrationWesteros4.phoneNumber,
     house: registrationWesteros4.house,
     preferredLanguage: registrationWesteros4.preferredLanguage,
@@ -94,7 +94,7 @@ test('[34689] User can view the registration data of registration that has only 
   );
 
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationWithOnlyRequiredData.referenceId,
     accessToken,
   });

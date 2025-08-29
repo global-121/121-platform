@@ -17,4 +17,4 @@ SELECT
 FROM
     "121-service"."intersolve_voucher"
 WHERE
-    "paymentId" = (SELECT MIN(id) FROM "121-service"."payment" p2 WHERE p2."programId" = $2)
+    "paymentId" = (SELECT MIN(id) FROM "121-service"."payment" p2 WHERE p2."projectId" = $2)

@@ -7,7 +7,7 @@ import { processMessagePlaceholders } from '@121-service/test/helpers/assert.hel
 import {
   getMessageTemplates,
   waitForMessagesToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   getMessageHistory,
@@ -19,13 +19,13 @@ import {
   getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 // this test is flaky, so we retry it before failing the whole 8-minute CI job just because of it
 jest.retryTimes(2);
 
 describe('Sending templated message', () => {
-  const programId = programIdPV; // status change templates are only available for PV
+  const projectId = projectIdPV; // status change templates are only available for PV
   const registrationAh = {
     referenceId: '63e62864557597e0d-AH',
     preferredLanguage: LanguageEnum.en,
@@ -33,7 +33,7 @@ describe('Sending templated message', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    programFspConfigurationName: Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    projectFspConfigurationName: Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
   };
 
@@ -44,9 +44,9 @@ describe('Sending templated message', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programId, [registrationAh], accessToken);
+    await importRegistrations(projectId, [registrationAh], accessToken);
 
-    messageTemplates = (await getMessageTemplates(programId, accessToken)).body;
+    messageTemplates = (await getMessageTemplates(projectId, accessToken)).body;
   });
 
   describe('on status change of PA', () => {
@@ -56,7 +56,7 @@ describe('Sending templated message', () => {
 
       // Act
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationAh.referenceId],
         status: statusChange,
         accessToken,
@@ -66,14 +66,14 @@ describe('Sending templated message', () => {
       });
 
       await waitForMessagesToComplete({
-        programId,
+        projectId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
       });
 
       const messageHistory = (
         await getMessageHistory(
-          programId,
+          projectId,
           registrationAh.referenceId,
           accessToken,
         )
@@ -98,7 +98,7 @@ describe('Sending templated message', () => {
 
       // Act
       const result = await getServer()
-        .patch(`/programs/${programId}/registrations/status`)
+        .patch(`/projects/${projectId}/registrations/status`)
         .set('Cookie', [accessToken])
         .query({})
         .send({
@@ -117,21 +117,21 @@ describe('Sending templated message', () => {
       // Act
       await sendMessage(
         accessToken,
-        programId,
+        projectId,
         [registrationAh.referenceId],
         undefined,
         templateKey,
       );
 
       await waitForMessagesToComplete({
-        programId,
+        projectId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
       });
 
       const messageHistory = (
         await getMessageHistory(
-          programId,
+          projectId,
           registrationAh.referenceId,
           accessToken,
         )
@@ -156,7 +156,7 @@ describe('Sending templated message', () => {
       // Act
       const result = await sendMessage(
         accessToken,
-        programId,
+        projectId,
         [registrationAh.referenceId],
         message,
         templateKey,
@@ -174,7 +174,7 @@ describe('Sending templated message', () => {
       // Act
       const result = await sendMessage(
         accessToken,
-        programId,
+        projectId,
         [registrationAh.referenceId],
         message,
         templateKey,

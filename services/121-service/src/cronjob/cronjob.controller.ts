@@ -46,12 +46,12 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all programs.',
+      '[CRON] Get and store account enquiry data from Commercial Bank of Ethiopia for all registrations in all projects.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
+      'Done retrieving and updating/insterting enquiry data for all registrations in all projects.',
   })
   @Put('fsps/commercial-bank-ethiopia/account-enquiries')
   public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
@@ -74,12 +74,12 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      '[CRON] Retrieve and update all Visa balance, spent this month and cards data for all programs',
+      '[CRON] Retrieve and update all Visa balance, spent this month and cards data for all projects',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Data retrieved from Intersolve and entities updated for all programs.',
+      'Data retrieved from Intersolve and entities updated for all projects.',
   })
   @Patch('/fsps/intersolve-visa/')
   public async cronRetrieveAndUpdateVisaData(): Promise<void> {
@@ -116,12 +116,12 @@ export class CronjobController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      '[CRON] GET all exchange rates for all programs and store them in the database',
+      '[CRON] GET all exchange rates for all projects and store them in the database',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Get all exchange rates for all programs and store them in the database',
+      'Get all exchange rates for all projects and store them in the database',
   })
   @Put('exchange-rates')
   public async cronGetDailyExchangeRates(): Promise<void> {

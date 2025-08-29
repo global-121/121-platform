@@ -8,5 +8,5 @@ export class FindUserReponseDto {
   username: string;
 
   @ApiProperty({ example: [1, 2] })
-  assignedProgramIds: number[];
+  assignedProjectIds: number[];
 }

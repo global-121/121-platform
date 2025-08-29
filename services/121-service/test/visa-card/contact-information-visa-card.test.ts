@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  programIdVisa,
+  projectIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -26,11 +26,11 @@ describe('Update registration data of registration with visa customer', () => {
 
   it('should update phone number before and after changing FSP configuration from Visa', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations([registrationVisa], projectIdVisa);
 
     // Act
     const responseUpdateBeforeFspChange = await updateRegistration(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       {
         phoneNumber: '123456789',
@@ -40,17 +40,17 @@ describe('Update registration data of registration with visa customer', () => {
     );
 
     await updateRegistration(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       {
-        programFspConfigurationName: 'Intersolve-voucher-whatsapp',
+        projectFspConfigurationName: 'Intersolve-voucher-whatsapp',
       },
       'test',
       accessToken,
     );
 
     const responseUpdateAfterFspChange = await updateRegistration(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       {
         phoneNumber: '987654321',

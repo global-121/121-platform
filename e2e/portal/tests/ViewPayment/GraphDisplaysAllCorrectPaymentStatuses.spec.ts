@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -10,7 +10,7 @@ import {
   resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW6Fail,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [registrationOCW1, registrationOCW6Fail],
-    programIdOCW,
+    projectIdOCW,
     accessToken,
   );
   await resetDuplicateRegistrations(4);
@@ -38,13 +38,13 @@ test.beforeEach(async ({ page }) => {
 test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const projectTitle = NLRCProject.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
 
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   await test.step('Do payment', async () => {
@@ -52,7 +52,7 @@ test('[32297] Graph should reflect transfer statuses', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/project/${projectIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.waitForPaymentToComplete();

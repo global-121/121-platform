@@ -8,7 +8,7 @@ import {
 } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Injectable()
@@ -17,15 +17,15 @@ export class ActionsService {
   private readonly actionRepository: Repository<ActionEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   public async postAction(
     userId: number,
-    programId: number,
+    projectId: number,
     actionType: ActionType,
   ): Promise<ActionReturnDto> {
-    const savedAction = await this.saveAction(userId, programId, actionType);
+    const savedAction = await this.saveAction(userId, projectId, actionType);
     const actionWithRelations = await this.actionRepository.findOne({
       where: { id: Equal(savedAction.id) },
       relations: ['user'],
@@ -35,7 +35,7 @@ export class ActionsService {
 
   public async saveAction(
     userId: number,
-    programId: number,
+    projectId: number,
     actionType: ActionType,
   ): Promise<ActionEntity> {
     const action = new ActionEntity();
@@ -46,22 +46,22 @@ export class ActionsService {
 
     action.user = user;
 
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
 
-    action.program = program;
+    action.project = project;
 
     return await this.actionRepository.save(action);
   }
 
   public async getLatestAction(
-    programId: number,
+    projectId: number,
     actionType: ActionType,
   ): Promise<ActionReturnDto | null> {
     const action = await this.actionRepository.findOne({
       where: {
-        program: { id: Equal(programId) },
+        project: { id: Equal(projectId) },
         actionType: Equal(actionType),
       },
       relations: ['user'],

@@ -20,8 +20,8 @@ export class RegistrationEventScopedRepository extends ScopedRepository<Registra
     super(request, repository);
   }
 
-  async getManyByProgramIdAndSearchOptions(
-    programId: number,
+  async getManyByProjectIdAndSearchOptions(
+    projectId: number,
     searchOptions: RegistrationEventSearchOptionsDto,
   ) {
     const exportLimit = 500000;
@@ -30,7 +30,7 @@ export class RegistrationEventScopedRepository extends ScopedRepository<Registra
       user: UserEntity;
       attributes: RegistrationEventAttributeEntity[];
     })[] = await this.find({
-      where: this.createWhereClause(programId, searchOptions),
+      where: this.createWhereClause(projectId, searchOptions),
       relations: ['registration', 'user', 'attributes'],
       order: { created: 'DESC' },
       take: exportLimit,
@@ -39,20 +39,20 @@ export class RegistrationEventScopedRepository extends ScopedRepository<Registra
   }
 
   private createWhereClause(
-    programId: number,
+    projectId: number,
     searchOptions: RegistrationEventSearchOptionsDto,
   ): FindOptionsWhere<RegistrationEventEntity> {
     const { registrationId, queryParams } = searchOptions;
 
     const whereStatement: FindOptionsWhere<RegistrationEventEntity> & {
       registration: {
-        programId: number;
+        projectId: number;
         id?: number;
         referenceId?: string;
       };
     } = {
       registration: {
-        programId,
+        projectId,
       },
     };
 

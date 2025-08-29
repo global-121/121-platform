@@ -1,11 +1,11 @@
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  programIdVisa,
+  projectIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { exportList } from '@121-service/test/helpers/program.helper';
+import { exportList } from '@121-service/test/helpers/project.helper';
 import {
   issueNewVisaCard,
   retrieveAndUpdateVisaWalletsAndDetails,
@@ -17,7 +17,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Export Visa debit card report', () => {
-  const programId = 3;
+  const projectId = 3;
 
   let accessToken: string;
 
@@ -29,24 +29,24 @@ describe('Export Visa debit card report', () => {
 
   it('should succesfully generate a report of all Visa Debit cards', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations([registrationVisa], projectIdVisa);
 
     // To ensure that the export also works if there are multiple cards for one person
     await issueNewVisaCard(
-      programId,
+      projectId,
       registrationVisa.referenceId,
       accessToken,
     );
 
     // This to ensure our mock is triggered
     await retrieveAndUpdateVisaWalletsAndDetails(
-      programId,
+      projectId,
       registrationVisa.referenceId,
       accessToken,
     );
 
     const exportResult = await exportList({
-      programId,
+      projectId,
       exportType: ExportType.intersolveVisaCardDetails,
       accessToken,
     });

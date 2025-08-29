@@ -15,7 +15,7 @@ export class SeedConfigurationDto {
   readonly seedAdminOnly?: boolean;
 
   @ApiProperty()
-  readonly programs: SeedConfigurationProgramDto[];
+  readonly projects: SeedConfigurationProjectDto[];
 
   @ApiProperty({ default: false })
   readonly includeMockData?: boolean;
@@ -24,12 +24,12 @@ export class SeedConfigurationDto {
   readonly includeDebugScopes?: boolean;
 
   @ApiProperty({ default: 1 })
-  readonly firstProgramId?: number;
+  readonly firstProjectId?: number;
 }
 
-export class SeedConfigurationProgramDto {
-  @ApiProperty({ example: 'program-safaricom.json' })
-  readonly program: string;
+export class SeedConfigurationProjectDto {
+  @ApiProperty({ example: 'project-safaricom.json' })
+  readonly project: string;
 
   @ApiProperty({ example: 'message-template-generic.json' })
   readonly messageTemplate: SeedMessageTemplateConfig;

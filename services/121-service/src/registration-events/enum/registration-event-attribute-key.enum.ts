@@ -4,5 +4,5 @@ export enum RegistrationEventAttributeKeyEnum {
   newValue = 'newValue',
   fieldName = 'fieldName',
   duplicateWithRegistrationId = 'duplicateWithRegistrationId',
-  duplicateWithRegistrationProgramId = 'duplicateWithRegistrationProgramId',
+  duplicateWithRegistrationProjectId = 'duplicateWithRegistrationProjectId',
 }

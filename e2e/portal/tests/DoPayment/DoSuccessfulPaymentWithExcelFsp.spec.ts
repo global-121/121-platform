@@ -2,14 +2,14 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProjectPV from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -19,14 +19,14 @@ import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Export Excel FSP payment list
-const amount = NLRCProgramPV.fixedTransferValue;
+const amount = NLRCProjectPV.fixedTransferValue;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsPvExcel,
-    programIdPV,
+    projectIdPV,
     accessToken,
   );
 
@@ -41,7 +41,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const projectTitle = NLRCProjectPV.titlePortal.en;
   const numberOfPas = registrationsPvExcel.length;
   const defaultTransferValue = amount;
   const defaultMaxTransferValue = registrationsPvExcel.reduce((output, pa) => {
@@ -51,10 +51,10 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
 
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
 
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   await test.step('Create payment', async () => {
@@ -72,7 +72,7 @@ test('[31972] Do payment for excel fsp', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(`/en-GB/project/${projectIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

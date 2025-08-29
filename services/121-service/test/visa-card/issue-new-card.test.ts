@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateNlrcOcw } from '@121-service/src/seed-data/message-template/message-template-nlrc-ocw.const';
 import { messageTemplateNlrcPv } from '@121-service/src/seed-data/message-template/message-template-nlrc-pv.const';
 import {
-  programIdVisa,
+  projectIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -32,18 +32,18 @@ describe('Issue new Visa debit card', () => {
 
   it('should succesfully issue a new Visa Debit card', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations([registrationVisa], projectIdVisa);
 
     // Block the card first. This is because this usually happens before issuing a new card in practice
     const visaWalletResponseBeforeBlock = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
     const tokencode = visaWalletResponseBeforeBlock.body.cards[0].tokenCode;
 
     await blockVisaCard(
-      programIdVisa,
+      projectIdVisa,
       tokencode,
       accessToken,
       registrationVisa.referenceId,
@@ -51,19 +51,19 @@ describe('Issue new Visa debit card', () => {
 
     // Act
     await issueNewVisaCard(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
     await waitFor(3_000);
     const visaWalletResponse = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
 
     const messageReponse = await getMessageHistory(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );
@@ -85,12 +85,12 @@ describe('Issue new Visa debit card', () => {
 
   it('should fail to issue a new Visa Debit card if phonenumber is missing & succesfully reissue after phonenumber is updated again', async () => {
     // Arrange
-    const programIdPv = 2;
-    await seedPaidRegistrations([registrationVisa], programIdPv);
+    const projectIdPv = 2;
+    await seedPaidRegistrations([registrationVisa], projectIdPv);
     const wrongPhoneNumber = '4534565434565434';
 
     await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       { phoneNumber: wrongPhoneNumber },
       'Set wrong phonenumber',
@@ -99,24 +99,24 @@ describe('Issue new Visa debit card', () => {
 
     // Act
     const issueVisaCardResponseAttempt1 = await issueNewVisaCard(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
     await waitFor(2_000);
     const visaWalletResponseAttempt1 = await getVisaWalletsAndDetails(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
     const messageReponseAttempt1 = await getMessageHistory(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
 
     await updateRegistration(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       { phoneNumber: '14155238889' },
       'add correct phonenumber again',
@@ -124,18 +124,18 @@ describe('Issue new Visa debit card', () => {
     );
 
     const issueVisaCardResponseAttempt2 = await issueNewVisaCard(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
     await waitFor(2_000);
     const visaWalletResponseAttempt2 = await getVisaWalletsAndDetails(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );
     const messageReponseAttempt2 = await getMessageHistory(
-      programIdPv,
+      projectIdPv,
       registrationVisa.referenceId,
       accessToken,
     );

@@ -37,33 +37,33 @@ export class RegistrationEventsService {
   ) {}
 
   public async getEventsAsJson({
-    programId,
+    projectId,
     searchOptions,
   }: {
-    programId: number;
+    projectId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
   }): Promise<GetRegistrationEventDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
+    const events = await this.fetchEvents(projectId, searchOptions);
     return RegistrationEventsMapper.mapEventsToJsonDtos(events);
   }
 
   public async getEventsAsXlsx({
-    programId,
+    projectId,
     searchOptions,
   }: {
-    programId: number;
+    projectId: number;
     searchOptions: RegistrationEventSearchOptionsDto;
   }): Promise<GetRegistrationEventXlsxDto[]> {
-    const events = await this.fetchEvents(programId, searchOptions);
+    const events = await this.fetchEvents(projectId, searchOptions);
     return RegistrationEventsMapper.mapEventsToXlsxDtos(events);
   }
 
   private async fetchEvents(
-    programId: number,
+    projectId: number,
     searchOptions: RegistrationEventSearchOptionsDto,
   ): Promise<RegistrationEventEntity[]> {
-    return await this.registrationEventRepository.getManyByProgramIdAndSearchOptions(
-      programId,
+    return await this.registrationEventRepository.getManyByProjectIdAndSearchOptions(
+      projectId,
       searchOptions,
     );
   }
@@ -363,12 +363,12 @@ export class RegistrationEventsService {
       'id',
       'paymentCount',
       'paymentCountRemaining',
-      'programId',
+      'projectId',
       'created',
       'fspName',
-      'programFspConfigurationId',
-      'programFspConfigurationLabel',
-      'registrationProgramId',
+      'projectFspConfigurationId',
+      'projectFspConfigurationLabel',
+      'registrationProjectId',
       'personAffectedSequence',
       'lastMessageStatus',
       'name',
@@ -380,7 +380,7 @@ export class RegistrationEventsService {
   }
 
   private getEventType(key: string): RegistrationEventEnum {
-    const fspKey: keyof RegistrationViewEntity = 'programFspConfigurationName';
+    const fspKey: keyof RegistrationViewEntity = 'projectFspConfigurationName';
     if (key === fspKey) {
       return RegistrationEventEnum.fspChange;
     }
@@ -440,8 +440,8 @@ export class RegistrationEventsService {
         String(duplicateRegistration.id),
       ),
       this.createEventAttributeEntity(
-        RegistrationEventAttributeKeyEnum.duplicateWithRegistrationProgramId,
-        String(duplicateRegistration.registrationProgramId),
+        RegistrationEventAttributeKeyEnum.duplicateWithRegistrationProjectId,
+        String(duplicateRegistration.registrationProjectId),
       ),
       this.createEventAttributeForReason(reason),
     ];

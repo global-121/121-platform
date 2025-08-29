@@ -51,7 +51,7 @@ export class RegistrationByReferenceIdPageComponent {
 
       void this.router.navigate(
         registrationLink({
-          projectId: registration.programId,
+          projectId: registration.projectId,
           registrationId: registration.id,
         }),
       );

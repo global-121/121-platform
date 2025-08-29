@@ -6,14 +6,14 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { seedRegistrationsWithStatus } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPvMaxPayment,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -28,7 +28,7 @@ test.beforeEach(async ({ page }) => {
 
   await seedRegistrationsWithStatus(
     [registrationPvMaxPayment],
-    programIdPV,
+    projectIdPV,
     accessToken,
     RegistrationStatusEnum.included,
   );
@@ -37,9 +37,9 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  // Navigate to program
+  // Navigate to project
   const basePage = new BasePage(page);
-  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await basePage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   page,
@@ -58,14 +58,14 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
 
   await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
     await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: 100,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
     // Wait for payment transactions to complete
     await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,

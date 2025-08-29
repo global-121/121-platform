@@ -31,14 +31,14 @@ export class TransactionJobsCreationService {
   public async createAndAddFspSpecificTransactionJobs({
     fspName,
     referenceIdsAndTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     fspName: string;
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -47,7 +47,7 @@ export class TransactionJobsCreationService {
       case Fsps.intersolveVisa:
         return await this.createAndAddIntersolveVisaTransactionJobs({
           referenceIdsAndTransactionAmounts,
-          programId,
+          projectId,
           userId,
           paymentId,
           isRetry,
@@ -55,7 +55,7 @@ export class TransactionJobsCreationService {
       case Fsps.safaricom:
         return await this.createAndAddSafaricomTransactionJobs({
           referenceIdsAndTransactionAmounts,
-          programId,
+          projectId,
           userId,
           paymentId,
           isRetry,
@@ -63,7 +63,7 @@ export class TransactionJobsCreationService {
       case Fsps.airtel:
         return await this.createAndAddAirtelTransactionJobs({
           referenceIdsAndTransactionAmounts,
-          programId,
+          projectId,
           userId,
           paymentId,
           isRetry,
@@ -71,7 +71,7 @@ export class TransactionJobsCreationService {
       case Fsps.nedbank:
         return await this.createAndAddNedbankTransactionJobs({
           referenceIdsAndTransactionAmounts,
-          programId,
+          projectId,
           userId,
           paymentId,
           isRetry,
@@ -79,7 +79,7 @@ export class TransactionJobsCreationService {
       case Fsps.onafriq:
         return await this.createAndAddOnafriqTransactionJobs({
           referenceIdsAndTransactionAmounts,
-          programId,
+          projectId,
           userId,
           paymentId,
           isRetry,
@@ -98,7 +98,7 @@ export class TransactionJobsCreationService {
    * It then adds these jobs to the transaction queue.
    *
    * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
-   * @param {number} programId - The ID of the program.
+   * @param {number} projectId - The ID of the project.
    * @param {number} paymentAmount - The amount to be transferred.
    * @param {number} paymentId - The payment number.
    * @param {boolean} isRetry - Whether this is a retry.
@@ -108,13 +108,13 @@ export class TransactionJobsCreationService {
    */
   private async createAndAddIntersolveVisaTransactionJobs({
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -133,7 +133,7 @@ export class TransactionJobsCreationService {
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       dataFieldNames,
-      programId,
+      projectId,
     );
 
     // Convert the array into a map for increased performace (hashmap lookup)
@@ -148,12 +148,12 @@ export class TransactionJobsCreationService {
       registrationViews.map(
         (registrationView): IntersolveVisaTransactionJobDto => {
           return {
-            programId,
+            projectId,
             userId,
             paymentId,
             referenceId: registrationView.referenceId,
-            programFspConfigurationId:
-              registrationView.programFspConfigurationId,
+            projectFspConfigurationId:
+              registrationView.projectFspConfigurationId,
             // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
             transactionAmountInMajorUnit: transactionAmountsMap.get(
               registrationView.referenceId,
@@ -189,13 +189,13 @@ export class TransactionJobsCreationService {
    */
   private async createAndAddSafaricomTransactionJobs({
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -207,7 +207,7 @@ export class TransactionJobsCreationService {
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       safaricomAttributeNames,
-      programId,
+      projectId,
     );
 
     // Convert the array into a map for increased performace (hashmap lookup)
@@ -221,10 +221,10 @@ export class TransactionJobsCreationService {
     const safaricomTransferJobs: SafaricomTransactionJobDto[] =
       registrationViews.map((registrationView): SafaricomTransactionJobDto => {
         return {
-          programId,
+          projectId,
           paymentId,
           referenceId: registrationView.referenceId,
-          programFspConfigurationId: registrationView.programFspConfigurationId,
+          projectFspConfigurationId: registrationView.projectFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -252,13 +252,13 @@ export class TransactionJobsCreationService {
    */
   private async createAndAddAirtelTransactionJobs({
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -270,7 +270,7 @@ export class TransactionJobsCreationService {
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       airtelAttributeNames,
-      programId,
+      projectId,
     );
 
     // Convert the array into a map for increased performace (hashmap lookup)
@@ -284,10 +284,10 @@ export class TransactionJobsCreationService {
     const airtelTransferJobs: AirtelTransactionJobDto[] = registrationViews.map(
       (registrationView): AirtelTransactionJobDto => {
         return {
-          programId,
+          projectId,
           paymentId,
           referenceId: registrationView.referenceId,
-          programFspConfigurationId: registrationView.programFspConfigurationId,
+          projectFspConfigurationId: registrationView.projectFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -314,13 +314,13 @@ export class TransactionJobsCreationService {
    */
   private async createAndAddNedbankTransactionJobs({
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -332,7 +332,7 @@ export class TransactionJobsCreationService {
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       nedbankAttributeNames,
-      programId,
+      projectId,
     );
 
     // Convert the array into a map for increased performace (hashmap lookup)
@@ -346,10 +346,10 @@ export class TransactionJobsCreationService {
     const nedbankTransferJobs: NedbankTransactionJobDto[] =
       registrationViews.map((registrationView): NedbankTransactionJobDto => {
         return {
-          programId,
+          projectId,
           paymentId,
           referenceId: registrationView.referenceId,
-          programFspConfigurationId: registrationView.programFspConfigurationId,
+          projectFspConfigurationId: registrationView.projectFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -375,13 +375,13 @@ export class TransactionJobsCreationService {
    */
   private async createAndAddOnafriqTransactionJobs({
     referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
-    programId,
+    projectId,
     userId,
     paymentId,
     isRetry,
   }: {
     referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
-    programId: number;
+    projectId: number;
     userId: number;
     paymentId: number;
     isRetry: boolean;
@@ -393,7 +393,7 @@ export class TransactionJobsCreationService {
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       onafriqAttributeNames,
-      programId,
+      projectId,
     );
 
     // Convert the array into a map for increased performace (hashmap lookup)
@@ -407,10 +407,10 @@ export class TransactionJobsCreationService {
     const onafriqTransactionJobs: OnafriqTransactionJobDto[] =
       registrationViews.map((registrationView): OnafriqTransactionJobDto => {
         return {
-          programId,
+          projectId,
           paymentId,
           referenceId: registrationView.referenceId,
-          programFspConfigurationId: registrationView.programFspConfigurationId,
+          projectFspConfigurationId: registrationView.projectFspConfigurationId,
           transactionAmount: transactionAmountsMap.get(
             registrationView.referenceId,
           )!,
@@ -431,13 +431,13 @@ export class TransactionJobsCreationService {
    * Get registration views with FSP-specific attributes
    * @param referenceIdsTransactionAmounts - Array of reference IDs with transaction amounts
    * @param attributeNames - Names of attributes to fetch
-   * @param programId - Program ID
+   * @param projectId - Project ID
    * @returns Registration views with FSP-specific data
    */
   private async getRegistrationViews(
     referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[],
     attributeNames: string[],
-    programId: number,
+    projectId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const referenceIds = referenceIdsTransactionAmounts.map(
       (r) => r.referenceId,
@@ -450,7 +450,7 @@ export class TransactionJobsCreationService {
 
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationsChunked(
-        programId,
+        projectId,
         paginateQuery,
         4000,
       );

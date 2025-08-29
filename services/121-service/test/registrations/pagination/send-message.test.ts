@@ -1,7 +1,7 @@
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/project.helper';
 import {
   getMessageHistory,
   importRegistrations,
@@ -13,7 +13,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
@@ -33,7 +33,7 @@ describe('send arbitrary messages to set of registrations', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programIdOCW, registrations, accessToken);
+    await importRegistrations(projectIdOCW, registrations, accessToken);
   });
 
   it('should send messages to selected PAs only', async () => {
@@ -47,13 +47,13 @@ describe('send arbitrary messages to set of registrations', () => {
     // Act
     const sendMessageResponse = await sendMessage(
       accessToken,
-      programIdOCW,
+      projectIdOCW,
       [referenceIds[0]],
       message,
     );
 
     await waitForMessagesToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds: [referenceIds[0]],
       accessToken,
       minimumNumberOfMessagesPerReferenceId: 2,
@@ -62,7 +62,7 @@ describe('send arbitrary messages to set of registrations', () => {
     const messageHistories: MessageActivity[][] = [];
     for (const referenceId of referenceIds) {
       const response = await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         referenceId,
         accessToken,
       );
@@ -88,7 +88,7 @@ describe('send arbitrary messages to set of registrations', () => {
     // Act
     const sendMessageResponse = await sendMessage(
       accessToken,
-      programIdOCW,
+      projectIdOCW,
       [],
       message,
       undefined,
@@ -99,7 +99,7 @@ describe('send arbitrary messages to set of registrations', () => {
     );
 
     await waitForMessagesToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds: [
         registrationOCW3.referenceId,
         registrationOCW4.referenceId,
@@ -110,28 +110,28 @@ describe('send arbitrary messages to set of registrations', () => {
 
     const messageHistory1 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW1.referenceId,
         accessToken,
       )
     ).body;
     const messageHistory2 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW2.referenceId,
         accessToken,
       )
     ).body;
     const messageHistory3 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW3.referenceId,
         accessToken,
       )
     ).body;
     const messageHistory4 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW4.referenceId,
         accessToken,
       )
@@ -157,7 +157,7 @@ describe('send arbitrary messages to set of registrations', () => {
 
     // Test sms
     await updateRegistration(
-      programIdOCW,
+      projectIdOCW,
       registrationOCW1.referenceId,
       {
         phoneNumber: toNumberDoesNotExist,
@@ -169,7 +169,7 @@ describe('send arbitrary messages to set of registrations', () => {
 
     // Test whatsapp
     await updateRegistration(
-      programIdOCW,
+      projectIdOCW,
       registrationOCW2.referenceId,
       {
         whatsappPhoneNumber: toNumberDoesNotExist,
@@ -181,13 +181,13 @@ describe('send arbitrary messages to set of registrations', () => {
     // Act
     const sendMessageResponse = await sendMessage(
       accessToken,
-      programIdOCW,
+      projectIdOCW,
       [registrationOCW1.referenceId, registrationOCW2.referenceId],
       message,
     );
 
     await waitForMessagesToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds: [
         registrationOCW1.referenceId,
         registrationOCW2.referenceId,
@@ -198,7 +198,7 @@ describe('send arbitrary messages to set of registrations', () => {
 
     const messageHistory1 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW1.referenceId,
         accessToken,
       )
@@ -206,7 +206,7 @@ describe('send arbitrary messages to set of registrations', () => {
 
     const messageHistory2 = (
       await getMessageHistory(
-        programIdOCW,
+        projectIdOCW,
         registrationOCW2.referenceId,
         accessToken,
       )

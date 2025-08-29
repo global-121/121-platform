@@ -4,8 +4,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   exportTransactions,
-  patchProgramRegistrationAttribute,
-} from '@121-service/test/helpers/program.helper';
+  patchProjectRegistrationAttribute,
+} from '@121-service/test/helpers/project.helper';
 import {
   doPaymentAndWaitForCompletion,
   seedPaidRegistrations,
@@ -18,11 +18,11 @@ import { registrationSafaricom } from '@121-service/test/registrations/paginatio
 
 let accessToken: string;
 describe('Export transactions', () => {
-  const programId = 1;
+  const projectId = 1;
   const amount = 15;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB(SeedScript.safaricomProject, __filename);
     accessToken = await getAccessToken();
   });
 
@@ -30,10 +30,10 @@ describe('Export transactions', () => {
     // Arrange
 
     // Ensure the 'age' attribute is not exported anymore
-    await patchProgramRegistrationAttribute({
-      programId,
-      programRegistrationAttributeName: 'age',
-      programRegistrationAttribute: {
+    await patchProjectRegistrationAttribute({
+      projectId,
+      projectRegistrationAttributeName: 'age',
+      projectRegistrationAttribute: {
         includeInTransactionExport: false,
       },
       accessToken,
@@ -42,14 +42,14 @@ describe('Export transactions', () => {
     const fromDate = new Date().toISOString();
     const paymentId = await seedPaidRegistrations(
       [registrationSafaricom],
-      programId,
+      projectId,
       amount,
     );
     const toDate = new Date().toISOString();
 
     // Act
     const transactionsResponse = await exportTransactions({
-      programId,
+      projectId,
       fromDate,
       toDate,
       accessToken,
@@ -85,7 +85,7 @@ describe('Export transactions', () => {
       amount: expect.any(Number),
       status: TransactionStatusEnum.success,
       registrationId: expect.any(Number),
-      registrationProgramId: expect.any(Number),
+      registrationProjectId: expect.any(Number),
       registrationReferenceId: referenceId,
       registrationName: registrationSafaricom.fullName,
       registrationStatus: expect.any(String),
@@ -98,13 +98,13 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment that should not be exported
-    await seedPaidRegistrations([registrationSafaricom], programId, amount);
+    await seedPaidRegistrations([registrationSafaricom], projectId, amount);
 
     const fromDate = new Date().toISOString();
 
     // Paymentthat should be exported
     const paymentIdOfMiddlePayment = await doPaymentAndWaitForCompletion({
-      programId,
+      projectId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
@@ -113,7 +113,7 @@ describe('Export transactions', () => {
 
     // Payment that should not be exported
     await doPaymentAndWaitForCompletion({
-      programId,
+      projectId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
@@ -121,7 +121,7 @@ describe('Export transactions', () => {
 
     // Act
     const transactionsResponse = await exportTransactions({
-      programId,
+      projectId,
       fromDate,
       toDate,
       accessToken,
@@ -152,11 +152,11 @@ describe('Export transactions', () => {
     // Arrange
 
     // Payment 1
-    await seedPaidRegistrations([registrationSafaricom], programId, amount);
+    await seedPaidRegistrations([registrationSafaricom], projectId, amount);
 
     // Payment 2
     const paymentIdOfSecondPayment = await doPaymentAndWaitForCompletion({
-      programId,
+      projectId,
       referenceIds: [registrationSafaricom.referenceId],
       amount,
       accessToken,
@@ -164,7 +164,7 @@ describe('Export transactions', () => {
 
     // Act: Export only payment 2
     const transactionsResponse = await exportTransactions({
-      programId,
+      projectId,
       paymentId: paymentIdOfSecondPayment,
       accessToken,
     });

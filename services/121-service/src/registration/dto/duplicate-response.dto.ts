@@ -8,7 +8,7 @@ export class DuplicateReponseDto {
   public readonly registrationId: number;
 
   @ApiProperty({ example: 1 })
-  public readonly registrationProgramId: number;
+  public readonly registrationProjectId: number;
 
   @ApiProperty({ example: 'zeeland' })
   public readonly scope: string;

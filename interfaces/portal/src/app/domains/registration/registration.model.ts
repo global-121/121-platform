@@ -16,7 +16,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { Dto } from '~/utils/dto-type';
 
 export type Registration = Dto<MappedPaginatedRegistrationDto> &
-  Record<string, unknown>; // The Registration entity has a lot of properties, but they are dynamic based on the program configuration so we don't know them in advance
+  Record<string, unknown>; // The Registration entity has a lot of properties, but they are dynamic based on the project configuration so we don't know them in advance
 
 export type FindAllRegistrationsResult = {
   data: Registration[]; // We need to manually remap the data property to the correct type because otherwise the dto type doesn't know how to handle the "unknown" properties defined above

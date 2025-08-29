@@ -5,14 +5,14 @@ import { Repository } from 'typeorm';
 import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
 import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 
 @Injectable()
 export class ExchangeRatesService {
   @InjectRepository(ExchangeRateEntity)
   private exchangeRateRepository: Repository<ExchangeRateEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public projectRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly exchangeRateApiService: ExchangeRatesApiService,
@@ -25,7 +25,7 @@ export class ExchangeRatesService {
   }
 
   public async retrieveAndStoreAllExchangeRates(): Promise<number> {
-    const currencies = await this.getAllProgramCurrencies();
+    const currencies = await this.getAllProjectCurrencies();
 
     for (const currency of currencies) {
       const { rate, closeTime } =
@@ -48,16 +48,16 @@ export class ExchangeRatesService {
     await this.exchangeRateRepository.save(exchangeRate);
   }
 
-  private async getAllProgramCurrencies(): Promise<string[]> {
+  private async getAllProjectCurrencies(): Promise<string[]> {
     const euroCode = 'EUR';
 
     return (
-      await this.programRepository
-        .createQueryBuilder('program')
-        .select('program.currency')
-        .where('program.currency != :euroCode', { euroCode })
+      await this.projectRepository
+        .createQueryBuilder('project')
+        .select('project.currency')
+        .where('project.currency != :euroCode', { euroCode })
         .distinct()
         .getRawMany()
-    ).map((el) => el.program_currency);
+    ).map((el) => el.project_currency);
   }
 }

@@ -34,10 +34,10 @@ export class GetTransactionResponseDto {
   public errorMessage: string | null;
 
   @ApiProperty({ example: 'ironBank' })
-  public programFspConfigurationName: string;
+  public projectFspConfigurationName: string;
 
   @ApiProperty({ example: 111, type: 'number' })
-  public registrationProgramId: number;
+  public registrationProjectId: number;
 
   @ApiProperty({ example: 111, type: 'number' })
   public registrationId: number;

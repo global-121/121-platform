@@ -45,21 +45,21 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
       });
     // ************************
 
-    // Set up organization and program
+    // Set up organization and project
     await this.seedHelper.seedData(seedConfig!, isApiTests);
 
-    const programIds: number[] = [];
+    const projectIds: number[] = [];
     // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
-      const programIdOcw = 3;
-      programIds.push(programIdOcw);
-      await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
+      const projectIdOcw = 3;
+      projectIds.push(projectIdOcw);
+      await this.seedRegistrationForProject(projectIdOcw, registrationVisa);
     }
     if (mockPv) {
-      const programIdPv = 2;
-      programIds.push(programIdPv);
-      await this.seedRegistrationForProgram(
-        programIdPv,
+      const projectIdPv = 2;
+      projectIds.push(projectIdPv);
+      await this.seedRegistrationForProject(
+        projectIdPv,
         registrationAHWhatsapp,
       );
     }
@@ -70,31 +70,31 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
       powerNrRegistrations,
     );
-    await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
+    await this.seedMockHelper.multiplyTransactions(nrPayments, projectIds);
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();
   }
 
-  private async seedRegistrationForProgram(
-    programId: number,
+  private async seedRegistrationForProject(
+    projectId: number,
     registration: any,
   ): Promise<void> {
     const accessToken = await this.axiosCallsService.getAccessToken();
     await this.seedMockHelper.importRegistrations(
-      programId,
+      projectId,
       [registration],
       accessToken,
     );
     await this.seedMockHelper.awaitChangePaStatus(
-      programId,
+      projectId,
       [registration.referenceId],
       RegistrationStatusEnum.included,
       accessToken,
     );
 
     await this.seedMockHelper.doPayment(
-      programId,
+      projectId,
       amountVisa,
       [registration.referenceId],
       accessToken,

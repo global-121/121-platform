@@ -70,7 +70,7 @@ export class RegistrationsBulkService {
 
   public async patchRegistrationsStatus({
     paginateQuery,
-    programId,
+    projectId,
     registrationStatus,
     dryRun,
     userId,
@@ -78,7 +78,7 @@ export class RegistrationsBulkService {
     reason,
   }: {
     paginateQuery: PaginateQuery;
-    programId: number;
+    projectId: number;
     registrationStatus: RegistrationStatusEnum;
     dryRun: boolean;
     userId: number;
@@ -90,7 +90,7 @@ export class RegistrationsBulkService {
       !!messageContentDetails.messageTemplateKey;
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
-        programId,
+        projectId,
         messageContentDetails.message,
         messageContentDetails.messageTemplateKey,
       );
@@ -107,13 +107,13 @@ export class RegistrationsBulkService {
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
-      programId,
+      projectId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
     if (!dryRun) {
       this.updateRegistrationStatusBatchFilter({
         paginateQuery,
-        programId,
+        projectId,
         registrationStatus,
         usedPlaceholders,
         allowedCurrentStatuses,
@@ -131,13 +131,13 @@ export class RegistrationsBulkService {
 
   public async deleteRegistrations({
     paginateQuery,
-    programId,
+    projectId,
     dryRun,
     userId,
     reason,
   }: {
     paginateQuery: PaginateQuery;
-    programId: number;
+    projectId: number;
     dryRun: boolean;
     userId: number;
     reason: string;
@@ -155,13 +155,13 @@ export class RegistrationsBulkService {
 
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
-      programId,
+      projectId,
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses),
     );
     if (!dryRun) {
       this.deleteBatch({
         paginateQuery,
-        programId,
+        projectId,
         allowedCurrentStatuses,
         userId,
         reason,
@@ -174,18 +174,18 @@ export class RegistrationsBulkService {
 
   public async postMessages(
     paginateQuery: PaginateQuery,
-    programId: number,
+    projectId: number,
     message: string,
     messageTemplateKey: string,
     dryRun: boolean,
     userId: number,
   ): Promise<BulkActionResultDto> {
     if (messageTemplateKey) {
-      await this.validateTemplateKey(programId, messageTemplateKey);
+      await this.validateTemplateKey(projectId, messageTemplateKey);
     }
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
-        programId,
+        projectId,
         message,
         messageTemplateKey,
       );
@@ -198,7 +198,7 @@ export class RegistrationsBulkService {
     });
     const resultDto = await this.getBulkActionResult(
       paginateQuery,
-      programId,
+      projectId,
       this.getBaseQuery(),
     );
 
@@ -206,7 +206,7 @@ export class RegistrationsBulkService {
       const chunkSize = 10000;
       this.sendMessagesBatch(
         paginateQuery,
-        programId,
+        projectId,
         message,
         chunkSize,
         resultDto.applicableCount,
@@ -222,7 +222,7 @@ export class RegistrationsBulkService {
 
   private async sendMessagesBatch(
     paginateQuery: PaginateQuery,
-    programId: number,
+    projectId: number,
     message: string,
     chunkSize: number,
     bulkSize: number,
@@ -234,7 +234,7 @@ export class RegistrationsBulkService {
     const registrationsMetadata =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         // TODO: Make this dynamic / a permission check
         true,
         false,
@@ -246,7 +246,7 @@ export class RegistrationsBulkService {
       const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
-          programId,
+          projectId,
           // TODO: Make this dynamic / a permission check
           true,
           false,
@@ -267,13 +267,13 @@ export class RegistrationsBulkService {
 
   public async getBulkActionResult(
     paginateQuery: PaginateQuery,
-    programId: number,
+    projectId: number,
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>,
   ): Promise<BulkActionResultDto> {
     const selectedRegistrations =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         true,
         false,
       );
@@ -281,7 +281,7 @@ export class RegistrationsBulkService {
     const applicableRegistrations =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         true,
         false,
         queryBuilder,
@@ -319,14 +319,14 @@ export class RegistrationsBulkService {
   }): PaginateQuery {
     query.select = [
       GenericRegistrationAttributes.referenceId,
-      'programId',
+      'projectId',
       ...selectColumns,
     ];
     if (includePaymentAttributes) {
       query.select.push(GenericRegistrationAttributes.paymentAmountMultiplier);
-      query.select.push('programFspConfigurationId');
+      query.select.push('projectFspConfigurationId');
       query.select.push(
-        GenericRegistrationAttributes.programFspConfigurationName,
+        GenericRegistrationAttributes.projectFspConfigurationName,
       );
       query.select.push('fspName');
     }
@@ -386,7 +386,7 @@ export class RegistrationsBulkService {
 
   private async updateRegistrationStatusBatchFilter({
     paginateQuery,
-    programId,
+    projectId,
     registrationStatus,
     usedPlaceholders,
     allowedCurrentStatuses,
@@ -395,7 +395,7 @@ export class RegistrationsBulkService {
     reason,
   }: {
     paginateQuery: PaginateQuery;
-    programId: number;
+    projectId: number;
     registrationStatus: RegistrationStatusEnum;
     usedPlaceholders: string[];
     allowedCurrentStatuses: RegistrationStatusEnum[];
@@ -408,7 +408,7 @@ export class RegistrationsBulkService {
     const registrationForUpdateMeta =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         true,
         false,
         this.getStatusUpdateBaseQuery(
@@ -421,7 +421,7 @@ export class RegistrationsBulkService {
       const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
-          programId,
+          projectId,
           true,
           false,
           this.getStatusUpdateBaseQuery(
@@ -526,13 +526,13 @@ export class RegistrationsBulkService {
 
   private async deleteBatch({
     paginateQuery,
-    programId,
+    projectId,
     allowedCurrentStatuses,
     userId,
     reason,
   }: {
     paginateQuery: PaginateQuery;
-    programId: number;
+    projectId: number;
     allowedCurrentStatuses: RegistrationStatusEnum[];
     userId: number;
     reason: string;
@@ -542,7 +542,7 @@ export class RegistrationsBulkService {
     const registrationForDeleteMeta =
       await this.registrationsPaginationService.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         true,
         false,
         this.getStatusUpdateBaseQuery(
@@ -555,7 +555,7 @@ export class RegistrationsBulkService {
       const registrationPaginateObject =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
-          programId,
+          projectId,
           true,
           false,
           this.getStatusUpdateBaseQuery(
@@ -671,12 +671,12 @@ export class RegistrationsBulkService {
   }
 
   private async validateTemplateKey(
-    programId: number,
+    projectId: number,
     messageTemplateKey: string,
   ): Promise<void> {
     const template = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(projectId),
         type: Equal(messageTemplateKey),
       },
     });

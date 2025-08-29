@@ -10,7 +10,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -30,9 +30,9 @@ test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
 
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
+    projectId: projectIdPV,
     referenceId: registrationPV5.referenceId,
     accessToken,
   });
@@ -41,10 +41,10 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto('/');
   await loginPage.login();
-  // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  // Navigate to project
+  await loginPage.selectProject('NLRC Direct Digital Aid Project (PV)');
   await loginPage.goto(
-    `/project/${programIdPV}/registrations/${registrationId}`,
+    `/project/${projectIdPV}/registrations/${registrationId}`,
   );
 });
 
@@ -58,8 +58,8 @@ test('[35234] Edit: FSP', async ({ page }) => {
   // Act
   // Change FSP from dropdown selection and fill in all the required fields
   await personalInformationPage.selectDropdownOption({
-    dropdownIdName: 'programFspConfigurationName',
-    dropdownLabel: dropdownInputs.programFspConfigurationName.fieldName,
+    dropdownIdName: 'projectFspConfigurationName',
+    dropdownLabel: dropdownInputs.projectFspConfigurationName.fieldName,
     option: 'Visa debit card',
   });
   // Fill in all the required fields
@@ -82,7 +82,7 @@ test('[35234] Edit: FSP', async ({ page }) => {
   await personalInformationPage.saveChanges();
   // Assert
   await personalInformationPage.validatePersonalInformationField({
-    fieldName: dropdownInputs.programFspConfigurationName.fieldName,
+    fieldName: dropdownInputs.projectFspConfigurationName.fieldName,
     fieldValue: 'Visa debit card',
   });
 });

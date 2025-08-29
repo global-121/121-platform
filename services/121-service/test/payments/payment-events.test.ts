@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { env } from '@121-service/src/env';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getPaymentEvents } from '@121-service/test/helpers/program.helper';
+import { getPaymentEvents } from '@121-service/test/helpers/project.helper';
 import {
   doPaymentAndWaitForCompletion,
   seedIncludedRegistrations,
@@ -17,11 +17,11 @@ import { registrationSafaricom } from '@121-service/test/registrations/paginatio
 let accessToken: string;
 
 describe('Payment Events API', () => {
-  const programId = 1;
+  const projectId = 1;
   const amount = 15;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.safaricomProgram, __filename);
+    await resetDB(SeedScript.safaricomProject, __filename);
     accessToken = await getAccessToken();
   });
 
@@ -30,12 +30,12 @@ describe('Payment Events API', () => {
     const note = '121 is great!';
     await seedIncludedRegistrations(
       [registrationSafaricom],
-      programId,
+      projectId,
       accessToken,
     );
 
     const paymentId = await doPaymentAndWaitForCompletion({
-      programId,
+      projectId,
       amount,
       referenceIds: [registrationSafaricom.referenceId],
       accessToken,
@@ -44,7 +44,7 @@ describe('Payment Events API', () => {
 
     // Act
     const paymentEventsResponse = await getPaymentEvents({
-      programId,
+      projectId,
       paymentId,
       accessToken,
     });

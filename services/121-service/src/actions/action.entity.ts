@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, Relation } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Entity('action')
@@ -15,10 +15,10 @@ export class ActionEntity extends Base121AuditedEntity {
   })
   public user: Relation<UserEntity>;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.actions, {
+  @ManyToOne((_type) => ProjectEntity, (project) => project.actions, {
     onDelete: 'CASCADE',
   })
-  public program: Relation<ProgramEntity>;
+  public project: Relation<ProjectEntity>;
 }
 
 export enum AdditionalActionType {

@@ -10,7 +10,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
@@ -26,7 +26,7 @@ describe('Load PA table', () => {
       accessToken = await getAccessToken();
 
       await importRegistrations(
-        programIdOCW,
+        projectIdOCW,
         [
           // Unordered on purpose, to test sorting/ordering later
           registrationOCW1, // Sequence number: 1
@@ -38,7 +38,7 @@ describe('Load PA table', () => {
       );
 
       await awaitChangeRegistrationStatus({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         referenceIds: [registrationOCW1.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -52,7 +52,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         sort: { field, direction },
       });
@@ -81,7 +81,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         sort: { field, direction },
       });

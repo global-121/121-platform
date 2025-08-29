@@ -1,4 +1,4 @@
-referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,programFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity,scope
+referenceId,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,projectFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity,scope
 ,en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag,kisumu.kisumu-north
 ,en,1,,Test mock-fail-create-customer,14155238887,Intersolve-visa,14155238887,Straat,1,A,1234AB,Den Haag,kisumu.kisumu-north
 ,en,1,,Test mock-fail-create-wallet,14155238888,Intersolve-visa,14155238888,Straat,1,A,1234AB,Den Haag,kisumu.kisumu-north

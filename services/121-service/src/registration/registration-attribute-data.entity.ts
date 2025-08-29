@@ -11,12 +11,12 @@ import {
 
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
-@Unique('registrationProgramAttributeUnique', [
+@Unique('registrationProjectAttributeUnique', [
   'registrationId',
-  'programRegistrationAttributeId',
+  'projectRegistrationAttributeId',
 ])
 @Entity('registration_attribute_data')
 export class RegistrationAttributeDataEntity extends Base121Entity {
@@ -34,17 +34,17 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
   public registrationId: number;
 
   @ManyToOne(
-    (_type) => ProgramRegistrationAttributeEntity,
-    (programRegistrationAttribute) =>
-      programRegistrationAttribute.registrationAttributeData,
+    (_type) => ProjectRegistrationAttributeEntity,
+    (projectRegistrationAttribute) =>
+      projectRegistrationAttribute.registrationAttributeData,
     {
       onDelete: 'CASCADE',
     },
   )
-  @JoinColumn({ name: 'programRegistrationAttributeId' })
-  public programRegistrationAttribute: Relation<ProgramRegistrationAttributeEntity>;
+  @JoinColumn({ name: 'projectRegistrationAttributeId' })
+  public projectRegistrationAttribute: Relation<ProjectRegistrationAttributeEntity>;
   @Column({ type: 'integer' })
-  public programRegistrationAttributeId: number;
+  public projectRegistrationAttributeId: number;
 
   @Index()
   @Column()
@@ -54,10 +54,10 @@ export class RegistrationAttributeDataEntity extends Base121Entity {
     const repo = AppDataSource.getRepository(RegistrationAttributeDataEntity);
     const dataWithRelations = await repo.findOneOrFail({
       where: { id: Equal(this.id) },
-      relations: ['programRegistrationAttribute'],
+      relations: ['projectRegistrationAttribute'],
     });
-    if (dataWithRelations.programRegistrationAttribute) {
-      return dataWithRelations.programRegistrationAttribute.name;
+    if (dataWithRelations.projectRegistrationAttribute) {
+      return dataWithRelations.projectRegistrationAttribute.name;
     }
   }
 }

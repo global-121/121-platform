@@ -3,11 +3,11 @@ import { HttpStatus } from '@nestjs/common';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { getServer, resetDB } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('/ Users', () => {
   describe('/ Login', () => {
-    const fixtureProgramId = programIdPV;
+    const fixtureProjectId = projectIdPV;
     const fixtureUser = {
       username: 'admin@example.org',
       password: 'password',
@@ -37,7 +37,7 @@ describe('/ Users', () => {
       expect(Date.parse(response.body.expires)).not.toBeNaN();
       expect(response.body.permissions).toBeDefined();
       expect(
-        response.body.permissions[`${fixtureProgramId}`].length,
+        response.body.permissions[`${fixtureProjectId}`].length,
       ).toBeGreaterThanOrEqual(1);
     });
 

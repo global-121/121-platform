@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 
 @Injectable()
 export class RegistrationUtilsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   constructor(
     private registrationScopedRepository: RegistrationScopedRepository,
@@ -20,22 +20,22 @@ export class RegistrationUtilsService {
   public async save(
     registration: RegistrationEntity,
     retryCount?: number,
-    recalculateRegistrationProgramId = false,
+    recalculateRegistrationProjectId = false,
   ): Promise<RegistrationEntity> {
     let saveRetriesCount = retryCount ? retryCount : 0;
-    if (recalculateRegistrationProgramId) {
+    if (recalculateRegistrationProjectId) {
       const query = this.registrationScopedRepository
         .createQueryBuilder('r')
-        .select('r."registrationProgramId"')
-        .andWhere('r.programId = :programId', {
-          programId: registration.program.id,
+        .select('r."registrationProjectId"')
+        .andWhere('r.projectId = :projectId', {
+          projectId: registration.project.id,
         })
-        .andWhere('r.registrationProgramId is not null')
-        .orderBy('r."registrationProgramId"', 'DESC')
+        .andWhere('r.registrationProjectId is not null')
+        .orderBy('r."registrationProjectId"', 'DESC')
         .limit(1);
       const result = await query.getRawOne();
-      registration.registrationProgramId = result
-        ? result.registrationProgramId + 1
+      registration.registrationProjectId = result
+        ? result.registrationProjectId + 1
         : 1;
     }
     try {
@@ -66,12 +66,12 @@ export class RegistrationUtilsService {
   public async getFullName(registration: RegistrationEntity): Promise<string> {
     let fullName = '';
     const fullnameConcat: string[] = [];
-    const program = await this.programRepository.findOneBy({
-      id: registration.programId,
+    const project = await this.projectRepository.findOneBy({
+      id: registration.projectId,
     });
-    if (program && program.fullnameNamingConvention) {
+    if (project && project.fullnameNamingConvention) {
       for (const nameColumn of JSON.parse(
-        JSON.stringify(program.fullnameNamingConvention),
+        JSON.stringify(project.fullnameNamingConvention),
       )) {
         const singleName =
           await this.registrationDataService.getRegistrationDataValueByName(

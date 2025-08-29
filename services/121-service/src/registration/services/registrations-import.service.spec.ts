@@ -2,8 +2,8 @@ import { TestBed } from '@automock/jest';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectService } from '@121-service/src/projects/projects.service';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationsImportService } from '@121-service/src/registration/services/registrations-import.service';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
@@ -20,15 +20,15 @@ describe('RegistrationsImportService', () => {
     ).compile();
     registrationsImportService = unit;
 
-    // Mock programService.findProgramOrThrow
-    const programService = unitRef.get(ProgramService);
+    // Mock projectService.findProjectOrThrow
+    const projectService = unitRef.get(ProjectService);
     jest
-      .spyOn(programService as any, 'findProgramOrThrow')
+      .spyOn(projectService as any, 'findProjectOrThrow')
       .mockImplementation(() => ({
         allowEmptyPhoneNumber: false,
       }));
 
-    // Mock registrationsInputValidator.findProgramOrThrow
+    // Mock registrationsInputValidator.findProjectOrThrow
     const registrationsInputValidator = unitRef.get(
       RegistrationsInputValidator,
     );
@@ -56,11 +56,11 @@ describe('RegistrationsImportService', () => {
       .spyOn(registrationsImportService as any, 'getDynamicAttributes')
       .mockImplementation(() => []);
 
-    // Mock programRepository.findOneBy
-    const programRepository = unitRef.get(
-      getRepositoryToken(ProgramEntity) as string,
+    // Mock projectRepository.findOneBy
+    const projectRepository = unitRef.get(
+      getRepositoryToken(ProjectEntity) as string,
     );
-    jest.spyOn(programRepository as any, 'findOneBy').mockImplementation(() => {
+    jest.spyOn(projectRepository as any, 'findOneBy').mockImplementation(() => {
       return Promise.resolve({
         allowEmptyPhoneNumber: false,
         languages: [language],

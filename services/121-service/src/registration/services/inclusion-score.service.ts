@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -12,8 +12,8 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 
 @Injectable()
 export class InclusionScoreService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -22,10 +22,10 @@ export class InclusionScoreService {
   ) {}
 
   public async calculatePaymentAmountMultiplier(
-    program: ProgramEntity,
+    project: ProjectEntity,
     referenceId: string,
   ): Promise<RegistrationEntity | undefined> {
-    if (!program.paymentAmountMultiplierFormula) {
+    if (!project.paymentAmountMultiplierFormula) {
       return;
     }
 
@@ -33,7 +33,7 @@ export class InclusionScoreService {
       where: { referenceId: Equal(referenceId) },
       relations: ['data'],
     });
-    const formulaParts = program.paymentAmountMultiplierFormula
+    const formulaParts = project.paymentAmountMultiplierFormula
       .replace(/\s/g, '')
       .split('+');
     const constant = Number(formulaParts[0]);
@@ -56,17 +56,17 @@ export class InclusionScoreService {
   public async calculateInclusionScore(referenceId: string): Promise<void> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['program'],
+      relations: ['project'],
     });
 
     const scoreList = await this.createQuestionAnswerListPrefilled(referenceId);
 
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(registration.program.id) },
-      relations: ['programRegistrationAttributes'],
+    const project = await this.projectRepository.findOneOrFail({
+      where: { id: Equal(registration.project.id) },
+      relations: ['projectRegistrationAttributes'],
     });
-    const score = this.calculateScoreAllProgramAttributes(
-      program.programRegistrationAttributes,
+    const score = this.calculateScoreAllProjectAttributes(
+      project.projectRegistrationAttributes,
       scoreList,
     );
 
@@ -80,15 +80,15 @@ export class InclusionScoreService {
   ): Promise<object> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { referenceId: Equal(referenceId) },
-      relations: ['data', 'data.programRegistrationAttribute'],
+      relations: ['data', 'data.projectRegistrationAttribute'],
     });
     const scoreList = {};
     for (const entry of registration.data) {
-      if (entry.programRegistrationAttribute) {
+      if (entry.projectRegistrationAttribute) {
         const attrValue = entry.value;
-        const newKeyName = entry.programRegistrationAttribute.name;
+        const newKeyName = entry.projectRegistrationAttribute.name;
         if (
-          entry.programRegistrationAttribute.type ===
+          entry.projectRegistrationAttribute.type ===
           RegistrationAttributeTypes.multiSelect
         ) {
           if (scoreList[newKeyName] !== undefined) {
@@ -104,12 +104,12 @@ export class InclusionScoreService {
     return scoreList;
   }
 
-  private calculateScoreAllProgramAttributes(
-    programRegistrationAttributes: ProgramRegistrationAttributeEntity[],
+  private calculateScoreAllProjectAttributes(
+    projectRegistrationAttributes: ProjectRegistrationAttributeEntity[],
     scoreList: object,
   ): number {
     let totalScore = 0;
-    for (const attribute of programRegistrationAttributes) {
+    for (const attribute of projectRegistrationAttributes) {
       const attributeName = attribute.name;
       if (scoreList[attributeName]) {
         const answerPA = scoreList[attributeName];
@@ -133,48 +133,48 @@ export class InclusionScoreService {
   }
 
   private getScoreForDropDown(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    projectRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: object,
   ): number {
     // If attribute has no scoring system return 0;
-    if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
+    if (Object.keys(projectRegistrationAttribute.scoring).length === 0) {
       return 0;
     }
     let score = 0;
     const options = JSON.parse(
-      JSON.stringify(programRegistrationAttribute.options),
+      JSON.stringify(projectRegistrationAttribute.options),
     );
     for (const value of options) {
       if (
         value.option == answerPA &&
-        programRegistrationAttribute.scoring[value.option]
+        projectRegistrationAttribute.scoring[value.option]
       ) {
-        score = Number(programRegistrationAttribute.scoring[value.option]);
+        score = Number(projectRegistrationAttribute.scoring[value.option]);
       }
     }
     return score;
   }
 
   private getScoreForMultiSelect(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    projectRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: object[],
   ): number {
     // If attribute has no scoring system return 0;
-    if (Object.keys(programRegistrationAttribute.scoring).length === 0) {
+    if (Object.keys(projectRegistrationAttribute.scoring).length === 0) {
       return 0;
     }
     let score = 0;
     const options = JSON.parse(
-      JSON.stringify(programRegistrationAttribute.options),
+      JSON.stringify(projectRegistrationAttribute.options),
     );
     for (const selectedOption of answerPA) {
       for (const value of options) {
         if (
           value.option == selectedOption &&
-          programRegistrationAttribute.scoring[value.option]
+          projectRegistrationAttribute.scoring[value.option]
         ) {
           score =
-            score + Number(programRegistrationAttribute.scoring[value.option]);
+            score + Number(projectRegistrationAttribute.scoring[value.option]);
         }
       }
     }
@@ -182,16 +182,16 @@ export class InclusionScoreService {
   }
 
   private getScoreForNumeric(
-    programRegistrationAttribute: ProgramRegistrationAttributeEntity,
+    projectRegistrationAttribute: ProjectRegistrationAttributeEntity,
     answerPA: number,
   ): number {
     let score = 0;
-    if (programRegistrationAttribute.scoring['multiplier']) {
+    if (projectRegistrationAttribute.scoring['multiplier']) {
       if (isNaN(answerPA)) {
         answerPA = 0;
       }
       score =
-        Number(programRegistrationAttribute.scoring['multiplier']) * answerPA;
+        Number(projectRegistrationAttribute.scoring['multiplier']) * answerPA;
     }
     return score;
   }

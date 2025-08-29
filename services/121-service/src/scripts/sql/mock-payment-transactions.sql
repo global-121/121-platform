@@ -10,7 +10,7 @@ INSERT INTO "121-service"."transaction"
   amount,
   updated,
   "userId",
-  "programFspConfigurationId"
+  "projectFspConfigurationId"
 )
 SELECT
   t.created + INTERVAL '1 millisecond' * ROW_NUMBER() OVER (ORDER BY t.id),
@@ -23,8 +23,8 @@ SELECT
   t.amount,
   t.updated,
   t."userId",
-  t."programFspConfigurationId"
+  t."projectFspConfigurationId"
 FROM
   "121-service"."transaction" t
 WHERE
-  t."paymentId" = (SELECT MIN(id) FROM "121-service"."payment" p2 WHERE p2."programId" = $2)
+  t."paymentId" = (SELECT MIN(id) FROM "121-service"."payment" p2 WHERE p2."projectId" = $2)

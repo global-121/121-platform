@@ -11,7 +11,7 @@ export function throwIfSelfUpdate(
 
   if (loggedInUserId === userIdToUpdate) {
     throw new HttpException(
-      'You cannot update your own program assignment',
+      'You cannot update your own project assignment',
       HttpStatus.FORBIDDEN,
     );
   }

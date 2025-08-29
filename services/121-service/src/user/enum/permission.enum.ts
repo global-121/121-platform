@@ -19,12 +19,12 @@
  *
  */
 export enum PermissionEnum {
-  // Program(s)
-  ProgramUPDATE = 'program.update',
-  ProgramMetricsREAD = 'program:metrics.read',
-  ProgramAttachmentsREAD = 'program:attachments.read',
-  ProgramAttachmentsCREATE = 'program:attachments.create',
-  ProgramAttachmentsDELETE = 'program:attachments.delete',
+  // Project(s)
+  ProjectUPDATE = 'project.update',
+  ProjectMetricsREAD = 'project:metrics.read',
+  ProjectAttachmentsREAD = 'project:attachments.read',
+  ProjectAttachmentsCREATE = 'project:attachments.create',
+  ProjectAttachmentsDELETE = 'project:attachments.delete',
 
   // Payment(s)
   PaymentREAD = 'payment.read',
@@ -84,6 +84,6 @@ export enum PermissionEnum {
   ActionCREATE = 'action.create',
 
   // User(s)
-  AidWorkerProgramREAD = 'aid-worker:program.read',
-  AidWorkerProgramUPDATE = 'aid-worker:program.update',
+  AidWorkerProjectREAD = 'aid-worker:project.read',
+  AidWorkerProjectUPDATE = 'aid-worker:project.update',
 }

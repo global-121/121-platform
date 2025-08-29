@@ -5,8 +5,8 @@ import { Equal, Repository } from 'typeorm';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeRepository } from '@121-service/src/projects/repositories/project-registration-attribute.repository';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -15,74 +15,74 @@ import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
 @Injectable()
 export class PaymentsReportingHelperService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   public constructor(
-    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+    private readonly projectRegistrationAttributeRepository: ProjectRegistrationAttributeRepository,
   ) {}
 
-  public async getSelectForExport(programId: number): Promise<string[]> {
+  public async getSelectForExport(projectId: number): Promise<string[]> {
     return [
-      ...(await this.getDefaultSelect({ programId })),
-      ...(await this.getProgramAttributeNamesIncludedInExport(programId)),
+      ...(await this.getDefaultSelect({ projectId })),
+      ...(await this.getProjectAttributeNamesIncludedInExport(projectId)),
     ];
   }
 
-  private async getProgramAttributeNamesIncludedInExport(
-    programId: number,
+  private async getProjectAttributeNamesIncludedInExport(
+    projectId: number,
   ): Promise<string[]> {
-    const programRegistrationAttributes =
-      await this.programRegistrationAttributeRepository.find({
+    const projectRegistrationAttributes =
+      await this.projectRegistrationAttributeRepository.find({
         where: {
-          programId: Equal(programId),
+          projectId: Equal(projectId),
           includeInTransactionExport: Equal(true),
         },
       });
 
-    return programRegistrationAttributes.map((attr) => attr.name);
+    return projectRegistrationAttributes.map((attr) => attr.name);
   }
 
   private async getDefaultSelect({
-    programId,
+    projectId,
   }: {
-    programId: number;
+    projectId: number;
   }): Promise<string[]> {
     const defaultSelect = [
       DefaultRegistrationDataAttributeNames.name,
-      GenericRegistrationAttributes.registrationProgramId,
+      GenericRegistrationAttributes.registrationProjectId,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
-      GenericRegistrationAttributes.programFspConfigurationLabel,
+      GenericRegistrationAttributes.projectFspConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ];
 
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
 
-    if (program.enableMaxPayments) {
+    if (project.enableMaxPayments) {
       defaultSelect.push(GenericRegistrationAttributes.maxPayments);
     }
 
-    if (program.enableScope) {
+    if (project.enableScope) {
       defaultSelect.push(GenericRegistrationAttributes.scope);
     }
 
     return defaultSelect;
   }
 
-  public async getFspSpecificJoinFields(programId: number): Promise<
+  public async getFspSpecificJoinFields(projectId: number): Promise<
     {
       entityJoinedToTransaction: EntityClass<any>;
       attribute: string;
       alias: string;
     }[]
   > {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['programFspConfigurations'],
+    const project = await this.projectRepository.findOneOrFail({
+      where: { id: Equal(projectId) },
+      relations: ['projectFspConfigurations'],
     });
     let fields: {
       entityJoinedToTransaction: EntityClass<any>;
@@ -90,7 +90,7 @@ export class PaymentsReportingHelperService {
       alias: string;
     }[] = [];
 
-    for (const fspConfig of program.programFspConfigurations) {
+    for (const fspConfig of project.projectFspConfigurations) {
       if (fspConfig.fspName === Fsps.safaricom) {
         fields = [
           ...fields,
@@ -130,7 +130,7 @@ export class PaymentsReportingHelperService {
   }
 
   public createTransactionsExportFilename(
-    programId: number,
+    projectId: number,
     fromDate?: Date,
     toDate?: Date,
     payment?: number,
@@ -143,7 +143,7 @@ export class PaymentsReportingHelperService {
     const toDateString = toDate ? formatDateForFilename(toDate) : undefined;
     const paymentString = payment ? `payment_${payment}` : undefined;
     const fileNameParts = [
-      `transactions_${programId}`,
+      `transactions_${projectId}`,
       fromDateString,
       toDateString,
       paymentString,

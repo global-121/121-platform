@@ -1,4 +1,4 @@
-preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,programFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
+preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,phoneNumber,projectFspConfigurationName,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
 en,1,,Test succeed,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag
 en,1,,Test mock-fail-create-customer,14155238886,Intersolve-visa,14155238886,Straat,1,A,1234AB,Den Haag

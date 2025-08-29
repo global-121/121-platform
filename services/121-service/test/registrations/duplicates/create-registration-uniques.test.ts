@@ -19,7 +19,7 @@ import {
 const registration1 = { ...registrationPV5 };
 const registration2 = { ...registrationPV6 };
 const registration3 = { ...registrationPV7 };
-const programId = 2;
+const projectId = 2;
 describe('Succesfully mark registrations to ignore duplication', () => {
   let registrationId1: number;
   let registrationId2: number;
@@ -33,25 +33,25 @@ describe('Succesfully mark registrations to ignore duplication', () => {
     registration2.phoneNumber = '1234567890';
     registration3.phoneNumber = '1234567890';
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2, registration3],
       accessToken,
     );
     registrationId1 = await getRegistrationIdByReferenceId({
       referenceId: registration1.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
 
     registrationId2 = await getRegistrationIdByReferenceId({
       referenceId: registration2.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
 
     registrationId3 = await getRegistrationIdByReferenceId({
       referenceId: registration3.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
   });
@@ -60,7 +60,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
     const reason = 'test reason';
     const createUniquesResult = await createRegistrationUniques({
       registrationIds: [registrationId1, registrationId2, registrationId3],
-      programId,
+      projectId,
       accessToken,
       reason,
     });
@@ -70,7 +70,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
     // Get activities for each registration
     const activities1 = (
       await getActivities({
-        programId,
+        projectId,
         registrationId: registrationId1,
         accessToken,
       })
@@ -78,7 +78,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
 
     const activities2 = (
       await getActivities({
-        programId,
+        projectId,
         registrationId: registrationId2,
         accessToken,
       })
@@ -86,7 +86,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
 
     const activities3 = (
       await getActivities({
-        programId,
+        projectId,
         registrationId: registrationId3,
         accessToken,
       })
@@ -147,7 +147,7 @@ describe('Succesfully mark registrations to ignore duplication', () => {
       type: ActivityTypeEnum.IgnoredDuplicate,
       attributes: {
         duplicateWithRegistrationId: registrationId2,
-        duplicateWithRegistrationProgramId: expect.any(Number),
+        duplicateWithRegistrationProjectId: expect.any(Number),
         reason,
       },
       created: expect.any(String),

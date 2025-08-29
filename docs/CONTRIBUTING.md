@@ -23,7 +23,7 @@ Some examples:
 
 - `feat:` (This commit will) `Add info-button to Profile-page header`
 - `docs:` (This commit will) `Remove confusing/inconsistent terms from helper-functions examples`
-- `refactor:` (This commit will) `Load the program-list fast again`
+- `refactor:` (This commit will) `Load the project-list fast again`
 - `fix:` (This commit will) `Prevent the user from submitting an empty form`
 
 Also add an Azure DevOps task-ID in the body(after the first line) of the commit message. This will make it a clickable link on GitHub. A mention in the title only gives a one-way link from DevOps to GitHub, not vice-versa.

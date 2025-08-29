@@ -14,7 +14,7 @@ import {
 import { type QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { GetDuplicatesResult } from '@121-service/src/registration/interfaces/get-duplicates-result.interface';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -125,44 +125,44 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     referenceId: string;
     relations: string[];
   }) {
-    return await this.getWithRelationsByReferenceIdAndProgramId({
+    return await this.getWithRelationsByReferenceIdAndProjectId({
       referenceId,
       relations,
     });
   }
 
-  public async getByReferenceIdAndProgramId({
+  public async getByReferenceIdAndProjectId({
     referenceId,
-    programId,
+    projectId,
   }: {
     referenceId: string;
-    programId: number;
+    projectId: number;
   }) {
-    return await this.getWithRelationsByReferenceIdAndProgramId({
+    return await this.getWithRelationsByReferenceIdAndProjectId({
       referenceId,
-      programId,
+      projectId,
     });
   }
 
   public async getByReferenceId({ referenceId }: { referenceId: string }) {
-    return await this.getWithRelationsByReferenceIdAndProgramId({
+    return await this.getWithRelationsByReferenceIdAndProjectId({
       referenceId,
     });
   }
 
-  public async getWithRelationsByReferenceIdAndProgramId({
+  public async getWithRelationsByReferenceIdAndProjectId({
     referenceId,
-    programId,
+    projectId,
     relations = [],
   }: {
     referenceId: string;
-    programId?: number;
+    projectId?: number;
     relations?: string[];
   }) {
     return await this.repository.findOne({
       where: {
         referenceId: Equal(referenceId),
-        ...(programId != undefined ? { programId: Equal(programId) } : {}),
+        ...(projectId != undefined ? { projectId: Equal(projectId) } : {}),
       },
       relations,
     });
@@ -170,10 +170,10 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
 
   public async getDuplicates({
     registrationId,
-    programId,
+    projectId,
   }: {
     registrationId: number;
-    programId: number;
+    projectId: number;
   }): Promise<GetDuplicatesResult[]> {
     // Added a limit to the number of duplicates to prevent a large amount of duplicates from being returned which could cause performance issues
     // If there are more than this amount of duplicates a user misconfiguration is likely
@@ -190,7 +190,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .innerJoin(
         RegistrationAttributeDataEntity,
         'attributeData2',
-        `"attributeData1"."programRegistrationAttributeId" = "attributeData2"."programRegistrationAttributeId"
+        `"attributeData1"."projectRegistrationAttributeId" = "attributeData2"."projectRegistrationAttributeId"
      AND "attributeData1".value = "attributeData2".value
      AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
       )
@@ -203,9 +203,9 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         },
       )
       .leftJoin(
-        ProgramRegistrationAttributeEntity,
+        ProjectRegistrationAttributeEntity,
         'attribute',
-        '"attributeData1"."programRegistrationAttributeId" = attribute.id',
+        '"attributeData1"."projectRegistrationAttributeId" = attribute.id',
       )
       .andWhere('"attributeData1"."registrationId" = :registrationId', {
         registrationId,
@@ -217,7 +217,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         },
       )
       .andWhere('attribute."duplicateCheck" = true')
-      .andWhere('duplicate."programId" = :programId', { programId })
+      .andWhere('duplicate."projectId" = :projectId', { projectId })
       .andWhere(`"attributeData1"."value" != ''`)
       .andWhere(
         'NOT EXISTS (' +
@@ -243,7 +243,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     const rawDuplicates = await this.createQueryBuilder('registration')
       .select([
         'duplicate.id as "registrationId"',
-        'duplicate.registrationProgramId as "registrationProgramId"',
+        'duplicate.registrationProjectId as "registrationProjectId"',
         'duplicate.referenceId as "referenceId"',
         'duplicate.scope as "scope"',
         'attribute.name as "attributeName"',
@@ -256,7 +256,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .innerJoin(
         RegistrationAttributeDataEntity,
         'attributeData2',
-        `"attributeData1"."programRegistrationAttributeId" = "attributeData2"."programRegistrationAttributeId"
+        `"attributeData1"."projectRegistrationAttributeId" = "attributeData2"."projectRegistrationAttributeId"
      AND "attributeData1".value = "attributeData2".value
      AND "attributeData1"."registrationId" != "attributeData2"."registrationId"`,
       )
@@ -266,9 +266,9 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         `"attributeData2"."registrationId" = duplicate.id`,
       )
       .leftJoin(
-        ProgramRegistrationAttributeEntity,
+        ProjectRegistrationAttributeEntity,
         'attribute',
-        '"attributeData1"."programRegistrationAttributeId" = attribute.id',
+        '"attributeData1"."projectRegistrationAttributeId" = attribute.id',
       )
       .andWhere('"attributeData1"."registrationId" = :registrationId', {
         registrationId,
@@ -284,7 +284,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       const {
         registrationId,
         referenceId,
-        registrationProgramId,
+        registrationProjectId,
         scope,
         attributeName,
       } = duplicate;
@@ -293,7 +293,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         duplicatesMap[registrationId] = {
           registrationId,
           referenceId,
-          registrationProgramId,
+          registrationProjectId,
           scope,
           attributeNames: [],
         };
@@ -307,7 +307,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   // This is put in the registration repository as this function queries both registration an intersolve visa entities
   // The intersolve visa entity should not manage the registration entity
   public async getDebitCardsDetailsForExport(
-    programId: number,
+    projectId: number,
   ): Promise<ExportVisaCardDetailsRawData[]> {
     const wallets = await this.repository
       .createQueryBuilder('registration')
@@ -322,7 +322,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       )
       .select([
         `registration."referenceId" as "referenceId"`,
-        `registration."registrationProgramId" as "paId"`,
+        `registration."registrationProjectId" as "paId"`,
         `registration."registrationStatus" as "registrationStatus"`,
         '"intersolveVisaChildWallets"."tokenCode" as "cardNumber"',
         '"intersolveVisaChildWallets".created as "issuedDate"',
@@ -335,9 +335,9 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
         '"intersolveVisaChildWallets"."isTokenBlocked" as "isTokenBlocked"',
       ])
       .andWhere(`"intersolveVisaChildWallets".id IS NOT NULL`)
-      .andWhere('registration."programId" = :programId', { programId })
+      .andWhere('registration."projectId" = :projectId', { projectId })
       .orderBy({
-        'registration."registrationProgramId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
+        'registration."registrationProjectId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
         '"intersolveVisaChildWallets"."created"': 'DESC',
       })
       .getRawMany();

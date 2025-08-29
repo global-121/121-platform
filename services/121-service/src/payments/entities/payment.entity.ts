@@ -10,7 +10,7 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 
 @Entity('payment')
 export class PaymentEntity extends Base121Entity {
@@ -23,11 +23,11 @@ export class PaymentEntity extends Base121Entity {
   )
   public latestTransactions: Relation<LatestTransactionEntity[]>;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.payments, {
+  @ManyToOne((_type) => ProjectEntity, (project) => project.payments, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project: Relation<ProjectEntity>;
   @Column()
-  public programId: number;
+  public projectId: number;
 }

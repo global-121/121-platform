@@ -86,8 +86,8 @@ export const env = createEnv({
     USERCONFIG_121_SERVICE_EMAIL_ADMIN: z.email(),
     USERCONFIG_121_SERVICE_PASSWORD_ADMIN: z.string(),
 
-    USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN: z.email().optional(),
-    USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN: z.string().optional(),
+    USERCONFIG_121_SERVICE_EMAIL_PROJECT_ADMIN: z.email().optional(),
+    USERCONFIG_121_SERVICE_PASSWORD_PROJECT_ADMIN: z.string().optional(),
 
     USERCONFIG_121_SERVICE_EMAIL_USER_VIEW: z.email().optional(),
     USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW: z.string().optional(),

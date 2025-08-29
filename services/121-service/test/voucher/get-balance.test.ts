@@ -6,7 +6,7 @@ import {
   getTransactionsIntersolveVoucher,
   getVoucherBalance,
 } from '@121-service/test/helpers/intersolve-voucher.helper';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -16,7 +16,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -35,16 +35,16 @@ describe('Get Intersolve voucher balance', () => {
 
   it('should succesfully get balance', async () => {
     // Arrange
-    await importRegistrations(programIdPV, [registrationPV5], accessToken);
+    await importRegistrations(projectIdPV, [registrationPV5], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdPV,
+      projectId: projectIdPV,
       referenceIds: [registrationPV5.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
     });
     const paymentReferenceIds = [registrationPV5.referenceId];
     await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -52,7 +52,7 @@ describe('Get Intersolve voucher balance', () => {
 
     // make sure to wait for the transaction to be completed
     const getTransactionsBody = await getTransactionsIntersolveVoucher({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId: payment,
       referenceId: registrationPV5.referenceId,
       accessToken,
@@ -60,7 +60,7 @@ describe('Get Intersolve voucher balance', () => {
 
     // Act
     const getVoucherBalanceResponse = await getVoucherBalance(
-      programIdPV,
+      projectIdPV,
       payment,
       registrationPV5.referenceId,
       accessToken,

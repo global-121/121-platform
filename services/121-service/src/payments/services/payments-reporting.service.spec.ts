@@ -6,7 +6,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { ProjectRegistrationAttributeRepository } from '@121-service/src/projects/repositories/project-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
@@ -26,8 +26,8 @@ function createMockTransaction(
     status,
     amount,
     errorMessage: null,
-    programFspConfigurationName: 'someFsp',
-    registrationProgramId: 2,
+    projectFspConfigurationName: 'someFsp',
+    registrationProjectId: 2,
     registrationId: 3,
     registrationStatus: RegistrationStatusEnum.included,
     registrationReferenceId: referenceId,
@@ -43,7 +43,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   let service: PaymentsReportingService;
   let transactionScopedRepository: TransactionScopedRepository;
   let registrationPaginationService: RegistrationsPaginationService;
-  let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
+  let projectRegistrationAttributeRepository: ProjectRegistrationAttributeRepository;
   let paymentsHelperService: PaymentsReportingHelperService;
   let paymentRepository: Repository<PaymentEntity>;
 
@@ -64,15 +64,15 @@ describe('PaymentsReportingService - getTransactions', () => {
     );
 
     registrationPaginationService = unitRef.get(RegistrationsPaginationService);
-    programRegistrationAttributeRepository = unitRef.get(
-      ProgramRegistrationAttributeRepository,
+    projectRegistrationAttributeRepository = unitRef.get(
+      ProjectRegistrationAttributeRepository,
     );
     paymentsHelperService = unitRef.get(PaymentsReportingHelperService);
     paymentRepository = unitRef.get('PaymentEntityRepository');
 
     jest.spyOn<any, any>(service, 'getTransactions');
     jest.spyOn(paymentsHelperService, 'getSelectForExport');
-    jest.spyOn(programRegistrationAttributeRepository, 'getDropdownAttributes');
+    jest.spyOn(projectRegistrationAttributeRepository, 'getDropdownAttributes');
     jest.spyOn(
       RegistrationViewsMapper,
       'replaceDropdownValuesWithEnglishLabel',
@@ -83,7 +83,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   describe('getTransactionsByPaymentId', () => {
     it('should return transactions with names', async () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const paymentId = 2;
 
       const mockRegistrationViews = [
@@ -104,7 +104,7 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act
       const result = await service.getTransactionsByPaymentId({
-        programId,
+        projectId,
         paymentId,
       });
 
@@ -117,20 +117,20 @@ describe('PaymentsReportingService - getTransactions', () => {
 
     it('should throw 404 if payment does not exist', async () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const paymentId = 999;
       // Simulate paymentRepository.findOne returning undefined
       (paymentRepository.findOne as jest.Mock).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(
-        service.getTransactionsByPaymentId({ programId, paymentId }),
+        service.getTransactionsByPaymentId({ projectId, paymentId }),
       ).rejects.toMatchSnapshot();
     });
 
     it('should return empty array when no transactions found', async () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const paymentId = 2;
 
       jest
@@ -139,13 +139,13 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act
       const result = await service.getTransactionsByPaymentId({
-        programId,
+        projectId,
         paymentId,
       });
 
       // Assert
       expect(transactionScopedRepository.getTransactions).toHaveBeenCalledWith({
-        programId,
+        projectId,
         paymentId,
       });
       expect(result).toEqual([]);
@@ -155,7 +155,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   describe('exportTransactionsUsingDateFilter', () => {
     it('should call getTransactions with correct params and return formatted fileDto', async () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const fromDateString = '2024-01-01T00:00:00.000Z';
       const toDateString = '2024-01-31T23:59:59.000Z';
       const select = ['name', 'foo'];
@@ -173,7 +173,7 @@ describe('PaymentsReportingService - getTransactions', () => {
       );
       (service as any).getTransactions.mockResolvedValue(transactions);
       (
-        programRegistrationAttributeRepository.getDropdownAttributes as jest.Mock
+        projectRegistrationAttributeRepository.getDropdownAttributes as jest.Mock
       ).mockResolvedValue(dropdownAttributes);
       (
         RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel as jest.Mock
@@ -185,25 +185,25 @@ describe('PaymentsReportingService - getTransactions', () => {
 
       // Act
       const result = await service.exportTransactionsUsingDateFilter({
-        programId,
+        projectId,
         fromDateString,
         toDateString,
       });
 
       // Assert
       expect(paymentsHelperService.getSelectForExport).toHaveBeenCalledWith(
-        programId,
+        projectId,
       );
       expect((service as any).getTransactions).toHaveBeenCalledWith({
-        programId,
+        projectId,
         select,
         fromDate: new Date(fromDateString),
         toDate: new Date(toDateString),
       });
       expect(
-        programRegistrationAttributeRepository.getDropdownAttributes,
+        projectRegistrationAttributeRepository.getDropdownAttributes,
       ).toHaveBeenCalledWith({
-        programId,
+        projectId,
         select,
       });
       expect(
@@ -220,13 +220,13 @@ describe('PaymentsReportingService - getTransactions', () => {
   describe('getPaymentEvents', () => {
     it('should throw 404 if payment does not exist', async () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const paymentId = 999;
       (paymentRepository.findOne as jest.Mock).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(
-        service.getPaymentEvents({ programId, paymentId }),
+        service.getPaymentEvents({ projectId, paymentId }),
       ).rejects.toMatchSnapshot();
     });
   });

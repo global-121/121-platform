@@ -11,26 +11,26 @@ import {
 } from '~/domains/project/project.model';
 
 export const projectHasVoucherSupport = (project?: Project): boolean =>
-  project?.programFspConfigurations.some((fsp) =>
+  project?.projectFspConfigurations.some((fsp) =>
     FSPS_WITH_VOUCHER_SUPPORT.includes(fsp.fspName),
   ) ?? false;
 
 export const projectHasPhysicalCardSupport = (project?: Project): boolean =>
-  project?.programFspConfigurations.some((fsp) =>
+  project?.projectFspConfigurations.some((fsp) =>
     FSPS_WITH_PHYSICAL_CARD_SUPPORT.includes(fsp.fspName),
   ) ?? false;
 
 export const projectHasFspWithExportFileIntegration = (
   project?: Project,
 ): boolean =>
-  project?.programFspConfigurations.some(
+  project?.projectFspConfigurations.some(
     (fsp) =>
       getFspSettingByName(fsp.fspName)?.integrationType ===
       FspIntegrationType.csv,
   ) ?? false;
 
 export const projectHasInclusionScore = (project?: Project): boolean =>
-  project?.programRegistrationAttributes.some(
+  project?.projectRegistrationAttributes.some(
     (attribute) => Object.keys(attribute.scoring).length > 0,
   ) ?? false;
 
@@ -44,7 +44,7 @@ export const fspConfigurationNamesHaveIntegrationType = ({
   integrationType: FspIntegrationType;
 }) => {
   const fspSettings = fspConfigurationNames.map((fspConfigurationName) => {
-    const config = project.programFspConfigurations.find(
+    const config = project.projectFspConfigurations.find(
       (fsp) => fsp.name === fspConfigurationName,
     );
 

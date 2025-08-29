@@ -14,7 +14,7 @@ INSERT
 			max("registrationId")
 		FROM
 			"121-service"."registration_attribute_data") AS "registrationId",
-		"programRegistrationAttributeId",
+		"projectRegistrationAttributeId",
 		value
 	FROM
 		"121-service"."registration_attribute_data");

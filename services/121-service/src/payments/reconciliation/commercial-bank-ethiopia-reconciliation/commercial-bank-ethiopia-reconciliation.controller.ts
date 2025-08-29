@@ -25,21 +25,21 @@ export class CommercialBankEthiopiaReconciliationController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Retrieving and updating/insterting account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
+      'Retrieving and updating/insterting account enquiry data from Commercial Bank of Ethiopia for all registrations in this project.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Done retrieving and updating/insterting account enquiry data for all registrations in this program.',
+      'Done retrieving and updating/insterting account enquiry data for all registrations in this project.',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Put('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
-  public async retrieveAndUpsertAccountEnquiriesForProgram(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
+  @Put('projects/:projectId/fsps/commercial-bank-ethiopia/account-enquiries')
+  public async retrieveAndUpsertAccountEnquiriesForProject(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<number> {
-    return this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiriesForProgram(
-      programId,
+    return this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiriesForProject(
+      projectId,
     );
   }
 }

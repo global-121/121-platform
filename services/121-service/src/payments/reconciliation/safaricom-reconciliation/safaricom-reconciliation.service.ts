@@ -47,7 +47,7 @@ export class SafaricomReconciliationService {
       safaricomTransferCallbackJob,
     );
 
-    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
   }
 
   public async processTimeoutCallback(
@@ -76,7 +76,7 @@ export class SafaricomReconciliationService {
       safaricomTimeoutCallbackJob,
     );
 
-    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
   }
 
   public async processSafaricomTransferCallbackJob(

@@ -9,8 +9,8 @@ import {
 import { parseFilter } from 'nestjs-paginate/lib/filter';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectService } from '@121-service/src/projects/projects.service';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,
@@ -33,19 +33,19 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Injectable()
 export class RegistrationsPaginationService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
 
   public constructor(
-    private readonly programService: ProgramService,
+    private readonly projectService: ProjectService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async getPaginate(
     query: PaginateQuery,
-    programId: number,
+    projectId: number,
     hasPersonalReadPermission: boolean,
     noLimit: boolean,
     queryBuilder?: ScopedQueryBuilder<RegistrationViewEntity>,
@@ -63,7 +63,7 @@ export class RegistrationsPaginationService {
 
     const orignalSelect = query.select ? [...query.select] : [];
     const fullnameNamingConvention =
-      await this.getFullNameNamingConvention(programId);
+      await this.getFullNameNamingConvention(projectId);
 
     if (query.select && query.select.includes('name')) {
       if (fullnameNamingConvention) {
@@ -71,8 +71,8 @@ export class RegistrationsPaginationService {
       }
     }
 
-    // If you want to select programFspConfigurationLabel, you also need to get fsp because we need this to find the correct programFspConfigurationLabel
-    if (query.select && query.select.includes('programFspConfigurationLabel')) {
+    // If you want to select projectFspConfigurationLabel, you also need to get fsp because we need this to find the correct projectFspConfigurationLabel
+    if (query.select && query.select.includes('projectFspConfigurationLabel')) {
       if (fullnameNamingConvention) {
         query.select.push('fsp');
       }
@@ -82,16 +82,16 @@ export class RegistrationsPaginationService {
       queryBuilder =
         this.registrationViewScopedRepository.createQueryBuilderExcludeDeleted();
     }
-    queryBuilder = this.registrationViewScopedRepository.addProgramFilter({
+    queryBuilder = this.registrationViewScopedRepository.addProjectFilter({
       queryBuilder,
-      programId,
+      projectId,
     });
 
-    const programRegistrationAttributeRelations =
-      await this.programService.getAllRelationProgram(programId);
+    const projectRegistrationAttributeRelations =
+      await this.projectService.getAllRelationProject(projectId);
     // Phonenumber is already in the registration table so we do not need to filter on it twice
     const relationsWithoutPhoneNumber =
-      programRegistrationAttributeRelations.filter(
+      projectRegistrationAttributeRelations.filter(
         (r) => r.name !== DefaultRegistrationDataAttributeNames.phoneNumber,
       );
     const relationNamesWithoutPhonenumber = relationsWithoutPhoneNumber.map(
@@ -137,7 +137,7 @@ export class RegistrationsPaginationService {
             sortByKey,
             sortByValue,
             queryBuilder,
-            programRegistrationAttributeRelations,
+            projectRegistrationAttributeRelations,
           );
       }
     }
@@ -158,7 +158,7 @@ export class RegistrationsPaginationService {
     );
 
     // Custom code is written here to filter on query.select since it does not work with query.relations
-    let attributeRelationsSelect = [...programRegistrationAttributeRelations];
+    let attributeRelationsSelect = [...projectRegistrationAttributeRelations];
     const { select } = query;
     if (select !== undefined && select.length > 0) {
       attributeRelationsSelect = attributeRelationsSelect.filter((relation) =>
@@ -173,7 +173,7 @@ export class RegistrationsPaginationService {
       orignalSelect,
       fullnameNamingConvention,
       hasPersonalReadPermission,
-      programId,
+      projectId,
     });
 
     return {
@@ -183,7 +183,7 @@ export class RegistrationsPaginationService {
   }
 
   public async getRegistrationsChunked(
-    programId: number,
+    projectId: number,
     paginateQuery: PaginateQuery,
     chunkSize: number,
     baseQuery?: ScopedQueryBuilder<RegistrationViewEntity>,
@@ -199,7 +199,7 @@ export class RegistrationsPaginationService {
     for (let i = 0; i < totalPages; i++) {
       const paginateResult = await this.getPaginate(
         paginateQuery,
-        programId,
+        projectId,
         true,
         false,
         baseQuery ? baseQuery.clone() : undefined, // We need to create a seperate querybuilder object twice or it will be modified twice
@@ -212,12 +212,12 @@ export class RegistrationsPaginationService {
   }
 
   public async getRegistrationViewsChunkedByReferenceIds({
-    programId,
+    projectId,
     referenceIds,
     select,
     chunkSize = 20000,
   }: {
-    programId: number;
+    projectId: number;
     referenceIds: string[];
     select?: string[];
     chunkSize?: number;
@@ -232,7 +232,7 @@ export class RegistrationsPaginationService {
           chunk,
         );
       const chunkResults = await this.getRegistrationsChunked(
-        programId,
+        projectId,
         { limit: chunkSize, path: '', select },
         chunkSize,
         qb,
@@ -245,26 +245,26 @@ export class RegistrationsPaginationService {
 
   public async throwIfNoPersonalReadPermission(
     userId: number,
-    programId: number,
+    projectId: number,
     paginateQuery: PaginateQuery,
   ): Promise<void> {
-    const hasPersonalRead = await this.userHasPermissionForProgram(
+    const hasPersonalRead = await this.userHasPermissionForProject(
       userId,
-      programId,
+      projectId,
       PermissionEnum.RegistrationPersonalREAD,
     );
     if (!hasPersonalRead && paginateQuery.filter) {
       const registrationDataRelations =
-        await this.programService.getAllRelationProgram(programId);
-      const registrationDataNamesProgram = registrationDataRelations.map(
+        await this.projectService.getAllRelationProject(projectId);
+      const registrationDataNamesProject = registrationDataRelations.map(
         (r) => r.name,
       );
-      registrationDataNamesProgram.push(
+      registrationDataNamesProject.push(
         DefaultRegistrationDataAttributeNames.phoneNumber,
       );
 
       // Check if the filter contains at least one registration data name
-      for (const registrationDataName of registrationDataNamesProgram) {
+      for (const registrationDataName of registrationDataNamesProject) {
         if (Object.keys(paginateQuery.filter).includes(registrationDataName)) {
           throw new HttpException(
             `You do not have permission ${PermissionEnum.RegistrationPersonalREAD}. Not allowed to use filter paramter: ${registrationDataName}`,
@@ -276,19 +276,19 @@ export class RegistrationsPaginationService {
   }
 
   // TODO: Put this function in a user module
-  public async userHasPermissionForProgram(
+  public async userHasPermissionForProject(
     userId: number,
-    programId: number,
+    projectId: number,
     permission: PermissionEnum,
   ): Promise<boolean> {
     const count = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.programAssignments', 'assignment')
-      .leftJoin('assignment.program', 'program')
+      .leftJoin('user.projectAssignments', 'assignment')
+      .leftJoin('assignment.project', 'project')
       .leftJoin('assignment.roles', 'roles')
       .leftJoin('roles.permissions', 'permissions')
       .where('user.id = :userId', { userId })
-      .andWhere('program.id = :programId', { programId })
+      .andWhere('project.id = :projectId', { projectId })
       .andWhere('permissions.name = :permissions', {
         permissions: permission,
       })
@@ -297,14 +297,14 @@ export class RegistrationsPaginationService {
   }
 
   private async getFullNameNamingConvention(
-    programId: number,
+    projectId: number,
   ): Promise<string[]> {
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
+    const project = await this.projectRepository.findOneOrFail({
+      where: { id: Equal(projectId) },
       select: ['fullnameNamingConvention'],
     });
-    if (program.fullnameNamingConvention)
-      return JSON.parse(JSON.stringify(program.fullnameNamingConvention));
+    if (project.fullnameNamingConvention)
+      return JSON.parse(JSON.stringify(project.fullnameNamingConvention));
     else {
       return [];
     }
@@ -354,7 +354,7 @@ export class RegistrationsPaginationService {
     orignalSelect: string[];
     fullnameNamingConvention: string[];
     hasPersonalReadPermission: boolean;
-    programId: number;
+    projectId: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
     return paginatedResult.data.map((registration) => {
       const mappedRootRegistration =

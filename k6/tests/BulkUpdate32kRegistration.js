@@ -12,7 +12,7 @@ const loginPage = new loginModel();
 
 const duplicateNumber = 15; // '15' leads to 32k registrations
 const resetScript = 'nlrc-multiple';
-const programId = 2;
+const projectId = 2;
 const MAX_BULK_UPDATE_DURATION_MS = 15714; // 15.714 seconds approx. duration for 100k registrations
 
 const failedChecks = new Counter('failed_checks');
@@ -30,12 +30,12 @@ export default function () {
   // login
   loginPage.login();
   // Upload registration
-  registrationsModel.importRegistrations(programId, registrationPV);
+  registrationsModel.importRegistrations(projectId, registrationPV);
   // Duplicate registration to be 32k
   resetPage.duplicateRegistrations(duplicateNumber);
   // export registrations
   const exportRegistrations = registrationsModel.exportRegistrations(
-    programId,
+    projectId,
     'preferredLanguage',
   );
   checkAndFail(exportRegistrations, {
@@ -51,7 +51,7 @@ export default function () {
   const csvFile = registrationsModel.jsonToCsv(registrations);
   // batch update registrations and check if it takes less than X ms
   const bulkUpdate = registrationsModel.bulkUpdateRegistrationsCSV(
-    programId,
+    projectId,
     csvFile,
   );
   checkAndFail(bulkUpdate, {

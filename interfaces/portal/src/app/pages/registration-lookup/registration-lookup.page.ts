@@ -45,7 +45,7 @@ export class RegistrationLookupPageComponent {
 
       void this.router.navigate(
         registrationLink({
-          projectId: registration.programId,
+          projectId: registration.projectId,
           registrationId: registration.id,
         }),
         {

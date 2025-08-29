@@ -6,7 +6,7 @@ import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jo
 
 const mockPaymentJob = {
   id: 11,
-  programId: 3,
+  projectId: 3,
   paymentNumber: 3,
   referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
   transactionAmount: 25,
@@ -15,7 +15,7 @@ const mockPaymentJob = {
   bulkSize: 10,
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
-  registrationProgramId: 2,
+  registrationProjectId: 2,
 };
 const testJob = { data: mockPaymentJob } as Job;
 

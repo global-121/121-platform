@@ -1,7 +1,7 @@
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/program.helper';
+import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   changeRegistrationStatus,
@@ -14,7 +14,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW3,
   registrationOCW4,
@@ -38,7 +38,7 @@ describe('change the status of a set of registrations', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programIdOCW, registrations, accessToken);
+    await importRegistrations(projectIdOCW, registrations, accessToken);
   });
 
   it('should update statuses if possible', async () => {
@@ -48,27 +48,27 @@ describe('change the status of a set of registrations', () => {
     const reason = 'new status';
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds,
       status: newStatus,
       accessToken,
       options: { reason },
     });
     await waitForStatusUpdateToComplete(
-      programIdOCW,
+      projectIdOCW,
       referenceIds,
       accessToken,
       50_000,
       newStatus,
     );
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
     });
     const registrations = getRegistrationsResponse.body.data;
 
     const eventsResponse = await getEvents({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
     });
 
@@ -108,13 +108,13 @@ describe('change the status of a set of registrations', () => {
 
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds,
       status: newStatus,
       accessToken,
     });
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
     });
     const data = getRegistrationsResponse.body.data;
@@ -138,14 +138,14 @@ describe('change the status of a set of registrations', () => {
 
     // Act
     const updateStatusResponse = await awaitChangeRegistrationStatus({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds,
       status: newStatus,
       accessToken,
       options: { filter },
     });
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
     });
     const data = getRegistrationsResponse.body.data;
@@ -171,7 +171,7 @@ describe('change the status of a set of registrations', () => {
       for (const status of statusesThatRequireReason) {
         // Act
         const updateStatusResponse = await changeRegistrationStatus({
-          programId: programIdOCW,
+          projectId: projectIdOCW,
           referenceIds,
           status,
           accessToken,
@@ -194,7 +194,7 @@ describe('change the status of a set of registrations', () => {
       for (const status of statusesThatDoNotRequireReason) {
         // Act
         const updateStatusResponse = await awaitChangeRegistrationStatus({
-          programId: programIdOCW,
+          projectId: projectIdOCW,
           referenceIds,
           status,
           accessToken,

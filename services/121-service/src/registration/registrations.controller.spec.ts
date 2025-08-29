@@ -24,7 +24,7 @@ describe('RegistrationsController', () => {
     registrationsBulkService = unitRef.get(RegistrationsBulkService);
 
     jest
-      .spyOn(registrationsPaginationService, 'userHasPermissionForProgram')
+      .spyOn(registrationsPaginationService, 'userHasPermissionForProject')
       .mockResolvedValue(false)
       .mockResolvedValueOnce(true) // update-status permission check
       .mockResolvedValueOnce(false); // send-message permission check
@@ -43,7 +43,7 @@ describe('RegistrationsController', () => {
         id: 1,
       },
     } as unknown as ScopedUserRequest;
-    const programId = 1;
+    const projectId = 1;
     const dryRun = 'true';
 
     it('should throw exception when user includes a message, but does not have permission for that', async () => {
@@ -58,7 +58,7 @@ describe('RegistrationsController', () => {
           paginateQuery,
           statusUpdateDto,
           mockRequest,
-          programId,
+          projectId,
           dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
@@ -76,7 +76,7 @@ describe('RegistrationsController', () => {
           paginateQuery,
           statusUpdateDto,
           mockRequest,
-          programId,
+          projectId,
           dryRun,
         ),
       ).rejects.toHaveProperty('status', 403); // Forbidden
@@ -104,7 +104,7 @@ describe('RegistrationsController', () => {
           paginateQuery,
           statusUpdateDto,
           mockRequest,
-          programId,
+          projectId,
           dryRun,
         ),
       ).rejects.toMatchObject({

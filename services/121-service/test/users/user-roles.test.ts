@@ -27,7 +27,7 @@ describe('/ Users', () => {
           role: 'test-manager',
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: ['program.update', 'program:metrics.read'],
+          permissions: ['project.update', 'project:metrics.read'],
         });
 
       // Assert
@@ -46,7 +46,7 @@ describe('/ Users', () => {
           role: roleId,
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: ['program.update', 'program:metrics.read'],
+          permissions: ['project.update', 'project:metrics.read'],
         });
 
       // Assert
@@ -60,7 +60,7 @@ describe('/ Users', () => {
           role: roleId,
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
-          permissions: ['program.update', 'program:metrics.read'],
+          permissions: ['project.update', 'project:metrics.read'],
         });
 
       // Assert
@@ -70,7 +70,7 @@ describe('/ Users', () => {
 
     it('should not create a role when using a permission that does not exist', async () => {
       // Arrange
-      const fakePermission = 'program.make-up-my-own-permission';
+      const fakePermission = 'project.make-up-my-own-permission';
 
       // Act
       const response = await getServer()
@@ -81,9 +81,9 @@ describe('/ Users', () => {
           label: 'Do stuff with certain permissions',
           description: 'This is a test role',
           permissions: [
-            'program.update',
+            'project.update',
             fakePermission,
-            'program:metrics.read',
+            'project:metrics.read',
           ],
         });
 

@@ -2,7 +2,7 @@ import test from '@playwright/test';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/project.helper';
 import {
   seedRegistrationsWithStatus,
   updateRegistration,
@@ -12,7 +12,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPvMaxPayment,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -30,13 +30,13 @@ test.beforeEach(async ({ page }) => {
 
   await seedRegistrationsWithStatus(
     [registrationPvMaxPayment],
-    programIdPV,
+    projectIdPV,
     accessToken,
     RegistrationStatusEnum.included,
   );
   // Make payment to change status to "Completed"
   await doPayment({
-    programId: 2,
+    projectId: 2,
     amount: 25,
     referenceIds: [],
     accessToken,
@@ -45,9 +45,9 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  // Navigate to program
+  // Navigate to project
   const basePage = new BasePage(page);
-  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await basePage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 
 test('[31214] Move PA(s) from status "Completed" to "Included"', async ({

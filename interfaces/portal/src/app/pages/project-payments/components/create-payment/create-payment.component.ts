@@ -153,7 +153,7 @@ export class CreatePaymentComponent {
       {
         label: $localize`Financial Service Provider(s)`,
         type: 'options',
-        value: dryRunResult.programFspConfigurationNames,
+        value: dryRunResult.projectFspConfigurationNames,
         options: (this.fspConfigurations.data() ?? []).map((fspConfig) => ({
           label: fspConfig.label,
           value: fspConfig.name,
@@ -329,7 +329,7 @@ export class CreatePaymentComponent {
 
     return fspConfigurationNamesHaveIntegrationType({
       project,
-      fspConfigurationNames: dryRunResult.programFspConfigurationNames,
+      fspConfigurationNames: dryRunResult.projectFspConfigurationNames,
       integrationType,
     });
   }

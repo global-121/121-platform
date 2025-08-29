@@ -23,50 +23,50 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Metric export list', () => {
-  const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
+  const OcwProjectId = projectIdOCW;
+  const PvProjectId = projectIdPV;
   let accessToken: string;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
 
     accessToken = await getAccessToken();
-    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    await importRegistrations(OcwProjectId, registrationsOCW, accessToken);
     await deleteRegistrations({
-      programId: OcwProgramId,
+      projectId: OcwProjectId,
       referenceIds: [registrationsOCW[0].referenceId],
       accessToken,
     });
     await waitForDeleteRegistrations({
-      programId: OcwProgramId,
+      projectId: OcwProjectId,
       referenceIds: [registrationsOCW[0].referenceId],
     });
     await awaitChangeRegistrationStatus({
-      programId: OcwProgramId,
+      projectId: OcwProjectId,
       referenceIds: [registrationsOCW[1].referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
     });
 
-    await importRegistrations(PvProgramId, registrationsPV, accessToken);
+    await importRegistrations(PvProjectId, registrationsPV, accessToken);
     await awaitChangeRegistrationStatus({
-      programId: PvProgramId,
+      projectId: PvProjectId,
       referenceIds: [registrationScopedKisumuWestPv.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
     });
   });
 
-  it('should export all registrations of a single program regardless of status', async () => {
+  it('should export all registrations of a single project regardless of status', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${OcwProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .send();
 
@@ -83,18 +83,18 @@ describe('Metric export list', () => {
     );
   });
 
-  it('should return all filtered registrations from 1 program using a filter for included and a scoped user', async () => {
+  it('should return all filtered registrations from 1 project using a filter for included and a scoped user', async () => {
     // Arrange
     const testScope = DebugScope.Kisumu;
     accessToken = await getAccessTokenScoped(testScope);
 
     // Act
     // 8 registrations in total are registered
-    // 4 registrations are in include in program PV
-    // 2 registrations of program PV and are in the scope (Zeeland) of the requesting user
+    // 4 registrations are in include in project PV
+    // 2 registrations of project PV and are in the scope (Zeeland) of the requesting user
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${PvProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -113,17 +113,17 @@ describe('Metric export list', () => {
     expect(exportRegistration.status).toBe('new');
   });
 
-  it('should return all filtered registrations from 1 program using a filter and search query', async () => {
+  it('should return all filtered registrations from 1 project using a filter and search query', async () => {
     // Arrange
     accessToken = await getAccessToken(); // gets admin access token
 
     // Act
     // 8 registrations in total are registered
-    // 4 registrations are in include in program PV
-    // 2 registrations of program PV have an attribute that contains '011' (phonenumber)
+    // 4 registrations are in include in project PV
+    // 2 registrations of project PV have an attribute that contains '011' (phonenumber)
     // 1 of those 2 registrations has status 'new'
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${PvProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         ['filter.status']: `$ilike:new`,
@@ -145,7 +145,7 @@ describe('Metric export list', () => {
   it('should export all registration attributes when no "select" is provided', async () => {
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${OcwProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${OcwProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .send();
 
@@ -170,7 +170,7 @@ describe('Metric export list', () => {
 
     // Act
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${PvProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .query({
         select: 'referenceId,fullName,phoneNumber',
@@ -191,7 +191,7 @@ describe('Metric export list', () => {
     accessToken = await getAccessTokenScoped(testScope);
 
     const getRegistrationsResponse = await getServer()
-      .get(`/programs/${PvProgramId}/metrics/export-list/registrations`)
+      .get(`/projects/${PvProjectId}/metrics/export-list/registrations`)
       .set('Cookie', [accessToken])
       .responseType('blob')
       .query({
@@ -212,7 +212,7 @@ describe('Metric export list', () => {
 
     const response = await getServer()
       .get(
-        `/programs/${PvProgramId}/metrics/export-list/${ExportType.unusedVouchers}`,
+        `/projects/${PvProjectId}/metrics/export-list/${ExportType.unusedVouchers}`,
       )
       .set('Cookie', [accessTokenCvaManager])
       .responseType('blob')
@@ -232,7 +232,7 @@ describe('Metric export list', () => {
   it('should return 400 Bad Request for invalid exportType', async () => {
     const invalidExportType = 'notAValidType';
     const response = await getServer()
-      .get(`/programs/${programIdPV}/metrics/export-list/${invalidExportType}`)
+      .get(`/projects/${projectIdPV}/metrics/export-list/${invalidExportType}`)
       .set('Cookie', [accessToken])
       .send();
 

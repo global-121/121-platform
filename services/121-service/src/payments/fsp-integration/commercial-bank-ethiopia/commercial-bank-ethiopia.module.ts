@@ -10,9 +10,9 @@ import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-int
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
@@ -26,8 +26,8 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     TypeOrmModule.forFeature([
       RegistrationEntity,
       TransactionEntity,
-      ProgramEntity,
-      ProgramFspConfigurationEntity,
+      ProjectEntity,
+      ProjectFspConfigurationEntity,
     ]),
     TransactionsModule,
     UserModule,
@@ -43,7 +43,7 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       CommercialBankEthiopiaAccountEnquiriesEntity,
     ),
     PaymentProcessorCommercialBankEthiopia,
-    ProgramFspConfigurationRepository,
+    ProjectFspConfigurationRepository,
   ],
   controllers: [CommercialBankEthiopiaController],
   exports: [CommercialBankEthiopiaApiService, CommercialBankEthiopiaService],

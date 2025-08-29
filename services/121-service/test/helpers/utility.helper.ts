@@ -96,13 +96,13 @@ export async function getAccessTokenCvaManager(): Promise<string> {
   );
 }
 
-export async function removeProgramAssignment(
-  programId: number,
+export async function removeProjectAssignment(
+  projectId: number,
   userId: number,
   accessToken: string,
 ): Promise<request.Response> {
   return getServer()
-    .delete(`/programs/${programId}/users/${userId}`)
+    .delete(`/projects/${projectId}/users/${userId}`)
     .set('Cookie', [accessToken])
     .send();
 }
@@ -194,7 +194,7 @@ function sortByAttribute(attribute: string) {
 
 /**
  * This function was created because the order of the attributes in the
- * program object is not consistent.
+ * project object is not consistent.
  *
  * The assumption is that the order changes are not relevant for the test,
  * and are caused by some database-related reason that we do not control nor care about.
@@ -202,14 +202,14 @@ function sortByAttribute(attribute: string) {
  * Beyond sorting the attributes, this function also removes certain
  * attributes that always change and that are also irrelevant for the test.
  */
-export function cleanProgramForAssertions(originalProgram: any): any {
-  const program = removeNestedProperties(originalProgram, [
+export function cleanProjectForAssertions(originalProject: any): any {
+  const project = removeNestedProperties(originalProject, [
     'configuration',
     'startDate',
     'endDate',
     'updated',
     'created',
-    'programFspConfigurations',
+    'projectFspConfigurations',
     'fspConfigurations',
   ]);
 
@@ -217,18 +217,18 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     { attribute: 'editableAttributes', key: 'name' },
     { attribute: 'paTableAttributes', key: 'name' },
     { attribute: 'fsps', key: 'fsp' },
-    { attribute: 'programRegistrationAttributes', key: 'name' },
+    { attribute: 'projectRegistrationAttributes', key: 'name' },
     { attribute: 'filterableAttributes', key: 'group' },
   ];
 
   attributesToSort.forEach(({ attribute, key }) => {
-    if (program[attribute]) {
-      program[attribute] = program[attribute].sort(sortByAttribute(key));
+    if (project[attribute]) {
+      project[attribute] = project[attribute].sort(sortByAttribute(key));
     }
   });
 
-  if (program.filterableAttributes) {
-    program.filterableAttributes = program.filterableAttributes.map(
+  if (project.filterableAttributes) {
+    project.filterableAttributes = project.filterableAttributes.map(
       (filterableAttribute: any) => {
         return {
           ...filterableAttribute,
@@ -238,5 +238,5 @@ export function cleanProgramForAssertions(originalProgram: any): any {
     );
   }
 
-  return program;
+  return project;
 }

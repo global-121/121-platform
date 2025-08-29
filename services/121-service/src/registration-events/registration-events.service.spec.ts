@@ -13,7 +13,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserService } from '@121-service/src/user/user.service';
 import { UserType } from '@121-service/src/user/user-type-enum';
 
-const programId = 1;
+const projectId = 1;
 
 const attributeEntityOldValue = {
   key: 'oldValue',
@@ -41,7 +41,7 @@ const mockFindEventResult: RegistrationEventEntity[] = [
       id: 1,
       referenceId: '2982g82bdsf89sdsd',
       paymentAmountMultiplier: 3,
-      registrationProgramId: 1,
+      registrationProjectId: 1,
     },
     user: {
       id: 1,
@@ -59,7 +59,7 @@ function getViewRegistration(): RegistrationViewEntity {
   return {
     id: 3,
     status: RegistrationStatusEnum.new,
-    programId: 3,
+    projectId: 3,
     registrationCreated: '2024-02-19T14:21:11.163Z',
     referenceId: '7e9bdf2118b3fb4ece93b6458815ab86',
     phoneNumber: '46631834076',
@@ -67,11 +67,11 @@ function getViewRegistration(): RegistrationViewEntity {
     inclusionScore: 0,
     paymentAmountMultiplier: 1,
     fspName: Fsps.intersolveVisa,
-    programFspConfigurationName: 'Intersolve-Visa',
-    programFspConfigurationLabel: {
+    projectFspConfigurationName: 'Intersolve-Visa',
+    projectFspConfigurationLabel: {
       en: 'Visa debit card',
     },
-    registrationProgramId: 2,
+    registrationProjectId: 2,
     personAffectedSequence: 'PA #2',
     maxPayments: null,
     lastMessageStatus: 'sms: queued',
@@ -111,7 +111,7 @@ describe('RegistrationEventsService', () => {
     registrationEventsService['request']['user']!['id'] = 2;
 
     jest
-      .spyOn(registrationEventRepository, 'getManyByProgramIdAndSearchOptions')
+      .spyOn(registrationEventRepository, 'getManyByProjectIdAndSearchOptions')
       .mockResolvedValue(mockFindEventResult);
 
     jest.spyOn(userService, 'findById').mockResolvedValue({
@@ -120,7 +120,7 @@ describe('RegistrationEventsService', () => {
       username: 'testUser',
       password: 'dummyPassword',
       hashPassword: async () => 'hashedPasswordDummy',
-      programAssignments: [],
+      projectAssignments: [],
     } as unknown as UserEntity);
 
     oldViewRegistration = getViewRegistration();
@@ -134,7 +134,7 @@ describe('RegistrationEventsService', () => {
   it('should return events in json dto format', async () => {
     // Act
     const result = await registrationEventsService.getEventsAsJson({
-      programId,
+      projectId,
       searchOptions: {},
     });
 
@@ -160,7 +160,7 @@ describe('RegistrationEventsService', () => {
   it('should return events in flat dto format (which is used for excel export)', async () => {
     // Act
     const result = await registrationEventsService.getEventsAsXlsx({
-      programId,
+      projectId,
       searchOptions: {},
     });
 
@@ -171,7 +171,7 @@ describe('RegistrationEventsService', () => {
     expect(resultEvent.oldValue).toBe(attributeEntityOldValue.value);
     expect(resultEvent.newValue).toBe(attributeEntityNewValue.value);
     expect(resultEvent.paId).toBe(
-      mockFindEventResult[0].registration.registrationProgramId,
+      mockFindEventResult[0].registration.registrationProjectId,
     );
   });
 
@@ -213,7 +213,7 @@ describe('RegistrationEventsService', () => {
   it('should create registration events for an FSP change of intersolve visa to voucher whatsapp', async () => {
     // Changes that should be logged
     newViewRegistration[FspAttributes.whatsappPhoneNumber] = '1234567890';
-    newViewRegistration['programFspConfigurationLabel'] = {
+    newViewRegistration['projectFspConfigurationLabel'] = {
       en: 'Albert Heijn voucher WhatsApp',
     };
     delete newViewRegistration[FspAttributes.addressCity];
@@ -223,7 +223,7 @@ describe('RegistrationEventsService', () => {
     delete newViewRegistration[FspAttributes.addressStreet];
 
     // Changes that should not be logged
-    newViewRegistration.programFspConfigurationName =
+    newViewRegistration.projectFspConfigurationName =
       Fsps.intersolveVoucherWhatsapp;
 
     // Act
@@ -241,11 +241,11 @@ describe('RegistrationEventsService', () => {
         attributes: [
           {
             key: 'oldValue',
-            value: oldViewRegistration['programFspConfigurationLabel'],
+            value: oldViewRegistration['projectFspConfigurationLabel'],
           },
           {
             key: 'newValue',
-            value: newViewRegistration['programFspConfigurationLabel'],
+            value: newViewRegistration['projectFspConfigurationLabel'],
           },
         ],
         userId: 2,

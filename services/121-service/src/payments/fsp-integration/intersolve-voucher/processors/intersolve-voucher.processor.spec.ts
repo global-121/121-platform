@@ -18,7 +18,7 @@ const mockPaymentJob = {
   paymentAddress: '14155238886',
   transactionAmount: 22,
   transactionId: 38,
-  programId: 3,
+  projectId: 3,
   paymentId: 3,
 };
 const testJob = { data: mockPaymentJob } as Job;

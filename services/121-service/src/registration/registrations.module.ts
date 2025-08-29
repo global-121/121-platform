@@ -16,10 +16,10 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectFspConfigurationsModule } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.module';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
@@ -50,27 +50,27 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   imports: [
     TypeOrmModule.forFeature([
       UserEntity,
-      ProgramEntity,
+      ProjectEntity,
       TryWhatsappEntity,
       RegistrationEntity,
       LatestMessageEntity,
       WhatsappPendingMessageEntity,
       MessageTemplateEntity,
-      ProgramRegistrationAttributeEntity,
+      ProjectRegistrationAttributeEntity,
       UniqueRegistrationPairEntity,
     ]),
     UserModule,
     HttpModule,
     LookupModule,
     ActionsModule,
-    ProgramModule,
+    ProjectModule,
     FspsModule,
     MessageQueuesModule,
     IntersolveVisaModule,
     RegistrationDataModule,
     RegistrationUtilsModule,
     RegistrationEventsModule,
-    ProgramFspConfigurationsModule,
+    ProjectFspConfigurationsModule,
     QueuesRegistryModule,
   ],
   providers: [

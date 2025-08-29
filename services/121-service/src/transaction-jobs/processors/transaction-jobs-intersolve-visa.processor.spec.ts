@@ -8,7 +8,7 @@ import { TransactionJobsIntersolveVisaService } from '@121-service/src/transacti
 
 const mockPaymentJob = {
   id: 11,
-  programId: 3,
+  projectId: 3,
   userId: 1,
   paymentNumber: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',

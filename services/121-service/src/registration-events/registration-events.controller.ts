@@ -39,10 +39,10 @@ export class RegistrationEventsController {
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
-  @ApiTags('programs/:programId/registration-events')
+  @ApiTags('projects/:projectId/registration-events')
   @ApiOperation({ summary: 'Get list of registration events for query params' })
   @ApiParam({
-    name: 'programId',
+    name: 'projectId',
     required: true,
     type: 'integer',
   })
@@ -61,9 +61,9 @@ export class RegistrationEventsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified. If "xlsx" is selected, the response will be a file download in which the data is slightly differently formatted for portal users.',
   })
-  @Get('programs/:programId/registration-events')
+  @Get('projects/:projectId/registration-events')
   public async getEvents(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
     @Query() queryParams: Record<string, string>,
     @Query('format') format = 'json',
     @Req() req: ScopedUserRequest,
@@ -77,7 +77,7 @@ export class RegistrationEventsController {
     const errorNoData = 'There is currently no data to export';
     if (format === ExportFileFormat.xlsx) {
       const result = await this.registrationEventsService.getEventsAsXlsx({
-        programId,
+        projectId,
         searchOptions,
       });
       if (result.length === 0) {
@@ -87,7 +87,7 @@ export class RegistrationEventsController {
     }
 
     const result = await this.registrationEventsService.getEventsAsJson({
-      programId,
+      projectId,
       searchOptions,
     });
     if (result.length === 0) {

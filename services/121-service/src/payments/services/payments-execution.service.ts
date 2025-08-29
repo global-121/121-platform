@@ -26,8 +26,8 @@ import { TransactionJobsCreationService } from '@121-service/src/payments/servic
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
@@ -47,8 +47,8 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 @Injectable()
 export class PaymentsExecutionService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
@@ -74,7 +74,7 @@ export class PaymentsExecutionService {
     private readonly onafriqService: OnafriqService,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
@@ -96,14 +96,14 @@ export class PaymentsExecutionService {
 
   public async createPayment({
     userId,
-    programId,
+    projectId,
     amount,
     query,
     dryRun,
     note,
   }: {
     userId: number;
-    programId: number;
+    projectId: number;
     amount: number | undefined;
     query: PaginateQuery;
     dryRun: boolean;
@@ -111,7 +111,7 @@ export class PaymentsExecutionService {
   }): Promise<BulkActionResultPaymentDto> {
     if (!dryRun) {
       await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
-        programId,
+        projectId,
       );
     }
 
@@ -126,7 +126,7 @@ export class PaymentsExecutionService {
     const bulkActionResultDto =
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
-        programId,
+        projectId,
         this.getPaymentBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
       );
 
@@ -137,13 +137,13 @@ export class PaymentsExecutionService {
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
-        programFspConfigurationNames: [],
+        projectFspConfigurationNames: [],
       };
     }
 
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
-      await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
+      await this.getRegistrationsForPaymentChunked(projectId, paginateQuery);
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
@@ -156,12 +156,12 @@ export class PaymentsExecutionService {
       // This is only needed in actual doPayment call
     }
 
-    // Get unique programFspConfigurationNames in payment
-    // Getting unique programFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
-    const programFspConfigurationNames = Array.from(
+    // Get unique projectFspConfigurationNames in payment
+    // Getting unique projectFspConfigurationNames is relatively: with 131k registrations it takes ~36ms locally
+    const projectFspConfigurationNames = Array.from(
       new Set(
         registrationsForPayment.map(
-          (registration) => registration.programFspConfigurationName,
+          (registration) => registration.projectFspConfigurationName,
         ),
       ),
     );
@@ -170,7 +170,7 @@ export class PaymentsExecutionService {
     const bulkActionResultPaymentDto: BulkActionResultPaymentDto = {
       ...bulkActionResultDto,
       sumPaymentAmountMultiplier: totalMultiplierSum,
-      programFspConfigurationNames,
+      projectFspConfigurationNames,
     };
 
     // Create an array of referenceIds to be paid
@@ -180,19 +180,19 @@ export class PaymentsExecutionService {
 
     if (!dryRun && referenceIds.length > 0) {
       await this.checkFspConfigurationsOrThrow(
-        programId,
-        programFspConfigurationNames,
+        projectId,
+        projectFspConfigurationNames,
       );
       const paymentId = await this.createPaymentAndEventsEntities({
         userId,
-        programId,
+        projectId,
         note,
       });
       bulkActionResultPaymentDto.id = paymentId;
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
         userId,
-        programId,
+        projectId,
         paymentId,
         amount,
         referenceIds,
@@ -204,7 +204,7 @@ export class PaymentsExecutionService {
         .finally(() => {
           void this.actionService.saveAction(
             userId,
-            programId,
+            projectId,
             AdditionalActionType.paymentFinished,
           );
         });
@@ -215,15 +215,15 @@ export class PaymentsExecutionService {
 
   private async createPaymentAndEventsEntities({
     userId,
-    programId,
+    projectId,
     note,
   }: {
     userId: number;
-    programId: number;
+    projectId: number;
     note?: string;
   }): Promise<number> {
     const paymentEntity = new PaymentEntity();
-    paymentEntity.programId = programId;
+    paymentEntity.projectId = projectId;
     const savedPaymentEntity = await this.paymentRepository.save(paymentEntity);
 
     await this.paymentEventsService.createCreatedEvent({
@@ -243,12 +243,12 @@ export class PaymentsExecutionService {
   }
 
   private async checkFspConfigurationsOrThrow(
-    programId: number,
-    programFspConfigurationNames: string[],
+    projectId: number,
+    projectFspConfigurationNames: string[],
   ): Promise<void> {
     const validationResults = await Promise.all(
-      programFspConfigurationNames.map((name) =>
-        this.validateMissingFspConfigurations(programId, name),
+      projectFspConfigurationNames.map((name) =>
+        this.validateMissingFspConfigurations(projectId, name),
       ),
     );
     const errorMessages = validationResults.flat();
@@ -261,13 +261,13 @@ export class PaymentsExecutionService {
   }
 
   private async validateMissingFspConfigurations(
-    programId: number,
-    programFspConfigurationName: string,
+    projectId: number,
+    projectFspConfigurationName: string,
   ): Promise<string[]> {
-    const config = await this.programFspConfigurationRepository.findOne({
+    const config = await this.projectFspConfigurationRepository.findOne({
       where: {
-        name: Equal(programFspConfigurationName),
-        programId: Equal(programId),
+        name: Equal(projectFspConfigurationName),
+        projectId: Equal(projectId),
       },
       relations: ['properties'],
     });
@@ -275,7 +275,7 @@ export class PaymentsExecutionService {
     const errorMessages: string[] = [];
     if (!config) {
       errorMessages.push(
-        `Missing Program FSP configuration with name ${programFspConfigurationName}`,
+        `Missing Project FSP configuration with name ${projectFspConfigurationName}`,
       );
       return errorMessages;
     }
@@ -303,13 +303,13 @@ export class PaymentsExecutionService {
   }
 
   private async getRegistrationsForPaymentChunked(
-    programId: number,
+    projectId: number,
     paginateQuery: PaginateQuery,
   ) {
     const chunkSize = 4000;
 
     return await this.registrationsPaginationService.getRegistrationsChunked(
-      programId,
+      projectId,
       paginateQuery,
       chunkSize,
       this.getPaymentBaseQuery(),
@@ -326,14 +326,14 @@ export class PaymentsExecutionService {
 
   public async initiatePayment({
     userId,
-    programId,
+    projectId,
     paymentId,
     amount,
     referenceIds,
     bulkSize,
   }: {
     userId: number;
-    programId: number;
+    projectId: number;
     paymentId: number;
     amount: number;
     referenceIds: string[];
@@ -341,7 +341,7 @@ export class PaymentsExecutionService {
   }): Promise<number> {
     await this.actionService.saveAction(
       userId,
-      programId,
+      projectId,
       AdditionalActionType.paymentStarted,
     );
 
@@ -355,14 +355,14 @@ export class PaymentsExecutionService {
       const paPaymentDataList = await this.getPaymentList(
         chunk,
         amount,
-        programId,
+        projectId,
         userId,
         bulkSize,
       );
 
       const result = await this.payout({
         paPaymentDataList,
-        programId,
+        projectId,
         paymentId,
         isRetry: false,
       });
@@ -374,18 +374,18 @@ export class PaymentsExecutionService {
 
   public async retryPayment(
     userId: number,
-    programId: number,
+    projectId: number,
     paymentId: number,
     referenceIdsDto?: ReferenceIdsDto,
   ): Promise<BulkActionResultRetryPaymentDto> {
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
-      programId,
+      projectId,
     );
 
-    await this.getProgramWithFspConfigOrThrow(programId);
+    await this.getProjectWithFspConfigOrThrow(projectId);
 
     const paPaymentDataList = await this.getPaymentListForRetry(
-      programId,
+      projectId,
       paymentId,
       userId,
       referenceIdsDto?.referenceIds,
@@ -398,13 +398,13 @@ export class PaymentsExecutionService {
 
     await this.actionService.saveAction(
       userId,
-      programId,
+      projectId,
       AdditionalActionType.paymentStarted,
     );
 
     void this.payout({
       paPaymentDataList,
-      programId,
+      projectId,
       paymentId,
       isRetry: true,
     })
@@ -414,21 +414,21 @@ export class PaymentsExecutionService {
       .finally(() => {
         void this.actionService.saveAction(
           userId,
-          programId,
+          projectId,
           AdditionalActionType.paymentFinished,
         );
       });
 
-    const programFspConfigurationNames: string[] = [];
+    const projectFspConfigurationNames: string[] = [];
     // This loop is pretty fast: with 131k registrations it takes ~38ms
     for (const registration of paPaymentDataList) {
       if (
-        !programFspConfigurationNames.includes(
-          registration.programFspConfigurationName,
+        !projectFspConfigurationNames.includes(
+          registration.projectFspConfigurationName,
         )
       ) {
-        programFspConfigurationNames.push(
-          registration.programFspConfigurationName,
+        projectFspConfigurationNames.push(
+          registration.projectFspConfigurationName,
         );
       }
     }
@@ -437,32 +437,32 @@ export class PaymentsExecutionService {
       totalFilterCount: paPaymentDataList.length,
       applicableCount: paPaymentDataList.length,
       nonApplicableCount: 0,
-      programFspConfigurationNames,
+      projectFspConfigurationNames,
     };
   }
 
-  private async getProgramWithFspConfigOrThrow(
-    programId: number,
-  ): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne({
-      where: { id: Equal(programId) },
-      relations: ['programFspConfigurations'],
+  private async getProjectWithFspConfigOrThrow(
+    projectId: number,
+  ): Promise<ProjectEntity> {
+    const project = await this.projectRepository.findOne({
+      where: { id: Equal(projectId) },
+      relations: ['projectFspConfigurations'],
     });
-    if (!program) {
-      const errors = 'Program not found.';
+    if (!project) {
+      const errors = 'Project not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return program;
+    return project;
   }
 
   public async payout({
     paPaymentDataList,
-    programId,
+    projectId,
     paymentId,
     isRetry = false,
   }: {
     paPaymentDataList: PaPaymentDataDto[];
-    programId: number;
+    projectId: number;
     paymentId: number;
     isRetry?: boolean;
   }): Promise<number> {
@@ -471,7 +471,7 @@ export class PaymentsExecutionService {
 
     await this.initiatePaymentPerFsp({
       paLists,
-      programId,
+      projectId,
       paymentId,
       isRetry,
     });
@@ -496,12 +496,12 @@ export class PaymentsExecutionService {
 
   private async initiatePaymentPerFsp({
     paLists,
-    programId,
+    projectId,
     paymentId,
     isRetry,
   }: {
     paLists: SplitPaymentListDto;
-    programId: number;
+    projectId: number;
     paymentId: number;
     isRetry: boolean;
   }): Promise<void> {
@@ -536,7 +536,7 @@ export class PaymentsExecutionService {
                 },
               ),
               userId: paPaymentList[0].userId,
-              programId,
+              projectId,
               paymentId,
               isRetry,
             },
@@ -546,7 +546,7 @@ export class PaymentsExecutionService {
         const [paymentService, useWhatsapp] = this.fspNameToServiceMap[fsp];
         return await paymentService.sendPayment(
           paPaymentList,
-          programId,
+          projectId,
           paymentId,
           useWhatsapp,
         );
@@ -591,21 +591,21 @@ export class PaymentsExecutionService {
   }
   // TODO: This function should be defined in a repository, however it will be changed when implementing segregation of duties, so let's leave the refactor until than
   private getPaymentRegistrationsQuery(
-    programId: number,
+    projectId: number,
   ): ScopedQueryBuilder<RegistrationEntity> {
     const q = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select('"referenceId"')
       .addSelect('registration.id as id')
       .addSelect('"fspConfig"."fspName" as "fspName"')
-      .addSelect('"fspConfig"."id" as "programFspConfigurationId"')
-      .andWhere('registration."programId" = :programId', { programId })
-      .leftJoin('registration.programFspConfiguration', 'fspConfig');
+      .addSelect('"fspConfig"."id" as "projectFspConfigurationId"')
+      .andWhere('registration."projectId" = :projectId', { projectId })
+      .leftJoin('registration.projectFspConfiguration', 'fspConfig');
     q.addSelect((subQuery) => {
       return subQuery
         .addSelect('value', 'paymentAddress')
         .from(RegistrationAttributeDataEntity, 'data')
-        .leftJoin('data.programRegistrationAttribute', 'attribute')
+        .leftJoin('data.projectRegistrationAttribute', 'attribute')
         .andWhere('attribute.name IN (:...names)', {
           names: [
             DefaultRegistrationDataAttributeNames.phoneNumber,
@@ -621,15 +621,15 @@ export class PaymentsExecutionService {
 
   // TODO: The query builders parts of this function should be defined in a repository, however it will be changed when implementing segregation of duties, so let's leave the refactor until than
   private async getPaymentListForRetry(
-    programId: number,
+    projectId: number,
     paymentId: number,
     userId: number,
     referenceIds?: string[],
   ): Promise<PaPaymentRetryDataDto[]> {
-    let q = this.getPaymentRegistrationsQuery(programId);
+    let q = this.getPaymentRegistrationsQuery(projectId);
     q = this.failedTransactionForRegistrationAndPayment(q, paymentId);
 
-    q.addSelect('"fspConfig"."name" as "programFspConfigurationName"');
+    q.addSelect('"fspConfig"."name" as "projectFspConfigurationName"');
 
     // If referenceIds passed, only retry those
     let rawResult;
@@ -649,7 +649,7 @@ export class PaymentsExecutionService {
       // .. get all failed referenceIds for this payment
       const failedReferenceIds = (
         await this.transactionsService.getLastTransactions({
-          programId,
+          projectId,
           paymentId,
           referenceId: undefined,
           status: TransactionStatusEnum.error,
@@ -677,11 +677,11 @@ export class PaymentsExecutionService {
   private async getPaymentList(
     referenceIds: string[],
     amount: number,
-    programId: number,
+    projectId: number,
     userId: number,
     bulkSize: number,
   ): Promise<PaPaymentDataDto[]> {
-    const q = this.getPaymentRegistrationsQuery(programId);
+    const q = this.getPaymentRegistrationsQuery(projectId);
     q.addSelect('registration."paymentAmountMultiplier"');
     q.andWhere('registration."referenceId" IN (:...referenceIds)', {
       referenceIds,
@@ -691,7 +691,7 @@ export class PaymentsExecutionService {
     for (const row of result) {
       const paPaymentData: PaPaymentDataDto = {
         userId,
-        programFspConfigurationId: row.programFspConfigurationId,
+        projectFspConfigurationId: row.projectFspConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
         paymentAddress: row.paymentAddress,

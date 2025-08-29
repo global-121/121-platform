@@ -2,16 +2,16 @@ import * as request from 'supertest';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactions } from '@121-service/test/helpers/project.helper';
 import { getServer } from '@121-service/test/helpers/utility.helper';
 
 export async function getTransactionsIntersolveVoucher({
-  programId,
+  projectId,
   paymentId,
   referenceId,
   accessToken,
 }: {
-  programId: number;
+  projectId: number;
   paymentId: number;
   referenceId: string;
   accessToken: string;
@@ -22,7 +22,7 @@ export async function getTransactionsIntersolveVoucher({
     attempts++;
     getTransactionsBody = (
       await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: referenceId,
         accessToken,
@@ -42,13 +42,13 @@ export async function getTransactionsIntersolveVoucher({
 }
 
 export async function getVoucherBalance(
-  programId: number,
+  projectId: number,
   paymentId: number,
   referenceId: string | null,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/fsps/intersolve-voucher/vouchers/balance`)
+    .get(`/projects/${projectId}/fsps/intersolve-voucher/vouchers/balance`)
     .set('Cookie', [accessToken])
     .query({ paymentId, referenceId });
 }

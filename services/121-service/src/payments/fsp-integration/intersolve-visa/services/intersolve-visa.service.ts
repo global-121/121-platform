@@ -43,7 +43,7 @@ export class IntersolveVisaService implements FspIntegrationInterface {
    */
   public async sendPayment(
     _paPaymentArray: PaPaymentDataDto[],
-    _programId: number,
+    _projectId: number,
     _payment: number,
   ): Promise<void> {
     throw new Error('Method should not be called anymore.');

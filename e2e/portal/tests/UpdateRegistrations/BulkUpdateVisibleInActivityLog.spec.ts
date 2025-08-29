@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProjectPV from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
   registrationPV6,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [registrationPV5, registrationPV6],
-    programIdPV,
+    projectIdPV,
     accessToken,
   );
 
@@ -40,10 +40,10 @@ test('[36352] Data should be updated according to selected columns and registrat
   const registrationsPage = new RegistrationsPage(page);
   const tableComponent = new TableComponent(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const projectTitle = NLRCProjectPV.titlePortal.en;
 
-  await test.step('Select program', async () => {
-    await registrationsPage.selectProgram(projectTitle);
+  await test.step('Select project', async () => {
+    await registrationsPage.selectProject(projectTitle);
   });
 
   await test.step('Select all registrations and open "Update registrations" dialog', async () => {

@@ -4,7 +4,7 @@ import { DomainApiService } from '~/domains/domain-api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
-  'programs',
+  'projects',
   projectId,
   'fsp-configurations',
 ];

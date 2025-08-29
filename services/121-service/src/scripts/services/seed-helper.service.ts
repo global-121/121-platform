@@ -19,12 +19,12 @@ import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectFspConfigurationPropertyEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration-property.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/project-aidworker.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
@@ -42,7 +42,7 @@ export class SeedHelperService {
   public constructor(
     private dataSource: DataSource,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly httpService: CustomHttpService,
     private readonly axiosCallsService: AxiosCallsService,
   ) {}
@@ -54,35 +54,35 @@ export class SeedHelperService {
     await this.addOrganization(organizationData);
 
     // ***** SET SEQUENCE *****
-    // This is to keep PV and OCW program ids on respectively 2 and 3
+    // This is to keep PV and OCW project ids on respectively 2 and 3
     // This to prevent differences between our local and prod dbs so we are less prone to mistakes
-    if (seedConfig.firstProgramId && seedConfig.firstProgramId !== 1) {
+    if (seedConfig.firstProjectId && seedConfig.firstProjectId !== 1) {
       await this.dataSource.query(
-        `ALTER SEQUENCE "121-service".program_id_seq RESTART WITH ${seedConfig.firstProgramId};`,
+        `ALTER SEQUENCE "121-service".project_id_seq RESTART WITH ${seedConfig.firstProjectId};`,
       );
     }
 
-    for (const program of seedConfig.programs) {
-      // Add program
-      const programPath = `program/${program.program}`;
-      const programData = await this.importData(programPath);
-      const programEntity = await this.addProgram(programData, isApiTests);
+    for (const project of seedConfig.projects) {
+      // Add project
+      const projectPath = `project/${project.project}`;
+      const projectData = await this.importData(projectPath);
+      const projectEntity = await this.addProject(projectData, isApiTests);
 
       // Add message templates
-      await this.addMessageTemplates(program.messageTemplate, programEntity);
+      await this.addMessageTemplates(project.messageTemplate, projectEntity);
 
       // Add default users
       const debugScopes = Object.values(DebugScope);
       await this.addDefaultUsers(
-        programEntity,
+        projectEntity,
         seedConfig.includeDebugScopes ? debugScopes : [],
       );
 
       // Add registrations if provided this is only for demo purposes
-      if (program.registrations) {
+      if (project.registrations) {
         await this.importRegistrations({
-          programId: programEntity.id,
-          registrationsFile: program.registrations,
+          projectId: projectEntity.id,
+          registrationsFile: project.registrations,
           isTest: isApiTests,
         });
       }
@@ -90,11 +90,11 @@ export class SeedHelperService {
   }
 
   private async importRegistrations({
-    programId,
+    projectId,
     registrationsFile,
     isTest,
   }: {
-    programId: number;
+    projectId: number;
     registrationsFile: string;
     isTest: boolean;
   }) {
@@ -123,7 +123,7 @@ export class SeedHelperService {
       }
     }
 
-    const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations/import`;
+    const url = `${this.axiosCallsService.getBaseUrl()}/projects/${projectId}/registrations/import`;
     await this.httpService.post(url, form, headers);
   }
 
@@ -158,15 +158,15 @@ export class SeedHelperService {
   }
 
   public async addDefaultUsers(
-    program: ProgramEntity,
+    project: ProjectEntity,
     debugScopeUsers: string[] = [],
   ): Promise<void> {
     const users = [
       {
-        type: 'programAdminUser',
-        username: env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_ADMIN,
-        password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
-        roles: [DefaultUserRole.ProgramAdmin],
+        type: 'projectAdminUser',
+        username: env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_ADMIN,
+        password: env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_ADMIN,
+        roles: [DefaultUserRole.ProjectAdmin],
       },
       {
         type: 'viewOnlyUser',
@@ -221,7 +221,7 @@ export class SeedHelperService {
     for (const user of users) {
       const savedUser = await this.getOrSaveUser(user);
       if (savedUser) {
-        await this.assignAidworker(savedUser.id, program.id, user.roles);
+        await this.assignAidworker(savedUser.id, project.id, user.roles);
       }
     }
 
@@ -230,12 +230,12 @@ export class SeedHelperService {
         const scopedUser = await this.getOrSaveUser({
           type: 'debugScopedUser',
           username: `${debugScopeUser}@example.org`,
-          password: env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_ADMIN,
+          password: env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_ADMIN,
         });
         if (scopedUser) {
           await this.assignAidworker(
             scopedUser.id,
-            program.id,
+            project.id,
             [DefaultUserRole.CvaManager],
             debugScopeUser,
           );
@@ -243,7 +243,7 @@ export class SeedHelperService {
       }
     }
 
-    await this.assignAdminUserToProgram(program.id);
+    await this.assignAdminUserToProject(project.id);
   }
 
   public async getOrSaveUser(userInput: {
@@ -283,30 +283,30 @@ export class SeedHelperService {
     await organizationRepository.save(organization);
   }
 
-  public async addProgram(
-    programExample: any,
+  public async addProject(
+    projectExample: any,
     isApiTests: boolean,
-  ): Promise<ProgramEntity> {
-    const programRepository = this.dataSource.getRepository(ProgramEntity);
+  ): Promise<ProjectEntity> {
+    const projectRepository = this.dataSource.getRepository(ProjectEntity);
 
-    const programRegistrationAttributeRepo = this.dataSource.getRepository(
-      ProgramRegistrationAttributeEntity,
+    const projectRegistrationAttributeRepo = this.dataSource.getRepository(
+      ProjectRegistrationAttributeEntity,
     );
 
-    const programExampleDump = JSON.stringify(programExample);
-    const programFromJSON = JSON.parse(programExampleDump);
+    const projectExampleDump = JSON.stringify(projectExample);
+    const projectFromJSON = JSON.parse(projectExampleDump);
 
     if (IS_DEVELOPMENT && !isApiTests) {
-      programFromJSON.published = true;
+      projectFromJSON.published = true;
     }
 
-    const programReturn = await programRepository.save(programFromJSON);
+    const projectReturn = await projectRepository.save(projectFromJSON);
 
-    // Remove original program registration attributes and add it to a separate variable
-    const programRegistrationAttributes =
-      programFromJSON.programRegistrationAttributes;
-    programFromJSON.programRegistrationAttibutes = [];
-    for (const attribute of programRegistrationAttributes) {
+    // Remove original project registration attributes and add it to a separate variable
+    const projectRegistrationAttributes =
+      projectFromJSON.projectRegistrationAttributes;
+    projectFromJSON.projectRegistrationAttibutes = [];
+    for (const attribute of projectRegistrationAttributes) {
       attribute.isRequired = attribute.isRequired || false;
       if (attribute.answerType === RegistrationAttributeTypes.dropdown) {
         const scoringKeys = Object.keys(attribute.scoring);
@@ -323,15 +323,15 @@ export class SeedHelperService {
           }
         }
       }
-      attribute.programId = programReturn.id;
-      await programRegistrationAttributeRepo.save(attribute);
+      attribute.projectId = projectReturn.id;
+      await projectRegistrationAttributeRepo.save(attribute);
     }
 
-    const foundProgram = await programRepository.findOneOrFail({
-      where: { id: Equal(programReturn.id) },
+    const foundProject = await projectRepository.findOneOrFail({
+      where: { id: Equal(projectReturn.id) },
     });
-    const fspConfigArrayFromJson = programFromJSON.programFspConfigurations;
-    foundProgram.programFspConfigurations = [];
+    const fspConfigArrayFromJson = projectFromJSON.projectFspConfigurations;
+    foundProject.projectFspConfigurations = [];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
       const fspObject = FSP_SETTINGS.find(
@@ -344,18 +344,18 @@ export class SeedHelperService {
         );
       }
 
-      const programFspConfig = this.createProgramFspConfiguration(
+      const projectFspConfig = this.createProjectFspConfiguration(
         fspConfigFromJson,
         fspObject,
-        foundProgram.id,
+        foundProject.id,
       );
-      await this.programFspConfigurationRepository.save(programFspConfig);
+      await this.projectFspConfigurationRepository.save(projectFspConfig);
     }
 
-    return programRepository.findOneByOrFail({ id: Equal(foundProgram.id) });
+    return projectRepository.findOneByOrFail({ id: Equal(foundProject.id) });
   }
 
-  private createProgramFspConfiguration(
+  private createProjectFspConfiguration(
     fspConfigFromJson: {
       fsp: Fsps;
       properties: { name: string; value: string }[] | undefined;
@@ -363,11 +363,11 @@ export class SeedHelperService {
       label: LocalizedString;
     },
     fspObject: FspDto,
-    programId: number,
-  ): ProgramFspConfigurationEntity {
-    const fspConfigEntity = new ProgramFspConfigurationEntity();
+    projectId: number,
+  ): ProjectFspConfigurationEntity {
+    const fspConfigEntity = new ProjectFspConfigurationEntity();
     fspConfigEntity.fspName = fspConfigFromJson.fsp;
-    fspConfigEntity.properties = this.createProgramFspConfigurationProperties(
+    fspConfigEntity.properties = this.createProjectFspConfigurationProperties(
       fspConfigFromJson.properties ?? [],
     );
     fspConfigEntity.label = fspConfigFromJson.label
@@ -377,14 +377,14 @@ export class SeedHelperService {
       ? fspConfigFromJson.name
       : fspObject.name;
     fspConfigEntity.transactions = [];
-    fspConfigEntity.programId = programId;
+    fspConfigEntity.projectId = projectId;
     return fspConfigEntity;
   }
 
-  private createProgramFspConfigurationProperties(
+  private createProjectFspConfigurationProperties(
     propertiesFromJSON: { name: string; value: string }[],
-  ): ProgramFspConfigurationPropertyEntity[] {
-    const fspConfigPropertyEntities: ProgramFspConfigurationPropertyEntity[] =
+  ): ProjectFspConfigurationPropertyEntity[] {
+    const fspConfigPropertyEntities: ProjectFspConfigurationPropertyEntity[] =
       [];
 
     for (const property of propertiesFromJSON) {
@@ -394,7 +394,7 @@ export class SeedHelperService {
         fspConfigPropertyValue = process.env[property.value] || property.value;
       }
       const fspConfigPropertyEntity =
-        new ProgramFspConfigurationPropertyEntity();
+        new ProjectFspConfigurationPropertyEntity();
       fspConfigPropertyEntity.name =
         property.name as FspConfigurationProperties;
       fspConfigPropertyEntity.value = fspConfigPropertyValue;
@@ -405,15 +405,15 @@ export class SeedHelperService {
 
   public async assignAidworker(
     userId: number,
-    programId: number,
+    projectId: number,
     roles: DefaultUserRole[] | string[],
     scope?: string,
   ): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
-    const programRepository = this.dataSource.getRepository(ProgramEntity);
+    const projectRepository = this.dataSource.getRepository(ProjectEntity);
     const userRoleRepository = this.dataSource.getRepository(UserRoleEntity);
     const assignmentRepository = this.dataSource.getRepository(
-      ProgramAidworkerAssignmentEntity,
+      ProjectAidworkerAssignmentEntity,
     );
     const user = await userRepository.findOneBy({
       id: userId,
@@ -421,9 +421,9 @@ export class SeedHelperService {
     await assignmentRepository.save({
       scope,
       user,
-      program: await programRepository.findOne({
+      project: await projectRepository.findOne({
         where: {
-          id: Equal(programId),
+          id: Equal(projectId),
         },
       }),
       roles: await userRoleRepository.find({
@@ -431,24 +431,24 @@ export class SeedHelperService {
           role: In(roles),
         },
       }),
-    } as DeepPartial<ProgramAidworkerAssignmentEntity>);
+    } as DeepPartial<ProjectAidworkerAssignmentEntity>);
   }
 
-  public async assignAdminUserToProgram(programId: number): Promise<void> {
+  public async assignAdminUserToProject(projectId: number): Promise<void> {
     const userRepository = this.dataSource.getRepository(UserEntity);
     const adminUser = await userRepository.findOneOrFail({
       where: {
         username: Equal(env.USERCONFIG_121_SERVICE_EMAIL_ADMIN),
       },
     });
-    await this.assignAidworker(adminUser.id, programId, [
+    await this.assignAidworker(adminUser.id, projectId, [
       DefaultUserRole.Admin,
     ]);
   }
 
   public async addMessageTemplates(
     messageTemplates: SeedMessageTemplateConfig,
-    program: ProgramEntity,
+    project: ProjectEntity,
   ): Promise<void> {
     const messageTemplateRepo = this.dataSource.getRepository(
       MessageTemplateEntity,
@@ -467,7 +467,7 @@ export class SeedHelperService {
 
       for (const language of languages) {
         const template = await this.createMessageTemplate(
-          program,
+          project,
           messageType,
           language,
           messageObject?.[language],
@@ -482,7 +482,7 @@ export class SeedHelperService {
   }
 
   public async createMessageTemplate(
-    program: ProgramEntity,
+    project: ProjectEntity,
     type: string,
     language: string,
     message: string,
@@ -491,7 +491,7 @@ export class SeedHelperService {
     label: LocalizedString,
   ): Promise<MessageTemplateEntity> {
     const messageTemplateEntity = new MessageTemplateEntity();
-    messageTemplateEntity.program = program;
+    messageTemplateEntity.project = project;
     messageTemplateEntity.type = type;
     messageTemplateEntity.label = label
       ? JSON.parse(JSON.stringify(label))
@@ -503,7 +503,7 @@ export class SeedHelperService {
 
     if (messageTemplateEntity.message) {
       await this.messageTemplateService.validatePlaceholders(
-        program.id,
+        project.id,
         messageTemplateEntity.message,
       );
     }

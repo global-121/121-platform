@@ -14,8 +14,8 @@ describe('TransactionJobsAirtelService', () => {
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
 
   const transactionJob: AirtelTransactionJobDto = {
-    programId: 3,
-    programFspConfigurationId: 3,
+    projectId: 3,
+    projectFspConfigurationId: 3,
     paymentId: 3,
     referenceId: 'ref-3',
     transactionAmount: 300,

@@ -23,6 +23,6 @@ export class PaymentProcessorIntersolveVoucher {
   @Process(JobNames.default)
   async handleSendPayment(job: Job): Promise<void> {
     await this.intersolveVoucherService.processQueuedPayment(job.data);
-    await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);
+    await this.redisClient.srem(getRedisSetName(job.data.projectId), job.id);
   }
 }

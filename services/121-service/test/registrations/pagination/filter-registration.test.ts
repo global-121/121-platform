@@ -6,7 +6,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { getProgram } from '@121-service/test/helpers/program.helper';
+import { getProject } from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   getRegistrations,
@@ -19,7 +19,7 @@ import {
 import {
   createExpectedValueObject,
   expectedAttributes,
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
@@ -45,10 +45,10 @@ describe('Filter registrations', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programIdOCW, registrations, accessToken);
+    await importRegistrations(projectIdOCW, registrations, accessToken);
 
     await awaitChangeRegistrationStatus({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       referenceIds: [registrationOCW2.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -58,7 +58,7 @@ describe('Filter registrations', () => {
   it('should filter based on status', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: { 'filter.status': RegistrationStatusEnum.included },
     });
@@ -78,7 +78,7 @@ describe('Filter registrations', () => {
   it('should filter based on registration data', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.whatsappPhoneNumber': registrationOCW4.whatsappPhoneNumber,
@@ -130,14 +130,14 @@ describe('Filter registrations', () => {
         filterValue: '1',
         expectedReferenceIds: allReferenceIds,
       },
-      programFspConfigurationName: {
+      projectFspConfigurationName: {
         filterValue: Fsps.intersolveVoucherWhatsapp,
         expectedReferenceIds: [registrationOCW5.referenceId],
       },
     };
 
-    const program = await getProgram(programIdOCW, accessToken);
-    const filterablePaAttributes = program.body.filterableAttributes.find(
+    const project = await getProject(projectIdOCW, accessToken);
+    const filterablePaAttributes = project.body.filterableAttributes.find(
       (attribute) => attribute.group === 'paAttributes',
     );
     const genericFilterableAttributes = filterablePaAttributes.filters.filter(
@@ -158,7 +158,7 @@ describe('Filter registrations', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter,
       });
@@ -185,7 +185,7 @@ describe('Filter registrations', () => {
     // Act
     // Each of the filters would seperately return
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.whatsappPhoneNumber': `${FilterOperator.ILIKE}:${registrationOCW3.whatsappPhoneNumber.substring(
@@ -213,7 +213,7 @@ describe('Filter registrations', () => {
     // Act
     // The postal code shoud filter 1 and 2 and the search should filter 2 and 4, so only 2 should be returned
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.addressPostalCode': `${FilterOperator.ILIKE}:${registrationOCW2.addressPostalCode.substring(
@@ -239,7 +239,7 @@ describe('Filter registrations', () => {
   describe('not operator filters', () => {
     it('should filter on registration attribute data using $not:$ilike', async () => {
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.whatsappPhoneNumber': `${FilterSuffix.NOT}:${FilterOperator.ILIKE}:${registrationOCW1.whatsappPhoneNumber}`,
@@ -264,7 +264,7 @@ describe('Filter registrations', () => {
       // in the backend there is some extra logic to handle this, so we test that here
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW4.addressHouseNumber}`,
@@ -293,7 +293,7 @@ describe('Filter registrations', () => {
       ];
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.whatsappPhoneNumber': `${FilterSuffix.NOT}:${FilterOperator.IN}:${numbers.join(',')}`,
@@ -318,7 +318,7 @@ describe('Filter registrations', () => {
     it('should filter on registration attribute data using $not:$gt', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.GT}:2`,
@@ -339,7 +339,7 @@ describe('Filter registrations', () => {
     it('should filter on registration attribute data using using $not:$t', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.LT}:2`,
@@ -361,7 +361,7 @@ describe('Filter registrations', () => {
     it('should filter on registration attribute data using using $not:$btw', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.addressHouseNumber': `${FilterSuffix.NOT}:${FilterOperator.BTW}:1,3`,
@@ -381,7 +381,7 @@ describe('Filter registrations', () => {
     it('should throw bad request for $not:$null filter on registration attribute data', async () => {
       // Act
       const response = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.addressCity': `${FilterSuffix.NOT}:${FilterOperator.NULL}`,
@@ -395,11 +395,11 @@ describe('Filter registrations', () => {
     it('should filter on root registration attribute', async () => {
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         accessToken,
         filter: {
           'filter.paymentAmountMultiplier': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW3.paymentAmountMultiplier}`,
-          'filter.programFspConfigurationName': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW5.programFspConfigurationName}`,
+          'filter.projectFspConfigurationName': `${FilterSuffix.NOT}:${FilterOperator.EQ}:${registrationOCW5.projectFspConfigurationName}`,
         },
       });
       const data = getRegistrationsResponse.body.data;

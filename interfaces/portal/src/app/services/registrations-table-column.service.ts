@@ -39,7 +39,7 @@ const FILTERABLE_ATTRIBUTES_LABELS: Record<string, string> = {
 };
 
 const DEFAULT_VISIBLE_FIELDS_SORTED: string[] = [
-  'registrationProgramId',
+  'registrationProjectId',
   'name',
   'status',
   'duplicateStatus',
@@ -80,10 +80,10 @@ export class RegistrationsTableColumnService {
           // Hardcoded columns first
           let columns: QueryTableColumn<Registration>[] = [
             {
-              field: 'registrationProgramId',
+              field: 'registrationProjectId',
               header: $localize`Reg. #`,
               getCellText: (registration) =>
-                `Reg. #${registration.registrationProgramId.toString()}`,
+                `Reg. #${registration.registrationProjectId.toString()}`,
               getCellRouterLink: (registration) =>
                 registrationLink({
                   projectId: projectId(),
@@ -132,10 +132,10 @@ export class RegistrationsTableColumnService {
                 getChipDataByDuplicateStatus(registration.duplicateStatus),
             },
             {
-              field: 'programFspConfigurationName',
+              field: 'projectFspConfigurationName',
               header: $localize`FSP`,
               type: QueryTableColumnType.MULTISELECT,
-              options: project.programFspConfigurations.map((config) => ({
+              options: project.projectFspConfigurations.map((config) => ({
                 label:
                   this.translatableStringService.translate(config.label) ?? '',
                 value: config.name,

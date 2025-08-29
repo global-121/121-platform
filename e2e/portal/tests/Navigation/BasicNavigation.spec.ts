@@ -13,7 +13,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const projectId = 2;
-const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+const projectTitle = 'NLRC Direct Digital Aid Project (PV)';
 
 // Arrange
 test.describe('Validate basic navigation of the Portal', () => {
@@ -29,8 +29,8 @@ test.describe('Validate basic navigation of the Portal', () => {
     const loginPage = new LoginPage(page);
     await page.goto(`/`);
     await loginPage.login();
-    // Navigate to program
-    await loginPage.selectProgram(projectTitle);
+    // Navigate to project
+    await loginPage.selectProject(projectTitle);
   });
 
   test.afterAll(async () => {
@@ -50,7 +50,7 @@ test.describe('Validate basic navigation of the Portal', () => {
     );
   });
 
-  test('Navigation from program header', async () => {
+  test('Navigation from project header', async () => {
     const homePage = new HomePage(page);
 
     await page.goto('/en-GB/projects');
@@ -60,7 +60,7 @@ test.describe('Validate basic navigation of the Portal', () => {
     );
     await expect(await homePage.logo).toHaveText(`121 Portal ${projectTitle}`);
 
-    await homePage.navigateToProgramPage('Monitoring');
+    await homePage.navigateToProjectPage('Monitoring');
     await page.waitForURL((url) =>
       url.pathname.startsWith(`/en-GB/project/${projectId}/monitoring`),
     );

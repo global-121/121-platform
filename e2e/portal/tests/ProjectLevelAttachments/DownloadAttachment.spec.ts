@@ -2,7 +2,7 @@ import { Page, test } from '@playwright/test';
 import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';
+import { uploadAttachment } from '@121-service/test/helpers/project-attachments.helper';
 import {
   getAccessToken,
   resetDB,
@@ -21,14 +21,14 @@ const fileName = 'Test TEST-DOCUMENT file upload.pdf';
 // Arrange
 test.describe('Attachments on Project Level', () => {
   let page: Page;
-  const projectTitle = 'NLRC OCW Program';
+  const projectTitle = 'NLRC OCW Project';
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
     await uploadAttachment({
-      programId: 3,
+      projectId: 3,
       filePath: pdfFilePath,
       filename: fileName,
       accessToken,
@@ -44,8 +44,8 @@ test.describe('Attachments on Project Level', () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await page.goto('/');
-    await projectMonitoring.selectProgram(projectTitle);
-    await projectMonitoring.navigateToProgramPage('Monitoring');
+    await projectMonitoring.selectProject(projectTitle);
+    await projectMonitoring.navigateToProjectPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 

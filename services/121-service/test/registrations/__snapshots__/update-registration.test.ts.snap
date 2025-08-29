@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Update attribute of PA should fail when removing a required program registration attribute 1`] = `
+exports[`Update attribute of PA should fail when removing a required project registration attribute 1`] = `
 {
   "message": "motto: The value 'null' given for the attribute 'motto' does not have the correct format for type 'text'",
   "statusCode": 400,

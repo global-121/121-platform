@@ -30,7 +30,7 @@ export class TransactionQueuesService {
           JobNames.default,
           transferJob,
         );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 
@@ -42,7 +42,7 @@ export class TransactionQueuesService {
         JobNames.default,
         safaricomTransactionJob,
       );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 
@@ -54,7 +54,7 @@ export class TransactionQueuesService {
         JobNames.default,
         airtelTransactionJob,
       );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 
@@ -66,7 +66,7 @@ export class TransactionQueuesService {
         JobNames.default,
         nedbankTransactionJob,
       );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 
@@ -78,7 +78,7 @@ export class TransactionQueuesService {
         JobNames.default,
         onafriqTransactionJob,
       );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 }

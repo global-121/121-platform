@@ -1,7 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/project-aidworker.entity';
 import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 
 @Entity('user_role')
@@ -16,10 +16,10 @@ export class UserRoleEntity extends Base121Entity {
   public description: string | null;
 
   @ManyToMany(
-    () => ProgramAidworkerAssignmentEntity,
+    () => ProjectAidworkerAssignmentEntity,
     (assignment) => assignment.roles,
   )
-  public assignments: ProgramAidworkerAssignmentEntity[];
+  public assignments: ProjectAidworkerAssignmentEntity[];
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.roles)
   @JoinTable()

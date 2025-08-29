@@ -178,7 +178,7 @@ export class ExportRegistrationsComponent {
   readonly isCBEProject = computed(() =>
     this.project
       .data()
-      ?.programFspConfigurations.some(
+      ?.projectFspConfigurations.some(
         (fsp) => fsp.fspName === Fsps.commercialBankEthiopia,
       ),
   );

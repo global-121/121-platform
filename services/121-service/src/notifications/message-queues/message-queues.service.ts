@@ -18,7 +18,7 @@ import {
   MessageQueueMap,
 } from '@121-service/src/notifications/message-queue-mapping.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
@@ -35,7 +35,7 @@ export class MessageQueuesService {
 
   public constructor(
     private readonly registrationDataService: RegistrationDataService,
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly projectAttributesService: ProjectAttributesService,
     private readonly queuesService: QueuesRegistryService,
   ) {
     this.queueNameToQueueMap = {
@@ -104,7 +104,7 @@ export class MessageQueuesService {
         preferredLanguage: registration.preferredLanguage ?? LanguageEnum.en,
         whatsappPhoneNumber,
         phoneNumber: registration.phoneNumber ?? undefined,
-        programId: registration.programId,
+        projectId: registration.projectId,
         message,
         contentSid,
         messageTemplateKey,
@@ -121,7 +121,7 @@ export class MessageQueuesService {
   }
 
   public async getPlaceholdersInMessageText(
-    programId: number,
+    projectId: number,
     messageText?: string,
     messageTemplateKey?: string,
   ): Promise<string[]> {
@@ -132,7 +132,7 @@ export class MessageQueuesService {
       const messageTemplate = await this.messageTemplateRepository.findOne({
         where: {
           type: Equal(messageTemplateKey),
-          programId: Equal(programId),
+          projectId: Equal(projectId),
           language: Equal('en'), // use English to determine which placeholders are used
         },
       });
@@ -143,9 +143,9 @@ export class MessageQueuesService {
       }
       messageText = messageTemplate.message;
     }
-    const placeholders = await this.programAttributesService.getAttributes({
-      programId,
-      includeProgramRegistrationAttributes: true,
+    const placeholders = await this.projectAttributesService.getAttributes({
+      projectId,
+      includeProjectRegistrationAttributes: true,
       includeTemplateDefaultAttributes: true,
     });
     const usedPlaceholders: string[] = [];

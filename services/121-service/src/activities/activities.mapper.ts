@@ -127,8 +127,8 @@ export class ActivitiesMapper {
         paymentDate: transaction.paymentDate,
         updatedDate: transaction.updated,
         fspName: transaction.fspName,
-        fspConfigurationLabel: transaction.programFspConfigurationLabel,
-        fspConfigurationName: transaction.programFspConfigurationName,
+        fspConfigurationLabel: transaction.projectFspConfigurationLabel,
+        fspConfigurationName: transaction.projectFspConfigurationName,
         errorMessage: transaction.errorMessage,
       },
     }));
@@ -239,8 +239,8 @@ export class ActivitiesMapper {
         duplicateWithRegistrationId: Number(
           event.attributes.duplicateWithRegistrationId,
         ),
-        duplicateWithRegistrationProgramId: Number(
-          event.attributes.duplicateWithRegistrationProgramId,
+        duplicateWithRegistrationProjectId: Number(
+          event.attributes.duplicateWithRegistrationProjectId,
         ),
         reason: event.attributes.reason,
       },

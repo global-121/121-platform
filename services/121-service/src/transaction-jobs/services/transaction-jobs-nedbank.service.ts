@@ -9,7 +9,7 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
@@ -20,7 +20,7 @@ export class TransactionJobsNedbankService {
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
 
@@ -35,7 +35,7 @@ export class TransactionJobsNedbankService {
 
     // 2. Set the payment reference
     const paymentReference = await this.createPaymentReference({
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
+      projectFspConfigurationId: transactionJob.projectFspConfigurationId,
       phoneNumber: transactionJob.phoneNumber,
     });
 
@@ -142,18 +142,18 @@ export class TransactionJobsNedbankService {
    * All non-alphanumeric characters (except hyphens) are removed because the Nedbank API does not accept them.
    */
   private async createPaymentReference({
-    programFspConfigurationId,
+    projectFspConfigurationId,
     phoneNumber,
   }: {
-    programFspConfigurationId: number;
+    projectFspConfigurationId: number;
     phoneNumber: string;
   }): Promise<string> {
     // This is a unique identifier for each transaction, which will be shown on the bank statement which the user receives by Nedbank out of the 121-platform
     // It's therefore a human readable identifier, which is unique for each transaction and can be related to the registration and transaction manually
     // Payment reference cannot be longer than 30 characters
     const paymentReferencePrefix =
-      (await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
+      (await this.projectFspConfigurationRepository.getPropertyValueByName({
+        projectFspConfigurationId,
         name: FspConfigurationProperties.paymentReferencePrefix,
       })) as string; // This must be a string. If it is undefined the validation in payment service should have caught it. If a user set it as an array string you should get an internal server error here, this seems like an edge case;
     const sanitizedPaymentReferencePrefix = paymentReferencePrefix.replace(

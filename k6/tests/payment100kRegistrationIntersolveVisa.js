@@ -13,7 +13,7 @@ const initializePayment = new InitializePaymentModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
-const programId = 3;
+const projectId = 3;
 const maxTimeoutAttempts = 800;
 const minPassRatePercentage = 10;
 const amount = 11.11;
@@ -41,7 +41,7 @@ function checkAndFail(response, checks) {
 export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
-    programId,
+    projectId,
     registrationVisa,
     duplicateNumber,
     maxTimeoutAttempts,

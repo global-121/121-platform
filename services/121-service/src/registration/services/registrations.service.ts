@@ -10,7 +10,7 @@ import {
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -20,14 +20,14 @@ import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integr
 import { ContactInformation } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/partials/contact-information.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
-import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
+import { ReferenceProjectIdScopeDto } from '@121-service/src/registration/dto/registrationProjectIdScope.dto';
 import {
   AdditionalAttributes,
   Attributes,
@@ -63,10 +63,10 @@ import { convertToScopedOptions } from '@121-service/src/utils/scope/createFindW
 export class RegistrationsService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly projectRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
 
   public constructor(
     private readonly lookupService: LookupService,
@@ -81,7 +81,7 @@ export class RegistrationsService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
@@ -90,7 +90,7 @@ export class RegistrationsService {
   // This methods can be used to get the same formattted data as the pagination query using referenceId
   public async getPaginateRegistrationForReferenceId(
     referenceId: string,
-    programId: number,
+    projectId: number,
   ) {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
@@ -98,7 +98,7 @@ export class RegistrationsService {
     const paginateResult =
       await this.registrationsPaginationService.getPaginate(
         { path: '' },
-        programId,
+        projectId,
         true,
         false,
         queryBuilder,
@@ -109,10 +109,10 @@ export class RegistrationsService {
   // This methods can be used to get the same formattted data as the pagination query using referenceId
   public async getPaginateRegistrationById({
     id,
-    programId,
+    projectId,
   }: {
     id: number;
-    programId: number;
+    projectId: number;
   }) {
     const queryBuilder = this.registrationViewScopedRepository
       .createQueryBuilder('registration')
@@ -122,7 +122,7 @@ export class RegistrationsService {
     const paginateResult =
       await this.registrationsPaginationService.getPaginate(
         { path: '' },
-        programId,
+        projectId,
         true,
         false,
         queryBuilder,
@@ -143,15 +143,15 @@ export class RegistrationsService {
 
   public async create(
     postData: CreateRegistrationDto,
-    programId: number,
+    projectId: number,
     userId: number,
   ) {
     const user = await this.findUserOrThrow(userId);
     const registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
     registration.user = user;
-    registration.program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    registration.project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
     await this.registrationUtilsService.save(registration);
     return this.setRegistrationStatus(
@@ -189,26 +189,26 @@ export class RegistrationsService {
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],
-    programId,
+    projectId,
   }: {
     referenceId: string;
     relations?: (keyof RegistrationEntity)[];
-    programId?: number;
+    projectId?: number;
   }): Promise<RegistrationEntity> {
     if (!referenceId) {
       const errors = `ReferenceId is not set`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const registration =
-      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProgramId(
+      await this.registrationScopedRepository.getWithRelationsByReferenceIdAndProjectId(
         {
           referenceId,
           relations,
-          programId,
+          projectId,
         },
       );
     if (!registration) {
-      const errors = `ReferenceId ${referenceId} is not known in this program (within your scope).`;
+      const errors = `ReferenceId ${referenceId} is not known in this project (within your scope).`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return registration;
@@ -217,20 +217,20 @@ export class RegistrationsService {
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[] | boolean | null,
-    programId: number,
+    projectId: number,
   ) {
     const allowEmptyPhoneNumber = (
-      await this.programRepository.findOneBy({
-        id: programId,
+      await this.projectRepository.findOneBy({
+        id: projectId,
       })
     )?.allowEmptyPhoneNumber;
 
     const answersTypeTel: string[] = [];
-    const programRegistrationAttributes =
-      await this.programRegistrationAttributeRepository.find({
+    const projectRegistrationAttributes =
+      await this.projectRegistrationAttributeRepository.find({
         where: { type: Equal(RegistrationAttributeTypes.tel) },
       });
-    for (const question of programRegistrationAttributes) {
+    for (const question of projectRegistrationAttributes) {
       answersTypeTel.push(question.name);
     }
 
@@ -262,36 +262,36 @@ export class RegistrationsService {
   }
 
   public async getImportRegistrationsTemplate(
-    programId: number,
+    projectId: number,
   ): Promise<string[]> {
     return await this.registrationsImportService.getImportRegistrationsTemplate(
-      programId,
+      projectId,
     );
   }
 
   public async importRegistrationsFromCsv(
     csvFile: Express.Multer.File,
-    programId: number,
+    projectId: number,
     userId: number,
   ): Promise<ImportResult> {
-    const program = await this.findProgramOrThrow(programId);
-    this.throwIfProgramIsNotPublished(program.published);
+    const project = await this.findProjectOrThrow(projectId);
+    this.throwIfProjectIsNotPublished(project.published);
     return await this.registrationsImportService.importRegistrationsFromCsv(
       csvFile,
-      program,
+      project,
       userId,
     );
   }
 
   public async patchBulk(
     csvFile: Express.Multer.File,
-    programId: number,
+    projectId: number,
     userId: number,
     reason: string,
   ): Promise<void> {
     return await this.registrationsImportService.patchBulk(
       csvFile,
-      programId,
+      projectId,
       userId,
       reason,
     );
@@ -299,36 +299,36 @@ export class RegistrationsService {
 
   public async importRegistrationsFromJson(
     jsonData: Record<string, string | number | boolean>[],
-    programId: number,
+    projectId: number,
     userId: number,
   ): Promise<ImportResult> {
-    const program = await this.findProgramOrThrow(programId);
-    this.throwIfProgramIsNotPublished(program.published);
+    const project = await this.findProjectOrThrow(projectId);
+    this.throwIfProjectIsNotPublished(project.published);
     return await this.registrationsImportService.importRegistrations(
       jsonData,
-      program,
+      project,
       userId,
     );
   }
 
-  private throwIfProgramIsNotPublished(published: boolean): void {
+  private throwIfProjectIsNotPublished(published: boolean): void {
     if (!published) {
       const errors =
-        'Registrations are not allowed for this program yet, try again later.';
+        'Registrations are not allowed for this project yet, try again later.';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
   }
 
-  private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne({
-      where: { id: Equal(programId) },
-      relations: ['programRegistrationAttributes'],
+  private async findProjectOrThrow(projectId: number): Promise<ProjectEntity> {
+    const project = await this.projectRepository.findOne({
+      where: { id: Equal(projectId) },
+      relations: ['projectRegistrationAttributes'],
     });
-    if (!program) {
-      const errors = 'Program not found.';
+    if (!project) {
+      const errors = 'Project not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return program;
+    return project;
   }
 
   public transformRegistrationByNamingConvention(
@@ -352,12 +352,12 @@ export class RegistrationsService {
   }
 
   public async validateInputAndUpdateRegistration({
-    programId,
+    projectId,
     referenceId,
     updateRegistrationDto,
     userId,
   }: {
-    programId: number;
+    projectId: number;
     referenceId: string;
     updateRegistrationDto: UpdateRegistrationDto;
     userId: number;
@@ -376,7 +376,7 @@ export class RegistrationsService {
       validateRegistrationPatchData =
         await this.registrationsInputValidator.validateAndCleanInput({
           registrationInputArray: [updateDataWithReferenceId],
-          programId,
+          projectId,
           userId,
           typeOfInput: RegistrationValidationInputType.update,
           validationConfig,
@@ -391,7 +391,7 @@ export class RegistrationsService {
 
     // if all valid, process update
     return await this.updateRegistration({
-      programId,
+      projectId,
       referenceId,
       validatedRegistrationInput: validateRegistrationPatchData[0],
       reason: updateRegistrationDto.reason,
@@ -420,12 +420,12 @@ export class RegistrationsService {
   }
 
   public async updateRegistration({
-    programId,
+    projectId,
     referenceId,
     validatedRegistrationInput,
     reason,
   }: {
-    programId: number;
+    projectId: number;
     referenceId: string;
     validatedRegistrationInput: ValidatedRegistrationInput;
     reason: string | undefined;
@@ -436,13 +436,13 @@ export class RegistrationsService {
 
     let registrationToUpdate = await this.getRegistrationOrThrow({
       referenceId,
-      relations: ['program'],
-      programId,
+      relations: ['project'],
+      projectId,
     });
-    const program = registrationToUpdate.program;
+    const project = registrationToUpdate.project;
 
     const oldViewRegistration =
-      await this.getPaginateRegistrationForReferenceId(referenceId, programId);
+      await this.getPaginateRegistrationForReferenceId(referenceId, projectId);
 
     // Track whether maxPayments has been updated to match paymentCount
     let maxPaymentsMatchesPaymentCount = false;
@@ -464,7 +464,7 @@ export class RegistrationsService {
           attribute: attributeKey,
           value: attributeValue,
           registration: registrationToUpdate,
-          program,
+          project,
         });
         nrAttributesUpdated++;
       }
@@ -483,7 +483,7 @@ export class RegistrationsService {
           attribute: attributeKey,
           value: attributeValue,
           registration: registrationToUpdate,
-          program,
+          project,
         });
         nrAttributesUpdated++;
       }
@@ -494,14 +494,14 @@ export class RegistrationsService {
         attribute: 'registrationStatus',
         value: RegistrationStatusEnum.completed,
         registration: registrationToUpdate,
-        program,
+        project,
       });
       nrAttributesUpdated++;
     }
 
     const newRegistration = await this.getPaginateRegistrationForReferenceId(
       referenceId,
-      programId,
+      projectId,
     );
 
     if (nrAttributesUpdated > 0) {
@@ -519,17 +519,17 @@ export class RegistrationsService {
     attribute,
     value,
     registration,
-    program,
+    project,
   }: {
     attribute: Attributes | string;
     value: string | number | string[] | boolean | null;
     registration: RegistrationEntity;
-    program: ProgramEntity;
+    project: ProjectEntity;
   }): Promise<RegistrationEntity> {
     value = await this.cleanCustomDataIfPhoneNr(
       attribute,
       value,
-      registration.programId,
+      registration.projectId,
     );
 
     if (typeof registration[attribute] !== 'undefined') {
@@ -542,7 +542,7 @@ export class RegistrationsService {
       )
     ) {
       if (value === null) {
-        await this.registrationDataService.deleteProgramRegistrationAttributeData(
+        await this.registrationDataService.deleteProjectRegistrationAttributeData(
           registration,
           {
             name: attribute,
@@ -567,8 +567,8 @@ export class RegistrationsService {
       }
     }
 
-    if (attribute === AdditionalAttributes.programFspConfigurationName) {
-      registration.programFspConfigurationId =
+    if (attribute === AdditionalAttributes.projectFspConfigurationName) {
+      registration.projectFspConfigurationId =
         await this.getChosenFspConfigurationId({
           registration,
           newFspConfigurationName: String(value),
@@ -578,7 +578,7 @@ export class RegistrationsService {
       await this.registrationUtilsService.save(registration);
     const calculatedRegistration =
       await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-        program,
+        project,
         registration.referenceId,
       );
     if (calculatedRegistration) {
@@ -599,7 +599,7 @@ export class RegistrationsService {
 
     return this.getRegistrationOrThrow({
       referenceId: savedRegistration.referenceId,
-      relations: ['program'],
+      relations: ['project'],
     });
   }
 
@@ -674,7 +674,7 @@ export class RegistrationsService {
       })
     ).map((r) => {
       return {
-        programId: r.programId,
+        projectId: r.projectId,
         referenceId: r.referenceId,
         scope: r.scope,
       };
@@ -694,7 +694,7 @@ export class RegistrationsService {
         registrationAttributesPhoneNumberNames.includes(dataName)
       ) {
         matchingRegistrations.push({
-          programId: d.registration.programId,
+          projectId: d.registration.projectId,
           referenceId: d.registration.referenceId,
           scope: d.registration.scope,
         });
@@ -706,7 +706,7 @@ export class RegistrationsService {
         index === self.findIndex((t) => t.referenceId === value.referenceId),
     );
 
-    const filteredRegistrations = await this.filterRegistrationsByProgramScope(
+    const filteredRegistrations = await this.filterRegistrationsByProjectScope(
       uniqueRegistrations,
       userId,
     );
@@ -715,40 +715,40 @@ export class RegistrationsService {
       filteredRegistrations.map(async (uniqueRegistration) => {
         return await this.getPaginateRegistrationForReferenceId(
           uniqueRegistration.referenceId,
-          uniqueRegistration.programId,
+          uniqueRegistration.projectId,
         );
       }),
     );
   }
 
-  private async filterRegistrationsByProgramScope(
-    registrationObjects: ReferenceProgramIdScopeDto[],
+  private async filterRegistrationsByProjectScope(
+    registrationObjects: ReferenceProjectIdScopeDto[],
     userId: number,
-  ): Promise<ReferenceProgramIdScopeDto[]> {
-    const filteredRegistrations: ReferenceProgramIdScopeDto[] = [];
-    const programIdScopeObjects =
-      await this.userService.getProgramScopeIdsUserHasPermission(
+  ): Promise<ReferenceProjectIdScopeDto[]> {
+    const filteredRegistrations: ReferenceProjectIdScopeDto[] = [];
+    const projectIdScopeObjects =
+      await this.userService.getProjectScopeIdsUserHasPermission(
         userId,
         PermissionEnum.RegistrationPersonalREAD,
       );
     for (const registration of registrationObjects) {
-      // Filters out registrations of programs to which this user is not assigned
-      const programIdScopeObject = programIdScopeObjects.find(
-        (p) => p.programId === registration.programId,
+      // Filters out registrations of projects to which this user is not assigned
+      const projectIdScopeObject = projectIdScopeObjects.find(
+        (p) => p.projectId === registration.projectId,
       );
 
-      if (programIdScopeObject) {
-        // Filters out registrations of a program to which this user is assigned, but not to the scope of the registration
-        const findProgramOption = {
+      if (projectIdScopeObject) {
+        // Filters out registrations of a project to which this user is assigned, but not to the scope of the registration
+        const findProjectOption = {
           where: {
-            programId: Equal(registration.programId),
+            projectId: Equal(registration.projectId),
             referenceId: Equal(registration.referenceId),
           },
         };
         const findOption = convertToScopedOptions<
           RegistrationEntity,
           FindOneOptions<RegistrationEntity>
-        >(findProgramOption, [], programIdScopeObject.scope);
+        >(findProjectOption, [], projectIdScopeObject.scope);
         const foundRegistration =
           await this.registrationScopedRepository.findOne(findOption);
 
@@ -768,10 +768,10 @@ export class RegistrationsService {
     newFspConfigurationName: string;
   }): Promise<number> {
     //Identify new FSP
-    const newFspConfig = await this.programFspConfigurationRepository.findOne({
+    const newFspConfig = await this.projectFspConfigurationRepository.findOne({
       where: {
         name: Equal(newFspConfigurationName),
-        programId: Equal(registration.programId),
+        projectId: Equal(registration.projectId),
       },
     });
     if (!newFspConfig) {
@@ -783,15 +783,15 @@ export class RegistrationsService {
 
   public async getDuplicates(
     referenceId: string,
-    programId: number,
+    projectId: number,
   ): Promise<DuplicateReponseDto[]> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
-      programId,
+      projectId,
     });
     const duplicates = await this.registrationScopedRepository.getDuplicates({
       registrationId: registration.id,
-      programId,
+      projectId,
     });
     if (duplicates.length === 0) {
       return [];
@@ -803,7 +803,7 @@ export class RegistrationsService {
     const registrationViews =
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
-          programId,
+          projectId,
           referenceIds,
         },
       );
@@ -815,7 +815,7 @@ export class RegistrationsService {
       );
       return {
         registrationId: duplicate.registrationId,
-        registrationProgramId: duplicate.registrationProgramId,
+        registrationProjectId: duplicate.registrationProjectId,
         attributeNames: duplicate.attributeNames,
         scope: duplicate.scope,
         name: registration?.name,
@@ -826,11 +826,11 @@ export class RegistrationsService {
 
   public async createUniques({
     registrationIds,
-    programId,
+    projectId,
     reason,
   }: {
     registrationIds: number[];
-    programId: number;
+    projectId: number;
     reason: string;
   }): Promise<void> {
     const uniqueIds = new Set(registrationIds);
@@ -847,7 +847,7 @@ export class RegistrationsService {
     const registrations = await this.registrationScopedRepository.find({
       where: {
         id: In(registrationIds),
-        programId: Equal(programId),
+        projectId: Equal(projectId),
       },
       select: ['id'],
     });
@@ -856,7 +856,7 @@ export class RegistrationsService {
       const foundIds = registrations.map((reg) => reg.id);
       const missingIds = registrationIds.filter((id) => !foundIds.includes(id));
 
-      const error = `Not all registrations were found in program ${programId}. Expected ${registrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
+      const error = `Not all registrations were found in project ${projectId}. Expected ${registrationIds.length} but found ${registrations.length}. Missing registraitonIds: ${missingIds.join(', ')}`;
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
     // Generate all possible pairs of registration IDs and create unique entities
@@ -919,11 +919,11 @@ export class RegistrationsService {
     await this.registrationEventsService.createForIgnoredDuplicatePair({
       registration1: {
         id: registration1.id,
-        registrationProgramId: registration1.registrationProgramId,
+        registrationProjectId: registration1.registrationProjectId,
       },
       registration2: {
         id: registration2.id,
-        registrationProgramId: registration2.registrationProgramId,
+        registrationProjectId: registration2.registrationProjectId,
       },
       reason,
     });
@@ -931,12 +931,12 @@ export class RegistrationsService {
 
   public async retrieveAndUpdateIntersolveVisaWalletAndCards(
     referenceId: string,
-    programId: number,
+    projectId: number,
   ): Promise<IntersolveVisaWalletDto> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       relations: [],
-      programId,
+      projectId,
     });
     return await this.intersolveVisaService.retrieveAndUpdateWallet(
       registration.id,
@@ -945,41 +945,41 @@ export class RegistrationsService {
 
   public async getIntersolveVisaWalletAndCards(
     referenceId: string,
-    programId: number,
+    projectId: number,
   ): Promise<IntersolveVisaWalletDto> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
       relations: [],
-      programId,
+      projectId,
     });
     return await this.intersolveVisaService.getWalletWithCards(registration.id);
   }
 
   /**
    * This function reissues a visa card and sends a message.
-   * - It first retrieves the registration associated with the given reference ID and program ID and he Intersolve Visa configuration for the program.
+   * - It first retrieves the registration associated with the given reference ID and project ID and he Intersolve Visa configuration for the project.
    * - It than checks that all required data fields are present in the registration data.
    * - It then calls the Intersolve Visa service to reissue the card with the registration data and Intersolve Visa configuration.
    * - Finally, it adds a message to the queue to be sent to the registrant.
    *
    * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
+   * @param {number} projectId - The ID of the project.
    * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID, if no registration data is found for the reference ID, or if a required data field is missing from the registration data.
    * @returns {Promise<void>}
    */
   public async reissueCardAndSendMessage(
     referenceId: string,
-    programId: number,
+    projectId: number,
     userId: number,
   ) {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
-      programId,
-      relations: ['programFspConfiguration'],
+      projectId,
+      relations: ['projectFspConfiguration'],
     });
     if (
-      !registration.programFspConfigurationId ||
-      registration.programFspConfiguration?.fspName !== Fsps.intersolveVisa
+      !registration.projectFspConfigurationId ||
+      registration.projectFspConfiguration?.fspName !== Fsps.intersolveVisa
     ) {
       throw new HttpException(
         `This registration is not associated with the Intersolve Visa Fsp.`,
@@ -988,8 +988,8 @@ export class RegistrationsService {
     }
 
     const intersolveVisaConfig =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId: registration.programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        projectFspConfigurationId: registration.projectFspConfigurationId,
         names: [
           FspConfigurationProperties.brandCode,
           FspConfigurationProperties.coverLetterCode,
@@ -1083,7 +1083,7 @@ export class RegistrationsService {
 
     await this.queueMessageService.addMessageJob({
       registration,
-      messageTemplateKey: ProgramNotificationEnum.reissueVisaCard,
+      messageTemplateKey: ProjectNotificationEnum.reissueVisaCard,
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
@@ -1096,7 +1096,7 @@ export class RegistrationsService {
    * - It retrieves the registration, pauses or unpauses the card, sends a message to the registrant, and returns the updated wallet.
    *
    * @param {string} referenceId - The reference ID of the registration.
-   * @param {number} programId - The ID of the program.
+   * @param {number} projectId - The ID of the project.
    * @param {string} tokenCode - The token code of the card to pause or unpause.
    * @param {boolean} pause - Whether to pause (true) or unpause (false) the card.
    * @throws {HttpException} Throws an HttpException if no registration is found for the given reference ID.
@@ -1104,14 +1104,14 @@ export class RegistrationsService {
    */
   public async pauseCardAndSendMessage(
     referenceId: string,
-    programId: number,
+    projectId: number,
     tokenCode: string,
     pause: boolean,
     userId: number,
   ): Promise<IntersolveVisaChildWalletEntity> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
-      programId,
+      projectId,
     });
     const updatedWallet = await this.intersolveVisaService.pauseCardOrThrow(
       tokenCode,
@@ -1120,8 +1120,8 @@ export class RegistrationsService {
     await this.queueMessageService.addMessageJob({
       registration,
       messageTemplateKey: pause
-        ? ProgramNotificationEnum.pauseVisaCard
-        : ProgramNotificationEnum.unpauseVisaCard,
+        ? ProjectNotificationEnum.pauseVisaCard
+        : ProjectNotificationEnum.unpauseVisaCard,
       messageContentType: MessageContentType.custom,
       messageProcessType:
         MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
@@ -1131,15 +1131,15 @@ export class RegistrationsService {
   }
 
   /**
-   * Retrieves a registration by reference ID and program ID, and sends its contact information to Intersolve. Used only for debugging purposes.
+   * Retrieves a registration by reference ID and project ID, and sends its contact information to Intersolve. Used only for debugging purposes.
    */
   public async getRegistrationAndSendContactInformationToIntersolve(
     referenceId: string,
-    programId: number,
+    projectId: number,
   ): Promise<void> {
     const registration = await this.getRegistrationOrThrow({
       referenceId,
-      programId,
+      projectId,
     });
     await this.sendContactInformationToIntersolve(registration);
   }

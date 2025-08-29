@@ -1,0 +1,154 @@
+{
+  "published": true,
+  "validation": false,
+  "location": "Ethiopia",
+  "ngo": "NGO",
+  "titlePortal": {
+    "en": "CBE Project"
+  },
+  "description": {
+    "en": "Test project using Commercial Bank of Ethiopia FSP"
+  },
+  "startDate": "2023-08-01T12:00:00Z",
+  "endDate": "2023-12-31T12:00:00Z",
+  "currency": "ETB",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 7000,
+  "tryWhatsAppFirst": false,
+  "paymentAmountMultiplierFormula": null,
+  "targetNrRegistrations": 250,
+  "projectRegistrationAttributes": [
+    {
+      "name": "fullName",
+      "label": {
+        "en": "Name",
+        "et_AM": "ስም"
+      },
+      "type": "text",
+      "options": null,
+      "includeInTransactionExport": true,
+      "scoring": {},
+      "editableInPortal": true,
+      "duplicateCheck": false,
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Phone number",
+        "et_AM": "ስልክ ቁጥር"
+      },
+      "type": "tel",
+      "options": null,
+      "scoring": {},
+      "pattern": null,
+      "editableInPortal": true,
+      "includeInTransactionExport": true,
+      "duplicateCheck": false,
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "idNumber",
+      "label": {
+        "en": "ID Card number",
+        "et_AM": "የመታውቂያ ቁጥር"
+      },
+      "type": "text",
+      "options": null,
+      "scoring": {},
+      "pattern": null,
+      "editableInPortal": true,
+      "includeInTransactionExport": true,
+      "duplicateCheck": true,
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "age",
+      "label": {
+        "en": "Age",
+        "et_AM": "እድሜ"
+      },
+      "type": "numeric",
+      "options": null,
+      "scoring": {},
+      "pattern": null,
+      "editableInPortal": true,
+      "includeInTransactionExport": true,
+      "duplicateCheck": false,
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "gender",
+      "label": {
+        "en": "Gender",
+        "et_AM": "ጾታ"
+      },
+      "type": "dropdown",
+      "options": [
+        {
+          "option": "male",
+          "label": {
+            "en": "Male",
+            "et_AM": "ወንድ"
+          }
+        },
+        {
+          "option": "female",
+          "label": {
+            "en": "Female",
+            "et_AM": "ሴት"
+          }
+        }
+      ],
+      "scoring": {},
+      "pattern": null,
+      "editableInPortal": true,
+      "includeInTransactionExport": true,
+      "duplicateCheck": false,
+      "placeholder": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "bankAccountNumber",
+      "label": {
+        "en": "Bank Account Number"
+      },
+      "placeholder": {
+        "en": "Please type your bank account number"
+      },
+      "includeInTransactionExport": true,
+      "type": "text",
+      "pattern": ".+",
+      "options": null,
+      "showInPeopleAffectedTable": true
+    }
+  ],
+  "aboutProject": {
+    "en": "Test project using Commercial Bank of Ethiopia FSP"
+  },
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en", "et_AM"],
+  "enableMaxPayments": true,
+  "enableScope": false,
+  "allowEmptyPhoneNumber": false,
+  "projectFspConfigurations": [
+    {
+      "fsp": "Commercial-bank-ethiopia",
+      "properties": [
+        {
+          "name": "username",
+          "value": "COMMERCIAL_BANK_ETHIOPIA_PASSWORD"
+        },
+        {
+          "name": "password",
+          "value": "COMMERCIAL_BANK_ETHIOPIA_USERNAME"
+        }
+      ]
+    }
+  ]
+}

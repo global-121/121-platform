@@ -16,7 +16,7 @@ const mockMessageJob: MessageJobDto = {
   preferredLanguage: LanguageEnum.en,
   whatsappPhoneNumber: '1234567890',
   phoneNumber: '1234567890',
-  programId: 1,
+  projectId: 1,
   message: 'test message',
   messageTemplateKey: 'messageTemplateKey',
   messageContentType: MessageContentType.custom,

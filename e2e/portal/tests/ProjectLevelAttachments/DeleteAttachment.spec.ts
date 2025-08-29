@@ -2,7 +2,7 @@ import { expect, Page, test } from '@playwright/test';
 import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { uploadAttachment } from '@121-service/test/helpers/program-attachments.helper';
+import { uploadAttachment } from '@121-service/test/helpers/project-attachments.helper';
 import {
   getAccessToken,
   resetDB,
@@ -36,7 +36,7 @@ const fileNameToDelete = 'test-document.docx';
 // Arrange
 test.describe('Attachments on Project Level', () => {
   let page: Page;
-  const projectTitle = 'NLRC OCW Program';
+  const projectTitle = 'NLRC OCW Project';
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -46,7 +46,7 @@ test.describe('Attachments on Project Level', () => {
       const baseName = path.basename(filePath);
       fileNames.push(baseName);
       await uploadAttachment({
-        programId: 3,
+        projectId: 3,
         filePath,
         filename: baseName,
         accessToken,
@@ -64,8 +64,8 @@ test.describe('Attachments on Project Level', () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await page.goto('/');
-    await projectMonitoring.selectProgram(projectTitle);
-    await projectMonitoring.navigateToProgramPage('Monitoring');
+    await projectMonitoring.selectProject(projectTitle);
+    await projectMonitoring.navigateToProjectPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 

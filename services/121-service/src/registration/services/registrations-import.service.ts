@@ -5,10 +5,10 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import { ProgramService } from '@121-service/src/programs/programs.service';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
+import { ProjectService } from '@121-service/src/projects/projects.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
 import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
@@ -37,27 +37,27 @@ const MASS_UPDATE_ROW_LIMIT = 50_000;
 
 @Injectable()
 export class RegistrationsImportService {
-  @InjectRepository(ProgramRegistrationAttributeEntity)
-  private readonly programRegistrationAttributeRepository: Repository<ProgramRegistrationAttributeEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectRegistrationAttributeEntity)
+  private readonly projectRegistrationAttributeRepository: Repository<ProjectRegistrationAttributeEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly actionService: ActionsService,
     private readonly inclusionScoreService: InclusionScoreService,
-    private readonly programService: ProgramService,
+    private readonly projectService: ProjectService,
     private readonly fileImportService: FileImportService,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
     private readonly registrationEventsService: RegistrationEventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
   ) {}
 
   public async patchBulk(
     csvFile: Express.Multer.File,
-    programId: number,
+    projectId: number,
     userId: number,
     reason: string,
   ): Promise<void> {
@@ -69,7 +69,7 @@ export class RegistrationsImportService {
     // Do initial validation of the input without the checks that are slow
     // So the user gets some feedback immidiately after upload
     // The rest of the checks will be done in the queue (the user will get no feedback of this)
-    await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
+    await this.validateBulkUpdateInput(bulkUpdateRecords, projectId, userId);
 
     // Prepare the job array to push to the queue
     const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] =
@@ -79,7 +79,7 @@ export class RegistrationsImportService {
         return {
           referenceId,
           data: record,
-          programId,
+          projectId,
           reason,
         };
       });
@@ -100,31 +100,31 @@ export class RegistrationsImportService {
   }
 
   public async getImportRegistrationsTemplate(
-    programId: number,
+    projectId: number,
   ): Promise<string[]> {
     const genericAttributes: string[] = [
       GenericRegistrationAttributes.referenceId,
-      GenericRegistrationAttributes.programFspConfigurationName,
+      GenericRegistrationAttributes.projectFspConfigurationName,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
     ];
     const dynamicAttributes: string[] = (
-      await this.getDynamicAttributes(programId)
+      await this.getDynamicAttributes(projectId)
     ).map((d) => d.name);
 
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
     // If paymentAmountMultiplier automatic, then drop from template
-    if (!program.paymentAmountMultiplierFormula) {
+    if (!project.paymentAmountMultiplierFormula) {
       genericAttributes.push(
         String(GenericRegistrationAttributes.paymentAmountMultiplier),
       );
     }
-    if (program.enableMaxPayments) {
+    if (project.enableMaxPayments) {
       genericAttributes.push(String(GenericRegistrationAttributes.maxPayments));
     }
-    if (program.enableScope) {
+    if (project.enableScope) {
       genericAttributes.push(String(GenericRegistrationAttributes.scope));
     }
 
@@ -134,24 +134,24 @@ export class RegistrationsImportService {
 
   public async importRegistrations(
     inputRegistrations: Record<string, string | boolean | number | undefined>[],
-    program: ProgramEntity,
+    project: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     const validatedImportRecords = await this.validateImportRegistrationsInput(
       inputRegistrations,
-      program.id,
+      project.id,
       userId,
     );
     return await this.importValidatedRegistrations(
       validatedImportRecords,
-      program,
+      project,
       userId,
     );
   }
 
   public async importRegistrationsFromCsv(
     csvFile: Express.Multer.File,
-    program: ProgramEntity,
+    project: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     const maxRecords = 1000;
@@ -162,24 +162,24 @@ export class RegistrationsImportService {
     // TODO: Improve the typing of what comes out validateCsv function to avoid this cast
     return this.importRegistrations(
       importRecords as Record<string, string | boolean | number | undefined>[],
-      program,
+      project,
       userId,
     );
   }
 
   public async importValidatedRegistrations(
     validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
+    project: ProjectEntity,
     userId: number,
   ): Promise<ImportResult> {
     let countImported = 0;
-    const dynamicAttributes = await this.getDynamicAttributes(program.id);
+    const dynamicAttributes = await this.getDynamicAttributes(project.id);
     const registrations: RegistrationEntity[] = [];
     const customDataList: Record<string, unknown>[] = [];
 
-    const programFspConfigurations = await this.getProgramFspConfigurations(
+    const projectFspConfigurations = await this.getProjectFspConfigurations(
       validatedImportRecords,
-      program,
+      project,
     );
 
     for await (const record of validatedImportRecords) {
@@ -187,18 +187,18 @@ export class RegistrationsImportService {
       registration.referenceId = record.referenceId || uuid();
       registration.phoneNumber = record.phoneNumber ?? null;
       registration.preferredLanguage = record.preferredLanguage ?? null;
-      registration.program = program;
+      registration.project = project;
       registration.inclusionScore = 0;
       registration.registrationStatus = RegistrationStatusEnum.new;
       const customData = {};
-      if (!program.paymentAmountMultiplierFormula) {
+      if (!project.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
           record.paymentAmountMultiplier || 1;
       }
-      if (program.enableMaxPayments) {
+      if (project.enableMaxPayments) {
         registration.maxPayments = record.maxPayments;
       }
-      if (program.enableScope) {
+      if (project.enableScope) {
         registration.scope = record.scope || '';
       }
       for await (const att of dynamicAttributes) {
@@ -212,14 +212,14 @@ export class RegistrationsImportService {
         }
       }
 
-      registration.programFspConfiguration =
-        programFspConfigurations[record.programFspConfigurationName!];
+      registration.projectFspConfiguration =
+        projectFspConfigurations[record.projectFspConfigurationName!];
 
       registrations.push(registration);
       customDataList.push(customData);
     }
 
-    // Save registrations using .save to properly set registrationProgramId
+    // Save registrations using .save to properly set registrationProjectId
     const savedRegistrations: RegistrationEntity[] = [];
     for await (const registration of registrations) {
       const savedRegistration =
@@ -242,7 +242,7 @@ export class RegistrationsImportService {
 
     // Save registration data in bulk for performance
     const dynamicAttributeRelations =
-      await this.programService.getAllRelationProgram(program.id);
+      await this.projectService.getAllRelationProject(project.id);
     let registrationDataArrayAllPa: RegistrationAttributeDataEntity[] = [];
     for (const [i, registration] of savedRegistrations.entries()) {
       const registrationDataArray = this.prepareRegistrationData(
@@ -263,61 +263,61 @@ export class RegistrationsImportService {
     );
 
     // Store inclusion score and paymentAmountMultiplierFormula if it's relevant
-    const programHasScore = await this.programHasInclusionScore(program.id);
+    const projectHasScore = await this.projectHasInclusionScore(project.id);
     for await (const registration of savedRegistrations) {
-      if (programHasScore) {
+      if (projectHasScore) {
         await this.inclusionScoreService.calculateInclusionScore(
           registration.referenceId,
         );
       }
-      if (program.paymentAmountMultiplierFormula) {
+      if (project.paymentAmountMultiplierFormula) {
         await this.inclusionScoreService.calculatePaymentAmountMultiplier(
-          program,
+          project,
           registration.referenceId,
         );
       }
     }
     await this.actionService.saveAction(
       userId,
-      program.id,
+      project.id,
       AdditionalActionType.importRegistrations,
     );
 
     return { aggregateImportResult: { countImported } };
   }
 
-  private async getProgramFspConfigurations(
+  private async getProjectFspConfigurations(
     validatedImportRecords: ValidatedRegistrationInput[],
-    program: ProgramEntity,
+    project: ProjectEntity,
   ) {
-    const programFspConfigurations = {};
+    const projectFspConfigurations = {};
     const uniqueConfigNames = Array.from(
       new Set(
         validatedImportRecords
-          .filter((record) => record.programFspConfigurationName !== undefined)
-          .map((record) => record.programFspConfigurationName),
+          .filter((record) => record.projectFspConfigurationName !== undefined)
+          .map((record) => record.projectFspConfigurationName),
       ),
     );
-    for (const programFspConfigurationName of uniqueConfigNames) {
-      programFspConfigurations[programFspConfigurationName!] =
-        await this.programFspConfigurationRepository.findOneOrFail({
+    for (const projectFspConfigurationName of uniqueConfigNames) {
+      projectFspConfigurations[projectFspConfigurationName!] =
+        await this.projectFspConfigurationRepository.findOneOrFail({
           where: {
-            name: Equal(programFspConfigurationName ?? ''),
-            programId: Equal(program.id),
+            name: Equal(projectFspConfigurationName ?? ''),
+            projectId: Equal(project.id),
           },
         });
     }
-    return programFspConfigurations;
+    return projectFspConfigurations;
   }
 
-  private async programHasInclusionScore(programId: number): Promise<boolean> {
-    const programRegistrationAttributes =
-      await this.programRegistrationAttributeRepository.find({
+  private async projectHasInclusionScore(projectId: number): Promise<boolean> {
+    const projectRegistrationAttributes =
+      await this.projectRegistrationAttributeRepository.find({
         where: {
-          programId: Equal(programId),
+          projectId: Equal(projectId),
         },
       });
-    for (const attribute of programRegistrationAttributes) {
+    for (const attribute of projectRegistrationAttributes) {
       if (
         attribute.scoring != null &&
         JSON.stringify(attribute.scoring) !== '{}'
@@ -354,8 +354,8 @@ export class RegistrationsImportService {
           const registrationData = new RegistrationAttributeDataEntity();
           registrationData.registration = registration;
           registrationData.value = value as string;
-          registrationData.programRegistrationAttributeId =
-            att.relation.programRegistrationAttributeId;
+          registrationData.projectRegistrationAttributeId =
+            att.relation.projectRegistrationAttributeId;
           registrationDataArray.push(registrationData);
         }
       }
@@ -364,11 +364,11 @@ export class RegistrationsImportService {
   }
 
   private async getDynamicAttributes(
-    programId: number,
+    projectId: number,
   ): Promise<AttributeWithOptionalLabel[]> {
-    const programRegistrationAttributes = (
-      await this.programRegistrationAttributeRepository.find({
-        where: { program: { id: Equal(programId) } },
+    const projectRegistrationAttributes = (
+      await this.projectRegistrationAttributeRepository.find({
+        where: { project: { id: Equal(projectId) } },
       })
     ).map((attribute) => {
       return {
@@ -379,7 +379,7 @@ export class RegistrationsImportService {
         isRequired: attribute.isRequired,
       } as AttributeWithOptionalLabel;
     });
-    return programRegistrationAttributes;
+    return projectRegistrationAttributes;
   }
 
   public async validateImportRegistrationsInput(
@@ -387,7 +387,7 @@ export class RegistrationsImportService {
       string,
       string | boolean | number | undefined
     >[],
-    programId: number,
+    projectId: number,
     userId: number,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
@@ -396,7 +396,7 @@ export class RegistrationsImportService {
     };
     const data = await this.registrationsInputValidator.validateAndCleanInput({
       registrationInputArray: registrationInputToValidate,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig,
@@ -406,7 +406,7 @@ export class RegistrationsImportService {
 
   private async validateBulkUpdateInput(
     csvArray: any[],
-    programId: number,
+    projectId: number,
     userId: number,
   ): Promise<ValidatedRegistrationInput[]> {
     const validationConfig: ValidationRegistrationConfig = {
@@ -416,7 +416,7 @@ export class RegistrationsImportService {
     const result = await this.registrationsInputValidator.validateAndCleanInput(
       {
         registrationInputArray: csvArray,
-        programId,
+        projectId,
         userId,
         typeOfInput: RegistrationValidationInputType.bulkUpdate,
         validationConfig,

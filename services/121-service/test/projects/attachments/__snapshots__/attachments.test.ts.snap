@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Project Attachments should list all attachments for a project 1`] = `
+{
+  "created": Any<String>,
+  "filename": "Test Image.jpg",
+  "id": 1,
+  "mimetype": "image/jpeg",
+  "projectId": 2,
+  "updated": Any<String>,
+  "user": {
+    "id": 1,
+    "username": "admin@example.org",
+  },
+}
+`;

@@ -38,7 +38,7 @@ export class MonitoringMenuComponent {
       icon: 'pi pi-file',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
-        requiredPermission: PermissionEnum.ProgramAttachmentsREAD,
+        requiredPermission: PermissionEnum.ProjectAttachmentsREAD,
       }),
     },
   ]);

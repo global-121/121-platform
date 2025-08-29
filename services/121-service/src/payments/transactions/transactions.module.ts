@@ -12,7 +12,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
@@ -23,7 +23,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      ProgramEntity,
+      ProjectEntity,
       LatestTransactionEntity,
       TwilioMessageEntity,
       TransactionEntity,

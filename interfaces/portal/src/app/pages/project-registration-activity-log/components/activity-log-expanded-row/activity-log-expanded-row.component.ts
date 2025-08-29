@@ -121,14 +121,14 @@ export class ActivityLogExpandedRowComponent
           {
             label: $localize`Old FSP`,
             value: this.localizeAttribute(
-              GenericRegistrationAttributes.programFspConfigurationName,
+              GenericRegistrationAttributes.projectFspConfigurationName,
               attributes.oldValue,
             ),
           },
           {
             label: $localize`New FSP`,
             value: this.localizeAttribute(
-              GenericRegistrationAttributes.programFspConfigurationName,
+              GenericRegistrationAttributes.projectFspConfigurationName,
               attributes.newValue,
             ),
           },

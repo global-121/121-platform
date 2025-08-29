@@ -5,7 +5,7 @@ import {
 } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserType } from '@121-service/src/user/user-type-enum';
@@ -21,7 +21,7 @@ describe('Action mapper', () => {
       id: userId,
       username,
       password: 'testPassword',
-      programAssignments: [],
+      projectAssignments: [],
       uploadedAttachments: [],
       actions: [],
       registrations: [],
@@ -42,7 +42,7 @@ describe('Action mapper', () => {
       id: actionId,
       actionType: AdditionalActionType.importRegistrations,
       user,
-      program: {} as ProgramEntity,
+      project: {} as ProjectEntity,
       userId,
       created: createdDate,
       updated: new Date(),

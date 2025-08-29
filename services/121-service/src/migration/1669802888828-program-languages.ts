@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-
 export class programLanguages1669802888828 implements MigrationInterface {
   name = 'programLanguages1669802888828';
 
@@ -10,7 +8,7 @@ export class programLanguages1669802888828 implements MigrationInterface {
       `ALTER TABLE "121-service"."program" ADD IF NOT EXISTS "languages" json NOT NULL DEFAULT '[]'`,
     );
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner);
+    // await this.migrateData(queryRunner); // Commented out because of datamodel changes that rendered this old migration incorrect
     await queryRunner.startTransaction();
   }
 
@@ -20,17 +18,17 @@ export class programLanguages1669802888828 implements MigrationInterface {
     );
   }
 
-  private async migrateData(queryRunner: QueryRunner): Promise<void> {
-    const notifications = await queryRunner.query(
-      `SELECT notifications, id from  "121-service"."program"`,
-    );
-    for (const program of notifications) {
-      const languages = Object.keys(program.notifications).map((key) => {
-        return key;
-      });
-      const programRepo = queryRunner.manager.getRepository(ProgramEntity);
-      program.languages = languages;
-      await programRepo.save(program);
-    }
-  }
+  // private async migrateData(queryRunner: QueryRunner): Promise<void> {
+  //   const notifications = await queryRunner.query(
+  //     `SELECT notifications, id from  "121-service"."program"`,
+  //   );
+  //   for (const program of notifications) {
+  //     const languages = Object.keys(program.notifications).map((key) => {
+  //       return key;
+  //     });
+  //     const programRepo = queryRunner.manager.getRepository(ProgramEntity);
+  //     program.languages = languages;
+  //     await programRepo.save(program);
+  //   }
+  // }
 }

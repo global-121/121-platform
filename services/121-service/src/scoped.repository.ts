@@ -181,9 +181,9 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
         qb = qb.leftJoin(`${joinProperty}.${relation}`, joinAlias);
         joinProperty = joinAlias;
       }
-      qb = qb.leftJoin(`${joinProperty}.program`, 'scopedataprogramjoin');
+      qb = qb.leftJoin(`${joinProperty}.project`, 'scopedataprojectjoin');
       qb = qb.andWhere(
-        `(scopedataprogramjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
+        `(scopedataprojectjoin."enableScope" = false OR ${joinProperty}.scope LIKE :scope)`,
         {
           scope: `${this.request.user.scope}%`,
         },

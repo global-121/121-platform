@@ -8,6 +8,6 @@ exports[`Export CBE validation report should succesfully generate a report of CB
   "errorMessage": null,
   "fullNameUsedForTheMatch": "example name for CBE mock mode",
   "referenceId": "registration-cbe-1",
-  "registrationProgramId": 1,
+  "registrationProjectId": 1,
 }
 `;

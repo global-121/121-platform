@@ -54,7 +54,7 @@ export class OnafriqReconciliationService {
       onafriqTransactionCallbackJob,
     );
 
-    await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
   }
 
   public async processOnafriqTransactionCallbackJob(

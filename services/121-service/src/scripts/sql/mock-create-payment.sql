@@ -2,7 +2,7 @@ INSERT INTO "121-service"."payment" (
   id,
   created,
   updated,
-  "programId"
+  "projectId"
 ) VALUES (
   $1,
   NOW(),

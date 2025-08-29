@@ -21,7 +21,7 @@ export class RegistrationEventsMapper {
   ): GetRegistrationEventXlsxDto {
     const attributes = this.createAttributesObject(event.attributes);
     return {
-      paId: event.registration.registrationProgramId,
+      paId: event.registration.registrationProjectId,
       referenceId: event.registration.referenceId,
       changedAt: event.created,
       changedBy: event?.user?.username ? event?.user?.username : '',

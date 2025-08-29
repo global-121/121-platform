@@ -13,7 +13,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -24,7 +24,7 @@ describe('Load PA table', () => {
       const accessTokenAdmin = await getAccessToken();
 
       await importRegistrations(
-        programIdOCW,
+        projectIdOCW,
         [registrationOCW1],
         accessTokenAdmin,
       );
@@ -41,7 +41,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken: accessTokenCvaManager,
       });
@@ -53,7 +53,7 @@ describe('Load PA table', () => {
         referenceId: registrationOCW1.referenceId,
         paymentAmountMultiplier: 1,
         preferredLanguage: registrationOCW1.preferredLanguage,
-        programFspConfigurationName: Fsps.intersolveVisa,
+        projectFspConfigurationName: Fsps.intersolveVisa,
       };
       const notExpectedValueObject = {
         fullName: registrationOCW1.fullName,
@@ -78,7 +78,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken: accessTokenCvaManager,
       });
@@ -103,7 +103,7 @@ describe('Load PA table', () => {
 
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       attributes: requestedDynamicAttributes,
       accessToken: accessTokenCvaManager,
     });

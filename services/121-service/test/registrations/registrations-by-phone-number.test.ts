@@ -15,8 +15,8 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('/ Registrations - by phone-number', () => {
@@ -47,7 +47,7 @@ describe('/ Registrations - by phone-number', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [
         registrationOnlyPhoneNumber,
         registrationOnlyPhoneNumberUnique,
@@ -149,7 +149,7 @@ describe('/ Registrations - by phone-number', () => {
         testPhoneNumber,
     };
     await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationWithWhatsApp],
       accessToken,
     );
@@ -181,7 +181,7 @@ describe('/ Registrations - by phone-number', () => {
         testPhoneNumber,
     };
     await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationWithSameWhatsApp],
       accessToken,
     );
@@ -213,19 +213,19 @@ describe('/ Registrations - by phone-number', () => {
     ).toBe(true);
   });
 
-  it('should find registrations across programs', async () => {
+  it('should find registrations across projects', async () => {
     //Arrange
     const testPhoneNumber = registrationOnlyPhoneNumberUnique.phoneNumber;
-    const registrationInOtherProgram = {
+    const registrationInOtherProject = {
       ...registrationVisa,
-      referenceId: 'test-pa-with-same-phone-number-in-other-program',
+      referenceId: 'test-pa-with-same-phone-number-in-other-project',
       [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
       [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
         '15005550300',
     };
     await importRegistrations(
-      programIdOCW,
-      [registrationInOtherProgram],
+      projectIdOCW,
+      [registrationInOtherProject],
       accessToken,
     );
 
@@ -252,20 +252,20 @@ describe('/ Registrations - by phone-number', () => {
       registrationOnlyPhoneNumberUnique[
         DefaultRegistrationDataAttributeNames.phoneNumber
       ];
-    const registrationInOtherProgramZeelandMiddelburg = {
+    const registrationInOtherProjectZeelandMiddelburg = {
       ...registrationVisa,
       referenceId:
-        'test-pa-with-same-phone-number-in-other-program-zeeland-middelburg',
+        'test-pa-with-same-phone-number-in-other-project-zeeland-middelburg',
       [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
       [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
         '15005550201',
       scope: DebugScope.KisumuWest,
     };
 
-    const registrationInOtherProgramUtrechtHouten = {
+    const registrationInOtherProjectUtrechtHouten = {
       ...registrationVisa,
       referenceId:
-        'test-pa-with-same-phone-number-in-other-program-utrecht-houten',
+        'test-pa-with-same-phone-number-in-other-project-utrecht-houten',
       [DefaultRegistrationDataAttributeNames.phoneNumber]: testPhoneNumber,
       [DefaultRegistrationDataAttributeNames.whatsappPhoneNumber]:
         '15005550202',
@@ -273,10 +273,10 @@ describe('/ Registrations - by phone-number', () => {
     };
 
     await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [
-        registrationInOtherProgramZeelandMiddelburg,
-        registrationInOtherProgramUtrechtHouten,
+        registrationInOtherProjectZeelandMiddelburg,
+        registrationInOtherProjectUtrechtHouten,
       ],
       accessToken,
     );

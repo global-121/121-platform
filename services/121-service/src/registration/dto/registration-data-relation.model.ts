@@ -1,7 +1,7 @@
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 
 export class RegistrationDataRelation {
-  public programRegistrationAttributeId: number;
+  public projectRegistrationAttributeId: number;
 }
 
 interface RegistrationDataOpionsWithRequiredRelation {

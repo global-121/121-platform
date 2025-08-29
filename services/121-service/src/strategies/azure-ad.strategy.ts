@@ -89,7 +89,7 @@ export class AzureAdStrategy
     try {
       // Try to find user by username (this is an email address in our case)
       user = await this.userService.findByUsernameOrThrow(username, {
-        programAssignments: true,
+        projectAssignments: true,
       });
 
       if (!user.isEntraUser) {
@@ -120,15 +120,15 @@ export class AzureAdStrategy
     }
 
     if (authParams.permissions) {
-      if (!request.params.programId) {
+      if (!request.params.projectId) {
         throw new HttpException(
-          'Endpoint is missing programId parameter',
+          'Endpoint is missing projectId parameter',
           HttpStatus.BAD_REQUEST,
         );
       }
       const hasPermission = await this.userService.canActivate(
         authParams.permissions,
-        request.params.programId,
+        request.params.projectId,
         user.id,
       );
       if (!hasPermission) {
@@ -149,8 +149,8 @@ export class AzureAdStrategy
       username: user.username,
       exp: payload.exp,
       admin: user.admin,
-      scope: request.params.programId
-        ? this.userService.getScopeForUser(user, request.params.programId)
+      scope: request.params.projectId
+        ? this.userService.getScopeForUser(user, request.params.projectId)
         : '',
       isOrganizationAdmin: payload.isOrganizationAdmin,
     };

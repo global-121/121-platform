@@ -22,7 +22,7 @@ describe('RegistrationEventsMapper', () => {
     const registration = new RegistrationEntity();
     registration.id = 1;
     registration.referenceId = 'referenceId';
-    registration.registrationProgramId = 1;
+    registration.registrationProjectId = 1;
 
     eventEntity = new RegistrationEventEntity();
     eventEntity.id = 1;
@@ -56,7 +56,7 @@ describe('RegistrationEventsMapper', () => {
     expect(result).toBeInstanceOf(Array);
     expect(result.length).toEqual(1);
     const dto = result[0];
-    expect(dto.paId).toEqual(eventEntity.registration.registrationProgramId);
+    expect(dto.paId).toEqual(eventEntity.registration.registrationProjectId);
     expect(dto.referenceId).toEqual(eventEntity.registration.referenceId);
     expect(dto.changedAt).toEqual(eventEntity.created);
     expect(dto.changedBy).toEqual(eventEntity.user.username);

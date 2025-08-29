@@ -8,13 +8,13 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
-@Unique('uniqueTemplatePerTypeLanguageProgram', [
+@Unique('uniqueTemplatePerTypeLanguageProject', [
   'type',
   'language',
-  'programId',
+  'projectId',
 ])
 // TODO: It may make sense to refactor this entity into 2 entities:
 // One that stores templates with a message and one that stores templates with a content SID
@@ -38,11 +38,11 @@ export class MessageTemplateEntity extends Base121Entity {
   @Column({ default: false })
   public isSendMessageTemplate: boolean;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.messageTemplates, {
+  @ManyToOne((_type) => ProjectEntity, (project) => project.messageTemplates, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program?: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project?: Relation<ProjectEntity>;
   @Column()
-  public programId: number;
+  public projectId: number;
 }

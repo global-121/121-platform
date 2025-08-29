@@ -16,7 +16,7 @@ import RegistrationActivityLogPage from '@121-e2e/portal/pages/RegistrationActiv
 
 const projectId = 2;
 let registrationId: number;
-let registrationProgramId: number;
+let registrationProjectId: number;
 
 test('[34690] User should see a summary of a registration', async ({
   page,
@@ -32,7 +32,7 @@ test('[34690] User should see a summary of a registration', async ({
   );
   const registration = searchRegistrationResponse.body.data[0];
   registrationId = registration.id;
-  registrationProgramId = registration.registrationProgramId;
+  registrationProjectId = registration.registrationProjectId;
 
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
@@ -44,7 +44,7 @@ test('[34690] User should see a summary of a registration', async ({
 
   await test.step('Validate registration title', async () => {
     const title = await activityLogPage.getRegistrationTitle();
-    const expectedTitle = `Reg. #${registrationProgramId} - ${registrationPvScoped.fullName}`;
+    const expectedTitle = `Reg. #${registrationProjectId} - ${registrationPvScoped.fullName}`;
     expect(title).toBe(expectedTitle);
   });
 

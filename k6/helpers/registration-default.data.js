@@ -6,7 +6,7 @@ export const registrationVisa = {
   paymentAmountMultiplier: 1,
   fullName: 'Jane Doe',
   [CustomDataAttributes.phoneNumber]: '14155238887',
-  programFspConfigurationName: Fsps.intersolveVisa,
+  projectFspConfigurationName: Fsps.intersolveVisa,
   addressStreet: 'Teststraat',
   addressHouseNumber: '1',
   addressHouseNumberAddition: '',
@@ -21,13 +21,13 @@ export const registrationPV = {
   paymentAmountMultiplier: 1,
   fullName: 'Gemma Houtenbos',
   phoneNumber: '14155235556',
-  programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+  projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
   whatsappPhoneNumber: '14155235555',
 };
 
 export const registrationSafaricom = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFspConfigurationName: Fsps.safaricom,
+  projectFspConfigurationName: Fsps.safaricom,
   phoneNumber: '254708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
@@ -41,7 +41,7 @@ export const registrationSafaricom = {
 
 export const registrationNedbank = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFspConfigurationName: Fsps.nedbank,
+  projectFspConfigurationName: Fsps.nedbank,
   phoneNumber: '2708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,
@@ -51,7 +51,7 @@ export const registrationNedbank = {
 
 export const registrationOnafriq = {
   referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-  programFspConfigurationName: Fsps.onafriq,
+  projectFspConfigurationName: Fsps.onafriq,
   phoneNumber: '243708374149',
   preferredLanguage: 'en',
   paymentAmountMultiplier: 1,

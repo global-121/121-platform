@@ -15,7 +15,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -29,9 +29,9 @@ const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
+    projectId: projectIdPV,
     referenceId: registrationPV5.referenceId,
     accessToken,
   });

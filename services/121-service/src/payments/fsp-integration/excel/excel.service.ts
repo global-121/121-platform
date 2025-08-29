@@ -17,26 +17,26 @@ import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integrati
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
 export class ExcelService implements FspIntegrationInterface {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   public constructor(
     private readonly transactionsService: TransactionsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    programId: number,
+    projectId: number,
     paymentId: number,
   ): Promise<FspTransactionResultDto> {
     const transactionResultObjectList: {
@@ -52,10 +52,10 @@ export class ExcelService implements FspIntegrationInterface {
       paTransactionResultDto.status = TransactionStatusEnum.waiting;
 
       const transactionRelationDetailsDto = {
-        programId,
+        projectId,
         paymentId,
         userId: paPaymentList[0].userId,
-        programFspConfigurationId: paPayment.programFspConfigurationId,
+        projectFspConfigurationId: paPayment.projectFspConfigurationId,
       };
 
       const transactionResultObject = {
@@ -81,33 +81,33 @@ export class ExcelService implements FspIntegrationInterface {
 
   public async getFspInstructions({
     transactions,
-    programId,
+    projectId,
     paymentId,
-    programFspConfigurationId,
+    projectFspConfigurationId,
   }: {
     transactions: TransactionReturnDto[];
-    programId: number;
+    projectId: number;
     paymentId: number;
-    programFspConfigurationId: number;
+    projectFspConfigurationId: number;
   }): Promise<ExcelFspInstructions[]> {
-    const exportColumns = await this.getExportColumnsForProgramFspConfig(
-      programFspConfigurationId,
-      programId,
+    const exportColumns = await this.getExportColumnsForProjectFspConfig(
+      projectFspConfigurationId,
+      projectId,
     );
     // TODO: Think about refactoring it's probably better use the transaction ids instead of the referenceIds not sure what the original reasoning was
     // Creating a new query builder since it is imposssible to do a where in query if there are more than 500000 referenceIds
     // TODO: Also refactor this so that the excel service does not know about transactions, so than this query should be moved to a repository and be called in another service
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
-        programId,
+        projectId,
         paymentId,
-        programFspConfigurationId,
+        projectFspConfigurationId,
         status: TransactionStatusEnum.waiting,
       });
     const chunkSize = 400000;
     const registrations =
       await this.registrationsPaginationService.getRegistrationsChunked(
-        programId,
+        projectId,
         {
           select: [...new Set(exportColumns.concat(['referenceId']))], // add referenceId (and deduplicate) to join transaction amount later
           path: '',
@@ -123,13 +123,13 @@ export class ExcelService implements FspIntegrationInterface {
     );
   }
 
-  private async getExportColumnsForProgramFspConfig(
-    programFspConfigurationId: number,
-    programId: number,
+  private async getExportColumnsForProjectFspConfig(
+    projectFspConfigurationId: number,
+    projectId: number,
   ): Promise<string[]> {
     const columnsToExportConfig =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getPropertyValueByName({
+        projectFspConfigurationId,
         name: FspConfigurationProperties.columnsToExport,
       });
 
@@ -146,13 +146,13 @@ export class ExcelService implements FspIntegrationInterface {
       return columnsToExportConfig;
     }
 
-    const programWithAttributes = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['programRegistrationAttributes'],
+    const projectWithAttributes = await this.projectRepository.findOneOrFail({
+      where: { id: Equal(projectId) },
+      relations: ['projectRegistrationAttributes'],
     });
-    // Default to using all program registration attributes names if columnsToExport is not specified
-    // So generic fields must be specified in the programFspConfiguration
-    return programWithAttributes.programRegistrationAttributes.map(
+    // Default to using all project registration attributes names if columnsToExport is not specified
+    // So generic fields must be specified in the projectFspConfiguration
+    return projectWithAttributes.projectRegistrationAttributes.map(
       (q) => q.name,
     );
   }
@@ -210,17 +210,17 @@ export class ExcelService implements FspIntegrationInterface {
   }
 
   public async getImportMatchColumn(
-    programFspConfigurationId: number,
+    projectFspConfigurationId: number,
   ): Promise<string> {
     const matchColumn =
-      await this.programFspConfigurationRepository.getPropertyValueByName({
-        programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getPropertyValueByName({
+        projectFspConfigurationId,
         name: FspConfigurationProperties.columnToMatch,
       });
     if (!matchColumn) {
       throw new HttpException(
         {
-          errors: `No match column found for FSP 'Excel' and programFspConfigurationId with id ${programFspConfigurationId}`,
+          errors: `No match column found for FSP 'Excel' and projectFspConfigurationId with id ${projectFspConfigurationId}`,
         },
         HttpStatus.NOT_FOUND,
       );

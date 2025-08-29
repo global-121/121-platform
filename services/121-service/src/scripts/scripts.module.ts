@@ -4,8 +4,8 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { ORMConfig } from '@121-service/src/ormconfig';
-import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectFspConfigurationsModule } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.module';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
@@ -21,9 +21,9 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     TypeOrmModule.forRoot(ORMConfig as TypeOrmModuleOptions),
     MessageTemplateModule,
     QueuesRegistryModule,
-    ProgramModule,
+    ProjectModule,
     HttpModule,
-    ProgramFspConfigurationsModule,
+    ProjectFspConfigurationsModule,
   ],
   providers: [
     ScriptsService,

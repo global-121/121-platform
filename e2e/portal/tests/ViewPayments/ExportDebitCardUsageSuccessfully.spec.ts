@@ -2,15 +2,15 @@ import { test } from '@playwright/test';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-ocw.json';
+import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/project.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -22,10 +22,10 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedPaidRegistrations(registrationsOCW, programIdOCW);
+  await seedPaidRegistrations(registrationsOCW, projectIdOCW);
 
   await waitForPaymentTransactionsToComplete({
-    programId: programIdOCW,
+    projectId: projectIdOCW,
     paymentReferenceIds: registrationsOCW.map(
       (registration) => registration.referenceId,
     ),
@@ -48,8 +48,8 @@ test('[36878] Export debit card usage', async ({ page }) => {
   const exportDataComponent = new ExportData(page);
 
   // Act
-  await paymentsPage.selectProgram(NLRCProgram.titlePortal.en);
-  await paymentsPage.navigateToProgramPage('Payments');
+  await paymentsPage.selectProject(NLRCProject.titlePortal.en);
+  await paymentsPage.navigateToProjectPage('Payments');
   await paymentsPage.selectPaymentExportOption({ option: 'Debit card usage' });
 
   // Assert

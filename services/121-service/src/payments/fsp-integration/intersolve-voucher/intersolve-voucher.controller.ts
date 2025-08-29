@@ -47,25 +47,25 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: '[SCOPED] Export Intersolve voucher image',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Voucher exported - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Voucher exported - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/vouchers')
+  @Get('projects/:projectId/fsps/intersolve-voucher/vouchers')
   public async exportVouchers(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
     @Query() queryParams: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
       queryParams.referenceId,
       Number(queryParams.paymentId),
-      programId,
+      projectId,
     );
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
@@ -79,24 +79,24 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: '[SCOPED] Get balance of Intersolve voucher',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
   @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Voucher balance retrieved - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/vouchers/balance')
+  @Get('projects/:projectId/fsps/intersolve-voucher/vouchers/balance')
   public async getBalance(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
     @Query() queryParams: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
       queryParams.referenceId,
       Number(queryParams.paymentId),
-      programId,
+      projectId,
     );
   }
 
@@ -104,18 +104,18 @@ export class IntersolveVoucherController {
     summary:
       'Get intersolve voucher instructions image - used by Twilio to include in WhatsApp message',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get intersolve instructions',
   })
-  @Get('programs/:programId/fsps/intersolve-voucher/instructions')
+  @Get('projects/:projectId/fsps/intersolve-voucher/instructions')
   public async intersolveInstructions(
     @Res() response: Response,
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<void> {
-    const blob = await this.intersolveVoucherService.getInstruction(programId);
+    const blob = await this.intersolveVoucherService.getInstruction(projectId);
     const bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(HttpStatus.OK, {
@@ -128,22 +128,22 @@ export class IntersolveVoucherController {
   @ApiOperation({
     summary: 'Post Intersolve instructions-image (Only .png-files supported)',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiConsumes('multipart/form-data')
   @ApiBody(IMAGE_UPLOAD_API_FORMAT)
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Post intersolve instructions',
   })
-  @Post('programs/:programId/fsps/intersolve-voucher/instructions')
+  @Post('projects/:projectId/fsps/intersolve-voucher/instructions')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
     @UploadedFile() instructionsFileBlob: Express.Multer.File,
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<void> {
     await this.intersolveVoucherService.postInstruction(
-      programId,
+      projectId,
       instructionsFileBlob,
     );
   }

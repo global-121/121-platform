@@ -21,7 +21,7 @@ export class RegistrationUpdateProcessor {
       reason: jobData.reason,
     };
     await this.registrationsService.validateInputAndUpdateRegistration({
-      programId: jobData.programId,
+      projectId: jobData.projectId,
       referenceId: jobData.referenceId,
       updateRegistrationDto: dto,
       userId: jobData.request.userId,

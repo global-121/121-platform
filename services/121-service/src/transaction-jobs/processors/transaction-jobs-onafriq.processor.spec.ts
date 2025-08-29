@@ -6,7 +6,7 @@ import { TransactionJobsOnafriqService } from '@121-service/src/transaction-jobs
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 
 const mockPaymentJob: OnafriqTransactionJobDto = {
-  programId: 1,
+  projectId: 1,
   paymentId: 1,
   referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
   transactionAmount: 25,
@@ -16,7 +16,7 @@ const mockPaymentJob: OnafriqTransactionJobDto = {
   phoneNumber: '254708374149',
   firstName: 'Jane',
   lastName: 'Doe',
-  programFspConfigurationId: 1,
+  projectFspConfigurationId: 1,
 };
 const testJob = { data: mockPaymentJob } as Job;
 

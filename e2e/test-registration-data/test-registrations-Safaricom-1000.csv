@@ -1,4 +1,4 @@
-referenceId,programFspConfigurationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,gender,age,nationalId
+referenceId,projectFspConfigurationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,maxPayments,fullName,gender,age,nationalId
 b7559784-db28-448e-8ef7-e1b927b95bd4,Safaricom,2.54708E+11,en,1,6,Barbara Floyd,male,25,32121321
 f5eaff25-882a-4a50-b3a3-156da01f4aa5,Safaricom,2.54708E+11,en,1,6,Barbara Floyd,male,25,32121321
 d2f7dfde-7406-428d-8cd7-f67f2cf92faf,Safaricom,2.54708E+11,en,1,6,Barbara Floyd,male,25,32121321

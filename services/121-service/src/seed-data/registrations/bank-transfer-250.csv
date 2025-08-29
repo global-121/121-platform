@@ -1,4 +1,4 @@
-programFspConfigurationName;phoneNumber;preferredLanguage;paymentAmountMultiplier;maxPayments;fullName;idNumber;age;gender;bankAccountNumber
+projectFspConfigurationName;phoneNumber;preferredLanguage;paymentAmountMultiplier;maxPayments;fullName;idNumber;age;gender;bankAccountNumber
 Awash-bank-ethiopia;251406725563;en;1;3;Anna Lloyd;5926161705;35;female;1000464047990
 Awash-bank-ethiopia;251760752528;en;1;3;Amy Stark;1952210990;75;female;1000532049372
 Commercial-bank-ethiopia;251646424269;en;1;3;Clinton Underwood;9731550044;75;male;1000531704242

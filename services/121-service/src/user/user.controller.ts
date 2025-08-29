@@ -32,10 +32,10 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import {
-  CreateProgramAssignmentDto,
-  DeleteProgramAssignmentDto,
-  UpdateProgramAssignmentDto,
-} from '@121-service/src/user/dto/assign-aw-to-program.dto';
+  CreateProjectAssignmentDto,
+  DeleteProjectAssignmentDto,
+  UpdateProjectAssignmentDto,
+} from '@121-service/src/user/dto/assign-aw-to-project.dto';
 import { changePasswordWithoutCurrentPasswordDto } from '@121-service/src/user/dto/change-password-without-current-password.dto';
 import { CreateUsersDto } from '@121-service/src/user/dto/create-user.dto';
 import { CreateUserRoleDto } from '@121-service/src/user/dto/create-user-role.dto';
@@ -285,13 +285,13 @@ export class UserController {
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProjectUPDATE] })
   @ApiTags('users')
   @ApiOperation({
     summary:
-      'Search, across all programs, for users who are already part of a program or who can be added to a program, based on their username or a substring of their username.' +
-      'Is **NOT** limited to the provided `programId`;' +
-      "The `programId` used to check for the requesting user's permissions only.",
+      'Search, across all projects, for users who are already part of a project or who can be added to a project, based on their username or a substring of their username.' +
+      'Is **NOT** limited to the provided `projectId`;' +
+      "The `projectId` used to check for the requesting user's permissions only.",
   })
   @ApiQuery({ name: 'username', required: true, type: 'string' })
   @ApiResponse({
@@ -299,10 +299,10 @@ export class UserController {
     description: 'Returns a list of users that match the search criteria.',
     type: [FindUserReponseDto],
   })
-  @Get('programs/:programId/users/search')
+  @Get('projects/:projectId/users/search')
   public async getUsersByName(
-    @Param('programId', ParseIntPipe)
-    _programId: number,
+    @Param('projectId', ParseIntPipe)
+    _projectId: number,
 
     @Query('username') username: string,
   ): Promise<FindUserReponseDto[]> {
@@ -311,149 +311,149 @@ export class UserController {
 
   @AuthenticatedUser({ isAdmin: true })
   @ApiTags('users/assignments')
-  @ApiOperation({ summary: 'Get roles for given user program assignment' })
+  @ApiOperation({ summary: 'Get roles for given user project assignment' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns program assignment including roles and scope',
+    description: 'Returns project assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'No roles found for user',
   })
-  @Get('programs/:programId/users/:userId')
-  public async getAidworkerProgramAssignment(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @Get('projects/:projectId/users/:userId')
+  public async getAidworkerProjectAssignment(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
 
     @Param('userId', ParseIntPipe)
     userId: number,
   ): Promise<AssignmentResponseDTO> {
-    return await this.userService.getAidworkerProgramAssignment(
-      programId,
+    return await this.userService.getAidworkerProjectAssignment(
+      projectId,
       userId,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProjectUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
-    summary: 'Create or OVERWRITE program assignment including roles and scope',
+    summary: 'Create or OVERWRITE project assignment including roles and scope',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Returns the created or overwritten program assignment including roles and scope',
+      'Returns the created or overwritten project assignment including roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'User, program or role(s) not found',
+    description: 'User, project or role(s) not found',
   })
-  @Put('programs/:programId/users/:userId')
-  public async assignAidworkerToProgram(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @Put('projects/:projectId/users/:userId')
+  public async assignAidworkerToProject(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
 
     @Param('userId', ParseIntPipe)
     userIdToUpdate: number,
 
     @Body()
-    assignAidworkerToProgram: CreateProgramAssignmentDto,
+    assignAidworkerToProject: CreateProjectAssignmentDto,
 
     @Req() req: ScopedUserRequest,
   ): Promise<AssignmentResponseDTO> {
     throwIfSelfUpdate(req, userIdToUpdate);
-    return await this.userService.assignAidworkerToProgram(
-      programId,
+    return await this.userService.assignAidworkerToProject(
+      projectId,
       userIdToUpdate,
-      assignAidworkerToProgram,
+      assignAidworkerToProject,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProjectUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
-      'Update existing program assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
+      'Update existing project assignment with new roles (UNION of existing and new roles) and/or overwrite scope',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns program assignment with all roles and scope',
+    description: 'Returns project assignment with all roles and scope',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'User, program or role(s) not found',
+    description: 'User, project or role(s) not found',
   })
-  @Patch('programs/:programId/users/:userId')
-  public async updateAidworkerProgramAssignment(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @Patch('projects/:projectId/users/:userId')
+  public async updateAidworkerProjectAssignment(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
     @Param('userId', ParseIntPipe)
     userIdToUpdate: number,
-    @Body() assignAidworkerToProgram: UpdateProgramAssignmentDto,
+    @Body() assignAidworkerToProject: UpdateProjectAssignmentDto,
     @Req() req: ScopedUserRequest,
   ): Promise<AssignmentResponseDTO> {
     throwIfSelfUpdate(req, userIdToUpdate);
-    return await this.userService.updateAidworkerProgramAssignment(
-      programId,
+    return await this.userService.updateAidworkerProjectAssignment(
+      projectId,
       userIdToUpdate,
-      assignAidworkerToProgram,
+      assignAidworkerToProject,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProjectUPDATE] })
   @ApiTags('users/assignments')
   @ApiOperation({
     summary:
-      'Remove roles from program-assignment (pass roles to delete in body) or remove assignment (no body)',
+      'Remove roles from project-assignment (pass roles to delete in body) or remove assignment (no body)',
   })
-  @ApiBody({ type: DeleteProgramAssignmentDto, required: false })
+  @ApiBody({ type: DeleteProjectAssignmentDto, required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Returns the program assignment with the remaining roles or nothing (if program assignment removed)',
+      'Returns the project assignment with the remaining roles or nothing (if project assignment removed)',
     type: AssignmentResponseDTO,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'User, program, role(s) or assignment not found',
+    description: 'User, project, role(s) or assignment not found',
   })
-  @Delete('programs/:programId/users/:userId')
+  @Delete('projects/:projectId/users/:userId')
   public async deleteAidworkerRolesOrAssignment(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
 
     @Param('userId', ParseIntPipe)
     userIdToUpdate: number,
 
     @Req() req: ScopedUserRequest,
-    @Body() deleteProgramAssignment?: DeleteProgramAssignmentDto,
+    @Body() deleteProjectAssignment?: DeleteProjectAssignmentDto,
   ): Promise<AssignmentResponseDTO | void> {
     throwIfSelfUpdate(req, userIdToUpdate);
 
     return await this.userService.deleteAidworkerRolesOrAssignment({
-      programId,
+      projectId,
       userId: userIdToUpdate,
-      roleNamesToDelete: deleteProgramAssignment?.rolesToDelete,
+      roleNamesToDelete: deleteProjectAssignment?.rolesToDelete,
     });
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProgramREAD] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.AidWorkerProjectREAD] })
   @ApiTags('users/assignments')
-  @ApiOperation({ summary: 'Get all users by programId' })
+  @ApiOperation({ summary: 'Get all users by projectId' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns a list of users assigned to a program',
+    description: 'Returns a list of users assigned to a project',
     type: [GetUserReponseDto],
   })
-  @Get('programs/:programId/users')
-  public async getUsersInProgram(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @Get('projects/:projectId/users')
+  public async getUsersInProject(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<GetUserReponseDto[]> {
-    return await this.userService.getUsersInProgram(programId);
+    return await this.userService.getUsersInProject(projectId);
   }
 
   @AuthenticatedUser({ isOrganizationAdmin: true })

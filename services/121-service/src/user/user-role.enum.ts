@@ -1,6 +1,6 @@
 export enum DefaultUserRole {
   Admin = 'admin',
-  ProgramAdmin = 'program-admin',
+  ProjectAdmin = 'project-admin',
   View = 'view',
   ViewWithoutPII = 'view-without-PII',
   KoboRegistrationUser = 'kobo-registration-user',

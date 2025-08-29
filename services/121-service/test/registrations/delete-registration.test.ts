@@ -16,7 +16,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Delete PA', () => {
-  const programId = 3;
+  const projectId = 3;
   let accessToken: string;
   const reason = 'automated test';
 
@@ -25,7 +25,7 @@ describe('Delete PA', () => {
     accessToken = await getAccessToken();
   });
   beforeEach(async () => {
-    await importRegistrations(programId, [registrationVisa], accessToken);
+    await importRegistrations(projectId, [registrationVisa], accessToken);
   });
 
   it('should not delete unknown registrations', async () => {
@@ -34,7 +34,7 @@ describe('Delete PA', () => {
 
     // Act
     const response = await deleteRegistrations({
-      programId,
+      projectId,
       referenceIds: [wrongReferenceId],
       accessToken,
       reason,
@@ -51,17 +51,17 @@ describe('Delete PA', () => {
 
     // Act
     const response = await deleteRegistrations({
-      programId,
+      projectId,
       referenceIds: [rightReferenceId],
       accessToken,
       reason,
     });
     const registration = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programId,
+      projectId,
       accessToken,
     );
-    const eventsResponse = await getEvents({ programId, accessToken });
+    const eventsResponse = await getEvents({ projectId, accessToken });
     const deleteEvent = eventsResponse.body[0];
 
     // Assert

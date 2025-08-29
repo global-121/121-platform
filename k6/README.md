@@ -63,5 +63,5 @@ Tests are configured in: [`.github/workflows/test_k6.yml`](../.github/workflows/
 - name: Run k6 tests
   working-directory: ${{ env.k6TestsPath }}
   run: |
-    npx dotenv -e ../services/.env -- ./k6 run tests/pvProgramPerformance.js
+    npx dotenv -e ../services/.env -- ./k6 run tests/pvProjectPerformance.js
 ```

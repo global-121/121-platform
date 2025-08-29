@@ -8,7 +8,7 @@ import { TransactionQueuesService } from '@121-service/src/transaction-queues/tr
 
 const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
   {
-    programId: 3,
+    projectId: 3,
     userId: 1,
     paymentId: 3,
     referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
@@ -22,13 +22,13 @@ const mockIntersolveVisaTransactionJobDto: IntersolveVisaTransactionJobDto[] = [
     addressPostalCode: '1234AB',
     addressCity: 'Den Haag',
     phoneNumber: '14155238886',
-    programFspConfigurationId: 1,
+    projectFspConfigurationId: 1,
   },
 ];
 
 const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
   {
-    programId: 3,
+    projectId: 3,
     paymentId: 3,
     referenceId: 'a3d1f489-2718-4430-863f-5abc14523691',
     transactionAmount: 25,
@@ -38,7 +38,7 @@ const mockSafaricomTransactionJobDto: SafaricomTransactionJobDto[] = [
     phoneNumber: '254708374149',
     idNumber: 'nat-123',
     originatorConversationId: 'originator-id',
-    programFspConfigurationId: 1,
+    projectFspConfigurationId: 1,
   },
 ];
 
@@ -73,7 +73,7 @@ describe('TransactionQueuesService', () => {
       .mockReturnValue({
         data: {
           id: 1,
-          programId: 3,
+          projectId: 3,
         },
       });
 
@@ -100,7 +100,7 @@ describe('TransactionQueuesService', () => {
       .mockReturnValue({
         data: {
           id: 1,
-          programId: 3,
+          projectId: 3,
         },
       });
 

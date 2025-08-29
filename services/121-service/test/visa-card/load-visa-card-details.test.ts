@@ -5,14 +5,14 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  programIdVisa,
+  projectIdVisa,
   registrationVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   getVisaWalletsAndDetails,
@@ -51,15 +51,15 @@ describe('Load Visa debit cards and details', () => {
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,
     );
-    await importRegistrations(programIdVisa, registrations, accessToken);
+    await importRegistrations(projectIdVisa, registrations, accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds,
       status: RegistrationStatusEnum.included,
       accessToken,
     });
     await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds,
       accessToken,
@@ -67,21 +67,21 @@ describe('Load Visa debit cards and details', () => {
 
     // Act
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 30_000,
     });
     for (const registration of registrations) {
       await issueNewVisaCard(
-        programIdVisa,
+        projectIdVisa,
         registration.referenceId,
         accessToken,
       );
 
       const visaParentWalletResponse =
         await retrieveAndUpdateVisaWalletsAndDetails(
-          programIdVisa,
+          projectIdVisa,
           registration.referenceId,
           accessToken,
         );
@@ -113,12 +113,12 @@ describe('Load Visa debit cards and details', () => {
 
   it('should throw a 404 if wallet or registration does not exist', async () => {
     const registrations = [registrationVisa];
-    await importRegistrations(programIdVisa, registrations, accessToken);
+    await importRegistrations(projectIdVisa, registrations, accessToken);
     const referenceIds = registrations.map(
       (registration) => registration.referenceId,
     );
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds,
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -126,12 +126,12 @@ describe('Load Visa debit cards and details', () => {
 
     // Act
     const unknownResponse = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       'unknown-reference-id',
       accessToken,
     );
     const noCustomerReponse = await getVisaWalletsAndDetails(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
     );

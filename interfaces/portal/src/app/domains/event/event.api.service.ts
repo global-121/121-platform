@@ -4,7 +4,7 @@ import { Injectable, Signal } from '@angular/core';
 import { DomainApiService } from '~/domains/domain-api.service';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
-  'programs',
+  'projects',
   projectId,
   'registration-events',
 ];

@@ -22,15 +22,15 @@ import {
   TwilioMessageEntity,
 } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
   @InjectRepository(WhatsappTemplateTestEntity)
   private readonly whatsappTemplateTestRepository: Repository<WhatsappTemplateTestEntity>;
 
@@ -232,22 +232,22 @@ export class WhatsappService {
 
   public async testTemplates(): Promise<object> {
     const sessionId = uuid();
-    const programs = await this.programRepository.find();
-    for (const program of programs) {
-      await this.testProgramTemplate(program, sessionId);
+    const projects = await this.projectRepository.find();
+    for (const project of projects) {
+      await this.testProjectTemplate(project, sessionId);
     }
     return {
       sessionId,
     };
   }
 
-  private async testProgramTemplate(
-    program: ProgramEntity,
+  private async testProjectTemplate(
+    project: ProjectEntity,
     sessionId: string,
   ): Promise<void> {
     const messageTemplates = (
-      await this.messageTemplateServices.getMessageTemplatesByProgramId(
-        program.id,
+      await this.messageTemplateServices.getMessageTemplatesByProjectId(
+        project.id,
       )
     ).filter((template) => template.contentSid);
 
@@ -270,7 +270,7 @@ export class WhatsappService {
       await this.whatsappTemplateTestRepository.save({
         sid: message.sid,
         language: messageTemplate.language,
-        programId: messageTemplate.programId,
+        projectId: messageTemplate.projectId,
         messageKey: messageTemplate.type,
         sessionId,
       });
@@ -313,24 +313,24 @@ export class WhatsappService {
         error: 'sessionId not found',
       };
     }
-    const programs = await this.programRepository.find();
+    const projects = await this.projectRepository.find();
     const result = {};
-    for (const program of programs) {
-      result[`program-${program.id}`] = await this.getProgramTemplateResult(
-        program,
+    for (const project of projects) {
+      result[`project-${project.id}`] = await this.getProjectTemplateResult(
+        project,
         sessionId,
       );
     }
     return result;
   }
 
-  private async getProgramTemplateResult(
-    program: ProgramEntity,
+  private async getProjectTemplateResult(
+    project: ProjectEntity,
     sessionId: string,
   ): Promise<object> {
     const messageTemplates = (
-      await this.messageTemplateServices.getMessageTemplatesByProgramId(
-        program.id,
+      await this.messageTemplateServices.getMessageTemplatesByProjectId(
+        project.id,
       )
     ).filter((template) => template.contentSid);
 
@@ -354,7 +354,7 @@ export class WhatsappService {
           where: {
             language: Equal(messageTemplate.language),
             messageKey: Equal(messageTemplate.type),
-            programId: Equal(messageTemplate.programId),
+            projectId: Equal(messageTemplate.projectId),
             sessionId: Equal(sessionId),
           },
           order: { created: 'ASC' },

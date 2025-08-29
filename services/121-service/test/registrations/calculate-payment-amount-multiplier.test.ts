@@ -10,8 +10,8 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
-  programIdWesteros,
+  projectIdPV,
+  projectIdWesteros,
   registrationPV5,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -33,13 +33,13 @@ describe('Set/calculate payment amount multiplier', () => {
 
     // Act
     const responseImport = await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesterosCopy],
       accessToken,
     );
     const searchRegistrationResponse = await searchRegistrationByReferenceId(
       registrationWesterosCopy.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
     const importedRegistration = searchRegistrationResponse.body.data[0];
@@ -49,7 +49,7 @@ describe('Set/calculate payment amount multiplier', () => {
     expect(importedRegistration.paymentAmountMultiplier).toBe(nrOfDragons + 1);
   });
 
-  it('should error if paymentAmountMultiplier is set while program has a formula', async () => {
+  it('should error if paymentAmountMultiplier is set while project has a formula', async () => {
     await resetDB(SeedScript.testMultiple, __filename);
     // Arrange
     const registrationWesterosCopy = {
@@ -59,14 +59,14 @@ describe('Set/calculate payment amount multiplier', () => {
 
     // Act
     const responseImport = await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesterosCopy],
       accessToken,
     );
 
     const searchRegistrationResponse = await searchRegistrationByReferenceId(
       registrationWesterosCopy.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
     // Assert
@@ -74,7 +74,7 @@ describe('Set/calculate payment amount multiplier', () => {
     expect(searchRegistrationResponse.body).toMatchSnapshot();
   });
 
-  it('should set paymentAmountMultiplier to 1 if program has no formula and paymentAmountMultiplier in import is not set', async () => {
+  it('should set paymentAmountMultiplier to 1 if project has no formula and paymentAmountMultiplier in import is not set', async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     // Arrange
     const registrationPvCopy = {
@@ -83,14 +83,14 @@ describe('Set/calculate payment amount multiplier', () => {
 
     // Act
     const responseImport = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationPvCopy],
       accessToken,
     );
 
     const searchRegistrationResponse = await searchRegistrationByReferenceId(
       registrationPvCopy.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const importedRegistration = searchRegistrationResponse.body.data[0];
@@ -100,7 +100,7 @@ describe('Set/calculate payment amount multiplier', () => {
     expect(importedRegistration.paymentAmountMultiplier).toBe(1);
   });
 
-  it('should set paymentAmountMultiplier based paymentAmountMultiplier if program has no formula', async () => {
+  it('should set paymentAmountMultiplier based paymentAmountMultiplier if project has no formula', async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     // Arrange
     const paymentAmountMultiplier = 3;
@@ -110,14 +110,14 @@ describe('Set/calculate payment amount multiplier', () => {
     };
     // Act
     const responseImport = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationPvCopy],
       accessToken,
     );
 
     const searchRegistrationResponse = await searchRegistrationByReferenceId(
       registrationPvCopy.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const importedRegistration = searchRegistrationResponse.body.data[0];

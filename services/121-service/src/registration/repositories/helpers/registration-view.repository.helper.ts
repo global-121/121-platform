@@ -117,9 +117,9 @@ export class RegistrationViewRepositoryHelper {
     subQuery = subQuery
       .andWhere(`"${uniqueSubQueryId}"."registrationId" = registration.id`)
       .from(RegistrationAttributeDataEntity, uniqueSubQueryId);
-    if (relation?.programRegistrationAttributeId) {
+    if (relation?.projectRegistrationAttributeId) {
       subQuery = subQuery.andWhere(
-        `"${uniqueSubQueryId}"."programRegistrationAttributeId" = ${relation.programRegistrationAttributeId}`,
+        `"${uniqueSubQueryId}"."projectRegistrationAttributeId" = ${relation.projectRegistrationAttributeId}`,
       );
     }
 

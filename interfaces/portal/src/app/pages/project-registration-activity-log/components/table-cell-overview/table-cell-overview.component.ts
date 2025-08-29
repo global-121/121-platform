@@ -106,7 +106,7 @@ export class TableCellOverviewComponent
         return this.registrationAttributeService.localizeAttribute({
           attributes: this.registrationAttributes.data(),
           attributeName:
-            GenericRegistrationAttributes.programFspConfigurationName,
+            GenericRegistrationAttributes.projectFspConfigurationName,
           attributeOptionValue: item.attributes.newValue,
         });
       case ActivityTypeEnum.Message:
@@ -118,7 +118,7 @@ export class TableCellOverviewComponent
       case ActivityTypeEnum.Transaction:
         return;
       case ActivityTypeEnum.IgnoredDuplicate:
-        return $localize`Duplication ignored with Reg. #${item.attributes.duplicateWithRegistrationProgramId}`;
+        return $localize`Duplication ignored with Reg. #${item.attributes.duplicateWithRegistrationProjectId}`;
     }
   });
 

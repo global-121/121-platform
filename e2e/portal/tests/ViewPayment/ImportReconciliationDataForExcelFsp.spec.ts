@@ -3,14 +3,14 @@ import { format } from 'date-fns';
 import path from 'path';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
+import NLRCProjectPV from '@121-service/src/seed-data/project/project-nlrc-pv.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationsPvExcel,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     registrationsPvExcel,
-    programIdPV,
+    projectIdPV,
     accessToken,
   );
 
@@ -39,17 +39,17 @@ test('[32303] [Excel fsp]: Import reconciliation data should work similar to imp
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
 
-  const projectTitle = NLRCProgramPV.titlePortal.en;
+  const projectTitle = NLRCProjectPV.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
   const reconciliationData = path.resolve(
     __dirname,
     '../../../test-registration-data/test-reconciliation-Excel-pv.csv',
   );
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
 
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   await test.step('Start payment', async () => {
@@ -57,7 +57,7 @@ test('[32303] [Excel fsp]: Import reconciliation data should work similar to imp
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdPV}/payments/1`),
+      url.pathname.startsWith(`/en-GB/project/${projectIdPV}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

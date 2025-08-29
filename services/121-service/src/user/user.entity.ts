@@ -12,8 +12,8 @@ import {
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
+import { ProjectAidworkerAssignmentEntity } from '@121-service/src/projects/project-aidworker.entity';
+import { ProjectAttachmentEntity } from '@121-service/src/projects/project-attachments/project-attachment.entity';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { UserType } from '@121-service/src/user/user-type-enum';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -38,12 +38,12 @@ export class UserEntity extends Base121Entity {
   }
 
   @OneToMany(
-    () => ProgramAidworkerAssignmentEntity,
+    () => ProjectAidworkerAssignmentEntity,
     (assignment) => assignment.user,
   )
-  public programAssignments: Relation<ProgramAidworkerAssignmentEntity[]>;
+  public projectAssignments: Relation<ProjectAidworkerAssignmentEntity[]>;
 
-  @OneToMany(() => ActionEntity, (program) => program.user)
+  @OneToMany(() => ActionEntity, (project) => project.user)
   public actions: Relation<ActionEntity[]>;
 
   @OneToMany(() => RegistrationEntity, (registration) => registration.user)
@@ -83,6 +83,6 @@ export class UserEntity extends Base121Entity {
   @Column({ type: 'character varying', nullable: false })
   public displayName: string;
 
-  @OneToMany(() => ProgramAttachmentEntity, (attachments) => attachments.user)
-  public uploadedAttachments: Relation<ProgramAttachmentEntity[]>;
+  @OneToMany(() => ProjectAttachmentEntity, (attachments) => attachments.user)
+  public uploadedAttachments: Relation<ProjectAttachmentEntity[]>;
 }

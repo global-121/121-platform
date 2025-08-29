@@ -5,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  programIdVisa,
+  projectIdVisa,
   registrationVisa as registrationVisaDefault,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
@@ -13,7 +13,7 @@ import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   getMessageHistoryUntilX,
@@ -47,9 +47,9 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
   it('should succesfully pay-out Visa Debit', async () => {
     // Arrange
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -58,7 +58,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -66,7 +66,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -75,7 +75,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -91,9 +91,9 @@ describe('Do succesful payment with FSP Visa Debit', () => {
   it('should successfully load balance Visa Debit', async () => {
     // Arrange
     registrationVisa.fullName = 'succeed';
-    await importRegistrations(programIdVisa, [registrationVisa], accessToken);
+    await importRegistrations(projectIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: [registrationVisa.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -103,7 +103,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Act
     // do 1st payment
     const doFirstPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -111,7 +111,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const firstPaymentId = doFirstPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -121,7 +121,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // do 2nd payment
     const doSecondPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -129,7 +129,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const secondPaymentId = doSecondPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -139,7 +139,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: secondPaymentId,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -176,9 +176,9 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     const referenceIds = registrations.map((r) => r.referenceId);
 
-    await importRegistrations(programIdVisa, registrations, accessToken);
+    await importRegistrations(projectIdVisa, registrations, accessToken);
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds,
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -187,7 +187,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     // Act
     // do 1st payment
     const paymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds,
       accessToken,
@@ -195,7 +195,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const paymentId1 = paymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
@@ -205,14 +205,14 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Reissue card so both cards have a spend of 6000
     await issueNewVisaCard(
-      programIdVisa,
+      projectIdVisa,
       registrationOCW4.referenceId,
       accessToken,
     );
     await waitFor(2_000);
 
     const paymentResponse2 = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds,
       accessToken,
@@ -220,7 +220,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     const paymentId2 = paymentResponse2.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
@@ -230,7 +230,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Assert
     const transactionsResponse1 = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
@@ -238,32 +238,32 @@ describe('Do succesful payment with FSP Visa Debit', () => {
 
     // Waits until the 4th message is received
     const messagesHistoryPa1 = await getMessageHistoryUntilX(
-      programIdVisa,
+      projectIdVisa,
       registrationVisa.referenceId,
       accessToken,
       4,
     );
 
     const transactionsResponse2 = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
     const messagesHistoryPa2 = await getMessageHistoryUntilX(
-      programIdVisa,
+      projectIdVisa,
       registrationOCW2.referenceId,
       accessToken,
       4,
     );
     const transactionsResponse3 = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW3.referenceId,
       accessToken,
     });
     const transactionsResponse4 = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW4.referenceId,
       accessToken,

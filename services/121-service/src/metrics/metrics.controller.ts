@@ -24,7 +24,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportDetailsQueryParamsDto } from '@121-service/src/metrics/dto/export-details.dto';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
-import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { ProjectStats } from '@121-service/src/metrics/dto/project-stats.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -56,7 +56,7 @@ export class MetricsController {
     status: HttpStatus.OK,
     description: 'Retrieved data for export',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({
     name: 'exportType',
     required: true,
@@ -87,14 +87,14 @@ export class MetricsController {
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
   // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
-  @Get('programs/:programId/metrics/export-list/:exportType')
+  @Get('projects/:projectId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
     RegistrationViewEntity,
     PaginateConfigRegistrationWithoutSort,
   )
   public async getExportList(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
     @Param('exportType') exportType: WrapperType<ExportType>,
     @Query() queryParams: WrapperType<ExportDetailsQueryParamsDto>,
     @Paginate() paginationQuery: PaginateQuery,
@@ -107,7 +107,7 @@ export class MetricsController {
       paginationQuery.search = queryParams['search'];
     }
     const result = await this.metricsService.getExport({
-      programId,
+      projectId,
       type: exportType,
       userId,
       paginationQuery,
@@ -137,35 +137,35 @@ export class MetricsController {
     return await this.metricsService.getToCancelVouchers();
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
-  @ApiOperation({ summary: '[SCOPED] Get program stats summary' })
-  @ApiParam({ name: 'programId', required: true })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProjectMetricsREAD] })
+  @ApiOperation({ summary: '[SCOPED] Get project stats summary' })
+  @ApiParam({ name: 'projectId', required: true })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Program stats summary',
+    description: 'Project stats summary',
   })
-  @Get('programs/:programId/metrics/program-stats-summary')
-  public async getProgramStats(
-    @Param('programId', ParseIntPipe)
-    programId: number,
-  ): Promise<ProgramStats> {
-    return await this.metricsService.getProgramStats(programId);
+  @Get('projects/:projectId/metrics/project-stats-summary')
+  public async getProjectStats(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
+  ): Promise<ProjectStats> {
+    return await this.metricsService.getProjectStats(projectId);
   }
 
   // This endpoint is only used by the k6 tests, not by frontend.
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProjectMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration statuses with count' })
-  @ApiParam({ name: 'programId', required: true })
+  @ApiParam({ name: 'projectId', required: true })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Registration statuses with count - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Registration statuses with count - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/metrics/registration-status')
+  @Get('projects/:projectId/metrics/registration-status')
   public async getRegistrationStatusStats(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<RegistrationStatusStats[]> {
-    return await this.metricsService.getRegistrationStatusStats(programId);
+    return await this.metricsService.getRegistrationStatusStats(projectId);
   }
 }

@@ -1,7 +1,7 @@
 import { type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { doPayment } from '@121-service/test/helpers/program.helper';
+import { doPayment } from '@121-service/test/helpers/project.helper';
 import {
   getRegistrationIdByReferenceId,
   seedIncludedRegistrations,
@@ -12,7 +12,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -30,15 +30,15 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
+    projectId: projectIdPV,
     referenceId: registrationPV5.referenceId,
     accessToken,
   });
 
   await doPayment({
-    programId: 2,
+    projectId: 2,
     amount: 100,
     referenceIds: paymentReferenceId,
     accessToken,
@@ -61,7 +61,7 @@ test.beforeAll(async ({ browser }) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await test.step('Navigate to registration activity log', async () => {
     await activityLogPage.goto(
-      `/project/${programIdPV}/registrations/${registrationId}`,
+      `/project/${projectIdPV}/registrations/${registrationId}`,
     );
   });
 });

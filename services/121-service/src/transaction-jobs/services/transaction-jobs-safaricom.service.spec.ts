@@ -20,7 +20,7 @@ const mockedRegistration = {
 const mockedTransactionId = 1;
 
 const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
-  programId: 3,
+  projectId: 3,
   paymentId: 3,
   referenceId: 'ref-123',
   transactionAmount: 25,
@@ -29,7 +29,7 @@ const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   bulkSize: 10,
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
-  programFspConfigurationId: 1,
+  projectFspConfigurationId: 1,
   originatorConversationId: 'originator-conversation-id',
 };
 

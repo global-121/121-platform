@@ -1,0 +1,153 @@
+{
+  "published": true,
+  "validation": false,
+  "location": "Nederland",
+  "ngo": "NLRC",
+  "titlePortal": {
+    "en": "NLRC OCW project"
+  },
+  "description": {
+    "en": ""
+  },
+  "startDate": "2023-03-01T12:00:00.000Z",
+  "endDate": "2023-12-31T12:00:00.000Z",
+  "currency": "EUR",
+  "distributionFrequency": "2-weeks",
+  "distributionDuration": 46,
+  "fixedTransferValue": 25,
+  "targetNrRegistrations": 100000,
+  "tryWhatsAppFirst": true,
+  "projectRegistrationAttributes": [
+    {
+      "name": "fullName",
+      "label": {
+        "en": "Full Name"
+      },
+      "type": "text",
+      "pattern": null,
+      "options": null,
+      "includeInTransactionExport": true,
+      "scoring": {},
+      "editableInPortal": true,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Phone Number"
+      },
+      "placeholder": {
+        "en": "+31 6 00 00 00 00"
+      },
+      "type": "tel",
+      "options": null,
+      "includeInTransactionExport": false,
+      "scoring": {},
+      "duplicateCheck": true,
+      "editableInPortal": false,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "whatsappPhoneNumber",
+      "label": {
+        "en": "WhatsApp Nr."
+      },
+      "placeholder": {
+        "ar": "00 00 00 00 0 00+",
+        "en": "+00 0 00 00 00 00"
+      },
+      "includeInTransactionExport": true,
+      "type": "tel",
+      "options": null,
+      "duplicateCheck": true,
+      "showInPeopleAffectedTable": true
+    },
+    {
+      "name": "addressStreet",
+      "label": {
+        "en": "Address street"
+      },
+      "includeInTransactionExport": true,
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumber",
+      "label": {
+        "en": "Address house number"
+      },
+      "includeInTransactionExport": true,
+      "type": "numeric",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressHouseNumberAddition",
+      "label": {
+        "en": "Address house number addition"
+      },
+      "includeInTransactionExport": true,
+      "type": "text",
+      "isRequired": false,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressPostalCode",
+      "label": {
+        "en": "Address postal code"
+      },
+      "includeInTransactionExport": true,
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "addressCity",
+      "label": {
+        "en": "Address city"
+      },
+      "includeInTransactionExport": true,
+      "type": "text",
+      "showInPeopleAffectedTable": false
+    }
+  ],
+  "aboutProject": {
+    "en": "This is the OCW project."
+  },
+  "fullnameNamingConvention": ["fullName"],
+  "languages": ["en", "nl", "ar", "tr"],
+  "enableMaxPayments": false,
+  "enableScope": false,
+  "monitoringDashboardUrl": "https://app.powerbi.com/view?r=eyJrIjoiNDkxN2Q1NmEtOWIxOC00ZTYyLTkxMTMtYmI3MmE4YTVkMTE2IiwidCI6ImEyYjUzYmU1LTczNGUtNGU2Yy1hYjBkLWQxODRmNjBmZDkxNyIsImMiOjh9",
+  "allowEmptyPhoneNumber": false,
+  "projectFspConfigurations": [
+    {
+      "fsp": "Intersolve-voucher-whatsapp",
+      "properties": [
+        {
+          "name": "username",
+          "value": "INTERSOLVE_USERNAME"
+        },
+        {
+          "name": "password",
+          "value": "INTERSOLVE_PASSWORD"
+        }
+      ]
+    },
+    {
+      "fsp": "Intersolve-visa",
+      "properties": [
+        {
+          "name": "brandCode",
+          "value": "INTERSOLVE_VISA_BRAND_CODE"
+        },
+        {
+          "name": "coverLetterCode",
+          "value": "INTERSOLVE_VISA_COVERLETTER_CODE"
+        },
+        {
+          "name": "fundingTokenCode",
+          "value": "INTERSOLVE_VISA_FUNDINGTOKEN_CODE"
+        }
+      ]
+    }
+  ]
+}

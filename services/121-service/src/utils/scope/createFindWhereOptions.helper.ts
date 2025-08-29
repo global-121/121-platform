@@ -39,7 +39,7 @@ function getWhereQueryWithScopeEnabled<T>(
   options: FindOptionsCombined<T>,
   relationArrayToRegistration: string[],
 ): FindOptionsWhere<T> {
-  const whereQueryScopeEnabled = { program: { enableScope: false } };
+  const whereQueryScopeEnabled = { project: { enableScope: false } };
   return getWhereQueryScope(
     options,
     whereQueryScopeEnabled,

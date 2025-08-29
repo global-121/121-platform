@@ -7,7 +7,7 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -23,7 +23,7 @@ const mockedRegistration = {
 const mockedTransactionId = 1;
 
 const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
-  programId: 3,
+  projectId: 3,
   paymentId: 3,
   referenceId: 'ref-123',
   transactionAmount: 25,
@@ -31,7 +31,7 @@ const mockedNedbankTransactionJob: NedbankTransactionJobDto = {
   userId: 1,
   bulkSize: 10,
   phoneNumber: '27831234567',
-  programFspConfigurationId: 1,
+  projectFspConfigurationId: 1,
 };
 
 describe('TransactionJobsNedbankService', () => {
@@ -39,7 +39,7 @@ describe('TransactionJobsNedbankService', () => {
   let nedbankService: NedbankService;
   let nedbankVoucherScopedRepository: NedbankVoucherScopedRepository;
   let transactionScopedRepository: TransactionScopedRepository;
-  let programFspConfigurationRepository: ProgramFspConfigurationRepository;
+  let projectFspConfigurationRepository: ProjectFspConfigurationRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
 
   beforeEach(async () => {
@@ -56,9 +56,9 @@ describe('TransactionJobsNedbankService', () => {
     transactionScopedRepository = unitRef.get<TransactionScopedRepository>(
       TransactionScopedRepository,
     );
-    programFspConfigurationRepository =
-      unitRef.get<ProgramFspConfigurationRepository>(
-        ProgramFspConfigurationRepository,
+    projectFspConfigurationRepository =
+      unitRef.get<ProjectFspConfigurationRepository>(
+        ProjectFspConfigurationRepository,
       );
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
@@ -87,7 +87,7 @@ describe('TransactionJobsNedbankService', () => {
       .spyOn(transactionScopedRepository, 'update')
       .mockResolvedValue({} as UpdateResult);
     jest
-      .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
+      .spyOn(projectFspConfigurationRepository, 'getPropertyValueByName')
       .mockResolvedValue('ref#1');
   });
 
@@ -162,7 +162,7 @@ describe('TransactionJobsNedbankService', () => {
   it('should never create a payment reference longer than 30 characters', async () => {
     const longPaymentReference = '1234567890123456789012345678901234567890';
     jest
-      .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
+      .spyOn(projectFspConfigurationRepository, 'getPropertyValueByName')
       .mockResolvedValue(longPaymentReference);
     jest
       .spyOn(nedbankService, 'createVoucher')
@@ -187,7 +187,7 @@ describe('TransactionJobsNedbankService', () => {
   it('should never create a payment reference with special characters except dash', async () => {
     const specialCharPaymentReference = '1234@5678#9012$3456%7890^';
     jest
-      .spyOn(programFspConfigurationRepository, 'getPropertyValueByName')
+      .spyOn(projectFspConfigurationRepository, 'getPropertyValueByName')
       .mockResolvedValue(specialCharPaymentReference);
     jest
       .spyOn(nedbankService, 'createVoucher')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -9,7 +9,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProjectRepository } from '@121-service/src/projects/repositories/project.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
@@ -34,7 +34,7 @@ export class TransactionJobsHelperService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
-    private readonly programRepository: ProgramRepository,
+    private readonly projectRepository: ProjectRepository,
     private readonly registrationEventsService: RegistrationEventsService,
   ) {}
 
@@ -60,13 +60,13 @@ export class TransactionJobsHelperService {
     status,
     errorText: errorMessage,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
-    const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
+    const { projectFspConfigurationId, projectId, paymentId, userId, isRetry } =
       transactionJob;
 
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
-      programFspConfigurationId,
+      projectFspConfigurationId,
       paymentId,
       userId,
       status,
@@ -82,7 +82,7 @@ export class TransactionJobsHelperService {
       const currentStatusIsCompleted =
         await this.setStatusToCompleteIfApplicable({
           registration,
-          programId,
+          projectId,
           paymentCount,
         });
 
@@ -132,7 +132,7 @@ export class TransactionJobsHelperService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    programFspConfigurationId,
+    projectFspConfigurationId,
     paymentId,
     userId,
     status,
@@ -140,7 +140,7 @@ export class TransactionJobsHelperService {
   }: {
     amount: number;
     registration: RegistrationEntity;
-    programFspConfigurationId: number;
+    projectFspConfigurationId: number;
     paymentId: number;
     userId: number;
     status: TransactionStatusEnum;
@@ -150,7 +150,7 @@ export class TransactionJobsHelperService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFspConfigurationId = programFspConfigurationId;
+    transaction.projectFspConfigurationId = projectFspConfigurationId;
     transaction.paymentId = paymentId;
     transaction.userId = userId;
     transaction.status = status;
@@ -174,16 +174,16 @@ export class TransactionJobsHelperService {
 
   private async setStatusToCompleteIfApplicable({
     registration,
-    programId,
+    projectId,
     paymentCount,
   }: {
     registration: RegistrationEntity;
-    programId: number;
+    projectId: number;
     paymentCount: number;
   }): Promise<boolean> {
-    const program = await this.programRepository.findByIdOrFail(programId);
+    const project = await this.projectRepository.findByIdOrFail(projectId);
 
-    if (!program.enableMaxPayments) {
+    if (!project.enableMaxPayments) {
       return false;
     }
 
@@ -210,22 +210,22 @@ export class TransactionJobsHelperService {
 
   public async createMessageAndAddToQueue({
     type,
-    programId,
+    projectId,
     registration,
     amountTransferred,
     bulkSize,
     userId,
   }: {
-    type: ProgramNotificationEnum;
-    programId: number;
+    type: ProjectNotificationEnum;
+    projectId: number;
     registration: RegistrationEntity;
     amountTransferred: number;
     bulkSize: number;
     userId: number;
   }) {
     const templates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        programId,
+      await this.messageTemplateService.getMessageTemplatesByProjectId(
+        projectId,
         type,
       );
     let messageContent = templates.find(

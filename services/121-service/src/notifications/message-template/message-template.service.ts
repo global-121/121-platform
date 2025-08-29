@@ -8,7 +8,7 @@ import {
   UpdateTemplateBodyDto,
 } from '@121-service/src/notifications/message-template/dto/message-template.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
+import { ProjectAttributesService } from '@121-service/src/project-attributes/project-attributes.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 @Injectable()
@@ -17,15 +17,15 @@ export class MessageTemplateService {
   private readonly messageTemplateRepository: Repository<MessageTemplateEntity>;
 
   constructor(
-    private readonly programAttributesService: ProgramAttributesService,
+    private readonly projectAttributesService: ProjectAttributesService,
   ) {}
 
-  public async getMessageTemplatesByProgramId(
-    programId: number,
+  public async getMessageTemplatesByProjectId(
+    projectId: number,
     type?: string,
     language?: LanguageEnum,
   ): Promise<MessageTemplateEntity[]> {
-    let where: FindOptionsWhere<MessageTemplateEntity> = { programId };
+    let where: FindOptionsWhere<MessageTemplateEntity> = { projectId };
 
     if (type) {
       where = { ...where, type };
@@ -71,7 +71,7 @@ export class MessageTemplateService {
   }
 
   public async createMessageTemplate(
-    programId: number,
+    projectId: number,
     postData: CreateMessageTemplateDto,
   ): Promise<void> {
     this.validateMessageAndContentSid({
@@ -82,18 +82,18 @@ export class MessageTemplateService {
 
     const existingTemplate = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(projectId),
         type: Equal(postData.type),
         language: Equal(postData.language),
       },
     });
     if (existingTemplate) {
-      const errors = `Message template with type '${postData.type}' and language '${postData.language}' already exists in program ${programId}`;
+      const errors = `Message template with type '${postData.type}' and language '${postData.language}' already exists in project ${projectId}`;
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
     const template = new MessageTemplateEntity();
-    template.programId = programId;
+    template.projectId = projectId;
     template.type = postData.type;
     template.language = postData.language;
     template.label = postData.label;
@@ -102,27 +102,27 @@ export class MessageTemplateService {
     template.isSendMessageTemplate = postData.isSendMessageTemplate;
 
     if (template.message) {
-      await this.validatePlaceholders(programId, template.message);
+      await this.validatePlaceholders(projectId, template.message);
     }
 
     await this.messageTemplateRepository.save(template);
   }
 
   public async updateMessageTemplate(
-    programId: number,
+    projectId: number,
     type: string,
     language: LanguageEnum,
     updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     const template = await this.messageTemplateRepository.findOne({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(projectId),
         type: Equal(type),
         language: Equal(language),
       },
     });
     if (!template) {
-      const errors = `No message template found with type '${type}' and language '${language}' in program ${programId}`;
+      const errors = `No message template found with type '${type}' and language '${language}' in project ${projectId}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     this.validateMessageAndContentSid({
@@ -133,7 +133,7 @@ export class MessageTemplateService {
 
     if (updateMessageTemplateDto.message) {
       await this.validatePlaceholders(
-        programId,
+        projectId,
         updateMessageTemplateDto.message,
       );
     }
@@ -146,32 +146,32 @@ export class MessageTemplateService {
   }
 
   public async deleteMessageTemplate(
-    programId: number,
+    projectId: number,
     messageType: string,
     language?: LanguageEnum,
   ): Promise<DeleteResult> {
     if (language) {
       return await this.messageTemplateRepository.delete({
-        programId,
+        projectId,
         type: messageType,
         language,
       });
     } else {
       return await this.messageTemplateRepository.delete({
-        programId,
+        projectId,
         type: messageType,
       });
     }
   }
 
   public async validatePlaceholders(
-    programId: number,
+    projectId: number,
     message: string,
   ): Promise<void> {
     const availableAttributes =
-      await this.programAttributesService.getAttributes({
-        programId,
-        includeProgramRegistrationAttributes: true,
+      await this.projectAttributesService.getAttributes({
+        projectId,
+        includeProjectRegistrationAttributes: true,
         includeTemplateDefaultAttributes: true,
       });
     const availablePlaceholders = availableAttributes.map(
@@ -185,7 +185,7 @@ export class MessageTemplateService {
       for (const match of matches) {
         const isPlaceholderAllowed = availablePlaceholders.includes(match);
         if (!isPlaceholderAllowed) {
-          const errors = `Placeholder ${match} not found in program ${programId}`;
+          const errors = `Placeholder ${match} not found in project ${projectId}`;
           throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
         }
       }

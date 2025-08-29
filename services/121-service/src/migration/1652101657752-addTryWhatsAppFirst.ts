@@ -1,6 +1,4 @@
-import { EntityManager, MigrationInterface, QueryRunner } from 'typeorm';
-
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
   name = 'addTryWhatsAppFirst1652101657752';
@@ -16,7 +14,7 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
       `CREATE INDEX "IDX_80de8dd79363e1274cfdba6bd4" ON "121-service"."try_whatsapp" ("created") `,
     );
     await queryRunner.commitTransaction();
-    await this.migrateData(queryRunner.manager);
+    // await this.migrateData(queryRunner.manager); // Commented out because of datamodel changes that rendered this old migration incorrect
     // Start artifical transaction because typeorm migrations automatically tries to close a transcation after migration
     await queryRunner.startTransaction();
   }
@@ -31,19 +29,19 @@ export class addTryWhatsAppFirst1652101657752 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "121-service"."try_whatsapp"`);
   }
 
-  private async migrateData(manager: EntityManager): Promise<void> {
-    const programRepo = manager.getRepository(ProgramEntity);
-    const programs = await programRepo
-      .createQueryBuilder('program')
-      .select('program.id')
-      .addSelect('program.ngo')
-      .getMany();
+  // private async migrateData(manager: EntityManager): Promise<void> {
+  //   const programRepo = manager.getRepository(ProgramEntity);
+  //   const programs = await programRepo
+  //     .createQueryBuilder('program')
+  //     .select('program.id')
+  //     .addSelect('program.ngo')
+  //     .getMany();
 
-    for (const p of programs) {
-      if (p.ngo === 'NLRC') {
-        p.tryWhatsAppFirst = true;
-        await programRepo.save(p);
-      }
-    }
-  }
+  //   for (const p of programs) {
+  //     if (p.ngo === 'NLRC') {
+  //       p.tryWhatsAppFirst = true;
+  //       await programRepo.save(p);
+  //     }
+  //   }
+  // }
 }

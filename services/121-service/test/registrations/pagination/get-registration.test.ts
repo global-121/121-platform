@@ -11,7 +11,7 @@ import {
 import {
   createExpectedValueObject,
   expectedAttributes,
-  programIdOCW,
+  projectIdOCW,
   registrationOCW2,
   registrationOCW3,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -24,15 +24,15 @@ describe('Load PA table', () => {
     const attribute3 = 'referenceId';
     const attributeName = 'name';
     const attributeFullName = 'fullName';
-    const attributeprogramFspConfigurationLabel =
-      'programFspConfigurationLabel';
-    const attributeProgramFspConfigurationName = 'programFspConfigurationName';
+    const attributeprojectFspConfigurationLabel =
+      'projectFspConfigurationLabel';
+    const attributeProjectFspConfigurationName = 'projectFspConfigurationName';
 
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple, __filename);
       accessToken = await getAccessToken();
 
-      await importRegistrations(programIdOCW, [registrationOCW2], accessToken);
+      await importRegistrations(projectIdOCW, [registrationOCW2], accessToken);
     });
 
     it('should return all dynamic attributes if param not supplied', async () => {
@@ -41,7 +41,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
@@ -64,7 +64,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
@@ -82,7 +82,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
@@ -100,7 +100,7 @@ describe('Load PA table', () => {
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
@@ -111,33 +111,33 @@ describe('Load PA table', () => {
       expect(data[0]).not.toHaveProperty(attributeFullName);
     });
 
-    it('should only return programFspConfigurationLabel', async () => {
+    it('should only return projectFspConfigurationLabel', async () => {
       // Arrange
       const requestedDynamicAttributes = [
-        attributeprogramFspConfigurationLabel,
+        attributeprojectFspConfigurationLabel,
       ];
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
       const data = getRegistrationsResponse.body.data;
 
       // Assert
-      expect(data[0]).toHaveProperty(attributeprogramFspConfigurationLabel);
-      expect(data[0]).not.toHaveProperty(attributeProgramFspConfigurationName);
+      expect(data[0]).toHaveProperty(attributeprojectFspConfigurationLabel);
+      expect(data[0]).not.toHaveProperty(attributeProjectFspConfigurationName);
     });
 
     it('Should return specified amount of PA per page', async () => {
       // Arrange
       const requestedDynamicAttributes = undefined;
-      const programId2 = 2;
+      const projectId2 = 2;
 
       // Act
       const getRegistrationsResponse = await getRegistrations({
-        programId: programId2,
+        projectId: projectId2,
         attributes: requestedDynamicAttributes,
         accessToken,
       });
@@ -150,11 +150,11 @@ describe('Load PA table', () => {
     it('should be able to specify page attributes', async () => {
       // Arrange
       const requestedDynamicAttributes = undefined;
-      await importRegistrations(programIdOCW, [registrationOCW3], accessToken);
+      await importRegistrations(projectIdOCW, [registrationOCW3], accessToken);
 
       // Act
       const getRegistrationsResponse1 = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
         page: 1,
@@ -164,7 +164,7 @@ describe('Load PA table', () => {
       const meta1 = getRegistrationsResponse1.body.meta;
 
       const getRegistrationsResponse2 = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
         page: 2,
@@ -174,7 +174,7 @@ describe('Load PA table', () => {
       const meta2 = getRegistrationsResponse2.body.meta;
 
       const getRegistrationsResponseAll = await getRegistrations({
-        programId: programIdOCW,
+        projectId: projectIdOCW,
         attributes: requestedDynamicAttributes,
         accessToken,
         page: 1,

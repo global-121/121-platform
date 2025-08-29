@@ -8,8 +8,8 @@ const { baseUrl } = config;
 export default class RegistrationsModel {
   constructor() {}
 
-  importRegistrations(programId, registrations) {
-    const url = `${baseUrl}api/programs/${programId}/registrations`;
+  importRegistrations(projectId, registrations) {
+    const url = `${baseUrl}api/projects/${projectId}/registrations`;
     const payload = JSON.stringify([registrations]);
     const params = {
       headers: {
@@ -22,8 +22,8 @@ export default class RegistrationsModel {
     return res;
   }
 
-  importRegistrationsCsv(programId, csvFile) {
-    const url = `${baseUrl}api/programs/${programId}/registrations/import`;
+  importRegistrationsCsv(projectId, csvFile) {
+    const url = `${baseUrl}api/projects/${projectId}/registrations/import`;
     const formData = {
       file: http.file(csvFile, 'registrations.csv'),
     };
@@ -36,7 +36,7 @@ export default class RegistrationsModel {
     return res;
   }
 
-  getRegistrations(programId, filter) {
+  getRegistrations(projectId, filter) {
     let queryParams = '';
     if (filter) {
       queryParams = Object.entries(filter)
@@ -47,17 +47,17 @@ export default class RegistrationsModel {
         .join('&');
     }
 
-    const url = `${baseUrl}api/programs/${programId}/registrations?${queryParams}`;
+    const url = `${baseUrl}api/projects/${projectId}/registrations?${queryParams}`;
     return http.get(url);
   }
 
-  exportRegistrations(programId, filter) {
-    const url = `${baseUrl}api/programs/${programId}/metrics/export-list/registrations?sortBy=registrationProgramId:DESC&select=referenceId,${filter}&format=json`;
+  exportRegistrations(projectId, filter) {
+    const url = `${baseUrl}api/projects/${projectId}/metrics/export-list/registrations?sortBy=registrationProjectId:DESC&select=referenceId,${filter}&format=json`;
     return http.get(url);
   }
 
-  bulkUpdateRegistrationsCSV(programId, csvContent) {
-    const url = `${baseUrl}api/programs/${programId}/registrations`;
+  bulkUpdateRegistrationsCSV(projectId, csvContent) {
+    const url = `${baseUrl}api/projects/${projectId}/registrations`;
 
     const formData = {
       file: http.file(csvContent, 'registrations.csv'),

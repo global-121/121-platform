@@ -48,7 +48,7 @@ export class RegistrationLookupMenuComponent {
     }
 
     for (const registration of this.registrations.data()) {
-      const project = this.assignedProjects.data()[registration.programId];
+      const project = this.assignedProjects.data()[registration.projectId];
 
       if (!project) {
         continue;

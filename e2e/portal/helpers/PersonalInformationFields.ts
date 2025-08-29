@@ -62,7 +62,7 @@ export const numberInputs = {
 };
 
 export const dropdownInputs = {
-  programFspConfigurationName: {
+  projectFspConfigurationName: {
     fieldName: 'FSP',
   },
   preferredLanguage: {

@@ -37,40 +37,40 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
   }
 
   public getQueryBuilderForFspInstructions({
-    programId,
+    projectId,
     paymentId,
-    programFspConfigurationId,
+    projectFspConfigurationId,
     fspName,
     status,
   }: {
-    programId: number;
+    projectId: number;
     paymentId: number;
-    programFspConfigurationId?: number;
+    projectFspConfigurationId?: number;
     fspName?: Fsps;
     status?: TransactionStatusEnum;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
     const query = this.createQueryBuilder('registration')
       .innerJoin('registration.latestTransactions', 'latestTransaction')
       .innerJoin('latestTransaction.transaction', 'transaction')
-      .andWhere('registration.programId = :programId', { programId })
+      .andWhere('registration.projectId = :projectId', { projectId })
       .andWhere('transaction.paymentId = :paymentId', { paymentId })
       .orderBy('registration.referenceId', 'ASC');
     if (status) {
       query.andWhere('transaction.status = :status', { status });
     }
-    if (programFspConfigurationId) {
+    if (projectFspConfigurationId) {
       query.andWhere(
-        'transaction.programFspConfigurationId = :programFspConfigurationId',
-        { programFspConfigurationId },
+        'transaction.projectFspConfigurationId = :projectFspConfigurationId',
+        { projectFspConfigurationId },
       );
     }
     if (fspName) {
       query
         .leftJoin(
-          'transaction.programFspConfiguration',
-          'programFspConfiguration',
+          'transaction.projectFspConfiguration',
+          'projectFspConfiguration',
         )
-        .andWhere('programFspConfiguration.fspName = :fspName', { fspName });
+        .andWhere('projectFspConfiguration.fspName = :fspName', { fspName });
     }
     return query;
   }
@@ -106,16 +106,16 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
     });
   }
 
-  public addProgramFilter({
+  public addProjectFilter({
     queryBuilder,
-    programId,
+    projectId,
   }: {
     queryBuilder: ScopedQueryBuilder<RegistrationViewEntity>;
-    programId: number;
+    projectId: number;
   }): ScopedQueryBuilder<RegistrationViewEntity> {
-    // Adds a filter for programId to the query builder
-    return queryBuilder.andWhere('"registration"."programId" = :programId', {
-      programId,
+    // Adds a filter for projectId to the query builder
+    return queryBuilder.andWhere('"registration"."projectId" = :projectId', {
+      projectId,
     });
   }
 
@@ -205,7 +205,7 @@ export class RegistrationViewScopedRepository extends RegistrationScopedBaseRepo
       queryBuilder.leftJoin(
         'registration.data', // relation path
         uniqueJoinId, // alias
-        `${uniqueJoinId}."programRegistrationAttributeId" = ${relationInfo.relation.programRegistrationAttributeId}`,
+        `${uniqueJoinId}."projectRegistrationAttributeId" = ${relationInfo.relation.projectRegistrationAttributeId}`,
       );
       queryBuilder =
         RegistrationViewRepositoryHelper.applyFilterConditionAttributes({

@@ -20,7 +20,7 @@ import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
-  'programs',
+  'projects',
   projectId,
   'payments',
 ];

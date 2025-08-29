@@ -14,12 +14,12 @@ graph LR
   TransactionsModule-->ActionsModule
   ActionsModule-->UserModule
   TransactionsModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->ProjectAttributesModule
   MessageQueuesModule-->RegistrationDataModule
   MessageQueuesModule-->QueuesRegistryModule
   TransactionsModule-->MessageTemplateModule
   MessageTemplateModule-->UserModule
-  MessageTemplateModule-->ProgramAttributesModule
+  MessageTemplateModule-->ProjectAttributesModule
   TransactionsModule-->RegistrationUtilsModule
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->RegistrationEventsModule
@@ -32,18 +32,18 @@ graph LR
   IntersolveVoucherModule-->QueuesRegistryModule
   CronjobModule-->IntersolveVoucherReconciliationModule
   IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
-  IntersolveVoucherReconciliationModule-->ProgramModule
-  ProgramModule-->ActionsModule
-  ProgramModule-->UserModule
-  ProgramModule-->FspsModule
+  IntersolveVoucherReconciliationModule-->ProjectModule
+  ProjectModule-->ActionsModule
+  ProjectModule-->UserModule
+  ProjectModule-->FspsModule
   FspsModule-->UserModule
-  ProgramModule-->LookupModule
-  ProgramModule-->ProgramAttachmentsModule
-  ProgramModule-->ProgramAttributesModule
-  ProgramModule-->KoboConnectModule
-  ProgramModule-->ProgramFspConfigurationsModule
-  ProgramModule-->IntersolveVisaModule
-  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
+  ProjectModule-->LookupModule
+  ProjectModule-->ProjectAttachmentsModule
+  ProjectModule-->ProjectAttributesModule
+  ProjectModule-->KoboConnectModule
+  ProjectModule-->ProjectFspConfigurationsModule
+  ProjectModule-->IntersolveVisaModule
+  IntersolveVoucherReconciliationModule-->ProjectFspConfigurationsModule
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaModule-->TransactionsModule
@@ -54,14 +54,14 @@ graph LR
   RegistrationsModule-->UserModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule
-  RegistrationsModule-->ProgramModule
+  RegistrationsModule-->ProjectModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->RegistrationDataModule
   RegistrationsModule-->RegistrationUtilsModule
   RegistrationsModule-->RegistrationEventsModule
-  RegistrationsModule-->ProgramFspConfigurationsModule
+  RegistrationsModule-->ProjectFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
@@ -84,7 +84,7 @@ graph LR
   MessageModule-->MessageQueuesModule
   MessageModule-->IntersolveVoucherModule
   MessageModule-->MessageTemplateModule
-  MessageModule-->ProgramModule
+  MessageModule-->ProjectModule
   MetricsModule-->UserModule
   MetricsModule-->RegistrationsModule
   MetricsModule-->ActionsModule
@@ -107,21 +107,21 @@ graph LR
   ExcelModule-->RegistrationsModule
   PaymentsModule-->CommercialBankEthiopiaModule
   PaymentsModule-->RegistrationsModule
-  PaymentsModule-->ProgramModule
+  PaymentsModule-->ProjectModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationDataModule
   PaymentsModule-->TransactionQueuesModule
   TransactionQueuesModule-->RedisModule
   TransactionQueuesModule-->QueuesRegistryModule
   PaymentsModule-->FspsModule
-  PaymentsModule-->ProgramFspConfigurationsModule
+  PaymentsModule-->ProjectFspConfigurationsModule
   PaymentsModule-->RedisModule
   PaymentsModule-->PaymentEventsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationEventsModule
   MetricsModule-->RegistrationDataModule
-  MetricsModule-->ProgramModule
+  MetricsModule-->ProjectModule
   MessageIncomingModule-->ImageCodeModule
   MessageIncomingModule-->UserModule
   MessageIncomingModule-->IntersolveVoucherModule
@@ -143,10 +143,10 @@ graph LR
   TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->AirtelModule
   TransactionJobsModule-->NedbankModule
-  TransactionJobsModule-->ProgramFspConfigurationsModule
+  TransactionJobsModule-->ProjectFspConfigurationsModule
   TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->RegistrationsModule
-  TransactionJobsModule-->ProgramModule
+  TransactionJobsModule-->ProjectModule
   TransactionJobsModule-->TransactionsModule
   TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->FspsModule

@@ -11,7 +11,7 @@ const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
 const duplicateNumber = 7; // '7' leads to 128 registrations
-const programId = 3;
+const projectId = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
 const amount = 10;
@@ -64,7 +64,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount);
+  const doPayment = paymentsPage.createPayment(projectId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
@@ -87,7 +87,7 @@ export default function () {
 
   // Monitor that 100% of payments is successful and then stop the test
   const monitorPayment = paymentsPage.getPaymentResults(
-    programId,
+    projectId,
     maxTimeoutAttempts,
     doPayment.body.id,
     duplicateNumber,

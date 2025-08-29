@@ -329,7 +329,7 @@ class RegistrationsPage extends BasePage {
     await this.importFileButton.click();
   }
 
-  async assertImportTemplateForPvProgram() {
+  async assertImportTemplateForPvProject() {
     await this.clickAndSelectImportOption('Import new registrations');
 
     const filePath = await this.downloadFile(

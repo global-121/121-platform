@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { merge } from 'lodash';
 
 import { KoboConnectApiService } from '@121-service/src/kobo-connect/kobo-connect.api.service';
-import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProjectDto } from '@121-service/src/projects/dto/create-project.dto';
 
 @Injectable()
 export class KoboConnectService {
@@ -11,20 +11,20 @@ export class KoboConnectService {
   public async create(
     koboToken: string,
     koboAssetId: string,
-    overrideProgramData?: Partial<CreateProgramDto>,
-  ): Promise<CreateProgramDto | Partial<CreateProgramDto>> {
-    const result = await this.koboConnectApiService.create121Program(
+    overrideProjectData?: Partial<CreateProjectDto>,
+  ): Promise<CreateProjectDto | Partial<CreateProjectDto>> {
+    const result = await this.koboConnectApiService.create121Project(
       koboToken,
       koboAssetId,
     );
 
     if (result && !('detail' in result)) {
-      if (overrideProgramData) {
-        // Combine the Kobo-Connect program data with overrides from the request
-        return merge(result, overrideProgramData);
+      if (overrideProjectData) {
+        // Combine the Kobo-Connect project data with overrides from the request
+        return merge(result, overrideProjectData);
       }
 
-      return result as CreateProgramDto | Partial<CreateProgramDto>;
+      return result as CreateProjectDto | Partial<CreateProjectDto>;
     }
 
     const errors: unknown[] = [];

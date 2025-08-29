@@ -9,10 +9,10 @@ import {
   registrationScopedTurkanaNorthPv,
 } from '@121-service/test/fixtures/scoped-registrations';
 import {
-  patchProgram,
-  setAllProgramsRegistrationAttributesNonRequired,
-  unpublishProgram,
-} from '@121-service/test/helpers/program.helper';
+  patchProject,
+  setAllProjectsRegistrationAttributesNonRequired,
+  unpublishProject,
+} from '@121-service/test/helpers/project.helper';
 import {
   getImportRegistrationsTemplate,
   importRegistrations,
@@ -24,9 +24,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
-  programIdWesteros,
+  projectIdOCW,
+  projectIdPV,
+  projectIdWesteros,
   registrationPV5,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -41,7 +41,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationVisa],
       accessToken,
     );
@@ -50,7 +50,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationVisa.referenceId,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -66,7 +66,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesteros1],
       accessToken,
     );
@@ -75,7 +75,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -96,23 +96,23 @@ describe('Import a registration', () => {
     }
   });
 
-  it('should fail import registrations due to program is not published yet', async () => {
+  it('should fail import registrations due to project is not published yet', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    // unpublish a program
-    await unpublishProgram(programIdOCW, accessToken);
+    // unpublish a project
+    await unpublishProject(projectIdOCW, accessToken);
 
     const response = await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationVisa],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body.errors).toBe(
-      `Registrations are not allowed for this program yet, try again later.`,
+      `Registrations are not allowed for this project yet, try again later.`,
     );
   });
 
@@ -123,7 +123,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationScopedKisumuEastPv],
       accessToken,
     );
@@ -133,7 +133,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationScopedKisumuEastPv.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const registrationResult = result.body.data[0];
@@ -150,7 +150,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationScopedKisumuEastPv, registrationScopedTurkanaNorthPv],
       accessToken,
     );
@@ -160,14 +160,14 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationScopedKisumuEastPv.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const registrationsResult = result.body.data;
     expect(registrationsResult).toHaveLength(0);
   });
 
-  it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
+  it('should not import registrations with empty phoneNumber, when project disallows this', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
@@ -177,7 +177,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationVisaCopy],
       accessToken,
     );
@@ -186,7 +186,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationVisaCopy.referenceId,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
 
@@ -194,21 +194,21 @@ describe('Import a registration', () => {
     expect(registration).toHaveLength(0);
   });
 
-  it('should import registrations with empty phoneNumber, when program allows this', async () => {
+  it('should import registrations with empty phoneNumber, when project allows this', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationPVCopy = { ...registrationPV5 };
     // @ts-expect-error "The operand of a 'delete' operator must be optional.ts(2790)"
     delete registrationPVCopy.phoneNumber;
-    const programUpdate = {
+    const projectUpdate = {
       allowEmptyPhoneNumber: true,
     };
-    await patchProgram(programIdPV, programUpdate, accessToken);
+    await patchProject(projectIdPV, projectUpdate, accessToken);
 
     // Act
     const response = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationPVCopy],
       accessToken,
     );
@@ -216,7 +216,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationPVCopy.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const registration = result.body.data[0];
@@ -235,7 +235,7 @@ describe('Import a registration', () => {
 
     // Act
     const response = await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationVisaCopy],
       accessToken,
     );
@@ -245,7 +245,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationVisaCopy.referenceId,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
 
@@ -258,13 +258,13 @@ describe('Import a registration', () => {
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
     const registrationWesteros1Copy = { ...registrationWesteros1 };
-    const programIdWesteros = 2;
+    const projectIdWesteros = 2;
     // @ts-expect-error we are forcing something to be null when it shouldn't be
     registrationWesteros1Copy.house = null;
 
     // Act
     const response = await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesteros1Copy],
       accessToken,
     );
@@ -274,7 +274,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
 
@@ -292,14 +292,14 @@ describe('Import a registration', () => {
       whatsappPhoneNumber: _whatsappPhoneNumber,
       ...registrationWesteros1Copy
     } = registrationWesteros1;
-    registrationWesteros1Copy.programFspConfigurationName =
+    registrationWesteros1Copy.projectFspConfigurationName =
       Fsps.intersolveVoucherWhatsapp;
 
-    const programIdWestoros = 2;
+    const projectIdWestoros = 2;
 
     // Act
     const response = await importRegistrations(
-      programIdWestoros,
+      projectIdWestoros,
       [registrationWesteros1Copy],
       accessToken,
     );
@@ -309,7 +309,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
-      programIdWestoros,
+      projectIdWestoros,
       accessToken,
     );
 
@@ -327,23 +327,23 @@ describe('Import a registration', () => {
       whatsappPhoneNumber: _whatsappPhoneNumber,
       ...registrationWesteros1Copy
     } = registrationWesteros1;
-    registrationWesteros1Copy.programFspConfigurationName = 'non-existing-fsp';
+    registrationWesteros1Copy.projectFspConfigurationName = 'non-existing-fsp';
 
     // Act
     const response = await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       [registrationWesteros1Copy],
       accessToken,
     );
 
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body[0].error).toContain(
-      registrationWesteros1Copy.programFspConfigurationName,
+      registrationWesteros1Copy.projectFspConfigurationName,
     );
 
     const result = await searchRegistrationByReferenceId(
       registrationWesteros1Copy.referenceId,
-      programIdWesteros,
+      projectIdWesteros,
       accessToken,
     );
 
@@ -356,7 +356,7 @@ describe('Import a registration', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    const response = await getImportRegistrationsTemplate(programIdOCW);
+    const response = await getImportRegistrationsTemplate(projectIdOCW);
     expect(response.statusCode).toBe(HttpStatus.OK);
     expect(response.body.sort()).toMatchSnapshot();
   });
@@ -367,23 +367,23 @@ describe('Import a registration', () => {
     accessToken = await getAccessToken();
     const registrationWesterosEmpty = {
       referenceId: 'registrationWesterosEmpty',
-      programFspConfigurationName: 'ironBank',
+      projectFspConfigurationName: 'ironBank',
     };
 
-    const programUpdate = {
+    const projectUpdate = {
       allowEmptyPhoneNumber: true,
     };
-    await patchProgram(programIdWesteros, programUpdate, accessToken);
+    await patchProject(projectIdWesteros, projectUpdate, accessToken);
 
-    // Patch all programRegistationAttributes to be non-required
-    await setAllProgramsRegistrationAttributesNonRequired(
-      programIdWesteros,
+    // Patch all projectRegistationAttributes to be non-required
+    await setAllProjectsRegistrationAttributesNonRequired(
+      projectIdWesteros,
       accessToken,
     );
 
     // Act
     const response = await importRegistrations(
-      programIdPV,
+      projectIdPV,
       [registrationWesterosEmpty],
       accessToken,
     );
@@ -391,7 +391,7 @@ describe('Import a registration', () => {
 
     const result = await searchRegistrationByReferenceId(
       registrationWesterosEmpty.referenceId,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     const registration = result.body.data[0];

@@ -7,7 +7,7 @@ import { Equal, Repository } from 'typeorm';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -37,9 +37,9 @@ import {
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { UsernamePasswordInterface } from '@121-service/src/project-fsp-configurations/interfaces/username-password.interface';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -57,8 +57,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   private readonly intersolveVoucherRequestRepository: Repository<IntersolveIssueVoucherRequestEntity>;
   @InjectRepository(TransactionEntity)
   public readonly transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  public readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  public readonly projectRepository: Repository<ProjectEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -74,7 +74,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly queuesService: QueuesRegistryService,
-    public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    public readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
 
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -82,7 +82,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   public async sendPayment(
     paPaymentList: PaPaymentDataDto[],
-    programId: number,
+    projectId: number,
     paymentId: number,
     useWhatsapp: boolean,
   ): Promise<void> {
@@ -94,11 +94,11 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
             paymentInfo,
             useWhatsapp,
             paymentId,
-            programId,
+            projectId,
           },
         );
 
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.sadd(getRedisSetName(job.data.projectId), job.id);
     }
   }
 
@@ -106,8 +106,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     jobData: IntersolveVoucherJobDto,
   ): Promise<void> {
     const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        jobData.paymentInfo.programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getUsernamePasswordProperties(
+        jobData.paymentInfo.projectFspConfigurationId,
       );
     const paResult = await this.sendIndividualPayment(
       jobData.paymentInfo,
@@ -130,10 +130,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       1,
       paResult.status,
       paResult.message ?? null,
-      registration.programId,
+      registration.projectId,
       {
-        programFspConfigurationId:
-          jobData.paymentInfo.programFspConfigurationId,
+        projectFspConfigurationId:
+          jobData.paymentInfo.projectFspConfigurationId,
         userId: jobData.paymentInfo.userId,
       },
     );
@@ -328,14 +328,14 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       where: { referenceId: Equal(paymentInfo.referenceId) },
     });
 
-    const programId = registration.programId;
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
+    const projectId = registration.projectId;
+    const project = await this.projectRepository.findOneByOrFail({
+      id: projectId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
     const contentSid = await this.getNotificationContentSid(
-      program,
-      ProgramNotificationEnum.whatsappPayment,
+      project,
+      ProjectNotificationEnum.whatsappPayment,
       language,
     );
 
@@ -353,13 +353,13 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async getNotificationContentSid(
-    program: ProgramEntity,
+    project: ProjectEntity,
     type: string,
     language?: string,
   ): Promise<string | undefined> {
     const messageTemplates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        program.id,
+      await this.messageTemplateService.getMessageTemplatesByProjectId(
+        project.id,
       );
 
     const notification = messageTemplates.find(
@@ -455,9 +455,9 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   public async exportVouchers(
     referenceId: string,
     paymentId: number,
-    programId: number,
+    projectId: number,
   ): Promise<any> {
-    const voucher = await this.getVoucher(referenceId, paymentId, programId);
+    const voucher = await this.getVoucher(referenceId, paymentId, projectId);
     const image = await this.imageCodeService.generateVoucherImage({
       dateTime: voucher.created,
       amount: voucher.amount,
@@ -470,12 +470,12 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   private async getVoucher(
     referenceId: string,
     paymentId: number,
-    programId: number,
+    projectId: number,
   ): Promise<IntersolveVoucherEntity> {
     const registration = await this.registrationScopedRepository.findOne({
       where: {
         referenceId: Equal(referenceId),
-        programId: Equal(programId),
+        projectId: Equal(projectId),
       },
       relations: ['images', 'images.voucher'],
     });
@@ -498,10 +498,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return imageCodeExportVouchersEntity.voucher;
   }
 
-  public async getInstruction(programId: number): Promise<any> {
+  public async getInstruction(projectId: number): Promise<any> {
     const intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(projectId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -515,12 +515,12 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async postInstruction(
-    programId: number,
+    projectId: number,
     instructionsFileBlob,
   ): Promise<any> {
     let intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
-        where: { programId: Equal(programId) },
+        where: { projectId: Equal(projectId) },
       });
 
     if (!intersolveInstructionsEntity) {
@@ -528,7 +528,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     }
 
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
-    intersolveInstructionsEntity.programId = programId;
+    intersolveInstructionsEntity.projectId = projectId;
 
     await this.intersolveInstructionsRepository.save(
       intersolveInstructionsEntity,
@@ -553,24 +553,24 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   public async getVoucherBalance(
     referenceId: string,
     paymentId: number,
-    programId: number,
+    projectId: number,
   ): Promise<number> {
-    const voucher = await this.getVoucher(referenceId, paymentId, programId);
+    const voucher = await this.getVoucher(referenceId, paymentId, projectId);
     const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+      await this.projectFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
         voucher.id,
       );
-    return await this.getAndUpdateBalance(voucher, programId, credentials);
+    return await this.getAndUpdateBalance(voucher, projectId, credentials);
   }
 
   public async getAndUpdateBalance(
     intersolveVoucher: IntersolveVoucherEntity,
-    programId: number,
+    projectId: number,
     credentials: UsernamePasswordInterface,
   ): Promise<number> {
     if (!credentials?.username || !credentials?.password) {
       throw new Error(
-        `Could not retrieve configuration of FSP Intersolve Voucher for program: ${programId}. Please contact the 121 platform team.`,
+        `Could not retrieve configuration of FSP Intersolve Voucher for project: ${projectId}. Please contact the 121 platform team.`,
       );
     }
 
@@ -607,15 +607,15 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async getUnusedVouchers(
-    programId?: number,
+    projectId?: number,
   ): Promise<UnusedVoucherDto[]> {
     const unusedVouchersEntities = await this.intersolveVoucherScopedRepository
       .createQueryBuilder('voucher')
       .leftJoinAndSelect('voucher.image', 'image')
       .leftJoinAndSelect('image.registration', 'registration')
       .andWhere('voucher.balanceUsed = false')
-      .andWhere('registration.programId = :programId', {
-        programId,
+      .andWhere('registration.projectId = :projectId', {
+        projectId,
       })
       .getMany();
 
@@ -645,7 +645,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     transactionStep: number,
     status: TransactionStatusEnum,
     errorMessage: string | null,
-    programId: number,
+    projectId: number,
     options: IntersolveStoreVoucherOptionsDto,
   ): Promise<void> {
     if (options.intersolveVoucherId) {
@@ -666,7 +666,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     );
 
     let userId = options.userId;
-    let programFspConfigurationId = options.programFspConfigurationId;
+    let projectFspConfigurationId = options.projectFspConfigurationId;
     if (transactionStep === 2) {
       const userFspConfigIdObject =
         await this.getUserFspConfigIdForTransactionStep2(
@@ -675,8 +675,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
         );
       if (userFspConfigIdObject) {
         userId = userFspConfigIdObject.userId;
-        programFspConfigurationId =
-          userFspConfigIdObject.programFspConfigurationId;
+        projectFspConfigurationId =
+          userFspConfigIdObject.projectFspConfigurationId;
       }
     }
 
@@ -685,17 +685,17 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
         'Could not find userId for transaction in storeTransactionResult.',
       );
     }
-    if (programFspConfigurationId === undefined) {
+    if (projectFspConfigurationId === undefined) {
       throw new Error(
-        'Could not find programFspConfigurationId for transaction in storeTransactionResult.',
+        'Could not find projectFspConfigurationId for transaction in storeTransactionResult.',
       );
     }
 
     const transactionRelationDetails = {
-      programId,
+      projectId,
       paymentId,
       userId,
-      programFspConfigurationId,
+      projectFspConfigurationId,
     };
 
     await this.transactionsService.storeTransactionUpdateStatus(
@@ -710,14 +710,14 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   ) {
     const transaction: null | {
       userId: number;
-      programFspConfigurationId: number;
+      projectFspConfigurationId: number;
     } = await this.transactionRepository.findOne({
       where: {
         registrationId: Equal(registrationId),
         paymentId: Equal(paymentId),
       },
       order: { created: 'DESC' },
-      select: ['userId', 'programFspConfigurationId'],
+      select: ['userId', 'projectFspConfigurationId'],
     });
     return transaction;
   }
@@ -732,7 +732,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   ): Promise<PaTransactionResultDto> {
     const registration = await this.registrationScopedRepository.findOneOrFail({
       where: { id: Equal(registrationId) },
-      relations: ['programFspConfiguration', 'program'],
+      relations: ['projectFspConfiguration', 'project'],
     });
 
     const transactionResult = new PaTransactionResultDto();
@@ -746,7 +746,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       transactionResult.messageSid = messageSid;
     }
 
-    const fspNameOfRegistration = registration.programFspConfiguration.fspName;
+    const fspNameOfRegistration = registration.projectFspConfiguration.fspName;
     if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
       transactionResult.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
@@ -766,7 +766,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async getVouchersWithBalance(
-    programId: number,
+    projectId: number,
   ): Promise<VoucherWithBalanceDto[]> {
     const vouchersWithBalance: VoucherWithBalanceDto[] = [];
     const voucherWithBalanceRaw = await this.intersolveVoucherScopedRepository
@@ -774,8 +774,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       .leftJoinAndSelect('voucher.image', 'image')
       .leftJoinAndSelect('image.registration', 'registration')
       .andWhere('voucher.lastRequestedBalance > 0')
-      .andWhere('registration.programId = :programId', {
-        programId,
+      .andWhere('registration.projectId = :projectId', {
+        projectId,
       })
       .getMany();
     for await (const voucher of voucherWithBalanceRaw) {
@@ -791,7 +791,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   ): Promise<VoucherWithBalanceDto> {
     const voucherWithBalance = new VoucherWithBalanceDto();
     voucherWithBalance.paNumber =
-      voucher.image[0].registration.registrationProgramId;
+      voucher.image[0].registration.registrationProjectId;
     voucherWithBalance.name = await this.registrationUtilsService.getFullName(
       voucher.image[0].registration,
     );

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
 import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
 import { ExchangeRatesService as ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 
 // Mock for ExchangeRateApiService
 const mockExchangeRatesApiService = {
@@ -27,7 +27,7 @@ describe('ExchangeRatesService', () => {
           },
         },
         {
-          provide: getRepositoryToken(ProgramEntity),
+          provide: getRepositoryToken(ProjectEntity),
           useValue: {
             createQueryBuilder: jest.fn(() => ({
               select: jest.fn().mockReturnThis(),
@@ -36,8 +36,8 @@ describe('ExchangeRatesService', () => {
               getRawMany: jest
                 .fn()
                 .mockResolvedValue([
-                  { program_currency: 'USD' },
-                  { program_currency: 'GBP' },
+                  { project_currency: 'USD' },
+                  { project_currency: 'GBP' },
                 ]),
             })),
           },

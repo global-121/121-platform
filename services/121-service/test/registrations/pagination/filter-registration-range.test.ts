@@ -11,7 +11,7 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdOCW } from '@121-service/test/registrations/pagination/pagination-data';
 
 // Dynamically create registrations
 const registrations = [
@@ -37,7 +37,7 @@ const registrations = [
   }),
   createOcwRegistrationForImport({
     referenceId: 'referenceId5',
-    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+    projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     paymentAmountMultiplier: 3,
     addressHouseNumber: null,
   }),
@@ -51,7 +51,7 @@ async function getMiddleCreatedDateOfRegistrations(
   accessToken: string,
 ): Promise<Date> {
   return getRegistrations({
-    programId: programIdOCW,
+    projectId: projectIdOCW,
     accessToken,
   }).then((response) => {
     const registrations = response.body.data;
@@ -78,17 +78,17 @@ describe('Filter registrations using range', () => {
 
     await seedIncludedRegistrations(
       registrations.slice(0, 2),
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
     await seedIncludedRegistrations(
       registrations.slice(2, 3),
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
     await seedIncludedRegistrations(
       registrations.slice(3, 5),
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
     middleCreatedDate = await getMiddleCreatedDateOfRegistrations(accessToken);
@@ -97,7 +97,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level numeric attributes based on greater than', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: { 'filter.paymentAmountMultiplier': `${FilterOperator.GT}:2` },
     });
@@ -116,7 +116,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level numeric attributes based on lower than', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: { 'filter.paymentAmountMultiplier': `${FilterOperator.LT}:2` },
     });
@@ -136,7 +136,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level numeric attributes based on on between filter', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.paymentAmountMultiplier': `${FilterOperator.BTW}:2,3`,
@@ -157,7 +157,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level date attributes based on greater than', async () => {
     // Act
     const getRegistrationsResponseGreater = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.created': `${FilterOperator.GT}:${middleCreatedDate.toISOString()}`,
@@ -180,7 +180,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level date attributes based on lower than', async () => {
     // Act
     const getRegistrationsResponseGreater = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.created': `${FilterOperator.LT}:${middleCreatedDate.toISOString()}`,
@@ -202,7 +202,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration entity-level date attributes based on between filter', async () => {
     // Act
     const getRegistrationsResponseGreater = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.created': `${FilterOperator.BTW}:${middleCreatedDate.toISOString()},${new Date(
@@ -221,7 +221,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration attribute data based on greater than', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.addressHouseNumber': `${FilterOperator.GT}:2`,
@@ -244,7 +244,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration attribute data based on lower than', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.addressHouseNumber': `${FilterOperator.LT}:2`,
@@ -263,7 +263,7 @@ describe('Filter registrations using range', () => {
   it('should filter registration attribute data based on between filter', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.addressHouseNumber': `${FilterOperator.BTW}:1,3`, // This also include 1 and 3
@@ -285,7 +285,7 @@ describe('Filter registrations using range', () => {
   it('should not apply greater than filter on non-numeric registratrion data', async () => {
     // Act
     const getRegistrationsResponse = await getRegistrations({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       accessToken,
       filter: {
         'filter.addressStreetName': `${FilterOperator.GT}:z`,

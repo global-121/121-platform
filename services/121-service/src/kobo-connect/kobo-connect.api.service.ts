@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
+import { CreateProjectDto } from '@121-service/src/projects/dto/create-project.dto';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 interface KoboApiResponse<T = unknown> {
@@ -26,12 +26,12 @@ export class KoboConnectApiService {
 
   public constructor(private readonly httpService: CustomHttpService) {}
 
-  public async create121Program(
+  public async create121Project(
     koboToken: string,
     koboAssetId: string,
-  ): Promise<CreateProgramDto | Partial<KoboApiResponse>> {
+  ): Promise<CreateProjectDto | Partial<KoboApiResponse>> {
     return await this.httpService
-      .get<KoboApiResponse<CreateProgramDto>>(`${this.apiUrl}/121-program`, [
+      .get<KoboApiResponse<CreateProjectDto>>(`${this.apiUrl}/121-project`, [
         {
           name: 'kobotoken',
           value: koboToken,

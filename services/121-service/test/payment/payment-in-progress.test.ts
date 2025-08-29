@@ -5,18 +5,18 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   doPayment,
-  getProgramPaymentsStatus,
+  getProjectPaymentsStatus,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
   registrationOCW4,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -29,7 +29,7 @@ describe('Payment in progress', () => {
   );
 
   const registrationsVisaOcw = registrationsOCW.filter(
-    (r) => r.programFspConfigurationName === Fsps.intersolveVisa,
+    (r) => r.projectFspConfigurationName === Fsps.intersolveVisa,
   );
   // Create a registration with a different referenceId from OCW registrations as the default ones from PV have no VISA
   const registrationsVisaPV = [
@@ -52,16 +52,16 @@ describe('Payment in progress', () => {
     const paymentAmount = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
 
-    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    await seedIncludedRegistrations(registrationsPV, projectIdPV, accessToken);
     await seedIncludedRegistrations(
       registrationsOCW,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
 
     // We do a payment here and wait for it to complete
     const doPaymentResponse = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -69,7 +69,7 @@ describe('Payment in progress', () => {
     });
     const paymentIdPvFirst = doPaymentResponse.body.id;
     await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
       maxWaitTimeMs: 10_000,
@@ -77,15 +77,15 @@ describe('Payment in progress', () => {
     });
 
     // Act
-    const getProgramPaymentsPvResult = (
-      await getProgramPaymentsStatus(programIdPV, accessToken)
+    const getProjectPaymentsPvResult = (
+      await getProjectPaymentsStatus(projectIdPV, accessToken)
     ).body;
-    const getProgramPaymentsOcwResult = (
-      await getProgramPaymentsStatus(programIdOCW, accessToken)
+    const getProjectPaymentsOcwResult = (
+      await getProjectPaymentsStatus(projectIdOCW, accessToken)
     ).body;
 
     const doPaymentPvResultPaymentNext = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -94,7 +94,7 @@ describe('Payment in progress', () => {
     const paymentIdPvNext = doPaymentPvResultPaymentNext.body.id;
 
     const doPaymentOcwResultPaymentNext = await doPayment({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -104,22 +104,22 @@ describe('Payment in progress', () => {
     const paymentIdOcw = doPaymentOcwResultPaymentNext.body.id;
 
     // Assert
-    expect(getProgramPaymentsPvResult.inProgress).toBe(false);
-    expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
+    expect(getProjectPaymentsPvResult.inProgress).toBe(false);
+    expect(getProjectPaymentsOcwResult.inProgress).toBe(false);
 
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPvNext,
     });
     await waitForPaymentTransactionsToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,
       maxWaitTimeMs: 30_000,
@@ -132,17 +132,17 @@ describe('Payment in progress', () => {
     const paymentAmount = 25;
     const filterAllIncluded = { 'filter.status': '$in:included' };
 
-    await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    await seedIncludedRegistrations(registrationsPV, projectIdPV, accessToken);
     await seedIncludedRegistrations(
       registrationsOCW,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
 
     // Act
     // We do a payment and we do not wait for all transactions to complete
     const doPaymentResponse = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -150,22 +150,22 @@ describe('Payment in progress', () => {
     });
     const paymentIdPv = doPaymentResponse.body.id;
 
-    const getProgramPaymentsPvResult = (
-      await getProgramPaymentsStatus(programIdPV, accessToken)
+    const getProjectPaymentsPvResult = (
+      await getProjectPaymentsStatus(projectIdPV, accessToken)
     ).body;
-    const getProgramPaymentsOcwResult = (
-      await getProgramPaymentsStatus(programIdOCW, accessToken)
+    const getProjectPaymentsOcwResult = (
+      await getProjectPaymentsStatus(projectIdOCW, accessToken)
     ).body;
 
     const doPaymentPvResultPaymentNext = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
       filter: filterAllIncluded,
     });
     const doPaymentOcwResultPaymentNext = await doPayment({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -173,14 +173,14 @@ describe('Payment in progress', () => {
     });
 
     const retryPaymentPvResult = await retryPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId: paymentIdPv,
       accessToken,
     });
 
     // Assert
-    expect(getProgramPaymentsPvResult.inProgress).toBe(true);
-    expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
+    expect(getProjectPaymentsPvResult.inProgress).toBe(true);
+    expect(getProjectPaymentsOcwResult.inProgress).toBe(false);
 
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
@@ -188,14 +188,14 @@ describe('Payment in progress', () => {
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentReferenceIds: registrationReferenceIdsPV,
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPv,
     });
     await waitForPaymentTransactionsToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       paymentReferenceIds: registrationReferenceIdsOCW,
       accessToken,
       maxWaitTimeMs: 30_000,
@@ -210,19 +210,19 @@ describe('Payment in progress', () => {
 
     await seedIncludedRegistrations(
       registrationsVisaPV,
-      programIdPV,
+      projectIdPV,
       accessToken,
     );
     await seedIncludedRegistrations(
       registrationsVisaOcw,
-      programIdOCW,
+      projectIdOCW,
       accessToken,
     );
 
     // Act
-    // We do a payment only for the PV program and we do not wait for all transactions to complete
+    // We do a payment only for the PV project and we do not wait for all transactions to complete
     const doPaymentResponse = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -230,17 +230,17 @@ describe('Payment in progress', () => {
     });
     const paymentIdPv = doPaymentResponse.body.id;
 
-    // PV program should be in progress, OCW should not
-    const getProgramPaymentsPvResult = (
-      await getProgramPaymentsStatus(programIdPV, accessToken)
+    // PV project should be in progress, OCW should not
+    const getProjectPaymentsPvResult = (
+      await getProjectPaymentsStatus(projectIdPV, accessToken)
     ).body;
-    const getProgramPaymentsOcwResult = (
-      await getProgramPaymentsStatus(programIdOCW, accessToken)
+    const getProjectPaymentsOcwResult = (
+      await getProjectPaymentsStatus(projectIdOCW, accessToken)
     ).body;
 
     // We expect that doing the next payment fails since the previous payment is still in progress
     const doPaymentPvResultPaymentNext = await doPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -248,14 +248,14 @@ describe('Payment in progress', () => {
     });
     // We expect that retrying the payment fails since the previous payment is still in progress
     const retryPaymentPvResult = await retryPayment({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId: paymentIdPv,
       accessToken,
     });
 
     // We expect that doing a payment for OCW succeeds since the previous payment is not in progress (the payment in progress is for PV)
     const doPaymentOcwResultPaymentNext = await doPayment({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       amount: paymentAmount,
       referenceIds: [],
       accessToken,
@@ -263,25 +263,25 @@ describe('Payment in progress', () => {
     });
 
     // Assert
-    // PV program should be in progress and new payments cannot be started
-    expect(getProgramPaymentsPvResult.inProgress).toBe(true);
+    // PV project should be in progress and new payments cannot be started
+    expect(getProjectPaymentsPvResult.inProgress).toBe(true);
     expect(doPaymentPvResultPaymentNext.status).toBe(HttpStatus.BAD_REQUEST);
     expect(retryPaymentPvResult.status).toBe(HttpStatus.BAD_REQUEST);
 
-    // OCW program should not be in progress and new payments can be started
-    expect(getProgramPaymentsOcwResult.inProgress).toBe(false);
+    // OCW project should not be in progress and new payments can be started
+    expect(getProjectPaymentsOcwResult.inProgress).toBe(false);
     expect(doPaymentOcwResultPaymentNext.status).toBe(HttpStatus.ACCEPTED);
 
     // Cleanup to make sure nothing is in progress anymore
     await waitForPaymentTransactionsToComplete({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentReferenceIds: registrationsVisaPV.map((r) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 30_000,
       paymentId: paymentIdPv,
     });
     await waitForPaymentTransactionsToComplete({
-      programId: programIdOCW,
+      projectId: projectIdOCW,
       paymentReferenceIds: registrationsVisaOcw.map((r) => r.referenceId),
       accessToken,
       maxWaitTimeMs: 30_000,

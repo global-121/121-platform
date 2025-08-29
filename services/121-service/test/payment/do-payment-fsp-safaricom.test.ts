@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
+import { UpdateProjectDto } from '@121-service/src/projects/dto/update-project.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -10,10 +10,10 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
-  patchProgram,
+  patchProject,
   retryPayment,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -25,11 +25,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Do payment to 1 PA', () => {
-  const programId = 1;
+  const projectId = 1;
   const amount = 12327;
   const registrationSafaricom = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-    programFspConfigurationName: Fsps.safaricom,
+    projectFspConfigurationName: Fsps.safaricom,
     phoneNumber: '254708374149',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
@@ -44,30 +44,30 @@ describe('Do payment to 1 PA', () => {
     let accessToken: string;
 
     beforeEach(async () => {
-      await resetDB(SeedScript.safaricomProgram, __filename);
+      await resetDB(SeedScript.safaricomProject, __filename);
       accessToken = await getAccessToken();
     });
 
     it('should successfully pay-out', async () => {
       // Arrange
-      const program = {
+      const project = {
         allowEmptyPhoneNumber: false,
       };
 
       // Act
       // Call the update function
-      await patchProgram(2, program as UpdateProgramDto, accessToken);
+      await patchProject(2, project as UpdateProjectDto, accessToken);
 
       // Arrange
       registrationSafaricom.phoneNumber = '254708374149';
       await importRegistrations(
-        programId,
+        projectId,
         [registrationSafaricom],
         accessToken,
       );
 
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationSafaricom.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -76,7 +76,7 @@ describe('Do payment to 1 PA', () => {
 
       // Act
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -84,7 +84,7 @@ describe('Do payment to 1 PA', () => {
       const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
@@ -96,7 +96,7 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
@@ -119,12 +119,12 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       registrationSafaricom.phoneNumber = '254000000000';
       await importRegistrations(
-        programId,
+        projectId,
         [registrationSafaricom],
         accessToken,
       );
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationSafaricom.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -133,7 +133,7 @@ describe('Do payment to 1 PA', () => {
 
       // Act
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -141,7 +141,7 @@ describe('Do payment to 1 PA', () => {
       const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
@@ -150,7 +150,7 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
@@ -175,12 +175,12 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       registrationSafaricom.phoneNumber = '254000000000';
       await importRegistrations(
-        programId,
+        projectId,
         [registrationSafaricom],
         accessToken,
       );
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationSafaricom.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -190,7 +190,7 @@ describe('Do payment to 1 PA', () => {
       // Act
       // Initial failing payment
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -198,7 +198,7 @@ describe('Do payment to 1 PA', () => {
       const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
@@ -207,7 +207,7 @@ describe('Do payment to 1 PA', () => {
 
       // update PA
       await updateRegistration(
-        programId,
+        projectId,
         registrationSafaricom.referenceId,
         { phoneNumber: '254708374149' },
         'automated test',
@@ -217,7 +217,7 @@ describe('Do payment to 1 PA', () => {
 
       // retry payment
       await retryPayment({
-        programId,
+        projectId,
         paymentId,
         accessToken,
       });
@@ -225,7 +225,7 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,
@@ -245,13 +245,13 @@ describe('Do payment to 1 PA', () => {
       const magigPhoneNrTimeout = '254000000002';
       registrationSafaricom.phoneNumber = magigPhoneNrTimeout;
       await importRegistrations(
-        programId,
+        projectId,
         [registrationSafaricom],
         accessToken,
       );
 
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationSafaricom.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -260,7 +260,7 @@ describe('Do payment to 1 PA', () => {
 
       // Act
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -268,7 +268,7 @@ describe('Do payment to 1 PA', () => {
       const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 4_000,
@@ -280,7 +280,7 @@ describe('Do payment to 1 PA', () => {
 
       // Assert
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationSafaricom.referenceId,
         accessToken,

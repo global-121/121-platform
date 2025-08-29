@@ -32,7 +32,7 @@ test('[34619] User can view debit cards of a registration with a single active d
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations([registrationOCW1], projectId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -78,7 +78,7 @@ test('[34620] User does not find debit card of a person without payments', async
 }) => {
   await seedIncludedRegistrations([registrationOCW1], projectId, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -120,7 +120,7 @@ test('[34621] User can replace a debit card and view both new and old card', asy
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations([registrationOCW1], projectId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });
@@ -234,7 +234,7 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
   // Prepare data - seed a registration with a payment to ensure they have a card
   await seedPaidRegistrations([registrationOCW1], projectId);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: projectId,
+    projectId,
     referenceId: registrationOCW1.referenceId,
     accessToken,
   });

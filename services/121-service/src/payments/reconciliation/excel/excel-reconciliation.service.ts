@@ -14,8 +14,8 @@ import { ReconciliationResult } from '@121-service/src/payments/interfaces/recon
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -24,8 +24,8 @@ import { FileImportService } from '@121-service/src/utils/file-import/file-impor
 
 @Injectable()
 export class ExcelRecociliationService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
 
   private statusColumnName = 'status';
 
@@ -39,32 +39,32 @@ export class ExcelRecociliationService {
   ) {}
 
   public async getImportInstructionsTemplate(
-    programId: number,
+    projectId: number,
   ): Promise<GetImportTemplateResponseDto[]> {
-    const programWithExcelFspConfigs = await this.programRepository.findOne({
+    const projectWithExcelFspConfigs = await this.projectRepository.findOne({
       where: {
-        id: Equal(programId),
-        programFspConfigurations: {
+        id: Equal(projectId),
+        projectFspConfigurations: {
           fspName: Equal(Fsps.excel),
         },
       },
-      relations: ['programFspConfigurations'],
+      relations: ['projectFspConfigurations'],
       order: {
-        programFspConfigurations: {
+        projectFspConfigurations: {
           name: 'ASC',
         },
       },
     });
 
-    if (!programWithExcelFspConfigs) {
+    if (!projectWithExcelFspConfigs) {
       throw new HttpException(
-        'No program with `Excel` FSP found',
+        'No project with `Excel` FSP found',
         HttpStatus.NOT_FOUND,
       );
     }
 
     const templates: GetImportTemplateResponseDto[] = [];
-    for (const fspConfig of programWithExcelFspConfigs.programFspConfigurations) {
+    for (const fspConfig of projectWithExcelFspConfigs.projectFspConfigurations) {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
@@ -79,7 +79,7 @@ export class ExcelRecociliationService {
 
   public async upsertFspReconciliationData(
     file: Express.Multer.File,
-    programId: number,
+    projectId: number,
     paymentId: number,
     userId: number,
   ): Promise<{
@@ -90,14 +90,14 @@ export class ExcelRecociliationService {
       countNotFound: number;
     };
   }> {
-    const program = await this.programRepository.findOneOrFail({
+    const project = await this.projectRepository.findOneOrFail({
       where: {
-        id: Equal(programId),
+        id: Equal(projectId),
       },
-      relations: ['programFspConfigurations'],
+      relations: ['projectFspConfigurations'],
     });
-    const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
-    for (const fspConfig of program.programFspConfigurations) {
+    const fspConfigsExcel: ProjectFspConfigurationEntity[] = [];
+    for (const fspConfig of project.projectFspConfigurations) {
       if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
@@ -112,23 +112,23 @@ export class ExcelRecociliationService {
     const importResults = await this.processReconciliationData({
       file,
       paymentId,
-      programId,
+      projectId,
       fspConfigs: fspConfigsExcel,
     });
 
     for (const fspConfig of fspConfigsExcel) {
       const transactions = importResults
-        .filter((r) => r.programFspConfigurationId === fspConfig.id)
+        .filter((r) => r.projectFspConfigurationId === fspConfig.id)
         .map((r) => r.transaction)
         .filter((t): t is PaTransactionResultDto => t !== undefined);
 
       await this.transactionsService.storeReconciliationTransactionsBulk(
         transactions,
         {
-          programId,
+          projectId,
           paymentId,
           userId,
-          programFspConfigurationId: fspConfig.id,
+          projectFspConfigurationId: fspConfig.id,
         },
       );
     }
@@ -140,7 +140,7 @@ export class ExcelRecociliationService {
 
     await this.actionService.saveAction(
       userId,
-      programId,
+      projectId,
       AdditionalActionType.importFspReconciliation,
     );
 
@@ -179,13 +179,13 @@ export class ExcelRecociliationService {
   public async processReconciliationData({
     file,
     paymentId,
-    programId,
+    projectId,
     fspConfigs,
   }: {
     file: Express.Multer.File;
     paymentId: number;
-    programId: number;
-    fspConfigs: ProgramFspConfigurationEntity[];
+    projectId: number;
+    fspConfigs: ProjectFspConfigurationEntity[];
   }): Promise<ReconciliationResult[]> {
     const maxRecords = 10000;
     const validatedExcelImport = await this.fileImportService.validateCsv(
@@ -204,7 +204,7 @@ export class ExcelRecociliationService {
         referenceId: null,
         message: null,
       };
-      resultRow.programFspConfigurationId = undefined;
+      resultRow.projectFspConfigurationId = undefined;
       resultRow.transaction = undefined;
       crossFspConfigImportResults.push(resultRow);
     }
@@ -219,7 +219,7 @@ export class ExcelRecociliationService {
         matchColumn,
       });
       const importResultForFspConfig = await this.reconciliatePayments({
-        programId,
+        projectId,
         paymentId,
         validatedExcelImport,
         fspConfig,
@@ -250,21 +250,21 @@ export class ExcelRecociliationService {
   }
 
   private async reconciliatePayments({
-    programId,
+    projectId,
     paymentId,
     validatedExcelImport,
     fspConfig,
     matchColumn,
   }: {
-    programId: number;
+    projectId: number;
     paymentId: number;
     validatedExcelImport: object[];
-    fspConfig: ProgramFspConfigurationEntity;
+    fspConfig: ProjectFspConfigurationEntity;
     matchColumn: string;
   }): Promise<ReconciliationResult[]> {
     const registrationsForReconciliation =
       await this.getRegistrationsForReconciliation(
-        programId,
+        projectId,
         paymentId,
         matchColumn,
         fspConfig.id,
@@ -274,11 +274,11 @@ export class ExcelRecociliationService {
     }
     const lastTransactions = await this.transactionsService.getLastTransactions(
       {
-        programId,
+        projectId,
         paymentId,
         referenceId: undefined,
         status: undefined,
-        programFspConfigId: fspConfig.id,
+        projectFspConfigId: fspConfig.id,
       },
     );
     // Join registration data with the imported CSV records
@@ -292,22 +292,22 @@ export class ExcelRecociliationService {
   }
 
   private async getRegistrationsForReconciliation(
-    programId: number,
+    projectId: number,
     paymentId: number,
     matchColumn: string,
-    programFspConfigurationId: number,
+    projectFspConfigurationId: number,
   ): Promise<MappedPaginatedRegistrationDto[]> {
     const qb =
       this.registrationViewScopedRepository.getQueryBuilderForFspInstructions({
-        programId,
+        projectId,
         paymentId,
-        programFspConfigurationId,
+        projectFspConfigurationId,
         fspName: Fsps.excel,
       });
     // log query
     const chunkSize = 400000;
     return await this.registrationsPaginationService.getRegistrationsChunked(
-      programId,
+      projectId,
       {
         select: [matchColumn, 'referenceId', 'id'],
         path: '',
@@ -381,7 +381,7 @@ export class ExcelRecociliationService {
           importStatus,
           [matchColumn]: record[matchColumn],
         },
-        programFspConfigurationId: matchedRegistration
+        projectFspConfigurationId: matchedRegistration
           ? fspConfigId
           : undefined,
         transaction: transaction || undefined,

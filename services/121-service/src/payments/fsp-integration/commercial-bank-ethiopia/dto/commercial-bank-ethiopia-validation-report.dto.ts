@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class CommercialBankEthiopiaValidationReportData {
   @ApiProperty()
-  registrationProgramId: number;
+  registrationProjectId: number;
   @ApiProperty()
   fullNameUsedForTheMatch: string;
   @ApiProperty()

@@ -1,7 +1,7 @@
 # Interfaces on the 121-platform
 
 - [Portal](./portal/)
-  Web-app used by the _Humanitarian Organization_ to manage their programs, aid-workers, communication, etc.
+  Web-app used by the _Humanitarian Organization_ to manage their projects, aid-workers, communication, etc.
 
   Primary target(s): Laptop/desktop
 

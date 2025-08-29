@@ -10,7 +10,7 @@ import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -22,14 +22,14 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
-  const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
+  const OcwProjectId = projectIdOCW;
+  const PvProjectId = projectIdPV;
   let accessToken: string;
 
   const registrationsPvFirst3 = registrationsPV.slice(0, 3);
@@ -45,19 +45,19 @@ describe('Registrations - [Scoped]', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(OcwProgramId, registrationsOCW, accessToken);
+    await importRegistrations(OcwProjectId, registrationsOCW, accessToken);
 
-    await importRegistrations(PvProgramId, registrationsPV, accessToken);
+    await importRegistrations(PvProjectId, registrationsPV, accessToken);
 
     await awaitChangeRegistrationStatus({
-      programId: OcwProgramId,
+      projectId: OcwProjectId,
       referenceIds: registrationsOCW.map((r) => r.referenceId),
       status: RegistrationStatusEnum.included,
       accessToken,
     });
 
     await awaitChangeRegistrationStatus({
-      programId: programIdPV,
+      projectId: projectIdPV,
       referenceIds: registrationsPvFirst3ReferenceIds,
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -76,10 +76,10 @@ describe('Registrations - [Scoped]', () => {
 
     // Act
     // 7 registrations in total are included
-    // 3 registrations are in include in program PV
-    // 2 registrations are in include in program PV and are in the scope of the requesting user
+    // 3 registrations are in include in project PV
+    // 2 registrations are in include in project PV and are in the scope of the requesting user
     const doPaymentResponse = await doPayment({
-      programId: PvProgramId,
+      projectId: PvProjectId,
       amount: 25,
       referenceIds: [],
       accessToken: accessTokenScoped,
@@ -89,13 +89,13 @@ describe('Registrations - [Scoped]', () => {
 
     // Assert
     await waitForPaymentTransactionsToComplete({
-      programId: PvProgramId,
+      projectId: PvProjectId,
       paymentReferenceIds: registrationsPvFirst2ReferenceIds,
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId,
       registrationReferenceId: null,
       accessToken,
