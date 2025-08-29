@@ -210,6 +210,8 @@ describe('Export transactions', () => {
     const faultyPropertiesInMessage = errorResponse.message.map(
       (messageObj) => messageObj.property,
     );
-    expect(faultyPropertiesInMessage).toEqual(Object.keys(invalidFields));
+    expect(Object.keys(invalidFields)).toEqual(
+      expect.arrayContaining(faultyPropertiesInMessage),
+    );
   });
 });

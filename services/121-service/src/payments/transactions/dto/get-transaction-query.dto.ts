@@ -1,4 +1,4 @@
-import { IsEnum, IsISO8601, IsOptional } from 'class-validator';
+import { IsEnum, IsISO8601, IsNumberString, IsOptional } from 'class-validator';
 
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 
@@ -13,5 +13,6 @@ export class GetTransactionsQueryDto {
   @IsEnum(ExportFileFormat)
   public format?: ExportFileFormat;
   @IsOptional()
-  public paymentId?: number;
+  @IsNumberString()
+  public paymentId?: string;
 }

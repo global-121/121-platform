@@ -216,7 +216,7 @@ export async function exportTransactions({
   accessToken: string;
   fromDate?: string;
   toDate?: string;
-  paymentId?: number;
+  paymentId?: unknown;
   format?: string;
 }): Promise<request.Response> {
   return await getServer()

@@ -294,7 +294,7 @@ export class PaymentsController {
         programId,
         fromDateString: query.fromDate,
         toDateString: query.toDate,
-        paymentId: query.paymentId,
+        paymentId: query.paymentId ? Number(query.paymentId) : undefined,
       });
     if (query.format === ExportFileFormat.xlsx) {
       return sendXlsxReponse(result.data, result.fileName, res);
