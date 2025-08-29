@@ -10,7 +10,6 @@ import { RegistrationViewEntity } from '@121-service/src/registration/registrati
 
 type RegistrationViewWithoutData = Omit<RegistrationViewEntity, 'data'>;
 
-// TODO: Add unit tests for this mapper class
 export class RegistrationViewsMapper {
   static selectRegistrationRootFields({
     registration,
