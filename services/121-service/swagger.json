@@ -854,6 +854,27 @@
   },
   {
     "method": "get",
+    "path": "/api/programs/{programId}/metrics/registration-count-by-date",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/all-payments-aggregates",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/metrics/amount-sent-by-month",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
     "path": "/api/programs/{programId}/payments",
     "params": [
       "programId"
