@@ -5,17 +5,11 @@
   "ngo": "Yellow Cross",
   "titlePortal": {
     "ar": "برنامج النقدية فيستروس",
-    "en": "Cash project Westeros",
-    "es": "Projecta de efectivo Poniente",
-    "fr": "Projectme de trésorerie Westeros",
-    "nl": "Cashprojectma Westeros"
+    "en": "Cash project Westeros"
   },
   "description": {
     "ar": "يهدف هذا البرنامج إلى مساعدة عامة الناس في ويستروس الأكثر تضرراً من حرب الملوك الخمسة.",
-    "en": "This project is aimed to help the commoners in Westeros most affected by the War of the Five Kings.",
-    "es": "Este projecta tiene como objetivo ayudar a los plebeyos de Poniente más afectados por la Guerra de los Cinco Reyes.",
-    "fr": "Ce projectme vise à aider les roturiers de Westeros les plus touchés par la guerre des Cinq Rois.",
-    "nl": "Dit projectma is bedoeld om de gewone mensen in Westeros te helpen die het zwaarst getroffen zijn door de Oorlog van de Vijf Koningen."
+    "en": "This project is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
@@ -271,10 +265,7 @@
   ],
   "aboutProject": {
     "ar": "[حول برنامج المساعدات]",
-    "en": "[about aid project]",
-    "es": "[sobre el projecta de ayuda]",
-    "fr": "[à propos du projectme d'aide]",
-    "nl": "[beschrijving van het projectma]"
+    "en": "[about aid project]"
   },
   "fullnameNamingConvention": ["fullName"],
   "languages": ["ar", "en", "es", "fr", "nl"],
