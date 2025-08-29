@@ -80,7 +80,7 @@ describe('PaymentsReportingService - getTransactions', () => {
     jest.spyOn(paymentRepository, 'findOne').mockResolvedValue({});
   });
 
-  describe('geTransactionsByPaymentId', () => {
+  describe('getTransactionsByPaymentId', () => {
     it('should return transactions with names', async () => {
       // Arrange
       const programId = 1;

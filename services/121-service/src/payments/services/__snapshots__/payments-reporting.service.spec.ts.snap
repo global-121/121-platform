@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PaymentsReportingService - getTransactions geTransactionsByPaymentId should throw 404 if payment does not exist 1`] = `[HttpException: Payment with ID 999 not found in program 1]`;
+exports[`PaymentsReportingService - getTransactions getTransactionsByPaymentId should throw 404 if payment does not exist 1`] = `[HttpException: Payment with ID 999 not found in program 1]`;
 
 exports[`PaymentsReportingService - getTransactions getPaymentEvents should throw 404 if payment does not exist 1`] = `[HttpException: Payment with ID 999 not found in program 1]`;

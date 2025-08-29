@@ -15,7 +15,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
-import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
@@ -48,7 +47,7 @@ export class MetricsService {
     private readonly userService: UserService,
   ) {}
 
-  public async getExportList({
+  public async getExport({
     programId,
     type,
     userId,
@@ -86,47 +85,44 @@ export class MetricsService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        return this.getAllPeopleAffectedList({
+        return this.getRegistrationsExport({
           programId,
-          filter: paginationQuery.filter,
-          search: paginationQuery.search,
-          select: paginationQuery.select,
+          paginationQuery,
         });
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchers(programId);
+        return this.getUnusedVouchersExport(programId);
       }
       case ExportType.vouchersWithBalance: {
-        return this.getVouchersWithBalance(programId);
+        return this.getVouchersWithBalanceExport(programId);
       }
       case ExportType.intersolveVisaCardDetails: {
-        return this.createIntersolveVisaBalancesExport(programId);
+        return this.getIntersolveVisaBalancesExport(programId);
       }
       default:
+        const validExportType = [
+          ExportType.registrations,
+          ExportType.unusedVouchers,
+          ExportType.vouchersWithBalance,
+          ExportType.intersolveVisaCardDetails,
+        ];
         throw new HttpException(
-          'Unknown ExportList type',
+          `Invalid export type: ${type}. Valid types are: ${validExportType.join(', ')}`,
           HttpStatus.BAD_REQUEST,
         );
     }
   }
 
-  private async getAllPeopleAffectedList({
+  private async getRegistrationsExport({
     programId,
-    filter,
-    search,
-    select,
+    paginationQuery,
   }: {
     programId: number;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
+    paginationQuery: PaginateQuery;
   }): Promise<FileDto> {
-    const data = await this.getRegistrationsList({
+    const data = await this.getRegistrationsData({
       programId,
-      exportType: ExportType.registrations,
-      filter,
-      search,
-      select,
+      paginationQuery,
     });
     const response = {
       fileName: ExportType.registrations,
@@ -135,26 +131,17 @@ export class MetricsService {
     return response;
   }
 
-  private async getRegistrationsList({
+  private async getRegistrationsData({
     programId,
-    exportType,
-    filter,
-    search,
-    select,
+    paginationQuery,
   }: {
     programId: number;
-    exportType: ExportType;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
+    paginationQuery: PaginateQuery;
   }): Promise<object[]> {
     let rows: Record<string, unknown>[] =
       await this.getRegistrationsGenericFields({
         programId,
-        exportType,
-        filter,
-        search,
-        select,
+        paginationQuery,
       });
 
     for await (const row of rows) {
@@ -172,7 +159,7 @@ export class MetricsService {
     }
     rows = await this.replaceValueWithDropdownLabel({
       rows,
-      select,
+      select: paginationQuery.select,
       programId,
     });
 
@@ -191,6 +178,46 @@ export class MetricsService {
       return this.orderObjectKeys(row, keyOrder);
     });
     return orderedObjects;
+  }
+
+  private async getRegistrationsGenericFields({
+    programId,
+    paginationQuery,
+  }: {
+    programId: number;
+    paginationQuery: PaginateQuery;
+  }): Promise<MappedPaginatedRegistrationDto[]> {
+    // Create an empty scoped querybuilder object
+    let queryBuilder = this.registrationScopedViewRepository
+      .createQueryBuilder('registration')
+      .andWhere({ programId });
+
+    if (!paginationQuery.filter?.['status']) {
+      queryBuilder = queryBuilder.andWhere(
+        'registration."status" != :registrationStatus',
+        {
+          registrationStatus: RegistrationStatusEnum.deleted,
+        },
+      );
+    }
+    const chunkSize = 10000;
+    const paginateQueryForBulk = {
+      path: 'registration',
+      filter: paginationQuery.filter,
+      limit: chunkSize,
+      page: 1,
+      select: paginationQuery.select,
+      search: paginationQuery.search,
+    };
+
+    const data =
+      await this.registrationsPaginationsService.getRegistrationsChunked(
+        programId,
+        paginateQueryForBulk,
+        chunkSize,
+        queryBuilder,
+      );
+    return data;
   }
 
   private orderObjectKeys<T extends Record<string, unknown>>(
@@ -214,7 +241,7 @@ export class MetricsService {
     return ordered;
   }
 
-  private async getUnusedVouchers(programId?: number): Promise<FileDto> {
+  private async getUnusedVouchersExport(programId?: number): Promise<FileDto> {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
 
@@ -226,7 +253,9 @@ export class MetricsService {
     return response;
   }
 
-  private async getVouchersWithBalance(programId: number): Promise<FileDto> {
+  private async getVouchersWithBalanceExport(
+    programId: number,
+  ): Promise<FileDto> {
     const vouchersWithBalance =
       await this.intersolveVoucherService.getVouchersWithBalance(programId);
     const response = {
@@ -246,52 +275,6 @@ export class MetricsService {
     };
 
     return response;
-  }
-
-  private async getRegistrationsGenericFields({
-    programId,
-    exportType,
-    filter,
-    search,
-    select,
-  }: {
-    programId: number;
-    exportType?: ExportType;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
-  }): Promise<MappedPaginatedRegistrationDto[]> {
-    // Create an empty scoped querybuilder object
-    let queryBuilder = this.registrationScopedViewRepository
-      .createQueryBuilder('registration')
-      .andWhere({ programId });
-
-    if (exportType !== ExportType.registrations && !filter?.['status']) {
-      queryBuilder = queryBuilder.andWhere(
-        'registration."status" != :registrationStatus',
-        {
-          registrationStatus: RegistrationStatusEnum.deleted,
-        },
-      );
-    }
-    const chunkSize = 10000;
-    const paginateQuery = {
-      path: 'registration',
-      filter,
-      limit: chunkSize,
-      page: 1,
-      select,
-      search,
-    };
-
-    const data =
-      await this.registrationsPaginationsService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        chunkSize,
-        queryBuilder,
-      );
-    return data;
   }
 
   private async replaceValueWithDropdownLabel({
@@ -369,7 +352,7 @@ export class MetricsService {
     };
   }
 
-  private async createIntersolveVisaBalancesExport(programId: number): Promise<{
+  private async getIntersolveVisaBalancesExport(programId: number): Promise<{
     fileName: ExportType;
     data: ExportVisaCardDetails[];
   }> {

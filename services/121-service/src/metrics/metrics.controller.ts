@@ -102,18 +102,11 @@ export class MetricsController {
     @Req() req: ScopedUserRequest,
     @Res() res: Response,
   ): Promise<Response | void> {
-    if (!Object.values(ExportType).includes(exportType)) {
-      throw new HttpException(
-        `Invalid export type: ${exportType}. Valid types are: ${Object.values(ExportType).join(', ')}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const userId = RequestHelper.getUserId(req);
     if (queryParams['search']) {
       paginationQuery.search = queryParams['search'];
     }
-    const result = await this.metricsService.getExportList({
+    const result = await this.metricsService.getExport({
       programId,
       type: exportType,
       userId,
