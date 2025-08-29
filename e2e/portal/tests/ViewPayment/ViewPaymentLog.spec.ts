@@ -7,7 +7,6 @@ import { seedIncludedRegistrations } from '@121-service/test/helpers/registratio
 import {
   getAccessToken,
   resetDB,
-  resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdOCW,
@@ -18,6 +17,8 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentPage from '@121-e2e/portal/pages/PaymentPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
+const note = 'test payment note';
+
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
@@ -26,7 +27,6 @@ test.beforeEach(async ({ page }) => {
     programIdOCW,
     accessToken,
   );
-  await resetDuplicateRegistrations(8);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[32296] Show in progress banner and chip when payment is in progress', async ({
+test('[37781] View payment log, including note added to payment', async ({
   page,
 }) => {
   const paymentPage = new PaymentPage(page);
@@ -48,9 +48,9 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
     await paymentsPage.navigateToProgramPage('Payments');
   });
 
-  await test.step('Do payment', async () => {
+  await test.step('Do payment with note', async () => {
     await paymentsPage.createPayment();
-    await paymentsPage.startPayment();
+    await paymentsPage.startPayment(note);
     const paymentId = 1; // First payment in this context, so ID 1
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
@@ -62,13 +62,7 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
   });
 
-  await test.step('Validate payemnt in progress in Payment overview', async () => {
-    await paymentPage.validateToastMessage('Payment created.');
-    await paymentPage.validateInProgressChipIsPresent();
-  });
-
-  await test.step('Validate payemnt in progress in Payments page', async () => {
-    await paymentPage.navigateToProgramPage('Payments');
-    await paymentsPage.validateInProgressBannerIsPresent();
+  await test.step('Validate payment log, including note', async () => {
+    await paymentPage.validatePaymentLog(note);
   });
 });

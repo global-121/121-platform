@@ -74,10 +74,23 @@
         <p i18n>Review summary and click start payment.</p>
       }
       <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
-        <app-data-list
-          [data]="paymentSummaryData()"
-          [hideBottomBorder]="true"
-        />
+        <app-data-list [data]="paymentSummaryData()" />
+        <div class="pt-4">
+          <form [formGroup]="paymentFormGroup">
+            <app-form-field-wrapper
+              label="Add note"
+              i18n-label
+            >
+              <input
+                class="w-full"
+                formControlName="note"
+                placeholder="Optional"
+                i18n-placeholder
+                pInputText
+              />
+            </app-form-field-wrapper>
+          </form>
+        </div>
         @if (paymentHasIntegratedFsp()) {
           <p-button
             text
