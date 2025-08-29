@@ -1252,9 +1252,6 @@
       <trans-unit id="8097251469414276924" datatype="html">
         <source><x ctype="x-strong" equiv-text="&lt;strong class=&quot;txt-system-bold-s&quot;&gt;" id="START_TAG_STRONG"/> <x equiv-text="{{ registrations.data()?.length }}" id="INTERPOLATION"/> registration(s) <x ctype="x-strong" equiv-text="&lt;/strong&gt;" id="CLOSE_TAG_STRONG"/> found with this number.</source>
       </trans-unit>
-      <trans-unit id="8209340100752123472" datatype="html">
-        <source>When you receive a task, any information linked to the person&apos;s phone number found in active projects in the 121 Platform will appear here.</source>
-      </trans-unit>
       <trans-unit id="5709449651238206423" datatype="html">
         <source>Gotcha!</source>
       </trans-unit>
@@ -1314,12 +1311,6 @@
       </trans-unit>
       <trans-unit id="2512429297957946940" datatype="html">
         <source>We only use necessary cookies to be able to let users log in to the 121 Platform. These cookies are not used to track any (returning) use of the 121 Platform over time.</source>
-      </trans-unit>
-      <trans-unit id="337088933774172577" datatype="html">
-        <source>We retain your e-mail address for as long as a project/project is stored on the 121 Platform.</source>
-      </trans-unit>
-      <trans-unit id="3619477798940026244" datatype="html">
-        <source>We retain your e-mail address and name for as long as you are a user associated with a project/project on the 121 Platform.</source>
       </trans-unit>
       <trans-unit id="3805310091097915389" datatype="html">
         <source>How long we keep information</source>
@@ -1699,6 +1690,15 @@
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
+      </trans-unit>
+      <trans-unit id="3790404495967906950" datatype="html">
+        <source>We retain your e-mail address and name for as long as you are a user associated with a project on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="4905396959349416136" datatype="html">
+        <source>We retain your e-mail address for as long as a project is stored on the 121 Platform.</source>
+      </trans-unit>
+      <trans-unit id="8857727233287978889" datatype="html">
+        <source>When you receive a task, any information linked to the person&apos;s phone number found in active projects in the 121 Platform will appear here.</source>
       </trans-unit>
     </body>
   </file>
