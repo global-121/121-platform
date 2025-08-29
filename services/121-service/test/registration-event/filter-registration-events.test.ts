@@ -119,4 +119,30 @@ describe('Get events', () => {
     // Assert
     expect(eventsResult.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
+
+  it('should return 400 for invalid date query parameters', async () => {
+    // Arrange: Provide invalid date strings
+    const invalidFields = {
+      fromDate: 'not-a-date',
+      toDate: 'also-not-a-date',
+    };
+
+    // Act
+    const eventsResult = await getEvents({
+      ...invalidFields,
+      accessToken,
+      programId: programIdOcw,
+    });
+
+    // Assert
+    expect(eventsResult.statusCode).toBe(HttpStatus.BAD_REQUEST);
+
+    // Dynamically check that all invalid fields are reported in the error message
+    const errorResponse = eventsResult.body;
+    const faultyPropertiesInMessage = errorResponse.message.map(
+      (messageObj) => messageObj.property,
+    );
+    // Only check for the date fields, since referenceId is optional and not validated as a date
+    expect(faultyPropertiesInMessage).toEqual(Object.keys(invalidFields));
+  });
 });

@@ -210,6 +210,32 @@ export async function exportTransactions({
   fromDate,
   toDate,
   paymentId,
+  format,
+}: {
+  programId: number;
+  accessToken: string;
+  fromDate?: string;
+  toDate?: string;
+  paymentId?: unknown;
+  format?: string;
+}): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/transactions`)
+    .query({
+      fromDate,
+      toDate,
+      paymentId,
+      format,
+    })
+    .set('Cookie', [accessToken]);
+}
+
+export async function exportTransactionsAsBuffer({
+  programId,
+  accessToken,
+  fromDate,
+  toDate,
+  paymentId,
 }: {
   programId: number;
   accessToken: string;
@@ -245,7 +271,7 @@ export async function exportTransactionsByDateRangeJson({
   fromDate?: string;
   toDate?: string;
 }): Promise<Record<string, unknown>[]> {
-  const response = await exportTransactions({
+  const response = await exportTransactionsAsBuffer({
     programId,
     accessToken,
     fromDate,

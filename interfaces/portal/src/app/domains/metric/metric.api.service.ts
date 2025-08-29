@@ -38,7 +38,7 @@ export class MetricApiService extends DomainApiService {
       return this.generateQueryOptions<Dto<FileDto>, Blob>({
         path: [...BASE_ENDPOINT(projectId), 'export-list', type],
         params,
-        processResponse: (response) => unknownArrayToCsvBlob(response.data),
+        processResponse: (response) => unknownArrayToCsvBlob(response.data), // TODO: The response.fileName is not used here we should consider using it or refactoring it out of the backend
       });
     }
 
