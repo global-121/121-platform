@@ -4,8 +4,8 @@ import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-inte
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
 import { CallServiceResult } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/call-service-result.interface.';
 import { CreateTransactionParams } from '@121-service/src/payments/fsp-integration/onafriq/interfaces/create-transaction-params.interface';
-import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 
 const mockedCreateTransactionParams: CreateTransactionParams = {
   transferAmount: 100,

@@ -55,7 +55,7 @@ import { GenericRegistrationAttributes } from '@121-service/src/registration/enu
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationsService } from '@121-service/src/registration/registrations.service';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';

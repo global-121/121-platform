@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.service';
+import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 
 @Injectable()
 export class IntersolveVisaReconciliationService {

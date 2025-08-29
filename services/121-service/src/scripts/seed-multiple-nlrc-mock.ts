@@ -4,8 +4,8 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
-import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
+import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
+import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
   amountVisa,
@@ -17,9 +17,9 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelper,
+    private readonly seedMockHelper: SeedMockHelperService,
     private axiosCallsService: AxiosCallsService,
-    private seedHelper: SeedHelper,
+    private seedHelper: SeedHelperService,
   ) {}
 
   public async run(

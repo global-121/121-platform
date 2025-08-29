@@ -25,9 +25,9 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
-import { RegistrationsService } from '@121-service/src/registration/registrations.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
+import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {

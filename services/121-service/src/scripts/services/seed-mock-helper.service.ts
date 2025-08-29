@@ -15,7 +15,7 @@ const readSqlFile = (filepath: string): string => {
     .toString()
     .replace(/\r?\n|\r/g, ' ');
 };
-export class SeedMockHelper {
+export class SeedMockHelperService {
   private httpService = new CustomHttpService(new HttpService());
   private axiosCallsService = new AxiosCallsService();
   private dataSource = AppDataSource;
