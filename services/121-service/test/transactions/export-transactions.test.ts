@@ -193,6 +193,7 @@ describe('Export transactions', () => {
       fromDate: 'not-a-date',
       toDate: 'not-a-date',
       paymentId: 'not-a-number' as unknown as number,
+      format: 'invalid-format',
     };
     // Act
     const transactionsResponse = await exportTransactions({

@@ -1,4 +1,6 @@
-import { IsISO8601, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsISO8601, IsOptional, IsString } from 'class-validator';
+
+import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 
 export class GetRegistrationEventsQueryDto {
   @IsOptional()
@@ -14,5 +16,6 @@ export class GetRegistrationEventsQueryDto {
   public referenceId?: string;
 
   @IsOptional()
-  public format?: string;
+  @IsEnum(ExportFileFormat)
+  public format?: ExportFileFormat;
 }

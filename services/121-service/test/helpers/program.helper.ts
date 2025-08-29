@@ -210,12 +210,14 @@ export async function exportTransactions({
   fromDate,
   toDate,
   paymentId,
+  format,
 }: {
   programId: number;
   accessToken: string;
   fromDate?: string;
   toDate?: string;
   paymentId?: number;
+  format?: string;
 }): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/transactions`)
@@ -223,7 +225,7 @@ export async function exportTransactions({
       fromDate,
       toDate,
       paymentId,
-      format: ExportFileFormat.xlsx,
+      format,
     })
     .set('Cookie', [accessToken]);
 }
