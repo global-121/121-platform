@@ -9,7 +9,7 @@ import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
 
 const expectedInitialAssignedUsers = [
   'admin@example.org',
-  'program-admin@example.org',
+  'project-admin@example.org',
   'view-user@example.org',
   'kobo+registration_country@example.org',
   'kobo+validation_country@example.org',
@@ -38,11 +38,11 @@ test('[29760] Users should be removable from "project team"', async ({
 }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeam(page);
-  const projectTitle = 'Cash program Westeros';
+  const projectTitle = 'Cash project Westeros';
 
-  await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Team');
+  await test.step('Select project and navigate to Manage team', async () => {
+    await basePage.selectProject(projectTitle);
+    await basePage.navigateToProjectPage('Team');
   });
 
   await test.step('Validate assigned users are visible', async () => {

@@ -7,7 +7,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -18,7 +18,7 @@ import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+  await seedIncludedRegistrations(registrationsPV, projectIdPV, accessToken);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -30,10 +30,10 @@ test('[31475] [Bug] Clear all filters does not work', async ({ page }) => {
   const basePage = new BasePage(page);
   const registrations = new RegistrationsPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const projectTitle = 'NLRC Direct Digital Aid Project (PV)';
 
-  await test.step('Select program', async () => {
-    await basePage.selectProgram(projectTitle);
+  await test.step('Select project', async () => {
+    await basePage.selectProject(projectTitle);
   });
 
   await test.step('Apply filter and then clear all filters', async () => {

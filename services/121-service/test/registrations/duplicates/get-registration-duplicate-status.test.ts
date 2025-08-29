@@ -2,7 +2,7 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { patchProgramRegistrationAttribute } from '@121-service/test/helpers/program.helper';
+import { patchProjectRegistrationAttribute } from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   createRegistrationUniques,
@@ -22,7 +22,7 @@ import {
   registrationPV7,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-const programId = 2;
+const projectId = 2;
 describe('Get duplicate status of registrations', () => {
   let accessToken: string;
 
@@ -39,13 +39,13 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '1234567890';
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
 
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -63,13 +63,13 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '0987654321'; // Different phone number to ensure uniqueness
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
 
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -87,19 +87,19 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '1234567890'; // Same phone number
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
     await awaitChangeRegistrationStatus({
-      programId,
+      projectId,
       referenceIds: [registration2.referenceId],
       status: RegistrationStatusEnum.declined,
       accessToken,
     });
 
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -124,7 +124,7 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '1234567890'; // Same phone number
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
@@ -133,7 +133,7 @@ describe('Get duplicate status of registrations', () => {
     const accessTokenScoped = await getAccessTokenScoped(testScope);
 
     const scopedResult = await getRegistrations({
-      programId,
+      projectId,
       accessToken: accessTokenScoped,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -145,10 +145,10 @@ describe('Get duplicate status of registrations', () => {
   });
 
   it(`should mark registration as ${DuplicateStatus.unique} if the registration data that is matched is not configured for a duplicate check`, async () => {
-    await patchProgramRegistrationAttribute({
-      programId,
-      programRegistrationAttributeName: 'phoneNumber',
-      programRegistrationAttribute: { duplicateCheck: false },
+    await patchProjectRegistrationAttribute({
+      projectId,
+      projectRegistrationAttributeName: 'phoneNumber',
+      projectRegistrationAttribute: { duplicateCheck: false },
       accessToken,
     });
 
@@ -158,13 +158,13 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '1234567890';
     registration2.phoneNumber = '1234567890';
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
 
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -182,13 +182,13 @@ describe('Get duplicate status of registrations', () => {
     registration1.phoneNumber = '';
     registration2.phoneNumber = '';
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2],
       accessToken,
     );
 
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -199,9 +199,9 @@ describe('Get duplicate status of registrations', () => {
     }
   });
 
-  it(`should not find duplicates across different programs`, async () => {
-    const programIdPv = 2;
-    const programIdOcw = 3;
+  it(`should not find duplicates across different projects`, async () => {
+    const projectIdPv = 2;
+    const projectIdOcw = 3;
 
     const registrationPv = { ...registrationPV5 };
     const registrationOcw = { ...registrationOCW1 };
@@ -209,11 +209,11 @@ describe('Get duplicate status of registrations', () => {
     registrationPv.phoneNumber = '1234567890';
     registrationOcw.phoneNumber = '1234567890'; // Same phone number to ensure duplication
 
-    await importRegistrations(programIdPv, [registrationPv], accessToken);
-    await importRegistrations(programIdOcw, [registrationOcw], accessToken);
+    await importRegistrations(projectIdPv, [registrationPv], accessToken);
+    await importRegistrations(projectIdOcw, [registrationOcw], accessToken);
 
     const result1 = await getRegistrations({
-      programId: programIdPv,
+      projectId: projectIdPv,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -222,7 +222,7 @@ describe('Get duplicate status of registrations', () => {
     expect(registrations1[0].duplicateStatus).toBe(DuplicateStatus.unique);
 
     const result2 = await getRegistrations({
-      programId: programIdOcw,
+      projectId: projectIdOcw,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });
@@ -245,33 +245,33 @@ describe('Get duplicate status of registrations', () => {
     registration3.whatsappPhoneNumber = '1234567890';
 
     await importRegistrations(
-      programId,
+      projectId,
       [registration1, registration2, registration3],
       accessToken,
     );
     const registrationId1 = await getRegistrationIdByReferenceId({
       referenceId: registration1.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
     const registrationId2 = await getRegistrationIdByReferenceId({
       referenceId: registration2.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
     const registrationId3 = await getRegistrationIdByReferenceId({
       referenceId: registration3.referenceId,
-      programId,
+      projectId,
       accessToken,
     });
 
     await createRegistrationUniques({
-      programId,
+      projectId,
       accessToken,
       registrationIds: [registrationId1, registrationId2],
     });
     await createRegistrationUniques({
-      programId,
+      projectId,
       accessToken,
       registrationIds: [registrationId1, registrationId3],
     });
@@ -280,7 +280,7 @@ describe('Get duplicate status of registrations', () => {
     // Registration2 should be duplicate as it is still duplicate with registration3
     // Registration3 should be duplicate as it is still duplicate with registration2
     const result = await getRegistrations({
-      programId,
+      projectId,
       accessToken,
       attributes: ['referenceId', 'duplicateStatus'],
     });

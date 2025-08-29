@@ -1,4 +1,4 @@
-// #TODO Cleanup the content of this mock to not have program specific options (This requires changes to the test cases)
+// #TODO Cleanup the content of this mock to not have project specific options (This requires changes to the test cases)
 export const ContentSidMessageMockMap = {
   enGeneric:
     'There is a message waiting for you. Please reply “yes” to this message to receive it.',

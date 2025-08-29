@@ -30,7 +30,7 @@ export class TransactionJobsProcessorNedbank {
       console.log(error);
       throw error;
     } finally {
-      await this.redisClient.srem(getRedisSetName(job.data.programId), job.id);
+      await this.redisClient.srem(getRedisSetName(job.data.projectId), job.id);
     }
   }
 }

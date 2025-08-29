@@ -9,7 +9,7 @@ import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dt
 import { registrationNedbank } from '@121-service/test/registrations/pagination/pagination-data';
 
 const mockPaymentJob: NedbankTransactionJobDto = {
-  programId: 3,
+  projectId: 3,
   userId: 1,
   paymentId: 3,
   referenceId: '40bde7dc-29a9-4af0-81ca-1c426dccdd29',
@@ -17,7 +17,7 @@ const mockPaymentJob: NedbankTransactionJobDto = {
   isRetry: false,
   bulkSize: 10,
   phoneNumber: registrationNedbank.phoneNumber,
-  programFspConfigurationId: 1,
+  projectFspConfigurationId: 1,
 };
 const testJob = { data: mockPaymentJob } as Job;
 

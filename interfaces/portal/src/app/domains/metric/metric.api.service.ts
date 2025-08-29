@@ -10,7 +10,7 @@ import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
-  'programs',
+  'projects',
   projectId,
   'metrics',
 ];
@@ -21,7 +21,7 @@ const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
 export class MetricApiService extends DomainApiService {
   getProjectSummaryMetrics(projectId: Signal<number | string>) {
     return this.generateQueryOptions<ProjectMetrics>({
-      path: [...BASE_ENDPOINT(projectId), 'program-stats-summary'],
+      path: [...BASE_ENDPOINT(projectId), 'project-stats-summary'],
     });
   }
 

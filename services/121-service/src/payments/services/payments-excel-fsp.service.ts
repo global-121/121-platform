@@ -11,8 +11,8 @@ import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/ex
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
 
 // The functionality in this service was meant a generic implementation of FSPs that work by importing and exporting files like vodacash
 // but in the end we converged to using it only for a generically configurable excel based FSP integration
@@ -24,23 +24,23 @@ export class PaymentsExcelFspService {
     private readonly actionService: ActionsService,
     private readonly transactionsService: TransactionsService,
     private readonly excelService: ExcelService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
   ) {}
 
   public async getFspInstructions(
-    programId: number,
+    projectId: number,
     paymentId: number,
     userId: number,
   ): Promise<FspInstructions[]> {
     const transactions = await this.transactionsService.getLastTransactions({
-      programId,
+      projectId,
       paymentId,
     });
 
-    const programFspConfigEntitiesWithFspInstruction =
-      await this.programFspConfigurationRepository.find({
+    const projectFspConfigEntitiesWithFspInstruction =
+      await this.projectFspConfigurationRepository.find({
         where: {
-          programId: Equal(programId),
+          projectId: Equal(projectId),
           fspName: In(this.getFspNamesThatRequireInstructions()),
         },
         order: {
@@ -51,7 +51,7 @@ export class PaymentsExcelFspService {
     const transactionsWithFspInstruction =
       this.filterTransactionsWithFspInstructionBasedOnStatus(
         transactions,
-        programFspConfigEntitiesWithFspInstruction,
+        projectFspConfigEntitiesWithFspInstruction,
       );
 
     if (transactionsWithFspInstruction.length === 0) {
@@ -61,18 +61,18 @@ export class PaymentsExcelFspService {
       );
     }
 
-    /// Seprate transactionsWithFspInstruction based on their programFspConfigurationName
+    /// Seprate transactionsWithFspInstruction based on their projectFspConfigurationName
     const allFspInstructions: FspInstructions[] = [];
-    for (const fspConfigEntity of programFspConfigEntitiesWithFspInstruction) {
+    for (const fspConfigEntity of projectFspConfigEntitiesWithFspInstruction) {
       const fspInstructions =
-        await this.getFspInstructionsPerProgramFspConfiguration({
-          programId,
+        await this.getFspInstructionsPerProjectFspConfiguration({
+          projectId,
           paymentId,
           transactions: transactionsWithFspInstruction.filter(
-            (t) => t.programFspConfigurationName === fspConfigEntity.name,
+            (t) => t.projectFspConfigurationName === fspConfigEntity.name,
           ),
-          programFspConfigurationName: fspConfigEntity.name,
-          programFspConfigurationId: fspConfigEntity.id,
+          projectFspConfigurationName: fspConfigEntity.name,
+          projectFspConfigurationId: fspConfigEntity.id,
           fspName: fspConfigEntity.fspName,
         });
       // Should we exclude empty instructions where fspInstructions.data.length is empty, I think it is clearer for the user if they than get an empty file
@@ -81,7 +81,7 @@ export class PaymentsExcelFspService {
 
     await this.actionService.saveAction(
       userId,
-      programId,
+      projectId,
       AdditionalActionType.exportFspInstructions,
     );
     return allFspInstructions;
@@ -95,14 +95,14 @@ export class PaymentsExcelFspService {
 
   private filterTransactionsWithFspInstructionBasedOnStatus(
     transactions: TransactionReturnDto[],
-    programFspConfigEntitiesWithFspInstruction: ProgramFspConfigurationEntity[],
+    projectFspConfigEntitiesWithFspInstruction: ProjectFspConfigurationEntity[],
   ): TransactionReturnDto[] {
-    const programFspConfigNamesThatRequireInstructions =
-      programFspConfigEntitiesWithFspInstruction.map((c) => c.name);
+    const projectFspConfigNamesThatRequireInstructions =
+      projectFspConfigEntitiesWithFspInstruction.map((c) => c.name);
 
     const transactionsWithFspInstruction = transactions.filter((t) =>
-      programFspConfigNamesThatRequireInstructions.includes(
-        t.programFspConfigurationName,
+      projectFspConfigNamesThatRequireInstructions.includes(
+        t.projectFspConfigurationName,
       ),
     );
 
@@ -118,30 +118,30 @@ export class PaymentsExcelFspService {
     return result;
   }
 
-  private async getFspInstructionsPerProgramFspConfiguration({
+  private async getFspInstructionsPerProjectFspConfiguration({
     transactions,
-    programId,
+    projectId,
     paymentId,
-    programFspConfigurationName,
-    programFspConfigurationId,
+    projectFspConfigurationName,
+    projectFspConfigurationId,
     fspName,
   }: {
     transactions: TransactionReturnDto[];
-    programId: number;
+    projectId: number;
     paymentId: number;
-    programFspConfigurationName: string;
-    programFspConfigurationId: number;
+    projectFspConfigurationName: string;
+    projectFspConfigurationId: number;
     fspName: Fsps;
   }): Promise<FspInstructions> {
     if (fspName === Fsps.excel) {
       return {
         data: await this.excelService.getFspInstructions({
           transactions,
-          programId,
+          projectId,
           paymentId,
-          programFspConfigurationId,
+          projectFspConfigurationId,
         }),
-        fileNamePrefix: programFspConfigurationName,
+        fileNamePrefix: projectFspConfigurationName,
       };
     }
     // Is this the best way to prevent a typeerror on the return type?

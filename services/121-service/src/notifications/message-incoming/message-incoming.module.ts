@@ -22,7 +22,7 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -35,7 +35,7 @@ import { UserModule } from '@121-service/src/user/user.module';
     TypeOrmModule.forFeature([
       TwilioMessageEntity,
       TransactionEntity,
-      ProgramEntity,
+      ProjectEntity,
       RegistrationEntity,
       WhatsappPendingMessageEntity,
       TryWhatsappEntity,

@@ -18,7 +18,7 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
 
 @UseGuards(AuthenticatedUserGuard)
-@ApiTags('programs/registrations')
+@ApiTags('projects/registrations')
 @Controller()
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
@@ -29,19 +29,19 @@ export class ActivitiesController {
     description: `Returns activities (${Object.values(ActivityTypeEnum).join(', ')}) for registration`,
     type: [ActivitiesDto],
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({ name: 'registrationId', required: true, type: 'integer' })
-  @Get('programs/:programId/registrations/:registrationId/activities')
+  @Get('projects/:projectId/registrations/:registrationId/activities')
   public async getActivitiesByRegistrationId(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
     @Param('registrationId', ParseIntPipe) registrationId: number,
     @Req() req: ScopedUserRequest,
   ): Promise<ActivitiesDto> {
     const userId = RequestHelper.getUserId(req);
 
-    return await this.activitiesService.getByRegistrationIdAndProgramId({
+    return await this.activitiesService.getByRegistrationIdAndProjectId({
       registrationId,
-      programId,
+      projectId,
       userId,
     });
   }

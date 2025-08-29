@@ -20,7 +20,7 @@ import { PaginateQuery } from '~/services/paginate-query.service';
 import { Dto } from '~/utils/dto-type';
 
 const BASE_ENDPOINT = (projectId: Signal<number | string>) => [
-  'programs',
+  'projects',
   projectId,
   'registrations',
 ];

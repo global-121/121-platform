@@ -71,7 +71,7 @@ describe('SafaricomReconciliationService', () => {
 
       const mockJob = {
         id: 'job-id',
-        data: { programId: 3 },
+        data: { projectId: 3 },
       };
 
       jest.spyOn(redisClient, 'sadd').mockResolvedValue(1);
@@ -94,7 +94,7 @@ describe('SafaricomReconciliationService', () => {
       });
 
       expect(redisClient.sadd).toHaveBeenCalledWith(
-        getRedisSetName(mockJob.data.programId),
+        getRedisSetName(mockJob.data.projectId),
         mockJob.id,
       );
     });
@@ -119,7 +119,7 @@ describe('SafaricomReconciliationService', () => {
 
       const mockJob = {
         id: 'job-id',
-        data: { programId: 3 },
+        data: { projectId: 3 },
       };
 
       jest.spyOn(redisClient, 'sadd').mockResolvedValue(1);
@@ -138,7 +138,7 @@ describe('SafaricomReconciliationService', () => {
       });
 
       expect(redisClient.sadd).toHaveBeenCalledWith(
-        getRedisSetName(mockJob.data.programId),
+        getRedisSetName(mockJob.data.projectId),
         mockJob.id,
       );
     });

@@ -1,7 +1,7 @@
 export interface GetDuplicatesResult {
   registrationId: number;
   referenceId: string;
-  registrationProgramId: number;
+  registrationProjectId: number;
   scope: string;
   attributeNames: string[];
 }

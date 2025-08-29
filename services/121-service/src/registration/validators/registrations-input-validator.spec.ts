@@ -6,8 +6,8 @@ import { Repository } from 'typeorm';
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -22,9 +22,9 @@ import { RegistrationsInputValidator } from '@121-service/src/registration/valid
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';
 
-const programId = 1;
+const projectId = 1;
 const userId = 1;
-const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
+const dynamicAttributes: Partial<ProjectRegistrationAttributeEntity>[] = [
   {
     id: 8,
     name: FspAttributes.addressStreet,
@@ -88,13 +88,13 @@ const dynamicAttributes: Partial<ProgramRegistrationAttributeEntity>[] = [
   },
 ];
 
-const program = {
+const project = {
   id: 1,
-  name: 'Test Program',
+  name: 'Test Project',
   languages: ['en'],
   enableMaxPayments: true,
   enableScope: true,
-  programFspConfigurations: [
+  projectFspConfigurations: [
     {
       fspName: Fsps.intersolveVoucherWhatsapp,
       name: 'Intersolve-voucher-whatsapp',
@@ -104,19 +104,19 @@ const program = {
       name: 'Excel',
     },
   ],
-  programRegistrationAttributes: dynamicAttributes,
+  projectRegistrationAttributes: dynamicAttributes,
 };
 
 describe('RegistrationsInputValidator', () => {
   let validator: RegistrationsInputValidator;
-  let mockProgramRepository: Partial<Repository<ProgramEntity>>;
+  let mockProjectRepository: Partial<Repository<ProjectEntity>>;
   let mockRegistrationRepository: Partial<Repository<RegistrationEntity>>;
   let userService: UserService;
   let registrationsPaginationService: RegistrationsPaginationService;
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockProgramRepository = {};
+    mockProjectRepository = {};
     mockRegistrationRepository = {};
 
     const mockRegistrationViewScopedRepository = {
@@ -129,8 +129,8 @@ describe('RegistrationsInputValidator', () => {
       providers: [
         RegistrationsInputValidator,
         {
-          provide: getRepositoryToken(ProgramEntity),
-          useValue: mockProgramRepository,
+          provide: getRepositoryToken(ProjectEntity),
+          useValue: mockProjectRepository,
         },
         {
           provide: getRepositoryToken(RegistrationEntity),
@@ -139,7 +139,7 @@ describe('RegistrationsInputValidator', () => {
         {
           provide: UserService,
           useValue: {
-            getUserScopeForProgram: jest.fn().mockResolvedValue('country'),
+            getUserScopeForProject: jest.fn().mockResolvedValue('country'),
           },
         },
         {
@@ -169,7 +169,7 @@ describe('RegistrationsInputValidator', () => {
 
     userService = module.get<UserService>(UserService);
     mockRegistrationRepository.findOne = jest.fn().mockResolvedValue(null);
-    mockProgramRepository.findOneOrFail = jest.fn().mockResolvedValue(program);
+    mockProjectRepository.findOneOrFail = jest.fn().mockResolvedValue(project);
     registrationsPaginationService = module.get<RegistrationsPaginationService>(
       RegistrationsPaginationService,
     );
@@ -187,7 +187,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
         house: 'stark',
       },
@@ -195,7 +195,7 @@ describe('RegistrationsInputValidator', () => {
 
     const result = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
@@ -211,7 +211,7 @@ describe('RegistrationsInputValidator', () => {
       '00dc9451-1273-484c-b2e8-ae21b51a96ab',
     );
     expect(result[0]).toHaveProperty(
-      'programFspConfigurationName',
+      'projectFspConfigurationName',
       Fsps.intersolveVoucherWhatsapp,
     );
     expect(result[0]).toHaveProperty('paymentAmountMultiplier', 2);
@@ -230,7 +230,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: 'newStreet1',
         addressHouseNumber: '2',
         addressHouseNumberAddition: 'Ground',
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         scope: 'country',
       },
     ];
@@ -238,7 +238,7 @@ describe('RegistrationsInputValidator', () => {
     await expect(
       validator.validateAndCleanInput({
         registrationInputArray: csvArray,
-        programId,
+        projectId,
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
@@ -252,17 +252,17 @@ describe('RegistrationsInputValidator', () => {
   it('should report errors for rows missing mandatory fields on import', async () => {
     const csvArray = [
       {
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
-    const programId = 1;
+    const projectId = 1;
     const userId = 1;
 
     await expect(
       validator.validateAndCleanInput({
         registrationInputArray: csvArray,
-        programId,
+        projectId,
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
@@ -276,7 +276,7 @@ describe('RegistrationsInputValidator', () => {
   it('should not report errors for rows missing mandatory fields on bulk update', async () => {
     const csvArray = [
       {
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         preferredLanguage: 'en',
       },
     ];
@@ -284,7 +284,7 @@ describe('RegistrationsInputValidator', () => {
     await expect(
       validator.validateAndCleanInput({
         registrationInputArray: csvArray,
-        programId,
+        projectId,
         userId,
         typeOfInput: RegistrationValidationInputType.update,
         validationConfig: {
@@ -303,7 +303,7 @@ describe('RegistrationsInputValidator', () => {
         maxPayments: '5',
         nameFirst: 'Test',
         nameLast: 'Test',
-        programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+        projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
         whatsappPhoneNumber: '1234567890',
         scope: 'country',
       },
@@ -312,7 +312,7 @@ describe('RegistrationsInputValidator', () => {
     await expect(
       validator.validateAndCleanInput({
         registrationInputArray: csvArray,
-        programId,
+        projectId,
         userId,
         typeOfInput: RegistrationValidationInputType.create,
         validationConfig: {
@@ -326,7 +326,7 @@ describe('RegistrationsInputValidator', () => {
         column: GenericRegistrationAttributes.phoneNumber,
         value: undefined,
         error:
-          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+          'PhoneNumber is required when creating a new registration for this project. Set allowEmptyPhoneNumber to true in the project settings to allow empty phone numbers',
       },
     ]);
   });
@@ -340,7 +340,7 @@ describe('RegistrationsInputValidator', () => {
 
     const result = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
@@ -355,14 +355,14 @@ describe('RegistrationsInputValidator', () => {
   // When columns are left empty in a csv they are read as empty string
   // This can happen we creating registrations with a csv file
   it('should be able to post all non required attributes as empty string', async () => {
-    jest.spyOn(userService, 'getUserScopeForProgram').mockResolvedValue('');
-    const programAllowsEmptyPhoneNumber = {
-      ...program,
+    jest.spyOn(userService, 'getUserScopeForProject').mockResolvedValue('');
+    const projectAllowsEmptyPhoneNumber = {
+      ...project,
       allowEmptyPhoneNumber: true,
     };
-    mockProgramRepository.findOneOrFail = jest
+    mockProjectRepository.findOneOrFail = jest
       .fn()
-      .mockResolvedValue(programAllowsEmptyPhoneNumber);
+      .mockResolvedValue(projectAllowsEmptyPhoneNumber);
 
     const csvArray = [
       {
@@ -374,7 +374,7 @@ describe('RegistrationsInputValidator', () => {
         addressStreet: '',
         addressHouseNumber: '',
         addressHouseNumberAddition: '',
-        programFspConfigurationName: Fsps.excel,
+        projectFspConfigurationName: Fsps.excel,
         scope: '',
         house: '',
       },
@@ -382,7 +382,7 @@ describe('RegistrationsInputValidator', () => {
 
     const result = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.create,
       validationConfig: {
@@ -404,7 +404,7 @@ describe('RegistrationsInputValidator', () => {
       scope: '',
       preferredLanguage: 'en',
       phoneNumber: null,
-      programFspConfigurationName: 'Excel',
+      projectFspConfigurationName: 'Excel',
     };
 
     expect(result[0]).toEqual(expected);
@@ -419,7 +419,7 @@ describe('RegistrationsInputValidator', () => {
     ];
     const result = await validator.validateAndCleanInput({
       registrationInputArray: csvArray,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.update,
       validationConfig: {
@@ -439,7 +439,7 @@ describe('RegistrationsInputValidator', () => {
     const referenceId = '00dc9451-1273-484c-b2e8-ae21b51a96ab';
     const mockRegistration = {
       referenceId,
-      programFspConfigurationName: 'Excel',
+      projectFspConfigurationName: 'Excel',
     } as unknown as RegistrationViewEntity;
 
     jest
@@ -459,7 +459,7 @@ describe('RegistrationsInputValidator', () => {
 
     const validationPromise = validator.validateAndCleanInput({
       registrationInputArray: csvArray,
-      programId,
+      projectId,
       userId,
       typeOfInput: RegistrationValidationInputType.bulkUpdate,
       validationConfig: {

@@ -12,7 +12,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
 
-const programId = 3;
+const projectId = 3;
 const paymentId = 5;
 const userId = 1;
 const sendPaymentData: PaPaymentDataDto[] = [
@@ -20,7 +20,7 @@ const sendPaymentData: PaPaymentDataDto[] = [
     transactionAmount: 22,
     referenceId: '3fc92035-78f5-4b40-a44d-c7711b559442',
     paymentAddress: '14155238886',
-    programFspConfigurationId: 1,
+    projectFspConfigurationId: 1,
     fspName: Fsps.commercialBankEthiopia,
     bulkSize: 1,
     userId,
@@ -42,7 +42,7 @@ const payload: CommercialBankEthiopiaTransferPayload[] = [
 const paymentDetailsResult: CommercialBankEthiopiaJobDto = {
   paPaymentData: sendPaymentData[0],
   paymentId,
-  programId,
+  projectId,
   payload: payload[0],
   userId: sendPaymentData[0].userId,
 };
@@ -97,7 +97,7 @@ describe('CommercialBankEthiopiaService', () => {
 
     jest
       .spyOn(
-        commercialBankEthiopiaService.programFspConfigurationRepository,
+        commercialBankEthiopiaService.projectFspConfigurationRepository,
         'createQueryBuilder',
       )
       .mockImplementation(() => createQueryBuilder) as any;
@@ -110,14 +110,14 @@ describe('CommercialBankEthiopiaService', () => {
       .mockReturnValue({
         data: {
           id: 1,
-          programId: 3,
+          projectId: 3,
         },
       });
 
     // Act
     await commercialBankEthiopiaService.sendPayment(
       sendPaymentData,
-      programId,
+      projectId,
       paymentId,
     );
 

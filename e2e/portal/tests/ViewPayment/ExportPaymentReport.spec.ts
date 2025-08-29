@@ -1,14 +1,14 @@
 import { test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-ocw.json';
 import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW6Fail,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [registrationOCW1, registrationOCW6Fail],
-    programIdOCW,
+    projectIdOCW,
     accessToken,
   );
 
@@ -40,22 +40,22 @@ test('[35621] Export Payment Report should contain the right data', async ({
   const paymentsPage = new PaymentsPage(page);
   const exportDataComponent = new ExportData(page);
 
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const projectTitle = NLRCProject.titlePortal.en;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
   });
 
   for (let i = 1; i <= 2; i++) {
     // Do 2 payments to make sure that the export only contains the latest payment
     await test.step(`Do payment ${i}`, async () => {
-      await paymentsPage.navigateToProgramPage('Payments');
+      await paymentsPage.navigateToProjectPage('Payments');
 
       await paymentsPage.createPayment();
       await paymentsPage.startPayment();
       // Assert redirection to payment overview page
       await page.waitForURL((url) =>
-        url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/${i}`),
+        url.pathname.startsWith(`/en-GB/project/${projectIdOCW}/payments/${i}`),
       );
       await paymentPage.waitForPaymentToComplete();
     });

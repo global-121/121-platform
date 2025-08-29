@@ -4,7 +4,7 @@ import { DataSource, Equal, Repository } from 'typeorm';
 
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
-import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
+import { ProjectPaymentsStatusDto } from '@121-service/src/payments/dto/project-payments-status.dto';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
@@ -13,7 +13,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { ProjectRegistrationAttributeRepository } from '@121-service/src/projects/repositories/project-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
   DefaultRegistrationDataAttributeNames,
@@ -30,17 +30,17 @@ export class PaymentsReportingService {
   public constructor(
     private readonly paymentsReportingHelperService: PaymentsReportingHelperService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
-    private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
+    private readonly projectRegistrationAttributeRepository: ProjectRegistrationAttributeRepository,
     private readonly registrationPaginationService: RegistrationsPaginationService,
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
-  public async getPayments(programId: number) {
+  public async getPayments(projectId: number) {
     const rawPayments = await this.paymentRepository.find({
       where: {
-        programId: Equal(programId),
+        projectId: Equal(projectId),
       },
       select: ['id', 'created'],
     });
@@ -52,12 +52,12 @@ export class PaymentsReportingService {
   }
 
   public async getPaymentAggregation(
-    programId: number,
+    projectId: number,
     paymentId: number,
   ): Promise<PaymentReturnDto> {
     // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
     const statusAggregation = await this.aggregateTransactionsByStatus(
-      programId,
+      projectId,
       paymentId,
     );
 
@@ -98,7 +98,7 @@ export class PaymentsReportingService {
 
   // TODO: Move to scoped transaction repository however it will be changed when implementing segregation of duties, so let's leave the refactor until than
   private async aggregateTransactionsByStatus(
-    programId: number,
+    projectId: number,
     paymentId: number,
   ): Promise<any[]> {
     return await this.dataSource
@@ -112,36 +112,36 @@ export class PaymentsReportingService {
       .from(
         '(' +
           this.transactionScopedRepository
-            .getLastTransactionsQuery({ programId, paymentId })
+            .getLastTransactionsQuery({ projectId, paymentId })
             .getQuery() +
           ')',
         'transactions',
       )
       .setParameters(
         this.transactionScopedRepository
-          .getLastTransactionsQuery({ programId, paymentId })
+          .getLastTransactionsQuery({ projectId, paymentId })
           .getParameters(),
       )
       .groupBy('status')
       .getRawMany();
   }
 
-  public async getProgramPaymentsStatus(
-    programId: number,
-  ): Promise<ProgramPaymentsStatusDto> {
+  public async getProjectPaymentsStatus(
+    projectId: number,
+  ): Promise<ProjectPaymentsStatusDto> {
     return {
       inProgress:
-        await this.paymentsProgressHelperService.isPaymentInProgress(programId),
+        await this.paymentsProgressHelperService.isPaymentInProgress(projectId),
     };
   }
 
   public async exportTransactionsUsingDateFilter({
-    programId,
+    projectId,
     fromDateString,
     toDateString,
     paymentId,
   }: {
-    programId: number;
+    projectId: number;
     fromDateString?: string;
     toDateString?: string;
     paymentId?: number;
@@ -152,15 +152,15 @@ export class PaymentsReportingService {
 
     const fileName =
       this.paymentsReportingHelperService.createTransactionsExportFilename(
-        programId,
+        projectId,
         fromDate,
         toDate,
       );
 
     const select =
-      await this.paymentsReportingHelperService.getSelectForExport(programId);
+      await this.paymentsReportingHelperService.getSelectForExport(projectId);
     const transactions = await this.getTransactions({
-      programId,
+      projectId,
       select,
       fromDate,
       toDate,
@@ -168,8 +168,8 @@ export class PaymentsReportingService {
     });
 
     const dropdownAttributes =
-      await this.programRegistrationAttributeRepository.getDropdownAttributes({
-        programId,
+      await this.projectRegistrationAttributeRepository.getDropdownAttributes({
+        projectId,
         select,
       });
 
@@ -183,29 +183,29 @@ export class PaymentsReportingService {
   }
 
   private async getTransactions({
-    programId,
+    projectId,
     select,
     paymentId,
     fromDate,
     toDate,
   }: {
-    programId: number;
+    projectId: number;
     select: string[];
     paymentId?: number;
     fromDate?: Date;
     toDate?: Date;
   }): Promise<
     (GetTransactionResponseDto & // This is the type returned by the transaction repository
-      Record<string, unknown>)[] // These are the dynamic fsp specific fields & the dynamic configured fields from the registration as set in 'export' of program registration attributes
+      Record<string, unknown>)[] // These are the dynamic fsp specific fields & the dynamic configured fields from the registration as set in 'export' of project registration attributes
   > {
     const fspSpecificJoinFields =
       await this.paymentsReportingHelperService.getFspSpecificJoinFields(
-        programId,
+        projectId,
       );
 
     const transactions = await this.transactionScopedRepository.getTransactions(
       {
-        programId,
+        projectId,
         paymentId,
         fromDate,
         toDate,
@@ -222,7 +222,7 @@ export class PaymentsReportingService {
     select.push(GenericRegistrationAttributes.referenceId);
     const registrationViews =
       (await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
-        { programId, referenceIds, select },
+        { projectId, referenceIds, select },
       )) as Omit<MappedPaginatedRegistrationDto, 'status'>[];
 
     // Create a map for faster lookups
@@ -251,45 +251,45 @@ export class PaymentsReportingService {
   }
 
   public async getPaymentEvents({
-    programId,
+    projectId,
     paymentId,
   }: {
-    programId: number;
+    projectId: number;
     paymentId: number;
   }): Promise<PaymentEventsReturnDto> {
-    await this.findPaymentOrThrow(programId, paymentId);
+    await this.findPaymentOrThrow(projectId, paymentId);
     return this.paymentEventsService.getPaymentEvents(paymentId);
   }
 
   private async findPaymentOrThrow(
-    programId: number,
+    projectId: number,
     paymentId: number,
   ): Promise<void> {
     const payment = await this.paymentRepository.findOne({
-      where: { id: Equal(paymentId), programId: Equal(programId) },
+      where: { id: Equal(paymentId), projectId: Equal(projectId) },
     });
 
     if (!payment) {
       throw new HttpException(
-        `Payment with ID ${paymentId} not found in program ${programId}`,
+        `Payment with ID ${paymentId} not found in project ${projectId}`,
         HttpStatus.NOT_FOUND,
       );
     }
   }
 
   public async getTransactionsByPaymentId({
-    programId,
+    projectId,
     paymentId,
   }: {
-    programId: number;
+    projectId: number;
     paymentId: number;
   }): Promise<GetTransactionResponseDto[]> {
-    await this.findPaymentOrThrow(programId, paymentId);
+    await this.findPaymentOrThrow(projectId, paymentId);
     // For in the portal we always want the name of the registration, so we need to select it
     const select = [DefaultRegistrationDataAttributeNames.name];
 
     const transactions = await this.getTransactions({
-      programId,
+      projectId,
       paymentId,
       select,
     });

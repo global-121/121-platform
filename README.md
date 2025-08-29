@@ -310,7 +310,7 @@ When new Node.js dependencies are added to a service since it is last build on y
 - Often used (with different parameters) endpoints: `PATCH /registration` etc.
 - Is there actual business-logic performed?
 - Not necessary:
-  - update single (program) properties?
+  - update single (project) properties?
 - Examples:
   - import Registrations -> change status (with list of `referenceId`s) -> export included registrations
   - update Registration-attributes: all different content-types + possible values (including edge cases)

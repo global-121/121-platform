@@ -224,7 +224,7 @@ export class PageLayoutRegistrationComponent {
   readonly registrationTitle = computed(() => {
     const localized = $localize`Reg. #`;
 
-    return `${localized}${this.registration.data()?.registrationProgramId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
+    return `${localized}${this.registration.data()?.registrationProjectId.toString() ?? ''} - ${this.registration.data()?.name ?? ''}`;
   });
 
   readonly canViewPersonalData = computed(() =>

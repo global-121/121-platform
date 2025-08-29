@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Manage Fsp configurations should not delete existing project Fsp configuration because of active registrations with that config 1`] = `
+{
+  "message": "Cannot delete project Fsp configuration Intersolve-voucher-whatsapp because it is still in use by registrations with referenceIds: 54e62864557597e034",
+  "statusCode": 409,
+}
+`;

@@ -40,7 +40,7 @@ const getFileName = (filePath: string) =>
 // Arrange
 test.describe('Attachments on Project Level', () => {
   let page: Page;
-  const projectTitle = 'NLRC OCW Program';
+  const projectTitle = 'NLRC OCW Project';
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -59,8 +59,8 @@ test.describe('Attachments on Project Level', () => {
     const projectMonitoring = new ProjectMonitoring(page);
 
     await page.goto('/');
-    await projectMonitoring.selectProgram(projectTitle);
-    await projectMonitoring.navigateToProgramPage('Monitoring');
+    await projectMonitoring.selectProject(projectTitle);
+    await projectMonitoring.navigateToProjectPage('Monitoring');
     await projectMonitoring.selectTab({ tabName: 'Files' });
   });
 

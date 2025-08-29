@@ -3,15 +3,15 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getPayments,
   getTransactions,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import { getRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Mock registrations', () => {
@@ -20,20 +20,20 @@ describe('Mock registrations', () => {
     await resetDB(SeedScript.nlrcMultipleMock, __filename);
     const accessToken = await getAccessToken();
     // Assert
-    const programIds = [programIdOCW, programIdPV];
+    const projectIds = [projectIdOCW, projectIdPV];
 
-    for (const programId of programIds) {
+    for (const projectId of projectIds) {
       const registrationsResponse = await getRegistrations({
-        programId,
+        projectId,
         accessToken,
       });
 
-      const paymentsResponse = await getPayments(programId, accessToken);
+      const paymentsResponse = await getPayments(projectId, accessToken);
 
       for (const paymentData of paymentsResponse.body) {
         const paymentId = paymentData.paymentId;
         const transactionsResponse = await getTransactions({
-          programId,
+          projectId,
           paymentId,
           registrationReferenceId: null,
           accessToken,

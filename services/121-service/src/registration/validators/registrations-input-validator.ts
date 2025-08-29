@@ -5,8 +5,8 @@ import { Equal, Repository } from 'typeorm';
 
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
 import {
@@ -26,8 +26,8 @@ type InputAttributeType = string | boolean | number | undefined | null;
 
 @Injectable()
 export class RegistrationsInputValidator {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
 
@@ -39,13 +39,13 @@ export class RegistrationsInputValidator {
 
   public async validateAndCleanInput({
     registrationInputArray,
-    programId,
+    projectId,
     userId,
     typeOfInput,
     validationConfig,
   }: {
     registrationInputArray: Record<string, InputAttributeType>[];
-    programId: number;
+    projectId: number;
     userId: number;
     typeOfInput: RegistrationValidationInputType;
     validationConfig: ValidationRegistrationConfig;
@@ -63,29 +63,29 @@ export class RegistrationsInputValidator {
     ) {
       originalRegistrationsMap = await this.getOriginalRegistrationsOrThrow(
         registrationInputArray,
-        programId,
+        projectId,
       );
     }
 
     const errors: ValidateRegistrationErrorObject[] = [];
     const phoneNumberLookupResults: Record<string, string | undefined> = {};
 
-    const userScope = await this.userService.getUserScopeForProgram(
+    const userScope = await this.userService.getUserScopeForProject(
       userId,
-      programId,
+      projectId,
     );
 
     if (validationConfig.validateUniqueReferenceId) {
       this.validateUniqueReferenceIds(registrationInputArray);
     }
 
-    const program = await this.programRepository.findOneOrFail({
-      where: { id: Equal(programId) },
-      relations: ['programFspConfigurations', 'programRegistrationAttributes'],
+    const project = await this.projectRepository.findOneOrFail({
+      where: { id: Equal(projectId) },
+      relations: ['projectFspConfigurations', 'projectRegistrationAttributes'],
     });
 
     const languageMapping = this.createLanguageMapping(
-      program.languages as unknown as string[],
+      project.languages as unknown as string[],
     );
 
     const validatedArray: any = [];
@@ -113,8 +113,8 @@ export class RegistrationsInputValidator {
           validatedPaymentAmountMultiplier,
         } = this.validatePaymentAmountMultiplier({
           value: row.paymentAmountMultiplier,
-          programPaymentAmountMultiplierFormula:
-            program.paymentAmountMultiplierFormula,
+          projectPaymentAmountMultiplierFormula:
+            project.paymentAmountMultiplierFormula,
           i,
         });
         if (errorObjPaymentAmountMultiplier) {
@@ -125,7 +125,7 @@ export class RegistrationsInputValidator {
         }
       }
 
-      if (program.enableMaxPayments && row.maxPayments !== undefined) {
+      if (project.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
             value: row.maxPayments,
@@ -153,7 +153,7 @@ export class RegistrationsInputValidator {
         });
         if (errorObjScope) {
           errors.push(errorObjScope);
-        } else if (program.enableScope) {
+        } else if (project.enableScope) {
           // We know that scope is undefined or string, or an error would have occured
           validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
             | undefined
@@ -191,7 +191,7 @@ export class RegistrationsInputValidator {
       const errorObjValidatePhoneNr = this.validatePhoneNumberEmpty({
         row,
         i,
-        program,
+        project,
         typeOfInput,
       });
       if (errorObjValidatePhoneNr) {
@@ -207,28 +207,28 @@ export class RegistrationsInputValidator {
        * Validate fsp config related attributes
        * =============================================
        */
-      const errorObjFspConfig = this.validateProgramFspConfigurationName({
-        programFspConfigurationName:
-          row[AdditionalAttributes.programFspConfigurationName],
-        programFspConfigurations: program.programFspConfigurations,
+      const errorObjFspConfig = this.validateProjectFspConfigurationName({
+        projectFspConfigurationName:
+          row[AdditionalAttributes.projectFspConfigurationName],
+        projectFspConfigurations: project.projectFspConfigurations,
         i,
         typeOfInput,
       });
       if (errorObjFspConfig) {
         errors.push(errorObjFspConfig);
       } else if (
-        row[AdditionalAttributes.programFspConfigurationName] as string
+        row[AdditionalAttributes.projectFspConfigurationName] as string
       ) {
         validatedRegistrationInput[
-          AdditionalAttributes.programFspConfigurationName
-        ] = row[AdditionalAttributes.programFspConfigurationName] as string;
+          AdditionalAttributes.projectFspConfigurationName
+        ] = row[AdditionalAttributes.projectFspConfigurationName] as string;
       }
 
       const errorObjsFspRequiredAttributes = this.validateFspRequiredAttributes(
         {
           row,
           originalRegistration,
-          programFspConfigurations: program.programFspConfigurations,
+          projectFspConfigurations: project.projectFspConfigurations,
           i,
         },
       );
@@ -243,7 +243,7 @@ export class RegistrationsInputValidator {
       // Filter dynamic atttributes that are not relevant for this fsp if question is only fsp specific
 
       await Promise.all(
-        program.programRegistrationAttributes.map(async (att) => {
+        project.projectRegistrationAttributes.map(async (att) => {
           // Skip validation if the attribute is not present in the row and it is a bulk update because you do not have to update all attributes in a bulk update
           if (
             [
@@ -406,13 +406,13 @@ export class RegistrationsInputValidator {
   }
 
   private createLanguageMapping(
-    programLanguages: string[],
+    projectLanguages: string[],
   ): Record<string, string> {
     const languageNamesApi = new Intl.DisplayNames(['en'], {
       type: 'language',
     });
     const mapping = {};
-    for (const languageAbbr of programLanguages) {
+    for (const languageAbbr of projectLanguages) {
       const fullNameLanguage = languageNamesApi.of(
         languageAbbr.substring(0, 2),
       );
@@ -428,39 +428,39 @@ export class RegistrationsInputValidator {
     return mapping;
   }
 
-  private validateProgramFspConfigurationName({
-    programFspConfigurationName: programFspName,
-    programFspConfigurations: programFspConfigurations,
+  private validateProjectFspConfigurationName({
+    projectFspConfigurationName: projectFspName,
+    projectFspConfigurations: projectFspConfigurations,
     i,
     typeOfInput,
   }: {
-    programFspConfigurationName: InputAttributeType;
-    programFspConfigurations: ProgramFspConfigurationEntity[];
+    projectFspConfigurationName: InputAttributeType;
+    projectFspConfigurations: ProjectFspConfigurationEntity[];
     i: number;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
-    // The registration is being patched, and the programFspConfigurationName is not being updated so the validation can be skipped
+    // The registration is being patched, and the projectFspConfigurationName is not being updated so the validation can be skipped
     if (
       [
         RegistrationValidationInputType.update,
         RegistrationValidationInputType.bulkUpdate,
       ].includes(typeOfInput) &&
-      (programFspName == null || programFspName === '')
+      (projectFspName == null || projectFspName === '')
     ) {
       return;
     }
 
     if (
-      !programFspName ||
-      !programFspConfigurations.some(
-        (fspConfig) => fspConfig.name === programFspName,
+      !projectFspName ||
+      !projectFspConfigurations.some(
+        (fspConfig) => fspConfig.name === projectFspName,
       )
     ) {
       return {
         lineNumber: i,
-        value: programFspName,
-        column: AdditionalAttributes.programFspConfigurationName,
-        error: `FspConfigurationName ${programFspName} not found in program. Allowed values: ${programFspConfigurations
+        value: projectFspName,
+        column: AdditionalAttributes.projectFspConfigurationName,
+        error: `FspConfigurationName ${projectFspName} not found in project. Allowed values: ${projectFspConfigurations
           .map((fspConfig) => fspConfig.name)
           .join(', ')}`,
       };
@@ -534,7 +534,7 @@ export class RegistrationsInputValidator {
         lineNumber: i + 1,
         column: AdditionalAttributes.preferredLanguage,
         value: preferredLanguage,
-        error: `Language error: Allowed values of this program for ${AdditionalAttributes.preferredLanguage}: ${Object.values(
+        error: `Language error: Allowed values of this project for ${AdditionalAttributes.preferredLanguage}: ${Object.values(
           languageMapping,
         ).join(', ')}, ${Object.keys(languageMapping).join(', ')}`,
       };
@@ -543,19 +543,19 @@ export class RegistrationsInputValidator {
 
   private updateLanguage(
     preferredLanguage: string | undefined,
-    programLanguageMapping: object,
+    projectLanguageMapping: object,
   ): LanguageEnum | undefined {
     if (!preferredLanguage) {
       return LanguageEnum.en;
     }
-    if (Object.keys(programLanguageMapping).includes(preferredLanguage)) {
-      return programLanguageMapping[preferredLanguage];
+    if (Object.keys(projectLanguageMapping).includes(preferredLanguage)) {
+      return projectLanguageMapping[preferredLanguage];
     } else if (
-      Object.values(programLanguageMapping).some(
+      Object.values(projectLanguageMapping).some(
         (x) => x.toLowerCase() == preferredLanguage.toLowerCase(),
       )
     ) {
-      for (const value of Object.values(programLanguageMapping)) {
+      for (const value of Object.values(projectLanguageMapping)) {
         if (value.toLowerCase() === preferredLanguage) {
           return value;
         }
@@ -584,7 +584,7 @@ export class RegistrationsInputValidator {
         lineNumber: i + 1,
         column: AdditionalAttributes.scope,
         value: row[AdditionalAttributes.scope],
-        error: `User has program scope ${userScope} and does not have access to registration scope ${
+        error: `User has project scope ${userScope} and does not have access to registration scope ${
           row[AdditionalAttributes.scope]
         }`,
       };
@@ -680,16 +680,16 @@ export class RegistrationsInputValidator {
   private validatePhoneNumberEmpty({
     row,
     i,
-    program,
+    project,
     typeOfInput,
   }: {
     row: any;
     i: number;
-    program: ProgramEntity;
+    project: ProjectEntity;
     typeOfInput: RegistrationValidationInputType;
   }): ValidateRegistrationErrorObject | undefined {
-    // If the program allows empty phone numbers, skip this validation
-    if (program.allowEmptyPhoneNumber) {
+    // If the project allows empty phone numbers, skip this validation
+    if (project.allowEmptyPhoneNumber) {
       return;
     }
     if (
@@ -701,7 +701,7 @@ export class RegistrationsInputValidator {
         column: GenericRegistrationAttributes.phoneNumber,
         value: undefined,
         error:
-          'PhoneNumber is required when creating a new registration for this program. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+          'PhoneNumber is required when creating a new registration for this project. Set allowEmptyPhoneNumber to true in the project settings to allow empty phone numbers',
       };
     }
 
@@ -715,7 +715,7 @@ export class RegistrationsInputValidator {
         column: GenericRegistrationAttributes.phoneNumber,
         value: row.phoneNumber,
         error:
-          'PhoneNumber is not allowed to be updated to an empty value. Set allowEmptyPhoneNumber to true in the program settings to allow empty phone numbers',
+          'PhoneNumber is not allowed to be updated to an empty value. Set allowEmptyPhoneNumber to true in the project settings to allow empty phone numbers',
       };
     }
   }
@@ -755,12 +755,12 @@ export class RegistrationsInputValidator {
   private validateFspRequiredAttributes({
     row,
     originalRegistration,
-    programFspConfigurations: programFspConfigurations,
+    projectFspConfigurations: projectFspConfigurations,
     i,
   }: {
     row: object;
     originalRegistration: MappedPaginatedRegistrationDto | undefined;
-    programFspConfigurations: ProgramFspConfigurationEntity[];
+    projectFspConfigurations: ProjectFspConfigurationEntity[];
     i: number;
   }): ValidateRegistrationErrorObject[] {
     // Decide which required attributes to check
@@ -768,17 +768,17 @@ export class RegistrationsInputValidator {
     // Otherwise, check the required attributes for the original registration that is in the database
 
     const relevantFspConfigName =
-      row[GenericRegistrationAttributes.programFspConfigurationName] ??
-      originalRegistration?.programFspConfigurationName;
+      row[GenericRegistrationAttributes.projectFspConfigurationName] ??
+      originalRegistration?.projectFspConfigurationName;
     if (!relevantFspConfigName) {
-      // If the programFspConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
+      // If the projectFspConfigurationName is neither in the row nor in the original registration, we cannot check the required attributes
       // Errors will be thrown in a different validation step
       return [];
     }
 
     const requiredAttributes = this.getRequiredAttributesForFsp(
       relevantFspConfigName,
-      programFspConfigurations,
+      projectFspConfigurations,
     );
     const errors: ValidateRegistrationErrorObject[] = [];
     for (const attribute of requiredAttributes) {
@@ -795,9 +795,9 @@ export class RegistrationsInputValidator {
         }
       }
 
-      // If the programFspConfigurationName being updated / set in this request
+      // If the projectFspConfigurationName being updated / set in this request
       // check if a combination orignal registration and new row has all required attributes
-      if (row[GenericRegistrationAttributes.programFspConfigurationName]) {
+      if (row[GenericRegistrationAttributes.projectFspConfigurationName]) {
         // Check if the required attributes are present in the row
         if (
           !this.isRequiredAttributeInObject(attribute, row) &&
@@ -830,12 +830,12 @@ export class RegistrationsInputValidator {
   }
 
   private getRequiredAttributesForFsp(
-    programFspConfigurationName: string,
-    programFspConfigurations: ProgramFspConfigurationEntity[],
+    projectFspConfigurationName: string,
+    projectFspConfigurations: ProjectFspConfigurationEntity[],
   ): string[] {
-    const fspName = programFspConfigurations.find(
-      (programFspConfig) =>
-        programFspConfig.name === programFspConfigurationName,
+    const fspName = projectFspConfigurations.find(
+      (projectFspConfig) =>
+        projectFspConfig.name === projectFspConfigurationName,
     )?.fspName;
     const foundFsp = FSP_SETTINGS.find((fsp) => fsp.name === fspName);
     if (!foundFsp) {
@@ -849,14 +849,14 @@ export class RegistrationsInputValidator {
 
   private async getOriginalRegistrationsOrThrow(
     csvArray: object[],
-    programId: number,
+    projectId: number,
   ): Promise<Map<string, MappedPaginatedRegistrationDto>> {
     const referenceIds = csvArray
       .filter((row) => row[GenericRegistrationAttributes.referenceId])
       .map((row) => row[GenericRegistrationAttributes.referenceId]);
     const originalRegistrations =
       await this.registrationPaginationService.getRegistrationViewsChunkedByReferenceIds(
-        { programId, referenceIds },
+        { projectId, referenceIds },
       );
     const originalRegistrationsMap = new Map(
       originalRegistrations.map((reg) => [reg.referenceId, reg]),
@@ -946,24 +946,24 @@ export class RegistrationsInputValidator {
 
   private validatePaymentAmountMultiplier({
     value,
-    programPaymentAmountMultiplierFormula,
+    projectPaymentAmountMultiplierFormula,
     i,
   }: {
     value: InputAttributeType;
-    programPaymentAmountMultiplierFormula: string | null;
+    projectPaymentAmountMultiplierFormula: string | null;
     i: number;
   }): {
     errorOjb?: ValidateRegistrationErrorObject | undefined;
     validatedPaymentAmountMultiplier?: number | undefined;
   } {
-    if (programPaymentAmountMultiplierFormula && value != null) {
+    if (projectPaymentAmountMultiplierFormula && value != null) {
       return {
         errorOjb: {
           lineNumber: i + 1,
           column: GenericRegistrationAttributes.paymentAmountMultiplier,
           value,
           error:
-            'Program has a paymentAmountMultiplierFormula, so the paymentAmountMultiplier should not be set as it will be calculated',
+            'Project has a paymentAmountMultiplierFormula, so the paymentAmountMultiplier should not be set as it will be calculated',
         },
       };
     }

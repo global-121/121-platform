@@ -22,13 +22,13 @@ export class ActivitiesService {
     private readonly noteScopedRepository: NoteScopedRepository,
     private readonly userService: UserService,
   ) {}
-  async getByRegistrationIdAndProgramId({
+  async getByRegistrationIdAndProjectId({
     registrationId,
-    programId,
+    projectId,
     userId,
   }: {
     registrationId: number;
-    programId: number;
+    projectId: number;
     userId: number;
   }) {
     const availableTypes: ActivityTypeEnum[] = [];
@@ -40,7 +40,7 @@ export class ActivitiesService {
 
     const canViewPaymentData = await this.userService.canActivate(
       [PermissionEnum.PaymentREAD, PermissionEnum.PaymentTransactionREAD],
-      programId,
+      projectId,
       userId,
     );
 
@@ -48,15 +48,15 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Transaction);
 
       transactions =
-        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
+        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProjectId(
           registrationId,
-          programId,
+          projectId,
         );
     }
 
     const canViewMessageHistory = await this.userService.canActivate(
       [PermissionEnum.RegistrationNotificationREAD],
-      programId,
+      projectId,
       userId,
     );
 
@@ -71,7 +71,7 @@ export class ActivitiesService {
 
     const canViewPersonalData = await this.userService.canActivate(
       [PermissionEnum.RegistrationPersonalREAD],
-      programId,
+      projectId,
       userId,
     );
 
@@ -82,8 +82,8 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.IgnoredDuplicate);
 
       events =
-        await this.eventScopedRepository.getManyByProgramIdAndSearchOptions(
-          programId,
+        await this.eventScopedRepository.getManyByProjectIdAndSearchOptions(
+          projectId,
           {
             registrationId,
           },
@@ -92,9 +92,9 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Note);
 
       notes =
-        await this.noteScopedRepository.getManyByRegistrationIdAndProgramId(
+        await this.noteScopedRepository.getManyByRegistrationIdAndProjectId(
           registrationId,
-          programId,
+          projectId,
         );
     }
 

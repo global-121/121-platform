@@ -10,7 +10,7 @@ import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -21,11 +21,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Do payment to 1 PA with Fsp Onafriq', () => {
-  const programId = 1;
+  const projectId = 1;
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-    programFspConfigurationName: Fsps.onafriq,
+    projectFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
@@ -39,17 +39,17 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.onafriqProgram, __filename);
+    await resetDB(SeedScript.onafriqProject, __filename);
     accessToken = await getAccessToken();
     registrationOnafriq = { ...baseRegistrationOnafriq };
   });
 
   it('should successfully pay-out', async () => {
     // Arrange
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await importRegistrations(projectId, [registrationOnafriq], accessToken);
 
     await awaitChangeRegistrationStatus({
-      programId,
+      projectId,
       referenceIds: [registrationOnafriq.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -58,7 +58,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -66,7 +66,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -78,7 +78,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
@@ -97,9 +97,9 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   it('should give error on the initial request based on magic phonenumber', async () => {
     // Arrange
     registrationOnafriq.phoneNumber = '24300000000'; // this magic number is configured in mock to return an error on request
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await importRegistrations(projectId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
-      programId,
+      projectId,
       referenceIds: [registrationOnafriq.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -108,7 +108,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -116,7 +116,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -125,7 +125,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
@@ -144,9 +144,9 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
   it('should give error via callback based on magic phonenumber', async () => {
     // Arrange
     registrationOnafriq.phoneNumber = '24300000002'; // this magic number is configured in mock to return an error on callback
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await importRegistrations(projectId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
-      programId,
+      projectId,
       referenceIds: [registrationOnafriq.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -155,7 +155,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -164,7 +164,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // wait for non-waiting transactions only, to make sure callback came in
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -176,7 +176,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Assert
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,
@@ -197,9 +197,9 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 1: we use a magic phone number here that is configured in the mock to return a duplicate thirdPartyTransId error on request.
     // We use this as we cannot actually easily test a duplicate thirdPartyTransId error in the mock.
     registrationOnafriq.phoneNumber = '24300000001';
-    await importRegistrations(programId, [registrationOnafriq], accessToken);
+    await importRegistrations(projectId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
-      programId,
+      projectId,
       referenceIds: [registrationOnafriq.referenceId],
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -208,7 +208,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     // Act
     const doPaymentResponse = await doPayment({
-      programId,
+      projectId,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
@@ -216,7 +216,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId,
+      projectId,
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
@@ -228,7 +228,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     await waitFor(1_000);
 
     const getTransactionsBody = await getTransactions({
-      programId,
+      projectId,
       paymentId,
       registrationReferenceId: registrationOnafriq.referenceId,
       accessToken,

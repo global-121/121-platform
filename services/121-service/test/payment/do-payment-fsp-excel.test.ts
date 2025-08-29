@@ -7,18 +7,18 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import programTest from '@121-service/src/seed-data/program/program-test.json';
+import projectTest from '@121-service/src/seed-data/project/project-test.json';
 import {
   doPayment,
   getFspInstructions,
   getTransactions,
   importFspReconciliationData,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
-  deleteProgramFspConfigurationProperty,
-  getProgramFspConfigurations,
-} from '@121-service/test/helpers/program-fsp-configuration.helper';
+  deleteProjectFspConfigurationProperty,
+  getProjectFspConfigurations,
+} from '@121-service/test/helpers/project-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
   getImportFspReconciliationTemplate,
@@ -29,7 +29,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdWesteros,
+  projectIdWesteros,
   registrationCbe,
   registrationWesteros1,
   registrationWesteros2,
@@ -55,31 +55,31 @@ describe('Do payment with Excel FSP', () => {
     (registration) => registration.phoneNumber,
   );
 
-  const registrationsProgramWithValidation = [registrationCbe];
+  const registrationsProjectWithValidation = [registrationCbe];
   const refrenceIdsWithValidation = [registrationCbe.referenceId];
-  const programIdCbe = 1;
+  const projectIdCbe = 1;
 
   beforeEach(async () => {
     await resetDB(SeedScript.testMultiple, __filename);
     accessToken = await getAccessToken();
 
     //////////////////////////
-    // Setup Westeros program
+    // Setup Westeros project
     //////////////////////////
     await importRegistrations(
-      programIdWesteros,
+      projectIdWesteros,
       registrationsWesteros,
       accessToken,
     );
     await awaitChangeRegistrationStatus({
-      programId: programIdWesteros,
+      projectId: projectIdWesteros,
       referenceIds: referenceIdsWesteros,
       status: RegistrationStatusEnum.included,
       accessToken,
     });
 
     const paymentResponse = await doPayment({
-      programId: programIdWesteros,
+      projectId: projectIdWesteros,
       amount,
       referenceIds: [],
       accessToken,
@@ -87,7 +87,7 @@ describe('Do payment with Excel FSP', () => {
     const pamymentIdWesteros = paymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdWesteros,
+      projectId: projectIdWesteros,
       paymentReferenceIds: referenceIdsWesteros,
       accessToken,
       maxWaitTimeMs: 10_000,
@@ -96,25 +96,25 @@ describe('Do payment with Excel FSP', () => {
     });
 
     ////////////////////////////
-    // Setup Validation program
+    // Setup Validation project
     ////////////////////////////
 
-    // Do more tests with multiple programs, to include data isolation in tests
+    // Do more tests with multiple projects, to include data isolation in tests
     // Specifically, this enables testing if transactions and registrations have the same length (see excel.service.ts)
     await importRegistrations(
-      programIdCbe,
-      registrationsProgramWithValidation,
+      projectIdCbe,
+      registrationsProjectWithValidation,
       accessToken,
     );
     await awaitChangeRegistrationStatus({
-      programId: programIdCbe,
+      projectId: projectIdCbe,
       referenceIds: refrenceIdsWithValidation,
       status: RegistrationStatusEnum.included,
       accessToken,
     });
 
     const paymentResponseCbe = await doPayment({
-      programId: programIdCbe,
+      projectId: projectIdCbe,
       amount,
       referenceIds: [],
       accessToken,
@@ -122,7 +122,7 @@ describe('Do payment with Excel FSP', () => {
     const paymentIdCbe = paymentResponseCbe.body.id;
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdCbe,
+      projectId: projectIdCbe,
       paymentReferenceIds: refrenceIdsWithValidation,
       accessToken,
       maxWaitTimeMs: 10_000,
@@ -136,14 +136,14 @@ describe('Do payment with Excel FSP', () => {
 
       // Act
       const transactionsResponse = await getTransactions({
-        programId: programIdWesteros,
+        projectId: projectIdWesteros,
         paymentId,
         registrationReferenceId: null,
         accessToken,
       });
 
       const fspInstructionsResponse = await getFspInstructions(
-        programIdWesteros,
+        projectIdWesteros,
         paymentId,
         accessToken,
       );
@@ -157,20 +157,20 @@ describe('Do payment with Excel FSP', () => {
       expect(fspInstructions).toMatchSnapshot();
     });
 
-    it('Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
+    it('Should return all project-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set', async () => {
       // Arrange
-      const programAttributeColumns =
-        programTest.programRegistrationAttributes.map((pa) => pa.name);
-      programAttributeColumns.concat(['amount']);
+      const projectAttributeColumns =
+        projectTest.projectRegistrationAttributes.map((pa) => pa.name);
+      projectAttributeColumns.concat(['amount']);
 
-      const fspConfigurations = await getProgramFspConfigurations({
-        programId: programIdWesteros,
+      const fspConfigurations = await getProjectFspConfigurations({
+        projectId: projectIdWesteros,
         accessToken,
       });
 
       for (const fspConfiguration of fspConfigurations.body) {
-        await deleteProgramFspConfigurationProperty({
-          programId: programIdWesteros,
+        await deleteProjectFspConfigurationProperty({
+          projectId: projectIdWesteros,
           configName: fspConfiguration.name,
           propertyName: FspConfigurationProperties.columnsToExport,
           accessToken,
@@ -179,7 +179,7 @@ describe('Do payment with Excel FSP', () => {
 
       // Act
       const fspInstructionsResponse = await getFspInstructions(
-        programIdWesteros,
+        projectIdWesteros,
         paymentId,
         accessToken,
       );
@@ -215,7 +215,7 @@ describe('Do payment with Excel FSP', () => {
 
       // Act
       const importResult = await importFspReconciliationData(
-        programIdWesteros,
+        projectIdWesteros,
         paymentId,
         accessToken,
         reconciliationData,
@@ -224,7 +224,7 @@ describe('Do payment with Excel FSP', () => {
 
       await waitForPaymentTransactionsToComplete(
         {
-          programId: programIdWesteros,
+          projectId: projectIdWesteros,
           paymentReferenceIds: referenceIdsWesteros,
           accessToken,
           maxWaitTimeMs: 10_000,
@@ -235,7 +235,7 @@ describe('Do payment with Excel FSP', () => {
         }, // Hmm, this is sort of stepping on the feet of the assert already
       );
       const transactionsResponse = await getTransactions({
-        programId: programIdWesteros,
+        projectId: projectIdWesteros,
         paymentId,
         registrationReferenceId: null,
         accessToken,
@@ -282,7 +282,7 @@ describe('Do payment with Excel FSP', () => {
 
       // Act
       const importResult = await importFspReconciliationData(
-        programIdWesteros,
+        projectIdWesteros,
         paymentId,
         accessToken,
         reconciliationData,
@@ -295,7 +295,7 @@ describe('Do payment with Excel FSP', () => {
 
     it('should give me a CSV template when I request it', async () => {
       const response =
-        await getImportFspReconciliationTemplate(programIdWesteros);
+        await getImportFspReconciliationTemplate(projectIdWesteros);
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.body.sort()).toMatchSnapshot();
     });
@@ -312,7 +312,7 @@ describe('Do payment with Excel FSP', () => {
 
       // Act
       const importResult = await importFspReconciliationData(
-        programIdWesteros,
+        projectIdWesteros,
         paymentId,
         accessToken,
         reconciliationData,

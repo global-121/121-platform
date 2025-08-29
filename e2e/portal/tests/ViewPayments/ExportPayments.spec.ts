@@ -30,10 +30,10 @@ const login = async ({
 };
 
 const navigateToPaymentsPage = async (paymentsPage: PaymentsPage) => {
-  const projectTitle = 'NLRC OCW Program';
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
-    await paymentsPage.navigateToProgramPage('Payments');
+  const projectTitle = 'NLRC OCW Project';
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 };
 
@@ -41,7 +41,7 @@ const createFivePayments = async (paymentsPage: PaymentsPage) => {
   for (let i = 0; i < 5; i++) {
     await paymentsPage.createPayment();
     await paymentsPage.startPayment();
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
     await paymentsPage.dismissToast();
   }
 };
@@ -51,11 +51,11 @@ let page: Page;
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+  const projectIdOCW = 3;
+  const OcwProjectId = projectIdOCW;
 
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations(registrationsOCW, OcwProgramId, accessToken);
+  await seedIncludedRegistrations(registrationsOCW, OcwProjectId, accessToken);
 
   await login({
     page,
@@ -85,14 +85,14 @@ test('[35621] ExportPayments', async () => {
       exactRowCount: 25, // defaults to export all payments, so 5 payments * 5 registrations
       excludedColumns: ['id', 'created', 'updated', 'paymentDate'],
       // Given that the payments are not consistently sorted,
-      // we need to sort them by registrationProgramId and payment
+      // we need to sort them by registrationProjectId and payment
       // to ensure the snapshot is stable.
       sortFunction: (a: string[], b: string[], headerCells: string[]) => {
-        const registrationProgramIdIndex = headerCells.indexOf(
-          'registrationProgramId',
+        const registrationProjectIdIndex = headerCells.indexOf(
+          'registrationProjectId',
         );
-        const aId = a[registrationProgramIdIndex];
-        const bId = b[registrationProgramIdIndex];
+        const aId = a[registrationProjectIdIndex];
+        const bId = b[registrationProjectIdIndex];
 
         if (aId !== bId) {
           return parseInt(aId, 10) - parseInt(bId, 10);

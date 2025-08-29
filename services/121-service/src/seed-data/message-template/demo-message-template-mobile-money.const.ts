@@ -8,7 +8,7 @@ export const demoMessageTemplates: SeedMessageTemplateConfig = {
     },
     isWhatsappTemplate: false,
     message: {
-      en: 'Dear {{fullName}},\n\nThis is a message from the Red Cross.\n\nYou have been included in the program. You will receive 2 rounds of mobile money transfers. The amount you receive is based on the number of people in your household.',
+      en: 'Dear {{fullName}},\n\nThis is a message from the Red Cross.\n\nYou have been included in the project. You will receive 2 rounds of mobile money transfers. The amount you receive is based on the number of people in your household.',
     },
   },
   declined: {
@@ -18,7 +18,7 @@ export const demoMessageTemplates: SeedMessageTemplateConfig = {
     },
     isWhatsappTemplate: false,
     message: {
-      en: 'Dear {{fullName}},\n\nThis is a message from the Red Cross.\n\nWe regret to inform you that you have not been selected for the program at this time. If you have any questions, please contact us.',
+      en: 'Dear {{fullName}},\n\nThis is a message from the Red Cross.\n\nWe regret to inform you that you have not been selected for the project at this time. If you have any questions, please contact us.',
     },
   },
   pdmMessage: {

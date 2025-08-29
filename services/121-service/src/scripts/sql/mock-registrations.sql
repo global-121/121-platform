@@ -14,24 +14,24 @@ INSERT
         "preferredLanguage",
         "inclusionScore",
         "paymentAmountMultiplier",
-        "programId",
+        "projectId",
         "userId",
         updated,
-        "registrationProgramId" + (
+        "registrationProjectId" + (
         SELECT
-            max("registrationProgramId")
+            max("registrationProjectId")
         FROM
             "121-service"."registration"),
         "maxPayments",
         "paymentCount",
         CASE
-            WHEN "programId" = 2 THEN
+            WHEN "projectId" = 2 THEN
                 CASE
                     WHEN random() < 0.5 THEN 'kisumu.kisumu-west'
                     ELSE 'turkana.turkana-north'
                 END
             ELSE scope
         END,
-        "programFspConfigurationId"
+        "projectFspConfigurationId"
     FROM
         "121-service".registration);

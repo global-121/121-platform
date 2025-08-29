@@ -41,7 +41,7 @@ export class ProjectMenuComponent {
       icon: 'pi pi-chart-bar',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
-        requiredPermission: PermissionEnum.ProgramMetricsREAD,
+        requiredPermission: PermissionEnum.ProjectMetricsREAD,
       }),
     },
     {
@@ -51,7 +51,7 @@ export class ProjectMenuComponent {
       icon: 'pi pi-users',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
-        requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+        requiredPermission: PermissionEnum.AidWorkerProjectREAD,
       }),
     },
   ]);

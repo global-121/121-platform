@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
 import {
   RegistrationDataOptions,
@@ -17,8 +17,8 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 
 @Injectable()
 export class RegistrationDataService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
   public constructor(
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
@@ -63,11 +63,11 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .leftJoin('registrationData.registration', 'registration')
       .leftJoin(
-        'registrationData.programRegistrationAttribute',
-        'programRegistrationAttribute',
+        'registrationData.projectRegistrationAttribute',
+        'projectRegistrationAttribute',
       )
       .andWhere('registration.id = :id', { id: registration.id })
-      .andWhere(`programRegistrationAttribute.name = :name`, { name });
+      .andWhere(`projectRegistrationAttribute.name = :name`, { name });
   }
 
   public async getRegistrationDataByName(
@@ -76,7 +76,7 @@ export class RegistrationDataService {
   ): Promise<RegistrationDataByNameDto | null> {
     const query = this.getRegistrationDataQuery(registration, name);
     const queryWithSelect = query.select([
-      'programRegistrationAttribute.name as name',
+      'projectRegistrationAttribute.name as name',
       'registrationData.value as value',
       'registrationData.id as id',
     ]);
@@ -97,27 +97,27 @@ export class RegistrationDataService {
     name: string,
   ): Promise<RegistrationDataRelation> {
     const result = new RegistrationDataRelation();
-    const query = this.programRepository
-      .createQueryBuilder('program')
+    const query = this.projectRepository
+      .createQueryBuilder('project')
       .leftJoin(
-        'program.programRegistrationAttributes',
-        'programRegistrationAttributes',
+        'project.projectRegistrationAttributes',
+        'projectRegistrationAttributes',
       )
-      .andWhere('program.id = :programId', {
-        programId: registration.programId,
+      .andWhere('project.id = :projectId', {
+        projectId: registration.projectId,
       })
-      .andWhere('programRegistrationAttributes.name = :name', { name })
-      .select('"programRegistrationAttributes".id', 'id');
+      .andWhere('projectRegistrationAttributes.name = :name', { name })
+      .select('"projectRegistrationAttributes".id', 'id');
 
-    const resultProgramRegistrationAttribute = await query.getRawOne();
+    const resultProjectRegistrationAttribute = await query.getRawOne();
 
-    if (resultProgramRegistrationAttribute) {
-      result.programRegistrationAttributeId =
-        resultProgramRegistrationAttribute.id;
+    if (resultProjectRegistrationAttribute) {
+      result.projectRegistrationAttributeId =
+        resultProjectRegistrationAttribute.id;
       return result;
     }
 
-    const errorMessage = `Cannot find registration data, name: '${name}' not found (In program registration attributes)`;
+    const errorMessage = `Cannot find registration data, name: '${name}' not found (In project registration attributes)`;
     throw new RegistrationDataError(errorMessage);
   }
 
@@ -156,11 +156,11 @@ export class RegistrationDataService {
   ): Promise<void> {
     value = value === undefined || value === null ? '' : String(value);
 
-    if (relation.programRegistrationAttributeId) {
-      await this.saveProgramRegistrationAttributeData(
+    if (relation.projectRegistrationAttributeId) {
+      await this.saveProjectRegistrationAttributeData(
         registration,
         value,
-        relation.programRegistrationAttributeId,
+        relation.projectRegistrationAttributeId,
       );
     }
   }
@@ -170,16 +170,16 @@ export class RegistrationDataService {
     value: string[],
     relation: RegistrationDataRelation,
   ): Promise<void> {
-    if (relation.programRegistrationAttributeId) {
-      await this.saveProgramRegistrationAttributeDataMultiSelect(
+    if (relation.projectRegistrationAttributeId) {
+      await this.saveProjectRegistrationAttributeDataMultiSelect(
         registration,
         value,
-        relation.programRegistrationAttributeId,
+        relation.projectRegistrationAttributeId,
       );
     }
   }
 
-  private async saveProgramRegistrationAttributeData(
+  private async saveProjectRegistrationAttributeData(
     registration: RegistrationEntity | RegistrationViewEntity,
     value: string,
     id: number,
@@ -188,10 +188,10 @@ export class RegistrationDataService {
       .createQueryBuilder('registrationData')
       .andWhere('"registrationId" = :regId', { regId: registration.id })
       .leftJoin(
-        'registrationData.programRegistrationAttribute',
-        'programRegistrationAttribute',
+        'registrationData.projectRegistrationAttribute',
+        'projectRegistrationAttribute',
       )
-      .andWhere('programRegistrationAttribute.id = :id', { id })
+      .andWhere('projectRegistrationAttribute.id = :id', { id })
       .getOne();
     if (existingEntry) {
       existingEntry.value = value;
@@ -200,31 +200,31 @@ export class RegistrationDataService {
       const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programRegistrationAttributeId = id;
+      newRegistrationData.projectRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
-  private async saveProgramRegistrationAttributeDataMultiSelect(
+  private async saveProjectRegistrationAttributeDataMultiSelect(
     registration: RegistrationEntity | RegistrationViewEntity,
     values: string[],
     id: number,
   ): Promise<void> {
     await this.registrationDataScopedRepository.deleteUnscoped({
       registration: { id: registration.id },
-      programRegistrationAttribute: { id },
+      projectRegistrationAttribute: { id },
     });
 
     for await (const value of values) {
       const newRegistrationData = new RegistrationAttributeDataEntity();
       newRegistrationData.registrationId = registration.id;
       newRegistrationData.value = value;
-      newRegistrationData.programRegistrationAttributeId = id;
+      newRegistrationData.projectRegistrationAttributeId = id;
       await this.registrationDataScopedRepository.save(newRegistrationData);
     }
   }
 
-  public async deleteProgramRegistrationAttributeData(
+  public async deleteProjectRegistrationAttributeData(
     registration: RegistrationEntity,
     options: RegistrationDataOptions,
   ) {
@@ -236,11 +236,11 @@ export class RegistrationDataService {
     if (!relation) {
       relation = await this.getRelationForName(registration, options.name!);
     }
-    if (relation.programRegistrationAttributeId) {
+    if (relation.projectRegistrationAttributeId) {
       await this.registrationDataScopedRepository.deleteUnscoped({
         registrationId: Equal(registration.id),
-        programRegistrationAttribute: {
-          id: relation.programRegistrationAttributeId,
+        projectRegistrationAttribute: {
+          id: relation.projectRegistrationAttributeId,
         },
       });
     }

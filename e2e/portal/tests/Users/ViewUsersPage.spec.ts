@@ -9,7 +9,7 @@ import UsersPage from '@121-e2e/portal/pages/UsersPage';
 
 const expectedUserEmails = [
   'admin@example.org',
-  'program-admin@example.org',
+  'project-admin@example.org',
   'view-user@example.org',
   'kobo+registration_country@example.org',
   'kobo+validation_country@example.org',
@@ -28,7 +28,7 @@ const expectedAssignedUsers = [
   'finance-officer',
   'kobo+registration_country',
   'kobo+validation_country',
-  'program-admin',
+  'project-admin',
   'view-no-pii',
   'view-user',
 ];

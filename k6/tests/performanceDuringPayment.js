@@ -4,17 +4,17 @@ import { Counter } from 'k6/metrics';
 import loginModel from '../models/login.js';
 import metricstsModel from '../models/metrics.js';
 import paymentsModel from '../models/payments.js';
-import programsModel from '../models/programs.js';
+import projectsModel from '../models/projects.js';
 import resetModel from '../models/reset.js';
 
 const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
-const programsPage = new programsModel();
+const projectsPage = new projectsModel();
 const metricsPage = new metricstsModel();
 
 const duplicateNumber = 5;
-const programId = 3;
+const projectId = 3;
 const maxTimeoutAttempts = 600;
 const minPassRatePercentage = 50;
 const amount = 11.11;
@@ -59,7 +59,7 @@ export default function () {
   });
 
   // Do the payment
-  const doPayment = paymentsPage.createPayment(programId, amount);
+  const doPayment = paymentsPage.createPayment(projectId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
       if (r.status != 202) {
@@ -71,7 +71,7 @@ export default function () {
 
   // Monitor that 100% of payments is successful and then stop the test
   const monitorPayment = paymentsPage.getPaymentResults(
-    programId,
+    projectId,
     maxTimeoutAttempts,
     doPayment.body.id,
     duplicateNumber,
@@ -95,7 +95,7 @@ export default function () {
   });
 
   // send bulk message
-  const message = programsPage.sendBulkMessage(3);
+  const message = projectsPage.sendBulkMessage(3);
   checkAndFail(message, {
     'Message sent succesfully status was 202': (r) => r.status == 202,
   });

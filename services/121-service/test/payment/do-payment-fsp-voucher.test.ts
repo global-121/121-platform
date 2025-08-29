@@ -10,7 +10,7 @@ import {
   getTransactions,
   waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   doPaymentAndWaitForCompletion,
   getMessageHistory,
@@ -20,10 +20,10 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Do payment to 1 PA', () => {
-  const programId = programIdPV;
+  const projectId = projectIdPV;
   const amount = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
@@ -32,7 +32,7 @@ describe('Do payment to 1 PA', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+    projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
   };
   const paymentReferenceIds = [registrationAh.referenceId];
@@ -50,13 +50,13 @@ describe('Do payment to 1 PA', () => {
       // Arrange
       await seedIncludedRegistrations(
         [registrationAhCopy],
-        programId,
+        projectId,
         accessToken,
       );
 
       // Act
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -64,7 +64,7 @@ describe('Do payment to 1 PA', () => {
       const paymentId = doPaymentResponse.body.id;
 
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 20_000,
@@ -72,7 +72,7 @@ describe('Do payment to 1 PA', () => {
       });
 
       const getTransactionsBody = await getTransactionsIntersolveVoucher({
-        programId,
+        projectId,
         paymentId,
         referenceId: registrationAhCopy.referenceId,
         accessToken,
@@ -94,14 +94,14 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
       await waitForMessagesToComplete({
-        programId,
+        projectId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
         minimumNumberOfMessagesPerReferenceId: 3,
       });
 
       const { body: messages } = await getMessageHistory(
-        programId,
+        projectId,
         registrationAhCopy.referenceId,
         accessToken,
       );
@@ -141,13 +141,13 @@ describe('Do payment to 1 PA', () => {
 
       await seedIncludedRegistrations(
         [registrationAhCopy],
-        programId,
+        projectId,
         accessToken,
       );
 
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -158,14 +158,14 @@ describe('Do payment to 1 PA', () => {
       });
 
       await waitForMessagesToComplete({
-        programId,
+        projectId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
         accessToken,
@@ -185,13 +185,13 @@ describe('Do payment to 1 PA', () => {
 
       await seedIncludedRegistrations(
         [registrationAhCopy],
-        programId,
+        projectId,
         accessToken,
       );
 
       // Act
       const paymentId = await doPaymentAndWaitForCompletion({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -203,14 +203,14 @@ describe('Do payment to 1 PA', () => {
       });
 
       await waitForMessagesToComplete({
-        programId,
+        projectId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
         minimumNumberOfMessagesPerReferenceId: 1,
       });
 
       const getTransactionsBody = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationAhCopy.referenceId,
         accessToken,

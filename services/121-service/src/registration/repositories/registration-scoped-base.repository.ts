@@ -91,9 +91,9 @@ export class RegistrationScopedBaseRepository<T extends ObjectLiteral> {
     }
     const qb = this.repository
       .createQueryBuilder(alias)
-      .leftJoin(`${alias}.program`, 'program')
+      .leftJoin(`${alias}.project`, 'project')
       .andWhere(
-        `(program."enableScope" = false OR ${alias}.scope LIKE :scope)`,
+        `(project."enableScope" = false OR ${alias}.scope LIKE :scope)`,
         {
           scope: `${this.request.user.scope}%`,
         },

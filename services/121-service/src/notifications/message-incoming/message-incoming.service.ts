@@ -13,7 +13,7 @@ import {
   TemplatedMessages,
 } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -30,7 +30,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
@@ -46,8 +46,8 @@ export class MessageIncomingService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(ProgramEntity)
-  private programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private projectRepository: Repository<ProjectEntity>;
   @InjectRepository(TryWhatsappEntity)
   private readonly tryWhatsappRepository: Repository<TryWhatsappEntity>;
   @InjectRepository(WhatsappPendingMessageEntity)
@@ -57,7 +57,7 @@ export class MessageIncomingService {
 
   private readonly fallbackLanguage = LanguageEnum.en;
   private readonly genericDefaultReplies = {
-    en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 program. For questions please contact the NGO.',
+    en: 'This is an automated message. Your WhatsApp phone number is not recognized for any 121 project. For questions please contact the NGO.',
   };
 
   public constructor(
@@ -73,12 +73,12 @@ export class MessageIncomingService {
 
   public async getGenericNotificationText(
     language: string,
-    program: ProgramEntity,
+    project: ProjectEntity,
   ): Promise<string> {
-    const key = ProgramNotificationEnum.whatsappGenericMessage;
+    const key = ProjectNotificationEnum.whatsappGenericMessage;
     const messageTemplates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        program.id,
+      await this.messageTemplateService.getMessageTemplatesByProjectId(
+        project.id,
         key,
       );
 
@@ -300,17 +300,17 @@ export class MessageIncomingService {
       // PA does have whatsapp
       // Store PA phone number as whatsappPhonenumber
       // Since it is for now impossible to store a whatsapp number without a chosen FSP
-      // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
+      // Explicitely search for the the fsp intersolve (in the related FSPs of this project)
       // This should be refactored later
-      const program = await this.programRepository.findOneOrFail({
-        where: { id: Equal(tryWhatsapp.registration.programId) },
-        relations: ['programFspConfigurations'],
+      const project = await this.projectRepository.findOneOrFail({
+        where: { id: Equal(tryWhatsapp.registration.projectId) },
+        relations: ['projectFspConfigurations'],
       });
       const fspConfigWithFspIntersolveWhatsapp =
-        program.programFspConfigurations.find((config) => {
+        project.projectFspConfigurations.find((config) => {
           return config.fspName === Fsps.intersolveVoucherWhatsapp;
         })!;
-      tryWhatsapp.registration.programFspConfigurationId =
+      tryWhatsapp.registration.projectFspConfigurationId =
         fspConfigWithFspIntersolveWhatsapp.id;
       const savedRegistration = await this.registrationRepository.save(
         tryWhatsapp.registration,
@@ -337,8 +337,8 @@ export class MessageIncomingService {
         'registration.whatsappPendingMessages',
         'whatsappPendingMessages',
       )
-      .leftJoinAndSelect('registration.program', 'program')
-      .leftJoin('registration_data.programRegistrationAttribute', 'attribute')
+      .leftJoinAndSelect('registration.project', 'project')
+      .leftJoin('registration_data.projectRegistrationAttribute', 'attribute')
       .where('registration_data.value = :whatsappPhoneNumber', {
         whatsappPhoneNumber: phoneNumber,
       })
@@ -433,28 +433,28 @@ export class MessageIncomingService {
           id: 'ASC',
         },
       });
-      let program: ProgramEntity | undefined;
-      // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding program
+      let project: ProjectEntity | undefined;
+      // If phonenumber is found but the registration has no outstanding vouchers/messages use the corresponding project
 
       if (registrationsWithPhoneNumber.length > 0) {
-        program = registrationsWithPhoneNumber[0].program;
+        project = registrationsWithPhoneNumber[0].project;
       } else {
-        // If only 1 program in database: use default reply of that program
-        const programs = await this.programRepository.find();
-        if (programs.length === 1) {
-          program = programs[0];
+        // If only 1 project in database: use default reply of that project
+        const projects = await this.projectRepository.find();
+        if (projects.length === 1) {
+          project = projects[0];
         }
       }
 
-      if (program) {
+      if (project) {
         const language =
           registrationsWithPhoneNumber[0]?.preferredLanguage ||
           this.fallbackLanguage;
 
         const whatsappDefaultReply = (
-          await this.messageTemplateService.getMessageTemplatesByProgramId(
-            program.id,
-            ProgramNotificationEnum.whatsappReply,
+          await this.messageTemplateService.getMessageTemplatesByProjectId(
+            project.id,
+            ProjectNotificationEnum.whatsappReply,
             language,
           )
         )[0];
@@ -467,7 +467,7 @@ export class MessageIncomingService {
         });
         return;
       } else {
-        // If multiple or 0 programs and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
+        // If multiple or 0 projects and phonenumber not found: use generic reply in code. Not via queue as that requires a registration.
         await this.whatsappService.sendWhatsapp({
           message: this.genericDefaultReplies[this.fallbackLanguage],
           recipientPhoneNr: fromNumber,
@@ -485,8 +485,8 @@ export class MessageIncomingService {
       const intersolveVouchersPerPa = registration.images.map(
         (image) => image.voucher,
       );
-      const program = await this.programRepository.findOneByOrFail({
-        id: registration.programId,
+      const project = await this.projectRepository.findOneByOrFail({
+        id: registration.projectId,
       });
       const language = registration.preferredLanguage || this.fallbackLanguage;
 
@@ -503,8 +503,8 @@ export class MessageIncomingService {
         } else {
           const foundMessageTemplateText =
             await this.getMessageTemplateOrFallback(
-              program.id,
-              ProgramNotificationEnum.whatsappVoucher,
+              project.id,
+              ProjectNotificationEnum.whatsappVoucher,
               language,
             );
           if (foundMessageTemplateText) {
@@ -545,7 +545,7 @@ export class MessageIncomingService {
           message: '',
           messageContentType: MessageContentType.paymentInstructions,
           messageProcessType: MessageProcessType.whatsappVoucherInstructions,
-          mediaUrl: `${EXTERNAL_API.rootApi}/programs/${program.id}/${API_PATHS.voucherInstructions}`,
+          mediaUrl: `${EXTERNAL_API.rootApi}/projects/${project.id}/${API_PATHS.voucherInstructions}`,
           userId: intersolveVouchersPerPa[0].userId,
         });
       }
@@ -559,13 +559,13 @@ export class MessageIncomingService {
   }
 
   private async getMessageTemplateOrFallback(
-    programId: number,
-    key: ProgramNotificationEnum,
+    projectId: number,
+    key: ProjectNotificationEnum,
     language: LanguageEnum,
   ): Promise<string | undefined> {
     const messageTemplates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        programId,
+      await this.messageTemplateService.getMessageTemplatesByProjectId(
+        projectId,
         key,
       );
     const messageTemplate = messageTemplates.find(

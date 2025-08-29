@@ -2,7 +2,7 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 
 export interface ValidatedRegistrationInput
   extends RegistrationEntityProperties {
-  programFspConfigurationName?: string;
+  projectFspConfigurationName?: string;
   data: Record<string, string | number | boolean | null>;
 }
 
@@ -10,7 +10,7 @@ export interface ValidatedRegistrationInput
 type RegistrationEntityProperties = Partial<
   Pick<
     InstanceType<typeof RegistrationEntity>,
-    | 'programId'
+    | 'projectId'
     | 'registrationStatus'
     | 'referenceId'
     | 'phoneNumber'

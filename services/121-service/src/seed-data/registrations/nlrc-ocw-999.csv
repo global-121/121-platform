@@ -1,4 +1,4 @@
-programFspConfigurationName;phoneNumber;preferredLanguage;paymentAmountMultiplier;fullName;whatsappPhoneNumber;addressStreet;addressHouseNumber;addressHouseNumberAddition;addressPostalCode;addressCity
+projectFspConfigurationName;phoneNumber;preferredLanguage;paymentAmountMultiplier;fullName;whatsappPhoneNumber;addressStreet;addressHouseNumber;addressHouseNumberAddition;addressPostalCode;addressCity
 Intersolve-visa;31623282420;en;1;Jan de Vries;31623282420;Arthurbaan;146;;1636HO;Schijf
 Intersolve-voucher-whatsapp;31646475620;en;1;Piet van der Berg;31646475620;Elizebaan;31;bis;3366 XJ;Oosternijkerk
 Intersolve-voucher-whatsapp;31656800180;en;1;Kees Bakker;31656800180;Tirzastraat;121;;1748 YY;Vijlen

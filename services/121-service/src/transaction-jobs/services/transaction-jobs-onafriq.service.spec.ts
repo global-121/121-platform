@@ -47,11 +47,11 @@ describe('TransactionJobsOnafriqService', () => {
       const transactionJob: OnafriqTransactionJobDto = {
         referenceId: 'ref-1',
         paymentId: 1,
-        programId: 1,
+        projectId: 1,
         userId: 1,
         bulkSize: 10,
         transactionAmount: 100,
-        programFspConfigurationId: 1,
+        projectFspConfigurationId: 1,
         isRetry: false,
         phoneNumber: '123',
         firstName: 'John',

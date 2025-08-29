@@ -10,7 +10,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -28,9 +28,9 @@ let registrationId: number;
 const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   const accessToken = await getAccessToken();
-  await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
+  await seedIncludedRegistrations([registrationPV5], projectIdPV, accessToken);
   registrationId = await getRegistrationIdByReferenceId({
-    programId: programIdPV,
+    projectId: projectIdPV,
     referenceId: registrationPV5.referenceId,
     accessToken,
   });
@@ -45,7 +45,7 @@ const login = async (page: Page, email?: string, password?: string) => {
 const goToEditPersonalInformationPage = async (page: Page) => {
   const activityLogPage = new RegistrationActivityLogPage(page);
   await activityLogPage.goto(
-    `/project/${programIdPV}/registrations/${registrationId}`,
+    `/project/${projectIdPV}/registrations/${registrationId}`,
   );
   await activityLogPage.navigateToPersonalInformation();
 };

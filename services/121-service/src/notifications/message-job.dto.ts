@@ -9,7 +9,7 @@ export class MessageJobDto {
   preferredLanguage: LanguageEnum;
   whatsappPhoneNumber?: string;
   phoneNumber?: string;
-  programId: number;
+  projectId: number;
   message?: string;
   contentSid?: string;
   messageTemplateKey?: string;

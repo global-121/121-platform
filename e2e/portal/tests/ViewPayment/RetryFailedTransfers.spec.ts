@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-ocw.json';
 import {
   seedIncludedRegistrations,
   updateRegistration,
@@ -12,7 +12,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW6Fail,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     [...registrationsOCW, registrationOCW6Fail],
-    programIdOCW,
+    projectIdOCW,
     accessToken,
   );
 
@@ -39,13 +39,13 @@ test.beforeEach(async ({ page }) => {
 test('[32300] Retry failed transfers', async ({ page }) => {
   const paymentPage = new PaymentPage(page);
   const paymentsPage = new PaymentsPage(page);
-  const projectTitle = NLRCProgram.titlePortal.en;
+  const projectTitle = NLRCProject.titlePortal.en;
   const lastPaymentDate = `${format(new Date(), 'dd/MM/yyyy')}`;
 
-  await test.step('Navigate to Program payments', async () => {
-    await paymentsPage.selectProgram(projectTitle);
+  await test.step('Navigate to Project payments', async () => {
+    await paymentsPage.selectProject(projectTitle);
 
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   await test.step('Do payment', async () => {
@@ -53,7 +53,7 @@ test('[32300] Retry failed transfers', async ({ page }) => {
     await paymentsPage.startPayment();
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith(`/en-GB/project/${programIdOCW}/payments/1`),
+      url.pathname.startsWith(`/en-GB/project/${projectIdOCW}/payments/1`),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);
@@ -67,7 +67,7 @@ test('[32300] Retry failed transfers', async ({ page }) => {
     const accessToken = await getAccessToken();
 
     await updateRegistration(
-      programIdOCW,
+      projectIdOCW,
       registrationOCW6Fail.referenceId,
       { fullName: 'John Doe' },
       'automated test',

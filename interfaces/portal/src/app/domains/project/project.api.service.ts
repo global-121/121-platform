@@ -26,7 +26,7 @@ import { AuthService } from '~/services/auth.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
-const BASE_ENDPOINT = 'programs';
+const BASE_ENDPOINT = 'projects';
 
 const filterableAttributesToIgnore = [
   'failedPayment',
@@ -34,7 +34,7 @@ const filterableAttributesToIgnore = [
   'successPayment',
   'notYetSentPayment',
   // Below attributes are already hardcoded in the table columns service
-  'programFspConfigurationName',
+  'projectFspConfigurationName',
   'fullName',
   'created',
   'registrationCreatedDate',
@@ -210,12 +210,12 @@ export class ProjectApiService extends DomainApiService {
 
   getProjectAttributes({
     projectId,
-    includeProgramRegistrationAttributes = false,
+    includeProjectRegistrationAttributes = false,
     includeTemplateDefaultAttributes = false,
     filterShowInRegistrationsTable = false,
   }: {
     projectId: Signal<number | string>;
-    includeProgramRegistrationAttributes?: boolean;
+    includeProjectRegistrationAttributes?: boolean;
     includeTemplateDefaultAttributes?: boolean;
     filterShowInRegistrationsTable?: boolean;
   }) {
@@ -225,7 +225,7 @@ export class ProjectApiService extends DomainApiService {
     >({
       path: [BASE_ENDPOINT, projectId, 'attributes'],
       params: {
-        includeProgramRegistrationAttributes,
+        includeProjectRegistrationAttributes,
         includeTemplateDefaultAttributes,
         filterShowInRegistrationsTable,
       },

@@ -23,12 +23,12 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     super(request, repository);
   }
 
-  async getLatestTransactionsByRegistrationIdAndProgramId(
+  async getLatestTransactionsByRegistrationIdAndProjectId(
     registrationId: number,
-    programId: number,
+    projectId: number,
   ) {
     const query = this.getLastTransactionsQuery({
-      programId,
+      projectId,
       registrationId,
     })
       .leftJoin('transaction.user', 'user')
@@ -38,13 +38,13 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   }
 
   public async getTransactions({
-    programId,
+    projectId,
     paymentId,
     fromDate,
     toDate,
     fspSpecificJoinFields,
   }: {
-    programId: number;
+    projectId: number;
     paymentId?: number;
     fromDate?: Date;
     toDate?: Date;
@@ -60,14 +60,14 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       paymentDate: Date;
       created: Date;
       updated: Date;
-      registrationProgramId: number;
+      registrationProjectId: number;
       registrationReferenceId: string;
       registrationId: number;
       status: TransactionStatusEnum;
       registrationStatus: RegistrationStatusEnum;
       amount: number;
       errorMessage: string | null;
-      programFspConfigurationName: string;
+      projectFspConfigurationName: string;
     } & Record<string, unknown>)[]
   > {
     const query = this.createQueryBuilder('transaction')
@@ -77,21 +77,21 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.id AS "id"',
         'transaction.created AS "created"',
         'transaction.updated AS "updated"',
-        'r."registrationProgramId"',
+        'r."registrationProjectId"',
         'r."referenceId" as "registrationReferenceId"',
         'r."id" as "registrationId"',
         'r."registrationStatus"',
         'transaction.status AS "status"',
         'transaction.amount AS "amount"',
         'transaction.errorMessage as "errorMessage"',
-        'fspconfig.name as "programFspConfigurationName"',
+        'fspconfig.name as "projectFspConfigurationName"',
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      .leftJoin('transaction.projectFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('p."programId" = :programId', {
-        programId,
+      .andWhere('p."projectId" = :projectId', {
+        projectId,
       });
 
     if (paymentId !== undefined && paymentId !== null) {
@@ -125,19 +125,19 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
 
   // Make this private when all 'querying code' has been moved to this repository
   public getLastTransactionsQuery({
-    programId,
+    projectId,
     paymentId,
     registrationId,
     referenceId,
     status,
-    programFspConfigId,
+    projectFspConfigId,
   }: {
-    programId: number;
+    projectId: number;
     paymentId?: number;
     registrationId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
-    programFspConfigId?: number;
+    projectFspConfigId?: number;
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
@@ -150,16 +150,16 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.errorMessage as "errorMessage"',
         'transaction.customData as "customData"',
         'fspconfig.fspName as "fspName"',
-        'transaction.programFspConfigurationId as "programFspConfigurationId"',
-        'fspconfig.label as "programFspConfigurationLabel"',
-        'fspconfig.name as "programFspConfigurationName"',
+        'transaction.projectFspConfigurationId as "projectFspConfigurationId"',
+        'fspconfig.label as "projectFspConfigurationLabel"',
+        'fspconfig.name as "projectFspConfigurationName"',
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      .leftJoin('transaction.projectFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .innerJoin('transaction.latestTransaction', 'lt')
-      .andWhere('p."programId" = :programId', {
-        programId,
+      .andWhere('p."projectId" = :projectId', {
+        projectId,
       });
     if (paymentId) {
       transactionQuery = transactionQuery.andWhere(
@@ -184,11 +184,11 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         { status },
       );
     }
-    if (programFspConfigId) {
+    if (projectFspConfigId) {
       transactionQuery = transactionQuery.andWhere(
-        'fspconfig.id = :programFspConfigId',
+        'fspconfig.id = :projectFspConfigId',
         {
-          programFspConfigId,
+          projectFspConfigId,
         },
       );
     }

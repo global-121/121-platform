@@ -12,7 +12,7 @@ import {
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -28,24 +28,24 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .select('registration.id', 'id')
       .from(RegistrationEntity, 'registration')
       .addSelect(
-        `CAST(CONCAT('PA #',registration."registrationProgramId") as VARCHAR)`,
+        `CAST(CONCAT('PA #',registration."registrationProjectId") as VARCHAR)`,
         'personAffectedSequence',
       )
       .addSelect(
-        `registration."registrationProgramId"`,
-        'registrationProgramId',
+        `registration."registrationProjectId"`,
+        'registrationProjectId',
       )
-      .orderBy(`registration.registrationProgramId`, 'ASC')
+      .orderBy(`registration.registrationProjectId`, 'ASC')
       .addSelect('registration.created', 'created')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
-      .addSelect('registration.programId', 'programId')
+      .addSelect('registration.projectId', 'projectId')
       .addSelect('registration.preferredLanguage', 'preferredLanguage')
       .addSelect('registration.inclusionScore', 'inclusionScore')
-      .addSelect('fspconfig."name"', 'programFspConfigurationName')
-      .addSelect('fspconfig."id"', 'programFspConfigurationId')
+      .addSelect('fspconfig."name"', 'projectFspConfigurationName')
+      .addSelect('fspconfig."id"', 'projectFspConfigurationId')
       .addSelect('fspconfig."fspName"', 'fspName')
-      .addSelect('fspconfig.label', 'programFspConfigurationLabel')
+      .addSelect('fspconfig.label', 'projectFspConfigurationLabel')
       .addSelect('registration.paymentCount', 'paymentCount')
       .addSelect(
         'registration.maxPayments - registration.paymentCount',
@@ -58,7 +58,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
       .addSelect('registration.maxPayments', 'maxPayments')
       .addSelect('registration.phoneNumber', 'phoneNumber')
       .addSelect('registration.scope', 'scope')
-      .leftJoin('registration.programFspConfiguration', 'fspconfig')
+      .leftJoin('registration.projectFspConfiguration', 'fspconfig')
       .leftJoin('registration.latestMessage', 'latestMessage')
       .leftJoin('latestMessage.message', 'message')
       .addSelect(
@@ -83,7 +83,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
             .innerJoin(
               'registration_attribute_data',
               'd2',
-              'd1."programRegistrationAttributeId" = d2."programRegistrationAttributeId" AND d1.value = d2.value AND d1."registrationId" != d2."registrationId"',
+              'd1."projectRegistrationAttributeId" = d2."projectRegistrationAttributeId" AND d1.value = d2.value AND d1."registrationId" != d2."registrationId"',
             )
             .innerJoin(
               'registration',
@@ -96,9 +96,9 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
               `d2."registrationId" = registration2.id AND registration2."registrationStatus" != '${RegistrationStatusEnum.declined}'`,
             )
             .innerJoin(
-              'program_registration_attribute',
+              'project_registration_attribute',
               'pra',
-              'd1."programRegistrationAttributeId" = pra.id',
+              'd1."projectRegistrationAttributeId" = pra.id',
             )
             .andWhere("d1.value != ''")
             .andWhere('pra."duplicateCheck" = true').andWhere(`
@@ -121,11 +121,11 @@ export class RegistrationViewEntity {
   @ViewColumn()
   public status: RegistrationStatusEnum;
 
-  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations)
-  @JoinColumn({ name: 'programId' })
-  public program: ProgramEntity;
+  @ManyToOne((_type) => ProjectEntity, (project) => project.registrations)
+  @JoinColumn({ name: 'projectId' })
+  public project: ProjectEntity;
   @Column()
-  public programId: number;
+  public projectId: number;
 
   @ViewColumn()
   public created: Date;
@@ -149,17 +149,17 @@ export class RegistrationViewEntity {
   public fspName?: Fsps;
 
   @ViewColumn()
-  public programFspConfigurationId: number;
+  public projectFspConfigurationId: number;
 
   @ViewColumn()
-  public programFspConfigurationName: string;
+  public projectFspConfigurationName: string;
 
   @ViewColumn()
-  public programFspConfigurationLabel: LocalizedString;
+  public projectFspConfigurationLabel: LocalizedString;
 
-  /** This is an "auto" incrementing field with a registration ID per program. */
+  /** This is an "auto" incrementing field with a registration ID per project. */
   @ViewColumn()
-  public registrationProgramId: number;
+  public registrationProjectId: number;
 
   @ViewColumn()
   public personAffectedSequence: string;

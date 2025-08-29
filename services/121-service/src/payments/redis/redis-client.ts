@@ -4,8 +4,8 @@ import { env } from '@121-service/src/env';
 
 export const REDIS_CLIENT = 'REDIS_CLIENT';
 
-export const getRedisSetName = (programId: number): string => {
-  return `program:${programId}:jobs`;
+export const getRedisSetName = (projectId: number): string => {
+  return `project:${projectId}:jobs`;
 };
 
 export const createRedisClient = (): Redis => {

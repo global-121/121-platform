@@ -11,7 +11,7 @@ import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   getEvents,
@@ -22,10 +22,10 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Do a payment to a PA with maxPayments=1', () => {
-  const programId = programIdPV;
+  const projectId = projectIdPV;
   const amount = 25;
   const registrationAh = {
     referenceId: '63e62864557597e0b-AH',
@@ -34,7 +34,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
     nameFirst: 'John',
     nameLast: 'Smith',
     phoneNumber: '14155238886',
-    programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
+    projectFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
     maxPayments: 1,
   };
@@ -49,9 +49,9 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
     it('should set registration to complete', async () => {
       // Arrange
-      await importRegistrations(programId, [registrationAh], accessToken);
+      await importRegistrations(projectId, [registrationAh], accessToken);
       await awaitChangeRegistrationStatus({
-        programId,
+        projectId,
         referenceIds: [registrationAh.referenceId],
         status: RegistrationStatusEnum.included,
         accessToken,
@@ -60,7 +60,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       // Act
       const doPaymentResponse = await doPayment({
-        programId,
+        projectId,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
@@ -69,14 +69,14 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       // Assert
       await waitForPaymentTransactionsToComplete({
-        programId,
+        projectId,
         paymentReferenceIds: [registrationAh.referenceId],
         accessToken,
         maxWaitTimeMs: 10_000,
       });
 
       const getTransactionsRes = await getTransactions({
-        programId,
+        projectId,
         paymentId,
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
@@ -92,7 +92,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         elapsedTime < timeout
       ) {
         const getRegistraitonRes = await getRegistrations({
-          programId,
+          projectId,
           accessToken,
         });
         getRegistration = getRegistraitonRes.body.data[0];
@@ -114,7 +114,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       const statusChangeToCompleted = (
         await getEvents({
-          programId,
+          projectId,
           accessToken,
           referenceId: registrationAh.referenceId,
         })

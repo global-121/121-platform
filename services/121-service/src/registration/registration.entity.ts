@@ -28,8 +28,8 @@ import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-inte
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectFspConfigurationEntity } from '@121-service/src/project-fsp-configurations/entities/project-fsp-configuration.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
@@ -38,17 +38,17 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/user.entity';
 import { WrapperType } from '@121-service/src/wrapper.type';
 
-@Unique('registrationProgramUnique', ['programId', 'registrationProgramId'])
+@Unique('registrationProjectUnique', ['projectId', 'registrationProjectId'])
 @Check(`"referenceId" NOT IN (${ReferenceIdConstraints})`)
 @Entity('registration')
 export class RegistrationEntity extends Base121Entity {
-  @ManyToOne((_type) => ProgramEntity, (program) => program.registrations, {
+  @ManyToOne((_type) => ProjectEntity, (project) => project.registrations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'programId' })
-  public program: Relation<ProgramEntity>;
+  @JoinColumn({ name: 'projectId' })
+  public project: Relation<ProjectEntity>;
   @Column()
-  public programId: number;
+  public projectId: number;
 
   // Refactor: remove this relationship as it is PA-app legacy
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
@@ -76,15 +76,15 @@ export class RegistrationEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public inclusionScore: number | null;
 
-  @ManyToOne((_type) => ProgramFspConfigurationEntity, {
+  @ManyToOne((_type) => ProjectFspConfigurationEntity, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({
-    name: 'programFspConfigurationId',
+    name: 'projectFspConfigurationId',
   })
-  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
+  public projectFspConfiguration: Relation<ProjectFspConfigurationEntity>;
   @Column({ type: 'integer', nullable: true })
-  public programFspConfigurationId: number;
+  public projectFspConfigurationId: number;
 
   @Column({ nullable: false, default: 1 })
   @IsInt()
@@ -92,11 +92,11 @@ export class RegistrationEntity extends Base121Entity {
   @IsNotEmpty()
   public paymentAmountMultiplier: number;
 
-  /** This is an "auto" incrementing field with a registration ID per program. */
-  // NOTE: REFACTOR: rename to sequenceInProgram for better intuitive understanding of this field
+  /** This is an "auto" incrementing field with a registration ID per project. */
+  // NOTE: REFACTOR: rename to sequenceInProject for better intuitive understanding of this field
   @Column()
   @Index()
-  public registrationProgramId: number;
+  public registrationProjectId: number;
 
   @Column({ nullable: true, type: 'integer' })
   @IsInt()

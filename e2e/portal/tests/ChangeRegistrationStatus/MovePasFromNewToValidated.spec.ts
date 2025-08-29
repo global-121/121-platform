@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -19,15 +19,15 @@ const toastMessage =
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
 
-  await seedRegistrations([registrationPV5], programIdPV);
+  await seedRegistrations([registrationPV5], projectIdPV);
 
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  // Navigate to program
+  // Navigate to project
   const basePage = new BasePage(page);
-  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await basePage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 
 test('[31206] Move PA(s) from status "New" to "Validated"', async ({

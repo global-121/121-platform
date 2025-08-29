@@ -213,11 +213,11 @@ export class ExportService {
           })(),
         );
 
-        return exportResult.map((fspInstructionPerProgramFspConfig) => {
-          const exportFileName = `payment#${paymentId}-${fspInstructionPerProgramFspConfig.fileNamePrefix}-fsp-instructions`;
+        return exportResult.map((fspInstructionPerProjectFspConfig) => {
+          const exportFileName = `payment#${paymentId}-${fspInstructionPerProjectFspConfig.fileNamePrefix}-fsp-instructions`;
 
           return {
-            data: fspInstructionPerProgramFspConfig.data,
+            data: fspInstructionPerProjectFspConfig.data,
             fileName: exportFileName,
           };
         });

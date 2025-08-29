@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Programs / Users / Roles should return an error when a user tries to assign roles to themselves 1`] = `"You cannot update your own program assignment"`;

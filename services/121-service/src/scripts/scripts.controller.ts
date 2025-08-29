@@ -44,13 +44,13 @@ export class ScriptsController {
     name: 'mockPv',
     required: false,
     example: true,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock PV program`,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock PV project`,
   })
   @ApiQuery({
     name: 'mockOcw',
     required: false,
     example: true,
-    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock OCW program`,
+    description: `Only for ${SeedScript.nlrcMultipleMock}: set to false to not mock OCW project`,
   })
   @ApiQuery({
     name: 'isApiTests',
@@ -66,7 +66,7 @@ export class ScriptsController {
   })
   @ApiOperation({
     summary: `Reset instance database.`,
-    description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
+    description: `When using the reset script: ${SeedScript.demoProjects}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
   })
   @Post('/reset')
   public async resetDb(

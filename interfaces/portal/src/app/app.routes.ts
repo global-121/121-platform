@@ -135,7 +135,7 @@ export const routes: Routes = [
                 '~/pages/project-monitoring-files/project-monitoring-files.page'
               ).then((x) => x.ProjectMonitoringFilesPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.ProgramAttachmentsREAD),
+              projectPermissionsGuard(PermissionEnum.ProjectAttachmentsREAD),
             ],
           },
           {
@@ -153,7 +153,7 @@ export const routes: Routes = [
             (x) => x.ProjectTeamPageComponent,
           ),
         canActivate: [
-          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+          projectPermissionsGuard(PermissionEnum.AidWorkerProjectREAD),
         ],
       },
       {

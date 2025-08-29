@@ -14,11 +14,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 describe('Export reconciliation report', () => {
-  const programId = 1;
+  const projectId = 1;
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
-    programFspConfigurationName: Fsps.onafriq,
+    projectFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
@@ -32,14 +32,14 @@ describe('Export reconciliation report', () => {
   let accessToken: string;
 
   beforeEach(async () => {
-    await resetDB(SeedScript.onafriqProgram, __filename);
+    await resetDB(SeedScript.onafriqProject, __filename);
     accessToken = await getAccessToken();
     registrationOnafriq = { ...baseRegistrationOnafriq };
   });
 
   it('should successfully generate reconciliation report', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationOnafriq], programId, amount, [
+    await seedPaidRegistrations([registrationOnafriq], projectId, amount, [
       TransactionStatusEnum.success,
       TransactionStatusEnum.error,
     ]);
