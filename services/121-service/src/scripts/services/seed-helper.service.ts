@@ -154,7 +154,7 @@ export class SeedHelperService {
   }
 
   private getSeedDataPath(subPath: string): string {
-    return join(__dirname, '../seed-data', subPath);
+    return join(__dirname, '../../seed-data', subPath);
   }
 
   public async addDefaultUsers(
