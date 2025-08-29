@@ -36,7 +36,9 @@ import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-
 import { RetryPaymentDto } from '@121-service/src/payments/dto/retry-payment.dto';
 import { PaymentEventDataDto } from '@121-service/src/payments/payment-events/dtos/payment-event-data.dto';
 import { PaymentEventsReturnDto } from '@121-service/src/payments/payment-events/dtos/payment-events-return.dto';
-import { PaymentsService } from '@121-service/src/payments/services/payments.service';
+import { PaymentsExcelFspService } from '@121-service/src/payments/services/payments-excel-fsp.service';
+import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
@@ -55,7 +57,9 @@ import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 @Controller()
 export class PaymentsController {
   public constructor(
-    private readonly paymentsService: PaymentsService,
+    private readonly paymentsExecutionService: PaymentsExecutionService,
+    private readonly paymentsReportingService: PaymentsReportingService,
+    private readonly paymentsExcelFspService: PaymentsExcelFspService,
     private readonly registrationsPaginateService: RegistrationsPaginationService,
   ) {}
 
@@ -71,7 +75,7 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<GetPaymentsDto[]> {
-    return await this.paymentsService.getPayments(programId);
+    return await this.paymentsReportingService.getPayments(programId);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })
@@ -86,7 +90,9 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<ProgramPaymentsStatusDto> {
-    return await this.paymentsService.getProgramPaymentsStatus(programId);
+    return await this.paymentsReportingService.getProgramPaymentsStatus(
+      programId,
+    );
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
@@ -108,7 +114,7 @@ export class PaymentsController {
   public async getPaymentAggregation(
     @Param() params: GetPaymentAggregationDto,
   ): Promise<PaymentReturnDto> {
-    return await this.paymentsService.getPaymentAggregation(
+    return await this.paymentsReportingService.getPaymentAggregation(
       Number(params.programId),
       Number(params.paymentId),
     );
@@ -183,7 +189,7 @@ export class PaymentsController {
       );
     }
 
-    const result = await this.paymentsService.createPayment({
+    const result = await this.paymentsExecutionService.createPayment({
       userId,
       programId,
       amount: data.amount,
@@ -214,7 +220,7 @@ export class PaymentsController {
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
-    return await this.paymentsService.retryPayment(
+    return await this.paymentsExecutionService.retryPayment(
       userId,
       programId,
       data.paymentId,
@@ -246,7 +252,7 @@ export class PaymentsController {
   ): Promise<FspInstructions[]> {
     const userId = RequestHelper.getUserId(req);
 
-    return await this.paymentsService.getFspInstructions(
+    return await this.paymentsExcelFspService.getFspInstructions(
       programId,
       paymentId,
       userId,
@@ -286,14 +292,13 @@ export class PaymentsController {
     @Query('paymentId', new ParseIntPipe({ optional: true }))
     paymentId?: number,
   ): Promise<Response | void> {
-    const result = await this.paymentsService.exportTransactionsUsingDateFilter(
-      {
+    const result =
+      await this.paymentsReportingService.exportTransactionsUsingDateFilter({
         programId,
         fromDateString: fromDate,
         toDateString: toDate,
         paymentId,
-      },
-    );
+      });
     if (format === ExportFileFormat.xlsx) {
       return sendXlsxReponse(result.data, result.fileName, res);
     }
@@ -314,7 +319,7 @@ export class PaymentsController {
     programId: number,
     @Param('paymentId', ParseIntPipe) paymentId: number,
   ): Promise<GetTransactionResponseDto[]> {
-    return await this.paymentsService.geTransactionsByPaymentId({
+    return await this.paymentsReportingService.getTransactionsByPaymentId({
       programId,
       paymentId,
     });
@@ -342,6 +347,9 @@ export class PaymentsController {
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
   ): Promise<PaymentEventsReturnDto> {
-    return this.paymentsService.getPaymentEvents({ programId, paymentId });
+    return this.paymentsReportingService.getPaymentEvents({
+      programId,
+      paymentId,
+    });
   }
 }

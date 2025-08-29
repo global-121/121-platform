@@ -13,9 +13,8 @@ import {
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { EntityClass } from '@121-service/src/shared/types/entity-class.type';
 
-// TODO: Move more functions from PaymentsService to this helper service
 @Injectable()
-export class PaymentsHelperService {
+export class PaymentsReportingHelperService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
