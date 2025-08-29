@@ -40,6 +40,7 @@ import { PaymentsExcelFspService } from '@121-service/src/payments/services/paym
 import { PaymentsExecutionService } from '@121-service/src/payments/services/payments-execution.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
   BulkActionResultDto,
@@ -284,22 +285,18 @@ export class PaymentsController {
   @Get('programs/:programId/transactions')
   public async exportTransactionsUsingDateFilter(
     @Res() res: Response,
-    @Param('programId', ParseIntPipe)
-    programId: number,
-    @Query('fromDate') fromDate?: string,
-    @Query('toDate') toDate?: string,
-    @Query('format') format = 'json',
-    @Query('paymentId', new ParseIntPipe({ optional: true }))
-    paymentId?: number,
+    @Param('programId', ParseIntPipe) programId: number,
+    @Query()
+    query: GetTransactionsQueryDto,
   ): Promise<Response | void> {
     const result =
       await this.paymentsReportingService.exportTransactionsUsingDateFilter({
         programId,
-        fromDateString: fromDate,
-        toDateString: toDate,
-        paymentId,
+        fromDateString: query.fromDate,
+        toDateString: query.toDate,
+        paymentId: query.paymentId,
       });
-    if (format === ExportFileFormat.xlsx) {
+    if (query.format === ExportFileFormat.xlsx) {
       return sendXlsxReponse(result.data, result.fileName, res);
     }
     return res.send(result);
