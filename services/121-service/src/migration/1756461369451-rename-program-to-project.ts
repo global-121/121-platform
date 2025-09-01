@@ -594,6 +594,11 @@ export class RenameProgramToProject1756461369451 implements MigrationInterface {
         `ALTER TABLE "121-service"."project_aidworker_assignment_roles_user_role" ADD CONSTRAINT "FK_8d869b02ca4f44ea0102c16bfed" FOREIGN KEY ("projectAidworkerAssignmentId") REFERENCES "121-service"."project_aidworker_assignment"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
       );
     }
+
+    // Update data with 'program' in values to 'project' in permissions table
+    await queryRunner.query(
+      `UPDATE "121-service"."permission" SET "name" = REPLACE("name", 'program', 'project') WHERE "name" LIKE '%program%'`,
+    );
   }
 
   public async down(): Promise<void> {
