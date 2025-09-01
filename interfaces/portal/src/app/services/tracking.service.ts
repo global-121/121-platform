@@ -39,8 +39,8 @@ export enum TrackingCategory {
  */
 export enum TrackingAction {
   clickBulkActionButton = 'click: Bulk Action Button',
-  clickContextMenuOption = 'click: Context-menu Option',
   clickProceedButton = 'click: Proceed Button',
+  selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
 }
 

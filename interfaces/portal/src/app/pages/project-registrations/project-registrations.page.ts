@@ -140,7 +140,7 @@ export class ProjectRegistrationsPageComponent {
 
         this.trackingService.trackEvent({
           category: TrackingCategory.manageRegistrations,
-          action: TrackingAction.clickContextMenuOption,
+          action: TrackingAction.selectContextMenuOption,
           name: `open-in-new-tab`,
         });
       },
@@ -186,7 +186,7 @@ export class ProjectRegistrationsPageComponent {
       this.trackingService.trackEvent({
         category: TrackingCategory.manageRegistrations,
         action: triggeredFromContextMenu
-          ? TrackingAction.clickContextMenuOption
+          ? TrackingAction.selectContextMenuOption
           : TrackingAction.clickBulkActionButton,
         name: `send-message for:none`,
       });
@@ -196,7 +196,7 @@ export class ProjectRegistrationsPageComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageRegistrations,
       action: triggeredFromContextMenu
-        ? TrackingAction.clickContextMenuOption
+        ? TrackingAction.selectContextMenuOption
         : TrackingAction.clickBulkActionButton,
       name: `send-message for:${actionData.selectAll ? 'all' : 'selection'}`,
       value: actionData.count > 0 ? actionData.count : undefined,
@@ -220,9 +220,9 @@ export class ProjectRegistrationsPageComponent {
       this.trackingService.trackEvent({
         category: TrackingCategory.manageRegistrations,
         action: triggeredFromContextMenu
-          ? TrackingAction.clickContextMenuOption
+          ? TrackingAction.selectContextMenuOption
           : TrackingAction.clickBulkActionButton,
-        name: `change-status:${status} for:none `,
+        name: `change-status:${status} for:none`,
       });
       return;
     }
@@ -230,7 +230,7 @@ export class ProjectRegistrationsPageComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageRegistrations,
       action: triggeredFromContextMenu
-        ? TrackingAction.clickContextMenuOption
+        ? TrackingAction.selectContextMenuOption
         : TrackingAction.clickBulkActionButton,
       name: `change-status:${status} for:${actionData.selectAll ? 'all' : 'selection'}`,
       value: actionData.count > 0 ? actionData.count : undefined,
