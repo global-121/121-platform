@@ -198,19 +198,56 @@ class PaymentsPage extends BasePage {
     dateRange,
   }: {
     option: string;
-    withDateRange?: boolean;
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: Date; end: Date };
   }) {
     await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
-      await this.dateRangeStartInput.click();
-      await this.page.locator(`[data-date="${dateRange.start}"]`).click();
+      await this.navigateToDateInPicker(
+        this.dateRangeStartInput,
+        dateRange.start,
+      );
       await this.page.waitForTimeout(500); // Wait for datePicker to be set
-      await this.dateRangeEndInput.click();
-      await this.page.locator(`[data-date="${dateRange.end}"]`).click();
+      await this.navigateToDateInPicker(this.dateRangeEndInput, dateRange.end);
     }
+  }
+
+  async navigateToDateInPicker(input: Locator, targetDate: Date) {
+    await input.click();
+
+    const targetMonth = targetDate.getMonth();
+    const targetYear = targetDate.getFullYear();
+
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    while (currentMonth !== targetMonth || currentYear !== targetYear) {
+      if (
+        currentYear < targetYear ||
+        (currentYear === targetYear && currentMonth < targetMonth)
+      ) {
+        await this.page.locator('.p-datepicker-next-button').click();
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+      } else {
+        await this.page.locator('.p-datepicker-prev-button').click();
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        }
+      }
+    }
+
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth()); // Month is 0-indexed
+    const day = String(targetDate.getDate());
+    const formattedDate = `${year}-${month}-${day}`;
+    await this.page.locator(`[data-date="${formattedDate}"]`).click();
   }
 
   async validateExportMessage({ message }: { message: string }) {

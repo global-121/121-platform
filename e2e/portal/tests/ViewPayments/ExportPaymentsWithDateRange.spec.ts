@@ -14,15 +14,10 @@ import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Get current date information
 const currentDate = new Date();
-const day = currentDate.getDate();
-const month = currentDate.getMonth();
-const year = currentDate.getFullYear();
-const startDate = `${year}-${month}-${day}`;
-const endDate = `${year}-${month}-${day}`;
-const startDateFuture = `${year}-${month}-${day + 1}`;
-const endDateFuture = `${year}-${month}-${day + 1}`;
-const startDatePast = `${year}-${month}-${day - 1}`;
-const endDatePast = `${year}-${month}-${day - 1}`;
+const futureDate = new Date(currentDate);
+futureDate.setDate(currentDate.getDate() + 1);
+const pastDate = new Date(currentDate);
+pastDate.setDate(currentDate.getDate() - 1);
 
 // Arrange
 test.describe('Export Payments with Date Range', () => {
@@ -59,10 +54,9 @@ test.describe('Export Payments with Date Range', () => {
     await test.step('Export and validate file', async () => {
       await paymentsPage.selectPaymentExportOption({
         option: 'Payments',
-        withDateRange: true,
         dateRange: {
-          start: startDate,
-          end: endDate,
+          start: currentDate,
+          end: currentDate,
         },
       });
 
@@ -85,10 +79,9 @@ test.describe('Export Payments with Date Range', () => {
     await test.step('Export and validate file', async () => {
       await paymentsPage.selectPaymentExportOption({
         option: 'Payments',
-        withDateRange: true,
         dateRange: {
-          start: startDateFuture,
-          end: endDateFuture,
+          start: futureDate,
+          end: futureDate,
         },
       });
 
@@ -110,10 +103,9 @@ test.describe('Export Payments with Date Range', () => {
     await test.step('Export and validate file', async () => {
       await paymentsPage.selectPaymentExportOption({
         option: 'Payments',
-        withDateRange: true,
         dateRange: {
-          start: startDatePast,
-          end: endDatePast,
+          start: pastDate,
+          end: pastDate,
         },
       });
 
