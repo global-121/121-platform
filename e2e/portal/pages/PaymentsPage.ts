@@ -247,6 +247,7 @@ class PaymentsPage extends BasePage {
     const month = String(targetDate.getMonth()); // Month is 0-indexed
     const day = String(targetDate.getDate());
     const formattedDate = `${year}-${month}-${day}`;
+    // TODO: use DatePicker-components API instead (see https://github.com/global-121/121-platform/pull/7175#discussion_r2313515442)
     await this.page.locator(`[data-date="${formattedDate}"]`).click();
   }
 

@@ -13,6 +13,7 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import PaymentsPage from '@121-e2e/portal/pages/PaymentsPage';
 
 // Get current date information
+// TODO: use library (date-fns) here (e2e-wide)
 const currentDate = new Date();
 const futureDate = new Date(currentDate);
 futureDate.setDate(currentDate.getDate() + 1);
