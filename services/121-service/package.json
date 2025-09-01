@@ -98,7 +98,7 @@
     "tsconfig-paths": "^4.2.0",
     "twilio": "^5.8.0",
     "typeorm": "npm:@global121/typeorm@1.0.4",
-    "typescript": "^5.7.2",
+    "typescript": "^5.9.2",
     "ufo": "^1.6.1",
     "uuid": "^11.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
