@@ -64,6 +64,12 @@ Or run them in "headed" mode (you can see the browser)
 npm test -- --headed
 ```
 
+Extra options:
+
+- To run only specific test files, you can can run `npm test <substringMatchingFilename>`
+- To update snapshot files: `npm run test:update-snapshots`
+- To combine the 2 options above: `npm run test:update-snapshots:specific <substringMatchingFilename>`
+
 ### Using the VS Code-extension
 
 Use the built-in runner of the VS Code-extension: [`#ms-playwright.playwright`](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
