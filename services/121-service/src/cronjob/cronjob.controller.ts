@@ -141,7 +141,7 @@ export class CronjobController {
     @Body() body: RemoveDeprecatedImageCodesDto,
   ): Promise<number | undefined> {
     return await this.cronjobExecutionService.cronRemoveDeprecatedImageCodes(
-      body.mockCurrentDate,
+      body?.mockCurrentDate,
     );
   }
 
