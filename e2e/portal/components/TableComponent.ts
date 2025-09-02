@@ -289,9 +289,9 @@ class TableComponent {
   }
 
   async validateFirstLogActivity(activity: string) {
-    await this.waitForLoaded(1);
-    const firstRowText = await this.getTextArrayFromColumn(2);
-    expect(firstRowText[0]).toContain(activity);
+    // Wait until the first cell in column 2 contains the expected activity
+    const firstCell = this.tableRows.nth(0).locator('td').nth(1); // column index is zero-based
+    await expect(firstCell).toContainText(activity);
   }
 
   async validateSelectionCount(expectedCount: number) {
