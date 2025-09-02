@@ -15,7 +15,7 @@ import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
 
-const loggingLevel: 'error' | 'info' | 'warn' | undefined = 'error'; // Seperate variable for typing purposes
+const loggingLevel: 'error' | 'info' | 'warn' | undefined = 'error'; // Separate variable for typing purposes
 
 const config = {
   credentials: {
