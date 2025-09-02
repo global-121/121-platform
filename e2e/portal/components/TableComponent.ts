@@ -334,7 +334,7 @@ class TableComponent {
   async changeRegistrationStatusByNameWithOptions({
     registrationName,
     status,
-    sendMessage,
+    sendMessage = false,
     sendCustomMessage = false,
     sendTemplatedMessage = false,
     customMessage,

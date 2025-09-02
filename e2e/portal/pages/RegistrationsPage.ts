@@ -138,15 +138,16 @@ class RegistrationsPage extends BasePage {
   }
 
   async getColumnIndexByHeaderText(headerText: string): Promise<number> {
+    await expect(
+      this.table.tableHeader.locator('th', { hasText: headerText }),
+    ).toBeVisible({ timeout: 2000 });
+
     const headerCells = await this.table.tableHeader
       .locator('th')
       .allTextContents();
     const index = headerCells.findIndex(
       (text) => text.trim() === headerText.trim(),
     );
-    if (index === -1) {
-      throw new Error(`Column with header "${headerText}" not found`);
-    }
     return index;
   }
 
