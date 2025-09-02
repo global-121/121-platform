@@ -13,6 +13,8 @@ import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integr
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { ProjectRepository } from '@121-service/src/projects/repositories/project.repository';
+import { ProjectRegistrationAttributeRepository } from '@121-service/src/projects/repositories/project-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
@@ -23,8 +25,6 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
-import { ProjectRegistrationAttributeRepository } from '../projects/repositories/project-registration-attribute.repository';
-import { ProjectRepository } from '../projects/repositories/project.repository';
 const userPermissionMapByExportType = {
   [ExportType.registrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
