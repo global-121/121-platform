@@ -359,8 +359,10 @@ class RegistrationsPage extends BasePage {
   }
 
   async assertDuplicateColumnValues(expectedValues: string[]) {
-    const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
-    expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+    await expect(async () => {
+      const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
+      expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+    }).toPass({ timeout: 2000 });
   }
 
   async waitForImportProcessToComplete() {

@@ -361,25 +361,22 @@ class TableComponent {
       await deleteLabel.click();
     }
 
+    const statusesThatRequireReason = ['Pause', 'Decline', 'Delete'];
+    if (statusesThatRequireReason.includes(status)) {
+      await expect(reasonField).toBeVisible({ timeout: 2000 });
+      await reasonField.fill('Test reason');
+    }
+
     if (sendMessage === true) {
       if (sendTemplatedMessage === true) {
         await this.sendMessageSwitch.check();
-        await this.approveButton.click();
       } else if (sendCustomMessage === true) {
         // Only fill reason field if it's visible
-        if (await reasonField.isVisible()) {
-          await reasonField.fill('Test reason');
-        }
         await this.fillCustomMessage(customMessage ?? '');
         await this.continueToPreviewButton.click();
-        await this.approveButton.click();
       }
-    } else {
-      if (await reasonField.isVisible()) {
-        await reasonField.fill('Test reason');
-      }
-      await this.approveButton.click();
     }
+    await this.approveButton.click();
   }
 
   async validateAllRecordsCount(expectedCount: number) {
