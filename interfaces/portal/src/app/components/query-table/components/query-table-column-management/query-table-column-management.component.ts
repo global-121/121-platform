@@ -20,6 +20,11 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-query-table-column-management',
@@ -38,6 +43,7 @@ export class QueryTableColumnManagementComponent<
   TData extends { id: PropertyKey },
 > {
   readonly rtlHelper = inject(RtlHelperService);
+  readonly trackingService = inject(TrackingService);
 
   readonly columns = input.required<QueryTableColumn<TData>[]>();
   readonly visibleColumns = model.required<QueryTableColumn<TData>[]>();
@@ -64,21 +70,58 @@ export class QueryTableColumnManagementComponent<
         );
       }
 
+      const visibleFieldNames = this.getFieldNameList(this.visibleColumns());
+      const selectedFieldNames = this.getFieldNameList(selectedColumns);
+
+      this.trackingService.trackEvent({
+        category: TrackingCategory.manageTableSettings,
+        action: TrackingAction.clickProceedButton,
+        name: `columns:${visibleFieldNames === selectedFieldNames ? 'keep' : 'update'} to:${selectedFieldNames}`,
+        value: selectedColumns.length,
+      });
+
       return Promise.resolve(selectedColumns);
     },
     onSuccess: (selectedColumns) => {
       const stateKey = this.selectedColumnsStateKey();
+
       if (stateKey) {
         localStorage.setItem(stateKey, JSON.stringify(selectedColumns));
       }
+
       this.visibleColumns.set(selectedColumns);
       this.formVisible.set(false);
     },
   }));
+
+  private getFieldNameList(fields: QueryTableColumn<TData>[]): string {
+    const fieldNames = Array.from(
+      new Set(fields.map((col) => col.field)).values(),
+    );
+    return fieldNames.sort().join(',');
+  }
+
   showColumnManagement() {
     this.formGroup.patchValue({
       selectedColumns: this.visibleColumns(),
     });
     this.formVisible.set(true);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickManageTableButton,
+      name: `table:${this.selectedColumnsStateKey() ?? 'unknown'}`,
+    });
+  }
+
+  revertToDefault() {
+    this.resetColumnVisibility.emit();
+    this.formVisible.set(false);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickRevertToDefaultButton,
+      name: `table:${this.selectedColumnsStateKey() ?? 'unknown'}`,
+    });
   }
 }
