@@ -26,6 +26,7 @@ import { environment } from '~environment';
 export enum TrackingCategory {
   export = 'Export',
   manageRegistrations = 'Manage Registrations',
+  manageTableSettings = 'Manage Table-settings',
 }
 
 /**
@@ -39,7 +40,9 @@ export enum TrackingCategory {
  */
 export enum TrackingAction {
   clickBulkActionButton = 'click: Bulk Action Button',
+  clickManageTableButton = 'click: Manage Table Button',
   clickProceedButton = 'click: Proceed Button',
+  clickRevertToDefaultButton = 'click: Revert to Default Button',
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
 }

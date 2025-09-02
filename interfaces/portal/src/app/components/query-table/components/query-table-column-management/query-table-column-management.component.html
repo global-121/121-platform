@@ -43,7 +43,7 @@
           [iconPos]="rtlHelper.createPosition('start')()"
           outlined
           rounded
-          (click)="resetColumnVisibility.emit(); formVisible.set(false)"
+          (click)="revertToDefault()"
         />
         <p
           i18n
