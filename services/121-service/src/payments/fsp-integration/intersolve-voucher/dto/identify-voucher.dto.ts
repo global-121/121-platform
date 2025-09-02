@@ -9,5 +9,5 @@ export class IdentifyVoucherDto {
   @ApiProperty({ example: 1 })
   @IsNumber()
   @Type(() => Number)
-  public readonly payment: number;
+  public readonly paymentId: number;
 }

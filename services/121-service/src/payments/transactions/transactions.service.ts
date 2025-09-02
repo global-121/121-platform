@@ -18,7 +18,7 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
@@ -49,17 +49,23 @@ export class TransactionsService {
     private readonly registrationEventsService: RegistrationEventsService,
   ) {}
 
-  public async getLastTransactions(
-    programId: number,
-    payment?: number,
-    referenceId?: string,
-    status?: TransactionStatusEnum,
-    programFspConfigId?: number,
-  ): Promise<TransactionReturnDto[]> {
+  public async getLastTransactions({
+    programId,
+    paymentId,
+    referenceId,
+    status,
+    programFspConfigId,
+  }: {
+    programId: number;
+    paymentId?: number;
+    referenceId?: string;
+    status?: TransactionStatusEnum;
+    programFspConfigId?: number;
+  }): Promise<TransactionReturnDto[]> {
     return this.transactionScopedRepository
       .getLastTransactionsQuery({
         programId,
-        payment,
+        paymentId,
         referenceId,
         status,
         programFspConfigId,
@@ -86,8 +92,7 @@ export class TransactionsService {
     transaction.registration = registration;
     transaction.programFspConfigurationId =
       relationDetails.programFspConfigurationId;
-    transaction.program = program;
-    transaction.payment = relationDetails.paymentNr;
+    transaction.paymentId = relationDetails.paymentId;
     transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message ?? null;
@@ -185,7 +190,7 @@ export class TransactionsService {
     const latestTransaction =
       new LatestTransactionEntity() as QueryDeepPartialEntity<LatestTransactionEntity>;
     latestTransaction.registrationId = transaction.registrationId;
-    latestTransaction.payment = transaction.payment;
+    latestTransaction.paymentId = transaction.paymentId;
     latestTransaction.transactionId = transaction.id;
     try {
       // Try to insert a new LatestTransactionEntity
@@ -197,7 +202,7 @@ export class TransactionsService {
         await this.latestTransactionRepository.update(
           {
             registrationId: latestTransaction.registrationId ?? undefined,
-            payment: latestTransaction.payment ?? undefined,
+            paymentId: latestTransaction.paymentId ?? undefined,
           },
           latestTransaction,
         );
@@ -215,9 +220,10 @@ export class TransactionsService {
     // Get current amount of payments done to PA
     const { currentPaymentCount } = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
-      .select('COUNT(DISTINCT payment)', 'currentPaymentCount')
+      .select('COUNT(DISTINCT "paymentId")', 'currentPaymentCount')
       .leftJoin('transaction.registration', 'r')
-      .andWhere('transaction.program.id = :programId', {
+      .leftJoin('transaction.payment', 'p')
+      .andWhere('p."programId" = :programId', {
         programId: registration.programId,
       })
       .andWhere('r.id = :registrationId', {
@@ -298,8 +304,7 @@ export class TransactionsService {
         transaction.registrationId = transactionResponse.registrationId;
         transaction.programFspConfigurationId =
           transactionRelationDetails.programFspConfigurationId;
-        transaction.programId = transactionRelationDetails.programId;
-        transaction.payment = transactionRelationDetails.paymentNr;
+        transaction.paymentId = transactionRelationDetails.paymentId;
         transaction.userId = transactionRelationDetails.userId;
         transaction.status = transactionResponse.status;
         transaction.errorMessage = transactionResponse.message ?? null;
@@ -334,7 +339,7 @@ export class TransactionsService {
   }
 
   public async updateWaitingTransaction(
-    payment: number,
+    paymentId: number,
     regisrationId: number,
     status: TransactionStatusEnum,
     transactionStep: number,
@@ -343,7 +348,7 @@ export class TransactionsService {
   ): Promise<void> {
     const foundTransaction = await this.transactionScopedRepository.findOne({
       where: {
-        payment: Equal(payment),
+        paymentId: Equal(paymentId),
         registrationId: Equal(regisrationId),
         transactionStep: Equal(transactionStep),
         status: Equal(TransactionStatusEnum.waiting),

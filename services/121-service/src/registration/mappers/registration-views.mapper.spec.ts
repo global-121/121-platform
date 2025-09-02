@@ -1,6 +1,7 @@
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
 
+// TODO: Add more unit tests for this mapper class
 describe('RegistrationViewsMapper', () => {
   describe('replaceDropdownValuesWithEnglishLabel', () => {
     it('should replace dropdown values with English label', () => {

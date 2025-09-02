@@ -8,8 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
-import { LastMessageStatusService } from '@121-service/src/notifications/last-message-status.service';
 import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
+import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 

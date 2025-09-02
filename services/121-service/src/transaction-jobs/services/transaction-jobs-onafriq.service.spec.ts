@@ -1,6 +1,6 @@
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
-import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/transaction-jobs/services/transaction-jobs-onafriq.service';
@@ -46,7 +46,7 @@ describe('TransactionJobsOnafriqService', () => {
     it('should use existing onafriqTransaction and not create a new one', async () => {
       const transactionJob: OnafriqTransactionJobDto = {
         referenceId: 'ref-1',
-        paymentNumber: 1,
+        paymentId: 1,
         programId: 1,
         userId: 1,
         bulkSize: 10,

@@ -11,7 +11,7 @@ import { UpdateProgramFspConfigurationPropertyDto } from '@121-service/src/progr
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { programIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
-import { paymentNrVisa } from '@121-service/src/seed-data/mock/visa-card.data';
+import { paymentIdVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import programOCW from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
 import { getTransactions } from '@121-service/test/helpers/program.helper';
 import {
@@ -259,7 +259,7 @@ describe('Manage Fsp configurations', () => {
 
     const getTranactions = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: paymentIdVisa,
       registrationReferenceId: registrationOCW5.referenceId,
       accessToken,
     });

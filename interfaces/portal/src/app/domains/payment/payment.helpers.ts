@@ -1,7 +1,7 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 
 import { AppRoutes } from '~/app.routes';
-import { Payment } from '~/domains/payment/payment.model';
 
 export const FSPS_WITH_VOUCHER_SUPPORT = [
   Fsps.intersolveVoucherPaper,
@@ -10,14 +10,6 @@ export const FSPS_WITH_VOUCHER_SUPPORT = [
 
 export const FSPS_WITH_PHYSICAL_CARD_SUPPORT = [Fsps.intersolveVisa];
 
-export const getNextPaymentId = (payments: Payment[]): number => {
-  if (payments.length === 0) {
-    return 1;
-  }
-
-  return Math.max(...payments.map((payment) => payment.payment)) + 1;
-};
-
 export const paymentLink = ({
   projectId,
   paymentId,
@@ -25,3 +17,14 @@ export const paymentLink = ({
   projectId: number | string;
   paymentId: number | string;
 }) => ['/', AppRoutes.project, projectId, AppRoutes.projectPayments, paymentId];
+
+export const PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS: Record<PaymentEvent, string> =
+  {
+    [PaymentEvent.created]: $localize`:@@payment-event-log-item-type-created:Created`,
+    [PaymentEvent.note]: $localize`:@@payment-event-log-item-type-note:Note`,
+  };
+
+export const PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS: Record<PaymentEvent, string> = {
+  [PaymentEvent.created]: 'pi pi-money-bill',
+  [PaymentEvent.note]: 'pi pi-pen-to-square',
+};

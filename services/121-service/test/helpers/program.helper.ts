@@ -109,18 +109,18 @@ export async function unpublishProgram(
 
 export async function doPayment({
   programId,
-  paymentNr,
   amount,
   referenceIds,
   accessToken,
   filter = {},
+  note,
 }: {
   programId: number;
-  paymentNr: number;
   amount: number;
   referenceIds: string[];
   accessToken: string;
   filter?: Record<string, string>;
+  note?: string;
 }): Promise<request.Response> {
   const queryParams = {};
   if (filter) {
@@ -138,46 +138,35 @@ export async function doPayment({
     .set('Cookie', [accessToken])
     .query(queryParams)
     .send({
-      payment: paymentNr,
       amount,
-    });
-}
-
-export async function doPaymentForAllPAs({
-  programId,
-  paymentNr,
-  amount,
-  accessToken,
-}: {
-  programId: number;
-  paymentNr: number;
-  amount: number;
-  accessToken: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .post(`/programs/${programId}/payments`)
-    .set('Cookie', [accessToken])
-    .send({
-      payment: paymentNr,
-      amount,
+      note,
     });
 }
 
 export async function retryPayment({
   programId,
-  paymentNr,
+  paymentId,
   accessToken,
 }: {
   programId: number;
-  paymentNr: number;
+  paymentId: number;
   accessToken: string;
 }): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
     .send({
-      payment: paymentNr,
+      paymentId,
     });
+}
+
+export async function getPayments(
+  programId: number,
+  accessToken: string,
+): Promise<request.Response> {
+  return await getServer()
+    .get(`/programs/${programId}/payments`)
+    .set('Cookie', [accessToken]);
 }
 
 export async function getProgramPaymentsStatus(
@@ -191,17 +180,17 @@ export async function getProgramPaymentsStatus(
 
 export async function getTransactions({
   programId,
-  paymentNr,
+  paymentId,
   registrationReferenceId,
   accessToken,
 }: {
   programId: number;
-  paymentNr: number;
+  paymentId: number;
   registrationReferenceId: string | null;
   accessToken: string;
 }): Promise<request.Response> {
   const response = await getServer()
-    .get(`/programs/${programId}/payments/${paymentNr}/transactions`)
+    .get(`/programs/${programId}/payments/${paymentId}/transactions`)
     .set('Cookie', [accessToken]);
   if (
     registrationReferenceId &&
@@ -220,17 +209,22 @@ export async function exportTransactions({
   accessToken,
   fromDate,
   toDate,
-  payment,
+  paymentId,
 }: {
   programId: number;
   accessToken: string;
   fromDate?: string;
   toDate?: string;
-  payment?: number;
+  paymentId?: number;
 }): Promise<request.Response> {
   return await getServer()
     .get(`/programs/${programId}/transactions`)
-    .query({ fromDate, toDate, payment, format: ExportFileFormat.xlsx })
+    .query({
+      fromDate,
+      toDate,
+      paymentId,
+      format: ExportFileFormat.xlsx,
+    })
     .set('Cookie', [accessToken])
     .buffer()
     .parse((res, callback) => {
@@ -265,25 +259,25 @@ export async function exportTransactionsByDateRangeJson({
 
 export async function getFspInstructions(
   programId: number,
-  paymentNr: number,
+  paymentId: number,
   accessToken: string,
 ): Promise<request.Response> {
   return await getServer()
-    .get(`/programs/${programId}/payments/${paymentNr}/fsp-instructions`)
+    .get(`/programs/${programId}/payments/${paymentId}/fsp-instructions`)
     .set('Cookie', [accessToken])
     .query({ format: 'json' });
 }
 
 export async function importFspReconciliationData(
   programId: number,
-  paymentNr: number,
+  paymentId: number,
   accessToken: string,
   reconciliationData: object[],
 ): Promise<request.Response> {
   const csvString = jsonArrayToCsv(reconciliationData);
   const buffer = Buffer.from(csvString, 'utf-8');
   return await getServer()
-    .post(`/programs/${programId}/payments/${paymentNr}/excel-reconciliation`)
+    .post(`/programs/${programId}/payments/${paymentId}/excel-reconciliation`)
     .set('Cookie', [accessToken])
     .field('Content-Type', 'multipart/form-data')
     .attach('file', buffer, 'reconciliation.csv');
@@ -337,14 +331,14 @@ export async function waitForPaymentTransactionsToComplete({
   accessToken,
   maxWaitTimeMs,
   completeStatusses = [TransactionStatusEnum.success],
-  payment = 1,
+  paymentId: paymentId = 1,
 }: {
   programId: number;
   paymentReferenceIds: string[];
   accessToken: string;
   maxWaitTimeMs: number;
   completeStatusses?: string[];
-  payment?: number;
+  paymentId?: number;
 }): Promise<void> {
   const startTime = Date.now();
   let allTransactionsComplete = false;
@@ -353,7 +347,7 @@ export async function waitForPaymentTransactionsToComplete({
     // Get payment transactions
     const paymentTransactions = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: null,
       accessToken,
     });
@@ -621,4 +615,18 @@ export async function removeDeprecatedImageCodes({
     .delete('/cronjobs/fsps/intersolve-voucher/deprecated-image-codes')
     .set('Cookie', [accessToken])
     .send(body);
+}
+
+export async function getPaymentEvents({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}) {
+  return await getServer()
+    .get(`/programs/${programId}/payments/${paymentId}/events`)
+    .set('Cookie', [accessToken]);
 }

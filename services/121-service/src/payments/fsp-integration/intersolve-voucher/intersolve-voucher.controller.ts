@@ -27,7 +27,7 @@ import stream from 'stream';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { IdentifyVoucherDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/identify-voucher.dto';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { IMAGE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
@@ -49,7 +49,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -64,7 +64,7 @@ export class IntersolveVoucherController {
   ): Promise<void> {
     const blob = await this.intersolveVoucherService.exportVouchers(
       queryParams.referenceId,
-      Number(queryParams.payment),
+      Number(queryParams.paymentId),
       programId,
     );
     const bufferStream = new stream.PassThrough();
@@ -81,7 +81,7 @@ export class IntersolveVoucherController {
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiQuery({ name: 'referenceId', required: true, type: 'string' })
-  @ApiQuery({ name: 'payment', required: true, type: 'integer' })
+  @ApiQuery({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
@@ -95,7 +95,7 @@ export class IntersolveVoucherController {
   ): Promise<number> {
     return await this.intersolveVoucherService.getVoucherBalance(
       queryParams.referenceId,
-      Number(queryParams.payment),
+      Number(queryParams.paymentId),
       programId,
     );
   }

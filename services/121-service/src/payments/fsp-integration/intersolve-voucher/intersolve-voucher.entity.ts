@@ -9,13 +9,17 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
+import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
 import { UserEntity } from '@121-service/src/user/user.entity';
-
 @Entity('intersolve_voucher')
 export class IntersolveVoucherEntity extends Base121Entity {
+  @ManyToOne(() => PaymentEntity, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'paymentId' })
+  public payment: Relation<PaymentEntity>;
+  @Index()
   @Column({ type: 'integer', nullable: true })
-  public payment: number | null;
+  public paymentId: number | null;
 
   @Column({ type: 'character varying', nullable: true })
   public whatsappPhoneNumber: string | null;

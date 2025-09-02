@@ -51,9 +51,12 @@ test('[32296] Show in progress banner and chip when payment is in progress', asy
   await test.step('Do payment', async () => {
     await paymentsPage.createPayment();
     await paymentsPage.startPayment();
+    const paymentId = 1; // First payment in this context, so ID 1
     // Assert redirection to payment overview page
     await page.waitForURL((url) =>
-      url.pathname.startsWith('/en-GB/project/3/payments/1'),
+      url.pathname.startsWith(
+        `/en-GB/project/${programIdOCW}/payments/${paymentId}`,
+      ),
     );
     // Assert payment overview page by payment date/ title
     await paymentPage.validatePaymentsDetailsPageByDate(lastPaymentDate);

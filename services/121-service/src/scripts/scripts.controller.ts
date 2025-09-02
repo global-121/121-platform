@@ -1,17 +1,11 @@
 import { Body, Controller, HttpStatus, Post, Query, Res } from '@nestjs/common';
-import {
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiProperty,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-import { IS_DEVELOPMENT, IS_PRODUCTION } from '@121-service/src/config';
+import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { ScriptsService } from '@121-service/src/scripts/scripts.service';
+import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { WrapperType } from '@121-service/src/wrapper.type';
 export class SecretDto {
   @ApiProperty({ example: 'fill_in_secret' })
@@ -70,7 +64,10 @@ export class ScriptsController {
     description:
       'Optional identifier for this reset action, will be logged by the server.',
   })
-  @ApiOperation({ summary: 'Reset instance database' })
+  @ApiOperation({
+    summary: `Reset instance database.`,
+    description: `When using the reset script: ${SeedScript.demoPrograms}. The reset can take a while, because of the large amount of data. This can result in a timeout on the client side, but the reset will still be done.`,
+  })
   @Post('/reset')
   public async resetDb(
     @Body() body: SecretDto,
@@ -153,24 +150,5 @@ export class ScriptsController {
     return res
       .status(HttpStatus.CREATED)
       .send('Request received. Data should have been duplicated.');
-  }
-
-  @ApiOperation({
-    summary:
-      'WARNING: Kills 121-service. Only works in DEBUG-mode. Only used for testing purposes.',
-  })
-  @ApiExcludeEndpoint(!IS_DEVELOPMENT)
-  @Post('kill-service')
-  killService(@Body() body: SecretDto, @Res() res): void {
-    if (body.secret !== env.RESET_SECRET) {
-      return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
-    }
-    if (!IS_DEVELOPMENT) {
-      return;
-    }
-
-    console.log('Service is being killed...');
-    // eslint-disable-next-line n/no-process-exit -- Exiting the app is the literal purpose of this method/endpoint
-    process.exit(1);
   }
 }

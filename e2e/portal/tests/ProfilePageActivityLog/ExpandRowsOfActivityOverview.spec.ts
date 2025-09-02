@@ -37,16 +37,17 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations([registrationPV5], programIdPV, accessToken);
 
-  await doPayment({
+  const paymentResponse = await doPayment({
     programId: 2,
-    paymentNr: 1,
     amount: 100,
     referenceIds: [referenceIdPV5],
     accessToken,
   });
+  const paymentId = paymentResponse.body.id;
 
   await waitForPaymentTransactionsToComplete({
     programId: programIdPV,
+    paymentId,
     paymentReferenceIds: [referenceIdPV5],
     accessToken,
     maxWaitTimeMs: 2_000,

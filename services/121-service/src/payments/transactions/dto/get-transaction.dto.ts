@@ -20,7 +20,7 @@ export class TransactionReturnDto {
   })
   public updated: Date;
   @ApiProperty({ example: 2, type: 'number' })
-  public payment: number;
+  public paymentId: number;
   @ApiProperty({ example: '2982g82bdsf89sdsd', type: 'string' })
   public referenceId: string;
   @ApiProperty({ example: TransactionStatusEnum.success, type: 'string' })

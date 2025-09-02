@@ -29,7 +29,7 @@ jobs:
     outputs:
       should_skip: ${{ steps.filter.outputs.should_skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         # Other events (from the merge-queue) can safely ignore the path-filter; Its output would default to 'NOT true'
         if: github.event_name == 'pull_request'
         with:
@@ -60,7 +60,7 @@ jobs:
         shardCount: ['6']
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set ENV-variables for test-environment
         run: |
@@ -83,7 +83,7 @@ jobs:
       - name: Generate lcov report from 121-service
         working-directory: ${{ env.workingDirectory }}
         run: |
-          curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/scripts/kill-service' || true
+          curl -d '{"secret":"fill_in_secret"}' -H "Content-Type: application/json" -X POST '${{ env.EXTERNAL_121_SERVICE_URL }}/api/test/kill-service' || true
           docker compose exec 121-service npm run coverage:report:integration
 
       - uses: actions/upload-artifact@v4
@@ -101,7 +101,7 @@ jobs:
     needs: path-filter
     if: ${{ needs.path-filter.outputs.should_skip != 'true' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Node.js version
         uses: actions/setup-node@v4
@@ -147,10 +147,10 @@ jobs:
     needs: [test-shard, test]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download coverage reports from previous jobs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: coverage
 

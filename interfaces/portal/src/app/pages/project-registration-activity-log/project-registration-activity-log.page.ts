@@ -11,12 +11,12 @@ import { FormsModule } from '@angular/forms';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { SelectButtonModule } from 'primeng/selectbutton';
 
+import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
-import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
@@ -39,7 +39,7 @@ export interface ActivityLogTableCellContext {
     FormsModule,
     SelectButtonModule,
     QueryTableComponent,
-    RegistrationPageLayoutComponent,
+    PageLayoutRegistrationComponent,
   ],
   templateUrl: './project-registration-activity-log.page.html',
   styles: ``,

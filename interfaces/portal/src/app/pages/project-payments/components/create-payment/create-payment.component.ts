@@ -1,17 +1,16 @@
-import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
-  HostListener,
   inject,
   input,
   model,
   signal,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import {
   injectMutation,
@@ -20,7 +19,8 @@ import {
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Dialog, DialogModule } from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 
 import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
@@ -35,11 +35,11 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { FullscreenSpinnerComponent } from '~/components/fullscreen-spinner/fullscreen-spinner.component';
+import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { getNextPaymentId } from '~/domains/payment/payment.helpers';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { fspConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
 import { DownloadService } from '~/services/download.service';
@@ -50,21 +50,21 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
 
-const queryParamStep = 'create-payment-step';
-
 @Component({
   selector: 'app-create-payment',
   imports: [
+    ReactiveFormsModule,
     ButtonModule,
     DialogModule,
     DatePipe,
     RegistrationsTableComponent,
     CardModule,
-    NgClass,
     DataListComponent,
-    FullscreenSpinnerComponent,
     MenuModule,
     ColoredChipComponent,
+    FullscreenStepperDialogComponent,
+    FormFieldWrapperComponent,
+    InputText,
   ],
   templateUrl: './create-payment.component.html',
   styles: ``,
@@ -72,23 +72,21 @@ const queryParamStep = 'create-payment-step';
   providers: [CurrencyPipe, ToastService],
 })
 export class CreatePaymentComponent {
-  readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
-  currencyPipe = inject(CurrencyPipe);
-  downloadService = inject(DownloadService);
-  exportService = inject(ExportService);
-  fspConfigurationApiService = inject(FspConfigurationApiService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  paymentApiService = inject(PaymentApiService);
-  projectApiService = inject(ProjectApiService);
-  toastService = inject(ToastService);
-  translatableStringService = inject(TranslatableStringService);
+  readonly currencyPipe = inject(CurrencyPipe);
+  readonly downloadService = inject(DownloadService);
+  readonly exportService = inject(ExportService);
+  readonly fspConfigurationApiService = inject(FspConfigurationApiService);
+  readonly rtlHelper = inject(RtlHelperService);
+  readonly router = inject(Router);
+  readonly paymentApiService = inject(PaymentApiService);
+  readonly projectApiService = inject(ProjectApiService);
+  readonly toastService = inject(ToastService);
+  readonly translatableStringService = inject(TranslatableStringService);
 
-  readonly createPaymentDialog = viewChild.required<Dialog>(
-    'createPaymentDialog',
-  );
+  readonly createPaymentDialog =
+    viewChild.required<FullscreenStepperDialogComponent>('createPaymentDialog');
   readonly registrationsTable =
     viewChild<RegistrationsTableComponent>('registrationsTable');
 
@@ -98,7 +96,6 @@ export class CreatePaymentComponent {
   );
 
   today = new Date();
-  totalSteps = 2;
   overrideFilters = {
     // only registrations with status "included" are eligible for payment
     status: RegistrationStatusEnum.included,
@@ -106,6 +103,11 @@ export class CreatePaymentComponent {
   includedChipData = getChipDataByRegistrationStatus(
     RegistrationStatusEnum.included,
   );
+  paymentFormGroup = new FormGroup({
+    note: new FormControl('', {
+      nonNullable: true,
+    }),
+  });
 
   fspConfigurations = injectQuery(
     this.fspConfigurationApiService.getFspConfigurations(this.projectId),
@@ -116,94 +118,9 @@ export class CreatePaymentComponent {
     this.paymentApiService.getPaymentStatus(this.projectId),
   );
 
-  readonly nextPaymentId = computed(() => {
-    const payments = this.payments.data();
-
-    if (!payments) {
-      return -1;
-    }
-
-    return getNextPaymentId(payments);
-  });
-
   readonly paymentAmount = computed(
     () => this.project.data()?.fixedTransferValue ?? 0,
   );
-
-  exportByTypeMutation = injectMutation(() =>
-    this.exportService.getExportByTypeMutation(
-      this.projectId,
-      this.toastService,
-    ),
-  );
-
-  createPaymentMutation = injectMutation(() => ({
-    mutationFn: async ({
-      paymentId,
-      dryRun,
-      paginateQuery,
-    }: {
-      paymentId: number;
-      dryRun: boolean;
-      paginateQuery: PaginateQuery;
-    }) => {
-      const paymentResult = await this.paymentApiService.createPayment({
-        projectId: this.projectId,
-        paginateQuery,
-        paymentData: {
-          payment: paymentId,
-          amount: this.paymentAmount(),
-        },
-        dryRun,
-      });
-
-      if (!dryRun) {
-        // wait 1 second before resolving, to give the backend time to create at least one transaction in the DB
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      return paymentResult;
-    },
-    onSuccess: async (result, { dryRun, paymentId }) => {
-      if (result.nonApplicableCount > 0) {
-        throw new Error(
-          $localize`Some of the registrations you have selected are not eligible for this payment. Change your selection and try again`,
-        );
-      }
-
-      if (dryRun) {
-        this.dryRunResult.set(result);
-        return;
-      }
-
-      // Do not set dialogVisible to false here, otherwise the addCurrentStepToQueryParams
-      // effect will be triggered, blocking the user from navigating away
-      // this.dialogVisible.set(false);
-
-      await this.paymentApiService.invalidateCache(
-        this.projectId,
-        signal(paymentId),
-      );
-
-      await this.router.navigate([
-        '/',
-        AppRoutes.project,
-        this.projectId(),
-        AppRoutes.projectPayments,
-        paymentId,
-      ]);
-
-      this.toastService.showToast({
-        detail: $localize`Payment created.`,
-      });
-    },
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
-    },
-  }));
 
   readonly currentStep = computed(() => {
     if (!this.dialogVisible()) {
@@ -216,12 +133,15 @@ export class CreatePaymentComponent {
 
     return 1;
   });
+
   readonly paymentHasIntegratedFsp = computed(() =>
     this.paymentHasIntegrationType(FspIntegrationType.api),
   );
+
   readonly paymentHasExcelFsp = computed(() =>
     this.paymentHasIntegrationType(FspIntegrationType.csv),
   );
+
   readonly paymentSummaryData = computed(() => {
     const dryRunResult = this.dryRunResult();
 
@@ -239,7 +159,6 @@ export class CreatePaymentComponent {
           value: fspConfig.name,
         })),
         loading: this.fspConfigurations.isPending(),
-        fullWidth: true,
       },
       {
         label: $localize`Registrations`,
@@ -254,11 +173,13 @@ export class CreatePaymentComponent {
           '1.2-2',
         ),
         tooltip: $localize`The total payment amount is calculated by summing up the transfer values of each included registration added to the payment.`,
+        fullWidth: true,
       },
     ];
 
     return listData;
   });
+
   readonly paymentSummaryMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`Export payment list`,
@@ -271,17 +192,94 @@ export class CreatePaymentComponent {
       },
     },
   ]);
+
   readonly proceedLabel = computed(() =>
     this.currentStep() === 1
       ? $localize`Add to payment`
       : $localize`Start payment`,
   );
+
   readonly cannotProceed = computed(
     () =>
       this.createPaymentMutation.isPending() ||
       this.project.isPending() ||
       this.paymentStatus.isPending(),
   );
+
+  exportByTypeMutation = injectMutation(() =>
+    this.exportService.getExportByTypeMutation(
+      this.projectId,
+      this.toastService,
+    ),
+  );
+
+  createPaymentMutation = injectMutation(() => ({
+    mutationFn: async ({
+      dryRun,
+      paginateQuery,
+    }: {
+      dryRun: boolean;
+      paginateQuery: PaginateQuery;
+    }) => {
+      const paymentResult = await this.paymentApiService.createPayment({
+        projectId: this.projectId,
+        paginateQuery,
+        paymentData: {
+          amount: this.paymentAmount(),
+          note: this.paymentFormGroup.value.note,
+        },
+        dryRun,
+      });
+
+      if (!dryRun) {
+        // wait 1 second before resolving, to give the backend time to create at least one transaction in the DB
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
+      return paymentResult;
+    },
+    onSuccess: async (result, { dryRun }) => {
+      if (result.nonApplicableCount > 0) {
+        throw new Error(
+          $localize`Some of the registrations you have selected are not eligible for this payment. Change your selection and try again`,
+        );
+      }
+
+      if (dryRun) {
+        this.dryRunResult.set(result);
+        return;
+      }
+
+      // Do not set dialogVisible to false here, otherwise the addCurrentStepToQueryParams
+      // effect will be triggered, blocking the user from navigating away
+      // this.dialogVisible.set(false);
+      const paymentId = result.id;
+      if (paymentId) {
+        await this.paymentApiService.invalidateCache(
+          this.projectId,
+          signal(paymentId),
+        );
+
+        await this.router.navigate([
+          '/',
+          AppRoutes.project,
+          this.projectId(),
+          AppRoutes.projectPayments,
+          paymentId,
+        ]);
+      }
+
+      this.toastService.showToast({
+        detail: $localize`Payment created.`,
+      });
+    },
+    onError: (error) => {
+      this.toastService.showToast({
+        severity: 'error',
+        detail: error.message,
+      });
+    },
+  }));
 
   openDialog() {
     if (this.paymentStatus.data()?.inProgress) {
@@ -295,7 +293,6 @@ export class CreatePaymentComponent {
     this.dryRunResult.set(undefined);
     this.registrationsTable()?.resetSelection();
     this.dialogVisible.set(true);
-    this.createPaymentDialog().maximize();
   }
 
   goBack() {
@@ -319,7 +316,6 @@ export class CreatePaymentComponent {
     this.createPaymentMutation.mutate({
       dryRun: this.currentStep() === 1,
       paginateQuery: actionData.query,
-      paymentId: this.nextPaymentId(),
     });
   }
 
@@ -336,24 +332,5 @@ export class CreatePaymentComponent {
       fspConfigurationNames: dryRunResult.programFspConfigurationNames,
       integrationType,
     });
-  }
-
-  /* the combination of the effect and the host listener allow us to make sure
-     that the user does not navigate away from the page by using the browser "back" button
-     during the payment creation process
-  */
-  // eslint-disable-next-line sort-class-members/sort-class-members -- disabling this eslint rule to keep the effect and the listener together in the code
-  addCurrentStepToQueryParams = effect(() => {
-    void this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { [queryParamStep]: this.currentStep() || null },
-      queryParamsHandling: 'replace',
-    });
-  });
-
-  @HostListener('window:popstate', ['$event'])
-  onPopState() {
-    // triggered when the browser "back" button is pressed
-    this.goBack();
   }
 }

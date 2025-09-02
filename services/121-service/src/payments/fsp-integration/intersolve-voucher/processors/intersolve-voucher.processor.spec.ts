@@ -2,8 +2,8 @@ import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.service';
 import { PaymentProcessorIntersolveVoucher } from '@121-service/src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor';
+import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 const mockPaymentJob = {
@@ -19,7 +19,7 @@ const mockPaymentJob = {
   transactionAmount: 22,
   transactionId: 38,
   programId: 3,
-  paymentNr: 3,
+  paymentId: 3,
 };
 const testJob = { data: mockPaymentJob } as Job;
 

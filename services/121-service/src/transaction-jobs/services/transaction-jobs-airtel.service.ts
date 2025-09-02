@@ -3,11 +3,11 @@ import * as crypto from 'crypto';
 import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/airtel.service';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
+import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 
@@ -70,14 +70,14 @@ export class TransactionJobsAirtelService {
       await this.transactionScopedRepository.count({
         where: {
           registrationId: Equal(registration.id),
-          payment: Equal(transactionJob.paymentNumber),
+          paymentId: Equal(transactionJob.paymentId),
           status: Equal(TransactionStatusEnum.error),
         },
       });
 
     const airtelTransactionId = this.generateAirtelTransactionId({
       referenceId: transactionJob.referenceId,
-      paymentNumber: transactionJob.paymentNumber,
+      paymentNumber: transactionJob.paymentId,
       failedTransactionsCount,
     });
 

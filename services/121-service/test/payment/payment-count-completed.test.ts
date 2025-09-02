@@ -26,7 +26,6 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do a payment to a PA with maxPayments=1', () => {
   const programId = programIdPV;
-  const payment = 1;
   const amount = 25;
   const registrationAh = {
     referenceId: '63e62864557597e0b-AH',
@@ -62,11 +61,11 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        paymentNr: payment,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
       // Assert
       await waitForPaymentTransactionsToComplete({
@@ -78,7 +77,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       const getTransactionsRes = await getTransactions({
         programId,
-        paymentNr: payment,
+        paymentId,
         registrationReferenceId: registrationAh.referenceId,
         accessToken,
       });

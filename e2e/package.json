@@ -4,7 +4,9 @@
     "setup": "npm install && npx playwright install",
     "lint": "eslint \"**/*.{ts,js}\"",
     "fix": "npm run lint -- --fix",
-    "test": "playwright test --config=playwright.config.ts"
+    "test": "playwright test --config=playwright.config.ts",
+    "test:update-snapshots": "npm run test -- --update-snapshots",
+    "test:update-snapshots:specific": "npm run test -- --update-snapshots --grep"
   },
   "keywords": [],
   "author": "",

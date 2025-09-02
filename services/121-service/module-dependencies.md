@@ -116,6 +116,7 @@ graph LR
   PaymentsModule-->FspsModule
   PaymentsModule-->ProgramFspConfigurationsModule
   PaymentsModule-->RedisModule
+  PaymentsModule-->PaymentEventsModule
   MetricsModule-->IntersolveVisaModule
   MetricsModule-->IntersolveVoucherModule
   MetricsModule-->RegistrationEventsModule
@@ -129,6 +130,7 @@ graph LR
   MessageIncomingModule-->MessageTemplateModule
   MessageIncomingModule-->RegistrationDataModule
   MessageIncomingModule-->QueuesRegistryModule
+  MessageIncomingModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule
   ActivitiesModule-->NoteModule

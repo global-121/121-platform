@@ -57,7 +57,7 @@ export class ProjectSummaryCardComponent {
     if (!data) {
       return;
     }
-    return data.sort((a, b) => (a.payment < b.payment ? 1 : -1))[0];
+    return data.sort((a, b) => (a.paymentId < b.paymentId ? 1 : -1))[0];
   });
 
   public readonly summaryMetrics = computed(() => {

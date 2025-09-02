@@ -16,6 +16,8 @@ class PaymentPage extends BasePage {
   readonly retryFailedTransfersButton: Locator;
   readonly popupRetryTransferButton: Locator;
   readonly exportButton: Locator;
+  readonly paymentLogTab: Locator;
+  readonly paymentLogTable: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -44,6 +46,8 @@ class PaymentPage extends BasePage {
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
     });
+    this.paymentLogTab = this.page.getByRole('tab', { name: 'Payment log' });
+    this.paymentLogTable = this.page.getByTestId('payment-log-table');
   }
 
   async waitForPaymentToComplete() {
@@ -135,6 +139,27 @@ class PaymentPage extends BasePage {
     await this.chooseAndUploadFile(filePath);
 
     await this.importFileButton.click();
+  }
+
+  async navigateToPaymentLog(): Promise<void> {
+    await this.paymentLogTab.click();
+    await this.page.waitForURL('**/payment-log');
+  }
+
+  async validatePaymentLogEntries(expectedNote: string): Promise<void> {
+    const rows = this.paymentLogTable.locator('tbody tr');
+    await expect(rows).toHaveCount(2);
+
+    const noteRow = rows.filter({ hasText: expectedNote });
+    const createdRow = rows.filter({ hasText: 'Created' });
+
+    await expect(noteRow).toBeVisible();
+    await expect(createdRow).toBeVisible();
+  }
+
+  async validatePaymentLog(expectedNote: string): Promise<void> {
+    await this.navigateToPaymentLog();
+    await this.validatePaymentLogEntries(expectedNote);
   }
 }
 

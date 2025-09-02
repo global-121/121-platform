@@ -20,7 +20,7 @@ export class MessageJobDto {
 }
 
 export class MessageJobCustomDataDto {
-  payment?: number;
+  paymentId?: number;
   amount?: number;
   intersolveVoucherId?: number;
   pendingMessageId?: number;

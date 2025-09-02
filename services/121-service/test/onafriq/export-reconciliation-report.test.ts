@@ -15,7 +15,6 @@ import {
 
 describe('Export reconciliation report', () => {
   const programId = 1;
-  const payment = 1;
   const amount = 12327;
   const baseRegistrationOnafriq = {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
@@ -40,13 +39,10 @@ describe('Export reconciliation report', () => {
 
   it('should successfully generate reconciliation report', async () => {
     // Arrange
-    await seedPaidRegistrations(
-      [registrationOnafriq],
-      programId,
-      payment,
-      amount,
-      [TransactionStatusEnum.success, TransactionStatusEnum.error],
-    );
+    await seedPaidRegistrations([registrationOnafriq], programId, amount, [
+      TransactionStatusEnum.success,
+      TransactionStatusEnum.error,
+    ]);
 
     // Act
     const response = await getServer()

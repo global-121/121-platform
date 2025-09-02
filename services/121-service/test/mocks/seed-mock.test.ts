@@ -1,6 +1,9 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import {
+  getPayments,
+  getTransactions,
+} from '@121-service/test/helpers/program.helper';
 import { getRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -16,32 +19,33 @@ describe('Mock registrations', () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultipleMock, __filename);
     const accessToken = await getAccessToken();
-    const payment = 1;
     // Assert
-    const programs = [
-      { programId: programIdOCW, paymentNr: payment },
-      { programId: programIdPV, paymentNr: payment },
-    ];
+    const programIds = [programIdOCW, programIdPV];
 
-    for (const { programId, paymentNr } of programs) {
+    for (const programId of programIds) {
       const registrationsResponse = await getRegistrations({
         programId,
         accessToken,
       });
 
-      const transactionsResponse = await getTransactions({
-        programId,
-        paymentNr,
-        registrationReferenceId: null,
-        accessToken,
-      });
+      const paymentsResponse = await getPayments(programId, accessToken);
 
-      // Assert
-      expect(registrationsResponse.body.data.length).toBe(4);
-      expect(transactionsResponse.body.length).toBe(4);
-      expect(transactionsResponse.text).toContain(
-        TransactionStatusEnum.success,
-      );
+      for (const paymentData of paymentsResponse.body) {
+        const paymentId = paymentData.paymentId;
+        const transactionsResponse = await getTransactions({
+          programId,
+          paymentId,
+          registrationReferenceId: null,
+          accessToken,
+        });
+
+        // Assert
+        expect(registrationsResponse.body.data.length).toBe(4);
+        expect(transactionsResponse.body.length).toBe(4);
+        expect(transactionsResponse.text).toContain(
+          TransactionStatusEnum.success,
+        );
+      }
     }
   });
 });

@@ -5,5 +5,5 @@ export class GetPaymentAggregationDto {
   programId: number;
 
   @IsNumberString()
-  payment: number;
+  paymentId: number;
 }

@@ -1,4 +1,4 @@
-<app-monitoring-page-layout [projectId]="projectId()">
+<app-page-layout-monitoring [projectId]="projectId()">
   <app-query-table
     [items]="projectAttachments.data() ?? []"
     [isPending]="projectAttachments.isPending()"
@@ -18,7 +18,7 @@
       }
     </div>
   </app-query-table>
-</app-monitoring-page-layout>
+</app-page-layout-monitoring>
 <app-confirmation-dialog
   #deleteFileConfirmationDialog
   header="Delete file"

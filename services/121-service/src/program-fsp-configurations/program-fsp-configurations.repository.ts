@@ -74,7 +74,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       .where('voucher.id = :intersolveVoucherId', {
         intersolveVoucherId,
       })
-      .andWhere('voucher.payment = transactions.payment') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsiblity then.
+      .andWhere('voucher."paymentId" = transactions."paymentId"') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsiblity then.
       .select('configuration.id AS id')
       .getRawOne(); // use getRawOne (+select) instead of getOne for performance reasons
 
@@ -102,6 +102,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
         id: programFspConfigurationId,
       })
       .andWhere('properties.name = :name', { name })
+      .orderBy('properties.name', 'ASC')
       .getOne();
     return configuration?.properties.find((property) => property.name === name)
       ?.value;

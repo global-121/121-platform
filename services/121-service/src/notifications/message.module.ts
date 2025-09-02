@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { MessageService } from '@121-service/src/notifications/message.service';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
@@ -12,6 +11,7 @@ import {
   MessageProcessorReplyOnIncoming,
   MessageProcessorSmallBulk,
 } from '@121-service/src/notifications/processors/message.processor';
+import { MessageService } from '@121-service/src/notifications/services/message.service';
 import { SmsModule } from '@121-service/src/notifications/sms/sms.module';
 import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';

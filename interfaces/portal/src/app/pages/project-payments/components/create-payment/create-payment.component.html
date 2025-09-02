@@ -8,143 +8,105 @@
   (click)="openDialog()"
 />
 
-<p-dialog
+<app-fullscreen-stepper-dialog
   #createPaymentDialog
-  [(visible)]="dialogVisible"
-  [draggable]="false"
-  [resizable]="false"
-  [modal]="true"
-  [maximizable]="true"
-  [closeOnEscape]="false"
-  styleClass="bg-grey-100 [&>*]:bg-grey-100 [&_.p-dialog-footer]:shadow-payment-stepper [&_.p-dialog-footer]:p-0"
+  [(dialogVisible)]="dialogVisible"
+  [currentStep]="currentStep()"
+  [proceedLabel]="proceedLabel()"
+  [cannotProceed]="cannotProceed()"
+  [queryParamStep]="'create-payment-step'"
+  (goBack)="goBack()"
+  (proceed)="createPayment()"
 >
-  <ng-template pTemplate="header">
-    <h3>
-      <i class="pi pi-money-bill me-2"></i>
-      <ng-container i18n="@@create-payment">Create new payment</ng-container>
-      - {{ today | date: 'shortDate' }}
-    </h3>
+  <ng-template #header>
+    <i class="pi pi-money-bill me-2"></i>
+    <ng-container i18n="@@create-payment">Create new payment</ng-container>
+    - {{ today | date: 'shortDate' }}
   </ng-template>
-  <div class="w-full px-6 lg:px-24">
-    @defer (when dialogVisible()) {
-      <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
-      <!-- because this makes the selection in the table persist without saving it to local storage. -->
-      <!-- It also has the advantage of not adding / removing the DOM of the table when going back and forth -->
-      <!-- which makes it more performant on slower devices. -->
-      <div
-        [ngClass]="{
-          hidden: currentStep() !== 1,
-        }"
-      >
-        <p
-          i18n
-          class="mb-5"
-        >
-          Below is a table of all
-          <app-colored-chip
-            [variant]="includedChipData.chipVariant"
-            [label]="includedChipData.chipLabel"
-          />
-          registrations. Select registrations you would like to add to this
-          payment.
-        </p>
-        <p-card>
-          <app-registrations-table
-            #registrationsTable
-            [projectId]="projectId()"
-            [localStorageKey]="
-              'project-payment-registrations-table-' +
-              projectId() +
-              '-' +
-              today.toISOString()
-            "
-            [overrideFilters]="overrideFilters"
-            [showSelectionInHeader]="true"
-          />
-        </p-card>
-      </div>
-
-      @if (currentStep() === 2) {
-        <div data-testid="create-payment-excel-fsp-instructions">
-          @if (paymentHasExcelFsp()) {
-            <p i18n>Review payment summary and follow the next steps:</p>
-            <ol class="mt-2 list-decimal ps-6">
-              <li i18n>
-                Click start payment, this will direct you to the payment page.
-              </li>
-              <li i18n>
-                Export the FSP instructions from the payment page. This is only
-                possible once the payment is no longer in progress.
-              </li>
-              <li i18n>
-                Save the exported XLSX-file in the format required by the
-                Financial Service Provider.
-              </li>
-              <li i18n>
-                Upload the file to the Financial Service Provider’s portal.
-              </li>
-            </ol>
-          } @else {
-            <p i18n>Review summary and click start payment.</p>
-          }
-          <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
-            <app-data-list
-              [data]="paymentSummaryData()"
-              [hideBottomBorder]="true"
-            />
-            @if (paymentHasIntegratedFsp()) {
-              <p-button
-                text
-                plain
-                icon="pi pi-ellipsis-h"
-                class="absolute end-4 top-2"
-                (click)="menu.toggle($event)"
-              />
-              <p-menu
-                #menu
-                [model]="paymentSummaryMenuItems()"
-                [popup]="true"
-                appendTo="body"
-              />
-            }
-          </p-card>
-        </div>
+  <ng-template #step>
+    <p
+      i18n
+      class="mb-5"
+    >
+      Below is a table of all
+      <app-colored-chip
+        [variant]="includedChipData.chipVariant"
+        [label]="includedChipData.chipLabel"
+      />
+      registrations. Select registrations you would like to add to this payment.
+    </p>
+    <p-card>
+      <app-registrations-table
+        #registrationsTable
+        [projectId]="projectId()"
+        [localStorageKey]="
+          'project-payment-registrations-table-' +
+          projectId() +
+          '-' +
+          today.toISOString()
+        "
+        [overrideFilters]="overrideFilters"
+        [showSelectionInHeader]="true"
+      />
+    </p-card>
+  </ng-template>
+  <ng-template #step>
+    <div data-testid="create-payment-fsp-instructions">
+      @if (paymentHasExcelFsp()) {
+        <p i18n>Review payment summary and follow the next steps:</p>
+        <ol class="mt-2 list-decimal ps-6">
+          <li i18n>
+            Click start payment, this will direct you to the payment page.
+          </li>
+          <li i18n>
+            Export the FSP instructions from the payment page. This is only
+            possible once the payment is no longer in progress.
+          </li>
+          <li i18n>
+            Save the exported XLSX-file in the format required by the Financial
+            Service Provider.
+          </li>
+          <li i18n>
+            Upload the file to the Financial Service Provider’s portal.
+          </li>
+        </ol>
+      } @else {
+        <p i18n>Review summary and click start payment.</p>
       }
-    }
-  </div>
-  <app-fullscreen-spinner [loading]="createPaymentMutation.isPending()" />
-  <ng-template pTemplate="footer">
-    <div class="relative w-full">
-      <div
-        class="border-t-2 border-t-purple-300 transition-all"
-        [style]="{
-          width: (currentStep() / totalSteps) * 100 + '%',
-        }"
-      ></div>
-      <div class="flex items-center justify-end p-4">
-        @if (currentStep() > 1) {
+      <p-card class="relative mt-5 block [&_.p-card-body]:py-2">
+        <app-data-list [data]="paymentSummaryData()" />
+        <div class="pt-4">
+          <form [formGroup]="paymentFormGroup">
+            <app-form-field-wrapper
+              label="Add note"
+              i18n-label
+            >
+              <input
+                class="w-full"
+                formControlName="note"
+                placeholder="Optional"
+                i18n-placeholder
+                pInputText
+              />
+            </app-form-field-wrapper>
+          </form>
+        </div>
+        @if (paymentHasIntegratedFsp()) {
           <p-button
-            label="Back"
-            i18n-label
-            rounded
-            outlined
-            class="me-auto"
-            (click)="goBack()"
+            text
+            plain
+            icon="pi pi-ellipsis-h"
+            class="absolute end-4 top-2"
+            (click)="menu.toggle($event)"
+          />
+          <p-menu
+            #menu
+            [model]="paymentSummaryMenuItems()"
+            [popup]="true"
+            appendTo="body"
           />
         }
-        <span
-          i18n
-          class="absolute start-1/2 -translate-x-1/2"
-          >Step {{ currentStep() }} of {{ totalSteps }}</span
-        >
-        <p-button
-          [label]="proceedLabel()"
-          rounded
-          [loading]="cannotProceed()"
-          [disabled]="cannotProceed()"
-          (click)="createPayment()"
-        />
-      </div>
+      </p-card>
     </div>
   </ng-template>
-</p-dialog>
+</app-fullscreen-stepper-dialog>

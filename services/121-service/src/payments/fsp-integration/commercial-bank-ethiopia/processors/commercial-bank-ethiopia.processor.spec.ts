@@ -2,8 +2,8 @@ import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.service';
 import { PaymentProcessorCommercialBankEthiopia } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor';
+import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 const mockPaymentJob = {
@@ -19,7 +19,7 @@ const mockPaymentJob = {
   transactionAmount: 22,
   transactionId: 38,
   programId: 3,
-  paymentNr: 3,
+  paymentId: 3,
 };
 const testJob = { data: mockPaymentJob } as Job;
 

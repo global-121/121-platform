@@ -17,6 +17,7 @@ class PaymentsPage extends BasePage {
   readonly exportButton: Locator;
   readonly dateRangeStartInput: Locator;
   readonly dateRangeEndInput: Locator;
+  readonly noteInput: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -37,7 +38,7 @@ class PaymentsPage extends BasePage {
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
     this.paymentSummaryWithInstructions = this.page.getByTestId(
-      'create-payment-excel-fsp-instructions',
+      'create-payment-fsp-instructions',
     );
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
@@ -48,6 +49,7 @@ class PaymentsPage extends BasePage {
     this.dateRangeEndInput = this.page.getByRole('combobox', {
       name: 'End Date',
     });
+    this.noteInput = this.page.locator('input[formControlName="note"]');
   }
 
   async selectAllRegistrations() {
@@ -82,8 +84,15 @@ class PaymentsPage extends BasePage {
     await this.addToPaymentButton.click();
   }
 
-  async startPayment() {
+  async startPayment(note?: string) {
+    if (note) {
+      await this.addPaymentNote(note);
+    }
     await this.startPaymentButton.click();
+  }
+
+  async addPaymentNote(note: string) {
+    await this.noteInput.fill(note);
   }
 
   async validateInProgressBannerIsPresent() {
@@ -156,6 +165,10 @@ class PaymentsPage extends BasePage {
   }
 
   async validateExcelFspInstructions() {
+    await expect(this.paymentSummaryWithInstructions).toContainText(
+      'Save the exported XLSX-file in the format required by the Financial Service Provider.',
+    );
+
     const paymentSummaryWithInstructions =
       await this.paymentSummaryWithInstructions.textContent();
 
@@ -177,11 +190,7 @@ class PaymentsPage extends BasePage {
       .replace(/Financial Service Provider\(s\):.*/g, '')
       .trim();
 
-    if (actualText !== expectedText) {
-      throw new Error(
-        `Expected payment summary instructions to be:\n${expectedText}\n\nBut received:\n${actualText}`,
-      );
-    }
+    expect(actualText).toBe(expectedText);
   }
 
   async selectPaymentExportOption({
@@ -189,19 +198,57 @@ class PaymentsPage extends BasePage {
     dateRange,
   }: {
     option: string;
-    withDateRange?: boolean;
-    dateRange?: { start: string; end: string };
+    dateRange?: { start: Date; end: Date };
   }) {
     await this.page.waitForLoadState('networkidle');
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
-      await this.dateRangeStartInput.click();
-      await this.page.locator(`[data-date="${dateRange.start}"]`).click();
+      await this.navigateToDateInPicker(
+        this.dateRangeStartInput,
+        dateRange.start,
+      );
       await this.page.waitForTimeout(500); // Wait for datePicker to be set
-      await this.dateRangeEndInput.click();
-      await this.page.locator(`[data-date="${dateRange.end}"]`).click();
+      await this.navigateToDateInPicker(this.dateRangeEndInput, dateRange.end);
     }
+  }
+
+  async navigateToDateInPicker(input: Locator, targetDate: Date) {
+    await input.click();
+
+    const targetMonth = targetDate.getMonth();
+    const targetYear = targetDate.getFullYear();
+
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    while (currentMonth !== targetMonth || currentYear !== targetYear) {
+      if (
+        currentYear < targetYear ||
+        (currentYear === targetYear && currentMonth < targetMonth)
+      ) {
+        await this.page.locator('.p-datepicker-next-button').click();
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
+      } else {
+        await this.page.locator('.p-datepicker-prev-button').click();
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        }
+      }
+    }
+
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth()); // Month is 0-indexed
+    const day = String(targetDate.getDate());
+    const formattedDate = `${year}-${month}-${day}`;
+    // TODO: use DatePicker-components API instead (see https://github.com/global-121/121-platform/pull/7175#discussion_r2313515442)
+    await this.page.locator(`[data-date="${formattedDate}"]`).click();
   }
 
   async validateExportMessage({ message }: { message: string }) {

@@ -4,7 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
-import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.service';
+import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('fsps/onafriq')

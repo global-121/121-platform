@@ -3,7 +3,7 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 export const programIdVisa = 3;
-export const paymentNrVisa = 1;
+export const paymentIdVisa = 1;
 export const amountVisa = 25;
 
 export const registrationVisa = {

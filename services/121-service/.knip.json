@@ -6,10 +6,9 @@
     "!src/**/*.{spec,test}.{js,ts}",
     "!src/migration/**/*.{js,ts}",
     "!src/seed-data/**/*.{js,ts}",
-    "!src/datasource-manage-migrations.ts",
-    "!src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-wallet.entity.ts"
+    "!src/datasource-manage-migrations.ts"
   ],
-  "ignore": ["src/utils/test-helpers/**"],
+  "ignore": ["src/utils/test-helpers/**", "src/scoped.repository.ts"],
   "jest": {
     "entry": []
   },

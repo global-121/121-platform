@@ -2,18 +2,19 @@ import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getTransactionsIntersolveVoucher } from '@121-service/test/helpers/intersolve-voucher.helper';
 import {
   doPayment,
+  getTransactions,
   waitForMessagesToComplete,
+  waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
-  awaitChangeRegistrationStatus,
+  doPaymentAndWaitForCompletion,
   getMessageHistory,
-  importRegistrations,
+  seedIncludedRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -23,7 +24,6 @@ import { programIdPV } from '@121-service/test/registrations/pagination/paginati
 
 describe('Do payment to 1 PA', () => {
   const programId = programIdPV;
-  const payment = 1;
   const amount = 22;
   const registrationAh = {
     referenceId: '63e62864557597e0a-AH',
@@ -35,41 +35,48 @@ describe('Do payment to 1 PA', () => {
     programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
   };
+  const paymentReferenceIds = [registrationAh.referenceId];
+  let accessToken: string;
+  let registrationAhCopy;
 
   describe('with FSP: Intersolve Voucher WhatsApp', () => {
-    let accessToken: string;
-
     beforeEach(async () => {
       await resetDB(SeedScript.nlrcMultiple, __filename);
       accessToken = await getAccessToken();
+      registrationAhCopy = { ...registrationAh };
     });
 
     it('should succesfully pay-out', async () => {
       // Arrange
-      await importRegistrations(programId, [registrationAh], accessToken);
-      await awaitChangeRegistrationStatus({
+      await seedIncludedRegistrations(
+        [registrationAhCopy],
         programId,
-        referenceIds: [registrationAh.referenceId],
-        status: RegistrationStatusEnum.included,
         accessToken,
-      });
-      const paymentReferenceIds = [registrationAh.referenceId];
+      );
 
       // Act
       const doPaymentResponse = await doPayment({
         programId,
-        paymentNr: payment,
         amount,
         referenceIds: paymentReferenceIds,
         accessToken,
       });
+      const paymentId = doPaymentResponse.body.id;
 
-      const getTransactionsBody = await getTransactionsIntersolveVoucher(
+      await waitForPaymentTransactionsToComplete({
         programId,
-        payment,
-        registrationAh.referenceId,
+        paymentReferenceIds,
         accessToken,
-      );
+        maxWaitTimeMs: 20_000,
+        paymentId,
+      });
+
+      const getTransactionsBody = await getTransactionsIntersolveVoucher({
+        programId,
+        paymentId,
+        referenceId: registrationAhCopy.referenceId,
+        accessToken,
+      });
 
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
@@ -81,21 +88,21 @@ describe('Do payment to 1 PA', () => {
       );
       expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
       expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
-        registrationAh.paymentAmountMultiplier,
+        registrationAhCopy.paymentAmountMultiplier,
       );
       expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
       await waitForMessagesToComplete({
         programId,
-        referenceIds: [registrationAh.referenceId],
+        referenceIds: [registrationAhCopy.referenceId],
         accessToken,
         minimumNumberOfMessagesPerReferenceId: 3,
       });
 
       const { body: messages } = await getMessageHistory(
         programId,
-        registrationAh.referenceId,
+        registrationAhCopy.referenceId,
         accessToken,
       );
 
@@ -125,6 +132,95 @@ describe('Do payment to 1 PA', () => {
 
       // Additional assertion for imageCodeSecret
       expect(imageCodeSecret).toHaveLength(200);
+    });
+
+    it('should fail pay-out due to invalid phone number', async () => {
+      // Arrange
+      const invalidPhoneNumber = '15005550001';
+      registrationAhCopy.whatsappPhoneNumber = invalidPhoneNumber;
+
+      await seedIncludedRegistrations(
+        [registrationAhCopy],
+        programId,
+        accessToken,
+      );
+
+      // Act
+      const paymentId = await doPaymentAndWaitForCompletion({
+        programId,
+        amount,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+        completeStatusses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+        ],
+      });
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAhCopy.referenceId],
+        accessToken,
+        minimumNumberOfMessagesPerReferenceId: 1,
+      });
+
+      const getTransactionsBody = await getTransactions({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAhCopy.referenceId,
+        accessToken,
+      });
+
+      // Assert
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.error,
+      );
+      expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+    });
+
+    it('payout should stay on waiting if no incoming message comes in', async () => {
+      // Arrange
+      const noIncomingMessagePhoneNumber = '16005550002';
+      registrationAhCopy.whatsappPhoneNumber = noIncomingMessagePhoneNumber;
+
+      await seedIncludedRegistrations(
+        [registrationAhCopy],
+        programId,
+        accessToken,
+      );
+
+      // Act
+      const paymentId = await doPaymentAndWaitForCompletion({
+        programId,
+        amount,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+        completeStatusses: [
+          TransactionStatusEnum.success,
+          TransactionStatusEnum.error,
+          TransactionStatusEnum.waiting,
+        ],
+      });
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAhCopy.referenceId],
+        accessToken,
+        minimumNumberOfMessagesPerReferenceId: 1,
+      });
+
+      const getTransactionsBody = await getTransactions({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAhCopy.referenceId,
+        accessToken,
+      });
+
+      // Assert
+      expect(getTransactionsBody.body[0].status).toBe(
+        TransactionStatusEnum.waiting,
+      );
+      expect(getTransactionsBody.body[0].errorMessage).toBeNull();
     });
   });
 });

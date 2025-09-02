@@ -47,7 +47,7 @@ export class ProjectPaymentsPageComponent {
   );
 
   readonly paymentsSorted = computed(() =>
-    this.payments.data()?.sort((a, b) => b.payment - a.payment),
+    this.payments.data()?.sort((a, b) => b.paymentId - a.paymentId),
   );
 
   readonly canExport = computed(() =>

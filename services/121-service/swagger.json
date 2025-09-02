@@ -1,5 +1,15 @@
 [
   {
+    "method": "post",
+    "path": "/api/test/kill-service",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/test/validate-indirect-relations",
+    "params": []
+  },
+  {
     "method": "get",
     "path": "/api/health/health",
     "params": []
@@ -194,7 +204,7 @@
     "params": [
       "programId",
       "referenceId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -203,7 +213,7 @@
     "params": [
       "programId",
       "referenceId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -762,11 +772,6 @@
     ]
   },
   {
-    "method": "post",
-    "path": "/api/scripts/kill-service",
-    "params": []
-  },
-  {
     "method": "get",
     "path": "/api/organization",
     "params": []
@@ -902,19 +907,19 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{payment}",
+    "path": "/api/programs/{programId}/payments/{paymentId}",
     "params": [
-      "payment",
+      "paymentId",
       "programId"
     ],
     "returnType": "PaymentReturnDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{payment}/fsp-instructions",
+    "path": "/api/programs/{programId}/payments/{paymentId}/fsp-instructions",
     "params": [
       "programId",
-      "payment"
+      "paymentId"
     ]
   },
   {
@@ -924,13 +929,21 @@
       "programId",
       "fromDate",
       "toDate",
-      "payment",
+      "paymentId",
       "format"
     ]
   },
   {
     "method": "get",
     "path": "/api/programs/{programId}/payments/{paymentId}/transactions",
+    "params": [
+      "programId",
+      "paymentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/payments/{paymentId}/events",
     "params": [
       "programId",
       "paymentId"
@@ -976,10 +989,10 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/payments/{payment}/excel-reconciliation",
+    "path": "/api/programs/{programId}/payments/{paymentId}/excel-reconciliation",
     "params": [
       "programId",
-      "payment"
+      "paymentId"
     ]
   },
   {

@@ -33,7 +33,7 @@ import {
   registrationLink,
 } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
-import { RetryTransfersDialogComponent } from '~/pages/project-payment/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { RetryTransfersDialogComponent } from '~/pages/project-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
@@ -89,7 +89,7 @@ export class TableCellOverviewComponent
   readonly paymentId = computed(() => {
     const item = this.value();
     if (item.type === ActivityTypeEnum.Transaction) {
-      return item.attributes.payment.toString();
+      return item.attributes.paymentId.toString();
     }
     return undefined;
   });
@@ -160,7 +160,7 @@ export class TableCellOverviewComponent
 
     return {
       projectId: this.context().projectId(),
-      paymentId: item.attributes.payment,
+      paymentId: item.attributes.paymentId,
       totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
     };

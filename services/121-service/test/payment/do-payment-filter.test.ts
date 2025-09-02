@@ -4,7 +4,6 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  paymentNrVisa,
   programIdVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
@@ -61,7 +60,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -75,7 +73,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
     });
@@ -96,7 +94,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -111,7 +108,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
     });
@@ -131,7 +128,6 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -149,7 +145,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
     });
@@ -166,7 +162,6 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        paymentNr: paymentNrVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -185,7 +180,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
     });
@@ -203,7 +198,6 @@ describe('Do payment with filter', () => {
     const doPaymentResponse = await doPayment(
       {
         programId: programIdVisa,
-        paymentNr: paymentNrVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -222,7 +216,7 @@ describe('Do payment with filter', () => {
     });
     const transactionsResponse = await getTransactions({
       programId: programIdVisa,
-      paymentNr: paymentNrVisa,
+      paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
     });

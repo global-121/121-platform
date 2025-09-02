@@ -4,8 +4,8 @@ import { env } from '@121-service/src/env';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
-import { SeedHelper } from '@121-service/src/scripts/seed-helper';
-import { SeedMockHelper } from '@121-service/src/scripts/seed-mock-helpers';
+import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
+import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
   amountVisa,
@@ -17,9 +17,9 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelper,
+    private readonly seedMockHelper: SeedMockHelperService,
     private axiosCallsService: AxiosCallsService,
-    private seedHelper: SeedHelper,
+    private seedHelper: SeedHelperService,
   ) {}
 
   public async run(
@@ -48,15 +48,18 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     // Set up organization and program
     await this.seedHelper.seedData(seedConfig!, isApiTests);
 
+    const programIds: number[] = [];
     // Set up 1 registration with 1 payment and 1 message
     if (mockOcw) {
       const programIdOcw = 3;
+      programIds.push(programIdOcw);
       await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
     }
     if (mockPv) {
-      const programIdPV = 2;
+      const programIdPv = 2;
+      programIds.push(programIdPv);
       await this.seedRegistrationForProgram(
-        programIdPV,
+        programIdPv,
         registrationAHWhatsapp,
       );
     }
@@ -67,7 +70,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
       powerNrRegistrations,
     );
-    await this.seedMockHelper.multiplyTransactions(nrPayments);
+    await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();
@@ -92,7 +95,6 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     await this.seedMockHelper.doPayment(
       programId,
-      1,
       amountVisa,
       [registration.referenceId],
       accessToken,

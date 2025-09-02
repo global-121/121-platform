@@ -995,7 +995,7 @@
         <source>Payment created.</source>
       </trans-unit>
       <trans-unit id="7102075992666089988" datatype="html">
-        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps }}" id="INTERPOLATION_1"/></source>
+        <source>Step <x equiv-text="{{ currentStep() }}" id="INTERPOLATION"/> of <x equiv-text="{{ totalSteps() }}" id="INTERPOLATION_1"/></source>
       </trans-unit>
       <trans-unit id="8890553633144307762" datatype="html">
         <source>Back</source>
@@ -1681,6 +1681,24 @@
       </trans-unit>
       <trans-unit id="page-title-project-monitoring-files" datatype="html">
         <source>Files</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-transfer-list" datatype="html">
+        <source>Transfer list</source>
+      </trans-unit>
+      <trans-unit id="3915966149686975421" datatype="html">
+        <source>Optional</source>
+      </trans-unit>
+      <trans-unit id="8433732438274024544" datatype="html">
+        <source>Add note</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-payment-log" datatype="html">
+        <source>Payment log</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-created" datatype="html">
+        <source>Created</source>
+      </trans-unit>
+      <trans-unit id="payment-event-log-item-type-note" datatype="html">
+        <source>Note</source>
       </trans-unit>
     </body>
   </file>

@@ -17,7 +17,9 @@ export enum AppRoutes {
   projectMonitoring = 'monitoring',
   projectMonitoringFiles = 'files',
   projectMonitoringPowerBI = 'powerbi',
+  projectPaymentLog = 'payment-log',
   projectPayments = 'payments',
+  projectPaymentTransferList = 'transfer-list',
   projectRegistrationActivityLog = 'activity-log',
   projectRegistrationDebitCards = 'debit-cards',
   projectRegistrationPersonalInformation = 'personal-information',
@@ -229,13 +231,30 @@ export const routes: Routes = [
           },
           {
             path: `:paymentId`,
-            title: $localize`:@@page-title-project-payment:Payment`,
-            pathMatch: 'full',
             canActivate: [foundResourceGuard('payment')],
-            loadComponent: () =>
-              import('~/pages/project-payment/project-payment.page').then(
-                (x) => x.ProjectPaymentPageComponent,
-              ),
+            children: [
+              {
+                path: AppRoutes.projectPaymentTransferList,
+                title: $localize`:@@page-title-project-transfer-list:Transfer list`,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-payment-transfer-list/project-payment-transfer-list.page'
+                  ).then((x) => x.ProjectPaymentTransferListPageComponent),
+              },
+              {
+                path: AppRoutes.projectPaymentLog,
+                title: $localize`:@@page-title-project-payment-log:Payment log`,
+                loadComponent: () =>
+                  import(
+                    '~/pages/project-payment-log/project-payment-log.page'
+                  ).then((x) => x.ProjectPaymentLogPageComponent),
+              },
+              {
+                path: ``,
+                pathMatch: 'full',
+                redirectTo: AppRoutes.projectPaymentTransferList,
+              },
+            ],
           },
         ],
       },

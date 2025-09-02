@@ -15,7 +15,6 @@ import {
 import { registrationAirtel } from '@121-service/test/registrations/pagination/pagination-data';
 
 const programId = 1;
-const payment = 1;
 const amount = 200;
 
 describe('Do payment with FSP: Airtel', () => {
@@ -42,15 +41,16 @@ describe('Do payment with FSP: Airtel', () => {
     // Act
     const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentReferenceIds,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
       completeStatusses: [
@@ -92,17 +92,18 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    await doPayment({
+    const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentReferenceIds,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
       completeStatusses: [
@@ -113,7 +114,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationAirtelSuccessTransaction.referenceId,
       accessToken,
     });
@@ -141,17 +142,18 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    await doPayment({
+    const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentReferenceIds,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
       completeStatusses: [
@@ -162,7 +164,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
@@ -192,17 +194,18 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    await doPayment({
+    const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentReferenceIds,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
       completeStatusses: [
@@ -213,7 +216,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId:
         registrationAirtelDuplicateTransactionId.referenceId,
       accessToken,
@@ -240,17 +243,18 @@ describe('Do payment with FSP: Airtel', () => {
     );
 
     // Act
-    await doPayment({
+    const doPaymentResponse = await doPayment({
       programId,
-      paymentNr: payment,
       amount,
       referenceIds: paymentReferenceIds,
       accessToken,
     });
+    const paymentId = doPaymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId,
       paymentReferenceIds,
+      paymentId,
       accessToken,
       maxWaitTimeMs: 30_000,
       completeStatusses: [
@@ -261,7 +265,7 @@ describe('Do payment with FSP: Airtel', () => {
     });
     const getTransactionsResult = await getTransactions({
       programId,
-      paymentNr: payment,
+      paymentId,
       registrationReferenceId: registrationAirtelAmbiguousError.referenceId,
       accessToken,
     });

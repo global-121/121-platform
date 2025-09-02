@@ -20,7 +20,7 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { RegistrationPageLayoutComponent } from '~/components/registration-page-layout/registration-page-layout.component';
+import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
@@ -31,7 +31,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 @Component({
   selector: 'app-project-registration-personal-information',
   imports: [
-    RegistrationPageLayoutComponent,
+    PageLayoutRegistrationComponent,
     SkeletonModule,
     ButtonModule,
     DataListComponent,

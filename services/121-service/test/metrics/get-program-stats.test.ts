@@ -14,7 +14,6 @@ import {
 
 describe('Get program stats', () => {
   let accessToken: string;
-  const paymentNr = 1;
   const amount = 50;
 
   beforeAll(async () => {
@@ -31,7 +30,6 @@ describe('Get program stats', () => {
     await seedPaidRegistrations(
       registrationsPV,
       programIdPV,
-      paymentNr,
       amount,
       Object.values(TransactionStatusEnum),
     );

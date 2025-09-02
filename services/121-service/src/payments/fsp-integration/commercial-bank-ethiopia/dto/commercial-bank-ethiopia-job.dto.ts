@@ -3,7 +3,7 @@ import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments
 
 export class CommercialBankEthiopiaJobDto {
   paPaymentData: PaPaymentDataDto;
-  paymentNr: number;
+  paymentId: number;
   programId: number;
   payload: CommercialBankEthiopiaTransferPayload;
   userId: number;

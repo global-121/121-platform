@@ -40,7 +40,7 @@ describe('Do payment with Excel FSP', () => {
   let accessToken: string;
   // Payment info
   const amount = 10;
-  const paymentNr = 1;
+  const paymentId = 1;
 
   // Registrations
   const registrationsWesteros = [
@@ -78,13 +78,13 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment({
+    const paymentResponse = await doPayment({
       programId: programIdWesteros,
-      paymentNr,
       amount,
       referenceIds: [],
       accessToken,
     });
+    const pamymentIdWesteros = paymentResponse.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId: programIdWesteros,
@@ -92,6 +92,7 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
       maxWaitTimeMs: 10_000,
       completeStatusses: [TransactionStatusEnum.waiting],
+      paymentId: pamymentIdWesteros,
     });
 
     ////////////////////////////
@@ -112,19 +113,20 @@ describe('Do payment with Excel FSP', () => {
       accessToken,
     });
 
-    await doPayment({
+    const paymentResponseCbe = await doPayment({
       programId: programIdCbe,
-      paymentNr,
       amount,
       referenceIds: [],
       accessToken,
     });
+    const paymentIdCbe = paymentResponseCbe.body.id;
 
     await waitForPaymentTransactionsToComplete({
       programId: programIdCbe,
       paymentReferenceIds: refrenceIdsWithValidation,
       accessToken,
       maxWaitTimeMs: 10_000,
+      paymentId: paymentIdCbe,
     });
   });
 
@@ -135,14 +137,14 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
-        paymentNr,
+        paymentId,
         registrationReferenceId: null,
         accessToken,
       });
 
       const fspInstructionsResponse = await getFspInstructions(
         programIdWesteros,
-        paymentNr,
+        paymentId,
         accessToken,
       );
       const fspInstructions = fspInstructionsResponse.body;
@@ -178,7 +180,7 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const fspInstructionsResponse = await getFspInstructions(
         programIdWesteros,
-        paymentNr,
+        paymentId,
         accessToken,
       );
       // Assert
@@ -214,7 +216,7 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const importResult = await importFspReconciliationData(
         programIdWesteros,
-        paymentNr,
+        paymentId,
         accessToken,
         reconciliationData,
       );
@@ -234,7 +236,7 @@ describe('Do payment with Excel FSP', () => {
       );
       const transactionsResponse = await getTransactions({
         programId: programIdWesteros,
-        paymentNr,
+        paymentId,
         registrationReferenceId: null,
         accessToken,
       });
@@ -281,7 +283,7 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const importResult = await importFspReconciliationData(
         programIdWesteros,
-        paymentNr,
+        paymentId,
         accessToken,
         reconciliationData,
       );
@@ -311,7 +313,7 @@ describe('Do payment with Excel FSP', () => {
       // Act
       const importResult = await importFspReconciliationData(
         programIdWesteros,
-        paymentNr,
+        paymentId,
         accessToken,
         reconciliationData,
       );

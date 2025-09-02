@@ -17,9 +17,7 @@ export default class InitializePaymentModel {
     registration,
     duplicateNumber,
     maxTimeoutAttempts,
-    status,
     minPassRatePercentage,
-    paymentNr,
     amount,
   ) {
     // reset db
@@ -33,13 +31,13 @@ export default class InitializePaymentModel {
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
     // Create payment
-    paymentsPage.createPayment(programId, amount, paymentNr);
+    const doPaymentResult = paymentsPage.createPayment(programId, amount);
+    const paymentId = doPaymentResult.body.id;
     // Monitor that 10% of payments is successful and then stop the test
     return paymentsPage.getPaymentResults(
       programId,
-      status,
       maxTimeoutAttempts,
-      paymentNr,
+      paymentId,
       duplicateNumber,
       minPassRatePercentage,
     );

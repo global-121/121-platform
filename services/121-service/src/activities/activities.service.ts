@@ -7,7 +7,7 @@ import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';

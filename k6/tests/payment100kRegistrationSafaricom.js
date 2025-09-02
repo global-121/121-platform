@@ -14,9 +14,7 @@ const initializePayment = new InitializePaymentModel();
 const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'safari-program';
 const programId = 1;
-const paymentNr = 3;
 const maxTimeoutAttempts = 800;
-const status = 'success';
 const minPassRatePercentage = 10;
 const amount = 10;
 
@@ -47,9 +45,7 @@ export default function () {
     registrationSafaricom,
     duplicateNumber,
     maxTimeoutAttempts,
-    status,
     minPassRatePercentage,
-    paymentNr,
     amount,
   );
   checkAndFail(monitorPayment, {

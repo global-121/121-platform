@@ -149,7 +149,6 @@ export async function waitForDeleteRegistrations({
   const startTime = Date.now();
   const accessToken = await getAccessToken();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    // Get payment transactions
     let totalRegistrationSuccesfullyDeleted = 0;
 
     for (const referenceId of referenceIds) {
@@ -639,23 +638,21 @@ export async function getMessageHistoryUntilX(
 export async function seedPaidRegistrations(
   registrations: any[],
   programId: number,
-  paymentNr = 1,
   amount = 20,
   completeStatusses: TransactionStatusEnum[] = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
   ],
-): Promise<void> {
+): Promise<number> {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrations, programId, accessToken);
   const registrationReferenceIds = registrations.map((r) => r.referenceId);
 
-  await doPaymentAndWaitForCompletion({
+  return await doPaymentAndWaitForCompletion({
     programId,
     referenceIds: registrationReferenceIds,
     amount,
     accessToken,
-    paymentNr,
     completeStatusses,
   });
 }
@@ -665,26 +662,27 @@ export async function doPaymentAndWaitForCompletion({
   referenceIds,
   amount,
   accessToken,
-  paymentNr = 1,
   completeStatusses = [
     TransactionStatusEnum.success,
     TransactionStatusEnum.waiting,
   ],
+  note,
 }: {
   programId: number;
   referenceIds: string[];
   amount: number;
   accessToken: string;
-  paymentNr?: number;
   completeStatusses?: TransactionStatusEnum[];
-}): Promise<void> {
-  await doPayment({
+  note?: string;
+}): Promise<number> {
+  const doPaymentResponse = await doPayment({
     programId,
-    paymentNr,
     amount,
     referenceIds,
     accessToken,
+    note,
   });
+  const paymentId = doPaymentResponse.body.id;
 
   await waitForPaymentTransactionsToComplete({
     programId,
@@ -692,7 +690,9 @@ export async function doPaymentAndWaitForCompletion({
     accessToken,
     maxWaitTimeMs: 30_000,
     completeStatusses,
+    paymentId,
   });
+  return paymentId;
 }
 
 export async function seedRegistrations(

@@ -37,6 +37,7 @@ import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptor
 import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
+import { TestController } from '@121-service/src/utils/test-helpers/test.controller';
 
 @Module({
   // Note: no need to import just any (new) Module in ApplicationModule, when another Module already imports it
@@ -91,7 +92,7 @@ import { TypeOrmModule } from '@121-service/src/typeorm.module';
     SafaricomReconciliationModule,
     OnafriqReconciliationModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, TestController],
   providers: [
     {
       provide: APP_GUARD,

@@ -7,13 +7,13 @@ import {
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
 
-import { MonitoringPageLayoutComponent } from '~/components/monitoring-page-layout/monitoring-page-layout.component';
+import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { DashboardIframeComponent } from '~/pages/project-monitoring-powerbi/components/monitoring-iframe/monitoring-iframe.component';
 
 @Component({
   selector: 'app-project-monitoring-powerbi',
-  imports: [DashboardIframeComponent, MonitoringPageLayoutComponent],
+  imports: [DashboardIframeComponent, PageLayoutMonitoringComponent],
   templateUrl: './project-monitoring-powerbi.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

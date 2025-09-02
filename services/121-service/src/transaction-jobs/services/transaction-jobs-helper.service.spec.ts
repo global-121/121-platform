@@ -8,7 +8,7 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -128,7 +128,7 @@ describe('TransactionJobsHelperService', () => {
   describe('createTransactionAndUpdateRegistration', () => {
     const transactionJob: SharedTransactionJobDto = {
       programId: 1,
-      paymentNumber: 5,
+      paymentId: 5,
       userId: 1,
       programFspConfigurationId: 1,
       isRetry: false,

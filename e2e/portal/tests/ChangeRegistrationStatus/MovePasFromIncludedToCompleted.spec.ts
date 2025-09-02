@@ -59,7 +59,6 @@ test('[31211] Move PA(s) from status "Included" to "Completed"', async ({
   await test.step('Change status of registratios to "Completed" with doing a payment', async () => {
     await doPayment({
       programId: programIdPV,
-      paymentNr: 1,
       amount: 100,
       referenceIds: paymentReferenceIds,
       accessToken,

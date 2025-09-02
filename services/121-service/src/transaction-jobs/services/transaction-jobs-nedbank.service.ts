@@ -5,10 +5,10 @@ import { NedbankVoucherStatus } from '@121-service//src/payments/fsp-integration
 import { env } from '@121-service/src/env';
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { NedbankError } from '@121-service/src/payments/fsp-integration/nedbank/errors/nedbank.error';
-import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.service';
 import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-integration/nedbank/repositories/nedbank-voucher.scoped.repository';
+import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -46,7 +46,7 @@ export class TransactionJobsNedbankService {
     let transactionId: number;
     const voucherWithoutStatus =
       await this.nedbankVoucherScopedRepository.getVoucherWhereStatusNull({
-        paymentId: transactionJob.paymentNumber,
+        paymentId: transactionJob.paymentId,
         registrationId: registration.id,
       });
 
@@ -73,16 +73,16 @@ export class TransactionJobsNedbankService {
         await this.transactionScopedRepository.count({
           where: {
             registrationId: Equal(registration.id),
-            payment: Equal(transactionJob.paymentNumber),
+            paymentId: Equal(transactionJob.paymentId),
             status: Equal(TransactionStatusEnum.error),
           },
         });
-      // orderCreateReference is generated using: (referenceId + paymentNr + current failed transactions)
+      // orderCreateReference is generated using: (referenceId + paymentId + current failed transactions)
       // Using this count to generate the OrderReferenceId ensures that:
       // a. On payment retry, a new reference is generated (needed because a new reference is required by nedbank if a failed order was created).
       // b. Queue Retry: on queue retry, the same OrderReferenceId is generated, which is beneficial because the old successful/failed Order response would be returned.
       orderCreateReference = generateUUIDFromSeed(
-        `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentNumber},Attempt=${failedTransactionsCount}`,
+        `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
       ).replace(/^(.{14})5/, '$14');
 
       // THIS IS MOCK FUNCTIONONALITY FOR TESTING PURPOSES ONLY

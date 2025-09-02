@@ -1,4 +1,4 @@
-<app-monitoring-page-layout [projectId]="projectId()">
+<app-page-layout-monitoring [projectId]="projectId()">
   @let monitoringDashboardUrl = this.project.data()?.monitoringDashboardUrl;
   @if (monitoringDashboardUrl) {
     <app-monitoring-iframe [url]="monitoringDashboardUrl" />
@@ -12,4 +12,4 @@
       to set this up
     </p>
   }
-</app-monitoring-page-layout>
+</app-page-layout-monitoring>

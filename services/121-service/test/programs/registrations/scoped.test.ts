@@ -108,7 +108,7 @@ describe('Registrations - [Scoped]', () => {
     // Act
     const transactionResponse = await getTransactions({
       programId: PvProgramId,
-      paymentNr: 1,
+      paymentId: 1,
       registrationReferenceId: null,
       accessToken,
     });
