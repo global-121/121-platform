@@ -83,7 +83,9 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Validate attachment deletion', async () => {
       await page.waitForTimeout(200); // Wait for the deletion to be processed and table fully updated
 
-      await tableComponent.validateTableRowCount(3); // 4 files - 1 deleted = 3 remaining
+      await tableComponent.validateWaitForTableRowCount({
+        expectedRowCount: 3,
+      }); // 4 files - 1 deleted = 3 remaining
       let fileNamesArray = await tableComponent.getTextArrayFromColumn(2); // Column 2 is the 'Name' column
       // Remove double extensions if present
       fileNamesArray = fileNamesArray.map((name) =>

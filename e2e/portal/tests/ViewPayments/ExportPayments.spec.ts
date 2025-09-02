@@ -110,6 +110,8 @@ test('[35621] ExportPayments', async () => {
 
 test('[36125] View available actions for admin', async () => {
   const paymentsPage = new PaymentsPage(page);
+  // Reload the page here because the toast might block the export button
+  await page.reload();
 
   await test.step('Validate export options', async () => {
     await paymentsPage.exportButton.waitFor({ state: 'visible' });
