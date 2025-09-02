@@ -98,7 +98,6 @@ export class ProjectPaymentLogPageComponent {
         icon: PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS[type],
         count: this.paymentEventLog.data()?.meta.count[type] ?? 0,
       })),
-      displayAsPlainText: true,
     },
     {
       header: $localize`Overview`,
@@ -110,6 +109,7 @@ export class ProjectPaymentLogPageComponent {
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: getUniqueUserOptions(this.paymentEvents()),
+      displayAsChip: true,
     },
     {
       field: 'created',

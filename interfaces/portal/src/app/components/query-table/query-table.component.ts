@@ -89,8 +89,8 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
         icon?: string;
         count?: number;
       }[];
+      displayAsChip?: boolean;
       getCellChipData?: (item: TData) => ChipData;
-      displayAsPlainText?: boolean;
     }
   | {
       type?:

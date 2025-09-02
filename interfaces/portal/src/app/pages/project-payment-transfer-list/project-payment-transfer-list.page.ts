@@ -126,6 +126,7 @@ export class ProjectPaymentTransferListPageComponent {
           label: REGISTRATION_STATUS_LABELS[status],
           value: status,
         })),
+        displayAsChip: true,
         getCellChipData: (transaction) =>
           getChipDataByRegistrationStatus(transaction.registrationStatus),
       },
@@ -137,6 +138,7 @@ export class ProjectPaymentTransferListPageComponent {
           label: TRANSACTION_STATUS_LABELS[status],
           value: status,
         })),
+        displayAsChip: true,
         getCellChipData: (transaction) =>
           getChipDataByTransactionStatus(transaction.status),
       },
@@ -163,6 +165,7 @@ export class ProjectPaymentTransferListPageComponent {
           label: this.translatableStringService.translate(config.label) ?? '',
           value: config.name,
         })),
+        displayAsChip: true,
       },
       {
         field: 'created',

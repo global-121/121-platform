@@ -98,7 +98,6 @@ export class ProjectRegistrationActivityLogPageComponent {
         icon: ACTIVITY_LOG_ITEM_TYPE_ICONS[type],
         count: this.activityLog.data()?.meta.count[type] ?? 0,
       })),
-      displayAsPlainText: true,
     },
     {
       header: $localize`Overview`,
@@ -110,6 +109,7 @@ export class ProjectRegistrationActivityLogPageComponent {
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: getUniqueUserOptions(this.activities()),
+      displayAsChip: true,
     },
     {
       field: 'created',

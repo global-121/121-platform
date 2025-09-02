@@ -131,7 +131,6 @@ export class ProjectMonitoringFilesPageComponent {
         value: type,
         icon: PROJECT_ATTACHMENT_FILE_TYPE_ICONS[type],
       })),
-      displayAsPlainText: true,
     },
     {
       field: 'filename',
@@ -142,6 +141,7 @@ export class ProjectMonitoringFilesPageComponent {
       header: $localize`Imported by`,
       type: QueryTableColumnType.MULTISELECT,
       options: getUniqueUserOptions(this.projectAttachments.data() ?? []),
+      displayAsChip: true,
     },
     {
       field: 'created',

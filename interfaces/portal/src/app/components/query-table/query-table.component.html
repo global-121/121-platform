@@ -236,7 +236,20 @@
           } @else {
             @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
-              @if (column.displayAsPlainText) {
+              @if (column.displayAsChip) {
+                @if (column.getCellChipData) {
+                  @let chipData = column.getCellChipData(item);
+                  <app-colored-chip
+                    [label]="chipData.chipLabel"
+                    [variant]="chipData.chipVariant"
+                  />
+                } @else if (cellText) {
+                  <app-colored-chip
+                    [label]="cellText"
+                    [variant]="'blue'"
+                  />
+                }
+              } @else {
                 <span class="inline-flex items-center">
                   @let icon = getMultiSelectCellIcon(column, item);
                   @if (icon) {
@@ -246,17 +259,6 @@
                   }
                   <span>{{ cellText }}</span>
                 </span>
-              } @else if (column.getCellChipData) {
-                @let chipData = column.getCellChipData(item);
-                <app-colored-chip
-                  [label]="chipData.chipLabel"
-                  [variant]="chipData.chipVariant"
-                />
-              } @else if (cellText) {
-                <app-colored-chip
-                  [label]="cellText"
-                  [variant]="'blue'"
-                />
               }
             } @else {
               @let routerLink =
