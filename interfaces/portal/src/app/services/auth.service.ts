@@ -23,6 +23,7 @@ const AuthStrategy = environment.use_sso_azure_entra
   : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
+const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({
   providedIn: 'root',
@@ -195,10 +196,9 @@ export class AuthService {
   }
 
   public hasDeprecatedPermissions(user: LocalStorageUser): boolean {
-    const validPermissions = new Set(Object.values(PermissionEnum));
     for (const projectId of Object.keys(user.permissions)) {
       for (const permission of user.permissions[Number(projectId)]) {
-        if (!validPermissions.has(permission)) {
+        if (!VALID_PERMISSIONS.has(permission)) {
           return true;
         }
       }
