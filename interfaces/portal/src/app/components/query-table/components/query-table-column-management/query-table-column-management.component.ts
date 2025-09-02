@@ -22,6 +22,11 @@ import { FocusTrapModule } from 'primeng/focustrap';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { QueryTableColumn } from '~/components/query-table/query-table.component';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-query-table-column-management',
@@ -42,6 +47,7 @@ export class QueryTableColumnManagementComponent<
   TData extends { id: PropertyKey },
 > {
   readonly rtlHelper = inject(RtlHelperService);
+  readonly trackingService = inject(TrackingService);
 
   readonly columns = input.required<QueryTableColumn<TData>[]>();
   readonly visibleColumns = model.required<QueryTableColumn<TData>[]>();
@@ -65,12 +71,40 @@ export class QueryTableColumnManagementComponent<
     this.formError.set(undefined);
   }
 
+  revertToDefault() {
+    this.resetColumnVisibility.emit();
+    this.formVisible.set(false);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickRevertToDefaultButton,
+    });
+  }
+
+  private getFieldNameList(fields: QueryTableColumn<TData>[]): string {
+    const fieldNames = Array.from(
+      new Set(fields.map((col) => col.field)).values(),
+    );
+    return fieldNames.sort().join(',');
+  }
+
   onFormSubmit(): void {
     const { selectedColumns } = this.formGroup.getRawValue();
     if (selectedColumns.length === 0) {
       this.formError.set($localize`At least one column must be selected`);
       return;
     }
+
+    const visibleFieldNames = this.getFieldNameList(this.visibleColumns());
+    const selectedFieldNames = this.getFieldNameList(selectedColumns);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickProceedButton,
+      name: `columns:${visibleFieldNames === selectedFieldNames ? 'keep' : 'update'} to:${selectedFieldNames}`,
+      value: selectedColumns.length,
+    });
+
     this.formError.set(undefined);
     const stateKey = this.selectedColumnsStateKey();
     if (stateKey) {
