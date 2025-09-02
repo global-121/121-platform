@@ -31,6 +31,29 @@ import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 import { UserType } from '@121-service/src/user/user-type-enum';
 
+// Minimal shape(s) used from seed JSON files
+interface ProgramRegistrationAttributeSeed {
+  name: string;
+  isRequired?: boolean;
+  answerType?: RegistrationAttributeTypes;
+  options?: { option: string }[];
+  scoring?: Record<string, number>;
+  programId?: number;
+  [key: string]: unknown;
+}
+
+interface ProgramFspConfigurationSeed {
+  fsp: Fsps;
+  properties?: { name: string; value: string }[];
+  name?: string;
+  label: LocalizedString;
+}
+
+type ProgramSeedInput = DeepPartial<ProgramEntity> & {
+  programRegistrationAttributes: ProgramRegistrationAttributeSeed[];
+  programFspConfigurations: ProgramFspConfigurationSeed[];
+};
+
 @Injectable()
 export class SeedHelper {
   public constructor(
@@ -199,17 +222,19 @@ export class SeedHelper {
   }
 
   public async addOrganization(
-    exampleOrganization: Record<string, any>,
+    exampleOrganization: DeepPartial<OrganizationEntity>,
   ): Promise<void> {
     const organizationRepository =
       this.dataSource.getRepository(OrganizationEntity);
     const organizationDump = JSON.stringify(exampleOrganization);
-    const organization = JSON.parse(organizationDump);
+    const organization = JSON.parse(
+      organizationDump,
+    ) as DeepPartial<OrganizationEntity>;
     await organizationRepository.save(organization);
   }
 
   public async addProgram(
-    programExample: any,
+    programExample: ProgramSeedInput,
     isApiTests: boolean,
   ): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);
@@ -219,7 +244,7 @@ export class SeedHelper {
     );
 
     const programExampleDump = JSON.stringify(programExample);
-    const programFromJSON = JSON.parse(programExampleDump);
+    const programFromJSON = JSON.parse(programExampleDump) as ProgramSeedInput;
 
     if (IS_DEVELOPMENT && !isApiTests) {
       programFromJSON.published = true;
@@ -230,13 +255,16 @@ export class SeedHelper {
     // Remove original program registration attributes and add it to a separate variable
     const programRegistrationAttributes =
       programFromJSON.programRegistrationAttributes;
-    programFromJSON.programRegistrationAttibutes = [];
+    programFromJSON.programRegistrationAttibutes =
+      [] as unknown as ProgramRegistrationAttributeSeed[];
     for (const attribute of programRegistrationAttributes) {
       attribute.isRequired = attribute.isRequired || false;
       if (attribute.answerType === RegistrationAttributeTypes.dropdown) {
-        const scoringKeys = Object.keys(attribute.scoring);
+        const scoringKeys = Object.keys(attribute.scoring ?? {});
         if (scoringKeys.length > 0) {
-          const optionKeys = attribute.options.map(({ option }) => option);
+          const optionKeys = (attribute.options ?? []).map(
+            ({ option }) => option,
+          );
           const areOptionScoringEqual =
             JSON.stringify(scoringKeys.sort()) ==
             JSON.stringify(optionKeys.sort());
@@ -248,15 +276,19 @@ export class SeedHelper {
           }
         }
       }
-      attribute.programId = programReturn.id;
-      await programRegistrationAttributeRepo.save(attribute);
+      (attribute as ProgramRegistrationAttributeSeed).programId =
+        programReturn.id;
+      await programRegistrationAttributeRepo.save(
+        attribute as DeepPartial<ProgramRegistrationAttributeEntity>,
+      );
     }
 
     const foundProgram = await programRepository.findOneOrFail({
       where: { id: Equal(programReturn.id) },
     });
     const fspConfigArrayFromJson = programFromJSON.programFspConfigurations;
-    foundProgram.programFspConfigurations = [];
+    foundProgram.programFspConfigurations =
+      [] as unknown as ProgramFspConfigurationEntity[];
 
     for (const fspConfigFromJson of fspConfigArrayFromJson) {
       const fspObject = FSP_SETTINGS.find(

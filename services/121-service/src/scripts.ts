@@ -7,12 +7,12 @@ import {
   ScriptsModule,
 } from '@121-service/src/scripts/scripts.module';
 
-async function runScript(scriptName): Promise<any> {
+async function runScript(scriptName: string): Promise<void> {
   console.log('scriptName: ', scriptName);
   const context = await NestFactory.createApplicationContext(ScriptsModule);
-  const { default: Module } = await import(
+  const { default: Module } = (await import(
     `${__dirname}/scripts/${scriptName}.ts`
-  );
+  )) as { default: new (...args: unknown[]) => InterfaceScript };
   if (typeof Module !== 'function') {
     throw new TypeError(
       `Cannot find default Module in scripts/${scriptName}.ts`,
@@ -25,17 +25,17 @@ async function runScript(scriptName): Promise<any> {
   await script.run();
 }
 
-function confirmRun(scriptName): any {
+function confirmRun(scriptName: string): void {
   const prompt = new EventEmitter();
-  let current = null;
-  let result = null;
+  let current: string | null = null;
+  let result: string | null = null;
   process.stdin.resume();
 
-  process.stdin.on('data', function (data) {
+  process.stdin.on('data', function (data: Buffer) {
     prompt.emit(current ?? '[empty current]', data.toString().trim());
   });
 
-  prompt.on(':new', function (name, question) {
+  prompt.on(':new', function (name: string, question: string) {
     current = name;
     console.log(question);
     process.stdout.write('> ');
@@ -61,7 +61,7 @@ function confirmRun(scriptName): any {
     'Are you sure? This might delete existing data in the database. (y/n)',
   );
 
-  prompt.on('confirm', function (data) {
+  prompt.on('confirm', function (data: string) {
     result = data;
     prompt.emit(':end');
   });

@@ -273,12 +273,13 @@ export const env = createEnv({
         ],
       ]);
 
+      const envRecord = env as unknown as Record<string, unknown>;
       for (const [fspFlag, requiredVariables] of fspVariableRequirements) {
-        if ((env as any)[fspFlag] !== true) {
+        if (envRecord[fspFlag] !== true) {
           continue;
         }
         for (const variable of requiredVariables) {
-          if ((env as any)[variable]) {
+          if (envRecord[variable] !== undefined && envRecord[variable] !== '') {
             continue;
           }
           ctx.addIssue({

@@ -25,6 +25,11 @@ import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whats
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
+// Minimal shape of Twilio Content Template response we rely on
+interface TwilioContentTemplate {
+  types?: Record<string, { body?: string }>;
+}
+
 @Injectable()
 export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
@@ -71,7 +76,7 @@ export class WhatsappService {
         EXTERNAL_API.whatsAppStatus +
         (env.MOCK_TWILIO ? `?messageContentType=${messageContentType}` : ''),
       to: formatWhatsAppNumber(recipientPhoneNr),
-    };
+    } as Record<string, unknown>;
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
     }
@@ -80,15 +85,17 @@ export class WhatsappService {
     }
 
     try {
-      const messageToStore = await twilioClient.messages.create(payload);
+      const messageToStore = await twilioClient.messages.create(
+        payload as Parameters<typeof twilioClient.messages.create>[0],
+      );
       // If the message is a template, we need to fetch the body from Twilio due to what we think is a bug in Twilio Node library
       // I opened an issue for it here: https://github.com/twilio/twilio-node/issues/1081
       if (contentSid && !messageToStore.body) {
         const fetchedTemplate = await twilioClient.content.v1
           .contents(contentSid)
           .fetch();
-        const types = (fetchedTemplate as any).types;
-        messageToStore.body = types['twilio/quick-reply']?.body ?? '';
+        const types = (fetchedTemplate as TwilioContentTemplate).types;
+        messageToStore.body = types?.['twilio/quick-reply']?.body ?? '';
       }
       await this.storeSendWhatsapp({
         message: messageToStore,
@@ -99,9 +106,10 @@ export class WhatsappService {
         messageProcessType,
       });
       return messageToStore.sid;
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = error as { code?: number; message?: string };
       if (
-        error.code == TwilioErrorCodes.mediaUrlInvalid &&
+        err.code == TwilioErrorCodes.mediaUrlInvalid &&
         mediaUrl &&
         firstAttempt
       ) {
@@ -125,14 +133,14 @@ export class WhatsappService {
       await this.storeSendWhatsapp({
         message: {
           accountSid: env.TWILIO_SID,
-          body: payload.body ?? '',
-          to: payload.to,
+          body: (payload['body'] as string) ?? '',
+          to: payload['to'] as string,
           messagingServiceSid: env.TWILIO_MESSAGING_SID,
           dateCreated: new Date(),
           sid: `failed-${uuid()}`,
           status: 'failed',
-          errorCode: error.code,
-          errorMessage: error.message,
+          errorCode: err.code,
+          errorMessage: err.message,
         },
         userId,
         registrationId,
@@ -141,11 +149,11 @@ export class WhatsappService {
         messageProcessType,
         existingSidToUpdateDueToFailure: existingSidToUpdate,
       });
-      if (error.code !== TwilioErrorCodes.toNumberDoesNotExist) {
+      if (err.code !== TwilioErrorCodes.toNumberDoesNotExist) {
         throw error;
       } else {
         console.log(
-          `WhatsApp message not sent to ${payload.to}. Error: ${error.message}. Error code: ${error.code}`,
+          `WhatsApp message not sent to ${payload['to']}. Error: ${err.message}. Error code: ${err.code}`,
         );
       }
     }

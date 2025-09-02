@@ -210,7 +210,10 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     entityOrEntities: T | T[],
     options?: SaveOptions,
   ): Promise<T | T[]> {
-    return this.repository.save(entityOrEntities as any, options);
+    return this.repository.save(
+      entityOrEntities as Parameters<Repository<T>['save']>[0],
+      options,
+    );
   }
 
   public override async insert(
@@ -228,7 +231,10 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     entityOrEntities: T | T[],
     options?: RemoveOptions,
   ): Promise<T | T[]> {
-    return this.repository.remove(entityOrEntities as any, options);
+    return this.repository.remove(
+      entityOrEntities as Parameters<Repository<T>['remove']>[0],
+      options,
+    );
   }
 
   // I did not apply the scope to this method as it was never needed
