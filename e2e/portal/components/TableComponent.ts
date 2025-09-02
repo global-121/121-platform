@@ -348,15 +348,16 @@ class TableComponent {
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const reasonField = this.page.getByPlaceholder('Enter reason');
-    const deleteLabel = this.page.getByLabel(
-      'I understand this action can not be undone',
-    );
 
     await this.selectRowByTextContent(registrationName);
     await statusButton.click();
 
     // Check for delete confirmation
-    if (await deleteLabel.isVisible()) {
+    if (status === 'Delete') {
+      const deleteLabel = this.page.getByLabel(
+        'I understand this action can not be undone',
+      );
+      await expect(deleteLabel).toBeVisible({ timeout: 2000 });
       await deleteLabel.click();
     }
 
