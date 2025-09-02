@@ -5,13 +5,6 @@ import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/pay
 
 class PaymentEventsMetaObject {
   @ApiProperty({
-    type: [String],
-    enum: PaymentEvent,
-    description: 'The available payment event types. Can be 0 or more.',
-  })
-  availableTypes: PaymentEvent[];
-
-  @ApiProperty({
     type: Object,
     example: {
       [PaymentEvent.created]: 1,

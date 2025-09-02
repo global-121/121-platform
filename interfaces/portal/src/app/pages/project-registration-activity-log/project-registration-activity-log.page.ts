@@ -19,10 +19,12 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import { ACTIVITY_LOG_ITEM_TYPE_LABELS } from '~/domains/registration/registration.helper';
+import {
+  ACTIVITY_LOG_ITEM_TYPE_ICONS,
+  ACTIVITY_LOG_ITEM_TYPE_LABELS,
+} from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { ActivityLogExpandedRowComponent } from '~/pages/project-registration-activity-log/components/activity-log-expanded-row/activity-log-expanded-row.component';
-import { TableCellActivityComponent } from '~/pages/project-registration-activity-log/components/table-cell-activity.component';
 import { TableCellOverviewComponent } from '~/pages/project-registration-activity-log/components/table-cell-overview/table-cell-overview.component';
 import { getUniqueUserOptions } from '~/utils/unique-users';
 
@@ -80,6 +82,8 @@ export class ProjectRegistrationActivityLogPageComponent {
   readonly activities = computed(() => this.activityLog.data()?.data ?? []);
 
   readonly availableActivityTypes = computed(
+    // we use `meta.availableTypes` instead of just mapping the values of the enum
+    // because the available types depend on the user's permissions
     () => this.activityLog.data()?.meta.availableTypes ?? [],
   );
 
@@ -87,15 +91,13 @@ export class ProjectRegistrationActivityLogPageComponent {
     {
       field: 'type',
       header: $localize`Activity`,
-      component: TableCellActivityComponent,
       type: QueryTableColumnType.MULTISELECT,
-      options: this.availableActivityTypes().map((type) => {
-        const count = this.activityLog.data()?.meta.count[type] ?? 0;
-        return {
-          label: ACTIVITY_LOG_ITEM_TYPE_LABELS[type] + ` (${String(count)})`,
-          value: type,
-        };
-      }),
+      options: this.availableActivityTypes().map((type) => ({
+        label: ACTIVITY_LOG_ITEM_TYPE_LABELS[type],
+        value: type,
+        icon: ACTIVITY_LOG_ITEM_TYPE_ICONS[type],
+        count: this.activityLog.data()?.meta.count[type] ?? 0,
+      })),
     },
     {
       header: $localize`Overview`,
@@ -107,6 +109,7 @@ export class ProjectRegistrationActivityLogPageComponent {
       header: $localize`Done by`,
       type: QueryTableColumnType.MULTISELECT,
       options: getUniqueUserOptions(this.activities()),
+      displayAsChip: true,
     },
     {
       field: 'created',

@@ -83,7 +83,13 @@ export type QueryTableColumn<TData, TField = Leaves<TData> & string> = {
 } & (
   | {
       type: QueryTableColumnType.MULTISELECT;
-      options: { label: string; value: number | string }[];
+      options: {
+        label: string;
+        value: number | string;
+        icon?: string;
+        count?: number;
+      }[];
+      displayAsChip?: boolean;
       getCellChipData?: (item: TData) => ChipData;
     }
   | {
@@ -193,6 +199,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       (this.enableSelection() ? 1 : 0),
   );
 
+  private getCellValue(column: QueryTableColumn<TData>, item: TData) {
+    // We're using radashi.get here to support "leaves" such as "user.username"
+    return get(item, column.field);
+  }
+
   getCellText(column: QueryTableColumn<TData>, item: TData) {
     if (
       column.type !== QueryTableColumnType.MULTISELECT &&
@@ -205,8 +216,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return;
     }
 
-    // We're using radashi.get here to support "leaves" such as "user.username"
-    const text = get(item, column.field);
+    const text = this.getCellValue(column, item);
 
     if (!text) {
       return;
@@ -242,6 +252,21 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     }
 
     return text.toString();
+  }
+
+  getMultiSelectCellIcon(
+    column: {
+      type: QueryTableColumnType.MULTISELECT;
+    } & QueryTableColumn<TData>,
+    item: TData,
+  ) {
+    const cellValue = this.getCellValue(column, item);
+
+    if (!cellValue) {
+      return;
+    }
+
+    return column.options.find((option) => option.value === cellValue)?.icon;
   }
 
   getColumnType(column: QueryTableColumn<TData>) {

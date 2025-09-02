@@ -11,13 +11,11 @@ export class PaymentEventsMapper {
     paymentEventEntities: PaymentEventEntity[],
   ): PaymentEventsReturnDto {
     const data = this.mapEntitiesToEventData(paymentEventEntities);
-    const availableTypes = this.getAvailableTypes(paymentEventEntities);
     const count = this.getCountByType(paymentEventEntities);
     const total = paymentEventEntities.length;
 
     return {
       meta: {
-        availableTypes,
         count,
         total,
       },
@@ -41,16 +39,6 @@ export class PaymentEventsMapper {
           : null,
       attributes: PaymentEventsMapper.mapAttributes(event),
     }));
-  }
-
-  private static getAvailableTypes(
-    paymentEventEntities: PaymentEventEntity[],
-  ): PaymentEvent[] {
-    const types = new Set<PaymentEvent>();
-    paymentEventEntities.forEach((event) => {
-      types.add(event.type);
-    });
-    return Array.from(types);
   }
 
   private static getCountByType(

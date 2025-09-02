@@ -34,13 +34,15 @@ import {
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { PROJECT_ATTACHMENT_FILE_TYPE_LABELS } from '~/domains/project/project.helper';
+import {
+  PROJECT_ATTACHMENT_FILE_TYPE_ICONS,
+  PROJECT_ATTACHMENT_FILE_TYPE_LABELS,
+} from '~/domains/project/project.helper';
 import {
   ProjectAttachment,
   ProjectAttachmentFileType,
 } from '~/domains/project/project.model';
 import { MonitoringUploadFileDialogComponent } from '~/pages/project-monitoring-files/components/monitoring-upload-file-dialog/monitoring-upload-file-dialog.component';
-import { TableCellFileTypeComponent } from '~/pages/project-monitoring-files/components/table-cell-file-type.component';
 import { AuthService } from '~/services/auth.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
@@ -123,14 +125,11 @@ export class ProjectMonitoringFilesPageComponent {
     {
       field: 'fileType',
       header: $localize`File type`,
-      component: TableCellFileTypeComponent,
       type: QueryTableColumnType.MULTISELECT,
       options: Object.values(ProjectAttachmentFileType).map((type) => ({
-        label:
-          PROJECT_ATTACHMENT_FILE_TYPE_LABELS[
-            type as ProjectAttachmentFileType
-          ],
+        label: PROJECT_ATTACHMENT_FILE_TYPE_LABELS[type],
         value: type,
+        icon: PROJECT_ATTACHMENT_FILE_TYPE_ICONS[type],
       })),
     },
     {
@@ -142,6 +141,7 @@ export class ProjectMonitoringFilesPageComponent {
       header: $localize`Imported by`,
       type: QueryTableColumnType.MULTISELECT,
       options: getUniqueUserOptions(this.projectAttachments.data() ?? []),
+      displayAsChip: true,
     },
     {
       field: 'created',

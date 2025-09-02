@@ -66,7 +66,6 @@ describe('PaymentEventsMapper', () => {
       const { meta, data } = result;
       // Assert
       expect(meta).toEqual({
-        availableTypes: [PaymentEvent.created, PaymentEvent.note],
         count: {
           [PaymentEvent.created]: 1,
           [PaymentEvent.note]: 1,
@@ -113,7 +112,6 @@ describe('PaymentEventsMapper', () => {
 
       // Assert
       expect(meta).toEqual({
-        availableTypes: [PaymentEvent.created],
         count: {
           [PaymentEvent.created]: 1,
         },
@@ -141,7 +139,6 @@ describe('PaymentEventsMapper', () => {
 
       // Assert
       expect(meta).toEqual({
-        availableTypes: [],
         count: {},
         total: 0,
       });
