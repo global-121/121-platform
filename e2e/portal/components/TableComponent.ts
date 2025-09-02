@@ -289,6 +289,7 @@ class TableComponent {
   }
 
   async validateFirstLogActivity(activity: string) {
+    await this.waitForLoaded(1);
     const firstRowText = await this.getTextArrayFromColumn(2);
     expect(firstRowText[0]).toContain(activity);
   }
