@@ -137,14 +137,28 @@ class RegistrationsPage extends BasePage {
     return fullNameText;
   }
 
-  async validateStatusOfFirstRegistration({ status }: { status: string }) {
-    await this.table.waitForLoaded();
-    const registrationStatus = await this.table.getCell(0, 3);
-    const statusText = (await registrationStatus.textContent())?.trim();
-    if (!statusText) {
-      throw new Error('Could not find status in the table');
+  async getColumnIndexByHeaderText(headerText: string): Promise<number> {
+    const headerCells = await this.table.tableHeader
+      .locator('th')
+      .allTextContents();
+    const index = headerCells.findIndex(
+      (text) => text.trim() === headerText.trim(),
+    );
+    if (index === -1) {
+      throw new Error(`Column with header "${headerText}" not found`);
     }
-    expect(statusText).toBe(status);
+    return index;
+  }
+
+  async validateStatusOfFirstRegistration({ status }: { status: string }) {
+    const columnIndex = await this.getColumnIndexByHeaderText(
+      'Registration Status',
+    );
+    const registrationStatus = this.table.tableRows
+      .nth(0)
+      .locator('td')
+      .nth(columnIndex);
+    await expect(registrationStatus).toHaveText(status);
   }
 
   async goToRegistrationByName({

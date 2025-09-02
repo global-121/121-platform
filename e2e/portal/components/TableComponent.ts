@@ -93,8 +93,7 @@ class TableComponent {
   }
 
   async validateTableRowCount(expectedRowCount: number) {
-    const rowCount = await this.tableRows.count();
-    expect(rowCount).toEqual(expectedRowCount);
+    await expect(this.tableRows).toHaveCount(expectedRowCount);
   }
 
   async globalSearch(searchText: string) {
@@ -118,13 +117,32 @@ class TableComponent {
   }
 
   async getSortingTypeOfColumn(columnName: string) {
-    const sortColumnHeader = await this.table
-      .getByRole('columnheader', {
-        name: columnName,
-      })
-      .getAttribute('aria-sort');
+    const header = this.table.getByRole('columnheader', { name: columnName });
+    await header.waitFor({ state: 'attached' });
+    return await header.getAttribute('aria-sort');
+  }
 
-    return sortColumnHeader;
+  async waitForSortingColumnToBeSorted({
+    columnName,
+    type,
+  }: {
+    columnName: string;
+    type?: 'ascending' | 'descending';
+  }) {
+    const header = this.table.getByRole('columnheader', { name: columnName });
+    await header.waitFor({ state: 'attached' });
+
+    if (type === 'ascending' || type === 'descending') {
+      await expect(header).toHaveAttribute('aria-sort', type, {
+        timeout: 2000,
+      });
+    } else {
+      await expect(header).toHaveAttribute(
+        'aria-sort',
+        /ascending|descending/,
+        { timeout: 2000 },
+      );
+    }
   }
 
   async sortAndValidateColumnByName(columnName: string) {
@@ -133,45 +151,41 @@ class TableComponent {
       .locator('p-sorticon');
 
     await columnToSort.click();
-    let sortingType = await this.getSortingTypeOfColumn(columnName);
-    expect(sortingType).toContain('ascending');
+    await this.waitForSortingColumnToBeSorted({
+      columnName,
+      type: 'ascending',
+    });
 
     await columnToSort.click();
-    sortingType = await this.getSortingTypeOfColumn(columnName);
-    expect(sortingType).toContain('descending');
+    await this.waitForSortingColumnToBeSorted({
+      columnName,
+      type: 'descending',
+    });
   }
 
   async sortColumnByName(columnName: string, sort: 'ascending' | 'descending') {
+    // Find out what the current state is
+    const sortingType = await this.getSortingTypeOfColumn(columnName);
     const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
       .locator('p-sorticon');
 
-    let sortingType = await this.getSortingTypeOfColumn(columnName);
-
-    if (sortingType === 'none') {
-      // Click once to go to ascending
-      await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn(columnName);
-
-      if (sort === 'ascending') {
-        expect(sortingType).toContain('ascending');
-        return;
-      }
-    }
-
     // If the current state is not the desired state, click to change it
     if (sortingType !== sort) {
       await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn(columnName);
+      await this.waitForSortingColumnToBeSorted({
+        columnName,
+      });
+      const sortingType = await this.getSortingTypeOfColumn(columnName);
 
       // If still not in the desired state, click again
       if (sortingType !== sort) {
         await columnToSort.click();
-        sortingType = await this.getSortingTypeOfColumn(columnName);
+        await this.waitForSortingColumnToBeSorted({
+          columnName,
+        });
       }
     }
-
-    expect(sortingType).toContain(sort);
   }
 
   async filterColumnByText({
