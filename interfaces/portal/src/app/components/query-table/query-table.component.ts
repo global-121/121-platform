@@ -216,7 +216,6 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return;
     }
 
-    // We're using radashi.get here to support "leaves" such as "user.username"
     const text = this.getCellValue(column, item);
 
     if (!text) {
