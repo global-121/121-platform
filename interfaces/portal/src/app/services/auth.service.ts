@@ -77,6 +77,14 @@ export class AuthService {
       return null;
     }
 
+    // If user has deprecated permissions (e.g. after a deploy), force to re-login
+    if (this.hasDeprecatedPermissions(user)) {
+      console.warn(
+        'AuthService: Deprecated permission found. Forcing re-login',
+      );
+      return null;
+    }
+
     return user;
   }
 
@@ -179,9 +187,22 @@ export class AuthService {
       }),
     );
   }
+
   public handleAuthCallback() {
     const returnUrl = getReturnUrlFromLocalStorage();
 
     this.authStrategy.handleAuthCallback(returnUrl ?? '/');
+  }
+
+  public hasDeprecatedPermissions(user: LocalStorageUser): boolean {
+    const validPermissions = new Set(Object.values(PermissionEnum));
+    for (const projectId of Object.keys(user.permissions)) {
+      for (const permission of user.permissions[Number(projectId)]) {
+        if (!validPermissions.has(permission)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
