@@ -140,7 +140,24 @@
                       [optionValue]="'value'"
                       placeholder="Choose option(s)"
                       i18n-placeholder
+                      class="[&_.p-multiselect-option]:text-nowrap"
                     >
+                      <ng-template
+                        let-option
+                        #item
+                      >
+                        <span
+                          class="inline-flex shrink-0 items-center gap-1 overflow-visible"
+                        >
+                          @if (option.icon) {
+                            <i [ngClass]="option.icon"></i>
+                          }
+                          {{ option.label }}
+                          @if (option.count !== undefined) {
+                            ({{ option.count }})
+                          }
+                        </span>
+                      </ng-template>
                     </p-multiSelect>
                   </ng-template>
                 }
@@ -219,7 +236,17 @@
           } @else {
             @let cellText = getCellText(column, item);
             @if (column.type === 'multiselect') {
-              @if (column.getCellChipData) {
+              @if (column.displayAsPlainText) {
+                <span class="inline-flex items-center">
+                  @let icon = getMultiSelectCellIcon(column, item);
+                  @if (icon) {
+                    <span class="me-2 inline leading-0"
+                      ><i [ngClass]="[icon, 'mt-0.25 text-xl']"></i>
+                    </span>
+                  }
+                  <span>{{ cellText }}</span>
+                </span>
+              } @else if (column.getCellChipData) {
                 @let chipData = column.getCellChipData(item);
                 <app-colored-chip
                   [label]="chipData.chipLabel"

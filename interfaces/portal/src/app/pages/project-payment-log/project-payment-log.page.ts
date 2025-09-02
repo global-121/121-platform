@@ -14,6 +14,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SkeletonModule } from 'primeng/skeleton';
 
+import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
+
 import { PageLayoutPaymentComponent } from '~/components/page-layout-payment/page-layout-payment.component';
 import {
   QueryTableColumn,
@@ -21,10 +23,12 @@ import {
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
-import { PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS } from '~/domains/payment/payment.helpers';
+import {
+  PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS,
+  PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS,
+} from '~/domains/payment/payment.helpers';
 import { PaymentEventType } from '~/domains/payment/payment.model';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { TableCellPaymentEventActivityComponent } from '~/pages/project-payment-log/components/table-cell-payment-event-activity.component';
 import { TableCellPaymentEventOverviewComponent } from '~/pages/project-payment-log/components/table-cell-payment-event-overview.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
@@ -82,24 +86,19 @@ export class ProjectPaymentLogPageComponent {
   readonly paymentEvents = computed(
     () => this.paymentEventLog.data()?.data ?? [],
   );
-  readonly availablePaymentEventTypes = computed(
-    () => this.paymentEventLog.data()?.meta.availableTypes ?? [],
-  );
 
   readonly columns = computed<QueryTableColumn<PaymentEventType>[]>(() => [
     {
       field: 'type',
       header: $localize`Activity`,
-      component: TableCellPaymentEventActivityComponent,
       type: QueryTableColumnType.MULTISELECT,
-      options: this.availablePaymentEventTypes().map((type) => {
-        const count = this.paymentEventLog.data()?.meta.count[type] ?? 0;
-        return {
-          label:
-            PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[type] + ` (${String(count)})`,
-          value: type,
-        };
-      }),
+      options: Object.values(PaymentEvent).map((type) => ({
+        label: PAYMENT_EVENT_LOG_ITEM_TYPE_LABELS[type],
+        value: type,
+        icon: PAYMENT_EVENT_LOG_ITEM_TYPE_ICONS[type],
+        count: this.paymentEventLog.data()?.meta.count[type] ?? 0,
+      })),
+      displayAsPlainText: true,
     },
     {
       header: $localize`Overview`,
