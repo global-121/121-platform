@@ -134,7 +134,7 @@ async function bootstrap(): Promise<void> {
     expressInstance.get(`/`, (__req: Request, res: Response) => {
       res.redirect(env.REDIRECT_PORTAL_URL_HOST);
     });
-    expressInstance.get(`/portal*`, (req: Request, res: Response) => {
+    expressInstance.get(`/portal{*any}`, (req: Request, res: Response) => {
       const newPath = req.url.replace(`/portal`, '');
       res.redirect(env.REDIRECT_PORTAL_URL_HOST + newPath);
     });
