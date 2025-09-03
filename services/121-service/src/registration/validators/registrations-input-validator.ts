@@ -125,6 +125,7 @@ export class RegistrationsInputValidator {
         }
       }
 
+      //TODO: 1
       if (program.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
@@ -135,6 +136,7 @@ export class RegistrationsInputValidator {
         if (errorObjMaxPayments) {
           errors.push(errorObjMaxPayments);
         } else {
+          // is undefined on empty
           validatedRegistrationInput.maxPayments = validatedMaxPayments;
         }
       }
@@ -986,6 +988,7 @@ export class RegistrationsInputValidator {
     return { validatedPaymentAmountMultiplier: +value };
   }
 
+  //TODO: 2
   private validateMaxPayments({
     value,
     originalRegistration,
@@ -996,12 +999,13 @@ export class RegistrationsInputValidator {
     i: number;
   }): {
     errorObj?: ValidateRegistrationErrorObject | undefined;
-    validatedMaxPayments?: number | undefined;
+    validatedMaxPayments?: number | null;
   } {
     // It's always allowed to remove the maxPayments value
     // When you upload a csv file, the value is an empty string
     if (value == null || value === '') {
-      return { validatedMaxPayments: undefined };
+      // returns here on empty
+      return { validatedMaxPayments: null };
     }
     if (isNaN(+value) || +value <= 0) {
       return {

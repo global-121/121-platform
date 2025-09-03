@@ -98,11 +98,12 @@ export class RegistrationEntity extends Base121Entity {
   @Index()
   public registrationProgramId: number;
 
+  //TODO: added null
   @Column({ nullable: true, type: 'integer' })
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments?: number;
+  public maxPayments?: number | null;
 
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions
