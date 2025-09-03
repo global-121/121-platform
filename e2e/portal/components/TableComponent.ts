@@ -92,8 +92,15 @@ class TableComponent {
     );
   }
 
-  async validateTableRowCount(expectedRowCount: number) {
-    await expect(this.tableRows).toHaveCount(expectedRowCount);
+  async validateWaitForTableRowCount({
+    expectedRowCount,
+  }: {
+    expectedRowCount: number;
+  }): Promise<void> {
+    await expect(async () => {
+      const rowCount = await this.tableRows.count();
+      expect(rowCount).toBe(expectedRowCount);
+    }).toPass({ timeout: 2000 });
   }
 
   async globalSearch(searchText: string) {
@@ -431,6 +438,17 @@ class TableComponent {
       (elements) => elements.filter((el) => el.checked).length,
     );
     return count;
+  }
+
+  async validateAndWaitForSelectedRowsCount({
+    expectedCount,
+  }: {
+    expectedCount: number;
+  }): Promise<void> {
+    await expect(async () => {
+      const count = await this.getSelectedRowsCount();
+      expect(count).toBe(expectedCount);
+    }).toPass({ timeout: 2000 });
   }
 
   async clearColumnFilter(columnName: string): Promise<void> {

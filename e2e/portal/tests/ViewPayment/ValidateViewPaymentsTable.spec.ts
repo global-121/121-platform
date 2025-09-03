@@ -103,7 +103,9 @@ test('[32298] Table should be a filtered list of registrations included in the t
       columnName: 'Transfer value',
       filterText: '75',
     });
-    await paymentPage.table.validateTableRowCount(2);
+    await paymentPage.table.validateWaitForTableRowCount({
+      expectedRowCount: 2,
+    });
 
     // Reset filters
     await paymentPage.table.clearAllFilters();
@@ -113,6 +115,8 @@ test('[32298] Table should be a filtered list of registrations included in the t
       columnName: 'FSP',
       selection: 'Albert Heijn voucher WhatsApp',
     });
-    await paymentPage.table.validateTableRowCount(1);
+    await paymentPage.table.validateWaitForTableRowCount({
+      expectedRowCount: 1,
+    });
   });
 });
