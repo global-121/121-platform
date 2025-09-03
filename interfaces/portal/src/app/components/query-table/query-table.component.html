@@ -53,6 +53,7 @@
       }
       @if (globalFilterFields() || serverSideFiltering()) {
         <app-query-table-global-search
+          [tableKey]="localStorageKey()"
           [globalFilterValue]="globalFilterValue()"
           [(globalFilterVisible)]="globalFilterVisible"
           (filterChange)="table.filterGlobal($event, 'contains')"
