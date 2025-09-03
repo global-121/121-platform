@@ -219,8 +219,7 @@ export class ProjectPaymentTransferListPageComponent {
   });
 
   readonly localStorageKey = computed(
-    () =>
-      `project-payment-table-${this.projectId().toString()}-${this.paymentId().toString()}`,
+    () => `project-payment-table-${this.projectId()}-${this.paymentId()}`,
   );
 
   readonly canRetryTransfers = computed(() => {

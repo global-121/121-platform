@@ -37,7 +37,7 @@ export class NotificationApiService extends DomainApiService {
             (template) =>
               template.isSendMessageTemplate &&
               template.language ===
-                getLanguageEnumFromLocale(this.locale).toString(),
+                (getLanguageEnumFromLocale(this.locale) as string),
           )
           .map((template) => ({
             ...template,

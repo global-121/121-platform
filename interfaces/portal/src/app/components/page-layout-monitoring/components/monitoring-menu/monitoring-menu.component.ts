@@ -29,12 +29,12 @@ export class MonitoringMenuComponent {
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-monitoring-powerbi:PowerBI`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringPowerBI}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringPowerBI}`,
       icon: 'pi pi-chart-line',
     },
     {
       label: $localize`:@@page-title-project-monitoring-files:Files`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringFiles}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringFiles}`,
       icon: 'pi pi-file',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
