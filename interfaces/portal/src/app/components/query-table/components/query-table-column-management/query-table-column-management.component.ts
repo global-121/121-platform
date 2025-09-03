@@ -69,6 +69,11 @@ export class QueryTableColumnManagementComponent<
     });
     this.formVisible.set(true);
     this.formError.set(undefined);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickManageTableButton,
+    });
   }
 
   revertToDefault() {
