@@ -108,7 +108,7 @@ updates:
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
       - dependency-name: 'filesize'
-        versions: ['^10.x', '^11.x'] # See: https://www.npmjs.com/package/ngx-filesize
+        update-types: ['version-update:semver-major'] # See: https://www.npmjs.com/package/ngx-filesize
       - dependency-name: 'primeng'
         update-types: ['version-update:semver-major']
       - dependency-name: 'tailwindcss' # TODO: AB#33547
