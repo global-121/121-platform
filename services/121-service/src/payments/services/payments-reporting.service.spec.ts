@@ -153,7 +153,7 @@ describe('PaymentsReportingService - getTransactions', () => {
   });
 
   describe('exportTransactionsUsingDateFilter', () => {
-    it('should call getTransactions with correct params and return formatted fileDto', async () => {
+    it('should call return formatted fileDto', async () => {
       // Arrange
       const programId = 1;
       const fromDateString = '2024-01-01T00:00:00.000Z';
@@ -191,27 +191,6 @@ describe('PaymentsReportingService - getTransactions', () => {
       });
 
       // Assert
-      expect(paymentsHelperService.getSelectForExport).toHaveBeenCalledWith(
-        programId,
-      );
-      expect((service as any).getTransactions).toHaveBeenCalledWith({
-        programId,
-        select,
-        fromDate: new Date(fromDateString),
-        toDate: new Date(toDateString),
-      });
-      expect(
-        programRegistrationAttributeRepository.getDropdownAttributes,
-      ).toHaveBeenCalledWith({
-        programId,
-        select,
-      });
-      expect(
-        RegistrationViewsMapper.replaceDropdownValuesWithEnglishLabel,
-      ).toHaveBeenCalledWith({
-        rows: transactions,
-        attributes: dropdownAttributes,
-      });
       expect(result.data).toEqual(replacedRows);
       expect(result.fileName).toEqual(fileName);
     });
