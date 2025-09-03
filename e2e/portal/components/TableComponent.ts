@@ -99,6 +99,9 @@ class TableComponent {
   }): Promise<void> {
     await expect(async () => {
       const rowCount = await this.tableRows.count();
+      console.log(
+        `Checking row count: ${rowCount}, Expected: ${expectedRowCount}`,
+      );
       expect(rowCount).toBe(expectedRowCount);
     }).toPass({ timeout: 2000 });
   }
