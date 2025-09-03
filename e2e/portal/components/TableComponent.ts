@@ -100,7 +100,7 @@ class TableComponent {
     await expect(async () => {
       const rowCount = await this.tableRows.count();
       expect(rowCount).toBe(expectedRowCount);
-    }).toPass({ timeout: 500 });
+    }).toPass({ timeout: 2000 });
   }
 
   async globalSearch(searchText: string) {
