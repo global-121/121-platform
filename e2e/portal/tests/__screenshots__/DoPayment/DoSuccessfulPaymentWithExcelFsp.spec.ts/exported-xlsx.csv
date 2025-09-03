@@ -1,2 +1,2 @@
-referenceId,amount,namePartnerOrganization,fullName,phoneNumber,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-44e62864557597e0d,17.5,,Gemma Houtenbos,14155235551,14155235551,Teststraat,1,,1234AB,Stad
+referenceId,amount,addressCity,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressStreet,fullName,namePartnerOrganization,phoneNumber,whatsappPhoneNumber
+44e62864557597e0d,17.5,Stad,1,,1234AB,Teststraat,Gemma Houtenbos,,14155235551,14155235551

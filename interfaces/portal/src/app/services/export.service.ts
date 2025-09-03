@@ -12,6 +12,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
+import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 
 import { EventApiService } from '~/domains/event/event.api.service';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
@@ -24,6 +25,7 @@ import {
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
 import { addDaysToDate, dateToIsoString } from '~/utils/date';
+import { Dto } from '~/utils/dto-type';
 
 @Injectable({
   providedIn: 'root',
@@ -95,7 +97,7 @@ export class ExportService {
   getExportCBEVerificationReportMutation(
     projectId: Signal<number | string>,
     toastService: ToastService,
-  ): CreateMutationOptions<{ data: unknown[]; fileName: string }> {
+  ): CreateMutationOptions<Dto<CommercialBankEthiopiaValidationReportDto>> {
     return {
       mutationFn: async () => {
         this.showStartExportToast(toastService);
@@ -198,7 +200,7 @@ export class ExportService {
     projectId: Signal<number | string>,
     toastService: ToastService,
   ): CreateMutationOptions<
-    { data: unknown[]; fileName: string }[],
+    { data: Record<string, unknown>[]; fileName: string }[],
     Error,
     { paymentId: string }
   > {
@@ -222,7 +224,7 @@ export class ExportService {
           };
         });
       },
-      onSuccess: (filesToExport: { data: unknown[]; fileName: string }[]) => {
+      onSuccess: (filesToExport) => {
         filesToExport.forEach((fileToExport) => {
           void this.downloadService.downloadArrayToXlsx(fileToExport);
         });

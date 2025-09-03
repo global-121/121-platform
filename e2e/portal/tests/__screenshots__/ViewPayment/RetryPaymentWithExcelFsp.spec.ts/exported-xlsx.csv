@@ -1,2 +1,2 @@
-referenceId,amount,namePartnerOrganization,fullName,phoneNumber,whatsappPhoneNumber,addressStreet,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressCity
-asdf234f4gg4ag64547,17.5,,Joost Herlembach,14155235553,14155235553,Teststraat,1,,1234AB,Stad
+referenceId,amount,addressCity,addressHouseNumber,addressHouseNumberAddition,addressPostalCode,addressStreet,fullName,namePartnerOrganization,phoneNumber,whatsappPhoneNumber
+asdf234f4gg4ag64547,17.5,Stad,1,,1234AB,Teststraat,Joost Herlembach,,14155235553,14155235553
