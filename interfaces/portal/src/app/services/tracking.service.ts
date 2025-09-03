@@ -40,6 +40,8 @@ export enum TrackingCategory {
  */
 export enum TrackingAction {
   clickBulkActionButton = 'click: Bulk Action Button',
+  clickGlobalFilterButton = 'click: Global-filter Button',
+  clickGlobalFilterClearButton = 'click: Clear Global-filter Button',
   clickManageTableButton = 'click: Manage Table Button',
   clickProceedButton = 'click: Proceed Button',
   clickRevertToDefaultButton = 'click: Revert to Default Button',
