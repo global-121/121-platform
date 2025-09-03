@@ -125,7 +125,6 @@ export class RegistrationsInputValidator {
         }
       }
 
-      //TODO: 1
       if (program.enableMaxPayments && row.maxPayments !== undefined) {
         const { errorObj: errorObjMaxPayments, validatedMaxPayments } =
           this.validateMaxPayments({
@@ -156,10 +155,9 @@ export class RegistrationsInputValidator {
         if (errorObjScope) {
           errors.push(errorObjScope);
         } else if (program.enableScope) {
-          // We know that scope is undefined or string, or an error would have occured
-          validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
-            | undefined
-            | string;
+          validatedRegistrationInput.scope = String(
+            row[AdditionalAttributes.scope] ?? '',
+          );
         }
       }
 
