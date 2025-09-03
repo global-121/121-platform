@@ -18,9 +18,9 @@ export class PaymentsProgressHelperService {
   ) {}
 
   public async checkPaymentInProgressAndThrow(
-    programId: number,
+    projectId: number,
   ): Promise<void> {
-    if (await this.isPaymentInProgress(programId)) {
+    if (await this.isPaymentInProgress(projectId)) {
       throw new HttpException(
         { errors: 'Payment is already in progress' },
         HttpStatus.BAD_REQUEST,
@@ -28,24 +28,24 @@ export class PaymentsProgressHelperService {
     }
   }
 
-  public async isPaymentInProgress(programId: number): Promise<boolean> {
+  public async isPaymentInProgress(projectId: number): Promise<boolean> {
     // check progress based on actions-table first
     // Check if there are any actions in progress
     const actionsInProgress =
-      await this.checkPaymentActionInProgress(programId);
+      await this.checkPaymentActionInProgress(projectId);
     if (actionsInProgress) {
       return true;
     }
 
     // If no actions in progress, check if there are any payments in progress in the queue
-    return await this.isPaymentInProgressForProgramQueue(programId);
+    return await this.isPaymentInProgressForProjectQueue(projectId);
   }
 
   private async checkPaymentActionInProgress(
-    programId: number,
+    projectId: number,
   ): Promise<boolean> {
     const latestPaymentStartedAction = await this.actionService.getLatestAction(
-      programId,
+      projectId,
       AdditionalActionType.paymentStarted,
     );
     // If never started, then not in progress, return early
@@ -55,7 +55,7 @@ export class PaymentsProgressHelperService {
 
     const latestPaymentFinishedAction =
       await this.actionService.getLatestAction(
-        programId,
+        projectId,
         AdditionalActionType.paymentFinished,
       );
     // If started, but never finished, then in progress
@@ -68,11 +68,11 @@ export class PaymentsProgressHelperService {
     return finishTimestamp < startTimestamp;
   }
 
-  private async isPaymentInProgressForProgramQueue(
-    programId: number,
+  private async isPaymentInProgressForProjectQueue(
+    projectId: number,
   ): Promise<boolean> {
-    // If there is more that one program with the same FSP we can use the delayed count of a program which is faster else we need to do use the redis set
-    const nrPending = await this.redisClient.scard(getRedisSetName(programId));
+    // If there is more that one project with the same FSP we can use the delayed count of a project which is faster else we need to do use the redis set
+    const nrPending = await this.redisClient.scard(getRedisSetName(projectId));
     const paymentIsInProgress = nrPending > 0;
     return paymentIsInProgress;
   }

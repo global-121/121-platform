@@ -7,7 +7,7 @@ import {
   registrationScopedKisumuWestPv,
   registrationsPV,
 } from '@121-service/test/fixtures/scoped-registrations';
-import { getTransactions } from '@121-service/test/helpers/program.helper';
+import { getTransactions } from '@121-service/test/helpers/project.helper';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -15,33 +15,33 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
-  programIdPV,
+  projectIdOCW,
+  projectIdPV,
   registrationsOCW,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Registrations - [Scoped]', () => {
-  const OcwProgramId = programIdOCW;
-  const PvProgramId = programIdPV;
+  const OcwProjectId = projectIdOCW;
+  const PvProjectId = projectIdPV;
 
   let paymentIdPv: number;
 
   beforeAll(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    await seedPaidRegistrations(registrationsOCW, OcwProgramId);
-    paymentIdPv = await seedPaidRegistrations(registrationsPV, PvProgramId);
+    await seedPaidRegistrations(registrationsOCW, OcwProjectId);
+    paymentIdPv = await seedPaidRegistrations(registrationsPV, PvProjectId);
   });
 
   it('should return transactions with all expected fields and correct data types', async () => {
     // Arrange
     const accessToken = await getAccessToken();
     const fspConfig = getFspSettingByNameOrThrow(
-      registrationScopedKisumuWestPv.programFspConfigurationName,
+      registrationScopedKisumuWestPv.projectFspConfigurationName,
     );
 
     // Act
     const transactionsResponse = await getTransactions({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId: paymentIdPv,
       registrationReferenceId: null,
       accessToken,
@@ -61,13 +61,13 @@ describe('Registrations - [Scoped]', () => {
       created: expect.any(String),
       updated: expect.any(String),
       paymentId: paymentIdPv,
-      registrationProgramId: expect.any(Number),
+      registrationProjectId: expect.any(Number),
       registrationReferenceId: registrationScopedKisumuWestPv.referenceId,
       status: TransactionStatusEnum.success,
       amount: expect.any(Number),
       errorMessage: null,
       registrationName: registrationScopedKisumuWestPv.fullName,
-      programFspConfigurationName: fspConfig.name,
+      projectFspConfigurationName: fspConfig.name,
     });
 
     // Validate date formats
@@ -82,10 +82,10 @@ describe('Registrations - [Scoped]', () => {
 
     // Act
     // 8 registrations in total are included
-    // 4 registrations are in include in program PV
-    // 2 registrations are in include in program PV and are in the scope (Zeeland) of the requesting user
+    // 4 registrations are in include in project PV
+    // 2 registrations are in include in project PV and are in the scope (Zeeland) of the requesting user
     const transactionsResponse = await getTransactions({
-      programId: programIdPV,
+      projectId: projectIdPV,
       paymentId: paymentIdPv,
       registrationReferenceId: null,
       accessToken: accessTokenScoped,

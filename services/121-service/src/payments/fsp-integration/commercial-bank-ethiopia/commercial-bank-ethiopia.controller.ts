@@ -32,17 +32,17 @@ export class CommercialBankEthiopiaController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'An array of Registrations with the latest retrieved account enquiry data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'An array of Registrations with the latest retrieved account enquiry data - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
     type: CommercialBankEthiopiaValidationReportDto,
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
+  @Get('projects/:projectId/fsps/commercial-bank-ethiopia/account-enquiries')
   public async getValidated(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<CommercialBankEthiopiaValidationReportDto> {
     return await this.commercialBankEthiopiaService.getAllPaValidations(
-      programId,
+      projectId,
     );
   }
 }

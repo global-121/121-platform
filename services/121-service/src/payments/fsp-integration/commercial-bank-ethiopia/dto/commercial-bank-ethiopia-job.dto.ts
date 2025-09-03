@@ -4,7 +4,7 @@ import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments
 export class CommercialBankEthiopiaJobDto {
   paPaymentData: PaPaymentDataDto;
   paymentId: number;
-  programId: number;
+  projectId: number;
   payload: CommercialBankEthiopiaTransferPayload;
   userId: number;
 }

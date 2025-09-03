@@ -5,8 +5,8 @@ const { baseUrl } = config;
 
 export default class metricstsModel {
   constructor() {}
-  getExportList(programId) {
-    const url = `${baseUrl}api/programs/${programId}/metrics/export-list/registrations`;
+  getExportList(projectId) {
+    const url = `${baseUrl}api/projects/${projectId}/metrics/export-list/registrations`;
     const res = http.get(url);
     return res;
   }

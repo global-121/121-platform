@@ -5,8 +5,8 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class paymentsModel {
-  createPayment(programId, amount) {
-    const url = `${baseUrl}api/programs/${programId}/payments`;
+  createPayment(projectId, amount) {
+    const url = `${baseUrl}api/projects/${projectId}/payments`;
     const payload = JSON.stringify({
       amount,
     });
@@ -21,7 +21,7 @@ export default class paymentsModel {
   }
 
   getPaymentResults(
-    programId,
+    projectId,
     maxTimeoutAttempts,
     paymentId,
     totalAmountPowerOfTwo,
@@ -33,7 +33,7 @@ export default class paymentsModel {
     let selectedStatusPercentage = 0;
 
     while (attempts < maxAttempts) {
-      const url = `${baseUrl}api/programs/${programId}/payments/${paymentId}`;
+      const url = `${baseUrl}api/projects/${projectId}/payments/${paymentId}`;
       const res = http.get(url);
       const responseBody = JSON.parse(res.body);
       const totalPayments = Math.pow(2, totalAmountPowerOfTwo);

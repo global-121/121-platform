@@ -2,7 +2,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/project.helper';
 import {
   getMessageHistory,
   importRegistrations,
@@ -12,17 +12,17 @@ import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { programIdPV } from '@121-service/test/registrations/pagination/pagination-data';
+import { projectIdPV } from '@121-service/test/registrations/pagination/pagination-data';
 
 describe('Send custom message with placeholders', () => {
-  const programId = programIdPV;
+  const projectId = projectIdPV;
   const registrationAh = {
     referenceId: '63e62864557597e0c-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 2,
     fullName: 'John Smith',
     phoneNumber: '14155238886',
-    programFspConfigurationName: Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
+    projectFspConfigurationName: Fsps.intersolveVoucherPaper, // use SMS PA, so that template directly arrives
     namePartnerOrganization: 'Test organization',
     maxPayments: 2,
     paymentCountRemaining: 2,
@@ -34,31 +34,31 @@ describe('Send custom message with placeholders', () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
 
-    await importRegistrations(programId, [registrationAh], accessToken);
+    await importRegistrations(projectId, [registrationAh], accessToken);
   });
 
   it('should send message with placeholder values processed', async () => {
     // Arrange
     const message =
-      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{programFspConfigurationLabel}} and {{fullName}} and {{paymentCountRemaining}}';
+      'This is a test message with {{namePartnerOrganization}} and {{paymentAmountMultiplier}} and {{projectFspConfigurationLabel}} and {{fullName}} and {{paymentCountRemaining}}';
 
     // Act
     await sendMessage(
       accessToken,
-      programId,
+      projectId,
       [registrationAh.referenceId],
       message,
     );
 
     await waitForMessagesToComplete({
-      programId,
+      projectId,
       referenceIds: [registrationAh.referenceId],
       accessToken,
     });
 
     const messageHistory = (
       await getMessageHistory(
-        programId,
+        projectId,
         registrationAh.referenceId,
         accessToken,
       )
@@ -77,7 +77,7 @@ describe('Send custom message with placeholders', () => {
       Fsps.intersolveVoucherPaper,
     ).defaultLabel[registrationAh.preferredLanguage];
     processedMessage = processedMessage.replace(
-      new RegExp('{{programFspConfigurationLabel}}', 'g'),
+      new RegExp('{{projectFspConfigurationLabel}}', 'g'),
       labelInPreferredLanguage!,
     );
     processedMessage = processedMessage.replace(

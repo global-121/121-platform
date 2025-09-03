@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/do-transfer-or-issue-card-result.interface';
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 
@@ -14,7 +14,7 @@ import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-qu
 export class TransactionJobsIntersolveVisaService {
   constructor(
     private readonly intersolveVisaService: IntersolveVisaService,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
   ) {}
 
@@ -58,7 +58,7 @@ export class TransactionJobsIntersolveVisaService {
     try {
       const { brandCode, coverLetterCode, fundingTokenCode } =
         await this.getIntersolveVisaFspConfig(
-          transactionJob.programFspConfigurationId,
+          transactionJob.projectFspConfigurationId,
         );
       intersolveVisaDoTransferOrIssueCardReturnDto =
         await this.intersolveVisaService.doTransferOrIssueCard({
@@ -100,11 +100,11 @@ export class TransactionJobsIntersolveVisaService {
 
     const messageType =
       intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated
-        ? ProgramNotificationEnum.visaDebitCardCreated
-        : ProgramNotificationEnum.visaLoad;
+        ? ProjectNotificationEnum.visaDebitCardCreated
+        : ProjectNotificationEnum.visaLoad;
     await this.transactionJobsHelperService.createMessageAndAddToQueue({
       type: messageType,
-      programId: transactionJob.programId,
+      projectId: transactionJob.projectId,
       registration,
       amountTransferred:
         intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
@@ -124,15 +124,15 @@ export class TransactionJobsIntersolveVisaService {
   }
 
   private async getIntersolveVisaFspConfig(
-    programFspConfigurationId: number,
+    projectFspConfigurationId: number,
   ): Promise<{
     brandCode: string;
     coverLetterCode: string;
     fundingTokenCode: string;
   }> {
     const intersolveVisaConfig =
-      await this.programFspConfigurationRepository.getPropertiesByNamesOrThrow({
-        programFspConfigurationId,
+      await this.projectFspConfigurationRepository.getPropertiesByNamesOrThrow({
+        projectFspConfigurationId,
         names: [
           FspConfigurationProperties.brandCode,
           FspConfigurationProperties.coverLetterCode,

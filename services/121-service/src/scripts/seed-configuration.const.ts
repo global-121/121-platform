@@ -9,114 +9,114 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   {
     name: SeedScript.productionInitialState,
     seedAdminOnly: true,
-    programs: [],
+    projects: [],
     includeDebugScopes: true,
-    firstProgramId: 1,
+    firstProjectId: 1,
   },
   {
     name: SeedScript.nlrcMultiple,
     organization: 'organization-nlrc.json',
-    programs: [
+    projects: [
       {
-        program: 'program-nlrc-pv.json',
+        project: 'project-nlrc-pv.json',
         messageTemplate: messageTemplateNlrcPv,
       },
       {
-        program: 'program-nlrc-ocw.json',
+        project: 'project-nlrc-ocw.json',
         messageTemplate: messageTemplateNlrcOcw,
       },
     ],
     includeDebugScopes: true,
-    firstProgramId: 2,
+    firstProjectId: 2,
   },
   {
     name: SeedScript.nlrcMultipleMock,
     organization: 'organization-nlrc.json',
-    programs: [
+    projects: [
       {
-        program: 'program-nlrc-pv.json',
+        project: 'project-nlrc-pv.json',
         messageTemplate: messageTemplateNlrcPv,
       },
       {
-        program: 'program-nlrc-ocw.json',
+        project: 'project-nlrc-ocw.json',
         messageTemplate: messageTemplateNlrcOcw,
       },
     ],
     includeDebugScopes: true,
     includeMockData: true,
-    firstProgramId: 2,
+    firstProjectId: 2,
   },
   {
-    name: SeedScript.cbeProgram,
+    name: SeedScript.cbeProject,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-cbe.json',
+        project: 'project-cbe.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],
   },
   {
-    name: SeedScript.safaricomProgram,
+    name: SeedScript.safaricomProject,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-safaricom.json',
+        project: 'project-safaricom.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],
   },
   {
-    name: SeedScript.airtelProgram,
+    name: SeedScript.airtelProject,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-airtel.json',
+        project: 'project-airtel.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],
   },
   {
-    name: SeedScript.nedbankProgram,
+    name: SeedScript.nedbankProject,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-nedbank.json',
+        project: 'project-nedbank.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],
   },
   {
-    name: SeedScript.onafriqProgram,
+    name: SeedScript.onafriqProject,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-onafriq.json',
+        project: 'project-onafriq.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],
   },
   {
-    name: SeedScript.demoPrograms,
+    name: SeedScript.demoProjects,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'demo-program-mobile-money.json',
+        project: 'demo-project-mobile-money.json',
         messageTemplate: demoMessageTemplates,
         registrations: 'mobile-money-999.csv',
       },
       {
-        program: 'demo-program-bank-transfer.json',
+        project: 'demo-project-bank-transfer.json',
         messageTemplate: demoMessageTemplates,
         registrations: 'bank-transfer-250.csv',
       },
       {
-        program: 'program-nlrc-ocw.json',
+        project: 'project-nlrc-ocw.json',
         messageTemplate: messageTemplateNlrcOcw,
         registrations: 'nlrc-ocw-999.csv',
       },
       {
-        program: 'demo-program-excel.json',
+        project: 'demo-project-excel.json',
         messageTemplate: demoMessageTemplates,
         registrations: 'excel-999.csv',
       },
@@ -126,13 +126,13 @@ export const SEED_CONFIGURATION_SETTINGS: SeedConfigurationDto[] = [
   {
     name: SeedScript.testMultiple,
     organization: 'organization-generic.json',
-    programs: [
+    projects: [
       {
-        program: 'program-cbe.json', // The test seed has multiple programs, because some tests scenarios only occur with multiple program
+        project: 'project-cbe.json', // The test seed has multiple projects, because some tests scenarios only occur with multiple project
         messageTemplate: messageTemplateGeneric,
       },
       {
-        program: 'program-test.json',
+        project: 'project-test.json',
         messageTemplate: messageTemplateGeneric,
       },
     ],

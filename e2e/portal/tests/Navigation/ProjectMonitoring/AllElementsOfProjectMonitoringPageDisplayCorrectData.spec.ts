@@ -11,10 +11,10 @@ import ProjectMonitoring from '@121-e2e/portal/pages/ProjectMonitoringPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+  const projectIdOCW = 3;
+  const OcwProjectId = projectIdOCW;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  await seedPaidRegistrations(registrationsOCW, OcwProjectId);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -28,11 +28,11 @@ test('[30579] All elements of Monitoring page display correct data for OCW', asy
   const basePage = new BasePage(page);
   const projectMonitoring = new ProjectMonitoring(page);
 
-  const projectTitle = 'NLRC OCW program';
+  const projectTitle = 'NLRC OCW project';
 
   await test.step('Navigate to project`s monitoring page', async () => {
-    await basePage.selectProgram(projectTitle);
-    await projectMonitoring.navigateToProgramPage('Monitoring');
+    await basePage.selectProject(projectTitle);
+    await projectMonitoring.navigateToProjectPage('Monitoring');
   });
 
   await test.step('Check if all elements are displayed', async () => {
@@ -52,11 +52,11 @@ test('[30326] All elements of Monitoring page display correct data for NLRC', as
   const basePage = new BasePage(page);
   const projectMonitoring = new ProjectMonitoring(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const projectTitle = 'NLRC Direct Digital Aid Project (PV)';
 
   await test.step('Navigate to project`s monitoring page', async () => {
-    await basePage.selectProgram(projectTitle);
-    await projectMonitoring.navigateToProgramPage('Monitoring');
+    await basePage.selectProject(projectTitle);
+    await projectMonitoring.navigateToProjectPage('Monitoring');
   });
 
   await test.step('Check if all elements are displayed', async () => {

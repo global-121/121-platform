@@ -8,5 +8,5 @@ INSERT
 			,'mock-holderId'
 			,r.id
 	from "121-service".registration r
-	left join "121-service".program_fsp_configuration f on r."programFspConfigurationId" = f.id
+	left join "121-service".project_fsp_configuration f on r."projectFspConfigurationId" = f.id
 	where f."fspName" = 'Intersolve-visa');

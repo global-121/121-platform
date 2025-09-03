@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -23,11 +23,11 @@ pastDate.setDate(currentDate.getDate() - 1);
 // Arrange
 test.describe('Export Payments with Date Range', () => {
   let page: Page;
-  const projectTitle = 'NLRC OCW Program';
+  const projectTitle = 'NLRC OCW Project';
 
   test.beforeAll(async ({ browser }) => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    await seedPaidRegistrations([registrationOCW5], programIdOCW);
+    await seedPaidRegistrations([registrationOCW5], projectIdOCW);
 
     page = await browser.newPage();
     // Login
@@ -40,8 +40,8 @@ test.describe('Export Payments with Date Range', () => {
     const paymentsPage = new PaymentsPage(page);
 
     await page.goto('/');
-    await paymentsPage.selectProgram(projectTitle);
-    await paymentsPage.navigateToProgramPage('Payments');
+    await paymentsPage.selectProject(projectTitle);
+    await paymentsPage.navigateToProjectPage('Payments');
   });
 
   test('[37534] Export payments with date range - Current', async () => {

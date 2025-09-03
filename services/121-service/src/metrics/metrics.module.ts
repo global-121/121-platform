@@ -9,7 +9,7 @@ import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integrati
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsModule } from '@121-service/src/payments/payments.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { ProjectModule } from '@121-service/src/projects/projects.module';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -29,7 +29,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     IntersolveVoucherModule,
     RegistrationEventsModule,
     RegistrationDataModule,
-    ProgramModule,
+    ProjectModule,
   ],
   providers: [
     MetricsService,

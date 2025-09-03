@@ -9,7 +9,7 @@ export enum AdditionalAttributes {
   maxPayments = 'maxPayments',
   referenceId = 'referenceId',
   scope = 'scope',
-  programFspConfigurationName = 'programFspConfigurationName',
+  projectFspConfigurationName = 'projectFspConfigurationName',
 }
 export const Attributes = {
   ...AdditionalAttributes,

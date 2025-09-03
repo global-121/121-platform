@@ -10,7 +10,7 @@ const loginPage = new LoginModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'test-multiple';
-const programId = 2;
+const projectId = 2;
 
 const csvFilePath =
   '../../e2e/test-registration-data/test-registrations-westeros-1000.csv';
@@ -64,7 +64,7 @@ export default function () {
 
   // Upload registrations
   const registrationImport = registrationsPage.importRegistrationsCsv(
-    programId,
+    projectId,
     csvFile,
   );
   checkAndFail(registrationImport, {

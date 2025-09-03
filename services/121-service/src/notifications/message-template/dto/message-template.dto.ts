@@ -66,7 +66,7 @@ export class CreateMessageTemplateDto {
 export class UpdateTemplateParamDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10))
-  public readonly programId: number;
+  public readonly projectId: number;
   @IsString()
   @Length(1, 255)
   public readonly type: string;
@@ -113,7 +113,7 @@ export class UpdateTemplateBodyDto {
 export class DeleteTemplateParamDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10))
-  public readonly programId: number;
+  public readonly projectId: number;
   @IsString()
   @Length(1, 255)
   public readonly type: string;

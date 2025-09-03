@@ -3,7 +3,7 @@ import { test } from '@playwright/test';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
-  removeProgramAssignment,
+  removeProjectAssignment,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
@@ -15,14 +15,14 @@ const expectedAssignedUsers = ['admin@example.org', 'cva-officer@example.org'];
 const userSearchPhrase = 'cva-officer';
 const userFullEmail = 'cva-officer@example.org';
 const userRole = 'Only CREATE registrations';
-const programId = 2;
+const projectId = 2;
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.testMultiple, __filename);
   // remove assignments of all users except admin again, to create the context for this test
   const accessToken = await getAccessToken();
   for (let userId = 2; userId <= 10; userId++) {
-    await removeProgramAssignment(programId, userId, accessToken);
+    await removeProjectAssignment(projectId, userId, accessToken);
   }
 
   // Login
@@ -34,11 +34,11 @@ test.beforeEach(async ({ page }) => {
 test('[29759] Assign successfully roles to a user ', async ({ page }) => {
   const basePage = new BasePage(page);
   const manageTeam = new ProjectTeam(page);
-  const projectTitle = 'Cash program Westeros';
+  const projectTitle = 'Cash project Westeros';
 
-  await test.step('Select program and navigate to Manage team', async () => {
-    await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Team');
+  await test.step('Select project and navigate to Manage team', async () => {
+    await basePage.selectProject(projectTitle);
+    await basePage.navigateToProjectPage('Team');
   });
 
   await test.step('Validate available system users are visible', async () => {

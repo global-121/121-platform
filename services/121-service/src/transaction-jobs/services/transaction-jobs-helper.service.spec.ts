@@ -2,14 +2,14 @@ import { TestBed } from '@automock/jest';
 import { UpdateResult } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProjectRepository } from '@121-service/src/projects/repositories/project.repository';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -28,7 +28,7 @@ const mockedRegistration: RegistrationEntity = {
 
 const mockedTransactionId = 1;
 
-const mockedProgram = {
+const mockedProject = {
   enableMaxPayments: true,
   titlePortal: { en: 'Example Title' },
   published: false,
@@ -42,7 +42,7 @@ describe('TransactionJobsHelperService', () => {
   let registrationScopedRepository: RegistrationScopedRepository;
   let transactionScopedRepository: TransactionScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
-  let programRepository: ProgramRepository;
+  let projectRepository: ProjectRepository;
   let registrationEventsService: RegistrationEventsService;
   let messageTemplateService: MessageTemplateService;
   let queueMessageService: MessageQueuesService;
@@ -62,7 +62,7 @@ describe('TransactionJobsHelperService', () => {
     latestTransactionRepository = unitRef.get<LatestTransactionRepository>(
       LatestTransactionRepository,
     );
-    programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
+    projectRepository = unitRef.get<ProjectRepository>(ProjectRepository);
     registrationEventsService = unitRef.get<RegistrationEventsService>(
       RegistrationEventsService,
     );
@@ -79,8 +79,8 @@ describe('TransactionJobsHelperService', () => {
       .spyOn(registrationScopedRepository, 'updateUnscoped')
       .mockResolvedValue({} as UpdateResult);
     jest
-      .spyOn(programRepository, 'findByIdOrFail')
-      .mockResolvedValue(mockedProgram as any);
+      .spyOn(projectRepository, 'findByIdOrFail')
+      .mockResolvedValue(mockedProject as any);
     jest.spyOn(transactionScopedRepository, 'save').mockResolvedValue({
       id: mockedTransactionId,
     } as any);
@@ -95,7 +95,7 @@ describe('TransactionJobsHelperService', () => {
       .mockResolvedValue();
     jest.spyOn(queueMessageService, 'addMessageJob').mockResolvedValue();
     jest
-      .spyOn(messageTemplateService, 'getMessageTemplatesByProgramId')
+      .spyOn(messageTemplateService, 'getMessageTemplatesByProjectId')
       .mockResolvedValue([
         { language: LanguageEnum.en, message: 'Payment of [[1]] received.' },
         { language: LanguageEnum.fr, message: 'Paiement de [[1]] reçu.' },
@@ -127,10 +127,10 @@ describe('TransactionJobsHelperService', () => {
 
   describe('createTransactionAndUpdateRegistration', () => {
     const transactionJob: SharedTransactionJobDto = {
-      programId: 1,
+      projectId: 1,
       paymentId: 5,
       userId: 1,
-      programFspConfigurationId: 1,
+      projectFspConfigurationId: 1,
       isRetry: false,
       referenceId: 'ref-123',
       phoneNumber: '1234567890',
@@ -166,9 +166,9 @@ describe('TransactionJobsHelperService', () => {
       );
     });
 
-    it('should not update the registration status to complete if the program does not have maxPayments', async () => {
+    it('should not update the registration status to complete if the project does not have maxPayments', async () => {
       // Arrange
-      const mockedProgramNoMaxPayments = {
+      const mockedProjectNoMaxPayments = {
         enableMaxPayments: false,
         titlePortal: { en: 'Example Title' },
         published: false,
@@ -177,8 +177,8 @@ describe('TransactionJobsHelperService', () => {
         budget: 50000,
       };
       jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+        .spyOn(projectRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProjectNoMaxPayments as any);
 
       const registration = structuredClone(mockedRegistration);
 
@@ -200,7 +200,7 @@ describe('TransactionJobsHelperService', () => {
 
     it('should not update the registration status to "completed" if the registration has less payments than maxPayments', async () => {
       // Arrange
-      const mockedProgramNoMaxPayments = {
+      const mockedProjectNoMaxPayments = {
         enableMaxPayments: true,
         titlePortal: { en: 'Example Title' },
         published: false,
@@ -213,8 +213,8 @@ describe('TransactionJobsHelperService', () => {
         paymentCount: 4,
       };
       jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+        .spyOn(projectRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProjectNoMaxPayments as any);
 
       const paymentCountFromDb = 5;
       jest
@@ -237,9 +237,9 @@ describe('TransactionJobsHelperService', () => {
       );
     });
 
-    it('should not update the registration status to "completed" if the registration does not have maxPayments but the program does', async () => {
+    it('should not update the registration status to "completed" if the registration does not have maxPayments but the project does', async () => {
       // Arrange
-      const mockedProgramNoMaxPayments = {
+      const mockedProjectNoMaxPayments = {
         enableMaxPayments: true,
         titlePortal: { en: 'Example Title' },
         published: false,
@@ -252,8 +252,8 @@ describe('TransactionJobsHelperService', () => {
         maxPayments: undefined,
       };
       jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+        .spyOn(projectRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProjectNoMaxPayments as any);
 
       const paymentCountFromDb = 5;
       jest
@@ -311,7 +311,7 @@ describe('TransactionJobsHelperService', () => {
       const maxPayments = 6;
       const alreadyCompletedPaymentsBeforeTransaction = 5;
 
-      const mockedProgramNoMaxPayments = {
+      const mockedProjectNoMaxPayments = {
         enableMaxPayments: true,
         titlePortal: { en: 'Example Title' },
         published: false,
@@ -325,8 +325,8 @@ describe('TransactionJobsHelperService', () => {
         maxPayments,
       };
       jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+        .spyOn(projectRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProjectNoMaxPayments as any);
 
       jest
         .spyOn(latestTransactionRepository, 'getPaymentCount')
@@ -355,7 +355,7 @@ describe('TransactionJobsHelperService', () => {
       const maxPayments = 6;
       const alreadyCompletedPaymentsBeforeTransaction = 4;
 
-      const mockedProgramNoMaxPayments = {
+      const mockedProjectNoMaxPayments = {
         enableMaxPayments: true,
         titlePortal: { en: 'Example Title' },
         published: false,
@@ -369,8 +369,8 @@ describe('TransactionJobsHelperService', () => {
         maxPayments,
       };
       jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+        .spyOn(projectRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProjectNoMaxPayments as any);
 
       jest
         .spyOn(latestTransactionRepository, 'getPaymentCount')
@@ -413,8 +413,8 @@ describe('TransactionJobsHelperService', () => {
   describe('createMessageAndAddToQueue', () => {
     it('should create and queue a message with dynamic content', async () => {
       await service.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaLoad,
-        programId: 1,
+        type: ProjectNotificationEnum.visaLoad,
+        projectId: 1,
         registration: mockedRegistration,
         amountTransferred: 123,
         bulkSize: 10,
@@ -422,8 +422,8 @@ describe('TransactionJobsHelperService', () => {
       });
 
       expect(
-        messageTemplateService.getMessageTemplatesByProgramId,
-      ).toHaveBeenCalledWith(1, ProgramNotificationEnum.visaLoad);
+        messageTemplateService.getMessageTemplatesByProjectId,
+      ).toHaveBeenCalledWith(1, ProjectNotificationEnum.visaLoad);
       expect(queueMessageService.addMessageJob).toHaveBeenCalledWith(
         expect.objectContaining({
           registration: mockedRegistration,
@@ -442,8 +442,8 @@ describe('TransactionJobsHelperService', () => {
         preferredLanguage: LanguageEnum.nl,
       };
       await service.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaLoad,
-        programId: 1,
+        type: ProjectNotificationEnum.visaLoad,
+        projectId: 1,
         registration,
         amountTransferred: 456,
         bulkSize: 5,
@@ -459,11 +459,11 @@ describe('TransactionJobsHelperService', () => {
 
     it('should handle missing template gracefully', async () => {
       jest
-        .spyOn(messageTemplateService, 'getMessageTemplatesByProgramId')
+        .spyOn(messageTemplateService, 'getMessageTemplatesByProjectId')
         .mockResolvedValue([]);
       await service.createMessageAndAddToQueue({
-        type: ProgramNotificationEnum.visaLoad,
-        programId: 1,
+        type: ProjectNotificationEnum.visaLoad,
+        projectId: 1,
         registration: mockedRegistration,
         amountTransferred: 789,
         bulkSize: 1,

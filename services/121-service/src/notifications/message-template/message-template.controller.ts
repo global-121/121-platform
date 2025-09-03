@@ -42,7 +42,7 @@ export class MessageTemplateController {
     private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
-  @ApiOperation({ summary: 'Get all message templates per program' })
+  @ApiOperation({ summary: 'Get all message templates per project' })
   @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -50,39 +50,39 @@ export class MessageTemplateController {
     type: [MessageTemplateEntity],
   })
   @ApiParam({
-    name: 'programId',
+    name: 'projectId',
     required: true,
     type: 'integer',
   })
-  @Get(':programId/message-templates')
-  public async getMessageTemplatesByProgramId(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+  @Get(':projectId/message-templates')
+  public async getMessageTemplatesByProjectId(
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<MessageTemplateEntity[]> {
-    return await this.messageTemplateService.getMessageTemplatesByProgramId(
-      programId,
+    return await this.messageTemplateService.getMessageTemplatesByProjectId(
+      projectId,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProjectUPDATE] })
   @ApiOperation({ summary: 'Create message template' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Created new message template',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
-  @Post(':programId/message-templates')
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
+  @Post(':projectId/message-templates')
   public async createMessageTemplate(
-    @Param('programId', ParseIntPipe) programId: number,
+    @Param('projectId', ParseIntPipe) projectId: number,
     @Body() templateData: CreateMessageTemplateDto,
   ): Promise<void> {
     await this.messageTemplateService.createMessageTemplate(
-      programId,
+      projectId,
       templateData,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProjectUPDATE] })
   @ApiOperation({ summary: '[EXTERNALLY USED] Update message template' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -93,23 +93,23 @@ export class MessageTemplateController {
     status: HttpStatus.NOT_FOUND,
     description: 'No message template found with given id',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({ name: 'type', required: true, type: 'string' })
   @ApiParam({ name: 'language', required: true, type: 'string' })
-  @Patch(':programId/message-templates/:type/:language')
+  @Patch(':projectId/message-templates/:type/:language')
   public async updateMessageTemplate(
     @Param() params: UpdateTemplateParamDto,
     @Body() updateMessageTemplateDto: UpdateTemplateBodyDto,
   ): Promise<MessageTemplateEntity> {
     return await this.messageTemplateService.updateMessageTemplate(
-      params.programId,
+      params.projectId,
       params.type,
       params.language,
       updateMessageTemplateDto,
     );
   }
 
-  @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
+  @AuthenticatedUser({ permissions: [PermissionEnum.ProjectUPDATE] })
   @ApiOperation({
     summary: 'Delete message template(s) by type and optionally language',
   })
@@ -118,7 +118,7 @@ export class MessageTemplateController {
     description: 'Message template deleted',
     type: DeleteResult,
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({ name: 'type', required: true, type: 'string' })
   @ApiQuery({
     name: 'language',
@@ -127,13 +127,13 @@ export class MessageTemplateController {
     description:
       'Optional. If not supplied, all languages for given type are removed.',
   })
-  @Delete(':programId/message-templates/:type')
+  @Delete(':projectId/message-templates/:type')
   public async deleteMessageTemplate(
     @Param() params: DeleteTemplateParamDto,
     @Query() query: DeleteTemplateQueryDto,
   ): Promise<DeleteResult> {
     return await this.messageTemplateService.deleteMessageTemplate(
-      params.programId,
+      params.projectId,
       params.type,
       query.language,
     );

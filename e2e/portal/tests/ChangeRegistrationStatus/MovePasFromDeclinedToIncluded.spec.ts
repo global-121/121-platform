@@ -8,7 +8,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationPV5,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -27,7 +27,7 @@ test.beforeEach(async ({ page }) => {
 
   await seedRegistrationsWithStatus(
     [registrationPV5],
-    programIdPV,
+    projectIdPV,
     accessToken,
     RegistrationStatusEnum.declined,
   );
@@ -36,9 +36,9 @@ test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-  // Navigate to program
+  // Navigate to project
   const basePage = new BasePage(page);
-  await basePage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await basePage.selectProject('NLRC Direct Digital Aid Project (PV)');
 });
 
 test('[31220] Move PA(s) from status "Declined" to "Included"', async ({

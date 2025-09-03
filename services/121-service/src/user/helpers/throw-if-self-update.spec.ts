@@ -10,7 +10,7 @@ describe('throwIfSelfUpdate', () => {
 
     expect(() => throwIfSelfUpdate(req, userIdToUpdate)).toThrow(
       new HttpException(
-        'You cannot update your own program assignment',
+        'You cannot update your own project assignment',
         HttpStatus.FORBIDDEN,
       ),
     );

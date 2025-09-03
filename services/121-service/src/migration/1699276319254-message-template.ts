@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-
 export class MessageTemplate1699276319254 implements MigrationInterface {
   name = 'MessageTemplate1699276319254';
 
@@ -24,46 +22,49 @@ export class MessageTemplate1699276319254 implements MigrationInterface {
   }
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {
-    const manager = queryRunner.manager;
-    const whatsAppMessageTemplateNames = [
-      'whatsappGenericMessage',
-      'whatsappPayment',
-    ];
-    const programsRepository = manager.getRepository(ProgramEntity);
+    // Commented out because of datamodel changes that rendered this old migration incorrect
+    // (This method also includes a datamodel migration at the bottom, which remains needed)
 
-    const programsQb = programsRepository
-      .createQueryBuilder('program')
-      .select(['id', 'notifications']);
-    const programs = await programsQb.getRawMany();
+    // const manager = queryRunner.manager;
+    // const whatsAppMessageTemplateNames = [
+    //   'whatsappGenericMessage',
+    //   'whatsappPayment',
+    // ];
+    // const programsRepository = manager.getRepository(ProgramEntity);
 
-    for (const program of programs) {
-      const notifications = program['notifications'];
-      if (notifications) {
-        for (const [language, messages] of Object.entries<string>(
-          notifications,
-        )) {
-          for (const [key, text] of Object.entries(messages)) {
-            const messageTemplate = {
-              programId: program['id'],
-              language,
-              type: key,
-              message: text,
-              isWhatsappTemplate: whatsAppMessageTemplateNames.includes(key),
-            };
-            await queryRunner.query(
-              `INSERT INTO "121-service"."message_template"("type", "language", "message", "isWhatsappTemplate", "programId") VALUES ($1, $2, $3, $4, $5)`,
-              [
-                messageTemplate.type,
-                messageTemplate.language,
-                messageTemplate.message,
-                messageTemplate.isWhatsappTemplate,
-                messageTemplate.programId,
-              ],
-            );
-          }
-        }
-      }
-    }
+    // const programsQb = programsRepository
+    //   .createQueryBuilder('program')
+    //   .select(['id', 'notifications']);
+    // const programs = await programsQb.getRawMany();
+
+    // for (const program of programs) {
+    //   const notifications = program['notifications'];
+    //   if (notifications) {
+    //     for (const [language, messages] of Object.entries<string>(
+    //       notifications,
+    //     )) {
+    //       for (const [key, text] of Object.entries(messages)) {
+    //         const messageTemplate = {
+    //           programId: program['id'],
+    //           language,
+    //           type: key,
+    //           message: text,
+    //           isWhatsappTemplate: whatsAppMessageTemplateNames.includes(key),
+    //         };
+    //         await queryRunner.query(
+    //           `INSERT INTO "121-service"."message_template"("type", "language", "message", "isWhatsappTemplate", "programId") VALUES ($1, $2, $3, $4, $5)`,
+    //           [
+    //             messageTemplate.type,
+    //             messageTemplate.language,
+    //             messageTemplate.message,
+    //             messageTemplate.isWhatsappTemplate,
+    //             messageTemplate.programId,
+    //           ],
+    //         );
+    //       }
+    //     }
+    //   }
+    // }
 
     // Remove notifications column because it is not needed anymore
     await queryRunner.query(

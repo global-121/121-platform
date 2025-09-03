@@ -25,7 +25,7 @@ export class UserRoleResponseDTO {
 
 export class AssignmentResponseDTO {
   @ApiProperty({ example: 1 })
-  public programId: number;
+  public projectId: number;
 
   @ApiProperty({ example: 1 })
   public userId: number;

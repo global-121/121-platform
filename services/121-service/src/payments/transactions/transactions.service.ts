@@ -19,7 +19,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -30,8 +30,8 @@ import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 @Injectable()
 export class TransactionsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProjectEntity)
+  private readonly projectRepository: Repository<ProjectEntity>;
   @InjectRepository(LatestTransactionEntity)
   private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
 
@@ -50,25 +50,25 @@ export class TransactionsService {
   ) {}
 
   public async getLastTransactions({
-    programId,
+    projectId,
     paymentId,
     referenceId,
     status,
-    programFspConfigId,
+    projectFspConfigId,
   }: {
-    programId: number;
+    projectId: number;
     paymentId?: number;
     referenceId?: string;
     status?: TransactionStatusEnum;
-    programFspConfigId?: number;
+    projectFspConfigId?: number;
   }): Promise<TransactionReturnDto[]> {
     return this.transactionScopedRepository
       .getLastTransactionsQuery({
-        programId,
+        projectId,
         paymentId,
         referenceId,
         status,
-        programFspConfigId,
+        projectFspConfigId,
       })
       .getRawMany();
   }
@@ -78,8 +78,8 @@ export class TransactionsService {
     relationDetails: TransactionRelationDetailsDto,
     transactionStep?: number,
   ): Promise<TransactionEntity> {
-    const program = await this.programRepository.findOneByOrFail({
-      id: relationDetails.programId,
+    const project = await this.projectRepository.findOneByOrFail({
+      id: relationDetails.projectId,
     });
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
@@ -90,8 +90,8 @@ export class TransactionsService {
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
-    transaction.programFspConfigurationId =
-      relationDetails.programFspConfigurationId;
+    transaction.projectFspConfigurationId =
+      relationDetails.projectFspConfigurationId;
     transaction.paymentId = relationDetails.paymentId;
     transaction.userId = relationDetails.userId;
     transaction.status = transactionResponse.status;
@@ -118,7 +118,7 @@ export class TransactionsService {
 
     await this.updatePaymentCountRegistration(
       registration,
-      program.enableMaxPayments,
+      project.enableMaxPayments,
     );
     await this.updateLatestTransaction(transaction);
     if (
@@ -131,7 +131,7 @@ export class TransactionsService {
       for (const transactionNotification of transactionResponse.notificationObjects) {
         const message = await this.getMessageText(
           registration.preferredLanguage ?? undefined,
-          program.id,
+          project.id,
           transactionNotification,
         );
         await this.queueMessageService.addMessageJob({
@@ -150,13 +150,13 @@ export class TransactionsService {
 
   private async getMessageText(
     language: LanguageEnum = LanguageEnum.en,
-    programId: number,
+    projectId: number,
     transactionNotification: TransactionNotificationObject,
   ): Promise<string | undefined> {
     const key = transactionNotification.notificationKey;
     const messageTemplates =
-      await this.messageTemplateService.getMessageTemplatesByProgramId(
-        programId,
+      await this.messageTemplateService.getMessageTemplatesByProjectId(
+        projectId,
         key,
       );
 
@@ -223,15 +223,15 @@ export class TransactionsService {
       .select('COUNT(DISTINCT "paymentId")', 'currentPaymentCount')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .andWhere('p."programId" = :programId', {
-        programId: registration.programId,
+      .andWhere('p."projectId" = :projectId', {
+        projectId: registration.projectId,
       })
       .andWhere('r.id = :registrationId', {
         registrationId: registration.id,
       })
       .getRawOne();
     // Match that against registration.maxPayments
-    // If a program has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
+    // If a project has a maxPayments set, and the currentPaymentCount is equal or larger to that, set registrationStatus to completed if it is currently included
     if (
       enableMaxPayments &&
       registration.maxPayments &&
@@ -282,7 +282,7 @@ export class TransactionsService {
     transactionRelationDetails: TransactionRelationDetailsDto,
   ): Promise<void> {
     // NOTE: this method is currently only used for the import-excel-reconciliation use case and assumes:
-    // 1: only 1 program fsp id
+    // 1: only 1 project fsp id
     // 2: no notifications to send
     // 3: no payment count to update (as it is reconciliation of existing payment)
     // 4: no twilio message to relate to
@@ -302,8 +302,8 @@ export class TransactionsService {
         const transaction = new TransactionEntity();
         transaction.amount = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
-        transaction.programFspConfigurationId =
-          transactionRelationDetails.programFspConfigurationId;
+        transaction.projectFspConfigurationId =
+          transactionRelationDetails.projectFspConfigurationId;
         transaction.paymentId = transactionRelationDetails.paymentId;
         transaction.userId = transactionRelationDetails.userId;
         transaction.status = transactionResponse.status;

@@ -19,7 +19,7 @@ const defaultMessageJob = {
   phoneNumber: '1234567890',
   preferredLanguage: LanguageEnum.en,
   referenceId: 'ref-test',
-  programId: 1,
+  projectId: 1,
   message: 'test message',
   messageTemplateKey: 'messageTemplateKey',
   customData: {},
@@ -46,7 +46,7 @@ describe('MessageService', () => {
 
     jest
       .spyOn(messageService.registrationRepository, 'findOneOrFail')
-      .mockResolvedValue({ program: { id: 1 } } as RegistrationEntity);
+      .mockResolvedValue({ project: { id: 1 } } as RegistrationEntity);
 
     jest.spyOn(console, 'log').mockImplementation();
 
@@ -278,7 +278,7 @@ describe('MessageService', () => {
         2,
         TransactionStatusEnum.success,
         null,
-        testMessageJob.programId,
+        testMessageJob.projectId,
         {
           messageSid: testMessageID,
           intersolveVoucherId: testMessageJob.customData.intersolveVoucherId,

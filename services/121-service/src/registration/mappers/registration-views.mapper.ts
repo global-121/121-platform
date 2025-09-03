@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProjectRegistrationAttributeEntity } from '@121-service/src/projects/project-registration-attribute.entity';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,
@@ -51,7 +51,7 @@ export class RegistrationViewsMapper {
       dataRelation: RegistrationDataRelation,
       data: RegistrationAttributeDataEntity,
     ): boolean => {
-      const propertiesToCheck = ['programRegistrationAttributeId'];
+      const propertiesToCheck = ['projectRegistrationAttributeId'];
       for (const property of propertiesToCheck) {
         if (
           dataRelation[property] === data[property] &&
@@ -125,7 +125,7 @@ export class RegistrationViewsMapper {
     attributes,
   }: {
     rows: Record<string, unknown>[];
-    attributes: ProgramRegistrationAttributeEntity[];
+    attributes: ProjectRegistrationAttributeEntity[];
   }): Record<string, unknown>[] {
     for (const attribute of attributes) {
       for (const row of rows) {
@@ -139,7 +139,7 @@ export class RegistrationViewsMapper {
   }
 
   private static getDropdownEnglishLabel(
-    attribute: ProgramRegistrationAttributeEntity,
+    attribute: ProjectRegistrationAttributeEntity,
     value: unknown,
   ): unknown {
     const selectedOption = attribute.options?.find((o) => o.option === value);

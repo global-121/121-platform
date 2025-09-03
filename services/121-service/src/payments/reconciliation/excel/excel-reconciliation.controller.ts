@@ -43,19 +43,19 @@ export class ExcelRecociliationController {
   @ApiOperation({
     summary: 'Get a CSV template for importing reconciliation instructions',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Get payments template instructions to post in Fsp Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Get payments template instructions to post in Fsp Portal - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Get('programs/:programId/payments/excel-reconciliation/template')
+  @Get('projects/:projectId/payments/excel-reconciliation/template')
   public async getImportFspReconciliationTemplate(
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
   ): Promise<GetImportTemplateResponseDto[]> {
     return await this.excelReconciliationService.getImportInstructionsTemplate(
-      Number(programId),
+      Number(projectId),
     );
   }
 
@@ -63,21 +63,21 @@ export class ExcelRecociliationController {
   @ApiOperation({
     summary: '[SCOPED] Upload payment reconciliation data from FSP per payment',
   })
-  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'projectId', required: true, type: 'integer' })
   @ApiParam({ name: 'paymentId', required: true, type: 'integer' })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description:
-      'Uploaded payment excel reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Uploaded payment excel reconciliation data - NOTE: this endpoint is scoped, depending on project configuration it only returns/modifies data the logged in user has access to.',
   })
-  @Post('programs/:programId/payments/:paymentId/excel-reconciliation')
+  @Post('projects/:projectId/payments/:paymentId/excel-reconciliation')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
   @UseInterceptors(FileInterceptor('file'))
   public async upsertExcelReconciliationData(
     @UploadedFile() file: Express.Multer.File,
-    @Param('programId', ParseIntPipe)
-    programId: number,
+    @Param('projectId', ParseIntPipe)
+    projectId: number,
     @Param('paymentId', ParseIntPipe)
     paymentId: number,
     @Req() req,
@@ -85,7 +85,7 @@ export class ExcelRecociliationController {
     const userId = RequestHelper.getUserId(req);
     return await this.excelReconciliationService.upsertFspReconciliationData(
       file,
-      programId,
+      projectId,
       paymentId,
       userId,
     );

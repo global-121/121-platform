@@ -17,7 +17,7 @@ import {
 const updatePhoneNumber = '15005550099';
 
 describe('Get events', () => {
-  const programIdOcw = 3;
+  const projectIdOcw = 3;
   const secondRegistration = {
     ...registrationVisa,
     referenceId: '2982g82bdsf89sdsd2',
@@ -30,13 +30,13 @@ describe('Get events', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(
-      programIdOcw,
+      projectIdOcw,
       [registrationVisa, secondRegistration],
       accessToken,
     );
   });
 
-  it('should get program events with date parameters', async () => {
+  it('should get project events with date parameters', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -57,14 +57,14 @@ describe('Get events', () => {
 
     // Act
     await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataToUpdate,
       reason,
       accessToken,
     );
     await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       secondRegistration.referenceId,
       dataToUpdate,
       reason,
@@ -72,7 +72,7 @@ describe('Get events', () => {
     );
 
     const eventsResult = await getEvents({
-      programId: programIdOcw,
+      projectId: projectIdOcw,
       fromDate: dateString,
       toDate: tomorrowDateString,
       referenceId: undefined,
@@ -90,7 +90,7 @@ describe('Get events', () => {
     expect(eventsResult.body[0].attributes).toEqual(expectedAttributesObject);
   });
 
-  it('should return a 404 when no program events are found', async () => {
+  it('should return a 404 when no project events are found', async () => {
     // Arrange
     const reason = 'automated test';
     const dataToUpdate = {
@@ -102,14 +102,14 @@ describe('Get events', () => {
 
     // Act
     await updateRegistration(
-      programIdOcw,
+      projectIdOcw,
       registrationVisa.referenceId,
       dataToUpdate,
       reason,
       accessToken,
     );
     const eventsResult = await getEvents({
-      programId: programIdOcw,
+      projectId: projectIdOcw,
       fromDate: yesterdayString,
       toDate: yesterdayString,
       referenceId: undefined,

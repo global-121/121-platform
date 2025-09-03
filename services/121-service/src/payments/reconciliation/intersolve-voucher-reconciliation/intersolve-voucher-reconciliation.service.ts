@@ -3,8 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IntersolveVoucherJobName } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/job-details.dto';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
-import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { ProjectFspConfigurationRepository } from '@121-service/src/project-fsp-configurations/project-fsp-configurations.repository';
+import { ProjectRepository } from '@121-service/src/projects/repositories/project.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -12,14 +12,14 @@ import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/cr
 export class IntersolveVoucherReconciliationService {
   public constructor(
     private readonly intersolveVoucherService: IntersolveVoucherService,
-    private readonly programRepository: ProgramRepository,
-    private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly projectRepository: ProjectRepository,
+    private readonly projectFspConfigurationRepository: ProjectFspConfigurationRepository,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private readonly intersolveVoucherScopedRepository: ScopedRepository<IntersolveVoucherEntity>,
   ) {}
 
-  public async getAndUpdateBalancesForProgram(
-    programId: number,
+  public async getAndUpdateBalancesForProject(
+    projectId: number,
     jobName: IntersolveVoucherJobName,
   ): Promise<void> {
     if (jobName === IntersolveVoucherJobName.getLastestVoucherBalance) {
@@ -29,8 +29,8 @@ export class IntersolveVoucherReconciliationService {
           .select('MAX(voucher.id)', 'max')
           .leftJoin('voucher.image', 'image')
           .leftJoin('image.registration', 'registration')
-          .andWhere('registration.programId = :programId', {
-            programId,
+          .andWhere('registration.projectId = :projectId', {
+            projectId,
           })
           .getRawOne()
       )?.max;
@@ -49,20 +49,20 @@ export class IntersolveVoucherReconciliationService {
           .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
             id,
           })
-          .andWhere('registration.programId = :programId', {
-            programId,
+          .andWhere('registration.projectId = :projectId', {
+            projectId,
           });
 
         const vouchersToUpdate = await q.getMany();
         if (vouchersToUpdate.length > 0) {
           const credentials =
-            await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+            await this.projectFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
               vouchersToUpdate[0].id,
             );
           for await (const voucher of vouchersToUpdate) {
             await this.intersolveVoucherService.getAndUpdateBalance(
               voucher,
-              programId,
+              projectId,
               credentials,
             );
           }
@@ -73,18 +73,18 @@ export class IntersolveVoucherReconciliationService {
   }
 
   public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<number> {
-    const programs = await this.programRepository.find();
+    const projects = await this.projectRepository.find();
     let totalVouchersUpdated = 0;
-    for (const program of programs) {
-      const voucherPerProgram =
-        await this.retrieveAndUpdateUnusedVouchersForProgram(program.id);
-      totalVouchersUpdated += voucherPerProgram;
+    for (const project of projects) {
+      const voucherPerProject =
+        await this.retrieveAndUpdateUnusedVouchersForProject(project.id);
+      totalVouchersUpdated += voucherPerProject;
     }
     return totalVouchersUpdated;
   }
 
-  public async retrieveAndUpdateUnusedVouchersForProgram(
-    programId: number,
+  public async retrieveAndUpdateUnusedVouchersForProject(
+    projectId: number,
   ): Promise<number> {
     const maxId = (
       await this.intersolveVoucherScopedRepository
@@ -92,8 +92,8 @@ export class IntersolveVoucherReconciliationService {
         .select('MAX(voucher.id)', 'max')
         .leftJoin('voucher.image', 'image')
         .leftJoin('image.registration', 'registration')
-        .andWhere('registration.programId = :programId', {
-          programId,
+        .andWhere('registration.projectId = :projectId', {
+          projectId,
         })
         .getRawOne()
     )?.max;
@@ -115,13 +115,13 @@ export class IntersolveVoucherReconciliationService {
           .andWhere(`voucher.id BETWEEN :id AND (:id + 1000 - 1)`, {
             id,
           })
-          .andWhere('registration.programId = :programId', {
-            programId,
+          .andWhere('registration.projectId = :projectId', {
+            projectId,
           })
           .getMany();
       if (previouslyUnusedVouchers.length) {
         const credentials =
-          await this.programFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
+          await this.projectFspConfigurationRepository.getUsernamePasswordPropertiesByVoucherId(
             previouslyUnusedVouchers[0].id,
           );
 
@@ -129,7 +129,7 @@ export class IntersolveVoucherReconciliationService {
           totalVouchersUpdated++;
           await this.intersolveVoucherService.getAndUpdateBalance(
             voucher,
-            programId,
+            projectId,
             credentials,
           );
         }

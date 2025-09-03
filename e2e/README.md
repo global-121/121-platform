@@ -101,15 +101,15 @@ import { Page } from 'playwright';
 
 class HomePage {
   readonly page: Page;
-  readonly programCard: Locator;
+  readonly projectCard: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.programCard = this.page.getByTestId('program-list-component-card');
+    this.projectCard = this.page.getByTestId('project-list-component-card');
   }
 
-  async navigateToProgramme(programName: string) {
-    await this.programCard.filter({ hasText: programName }).click();
+  async navigateToProjectme(projectName: string) {
+    await this.projectCard.filter({ hasText: projectName }).click();
   }
 }
 
@@ -125,7 +125,7 @@ Here is a simple example of writing a test using the POM structure:
 ```ts
 import HomePage from '@121-e2e/pages/Home/HomePage';
 import LoginPage from '@121-e2e/pages/Login/LoginPage';
-import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import NLRCProject from '@121-service/src/seed-data/project/project-nlrc-ocw.json';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { seedPaidRegistrations } from '@121-service/test/helpers/registration.helper';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
@@ -134,10 +134,10 @@ import { test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
-  const programIdOCW = 3;
-  const OcwProgramId = programIdOCW;
+  const projectIdOCW = 3;
+  const OcwProjectId = projectIdOCW;
 
-  await seedPaidRegistrations(registrationsOCW, OcwProgramId);
+  await seedPaidRegistrations(registrationsOCW, OcwProjectId);
 
   // Login
   const loginPage = new LoginPage(page);
@@ -145,11 +145,11 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[27493] Navigate to programme', async ({ page }) => {
+test('[27493] Navigate to projectme', async ({ page }) => {
   const homePage = new HomePage(page);
 
   await test.step('Should open PAs for registration', async () => {
-    await homePage.navigateToProgramme('NLRC OCW Program');
+    await homePage.navigateToProjectme('NLRC OCW Project');
   });
 });
 ```

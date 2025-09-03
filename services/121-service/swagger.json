@@ -149,85 +149,85 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/users/search",
+    "path": "/api/projects/{projectId}/users/search",
     "params": [
-      "programId",
+      "projectId",
       "username"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/users/{userId}",
+    "path": "/api/projects/{projectId}/users/{userId}",
     "params": [
-      "programId",
+      "projectId",
       "userId"
     ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "put",
-    "path": "/api/programs/{programId}/users/{userId}",
+    "path": "/api/projects/{projectId}/users/{userId}",
     "params": [
-      "programId",
+      "projectId",
       "userId"
     ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/users/{userId}",
+    "path": "/api/projects/{projectId}/users/{userId}",
     "params": [
-      "programId",
+      "projectId",
       "userId"
     ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/users/{userId}",
+    "path": "/api/projects/{projectId}/users/{userId}",
     "params": [
-      "programId",
+      "projectId",
       "userId"
     ],
     "returnType": "AssignmentResponseDTO"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/users",
+    "path": "/api/projects/{projectId}/users",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers",
+    "path": "/api/projects/{projectId}/fsps/intersolve-voucher/vouchers",
     "params": [
-      "programId",
+      "projectId",
       "referenceId",
       "paymentId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/vouchers/balance",
+    "path": "/api/projects/{projectId}/fsps/intersolve-voucher/vouchers/balance",
     "params": [
-      "programId",
+      "projectId",
       "referenceId",
       "paymentId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
+    "path": "/api/projects/{projectId}/fsps/intersolve-voucher/instructions",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/instructions",
+    "path": "/api/projects/{projectId}/fsps/intersolve-voucher/instructions",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
@@ -239,43 +239,43 @@
   },
   {
     "method": "get",
-    "path": "/api/notifications/{programId}/message-templates",
+    "path": "/api/notifications/{projectId}/message-templates",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/notifications/{programId}/message-templates",
+    "path": "/api/notifications/{projectId}/message-templates",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/notifications/{programId}/message-templates/{type}/{language}",
+    "path": "/api/notifications/{projectId}/message-templates/{type}/{language}",
     "params": [
       "language",
       "type",
-      "programId"
+      "projectId"
     ],
     "returnType": "MessageTemplateEntity"
   },
   {
     "method": "delete",
-    "path": "/api/notifications/{programId}/message-templates/{type}",
+    "path": "/api/notifications/{projectId}/message-templates/{type}",
     "params": [
       "language",
       "type",
-      "programId"
+      "projectId"
     ],
     "returnType": "DeleteResult"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
+    "path": "/api/projects/{projectId}/registration-events",
     "params": [
-      "programId",
+      "projectId",
       "format",
       "toDate",
       "fromDate",
@@ -284,9 +284,9 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "path": "/api/projects/{projectId}/fsps/intersolve-voucher/all",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
@@ -296,76 +296,76 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}",
+    "path": "/api/projects/{projectId}",
     "params": [
-      "programId",
-      "formatProgramReturnDto"
+      "projectId",
+      "formatProjectReturnDto"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}",
+    "path": "/api/projects/{projectId}",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}",
+    "path": "/api/projects/{projectId}",
     "params": [
-      "programId"
+      "projectId"
     ],
-    "returnType": "ProgramReturnDto"
+    "returnType": "ProjectReturnDto"
   },
   {
     "method": "post",
-    "path": "/api/programs",
+    "path": "/api/projects",
     "params": [
       "importFromKobo",
       "koboToken",
       "koboAssetId"
     ],
-    "returnType": "ProgramEntity"
+    "returnType": "ProjectEntity"
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registration-attributes",
+    "path": "/api/projects/{projectId}/registration-attributes",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeName}",
+    "path": "/api/projects/{projectId}/registration-attributes/{projectRegistrationAttributeName}",
     "params": [
-      "programId",
-      "programRegistrationAttributeName"
+      "projectId",
+      "projectRegistrationAttributeName"
     ],
-    "returnType": "ProgramRegistrationAttributeEntity"
+    "returnType": "ProjectRegistrationAttributeEntity"
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeId}",
+    "path": "/api/projects/{projectId}/registration-attributes/{projectRegistrationAttributeId}",
     "params": [
-      "programId",
-      "programRegistrationAttributeId"
+      "projectId",
+      "projectRegistrationAttributeId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/attributes",
+    "path": "/api/projects/{projectId}/attributes",
     "params": [
-      "programId",
-      "includeProgramRegistrationAttributes",
+      "projectId",
+      "includeProjectRegistrationAttributes",
       "includeTemplateDefaultAttributes",
       "filterShowInRegistrationsTable"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-visa/funding-wallet",
+    "path": "/api/projects/{projectId}/fsps/intersolve-visa/funding-wallet",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
@@ -384,132 +384,132 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/attachments",
+    "path": "/api/projects/{projectId}/attachments",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/attachments",
+    "path": "/api/projects/{projectId}/attachments",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "path": "/api/projects/{projectId}/attachments/{attachmentId}",
     "params": [
-      "programId",
+      "projectId",
       "attachmentId"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "path": "/api/projects/{projectId}/attachments/{attachmentId}",
     "params": [
-      "programId",
+      "projectId",
       "attachmentId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsp-configurations",
+    "path": "/api/projects/{projectId}/fsp-configurations",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/fsp-configurations",
+    "path": "/api/projects/{projectId}/fsp-configurations",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}",
     "params": [
-      "programId",
+      "projectId",
       "name"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}",
     "params": [
-      "programId",
+      "projectId",
       "name"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}/properties",
     "params": [
-      "programId",
+      "projectId",
       "name"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}/properties",
     "params": [
-      "programId",
+      "projectId",
       "name"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}/properties/{propertyName}",
     "params": [
-      "programId",
+      "projectId",
       "name",
       "propertyName"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
+    "path": "/api/projects/{projectId}/fsp-configurations/{name}/properties/{propertyName}",
     "params": [
-      "programId",
+      "projectId",
       "name",
       "propertyName"
     ]
   },
   {
     "method": "put",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/projects/{projectId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "path": "/api/projects/{projectId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
-      "programId"
+      "projectId"
     ],
     "returnType": "CommercialBankEthiopiaValidationReportDto"
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/import",
+    "path": "/api/projects/{projectId}/registrations/import",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations",
+    "path": "/api/projects/{projectId}/registrations",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations",
+    "path": "/api/projects/{projectId}/registrations",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "filter.referenceId",
@@ -521,9 +521,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -537,16 +537,16 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations",
+    "path": "/api/projects/{projectId}/registrations",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "delete",
-    "path": "/api/programs/{programId}/registrations",
+    "path": "/api/projects/{projectId}/registrations",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "dryRun",
@@ -559,9 +559,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -576,16 +576,16 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/import/template",
+    "path": "/api/projects/{projectId}/registrations/import/template",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/status",
+    "path": "/api/projects/{projectId}/registrations/status",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "dryRun",
@@ -598,9 +598,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -615,9 +615,9 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}",
     "params": [
-      "programId",
+      "projectId",
       "referenceId"
     ]
   },
@@ -630,9 +630,9 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/message",
+    "path": "/api/projects/{projectId}/registrations/message",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "dryRun",
@@ -645,9 +645,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -662,32 +662,32 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/duplicates",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/duplicates",
     "params": [
       "referenceId",
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/uniques",
+    "path": "/api/projects/{projectId}/registrations/uniques",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
     "params": [
-      "programId",
+      "projectId",
       "referenceId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
     "params": [
-      "programId",
+      "projectId",
       "referenceId",
       "tokenCode",
       "pause"
@@ -695,35 +695,35 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
-      "programId"
+      "projectId"
     ],
     "returnType": "IntersolveVisaWalletDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
     "params": [
       "referenceId",
-      "programId"
+      "projectId"
     ],
     "returnType": "IntersolveVisaWalletDto"
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
     "params": [
-      "programId",
+      "projectId",
       "referenceId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{id}",
+    "path": "/api/projects/{projectId}/registrations/{id}",
     "params": [
-      "programId",
+      "projectId",
       "id"
     ]
   },
@@ -801,9 +801,9 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/export-list/{exportType}",
+    "path": "/api/projects/{projectId}/metrics/export-list/{exportType}",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "filter.referenceId",
@@ -815,9 +815,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -840,30 +840,30 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/program-stats-summary",
+    "path": "/api/projects/{projectId}/metrics/project-stats-summary",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/metrics/registration-status",
+    "path": "/api/projects/{projectId}/metrics/registration-status",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments",
+    "path": "/api/projects/{projectId}/payments",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/payments",
+    "path": "/api/projects/{projectId}/payments",
     "params": [
-      "programId",
+      "projectId",
       "page",
       "limit",
       "dryRun",
@@ -876,9 +876,9 @@
       "filter.inclusionScore",
       "filter.paymentAmountMultiplier",
       "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
+      "filter.projectFspConfigurationName",
+      "filter.projectFspConfigurationLabel",
+      "filter.registrationProjectId",
       "filter.maxPayments",
       "filter.paymentCount",
       "filter.paymentCountRemaining",
@@ -893,40 +893,40 @@
   },
   {
     "method": "patch",
-    "path": "/api/programs/{programId}/payments",
+    "path": "/api/projects/{projectId}/payments",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/status",
+    "path": "/api/projects/{projectId}/payments/status",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}",
+    "path": "/api/projects/{projectId}/payments/{paymentId}",
     "params": [
       "paymentId",
-      "programId"
+      "projectId"
     ],
     "returnType": "PaymentReturnDto"
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/fsp-instructions",
+    "path": "/api/projects/{projectId}/payments/{paymentId}/fsp-instructions",
     "params": [
-      "programId",
+      "projectId",
       "paymentId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/transactions",
+    "path": "/api/projects/{projectId}/transactions",
     "params": [
-      "programId",
+      "projectId",
       "fromDate",
       "toDate",
       "paymentId",
@@ -935,17 +935,17 @@
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/transactions",
+    "path": "/api/projects/{projectId}/payments/{paymentId}/transactions",
     "params": [
-      "programId",
+      "projectId",
       "paymentId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/{paymentId}/events",
+    "path": "/api/projects/{projectId}/payments/{paymentId}/events",
     "params": [
-      "programId",
+      "projectId",
       "paymentId"
     ]
   },
@@ -966,32 +966,32 @@
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/notes",
+    "path": "/api/projects/{projectId}/registrations/{referenceId}/notes",
     "params": [
-      "programId",
+      "projectId",
       "referenceId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/registrations/{registrationId}/activities",
+    "path": "/api/projects/{projectId}/registrations/{registrationId}/activities",
     "params": [
-      "programId",
+      "projectId",
       "registrationId"
     ]
   },
   {
     "method": "get",
-    "path": "/api/programs/{programId}/payments/excel-reconciliation/template",
+    "path": "/api/projects/{projectId}/payments/excel-reconciliation/template",
     "params": [
-      "programId"
+      "projectId"
     ]
   },
   {
     "method": "post",
-    "path": "/api/programs/{programId}/payments/{paymentId}/excel-reconciliation",
+    "path": "/api/projects/{projectId}/payments/{paymentId}/excel-reconciliation",
     "params": [
-      "programId",
+      "projectId",
       "paymentId"
     ]
   },

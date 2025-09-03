@@ -1,4 +1,4 @@
-programFspConfigurationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName
+projectFspConfigurationName,phoneNumber,preferredLanguage,paymentAmountMultiplier,maxPayments,firstName,lastName
 Onafriq,24312345678,en,1,6,Barbara,Floyd
 Onafriq,24312345679,en,1,6,Rebecca,Rodgers
 Onafriq,24312345680,en,1,6,Eddie,Sharp

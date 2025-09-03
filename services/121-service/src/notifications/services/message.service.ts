@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { ProjectNotificationEnum } from '@121-service/src/notifications/enum/project-notification.enum';
 import {
   MessageJobCustomDataDto,
   MessageJobDto,
@@ -125,7 +125,7 @@ export class MessageService {
     }
     if (messageJobDto.messageTemplateKey) {
       return await this.getTemplateMessageTextOrFallback({
-        programId: messageJobDto.programId,
+        projectId: messageJobDto.projectId,
         messageTemplateKey: messageJobDto.messageTemplateKey,
         preferredLanguage: messageJobDto.preferredLanguage,
       });
@@ -251,7 +251,7 @@ export class MessageService {
         transactionStep,
         status,
         errorMessage,
-        messageJobDto.programId,
+        messageJobDto.projectId,
         {
           messageSid,
           intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
@@ -288,12 +288,12 @@ export class MessageService {
 
     const registration = await this.registrationRepository.findOneOrFail({
       where: { id: Equal(registrationId) },
-      relations: ['program'],
+      relations: ['project'],
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
     const contentSid = await this.getTemplateContentSidOrFallback({
-      programId: registration.program.id,
-      messageTemplateKey: ProgramNotificationEnum.whatsappGenericMessage,
+      projectId: registration.project.id,
+      messageTemplateKey: ProjectNotificationEnum.whatsappGenericMessage,
       preferredLanguage: language,
     });
     const sid = await this.whatsappService.sendWhatsapp({
@@ -314,18 +314,18 @@ export class MessageService {
   }
 
   private async getTemplateMessageTextOrFallback({
-    programId,
+    projectId,
     messageTemplateKey,
     preferredLanguage,
   }: {
-    programId: number;
+    projectId: number;
     messageTemplateKey: string;
     preferredLanguage: string;
   }): Promise<string> {
     return (
       (
         await this.getMessageTemplateForLanguageOrFallback(
-          programId,
+          projectId,
           messageTemplateKey,
           preferredLanguage,
         )
@@ -334,34 +334,34 @@ export class MessageService {
   }
 
   private async getTemplateContentSidOrFallback({
-    programId,
+    projectId,
     messageTemplateKey,
     preferredLanguage,
   }: {
-    programId: number;
+    projectId: number;
     messageTemplateKey: string;
     preferredLanguage: string;
   }): Promise<string> {
     const messageTemplate = await this.getMessageTemplateForLanguageOrFallback(
-      programId,
+      projectId,
       messageTemplateKey,
       preferredLanguage,
     );
     if (!messageTemplate.contentSid) {
       throw new Error(
-        `No contentSid found for message template key: ${messageTemplateKey}, programId: ${programId}, language: ${preferredLanguage}`,
+        `No contentSid found for message template key: ${messageTemplateKey}, projectId: ${projectId}, language: ${preferredLanguage}`,
       );
     }
     return messageTemplate.contentSid;
   }
 
   private async getMessageTemplateForLanguageOrFallback(
-    programId: number,
+    projectId: number,
     messageTemplateKey: string,
     preferredLanguage: string,
   ): Promise<{ message: string | null; contentSid: string | null }> {
     const messageTemplates = await this.messageTemplateRepo.findBy({
-      program: { id: programId },
+      project: { id: projectId },
       type: messageTemplateKey,
     });
 

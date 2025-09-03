@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Update project fsp configuration of PA should fail when updating project fsp configuration when a required property of new FSP is not yet present 1`] = `
+{
+  "message": "addressCity: Cannot update 'addressCity' is required for the FSP: 'Intersolve-visa', addressHouseNumber: Cannot update 'addressHouseNumber' is required for the FSP: 'Intersolve-visa', addressPostalCode: Cannot update 'addressPostalCode' is required for the FSP: 'Intersolve-visa', addressStreet: Cannot update 'addressStreet' is required for the FSP: 'Intersolve-visa'",
+  "statusCode": 400,
+}
+`;

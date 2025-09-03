@@ -16,13 +16,13 @@ export class NotesService {
     referenceId: string,
     text: string,
     userId: number,
-    programId: number,
+    projectId: number,
   ): Promise<void> {
     const registration = await this.registrationsService.getRegistrationOrThrow(
       {
         referenceId,
         relations: undefined,
-        programId,
+        projectId,
       },
     );
 

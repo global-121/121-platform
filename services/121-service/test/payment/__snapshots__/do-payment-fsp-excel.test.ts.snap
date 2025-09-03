@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Do payment with Excel FSP Export FSP instructions Should return all program-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set 1`] = `
+exports[`Do payment with Excel FSP Export FSP instructions Should return all project-registration-attributes on Get FSP instruction with Excel-FSP when "columnsToExport" is not set 1`] = `
 [
   {
     "data": [

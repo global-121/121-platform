@@ -12,7 +12,7 @@ const loginPage = new loginModel();
 
 const duplicateNumber = 17; // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
-const programId = 2;
+const projectId = 2;
 
 // At the time of implementation, the request duration was 12s on the server and 3s on the local machine for 130k registrations and about 8k duplicates
 const maxRequestDuration = 12000;
@@ -32,7 +32,7 @@ export default function () {
   // login
   loginPage.login();
   // Upload registration
-  registrationsModel.importRegistrations(programId, registrationPV);
+  registrationsModel.importRegistrations(projectId, registrationPV);
   // Duplicate registration to be more then 100k
   resetPage.duplicateRegistrations(duplicateNumber);
 
@@ -41,7 +41,7 @@ export default function () {
   };
 
   const getRegistration = registrationsModel.getRegistrations(
-    programId,
+    projectId,
     queryParams,
   );
 

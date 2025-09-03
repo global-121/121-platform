@@ -7,7 +7,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdPV,
+  projectIdPV,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(
     seededRegistrations,
-    programIdPV,
+    projectIdPV,
     accessToken,
   );
 
@@ -51,12 +51,12 @@ test('[33879] After the data change of 1 out of 3 duplicates, only 1 registratio
   const registrationPersonalInformationPage =
     new RegistrationPersonalInformationPage(page);
 
-  const projectTitle = 'NLRC Direct Digital Aid Program (PV)';
+  const projectTitle = 'NLRC Direct Digital Aid Project (PV)';
 
   const duplicateRegistration = registrationsPV[1]; // 'Jan Janssen'
 
-  await test.step('Select program', async () => {
-    await homePage.selectProgram(projectTitle);
+  await test.step('Select project', async () => {
+    await homePage.selectProject(projectTitle);
   });
 
   await test.step('Wait for registrations to load', async () => {
@@ -109,7 +109,7 @@ test('[33879] After the data change of 1 out of 3 duplicates, only 1 registratio
   });
 
   await test.step('Navigate back to registrations table', async () => {
-    await registrationActivityLogPage.navigateToProgramPage('Registrations');
+    await registrationActivityLogPage.navigateToProjectPage('Registrations');
   });
 
   await test.step('Verify that we now have 2 duplicate registrations', async () => {

@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SafaricomTransferEntity } from '@121-service/src/payments/fsp-integration/safaricom/entities/safaricom-transfer.entity';
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
+import { ProjectEntity } from '@121-service/src/projects/project.entity';
+import { ProjectRegistrationAttributeRepository } from '@121-service/src/projects/repositories/project-registration-attribute.repository';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -14,22 +14,22 @@ import {
 
 describe('PaymentsReportingHelperService', () => {
   let service: PaymentsReportingHelperService;
-  let programRepository: Repository<ProgramEntity>;
-  let programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository;
+  let projectRepository: Repository<ProjectEntity>;
+  let projectRegistrationAttributeRepository: ProjectRegistrationAttributeRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PaymentsReportingHelperService,
         {
-          provide: getRepositoryToken(ProgramEntity),
+          provide: getRepositoryToken(ProjectEntity),
           useValue: {
             findOneByOrFail: jest.fn(),
             findOneOrFail: jest.fn(),
           },
         },
         {
-          provide: ProgramRegistrationAttributeRepository,
+          provide: ProjectRegistrationAttributeRepository,
           useValue: {
             find: jest.fn().mockReturnValue(() => []),
           },
@@ -38,20 +38,20 @@ describe('PaymentsReportingHelperService', () => {
     }).compile();
 
     service = module.get(PaymentsReportingHelperService);
-    programRepository = module.get(getRepositoryToken(ProgramEntity));
-    programRegistrationAttributeRepository = module.get(
-      ProgramRegistrationAttributeRepository,
+    projectRepository = module.get(getRepositoryToken(ProjectEntity));
+    projectRegistrationAttributeRepository = module.get(
+      ProjectRegistrationAttributeRepository,
     );
   });
 
   describe('getSelectForExport', () => {
     const defaultSelect = [
       DefaultRegistrationDataAttributeNames.name,
-      GenericRegistrationAttributes.registrationProgramId,
+      GenericRegistrationAttributes.registrationProjectId,
       GenericRegistrationAttributes.phoneNumber,
       GenericRegistrationAttributes.preferredLanguage,
       GenericRegistrationAttributes.paymentAmountMultiplier,
-      GenericRegistrationAttributes.programFspConfigurationLabel,
+      GenericRegistrationAttributes.projectFspConfigurationLabel,
       GenericRegistrationAttributes.paymentCount,
     ];
 
@@ -59,12 +59,12 @@ describe('PaymentsReportingHelperService', () => {
       // Arrange
       const customAttributeName1 = 'custom1';
       const customAttributeName2 = 'custom2';
-      (programRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
+      (projectRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
         enableMaxPayments: false,
         enableScope: false,
       });
       (
-        programRegistrationAttributeRepository.find as jest.Mock
+        projectRegistrationAttributeRepository.find as jest.Mock
       ).mockResolvedValue([
         { name: customAttributeName1 },
         { name: customAttributeName2 },
@@ -84,12 +84,12 @@ describe('PaymentsReportingHelperService', () => {
 
     it('includes maxPayments and scope if enabled', async () => {
       // Arrange
-      (programRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
+      (projectRepository.findOneByOrFail as jest.Mock).mockResolvedValue({
         enableMaxPayments: true,
         enableScope: true,
       });
       (
-        programRegistrationAttributeRepository.find as jest.Mock
+        projectRegistrationAttributeRepository.find as jest.Mock
       ).mockResolvedValue([]);
 
       // Act
@@ -108,8 +108,8 @@ describe('PaymentsReportingHelperService', () => {
   describe('getFspSpecificJoinFields', () => {
     it('returns Safaricom join fields', async () => {
       // Arrange
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        programFspConfigurations: [{ fspName: Fsps.safaricom }],
+      (projectRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        projectFspConfigurations: [{ fspName: Fsps.safaricom }],
       });
 
       // Act
@@ -129,8 +129,8 @@ describe('PaymentsReportingHelperService', () => {
 
     it('returns Nedbank join fields', async () => {
       // Arrange
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        programFspConfigurations: [{ fspName: Fsps.nedbank }],
+      (projectRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        projectFspConfigurations: [{ fspName: Fsps.nedbank }],
       });
 
       // Act
@@ -157,8 +157,8 @@ describe('PaymentsReportingHelperService', () => {
 
     it('returns empty array if no matching FSPs', async () => {
       // Arrange
-      (programRepository.findOneOrFail as jest.Mock).mockResolvedValue({
-        programFspConfigurations: [],
+      (projectRepository.findOneOrFail as jest.Mock).mockResolvedValue({
+        projectFspConfigurations: [],
       });
       // Act
       const result = await service.getFspSpecificJoinFields(1);
@@ -170,18 +170,18 @@ describe('PaymentsReportingHelperService', () => {
   describe('createTransactionsExportFilename', () => {
     it('should include all parts when all arguments are provided', () => {
       // Arrange
-      const programId = 42;
+      const projectId = 42;
       const fromDate = new Date('2024-01-01T12:00:00Z');
       const toDate = new Date('2024-01-31T18:30:00Z');
       const payment = 3;
       const fromDateString = '2024-01-01T12-00-00';
       const toDateString = '2024-01-31T18-30-00';
       const paymentString = `payment_${payment}`;
-      const expected = `transactions_${programId}_${fromDateString}_${toDateString}_${paymentString}`;
+      const expected = `transactions_${projectId}_${fromDateString}_${toDateString}_${paymentString}`;
 
       // Act
       const result = service.createTransactionsExportFilename(
-        programId,
+        projectId,
         fromDate,
         toDate,
         payment,
@@ -193,16 +193,16 @@ describe('PaymentsReportingHelperService', () => {
 
     it('should omit fromDate if not provided', () => {
       // Arrange
-      const programId = 1;
+      const projectId = 1;
       const toDate = new Date('2024-02-01T00:00:00Z');
       const payment = 2;
       const toDateString = '2024-02-01T00-00-00';
       const paymentString = `payment_${payment}`;
-      const expected = `transactions_${programId}_${toDateString}_${paymentString}`;
+      const expected = `transactions_${projectId}_${toDateString}_${paymentString}`;
 
       // Act
       const result = service.createTransactionsExportFilename(
-        programId,
+        projectId,
         undefined,
         toDate,
         payment,
@@ -214,16 +214,16 @@ describe('PaymentsReportingHelperService', () => {
 
     it('should omit toDate if not provided', () => {
       // Arrange
-      const programId = 5;
+      const projectId = 5;
       const fromDate = new Date('2024-03-01T10:00:00Z');
       const payment = 7;
       const fromDateString = '2024-03-01T10-00-00';
       const paymentString = `payment_${payment}`;
-      const expected = `transactions_${programId}_${fromDateString}_${paymentString}`;
+      const expected = `transactions_${projectId}_${fromDateString}_${paymentString}`;
 
       // Act
       const result = service.createTransactionsExportFilename(
-        programId,
+        projectId,
         fromDate,
         undefined,
         payment,
@@ -235,16 +235,16 @@ describe('PaymentsReportingHelperService', () => {
 
     it('should omit payment if not provided', () => {
       // Arrange
-      const programId = 9;
+      const projectId = 9;
       const fromDate = new Date('2024-04-01T08:00:00Z');
       const toDate = new Date('2024-04-30T20:00:00Z');
       const fromDateString = '2024-04-01T08-00-00';
       const toDateString = '2024-04-30T20-00-00';
-      const expected = `transactions_${programId}_${fromDateString}_${toDateString}`;
+      const expected = `transactions_${projectId}_${fromDateString}_${toDateString}`;
 
       // Act
       const result = service.createTransactionsExportFilename(
-        programId,
+        projectId,
         fromDate,
         toDate,
         undefined,
@@ -254,13 +254,13 @@ describe('PaymentsReportingHelperService', () => {
       expect(result).toBe(expected);
     });
 
-    it('should only include programId if nothing else is provided', () => {
+    it('should only include projectId if nothing else is provided', () => {
       // Arrange
-      const programId = 99;
-      const expected = `transactions_${programId}`;
+      const projectId = 99;
+      const expected = `transactions_${projectId}`;
 
       // Act
-      const result = service.createTransactionsExportFilename(programId);
+      const result = service.createTransactionsExportFilename(projectId);
 
       // Assert
       expect(result).toBe(expected);

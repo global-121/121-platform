@@ -4,13 +4,13 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   amountVisa,
-  programIdVisa,
+  projectIdVisa,
 } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
+} from '@121-service/test/helpers/project.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
@@ -20,7 +20,7 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
-  programIdOCW,
+  projectIdOCW,
   registrationOCW1,
   registrationOCW2,
   registrationOCW3,
@@ -43,13 +43,13 @@ describe('Do payment with filter', () => {
     accessToken = await getAccessToken();
 
     await importRegistrations(
-      programIdOCW,
+      projectIdOCW,
       [registrationOCW1, registrationOCW2, registrationOCW3, registrationOCW4],
       accessToken,
     );
 
     await awaitChangeRegistrationStatus({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       referenceIds: includedRefrenceIds,
       status: RegistrationStatusEnum.included,
       accessToken,
@@ -59,20 +59,20 @@ describe('Do payment with filter', () => {
   it('should only pay included people', async () => {
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: includedRefrenceIds,
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
@@ -93,7 +93,7 @@ describe('Do payment with filter', () => {
   it('should only pay included people with query filter included', async () => {
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -101,13 +101,13 @@ describe('Do payment with filter', () => {
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: includedRefrenceIds,
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
@@ -127,7 +127,7 @@ describe('Do payment with filter', () => {
   it('should only pay included people with query filter referenceId', async () => {
     // Act
     const doPaymentResponse = await doPayment({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       amount: amountVisa,
       referenceIds: [],
       accessToken,
@@ -138,13 +138,13 @@ describe('Do payment with filter', () => {
     });
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: [registrationOCW1.referenceId],
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
@@ -161,7 +161,7 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment(
       {
-        programId: programIdVisa,
+        projectId: projectIdVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -173,13 +173,13 @@ describe('Do payment with filter', () => {
     );
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,
@@ -197,7 +197,7 @@ describe('Do payment with filter', () => {
     // Act
     const doPaymentResponse = await doPayment(
       {
-        programId: programIdVisa,
+        projectId: projectIdVisa,
         amount: amountVisa,
         referenceIds: [],
         accessToken,
@@ -209,13 +209,13 @@ describe('Do payment with filter', () => {
     );
 
     await waitForPaymentTransactionsToComplete({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentReferenceIds: [registrationOCW3.referenceId],
       accessToken,
       maxWaitTimeMs: 10_000,
     });
     const transactionsResponse = await getTransactions({
-      programId: programIdVisa,
+      projectId: projectIdVisa,
       paymentId: doPaymentResponse.body.id,
       registrationReferenceId: null,
       accessToken,

@@ -192,7 +192,7 @@ export class ProjectMonitoringFilesPageComponent {
       },
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
-        requiredPermission: PermissionEnum.ProgramAttachmentsDELETE,
+        requiredPermission: PermissionEnum.ProjectAttachmentsDELETE,
       }),
     },
   ]);
@@ -200,7 +200,7 @@ export class ProjectMonitoringFilesPageComponent {
   readonly canUploadFiles = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
-      requiredPermission: PermissionEnum.ProgramAttachmentsCREATE,
+      requiredPermission: PermissionEnum.ProjectAttachmentsCREATE,
     }),
   );
 }
