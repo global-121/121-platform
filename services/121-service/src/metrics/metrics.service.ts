@@ -428,11 +428,12 @@ export class MetricsService {
       .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
       .addSelect(`COUNT(*)`)
       .andWhere({ programId })
-      .groupBy(`"created"`)
-      .orderBy(`"created"`);
+      .groupBy(`to_char("created", 'yyyy-mm-dd')`)
+      .orderBy(`to_char("created", 'yyyy-mm-dd')`);
+    console.log('query: ', query.getSql());
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
-        dates[r.created] = r.count;
+        dates[r.created] = Number(r.count);
         return dates;
       },
       {},
@@ -488,9 +489,9 @@ export class MetricsService {
           payment.paymentId,
         );
 
-      res[month].success += aggregate.success.amount;
-      res[month].waiting += aggregate.waiting.amount;
-      res[month].failed += aggregate.failed.amount;
+      res[month].success += Number(aggregate.success.amount);
+      res[month].waiting += Number(aggregate.waiting.amount);
+      res[month].failed += Number(aggregate.failed.amount);
     }
 
     return res;
