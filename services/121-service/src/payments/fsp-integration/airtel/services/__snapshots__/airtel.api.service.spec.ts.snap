@@ -15,51 +15,6 @@ exports[`AirtelApiService disburse authenticate throws an AirtelApiError when au
 
 exports[`AirtelApiService disburse authenticate throws an AirtelApiError when authentication was unsuccessfull because of invalid secrets 1`] = `"Airtel API Error: authentication failed: invalid_client - Invalid client authentication"`;
 
-exports[`AirtelApiService disburse authenticated correctly calls disburse endpoint 1`] = `
-{
-  "message": "Success (DP00900001001)",
-  "result": "success",
-}
-`;
-
-exports[`AirtelApiService disburse authenticated correctly calls disburse endpoint 2`] = `
-[
-  "http://mock-service:3001/api/fsp/airtel/standard/v2/disbursements/",
-  {
-    "payee": {
-      "currency": "ZMW",
-      "msisdn": "000000000",
-      "name": "3132312D706C6174666F726D",
-    },
-    "pin": "mock-encrypted-pin",
-    "reference": "1234",
-    "transaction": {
-      "amount": 200,
-      "id": "mock-transaction-id",
-      "type": "B2C",
-    },
-  },
-  [
-    {
-      "name": "Authorization",
-      "value": "Bearer mock-access-token",
-    },
-    {
-      "name": "Content-type",
-      "value": "application/json",
-    },
-    {
-      "name": "X-country",
-      "value": "ZM",
-    },
-    {
-      "name": "X-currency",
-      "value": "ZMW",
-    },
-  ],
-]
-`;
-
 exports[`AirtelApiService disburse authenticated throws an AirtelApiError when there's a network error 1`] = `"Airtel API Error: disburse failed, could not complete request: Network error"`;
 
 exports[`AirtelApiService enquire calls authenticate endpoint 1`] = `
