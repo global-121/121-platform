@@ -55,7 +55,7 @@ export class SinglePaymentExportComponent {
   );
 
   readonly exportFspPaymentListMutationData = computed(() => ({
-    paymentId: this.paymentId().toString(),
+    paymentId: this.paymentId(),
   }));
 
   exportFspPaymentListMutation = injectMutation(() =>

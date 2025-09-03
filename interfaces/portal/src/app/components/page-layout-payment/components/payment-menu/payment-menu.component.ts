@@ -28,12 +28,12 @@ export class PaymentMenuComponent {
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-transfer-list:Transfer list`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}/${this.paymentId().toString()}/${AppRoutes.projectPaymentTransferList}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectPayments}/${this.paymentId()}/${AppRoutes.projectPaymentTransferList}`,
       icon: 'pi pi-table',
     },
     {
       label: $localize`:@@page-title-project-payment-log:Payment log`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectPayments}/${this.paymentId().toString()}/${AppRoutes.projectPaymentLog}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectPayments}/${this.paymentId()}/${AppRoutes.projectPaymentLog}`,
       icon: 'pi pi-list',
     },
   ]);

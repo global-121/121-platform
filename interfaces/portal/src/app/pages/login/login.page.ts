@@ -33,11 +33,13 @@ import { AUTH_ERROR_IN_STATE_KEY, AuthService } from '~/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  AppRoutes = AppRoutes;
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  authError: string | undefined;
+
+  AppRoutes = AppRoutes;
+  LoginComponent = this.authService.LoginComponent;
+
   readonly returnUrl = computed(() => {
     const returnUrl: unknown = this.route.snapshot.queryParams.returnUrl;
     if (typeof returnUrl !== 'string') {
@@ -46,14 +48,15 @@ export class LoginPageComponent {
     return returnUrl;
   });
 
-  LoginComponent = this.authService.LoginComponent;
-  constructor() {
-    const currentNavigation = this.router.getCurrentNavigation();
+  readonly authError = computed(() => {
+    const currentNavigation = this.router.currentNavigation();
     const authError: unknown =
       currentNavigation?.extras.state?.[AUTH_ERROR_IN_STATE_KEY];
 
     if (typeof authError === 'string') {
-      this.authError = authError;
+      return authError;
     }
-  }
+
+    return undefined;
+  });
 }

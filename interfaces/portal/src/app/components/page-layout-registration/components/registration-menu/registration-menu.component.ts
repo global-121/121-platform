@@ -41,17 +41,17 @@ export class RegistrationMenuComponent {
   readonly navMenuItems = computed<MenuItem[]>(() => [
     {
       label: $localize`:@@page-title-project-registrations-activity-log:Activity log`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationActivityLog}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationActivityLog}`,
       icon: 'pi pi-list',
     },
     {
       label: $localize`:@@page-title-project-registrations-personal-information:Personal information`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationPersonalInformation}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationPersonalInformation}`,
       icon: 'pi pi-id-card',
     },
     {
       label: $localize`:@@page-title-project-registrations-debit-cards:Debit cards`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectRegistrations}/${this.registrationId().toString()}/${AppRoutes.projectRegistrationDebitCards}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectRegistrations}/${this.registrationId()}/${AppRoutes.projectRegistrationDebitCards}`,
       icon: 'pi pi-credit-card',
       visible: this.registration.data()?.fspName === Fsps.intersolveVisa,
     },

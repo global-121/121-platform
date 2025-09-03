@@ -68,7 +68,7 @@ export class IgnoreDuplicationDialogComponent {
 
     const registrationIds = [
       Number(this.registrationId()),
-      ...this.duplicates.data().map((d) => Number(d.registrationId)),
+      ...this.duplicates.data().map((d) => d.registrationId),
     ];
 
     return registrationIds;
