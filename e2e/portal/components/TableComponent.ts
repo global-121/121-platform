@@ -100,7 +100,7 @@ class TableComponent {
     await expect(async () => {
       const rowCount = await this.tableRows.count();
       expect(rowCount).toBe(expectedRowCount);
-    }).toPass({ timeout: 2000 });
+    }).toPass({ timeout: 500 });
   }
 
   async globalSearch(searchText: string) {
@@ -129,7 +129,7 @@ class TableComponent {
     return await header.getAttribute('aria-sort');
   }
 
-  async waitForSortingColumnToBeSorted({
+  async waitForSortingIconOnTableHeader({
     columnName,
     type,
   }: {
@@ -141,13 +141,13 @@ class TableComponent {
 
     if (type === 'ascending' || type === 'descending') {
       await expect(header).toHaveAttribute('aria-sort', type, {
-        timeout: 2000,
+        timeout: 500,
       });
     } else {
       await expect(header).toHaveAttribute(
         'aria-sort',
         /ascending|descending/,
-        { timeout: 2000 },
+        { timeout: 500 },
       );
     }
   }
@@ -158,13 +158,13 @@ class TableComponent {
       .locator('p-sorticon');
 
     await columnToSort.click();
-    await this.waitForSortingColumnToBeSorted({
+    await this.waitForSortingIconOnTableHeader({
       columnName,
       type: 'ascending',
     });
 
     await columnToSort.click();
-    await this.waitForSortingColumnToBeSorted({
+    await this.waitForSortingIconOnTableHeader({
       columnName,
       type: 'descending',
     });
@@ -180,7 +180,7 @@ class TableComponent {
     // If the current state is not the desired state, click to change it
     if (sortingType !== sort) {
       await columnToSort.click();
-      await this.waitForSortingColumnToBeSorted({
+      await this.waitForSortingIconOnTableHeader({
         columnName,
       });
       const sortingType = await this.getSortingTypeOfColumn(columnName);
@@ -188,7 +188,7 @@ class TableComponent {
       // If still not in the desired state, click again
       if (sortingType !== sort) {
         await columnToSort.click();
-        await this.waitForSortingColumnToBeSorted({
+        await this.waitForSortingIconOnTableHeader({
           columnName,
         });
       }
@@ -364,13 +364,13 @@ class TableComponent {
       const deleteLabel = this.page.getByLabel(
         'I understand this action can not be undone',
       );
-      await expect(deleteLabel).toBeVisible({ timeout: 2000 });
+      await expect(deleteLabel).toBeVisible({ timeout: 500 });
       await deleteLabel.click();
     }
 
     const statusesThatRequireReason = ['Pause', 'Decline', 'Delete'];
     if (statusesThatRequireReason.includes(status)) {
-      await expect(reasonField).toBeVisible({ timeout: 2000 });
+      await expect(reasonField).toBeVisible({ timeout: 500 });
       await reasonField.fill('Test reason');
     }
 

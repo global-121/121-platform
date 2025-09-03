@@ -140,7 +140,7 @@ class RegistrationsPage extends BasePage {
   async getColumnIndexByHeaderText(headerText: string): Promise<number> {
     await expect(
       this.table.tableHeader.locator('th', { hasText: headerText }),
-    ).toBeVisible({ timeout: 2000 });
+    ).toBeVisible({ timeout: 500 });
 
     const headerCells = await this.table.tableHeader
       .locator('th')
@@ -363,7 +363,7 @@ class RegistrationsPage extends BasePage {
     await expect(async () => {
       const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
       expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
-    }).toPass({ timeout: 2000 });
+    }).toPass({ timeout: 500 });
   }
 
   async waitForImportProcessToComplete() {
