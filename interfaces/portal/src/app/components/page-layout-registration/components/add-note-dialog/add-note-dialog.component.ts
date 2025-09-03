@@ -3,7 +3,7 @@ import {
   Component,
   inject,
   input,
-  model,
+  viewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -16,7 +16,7 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { TextareaModule } from 'primeng/textarea';
 
-import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -26,29 +26,31 @@ import {
   genericFieldIsRequiredValidationMessage,
 } from '~/utils/form-validation';
 
-type AddNoteFormGroup = (typeof AddNoteFormComponent)['prototype']['formGroup'];
+type AddNoteFormGroup =
+  (typeof AddNoteDialogComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-note-form',
+  selector: 'app-add-note-dialog',
   imports: [
-    FormSidebarComponent,
+    FormDialogComponent,
     FormFieldWrapperComponent,
     TextareaModule,
     ReactiveFormsModule,
   ],
   providers: [ToastService],
-  templateUrl: './add-note-form.component.html',
+  templateUrl: './add-note-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddNoteFormComponent {
+export class AddNoteDialogComponent {
   private projectApiService = inject(ProjectApiService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  readonly formVisible = model.required<boolean>();
   readonly projectId = input.required<string>();
   readonly registrationId = input.required<string>();
+
+  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -86,14 +88,18 @@ export class AddNoteFormComponent {
       });
     },
     onSuccess: () => {
-      this.formGroup.reset();
       this.toastService.showToast({
         detail: $localize`Note successfully added.`,
       });
       void this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
-      this.formVisible.set(false);
     },
   }));
+
+  show() {
+    this.formDialog().show({
+      resetMutation: true,
+    });
+  }
 }

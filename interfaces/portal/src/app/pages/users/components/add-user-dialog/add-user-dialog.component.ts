@@ -5,7 +5,7 @@ import {
   effect,
   inject,
   input,
-  model,
+  viewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -21,7 +21,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
@@ -32,30 +32,33 @@ import {
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
-  (typeof AddUserFormComponent)['prototype']['formGroup'];
+  (typeof AddUserDialogComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-user-form',
+  selector: 'app-add-user-dialog',
   styles: ``,
-  templateUrl: './add-user-form.component.html',
+  templateUrl: './add-user-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
-    FormSidebarComponent,
+    FormDialogComponent,
     FormFieldWrapperComponent,
     InputTextModule,
     ReactiveFormsModule,
   ],
 })
-export class AddUserFormComponent {
+export class AddUserDialogComponent {
   readonly userToEdit = input<undefined | User>();
-  readonly formVisible = model.required<boolean>();
 
   private userApiService = inject(UserApiService);
   private toastService = inject(ToastService);
 
-  readonly isEditing = computed(() => !!this.userToEdit());
+  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
+
   allUsers = injectQuery(this.userApiService.getAllUsers());
+
+  readonly isEditing = computed(() => !!this.userToEdit());
+
   formGroup = new FormGroup({
     displayNameValue: new FormControl<string>('', {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
@@ -68,6 +71,7 @@ export class AddUserFormComponent {
       nonNullable: true,
     }),
   });
+
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
@@ -80,6 +84,7 @@ export class AddUserFormComponent {
       },
     },
   );
+
   userMutation = injectMutation(() => ({
     mutationFn: ({
       displayNameValue,
@@ -100,9 +105,6 @@ export class AddUserFormComponent {
       });
     },
     onSuccess: () => {
-      this.formVisible.set(false);
-      this.formGroup.reset();
-
       this.toastService.showToast({
         detail: this.isEditing()
           ? $localize`User updated`
@@ -112,6 +114,7 @@ export class AddUserFormComponent {
       void this.userApiService.invalidateCache();
     },
   }));
+
   constructor() {
     effect(() => {
       const user = this.userToEdit();
@@ -124,6 +127,12 @@ export class AddUserFormComponent {
       } else {
         this.formGroup.controls.usernameValue.enable();
       }
+    });
+  }
+
+  show() {
+    this.formDialog().show({
+      resetMutation: true,
     });
   }
 }

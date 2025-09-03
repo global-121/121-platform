@@ -1,9 +1,13 @@
-<app-form-sidebar
-  [(visible)]="formVisible"
+<app-form-dialog
+  #formDialog
   [formGroup]="formGroup"
   [mutation]="createProjectMutation"
-  formTitle="Add project"
-  i18n-formTitle="@@add-project-label"
+  [mutationData]="formGroup.getRawValue()"
+  header="Create project"
+  i18n-header="@@create-project"
+  headerIcon="pi pi-plus"
+  proceedLabel="Create project"
+  i18n-proceedLabel="@@create-project"
 >
   <app-form-field-wrapper
     label="Kobo Asset ID"
@@ -30,4 +34,4 @@
       [feedback]="false"
     />
   </app-form-field-wrapper>
-</app-form-sidebar>
+</app-form-dialog>

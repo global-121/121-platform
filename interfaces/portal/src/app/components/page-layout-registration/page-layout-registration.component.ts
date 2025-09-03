@@ -5,7 +5,6 @@ import {
   computed,
   inject,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
 
@@ -32,7 +31,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
-import { AddNoteFormComponent } from '~/components/page-layout-registration/components/add-note-form/add-note-form.component';
+import { AddNoteDialogComponent } from '~/components/page-layout-registration/components/add-note-dialog/add-note-dialog.component';
 import { IgnoreDuplicationDialogComponent } from '~/components/page-layout-registration/components/ignore-duplicates-dialog/ignore-duplication-dialog.component';
 import { RegistrationDuplicatesBannerComponent } from '~/components/page-layout-registration/components/registration-duplicates-banner/registration-duplicates-banner.component';
 import { RegistrationMenuComponent } from '~/components/page-layout-registration/components/registration-menu/registration-menu.component';
@@ -59,7 +58,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     DatePipe,
     MenuModule,
     SkeletonInlineComponent,
-    AddNoteFormComponent,
+    AddNoteDialogComponent,
     RegistrationMenuComponent,
     RegistrationDuplicatesBannerComponent,
     ColoredChipComponent,
@@ -91,6 +90,8 @@ export class PageLayoutRegistrationComponent {
     viewChild.required<IgnoreDuplicationDialogComponent>(
       'ignoreDuplicationDialog',
     );
+  readonly addNoteDialog =
+    viewChild.required<AddNoteDialogComponent>('addNoteDialog');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   registration = injectQuery(
@@ -100,7 +101,6 @@ export class PageLayoutRegistrationComponent {
     ),
   );
 
-  readonly addNoteFormVisible = signal(false);
   readonly actionMenuItems = computed<MenuItem[]>(() => [
     {
       // We need to provide a label for this submenu header due to a PrimeNG bug.
@@ -112,7 +112,7 @@ export class PageLayoutRegistrationComponent {
           label: $localize`:@@add-note:Add note`,
           icon: 'pi pi-pen-to-square',
           command: () => {
-            this.addNoteFormVisible.set(true);
+            this.addNoteDialog().show();
           },
           visible: this.canUpdatePersonalData(),
         },

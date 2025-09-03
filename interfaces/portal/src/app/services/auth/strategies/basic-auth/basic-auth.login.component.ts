@@ -16,7 +16,7 @@ import { AutoFocus } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
-import { FormDefaultComponent } from '~/components/form/form-default.component';
+import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { generateFieldErrors } from '~/utils/form-validation';

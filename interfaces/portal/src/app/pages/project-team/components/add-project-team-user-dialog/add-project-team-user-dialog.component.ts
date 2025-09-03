@@ -5,8 +5,8 @@ import {
   effect,
   inject,
   input,
-  model,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -24,7 +24,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 
-import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
@@ -37,16 +37,16 @@ import {
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
-  (typeof AddProjectTeamUserFormComponent)['prototype']['formGroup'];
+  (typeof AddProjectTeamUserDialogComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-add-project-team-user-form',
+  selector: 'app-add-project-team-user-dialog',
   styles: ``,
-  templateUrl: './add-project-team-user-form.component.html',
+  templateUrl: './add-project-team-user-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ButtonModule,
-    FormSidebarComponent,
+    FormDialogComponent,
     FormFieldWrapperComponent,
     SelectModule,
     MultiSelectModule,
@@ -54,16 +54,17 @@ type AddUserToTeamFormGroup =
     ReactiveFormsModule,
   ],
 })
-export class AddProjectTeamUserFormComponent {
+export class AddProjectTeamUserDialogComponent {
   readonly projectId = input.required<string>();
   readonly enableScope = input.required<boolean>();
-  readonly formVisible = model.required<boolean>();
   readonly userToEdit = input<ProjectUserWithRolesLabel | undefined>();
 
   private projectApiService = inject(ProjectApiService);
   private roleApiService = inject(RoleApiService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
+
+  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
   readonly isEditing = computed(() => !!this.userToEdit());
 
@@ -179,9 +180,6 @@ export class AddProjectTeamUserFormComponent {
       });
     },
     onSuccess: () => {
-      this.formVisible.set(false);
-      this.formGroup.reset();
-
       this.toastService.showToast({
         detail: this.isEditing()
           ? $localize`User updated`
@@ -208,6 +206,12 @@ export class AddProjectTeamUserFormComponent {
         });
         this.formGroup.controls.userValue.enable();
       }
+    });
+  }
+
+  show() {
+    this.formDialog().show({
+      resetMutation: true,
     });
   }
 }
