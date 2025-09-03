@@ -41,7 +41,6 @@ export class QueryTableGlobalSearchComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly trackingService = inject(TrackingService);
 
-  readonly tableKey = input<string | undefined>();
   readonly globalFilterValue = input<string | undefined>();
   readonly globalFilterVisible = model<boolean>(false);
   readonly filterChange = output<string | undefined>();
@@ -76,7 +75,6 @@ export class QueryTableGlobalSearchComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,
       action: TrackingAction.clickGlobalFilterClearButton,
-      name: `table:${this.tableKey() ?? 'unknown'}`,
     });
   }
 
@@ -86,7 +84,6 @@ export class QueryTableGlobalSearchComponent {
     this.trackingService.trackEvent({
       category: TrackingCategory.manageTableSettings,
       action: TrackingAction.clickGlobalFilterButton,
-      name: `table:${this.tableKey() ?? 'unknown'}`,
     });
   }
 }
