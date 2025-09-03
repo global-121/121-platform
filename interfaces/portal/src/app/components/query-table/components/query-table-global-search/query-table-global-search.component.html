@@ -14,6 +14,10 @@
         (input)="filterChange.emit(globalFilterInput.value)"
         placeholder="Filter by keyword"
         i18n-placeholder="@@table-quick-search"
+        title="Filter by keyword"
+        i18n-title="@@table-quick-search"
+        aria-label="Filter by keyword"
+        i18n-aria-label="@@table-quick-search"
       />
       @if (globalFilterValue()) {
         <p-button
