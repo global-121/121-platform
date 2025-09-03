@@ -174,7 +174,7 @@ export class MetricsController {
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
-  @ApiOperation({ summary: 'Get registration count by created date' })
+  @ApiOperation({ summary: '[SCOPED] Get registration count by created date.' })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -190,7 +190,7 @@ export class MetricsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
-    summary: 'Get aggregate results for all payments in a program',
+    summary: '[SCOPED] Get aggregate results for all payments in a program',
   })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({
@@ -207,7 +207,7 @@ export class MetricsController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({
-    summary: 'Get amount sent by month',
+    summary: '[SCOPED] Get amount sent by month',
   })
   @ApiParam({ name: 'programId', required: true })
   @ApiResponse({

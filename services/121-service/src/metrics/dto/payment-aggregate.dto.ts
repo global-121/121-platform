@@ -5,7 +5,7 @@ export class AggregatePerPayment {
 }
 
 export class AggregatePerMonth {
-  [month: number]: {
+  [month: string]: {
     success: number;
     waiting: number;
     failed: number;
