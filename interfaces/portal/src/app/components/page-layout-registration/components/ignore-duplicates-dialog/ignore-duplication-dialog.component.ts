@@ -20,7 +20,7 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
@@ -36,7 +36,7 @@ type IgnoreDuplicationFormGroup =
   imports: [
     FormFieldWrapperComponent,
     InputTextModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -105,7 +105,7 @@ export class IgnoreDuplicationDialogComponent {
       });
     },
   }));
-  readonly confirmationDialog = viewChild.required<ConfirmationDialogComponent>(
+  readonly confirmationDialog = viewChild.required<FormDialogComponent>(
     'ignoreDuplicationDialog',
   );
   show() {

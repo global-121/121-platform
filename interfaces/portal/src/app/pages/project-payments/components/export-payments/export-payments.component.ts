@@ -19,7 +19,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -39,7 +39,7 @@ import {
 @Component({
   selector: 'app-export-payments',
   imports: [
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     ButtonMenuComponent,
     DatePickerModule,
     FormFieldWrapperComponent,
@@ -63,16 +63,15 @@ export class ExportPaymentsComponent {
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   payments = injectQuery(this.paymentApiService.getPayments(this.projectId));
 
-  readonly exportlastPaymentsDialog =
-    viewChild.required<ConfirmationDialogComponent>('exportlastPaymentsDialog');
-  readonly exportUnusedVouchersDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'exportUnusedVouchersDialog',
-    );
-  readonly exportDebitCardUsageDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'exportDebitCardUsageDialog',
-    );
+  readonly exportlastPaymentsDialog = viewChild.required<FormDialogComponent>(
+    'exportlastPaymentsDialog',
+  );
+  readonly exportUnusedVouchersDialog = viewChild.required<FormDialogComponent>(
+    'exportUnusedVouchersDialog',
+  );
+  readonly exportDebitCardUsageDialog = viewChild.required<FormDialogComponent>(
+    'exportDebitCardUsageDialog',
+  );
 
   ExportType = ExportType;
 

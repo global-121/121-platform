@@ -17,7 +17,7 @@ import { FormErrorComponent } from '~/components/form-error/form-error.component
 import { TrackingEvent, TrackingService } from '~/services/tracking.service';
 
 @Component({
-  selector: 'app-confirmation-dialog',
+  selector: 'app-form-dialog',
   imports: [
     ConfirmDialogModule,
     ButtonModule,
@@ -26,11 +26,11 @@ import { TrackingEvent, TrackingService } from '~/services/tracking.service';
     FormsModule,
   ],
   providers: [ConfirmationService],
-  templateUrl: './confirmation-dialog.component.html',
+  templateUrl: './form-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConfirmationDialogComponent<TMutationData = unknown> {
+export class FormDialogComponent<TMutationData = unknown> {
   private confirmationService = inject(ConfirmationService);
   private trackingService = inject(TrackingService);
 

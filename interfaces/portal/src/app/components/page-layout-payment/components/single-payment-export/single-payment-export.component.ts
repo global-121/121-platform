@@ -14,7 +14,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
@@ -26,7 +26,7 @@ import {
 
 @Component({
   selector: 'app-single-payment-export',
-  imports: [ConfirmationDialogComponent, ButtonMenuComponent],
+  imports: [FormDialogComponent, ButtonMenuComponent],
   templateUrl: './single-payment-export.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,12 +41,12 @@ export class SinglePaymentExportComponent {
   private toastService = inject(ToastService);
   private trackingService = inject(TrackingService);
 
-  readonly exportFspPaymentListDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'exportFspPaymentListDialog',
-    );
-  readonly paymentReportDialog =
-    viewChild.required<ConfirmationDialogComponent>('paymentReportDialog');
+  readonly exportFspPaymentListDialog = viewChild.required<FormDialogComponent>(
+    'exportFspPaymentListDialog',
+  );
+  readonly paymentReportDialog = viewChild.required<FormDialogComponent>(
+    'paymentReportDialog',
+  );
 
   ExportType = ExportType;
 

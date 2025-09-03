@@ -12,8 +12,8 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationOCW1 } from '@121-service/test/registrations/pagination/pagination-data';
 
-import ConfirmationDialogComponent from '@121-e2e/portal/components/ConfirmationDialogComponent';
 import DataListComponent from '@121-e2e/portal/components/DataListComponent';
+import FormDialogComponent from '@121-e2e/portal/components/FormDialogComponent';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import RegistrationDebitCardPage from '@121-e2e/portal/pages/RegistrationDebitCardPage';
 
@@ -149,7 +149,7 @@ test('[34621] User can replace a debit card and view both new and old card', asy
   await test.step('Verify the confirmation dialog', async () => {
     const dialogLocator = page.locator('.p-dialog');
 
-    const dialog = new ConfirmationDialogComponent(dialogLocator);
+    const dialog = new FormDialogComponent(dialogLocator);
     await dialog.waitForVisible();
     // Assert
     expect(await dialog.getHeader()).toBe('Replace card');
@@ -262,7 +262,7 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
 
   await test.step('Verify the pause confirmation dialog', async () => {
     const dialogLocator = page.locator('.p-dialog');
-    const dialog = new ConfirmationDialogComponent(dialogLocator);
+    const dialog = new FormDialogComponent(dialogLocator);
     await dialog.waitForVisible();
 
     // Assert dialog content
@@ -325,7 +325,7 @@ test('[34622] User can pause and unpause a debit card', async ({ page }) => {
 
   await test.step('Verify the unpause confirmation dialog', async () => {
     const dialogLocator = page.locator('.p-dialog');
-    const dialog = new ConfirmationDialogComponent(dialogLocator);
+    const dialog = new FormDialogComponent(dialogLocator);
     await dialog.waitForVisible();
 
     // Assert dialog content

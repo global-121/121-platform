@@ -5,7 +5,7 @@
   [icon]="'pi pi-upload'"
   [outlined]="true"
 />
-<app-confirmation-dialog
+<app-form-dialog
   #exportFspPaymentListDialog
   [header]="fspPaymentListLabel()"
   headerIcon="pi pi-upload"
@@ -16,8 +16,8 @@
     You're about to download an Excel file with the FSP instructions for this
     payment.
   </p>
-</app-confirmation-dialog>
-<app-confirmation-dialog
+</app-form-dialog>
+<app-form-dialog
   #paymentReportDialog
   [header]="paymentReportLabel()"
   headerIcon="pi pi-upload"
@@ -31,4 +31,4 @@
     You're about to download an Excel file with all of the registrations
     included in this payment.
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>
