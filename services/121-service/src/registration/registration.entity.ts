@@ -98,7 +98,6 @@ export class RegistrationEntity extends Base121Entity {
   @Index()
   public registrationProgramId: number;
 
-  //TODO: added null
   @Column({ nullable: true, type: 'integer' })
   @IsInt()
   @IsPositive()
