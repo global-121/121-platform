@@ -1700,6 +1700,9 @@
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>
+      <trans-unit id="generic-more-actions" datatype="html">
+        <source>More actions</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

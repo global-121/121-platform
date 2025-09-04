@@ -60,6 +60,11 @@ import {
 } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 import { Leaves } from '~/utils/leaves';
 import { Locale } from '~/utils/locale';
 
@@ -137,6 +142,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   paginateQueryService = inject(PaginateQueryService);
   toastService = inject(ToastService);
   readonly rtlHelper = inject(RtlHelperService);
+  readonly trackingService = inject(TrackingService);
 
   readonly items = input.required<TData[]>();
   readonly isPending = input.required<boolean>();
@@ -174,9 +180,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly tableFilters = signal<
     Record<string, FilterMetadata | FilterMetadata[] | undefined>
   >({});
-  // This is triggered whenever primeng saves the state of the table to local storage
-  // which is an optimal time to update our local state, and make sure the table is showing the correct data
 
+  // This is triggered whenever PrimeNG saves the state of the table to local storage which is an optimal time to update our local state,
+  //  and make sure the table is showing the correct data.
   onStateSave(event: TableState) {
     this.tableFilters.set({
       // clone to make sure to trigger change detection
@@ -271,6 +277,23 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
 
   getColumnType(column: QueryTableColumn<TData>) {
     return column.type ?? QueryTableColumnType.TEXT;
+  }
+
+  toggleMoreActionsMenu(event: Event, item: TData) {
+    this.updateContextMenuItem.emit(item);
+    this.extraOptionsMenu()?.toggle(event);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickMoreActionsMenuButton,
+    });
+  }
+
+  showContextMenu() {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.showContextMenu,
+    });
   }
 
   /**
