@@ -6,7 +6,7 @@ import { ProgramEntity } from '@121-service/src/programs/program.entity';
 @Entity('intersolve_voucher_instruction')
 export class IntersolveVoucherInstructionsEntity extends Base121Entity {
   @Column({ type: 'bytea' })
-  public image: any;
+  public image: Buffer;
 
   @ManyToOne(() => ProgramEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'programId' })

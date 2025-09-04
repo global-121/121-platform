@@ -4,13 +4,13 @@ interface QueryBuilderMock {
   select: () => QueryBuilderMock;
   addSelect: () => QueryBuilderMock;
   leftJoin: () => QueryBuilderMock;
-  getMany?: () => any;
-  getRawMany?: () => any;
+  getMany?: () => unknown;
+  getRawMany?: () => unknown;
   distinct?: () => QueryBuilderMock;
 }
 
 export function generateMockCreateQueryBuilder(
-  dbQueryResult?: any[] | null,
+  dbQueryResult?: unknown[] | null,
   options: { useGetMany?: boolean } = {},
 ): QueryBuilderMock {
   const mock: QueryBuilderMock = {
