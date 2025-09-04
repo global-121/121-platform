@@ -112,15 +112,16 @@ export class OnafriqApiHelperService {
   public isOnafriqApiCallServiceResponseBody(
     responseObj: unknown,
   ): responseObj is OnafriqApiCallServiceResponseBody {
-    const status = (responseObj as any)?.data?.details?.transResponse?.[0]
-      ?.status;
+    const objWithData = responseObj as { data?: { details?: { transResponse?: { status?: unknown }[] } } };
+    const status = objWithData?.data?.details?.transResponse?.[0]?.status;
     return typeof status !== 'undefined';
   }
 
   public serializeErrorResponseData(responseObj: unknown): string {
     let jsonString: string;
     try {
-      jsonString = JSON.stringify((responseObj as any)?.data);
+      const objWithData = responseObj as { data?: unknown };
+      jsonString = JSON.stringify(objWithData?.data);
     } catch {
       jsonString = '[Unserializable data]';
     }

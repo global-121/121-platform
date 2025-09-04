@@ -9,8 +9,9 @@ export class AirtelApiHelperService {
   public isAirtelDisbursementOrEnquiryResponseBodyDto(
     responseObj: unknown,
   ): responseObj is AirtelDisbursementOrEnquiryResponseBodyDto {
-    const responseCode = (responseObj as any)?.status?.response_code;
-    const message = (responseObj as any)?.status?.message;
+    const objWithStatus = responseObj as { status?: { response_code?: unknown; message?: unknown } };
+    const responseCode = objWithStatus?.status?.response_code;
+    const message = objWithStatus?.status?.message;
 
     return responseCode !== undefined && message !== undefined;
   }
