@@ -17,6 +17,11 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 
 @Component({
   selector: 'app-query-table-global-search',
@@ -34,6 +39,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 export class QueryTableGlobalSearchComponent {
   private renderer = inject(Renderer2);
   readonly rtlHelper = inject(RtlHelperService);
+  readonly trackingService = inject(TrackingService);
 
   readonly globalFilterValue = input<string | undefined>();
   readonly globalFilterVisible = model<boolean>(false);
@@ -60,6 +66,24 @@ export class QueryTableGlobalSearchComponent {
       if (isNoGlobalFilterApplied && hasCickedOutsideGlobalFilterContainer) {
         this.globalFilterVisible.set(false);
       }
+    });
+  }
+
+  clearFilterValue(): void {
+    this.filterChange.emit(undefined);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickGlobalFilterClearButton,
+    });
+  }
+
+  showGlobalFilterInput(): void {
+    this.globalFilterVisible.set(true);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickGlobalFilterButton,
     });
   }
 }

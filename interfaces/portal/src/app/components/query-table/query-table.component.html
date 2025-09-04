@@ -121,6 +121,9 @@
                 [showAddButton]="false"
                 [showMatchModes]="!!columnMatchModeOptions"
                 [matchModeOptions]="columnMatchModeOptions"
+                (onShow)="
+                  onShowColumnFilter(columnFilterField, getColumnType(column))
+                "
                 [ngClass]="{
                   '[&_.p-button]:text-purple [&_.p-button]:bg-purple-100':
                     isColumnFiltered,
@@ -167,7 +170,7 @@
                   icon="pi pi-filter-slash"
                   text
                   rounded
-                  (click)="columnFilter.clearFilter(); $event.stopPropagation()"
+                  (onClick)="clearColumnFilter($event, columnFilter)"
                 />
               }
             }
@@ -285,10 +288,11 @@
             text
             plain
             icon="pi pi-ellipsis-h"
-            (click)="
-              updateContextMenuItem.emit(item);
-              extraOptionsMenu()?.toggle($event)
-            "
+            title="More actions"
+            i18n-title="@@generic-more-actions"
+            aria-label="More actions"
+            i18n-aria-label="@@generic-more-actions"
+            (click)="toggleMoreActionsMenu($event, item)"
           />
         </td>
       }
@@ -409,6 +413,7 @@
     [model]="contextMenuItems()"
     #contextMenu
     popup
+    (onShow)="showContextMenu()"
     appendTo="body"
   />
   <!-- Opened when clicking on the ellipsis button -->

@@ -14,11 +14,15 @@
         (input)="filterChange.emit(globalFilterInput.value)"
         placeholder="Filter by keyword"
         i18n-placeholder="@@table-quick-search"
+        title="Filter by keyword"
+        i18n-title="@@table-quick-search"
+        aria-label="Filter by keyword"
+        i18n-aria-label="@@table-quick-search"
       />
       @if (globalFilterValue()) {
         <p-button
           icon="pi pi-times"
-          (click)="filterChange.emit(undefined)"
+          (click)="clearFilterValue()"
           text
           severity="contrast"
           class="absolute end-1 top-1/2 -translate-y-1/2"
@@ -38,7 +42,7 @@
   } @else {
     <p-button
       icon="pi pi-search"
-      (click)="globalFilterVisible.set(true)"
+      (click)="showGlobalFilterInput()"
       text
       severity="contrast"
       size="large"
