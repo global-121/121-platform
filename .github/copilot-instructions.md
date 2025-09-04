@@ -45,7 +45,7 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 
 - Follow existing code patterns and architectural decisions
 - Prioritize readability and maintainability over clever solutions
-- Use TypeScript strictly - avoid `any` types where possible
+- Use TypeScript strictly - avoid `any` types
 - Write self-documenting code with clear naming conventions
 
 ### Formatting & Linting
@@ -72,7 +72,7 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 
 ### Commit Conventions
 
-Follow Conventional Commits with Angular format:
+Follow Conventional Commits with Angular format (strictly enforced):
 
 - `feat:` - New features
 - `fix:` - Bug fixes
@@ -82,7 +82,14 @@ Follow Conventional Commits with Angular format:
 - `test:` - Test additions or modifications
 - `chore:` - Build process, dependency updates
 
-**Format**: Imperative mood, what the commit WILL do
+**Format Requirements**:
+
+- Use imperative mood: "Add feature" not "Added feature" or "Adds feature"
+- Think: "This commit will..." + your commit message
+- Always include Azure DevOps reference in commit body (not title)
+- Use appropriate labels for release note generation
+
+**Examples**:
 
 ```
 feat: Add transaction history to profile page
@@ -90,10 +97,19 @@ feat: Add transaction history to profile page
 See AB#123456
 ```
 
+```
+fix: Prevent user from submitting empty form
+
+See AB#789012
+```
+
 ### Branch Naming
 
-Use pattern: `username/description-of-change`
-Example: `john-doe/add-user-profile-endpoint`
+Use pattern: `username/description-of-change` (strongly encouraged)
+
+- Example: `john-doe/add-user-profile-endpoint`
+- Helps maintain clarity and ownership
+- Consistent with single-author branch paradigm
 
 ### Pull Request Guidelines
 
@@ -101,6 +117,31 @@ Example: `john-doe/add-user-profile-endpoint`
 - Separate frontend and backend changes when possible
 - Include Azure DevOps task references in PR descriptions
 - Follow the PR template for consistency
+- **Draft PRs**: Use draft status until ready for review
+- **Ownership**: Each branch has one owner/maintainer (the PR author)
+- **Review Process**:
+  - Limit to one reviewer unless additional expertise is needed
+  - Same reviewer should handle subsequent reviews
+  - Author merges after approval unless stated otherwise
+  - PRs must be up-to-date with target branch before merging
+- **Content Guidelines**:
+  - Avoid mixing responsibilities in single PR
+  - Prefer non-breaking changes when possible
+  - Add appropriate labels for auto-generating release notes
+  - Include design team review for UI/UX changes
+
+### Pull Request Checklist
+
+Before requesting review, ensure:
+
+- [ ] Self-review completed
+- [ ] Tests added or justification for no tests provided
+- [ ] Design team review requested for UI/UX changes
+- [ ] All automated checks pass
+- [ ] No deviation from PR guidelines needed
+- [ ] Azure DevOps task reference included (AB#XXXXX)
+- [ ] Appropriate release notes label added
+- [ ] Branch is up-to-date with target branch
 
 ## Backend Service Patterns (NestJS)
 
@@ -272,7 +313,7 @@ npm run test:all           # Run all tests
 - ❌ Direct SQL query construction without parameterization
 - ❌ Exposing sensitive data in API responses
 - ❌ Missing authentication/authorization checks
-- ❌ Using `any` type for user input validation
+- ❌ Using `any` type
 
 ### Code Quality Issues
 
@@ -302,5 +343,46 @@ npm run test:all           # Run all tests
 - [Service README](../services/121-service/README.md)
 - [Portal README](../interfaces/portal/README.md)
 - [Testing Guide](../guide-Writing-Tests.md)
+
+## VSCode Integration
+
+This file (`.github/copilot-instructions.md`) is automatically recognized by GitHub Copilot in both GitHub and VSCode environments. The repository includes VSCode-specific configurations:
+
+### VSCode Settings
+
+- **Prettier**: Default formatter with automatic formatting on save
+- **ESLint**: Enabled with auto-fix on save and unused import removal
+- **Azure DevOps Integration**: AB# links are automatically detected and made clickable
+- **Tailwind CSS**: Enhanced IntelliSense with pixel equivalents and custom class attributes
+- **TypeScript**: Uses workspace TypeScript version for consistency
+
+### Recommended Extensions
+
+Check `.vscode/extensions.json` for the complete list of recommended extensions that enhance the development experience.
+
+## Instructions for Copilot Agents
+
+### Self-Improvement Protocol
+
+**Important**: All Copilot agents (both GitHub and VSCode) must follow this protocol:
+
+1. **When reviewing PRs**: Always check if the changes introduce new patterns, conventions, or insights that should be added to these instructions
+2. **When learning new patterns**: If you discover better practices while working on this codebase, suggest updates to this file
+3. **Continuous improvement**: Regularly evaluate whether these instructions reflect the current state and best practices of the codebase
+4. **Documentation updates**: When adding new features or changing existing patterns, ensure these instructions are updated accordingly
+
+### For PR Review Agents
+
+- **Check instruction updates**: Review if the PR introduces patterns that should be documented here
+- **Suggest improvements**: Recommend additions or modifications to these instructions based on code changes
+- **Maintain consistency**: Ensure new code follows the patterns documented in these instructions
+- **Update when needed**: Create follow-up tasks to update these instructions when significant architectural changes are made
+
+### For Code Generation Agents
+
+- **Follow current patterns**: Always reference these instructions when generating code suggestions
+- **Learn from feedback**: When suggestions are rejected, consider if the instructions need clarification
+- **Propose enhancements**: Suggest updates to these instructions when you identify gaps or improvements
+- **Stay current**: Regularly re-read these instructions as they evolve with the codebase
 
 Remember: This platform serves humanitarian aid operations. Code quality and reliability directly impact people in need. Write code that is secure, maintainable, and well-tested.
