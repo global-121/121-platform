@@ -49,7 +49,7 @@ describe('ProgramAttributesService', () => {
           label: 'label for test name #1',
         },
       ];
-      const createQueryBuilder: any = generateMockCreateQueryBuilder(
+      const createQueryBuilder = generateMockCreateQueryBuilder(
         dbQueryResult,
         {
           useGetMany: true,

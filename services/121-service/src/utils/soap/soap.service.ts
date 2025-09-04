@@ -7,6 +7,14 @@ import * as convert from 'xml-js';
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
+// Type for XML elements as used by xml2js library
+type XmlElement = {
+  name?: string;
+  elements?: XmlElement[];
+  text?: string;
+  [key: string]: unknown;
+};
+
 @Injectable()
 export class SoapService {
   public constructor(private readonly httpService: CustomHttpService) {}
@@ -77,23 +85,23 @@ export class SoapService {
     return payload;
   }
 
-  public async readXmlAsJs(xmlName: string): Promise<any> {
+  public async readXmlAsJs(xmlName: string): Promise<XmlElement> {
     const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
     return jsObject;
   }
 
-  public findSoapIndex(soapElement: any, q: string): any {
+  public findSoapIndex(soapElement: XmlElement, q: string): number {
     return soapElement['elements'].findIndex((x) => x.name === q);
   }
 
   public changeSoapBody(
-    payload: any,
+    payload: XmlElement,
     mainElement: string,
     subElements: string[],
     value: string,
-  ): any {
+  ): XmlElement {
     const envelopeXML = this.getChild(payload, 0);
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
@@ -117,11 +125,11 @@ export class SoapService {
     return payload;
   }
 
-  private getChild(xml: any, index: number): any {
+  private getChild(xml: XmlElement, index: number): XmlElement {
     return xml['elements'][index];
   }
 
-  private setValue(xml: any, indices: number[], value: string): any {
+  private setValue(xml: XmlElement, indices: number[], value: string): XmlElement {
     const firstIndex = indices.shift();
     if (firstIndex == undefined) {
       throw new Error('Invalid indices array.');
@@ -138,7 +146,7 @@ export class SoapService {
     return xml;
   }
 
-  public setValueByName(xml: any, attributeName: string, value?: string): any {
+  public setValueByName(xml: XmlElement, attributeName: string, value?: string): XmlElement {
     for (const el of xml.elements) {
       if (el.name === attributeName) {
         el.elements[0].text = value;
@@ -153,9 +161,9 @@ export class SoapService {
     soapAction,
   }: {
     apiUrl: string | undefined;
-    payload: any;
+    payload: XmlElement;
     soapAction: string;
-  }): Promise<any> {
+  }): Promise<Record<string, unknown> | null> {
     const soapRequestXml = convert.js2xml(payload, {
       compact: false,
       spaces: 4,
@@ -199,7 +207,7 @@ export class SoapService {
         httpsAgent: agent,
       },
     })
-      .then((rawResponse: any) => {
+      .then((rawResponse: { response: { statusCode: number; body: string } }) => {
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
           { url: apiUrl, payload: soapRequestXml },
@@ -236,7 +244,7 @@ export class SoapService {
         }
         return null;
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url: apiUrl, payload: soapRequestXml },
           {

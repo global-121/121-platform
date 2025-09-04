@@ -80,7 +80,7 @@ describe('CommercialBankEthiopiaService', () => {
         value: '1234',
       },
     ];
-    const createQueryBuilder: any =
+    const createQueryBuilder =
       generateMockCreateQueryBuilder(dbQueryResult);
 
     jest

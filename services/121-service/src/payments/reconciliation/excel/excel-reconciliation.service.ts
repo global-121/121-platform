@@ -409,7 +409,7 @@ export class ExcelRecociliationService {
 
   private createTransactionResult(
     registrationWithAmount: ExcelFspInstructions,
-    importResponseRecord: any,
+    importResponseRecord: Record<string, unknown>,
   ): PaTransactionResultDto {
     return {
       referenceId: registrationWithAmount.referenceId,
