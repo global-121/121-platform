@@ -70,6 +70,14 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 
 ## Development Workflow
 
+### Sprint Structure
+
+**Team Coordination:**
+- CVA-IM team works in 2-week sprints
+- Sprint schedules synchronized (CVA-IM Tuesday, 121 Wednesday)
+- Tasks tracked on [CVA-IM board 121](https://github.com/orgs/rodekruis/projects/1/views/29)
+- 121 Product Owner manages the backlog
+
 ### Commit Conventions
 
 Follow Conventional Commits with Angular format (strictly enforced):
@@ -102,6 +110,29 @@ fix: Prevent user from submitting empty form
 
 See AB#789012
 ```
+
+### Domain Terminology
+
+**Standard Abbreviations:**
+- **Fsp**: Financial Service Provider (only abbreviation allowed in codebase)
+- All other domain concepts must be written in full
+
+### Naming Conventions
+
+**General Rules:**
+- Use full names, no abbreviations (except "Fsp")
+- Let IDE auto-complete instead of typing long names
+- Class names are plural for Modules, Controllers, Services
+- Class names are singular for Entities and Repositories
+- Base folder names of modules are plural
+- Do not include "Enum" suffix for enums
+
+**Examples:**
+- Module: `ProgramsModule` → `programs.module.ts`
+- Service: `ProgramsService` → `programs.service.ts`
+- Entity: `ProgramEntity` → `program.entity.ts`
+- Repository: `FinancialServiceProviderRepository` → `fsp.repository.ts`
+- Enum: `DefaultUserRole` (not `DefaultUserRoleEnum`)
 
 ### Branch Naming
 
@@ -145,6 +176,21 @@ Before requesting review, ensure:
 
 ## Backend Service Patterns (NestJS)
 
+### Module Architecture & Dependencies
+
+**NestJS Module Dependency Structure:**
+- **Single Responsibility Principle**: Each module has one clear responsibility
+- **Minimal Coupling**: Modules should be loosely coupled for reusability and testing
+- **Hierarchical Structure**: Higher-level modules depend on lower-level ones
+- **Feature Modules**: Group related functionality into feature modules
+- **Avoid Circular Dependencies**: Keep module dependencies acyclic
+
+**Module Implementation Rules:**
+- All database interactions must be in Repositories
+- Modules only use Repositories from their own module and lower-level modules
+- Functions do not accept or return Entities (use DTOs/interfaces)
+- When importing services from other modules, import the full module, not just the service
+
 ### Controller Structure
 
 ```typescript
@@ -162,19 +208,67 @@ export class ProgramsController {
 }
 ```
 
-### Service Layer
+### Function Signatures & Naming
 
-- Implement business logic in services
-- Use dependency injection for all dependencies
-- Handle errors with appropriate HTTP exceptions
-- Use repository pattern for data access
+**Function Naming Conventions:**
+- Add `OrThrow` suffix when functions deliberately throw expected errors
+- Functions returning data from 121 Platform start with "get", not "find"
+- External system functions can use "retrieve" or other descriptive verbs
+- Use full names, no abbreviations (except documented domain abbreviations like "Fsp")
 
-### Entity Definitions
+**Interface Conventions:**
+- **Input Interfaces**: Use "Params" suffix (e.g., `ContactInformationParams`)
+- **Output Interfaces**: Use "Result" suffix (e.g., `ContactInformationResult`)
+- Place interfaces in `/interfaces` folder with descriptive filenames
+- All interface attributes should be `readonly`
+- For 3+ parameters in internal methods, use destructured objects
 
-- Extend `BaseEntity` or `BaseAuditedEntity`
-- Use TypeORM decorators properly
-- Define relationships carefully with cascade options
-- Follow custom ESLint rules for TypeORM entities
+**Function Organization:**
+- Use "step-down" approach: high-level functions first, then implementation details
+- Functions should appear in the order they are called
+- Keep related functions close together
+- Place private/helper functions near the public functions they support
+
+### DTO Conventions
+
+**121 Service API DTOs:**
+- Use classes with "Dto" suffix
+- Input DTOs: Start with action verb (e.g., `CreateAddressDto`)
+- Output DTOs: Use "Response" suffix (e.g., `UserResponseDto`)
+- All DTO attributes should be `readonly`
+- One DTO per file in `/dtos` folder
+
+**External API DTOs:**
+- Use interfaces with naming format: `{Fsp-name}Api{Operation}{Request|Response}{Body|Headers}`
+- Example: `AirtelApiDisbursementRequestHeaders`
+- Place in subfolders like `/dtos/safaricom-api/`
+- Do not share DTOs between internal and external APIs
+
+### Entity & Data Model
+
+**Entity Guidelines:**
+- Use 3rd Normal Form (3NF) for database design
+- Entities belong to specific NestJS modules
+- Only owning module and dependent modules can import entities
+- All data access via Custom Repositories (no TypeORM outside repositories)
+- Entities can only be created/updated/deleted within owning module
+
+**Entity Naming:**
+- Entity class names are singular (e.g., `ProgramEntity`)
+- Repository class names are singular (e.g., `FinancialServiceProviderRepository`)
+- Properties should not use `JSON` as TypeScript type
+- Include `| null` in type when `nullable: true`
+- For FK properties, use full foreign entity name
+
+### API Design
+
+**API Structure:**
+- Organize APIs around entities, not use cases
+- Use proper HTTP methods (GET/POST/DELETE/PUT/PATCH)
+- Apply correct status codes and document them
+- Use nouns, not verbs in URLs (exceptions for actions like /retry, /approve)
+- Limit nesting to 2 levels (`/noun/id/noun/id`)
+- Limit response depth to 2 levels (relation of relation is OK)
 
 ### Database Operations
 
@@ -182,22 +276,82 @@ export class ProgramsController {
 - Avoid direct object conditions in `where` clauses (ESLint enforced)
 - Use the scoped repository pattern for data isolation
 - Handle transactions properly for complex operations
+- Encapsulate data access functionality in Custom Repositories
+
+### Exception Handling
+
+- Use NestJS `HTTPException` for control flow and HTTP responses
+- First argument should be a descriptive string
+- Only use arrays/objects for error messages with very good reason
+- Exceptions can be used for control flow in the 121 Platform
 
 ### Testing Patterns
 
-- Unit tests: Mock dependencies, test business logic
-- Integration tests: Test API endpoints with test database
-- Use helper functions from `test/helpers/` for common operations
-- Clean up data properly in test teardown
+**Unit Tests** (`*.spec.ts`):
+- Focus on response handling, business logic, and edge cases
+- Mock external dependencies for isolation
+- Fast and reliable execution
+- Use for functions with internal business logic and multiple paths
+- Run with: `npm run test:unit:all`
+
+**Integration Tests** (`*.test.ts`):
+- Test real API interactions and component integration
+- Use SuperAgent for API testing
+- Place in `/test` folder
+- Run with: `npm run test:e2e:all`
+
+**Testing Strategy:**
+- Follow Testing Trophy philosophy over Testing Pyramid
+- Write tests that provide value (cost vs. risk analysis)
+- Unit tests provide breadth (wide range of scenarios)
+- Integration tests provide depth (real-world behavior)
+- Refactor complex units into smaller, testable functions
 
 ## Frontend Patterns (Angular)
 
+### File & Folder Structure
+
+**Desired Structure:**
+```
+app
+├── components
+│   └── component-name/
+├── directives
+├── models
+│   ├── model-name.api.model.ts
+│   └── model-name.model.ts
+├── pages/
+│   └── page-name/
+│       ├── components/
+│       │   └── page-specific-component/
+│       ├── page-name.component.html
+│       └── page-name.component.ts
+└── services
+```
+
+**Organization Rules:**
+- No new top-level folders should be added to `app/`
+- Domain-specific folders go inside `app/pages`
+- `models` folder only contains backend entity representations
+- Create components close to where they're used
+- Move to top-level folders only when used by multiple domains
+
 ### Component Guidelines
 
+**Creation Requirements:**
 - **Standalone Components**: All components must be standalone (enforced)
 - **Change Detection**: Use OnPush strategy for performance (enforced)
 - **Lifecycle**: Implement proper lifecycle interfaces
 - **Selectors**: Use `app-` prefix with kebab-case
+- Delete auto-generated spec files unless meaningful
+- Do not create (S)CSS files per component
+
+**Component Best Practices:**
+- Keep custom components/CSS to minimum
+- Use PrimeNG components whenever possible
+- Use new control flow syntax (`@if`, `@for`) over structural directives
+- Do not abstract by default - only extract when certain of reuse
+- Inline templates OK for templates ≤10 lines
 
 ### Component Structure
 
@@ -216,11 +370,18 @@ export class UserProfileComponent implements OnInit {
 
 ### Styling & Templates
 
+**Styling Guidelines:**
 - **Tailwind CSS**: Use utility classes instead of custom CSS
+- Follow Tailwind recommendations for reusing styles
 - **PrimeNG**: Prefer PrimeNG components over custom implementations
+- Add global rules to `styles.scss` for PrimeNG components used in multiple places
+- Use `*-start`/`*-end` instead of `*-left`/`*-right` for RTL support
+
+**Template Guidelines:**
 - **Control Flow**: Use new `@if` and `@for` syntax over `*ngIf`/`*ngFor`
-- **i18n**: All user-facing text must be internationalized
+- **i18n**: All user-facing text must be internationalized using Lokalise
 - **Templates**: Keep inline templates under 20 lines
+- Support RTL languages in positioning and margins
 
 ### State Management
 
@@ -228,6 +389,14 @@ export class UserProfileComponent implements OnInit {
 - Implement reactive patterns with RxJS
 - Handle loading states and error conditions
 - Use signals where appropriate (Angular 17+)
+
+### Internationalization (i18n)
+
+**Translation Process:**
+- Translations managed through Lokalise TMS-service
+- Latest translations downloaded at every build/deployment
+- Language configuration managed per-instance via GitHub environment variables
+- All user-facing text must be internationalized
 
 ## Testing Approach
 
@@ -249,13 +418,19 @@ export class UserProfileComponent implements OnInit {
 
 ```bash
 # Backend
-npm run test:121-service    # All tests
-npm run test:unit:all       # Unit tests only
-npm run test:integration:all # Integration tests
+npm run test:121-service      # All tests
+npm run test:unit:all         # Unit tests only
+npm run test:unit:watch       # Unit tests with watch mode
+npm run test:e2e:all          # Integration/API tests
+npm run test:e2e:watch        # Integration tests with watch mode
 
 # Frontend
-npm run test:portal         # Angular tests
-npm run test:coverage       # With coverage report
+npm run test:portal           # Angular tests
+npm run test:coverage         # With coverage report
+
+# Specific test files
+npm run test:unit:all 'notes' # Unit tests matching pattern
+npm run test:e2e:all 'update-pa' # Integration tests matching pattern
 ```
 
 ## Common Patterns & Utilities
@@ -274,10 +449,26 @@ npm run test:coverage       # With coverage report
 
 ### API Design
 
-- Follow RESTful conventions
-- Use proper HTTP status codes
-- Document all endpoints with Swagger/OpenAPI
-- Version APIs when making breaking changes
+**API Structure:**
+- Organize APIs around entities, not use cases
+- Use proper HTTP methods (GET/POST/DELETE/PUT/PATCH)
+- Apply correct status codes and document them
+- Use nouns, not verbs in URLs (exceptions for actions like /retry, /approve)
+- Limit nesting to 2 levels (`/noun/id/noun/id`)
+- Limit response depth to 2 levels (relation of relation is OK)
+
+**HTTP Response Guidelines:**
+- 404 Not Found: For GET calls to non-existent resource endpoints
+- 200 OK with empty array: For GET calls to collection endpoints with no resources
+
+### URL and Header Construction
+
+**When using fetch API:**
+- Use native `URL` object for constructing URLs and parameters
+- Use native `Headers` object for HTTP headers
+- Pass URL object instance directly to fetch
+- Set Headers object as `headers` property value
+- Exception: Use framework-specific tooling when available (e.g., Angular HttpClient)
 
 ### Database Migrations
 
@@ -370,6 +561,7 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 2. **When learning new patterns**: If you discover better practices while working on this codebase, suggest updates to this file
 3. **Continuous improvement**: Regularly evaluate whether these instructions reflect the current state and best practices of the codebase
 4. **Documentation updates**: When adding new features or changing existing patterns, ensure these instructions are updated accordingly
+5. **Error reporting**: When encountering unexpected errors (e.g., inability to access resources, API failures, permission issues), always report these to reviewers so alternative approaches can be tried
 
 ### For PR Review Agents
 
@@ -377,6 +569,7 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 - **Suggest improvements**: Recommend additions or modifications to these instructions based on code changes
 - **Maintain consistency**: Ensure new code follows the patterns documented in these instructions
 - **Update when needed**: Create follow-up tasks to update these instructions when significant architectural changes are made
+- **Report obstacles**: When unable to access required resources (wikis, documentation, APIs), inform reviewers immediately with specific error details
 
 ### For Code Generation Agents
 
@@ -384,5 +577,6 @@ Check `.vscode/extensions.json` for the complete list of recommended extensions 
 - **Learn from feedback**: When suggestions are rejected, consider if the instructions need clarification
 - **Propose enhancements**: Suggest updates to these instructions when you identify gaps or improvements
 - **Stay current**: Regularly re-read these instructions as they evolve with the codebase
+- **Surface issues**: Report any unexpected errors, access issues, or limitations encountered during code analysis or generation
 
 Remember: This platform serves humanitarian aid operations. Code quality and reliability directly impact people in need. Write code that is secure, maintainable, and well-tested.
