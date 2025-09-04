@@ -10,43 +10,80 @@
   i18n-aria-label="@@query-table-manage-table"
 />
 
-<app-form-sidebar
+<p-drawer
+  #sideBar
   [(visible)]="formVisible"
-  [formGroup]="formGroup"
-  [mutation]="updateColumnVisibility"
+  [position]="rtlHelper.createPosition('end')()"
+  styleClass="max-w-[96vw] sm:min-w-[30rem]"
+  [blockScroll]="true"
   [modal]="false"
-  formTitle="Manage table"
-  i18n-formTitle="@@query-table-manage-table"
-  submitButtonText="Apply"
-  i18n-submitButtonText="@@generic-apply"
 >
-  <p-button
-    label="Revert to default"
-    i18n-label
-    icon="pi pi-replay"
-    [iconPos]="rtlHelper.createPosition('start')()"
-    outlined
-    rounded
-    (click)="resetColumnVisibility.emit(); formVisible.set(false)"
-  />
-  <p
-    i18n
-    class="mt-5 mb-2 font-semibold"
-  >
-    Table columns:
-  </p>
-
-  @for (column of columns(); track $index) {
-    <div class="flex w-full items-center gap-1">
-      <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
-      <label class="flex">
-        <p-checkbox
-          formControlName="selectedColumns"
-          [value]="column"
-          class="me-2"
+  <ng-template pTemplate="headless">
+    <form
+      #sideBarForm
+      class="flex max-h-full min-h-full w-full flex-col overflow-y-auto p-4 pb-20"
+      [formGroup]="formGroup"
+      (ngSubmit)="onFormSubmit()"
+      (keydown.control.enter)="onFormSubmit()"
+      (keydown.meta.enter)="onFormSubmit()"
+      pFocusTrap
+      [pFocusTrapDisabled]="!formVisible()"
+    >
+      <div class="flex grow flex-col gap-2">
+        <h2
+          i18n="@@query-table-manage-table"
+          class="mb-5"
+        >
+          Manage table
+        </h2>
+        <p-button
+          label="Revert to default"
+          i18n-label
+          icon="pi pi-replay"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          outlined
+          rounded
+          (click)="resetColumnVisibility.emit(); formVisible.set(false)"
         />
-        <span>{{ column.header }}</span>
-      </label>
-    </div>
-  }
-</app-form-sidebar>
+        <p
+          i18n
+          class="mt-5 mb-2 font-semibold"
+        >
+          Table columns:
+        </p>
+
+        @for (column of columns(); track $index) {
+          <div class="flex w-full items-center gap-1">
+            <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+            <label class="flex">
+              <p-checkbox
+                formControlName="selectedColumns"
+                [value]="column"
+                class="me-2"
+              />
+              <span>{{ column.header }}</span>
+            </label>
+          </div>
+        }
+      </div>
+      <app-form-error [error]="formError()" />
+      <div class="fixed start-0 end-0 bottom-0 flex justify-end gap-2 p-4">
+        <p-button
+          label="Cancel"
+          i18n-label="@@generic-cancel"
+          type="button"
+          rounded
+          outlined
+          severity="contrast"
+          (click)="sideBar.close($event)"
+        />
+        <p-button
+          label="Apply"
+          i18n-label="@@generic-apply"
+          type="submit"
+          rounded
+        />
+      </div>
+    </form>
+  </ng-template>
+</p-drawer>

@@ -105,7 +105,7 @@ class RegistrationsPage extends BasePage {
   async configureTableColumns(columns: string[]) {
     await this.page.getByTitle('Manage table').click();
     for (const column of columns) {
-      await this.page.getByLabel(column).check();
+      await this.page.getByLabel(column).first().check();
     }
     await this.page.getByRole('button', { name: 'Apply' }).click();
   }
