@@ -4,7 +4,6 @@ import * as XLSX from 'xlsx';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  exportTransactions,
   exportTransactionsAsBuffer,
   patchProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
@@ -14,6 +13,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
@@ -196,11 +196,13 @@ describe('Export transactions', () => {
       format: 'invalid-format',
     };
     // Act
-    const transactionsResponse = await exportTransactions({
-      programId,
-      ...invalidFields,
-      accessToken,
-    });
+
+    const transactionsResponse = await getServer()
+      .get(`/programs/${programId}/transactions`)
+      .query({
+        ...invalidFields,
+      })
+      .set('Cookie', [accessToken]);
 
     // Assert
     expect(transactionsResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);

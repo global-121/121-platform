@@ -204,32 +204,6 @@ export async function getTransactions({
   return response;
 }
 
-export async function exportTransactions({
-  programId,
-  accessToken,
-  fromDate,
-  toDate,
-  paymentId,
-  format,
-}: {
-  programId: number;
-  accessToken: string;
-  fromDate?: string;
-  toDate?: string;
-  paymentId?: unknown;
-  format?: string;
-}): Promise<request.Response> {
-  return await getServer()
-    .get(`/programs/${programId}/transactions`)
-    .query({
-      fromDate,
-      toDate,
-      paymentId,
-      format,
-    })
-    .set('Cookie', [accessToken]);
-}
-
 export async function exportTransactionsAsBuffer({
   programId,
   accessToken,
