@@ -24,7 +24,11 @@ export class CookieJwtStrategy
 
   constructor(private moduleRef: ModuleRef) {
     super({
-      jwtFromRequest: (req: any) => {
+      jwtFromRequest: (req: { 
+        headers?: Record<string, string>; 
+        cookies?: Record<string, string>; 
+        token?: string 
+      }) => {
         let token = null;
         const headerKey = 'x-121-interface';
         const originInterface: InterfaceNames = req.headers[headerKey];
@@ -57,7 +61,13 @@ export class CookieJwtStrategy
     });
   }
 
-  async validate(request: any, payload: UserRequestData): Promise<any> {
+  async validate(
+    request: { 
+      authenticationParameters?: AuthenticatedUserParameters; 
+      params?: { programId?: string } 
+    }, 
+    payload: UserRequestData
+  ): Promise<UserRequestData | boolean> {
     const authParams =
       request.authenticationParameters as AuthenticatedUserParameters;
 

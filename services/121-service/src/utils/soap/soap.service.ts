@@ -12,12 +12,12 @@ export class SoapService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async post(
-    soapBodyPayload: any,
+    soapBodyPayload: Record<string, unknown>,
     headerFile: string,
     username: string,
     password: string,
     url: string,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const jsonSoapBody = convert.js2xml(soapBodyPayload);
     const payload = await this.setSoapHeader(
       soapBodyPayload,
@@ -36,7 +36,7 @@ export class SoapService {
       xml,
       timeout: 150000,
     })
-      .then((rawResponse: any) => {
+      .then((rawResponse: { response: { statusCode: number; body: string } }) => {
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
           { url, payload: jsonSoapBody },
@@ -50,7 +50,7 @@ export class SoapService {
         const jsonResponse = convert.xml2js(body, { compact: true });
         return jsonResponse['soap:Envelope']['soap:Body'];
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
           {
@@ -64,11 +64,11 @@ export class SoapService {
   }
 
   private async setSoapHeader(
-    payload: any,
+    payload: Record<string, unknown>,
     headerFile: string,
     username: string,
     password: string,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const header = await this.readXmlAsJs(headerFile);
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(headerPart, [0, 0, 0], username);
