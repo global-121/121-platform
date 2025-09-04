@@ -216,8 +216,50 @@ describe('AirtelApiService', () => {
         // Second call is disburse()
         expect(post).toHaveBeenCalledTimes(2);
         // Also checks the message, even though we don't show that in the UI.
-        expect(result).toMatchSnapshot();
-        expect(post.mock.calls[1]).toMatchSnapshot();
+        expect(result).toEqual({
+          message: 'Success (DP00900001001)',
+          result: 'success',
+        });
+        const [urlCalled, payload, headers] = post.mock.calls[1];
+        expect(urlCalled).toBe(
+          'http://mock-service:3001/api/fsp/airtel/standard/v2/disbursements/',
+        );
+        expect(payload).toEqual({
+          payee: {
+            currency: 'ZMW',
+            msisdn: '000000000',
+            name: '3132312D706C6174666F726D',
+          },
+          pin: 'mock-encrypted-pin',
+          reference: '1234',
+          transaction: {
+            amount: 200,
+            id: 'mock-transaction-id',
+            type: 'B2C',
+          },
+        });
+        expect(headers).toEqual([
+          {
+            name: 'Accept',
+            value: '*/*',
+          },
+          {
+            name: 'Authorization',
+            value: 'Bearer mock-access-token',
+          },
+          {
+            name: 'Content-type',
+            value: 'application/json',
+          },
+          {
+            name: 'X-country',
+            value: 'ZM',
+          },
+          {
+            name: 'X-currency',
+            value: 'ZMW',
+          },
+        ]);
       });
 
       it("correctly handles response code 'DP00900001000' (ambiguous)", async () => {
