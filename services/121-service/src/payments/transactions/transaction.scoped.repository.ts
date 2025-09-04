@@ -49,7 +49,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     fromDate?: Date;
     toDate?: Date;
     fspSpecificJoinFields?: {
-      entityJoinedToTransaction: EntityClass<any>;
+      entityJoinedToTransaction: EntityClass<Record<string, unknown>>;
       attribute: string;
       alias: string;
     }[];

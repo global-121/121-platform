@@ -212,7 +212,7 @@ export class ScopedRepository<T extends ObjectLiteral> extends Repository<T> {
     entityOrEntities: T | T[],
     options?: SaveOptions,
   ): Promise<T | T[]> {
-    return this.repository.save(entityOrEntities as any, options);
+    return this.repository.save(entityOrEntities as T & T[], options);
   }
 
   public override async insert(

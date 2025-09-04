@@ -55,7 +55,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     entityOrEntities: RegistrationEntity | RegistrationEntity[],
     options?: SaveOptions,
   ): Promise<RegistrationEntity | RegistrationEntity[]> {
-    return this.repository.save(entityOrEntities as any, options);
+    return this.repository.save(entityOrEntities as RegistrationEntity & RegistrationEntity[], options);
   }
 
   public async insert(
