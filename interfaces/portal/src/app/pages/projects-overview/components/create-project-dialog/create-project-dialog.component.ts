@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  model,
+  viewChild,
 } from '@angular/core';
 import {
   FormControl,
@@ -18,7 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
 import { AppRoutes } from '~/app.routes';
-import { FormSidebarComponent } from '~/components/form/form-sidebar.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ToastService } from '~/services/toast.service';
@@ -28,29 +28,29 @@ import {
 } from '~/utils/form-validation';
 
 type CreateProjectFormGroup =
-  (typeof CreateProjectFormComponent)['prototype']['formGroup'];
+  (typeof CreateProjectDialogComponent)['prototype']['formGroup'];
 
 @Component({
-  selector: 'app-create-project-form',
+  selector: 'app-create-project-dialog',
   imports: [
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    FormSidebarComponent,
+    FormDialogComponent,
     ReactiveFormsModule,
     FormFieldWrapperComponent,
   ],
   providers: [ToastService],
-  templateUrl: './create-project-form.component.html',
+  templateUrl: './create-project-dialog.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateProjectFormComponent {
+export class CreateProjectDialogComponent {
   private projectApiService = inject(ProjectApiService);
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  readonly formVisible = model.required<boolean>();
+  readonly formDialog = viewChild.required<FormDialogComponent>('formDialog');
 
   formGroup = new FormGroup({
     token: new FormControl('', {
@@ -83,11 +83,16 @@ export class CreateProjectFormComponent {
       if (!project?.id) {
         throw new Error($localize`No Project-ID returned.`);
       }
-      this.formGroup.reset();
       this.toastService.showToast({
         detail: $localize`Project successfully created.`,
       });
       return this.router.navigate([AppRoutes.project, project.id]);
     },
   }));
+
+  show() {
+    this.formDialog().show({
+      resetMutation: true,
+    });
+  }
 }

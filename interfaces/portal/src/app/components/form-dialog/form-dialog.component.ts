@@ -65,6 +65,8 @@ export class FormDialogComponent<TMutationData = unknown> {
     if (resetMutation) {
       this.mutation().reset();
     }
+
+    this.formGroup()?.reset();
   }
 
   onProceed() {

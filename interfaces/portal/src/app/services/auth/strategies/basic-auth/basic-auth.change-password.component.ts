@@ -13,7 +13,7 @@ import { injectMutation } from '@tanstack/angular-query-experimental';
 import { AutoFocus } from 'primeng/autofocus';
 import { PasswordModule } from 'primeng/password';
 
-import { FormDefaultComponent } from '~/components/form/form-default.component';
+import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';

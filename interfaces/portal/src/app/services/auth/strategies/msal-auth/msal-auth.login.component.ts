@@ -17,7 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-import { FormDefaultComponent } from '~/components/form/form-default.component';
+import { FormDefaultComponent } from '~/components/form-default/form-default.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { AuthService } from '~/services/auth.service';
 import { areAutomatedPopupsBlocked } from '~/utils/are-popups-blocked';

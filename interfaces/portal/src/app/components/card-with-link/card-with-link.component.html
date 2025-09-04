@@ -1,10 +1,10 @@
 <p-card
-  styleClass="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
+  styleClass="[&_.p-card-content]:flex-end group shadow-clickable-cards relative h-full border border-transparent transition-colors *:h-full focus-within:border-purple-500 hover:border-purple-500 [&_.p-card-title]:flex-grow"
 >
   <ng-template pTemplate="title">
     <a
       [routerLink]="href()"
-      class="group-focus-within:text-purple group-hover:text-purple after:absolute after:inset-0 after:block"
+      class="group-focus-within:text-purple group-hover:text-purple transition-colors after:absolute after:inset-0 after:block"
     >
       @if (loading()) {
         <app-skeleton-inline />

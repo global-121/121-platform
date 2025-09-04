@@ -16,10 +16,10 @@
         [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
-      <app-add-project-team-user-form
+      <app-add-project-team-user-dialog
+        #addUserDialog
         [projectId]="projectId()"
         [enableScope]="enableScope()"
-        [(formVisible)]="formVisible"
         [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
       />
     }
