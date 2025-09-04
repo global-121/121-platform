@@ -400,7 +400,7 @@ export class UserProfileComponent implements OnInit {
 ### State Management
 
 - Use Angular services for shared state
-- Implement reactive patterns with RxJS
+- Use tanstack-query for state management and data fetching
 - Handle loading states and error conditions
 
 ### Internationalization (i18n)
