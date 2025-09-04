@@ -442,8 +442,7 @@ docker exec 121-service npm run test:integration:all -t delete-program.test.ts #
 npm run typecheck # type checking
 npm run lint # linting
 
-# Frontend
-cd services/121-service
+cd interfaces/portal
 npm run test:all # run all tests
 npm run typecheck # type checking
 npm run lint # linting
