@@ -48,7 +48,7 @@
     "@swc/core": "^1.13.5",
     "@types/express": "^4.17.23",
     "@types/node": "^20.x",
-    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
