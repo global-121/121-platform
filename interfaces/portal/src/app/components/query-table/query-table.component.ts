@@ -310,6 +310,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
     this.resetSelection();
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickClearAllFiltersButton,
+    });
   }
 
   readonly globalFilterValue = computed(() => {
