@@ -41,6 +41,7 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
 import {
+  ColumnFilter,
   Table,
   TableLazyLoadEvent,
   TableModule,
@@ -436,6 +437,25 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return undefined;
     }
     return column.fieldForSort ?? column.field;
+  }
+
+  onShowColumnFilter(name: string, type: QueryTableColumnType) {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.showColumnFilter,
+      name: `type:${type} name:${name}`,
+    });
+  }
+
+  clearColumnFilter(event: MouseEvent, columnFilter: ColumnFilter) {
+    event.stopPropagation();
+    columnFilter.clearFilter();
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickClearColumnFilterButton,
+      name: `type:${columnFilter.type} name:${columnFilter.field ?? 'unknown'}`,
+    });
   }
 
   /**

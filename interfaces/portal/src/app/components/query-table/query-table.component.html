@@ -121,6 +121,9 @@
                 [showAddButton]="false"
                 [showMatchModes]="!!columnMatchModeOptions"
                 [matchModeOptions]="columnMatchModeOptions"
+                (onShow)="
+                  onShowColumnFilter(columnFilterField, getColumnType(column))
+                "
                 [ngClass]="{
                   '[&_.p-button]:text-purple [&_.p-button]:bg-purple-100':
                     isColumnFiltered,
@@ -167,7 +170,7 @@
                   icon="pi pi-filter-slash"
                   text
                   rounded
-                  (click)="columnFilter.clearFilter(); $event.stopPropagation()"
+                  (onClick)="clearColumnFilter($event, columnFilter)"
                 />
               }
             }
