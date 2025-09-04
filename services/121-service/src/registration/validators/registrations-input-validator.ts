@@ -154,10 +154,9 @@ export class RegistrationsInputValidator {
         if (errorObjScope) {
           errors.push(errorObjScope);
         } else if (program.enableScope) {
-          // We know that scope is undefined or string, or an error would have occured
-          validatedRegistrationInput.scope = row[AdditionalAttributes.scope] as
-            | undefined
-            | string;
+          validatedRegistrationInput.scope = String(
+            row[AdditionalAttributes.scope] ?? '',
+          );
         }
       }
 
@@ -996,12 +995,12 @@ export class RegistrationsInputValidator {
     i: number;
   }): {
     errorObj?: ValidateRegistrationErrorObject | undefined;
-    validatedMaxPayments?: number | undefined;
+    validatedMaxPayments?: number | undefined | null;
   } {
     // It's always allowed to remove the maxPayments value
     // When you upload a csv file, the value is an empty string
     if (value == null || value === '') {
-      return { validatedMaxPayments: undefined };
+      return { validatedMaxPayments: null };
     }
     if (isNaN(+value) || +value <= 0) {
       return {

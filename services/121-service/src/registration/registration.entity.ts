@@ -102,7 +102,7 @@ export class RegistrationEntity extends Base121Entity {
   @IsInt()
   @IsPositive()
   @IsOptional()
-  public maxPayments?: number;
+  public maxPayments?: number | null;
 
   // This is a count of the number of transactions with a distinct on the paymentId
   // can be failed or successful or waiting transactions
@@ -157,7 +157,6 @@ export class RegistrationEntity extends Base121Entity {
 
   // TODO: add some database constraints to make sure that scope is always lowercase
   // TODO: DO not make this nullable but set everything to empty string in migration
-  // Also not use the setting {default: ''} because than we will forget to set it later just one time '' in the migration
   @Index()
   @Column({ nullable: false, default: '' })
   public scope: string;

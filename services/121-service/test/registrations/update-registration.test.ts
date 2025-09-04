@@ -424,4 +424,41 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body).toMatchSnapshot();
   });
+
+  it('should succeed on removing clearable default registration attributes', async () => {
+    // Arrange
+    await resetDB(SeedScript.testMultiple, __filename);
+    accessToken = await getAccessToken();
+    await importRegistrations(
+      programIdWesteros,
+      [registrationWesteros1],
+      accessToken,
+    );
+
+    const dataUpdateToEmpty = {
+      maxPayments: null,
+      scope: null,
+    };
+
+    const reason = 'automated test';
+    // Act
+    const response = await updateRegistration(
+      programIdWesteros,
+      registrationWesteros1.referenceId,
+      dataUpdateToEmpty,
+      reason,
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.OK);
+    const result = await searchRegistrationByReferenceId(
+      registrationWesteros1.referenceId,
+      programIdWesteros,
+      accessToken,
+    );
+    const registration = result.body.data[0];
+    expect(registration.maxPayments).toBe(null);
+    expect(registration.scope.length).toBe(0);
+  });
 });
