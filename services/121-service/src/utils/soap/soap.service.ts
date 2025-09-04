@@ -7,8 +7,8 @@ import * as convert from 'xml-js';
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
-// Type for XML elements as used by xml2js library
-type XmlElement = {
+// Interface for XML elements as used by xml2js library
+interface XmlElement {
   name?: string;
   elements?: XmlElement[];
   text?: string;

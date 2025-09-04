@@ -637,7 +637,7 @@ export class UserService {
     return { user: userData };
   }
 
-  private async buildPermissionsObject(userId: number): Promise<any> {
+  private async buildPermissionsObject(userId: number): Promise<Record<number, PermissionEnum[]>> {
     const user = await this.userRepository.findOneOrFail({
       where: { id: Equal(userId) },
       relations: [
@@ -648,7 +648,7 @@ export class UserService {
       ],
     });
 
-    const permissionsObject = {};
+    const permissionsObject: Record<number, PermissionEnum[]> = {};
     if (user.programAssignments && user.programAssignments[0]) {
       for (const programAssignment of user.programAssignments) {
         let permissions: PermissionEnum[] = [];

@@ -456,7 +456,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     referenceId: string,
     paymentId: number,
     programId: number,
-  ): Promise<any> {
+  ): Promise<Buffer> {
     const voucher = await this.getVoucher(referenceId, paymentId, programId);
     const image = await this.imageCodeService.generateVoucherImage({
       dateTime: voucher.created,
@@ -498,7 +498,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return imageCodeExportVouchersEntity.voucher;
   }
 
-  public async getInstruction(programId: number): Promise<any> {
+  public async getInstruction(programId: number): Promise<Buffer> {
     const intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
         where: { programId: Equal(programId) },
@@ -516,8 +516,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   public async postInstruction(
     programId: number,
-    instructionsFileBlob,
-  ): Promise<any> {
+    instructionsFileBlob: { buffer: Buffer },
+  ): Promise<void> {
     let intersolveInstructionsEntity =
       await this.intersolveInstructionsRepository.findOne({
         where: { programId: Equal(programId) },

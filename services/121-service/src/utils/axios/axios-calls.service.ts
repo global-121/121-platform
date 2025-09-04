@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
 
 import { EXTERNAL_API, IS_DEVELOPMENT } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -20,7 +21,7 @@ export class AxiosCallsService {
     return EXTERNAL_API.rootApi;
   }
 
-  public async loginAsAdmin(): Promise<any> {
+  public async loginAsAdmin(): Promise<AxiosResponse> {
     const url = `${this.getBaseUrl()}/users/login`;
     return this.httpService.post(url, {
       username: env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,

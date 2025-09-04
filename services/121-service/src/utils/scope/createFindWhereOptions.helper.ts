@@ -10,7 +10,7 @@ export type FindOptionsCombined<T> = FindOneOptions<T> & FindManyOptions<T>;
 
 function getWhereQueryScope<T>(
   options: FindOptionsCombined<T>,
-  whereQueryScopeRelated: Record<string, any>,
+  whereQueryScopeRelated: Record<string, unknown>,
   relationArrayToRegistration: string[],
 ): FindOptionsWhere<T> {
   const optionsCopy = options ? cloneDeep(options) : {};
