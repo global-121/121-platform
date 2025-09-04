@@ -227,10 +227,10 @@ export class RegistrationsPaginationService {
     const allResults: MappedPaginatedRegistrationDto[] = [];
 
     const chunks = chunk(referenceIds, chunkSize);
-    for (const c of chunks) {
+    for (const currentChunk of chunks) {
       const querybuilder =
         this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
-          c,
+          currentChunk,
         );
       const chunkResults = await this.getRegistrationsChunked(
         programId,
