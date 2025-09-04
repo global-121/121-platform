@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
@@ -43,7 +44,6 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
-import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -347,7 +347,7 @@ export class PaymentsExecutionService {
 
     // Split the referenceIds into chunks of 1000, to prevent heap out of memory errors
     const BATCH_SIZE = 1000;
-    const paymentChunks = splitArrayIntoChunks(referenceIds, BATCH_SIZE);
+    const paymentChunks = chunk(referenceIds, BATCH_SIZE);
 
     let paymentTransactionResult = 0;
     for (const chunk of paymentChunks) {

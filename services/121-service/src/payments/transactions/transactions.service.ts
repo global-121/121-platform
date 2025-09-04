@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
@@ -26,8 +27,6 @@ import { RegistrationEntity } from '@121-service/src/registration/registration.e
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { splitArrayIntoChunks } from '@121-service/src/utils/chunk.helper';
-
 @Injectable()
 export class TransactionsService {
   @InjectRepository(ProgramEntity)
@@ -316,14 +315,11 @@ export class TransactionsService {
     );
 
     const BATCH_SIZE = 2500;
-    const transactionChunks = splitArrayIntoChunks(
-      transactionsToSave,
-      BATCH_SIZE,
-    );
+    const transactionChunks = chunk(transactionsToSave, BATCH_SIZE);
 
-    for (const chunk of transactionChunks) {
+    for (const chunkedTransactions of transactionChunks) {
       const savedTransactions =
-        await this.transactionScopedRepository.save(chunk);
+        await this.transactionScopedRepository.save(chunkedTransactions);
       const savedTransactionEntities =
         await this.transactionScopedRepository.find({
           where: {
