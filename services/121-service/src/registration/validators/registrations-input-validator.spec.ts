@@ -350,6 +350,7 @@ describe('RegistrationsInputValidator', () => {
     });
 
     expect(result[0]).toHaveProperty('maxPayments');
+    expect(result[0].maxPayments).toBe(null);
   });
 
   // When columns are left empty in a csv they are read as empty string
