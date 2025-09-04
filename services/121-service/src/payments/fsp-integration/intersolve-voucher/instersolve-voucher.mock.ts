@@ -5,7 +5,9 @@ import { waitForRandomDelay } from '@121-service/src/utils/waitFor.helper';
 
 @Injectable()
 export class IntersolveVoucherMockService {
-  public async post(payload: Record<string, unknown>): Promise<Record<string, unknown>> {
+  public async post(
+    payload: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
     await waitForRandomDelay(100, 300);
     const soapBody = payload.elements[0].elements.find(
       (e) => e.name === 'soap:Body',

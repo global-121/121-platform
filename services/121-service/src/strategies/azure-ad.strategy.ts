@@ -62,16 +62,16 @@ export class AzureAdStrategy
   }
 
   async validate(
-    request: { 
-      authenticationParameters?: AuthenticatedUserParameters; 
-      params?: { programId?: string } 
-    }, 
-    payload: { 
-      unique_name?: string; 
-      preferred_username?: string; 
-      exp?: number; 
-      isOrganizationAdmin?: boolean 
-    }
+    request: {
+      authenticationParameters?: AuthenticatedUserParameters;
+      params?: { programId?: string };
+    },
+    payload: {
+      unique_name?: string;
+      preferred_username?: string;
+      exp?: number;
+      isOrganizationAdmin?: boolean;
+    },
   ): Promise<UserRequestData | boolean> {
     if (
       !payload ||

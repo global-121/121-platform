@@ -78,7 +78,7 @@ describe('AirtelService', () => {
       const invalidPhoneNumber = '26012345'; // Too short
 
       // Act
-      let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+      let error: AirtelError | Error; // Handle both custom and generic errors
       try {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
@@ -101,7 +101,7 @@ describe('AirtelService', () => {
       jest.spyOn(apiService, 'disburse').mockResolvedValue(responseFail);
 
       // Act
-      let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+      let error: AirtelError | Error; // Handle both custom and generic errors
       try {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
@@ -123,7 +123,7 @@ describe('AirtelService', () => {
       jest.spyOn(apiService, 'disburse').mockResolvedValue(responseAmbiguous);
 
       // Act
-      let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+      let error: AirtelError | Error; // Handle both custom and generic errors
       try {
         await service.attemptOrCheckDisbursement({
           airtelTransactionId,
@@ -179,7 +179,7 @@ describe('AirtelService', () => {
         jest.spyOn(apiService, 'enquire').mockResolvedValue(responseFail);
 
         // Act
-        let error: AirtelError | any; // The any is unfortunately needed to prevent type errors
+        let error: AirtelError | Error; // Handle both custom and generic errors
         try {
           await service.attemptOrCheckDisbursement({
             airtelTransactionId,

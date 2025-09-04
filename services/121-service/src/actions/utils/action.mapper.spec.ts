@@ -32,7 +32,7 @@ describe('Action mapper', () => {
       salt: 'salt',
       active: true,
       lastLogin: new Date(),
-      hashPassword: async () => {},
+      hashPassword: async () => undefined,
       created: createdDate,
       updated: new Date(),
       isOrganizationAdmin: false,

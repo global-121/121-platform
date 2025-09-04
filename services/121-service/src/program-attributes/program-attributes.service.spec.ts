@@ -49,12 +49,9 @@ describe('ProgramAttributesService', () => {
           label: 'label for test name #1',
         },
       ];
-      const createQueryBuilder = generateMockCreateQueryBuilder(
-        dbQueryResult,
-        {
-          useGetMany: true,
-        },
-      );
+      const createQueryBuilder = generateMockCreateQueryBuilder(dbQueryResult, {
+        useGetMany: true,
+      });
 
       jest
         .spyOn(programRegistrationAttributeRepository, 'createQueryBuilder')

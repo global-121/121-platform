@@ -112,7 +112,9 @@ export class OnafriqApiHelperService {
   public isOnafriqApiCallServiceResponseBody(
     responseObj: unknown,
   ): responseObj is OnafriqApiCallServiceResponseBody {
-    const objWithData = responseObj as { data?: { details?: { transResponse?: { status?: unknown }[] } } };
+    const objWithData = responseObj as {
+      data?: { details?: { transResponse?: { status?: unknown }[] } };
+    };
     const status = objWithData?.data?.details?.transResponse?.[0]?.status;
     return typeof status !== 'undefined';
   }

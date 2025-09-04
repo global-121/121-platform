@@ -35,33 +35,37 @@ describe('RegistrationBulkService', () => {
     // Mock the findOne method
     jest
       .spyOn(messageTemplateRepository as any, 'findOne')
-      .mockImplementation((arg: { where: { programId: { _value: number }; type: { _value: RegistrationStatusEnum } } }) => {
-        const programIdValue = arg.where.programId._value;
-        const typeValue = arg.where.type._value;
+      .mockImplementation(
+        (arg: {
+          where: {
+            programId: { _value: number };
+            type: { _value: RegistrationStatusEnum };
+          };
+        }) => {
+          const programIdValue = arg.where.programId._value;
+          const typeValue = arg.where.type._value;
 
-        if (
-          programIdValue === programId &&
-          typeValue === RegistrationStatusEnum.new
-        ) {
-          return Promise.resolve({
-            id: 1,
-            name: 'test',
-            language: LanguageEnum.en,
-            type: RegistrationStatusEnum.new,
-            message: 'test message',
-            programId: 2,
-          });
-        }
-        return Promise.resolve(null);
-      });
+          if (
+            programIdValue === programId &&
+            typeValue === RegistrationStatusEnum.new
+          ) {
+            return Promise.resolve({
+              id: 1,
+              name: 'test',
+              language: LanguageEnum.en,
+              type: RegistrationStatusEnum.new,
+              message: 'test message',
+              programId: 2,
+            });
+          }
+          return Promise.resolve(null);
+        },
+      );
 
     const dbQueryResult = null;
-    const createQueryBuilder = generateMockCreateQueryBuilder(
-      dbQueryResult,
-      {
-        useGetMany: true,
-      },
-    );
+    const createQueryBuilder = generateMockCreateQueryBuilder(dbQueryResult, {
+      useGetMany: true,
+    });
 
     const registrationViewScopedRepository = unitRef.get(
       RegistrationViewScopedRepository,

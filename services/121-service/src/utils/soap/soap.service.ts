@@ -44,20 +44,22 @@ export class SoapService {
       xml,
       timeout: 150000,
     })
-      .then((rawResponse: { response: { statusCode: number; body: string } }) => {
-        const response = rawResponse.response;
-        this.httpService.logMessageRequest(
-          { url, payload: jsonSoapBody },
-          {
-            status: response.statusCode,
-            statusText: undefined,
-            data: response.body,
-          },
-        );
-        const { body } = response;
-        const jsonResponse = convert.xml2js(body, { compact: true });
-        return jsonResponse['soap:Envelope']['soap:Body'];
-      })
+      .then(
+        (rawResponse: { response: { statusCode: number; body: string } }) => {
+          const response = rawResponse.response;
+          this.httpService.logMessageRequest(
+            { url, payload: jsonSoapBody },
+            {
+              status: response.statusCode,
+              statusText: undefined,
+              data: response.body,
+            },
+          );
+          const { body } = response;
+          const jsonResponse = convert.xml2js(body, { compact: true });
+          return jsonResponse['soap:Envelope']['soap:Body'];
+        },
+      )
       .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
@@ -129,7 +131,11 @@ export class SoapService {
     return xml['elements'][index];
   }
 
-  private setValue(xml: XmlElement, indices: number[], value: string): XmlElement {
+  private setValue(
+    xml: XmlElement,
+    indices: number[],
+    value: string,
+  ): XmlElement {
     const firstIndex = indices.shift();
     if (firstIndex == undefined) {
       throw new Error('Invalid indices array.');
@@ -146,7 +152,11 @@ export class SoapService {
     return xml;
   }
 
-  public setValueByName(xml: XmlElement, attributeName: string, value?: string): XmlElement {
+  public setValueByName(
+    xml: XmlElement,
+    attributeName: string,
+    value?: string,
+  ): XmlElement {
     for (const el of xml.elements) {
       if (el.name === attributeName) {
         el.elements[0].text = value;
@@ -207,43 +217,51 @@ export class SoapService {
         httpsAgent: agent,
       },
     })
-      .then((rawResponse: { response: { statusCode: number; body: string } }) => {
-        const response = rawResponse.response;
-        this.httpService.logMessageRequest(
-          { url: apiUrl, payload: soapRequestXml },
-          {
-            status: response.statusCode,
-            statusText: undefined,
-            data: response.body,
-          },
-        );
+      .then(
+        (rawResponse: { response: { statusCode: number; body: string } }) => {
+          const response = rawResponse.response;
+          this.httpService.logMessageRequest(
+            { url: apiUrl, payload: soapRequestXml },
+            {
+              status: response.statusCode,
+              statusText: undefined,
+              data: response.body,
+            },
+          );
 
-        // Parse the SOAP response if needed
-        const parsedResponse = convert.xml2js(response.body, { compact: true });
+          // Parse the SOAP response if needed
+          const parsedResponse = convert.xml2js(response.body, {
+            compact: true,
+          });
 
-        if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:RMTFundtransferResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:RMTFundtransferResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ]
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:CBERemitanceTransactionStatusResponse'
-          ];
-        } else if (
-          parsedResponse['S:Envelope']['S:Body']['ns10:AccountEnquiryResponse']
-        ) {
-          return parsedResponse['S:Envelope']['S:Body'][
-            'ns10:AccountEnquiryResponse'
-          ];
-        }
-        return null;
-      })
+          if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:RMTFundtransferResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:RMTFundtransferResponse'
+            ];
+          } else if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:CBERemitanceTransactionStatusResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:CBERemitanceTransactionStatusResponse'
+            ];
+          } else if (
+            parsedResponse['S:Envelope']['S:Body'][
+              'ns10:AccountEnquiryResponse'
+            ]
+          ) {
+            return parsedResponse['S:Envelope']['S:Body'][
+              'ns10:AccountEnquiryResponse'
+            ];
+          }
+          return null;
+        },
+      )
       .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url: apiUrl, payload: soapRequestXml },

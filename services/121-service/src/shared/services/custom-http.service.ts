@@ -208,7 +208,9 @@ export class CustomHttpService {
     return returnHeaders;
   }
 
-  private setNoResponseError(err: Error & { errno?: number; code?: string; cause?: unknown }): Response {
+  private setNoResponseError(
+    err: Error & { errno?: number; code?: string; cause?: unknown },
+  ): Response {
     return {
       status: err.errno,
       statusText: err.code,

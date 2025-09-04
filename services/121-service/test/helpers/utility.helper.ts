@@ -202,7 +202,9 @@ function sortByAttribute(attribute: string) {
  * Beyond sorting the attributes, this function also removes certain
  * attributes that always change and that are also irrelevant for the test.
  */
-export function cleanProgramForAssertions(originalProgram: any): any {
+export function cleanProgramForAssertions(
+  originalProgram: Record<string, unknown>,
+): Record<string, unknown> {
   const program = removeNestedProperties(originalProgram, [
     'configuration',
     'startDate',
@@ -229,7 +231,7 @@ export function cleanProgramForAssertions(originalProgram: any): any {
 
   if (program.filterableAttributes) {
     program.filterableAttributes = program.filterableAttributes.map(
-      (filterableAttribute: any) => {
+      (filterableAttribute: Record<string, unknown>) => {
         return {
           ...filterableAttribute,
           filters: filterableAttribute.filters.sort(sortByAttribute('name')),

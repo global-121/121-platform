@@ -11,6 +11,11 @@ const cbeApiUrl = env.MOCK_COMMERCIAL_BANK_ETHIOPIA
   ? `${env.MOCK_SERVICE_URL}/api/fsp/commercial-bank-ethiopia/services` // Mock URL
   : env.COMMERCIAL_BANK_ETHIOPIA_URL;
 
+interface CommercialBankEthiopiaApiResponse {
+  resultDescription?: string;
+  [key: string]: unknown;
+}
+
 @Injectable()
 export class CommercialBankEthiopiaApiService {
   public constructor(private readonly soapService: SoapService) {}
@@ -18,7 +23,7 @@ export class CommercialBankEthiopiaApiService {
   public async creditTransfer(
     payment: CommercialBankEthiopiaTransferPayload,
     credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<CommercialBankEthiopiaApiResponse> {
     const payload = await this.createCreditTransferPayload(
       payment,
       credentials,
@@ -77,7 +82,7 @@ export class CommercialBankEthiopiaApiService {
   public async createCreditTransferPayload(
     payment: CommercialBankEthiopiaTransferPayload,
     credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.CreditTransfer,
@@ -149,7 +154,7 @@ export class CommercialBankEthiopiaApiService {
   public async getTransactionStatus(
     payment: CommercialBankEthiopiaTransferPayload,
     credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<CommercialBankEthiopiaApiResponse> {
     const payload = await this.createTransactionStatusPayload(
       payment,
       credentials,
@@ -196,7 +201,7 @@ export class CommercialBankEthiopiaApiService {
   public async createTransactionStatusPayload(
     payment: CommercialBankEthiopiaTransferPayload,
     credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.TransactionStatus,
@@ -249,7 +254,7 @@ export class CommercialBankEthiopiaApiService {
   public async getValidationStatus(
     bankAccountNumber: string,
     credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<CommercialBankEthiopiaApiResponse> {
     const payload = await this.createValidationStatusPayload(
       bankAccountNumber,
       credentials,
@@ -294,7 +299,7 @@ export class CommercialBankEthiopiaApiService {
   public async createValidationStatusPayload(
     bankAccountNumber: string,
     credentials: UsernamePasswordInterface,
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.AccountEnquiry,

@@ -166,13 +166,15 @@ export class CommercialBankEthiopiaReconciliationService {
       .getRawMany();
 
     // Create a new array by mapping the original objects
-    const formattedData: Record<string, unknown>[] = registrationData.map((pa) => {
-      const paData: Record<string, unknown> = { id: pa.id };
-      pa.fieldNames.forEach((fieldName: string, index: number) => {
-        paData[fieldName] = pa.values[index];
-      });
-      return paData;
-    });
+    const formattedData: Record<string, unknown>[] = registrationData.map(
+      (pa) => {
+        const paData: Record<string, unknown> = { id: pa.id };
+        pa.fieldNames.forEach((fieldName: string, index: number) => {
+          paData[fieldName] = pa.values[index];
+        });
+        return paData;
+      },
+    );
 
     return formattedData;
   }

@@ -80,19 +80,18 @@ describe('CommercialBankEthiopiaService', () => {
         value: '1234',
       },
     ];
-    const createQueryBuilder =
-      generateMockCreateQueryBuilder(dbQueryResult);
+    const createQueryBuilder = generateMockCreateQueryBuilder(dbQueryResult);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'getRegistrationData')
+      .spyOn(commercialBankEthiopiaService, 'getRegistrationData')
       .mockImplementation(() => sendPaymentData[0].referenceId);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'getPaRegistrationData')
+      .spyOn(commercialBankEthiopiaService, 'getPaRegistrationData')
       .mockImplementation(() => [sendPaymentData[0], createQueryBuilder]);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'createPayloadPerPa')
+      .spyOn(commercialBankEthiopiaService, 'createPayloadPerPa')
       .mockReturnValue(paymentDetailsResult.payload);
 
     jest

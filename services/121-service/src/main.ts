@@ -95,7 +95,8 @@ function generateSwaggerSummaryJson(app: INestApplication): void {
           .pop();
 
       const params =
-        methodInfo.parameters?.map((param: { name: string }) => param.name) || [];
+        methodInfo.parameters?.map((param: { name: string }) => param.name) ||
+        [];
 
       const methodInfoObject: MethodInfo = {
         method,

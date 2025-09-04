@@ -393,7 +393,7 @@ export async function waitForStatusChangeToComplete(
 export async function waitForBulkRegistrationChanges(
   expectedChanges: {
     referenceId: string;
-    expectedPatch: Record<string, any>;
+    expectedPatch: Record<string, unknown>;
   }[],
   programId: number,
   accessToken: string,

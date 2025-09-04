@@ -24,7 +24,9 @@ export function IsNotBothPresent<T extends object>(
       validator: {
         validate(value: string, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as Record<string, unknown>)[relatedPropertyName];
+          const relatedValue = (args.object as Record<string, unknown>)[
+            relatedPropertyName
+          ];
           return !(value && relatedValue);
         },
         defaultMessage(args: ValidationArguments) {
