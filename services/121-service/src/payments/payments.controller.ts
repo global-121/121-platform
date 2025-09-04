@@ -13,6 +13,8 @@ import {
   Req,
   Res,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -280,14 +282,14 @@ export class PaymentsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
+  @UsePipes(new ValidationPipe({ transform: true }))
   // This transaction export controller is located in the payments controller because the transaction modules have no knowledge of programs and registrations
   // We tried to name this controller first 'programs/:programId/payments/transactions but than it conflicted with the getTransactions route
   @Get('programs/:programId/transactions')
   public async exportTransactionsUsingDateFilter(
     @Res() res: Response,
     @Param('programId', ParseIntPipe) programId: number,
-    @Query()
-    query: GetTransactionsQueryDto,
+    @Query() query: GetTransactionsQueryDto,
   ): Promise<Response | void> {
     const result =
       await this.paymentsReportingService.exportTransactionsUsingDateFilter({
@@ -296,10 +298,13 @@ export class PaymentsController {
         toDateString: query.toDate,
         paymentId: query.paymentId ? Number(query.paymentId) : undefined,
       });
-    if (query.format === ExportFileFormat.xlsx) {
-      return sendXlsxReponse(result.data, result.fileName, res);
+    switch (query.format) {
+      case ExportFileFormat.xlsx:
+        return sendXlsxReponse(result.data, result.fileName, res);
+      case ExportFileFormat.json:
+      case undefined:
+        return res.send(result);
     }
-    return res.send(result);
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
