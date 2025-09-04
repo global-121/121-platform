@@ -98,10 +98,13 @@ class TableComponent {
     expectedRowCount: number;
   }): Promise<void> {
     await expect(async () => {
-      const rowCount = await this.tableRows.count();
+      const visibleRows = this.tableRows.filter({
+        has: this.page.locator('td:visible'),
+      });
+      const rowCount = await visibleRows.count();
       const rowContents = [];
       for (let i = 0; i < rowCount; i++) {
-        const rowText = await this.tableRows.nth(i).textContent();
+        const rowText = await visibleRows.nth(i).textContent();
         rowContents.push(rowText?.trim());
       }
       console.log(
@@ -111,6 +114,7 @@ class TableComponent {
       expect(rowCount).toBe(expectedRowCount);
     }).toPass({ timeout: 2000 });
   }
+
   async globalSearch(searchText: string) {
     const isGlobalSearchOpen = await this.globalSearchInput.isVisible();
 
