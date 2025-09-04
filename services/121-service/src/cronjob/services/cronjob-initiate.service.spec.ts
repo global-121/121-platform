@@ -1,12 +1,13 @@
 import { AxiosResponse } from 'axios';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
+import { Header } from '@121-service/src/shared/services/custom-http.service';
 
 const exampleApiUrl = 'http://example.com/api';
 const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
 describe('Cronjob initiation', () => {
   let cronjobInitiateService: CronjobInitiateService;
-  const testHeader = { name: 'test name', value: 'test value' };
+  const testHeader: Header = { name: 'test name', value: 'test value' };
   beforeAll(() => {
     cronjobInitiateService = new CronjobInitiateService();
     // Make this a noop.
@@ -16,11 +17,11 @@ describe('Cronjob initiation', () => {
     // Make this a noop. We assert on this return value.
     jest
       .spyOn(cronjobInitiateService['axiosCallsService'], 'accesTokenToHeaders')
-      .mockResolvedValue([testHeader]);
+      .mockReturnValue([testHeader]);
     // We assert on this return value.
     jest
       .spyOn(cronjobInitiateService['axiosCallsService'], 'getBaseUrl')
-      .mockResolvedValue(exampleApiUrl);
+      .mockReturnValue(exampleApiUrl);
   });
 
   afterAll(jest.restoreAllMocks);
