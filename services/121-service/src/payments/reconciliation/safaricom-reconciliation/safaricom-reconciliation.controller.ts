@@ -51,7 +51,7 @@ export class SafaricomReconciliationController {
   @Post('timeout-callback')
   public async processTimeoutCallback(
     @AnyValidBody() // We cannot control the structure of the callback data
-    safaricomTimeoutCallback: any, // deliberatedly 'any', as we are unsure of the payload structure.
+    safaricomTimeoutCallback: unknown, // deliberately 'unknown', as we are unsure of the payload structure.
   ): Promise<void> {
     // Note: As we are unsure of the (exact) payload structure, we log it for debugging purposes when this _does_ occur in production.
     // So that we can adapt the DTO in the future if needed.

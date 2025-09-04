@@ -165,7 +165,7 @@ export class CommercialBankEthiopiaApiService {
       return responseBody;
     } catch (error) {
       // Handle errors here
-      const result: any = {
+      const result: { resultDescription: string } = {
         resultDescription: 'Unknown error occurred.',
       };
 
@@ -265,7 +265,7 @@ export class CommercialBankEthiopiaApiService {
       return responseBody;
     } catch (error) {
       // Handle errors here
-      const result: any = {
+      const result: { resultDescription: string } = {
         resultDescription: 'Unknown error occurred.',
       };
 
