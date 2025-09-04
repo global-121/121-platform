@@ -6,7 +6,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 
 // Todo make this strongly typed
-export function getScopedRepositoryProviderName(entity: any): string {
+export function getScopedRepositoryProviderName(entity: new () => ObjectLiteral): string {
   return `ScopedRepository${entity.name}`;
 }
 

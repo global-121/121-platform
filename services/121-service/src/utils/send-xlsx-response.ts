@@ -2,7 +2,7 @@ import { Response } from 'express';
 import * as XLSX from 'xlsx';
 
 export function sendXlsxReponse(
-  array: any[],
+  array: Record<string, unknown>[],
   filename: string,
   res: Response,
 ): void {
@@ -18,7 +18,7 @@ export function sendXlsxReponse(
   res.send(xls);
 }
 
-function arrayToXlsx(array: any[]): Buffer {
+function arrayToXlsx(array: Record<string, unknown>[]): Buffer {
   const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(array, {
     dense: true,
   });

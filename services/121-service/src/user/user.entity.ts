@@ -30,7 +30,7 @@ export class UserEntity extends Base121Entity {
   public password: string;
 
   @BeforeInsert()
-  public hashPassword(): any {
+  public hashPassword(): void {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.password = crypto
       .pbkdf2Sync(this.password, this.salt, 1, 32, 'sha256')

@@ -74,7 +74,7 @@ interface MethodInfo {
   returnType?: string;
 }
 
-function generateSwaggerSummaryJson(app: INestApplication<any>): void {
+function generateSwaggerSummaryJson(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
@@ -95,7 +95,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
           .pop();
 
       const params =
-        methodInfo.parameters?.map((param: any) => param.name) || [];
+        methodInfo.parameters?.map((param: { name: string }) => param.name) || [];
 
       const methodInfoObject: MethodInfo = {
         method,

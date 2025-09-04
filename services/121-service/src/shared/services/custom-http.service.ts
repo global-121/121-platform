@@ -18,13 +18,13 @@ export class Header {
 class Request {
   public headers?: Header[];
   public url: string;
-  public payload: any;
+  public payload: unknown;
 }
 
 class Response {
   public status: number;
   public statusText: string;
-  public data: any;
+  public data: unknown;
 }
 
 @Injectable()
@@ -60,7 +60,7 @@ export class CustomHttpService {
 
   public async post<T>(
     url: string,
-    payload: any,
+    payload: unknown,
     headers?: Header[],
     httpsAgent?: https.Agent,
   ): Promise<T> {
@@ -86,7 +86,7 @@ export class CustomHttpService {
 
   public async put<T>(
     url: string,
-    payload: any,
+    payload: unknown,
     headers?: Header[],
   ): Promise<T> {
     return await lastValueFrom(
@@ -110,7 +110,7 @@ export class CustomHttpService {
 
   public async patch<T>(
     url: string,
-    payload: any,
+    payload: unknown,
     headers?: Header[],
   ): Promise<T> {
     return await lastValueFrom(
@@ -208,7 +208,7 @@ export class CustomHttpService {
     return returnHeaders;
   }
 
-  private setNoResponseError(err: any): Response {
+  private setNoResponseError(err: Error & { errno?: number; code?: string; cause?: unknown }): Response {
     return {
       status: err.errno,
       statusText: err.code,
@@ -329,7 +329,7 @@ export class CustomHttpService {
    * @param data - Any key-value object
    * @returns - A copy of the input-object with some specific data overwritten/redacted
    */
-  private redactSensitiveDataProperties(data: any) {
+  private redactSensitiveDataProperties(data: unknown) {
     if (!isPlainObject(data)) {
       return data;
     }
