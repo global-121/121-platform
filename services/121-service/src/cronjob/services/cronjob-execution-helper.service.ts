@@ -17,22 +17,19 @@ export class CronjobExecutionHelperService {
     this.azureLogService.consoleLogAndTraceAzure(startMessage);
 
     try {
-      // Execute the cron job function and await its result
       const batchSize = await fn();
 
-      // Handle the result and log the end message
       const cronjobResultMessage = this.createCronjobResultMessage({
         methodName,
         batchSize,
         isError: false,
       });
       this.azureLogService.consoleLogAndTraceAzure(cronjobResultMessage);
+
       return batchSize;
     } catch (error) {
-      // 1. Log the stack trace to the Node logs
       console.error(`Error executing cron job ${methodName}:`, error);
 
-      // 2. Log the cronjob end message to Azure Application Insights and trigger an alert
       const cronjobResultMessage = this.createCronjobResultMessage({
         methodName,
         isError: true,
@@ -51,15 +48,19 @@ export class CronjobExecutionHelperService {
     const { methodName, batchSize, isError } = cronjobResults;
     let message = `[CRON END] ${env.ENV_NAME} - ${methodName} finished at ${new Date().toISOString()}`;
     const details: string[] = [];
+
     if (typeof batchSize === 'number') {
       details.push(`batchSize=${batchSize}`);
     }
+
     if (isError) {
       details.push('isError=true');
     }
+
     if (details.length > 0) {
       message += ` (${details.join(', ')})`;
     }
+
     return message;
   }
 }

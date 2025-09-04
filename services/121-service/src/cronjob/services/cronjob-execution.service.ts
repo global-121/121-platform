@@ -24,60 +24,60 @@ export class CronjobExecutionService {
     private readonly cronjobExecutionHelperService: CronjobExecutionHelperService,
   ) {}
 
-  public async cronCancelByRefposIntersolve(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronCancelByRefposIntersolve() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronCancelByRefposIntersolve',
       () => this.intersolveVoucherCronService.cancelByRefposIntersolve(),
     );
   }
 
-  public async cronValidateCommercialBankEthiopiaAccountEnquiries(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronValidateCommercialBankEthiopiaAccountEnquiries() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronValidateCommercialBankEthiopiaAccountEnquiries',
       () =>
         this.commercialBankEthiopiaReconciliationService.retrieveAndUpsertAccountEnquiries(),
     );
   }
 
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronRetrieveAndUpdatedUnusedIntersolveVouchers() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronRetrieveAndUpdatedUnusedIntersolveVouchers',
       () =>
         this.intersolveVoucherReconciliationService.cronRetrieveAndUpdatedUnusedIntersolveVouchers(),
     );
   }
 
-  public async cronRetrieveAndUpdateVisaData(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronRetrieveAndUpdateVisaData() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronRetrieveAndUpdateVisaData',
       () =>
         this.intersolveVisaReconciliationService.retrieveAndUpdateAllWalletsAndCards(),
     );
   }
 
-  public async cronSendWhatsappReminders(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronSendWhatsappReminders() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronSendWhatsappReminders',
       () => this.intersolveVoucherCronService.sendWhatsappReminders(),
     );
   }
 
-  public async cronDoNedbankReconciliation(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronDoNedbankReconciliation() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronDoNedbankReconciliation',
       () => this.nedbankReconciliationService.doNedbankReconciliation(),
     );
   }
 
-  public async cronSendOnafriqReconciliationReport(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronSendOnafriqReconciliationReport() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronSendOnafriqReconciliationReport',
       () => this.onafriqReconciliationService.sendReconciliationReport(),
     );
   }
 
-  public async cronGetDailyExchangeRates(): Promise<void> {
-    await this.cronjobExecutionHelperService.executeWithLogging(
+  public cronGetDailyExchangeRates() {
+    void this.cronjobExecutionHelperService.executeWithLogging(
       'cronGetDailyExchangeRates',
       () => this.exchangeRatesService.retrieveAndStoreAllExchangeRates(),
     );

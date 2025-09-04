@@ -39,8 +39,8 @@ export class CronjobController {
     description: 'Vouchers canceled by refpos',
   })
   @Post('/fsps/intersolve-voucher/cancel')
-  public async cancelByRefPos(): Promise<void> {
-    await this.cronjobExecutionService.cronCancelByRefposIntersolve();
+  public cancelByRefPos() {
+    void this.cronjobExecutionService.cronCancelByRefposIntersolve();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -54,8 +54,8 @@ export class CronjobController {
       'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
   })
   @Put('fsps/commercial-bank-ethiopia/account-enquiries')
-  public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
-    await this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+  public retrieveAndUpsertAccountEnquiries() {
+    void this.cronjobExecutionService.cronValidateCommercialBankEthiopiaAccountEnquiries();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -67,8 +67,8 @@ export class CronjobController {
     description: 'Cached unused vouchers',
   })
   @Patch('/fsps/intersolve-voucher/unused-vouchers')
-  public async cronRetrieveAndUpdatedUnusedIntersolveVouchers(): Promise<void> {
-    await this.cronjobExecutionService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
+  public cronRetrieveAndUpdatedUnusedIntersolveVouchers() {
+    void this.cronjobExecutionService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -82,8 +82,8 @@ export class CronjobController {
       'Data retrieved from Intersolve and entities updated for all programs.',
   })
   @Patch('/fsps/intersolve-visa/')
-  public async cronRetrieveAndUpdateVisaData(): Promise<void> {
-    await this.cronjobExecutionService.cronRetrieveAndUpdateVisaData();
+  public cronRetrieveAndUpdateVisaData() {
+    void this.cronjobExecutionService.cronRetrieveAndUpdateVisaData();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -95,8 +95,8 @@ export class CronjobController {
     description: 'Sent WhatsApp reminders',
   })
   @Post('/fsps/intersolve-voucher/send-reminders')
-  public async cronSendWhatsappReminders(): Promise<void> {
-    await this.cronjobExecutionService.cronSendWhatsappReminders();
+  public cronSendWhatsappReminders() {
+    void this.cronjobExecutionService.cronSendWhatsappReminders();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -109,8 +109,8 @@ export class CronjobController {
     description: 'Nedbank vouchers and transaction update process started',
   })
   @Patch('fsps/nedbank')
-  public async cronDoNedbankReconciliation(): Promise<void> {
-    await this.cronjobExecutionService.cronDoNedbankReconciliation();
+  public cronDoNedbankReconciliation() {
+    void this.cronjobExecutionService.cronDoNedbankReconciliation();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -124,8 +124,8 @@ export class CronjobController {
       'Get all exchange rates for all programs and store them in the database',
   })
   @Put('exchange-rates')
-  public async cronGetDailyExchangeRates(): Promise<void> {
-    await this.cronjobExecutionService.cronGetDailyExchangeRates();
+  public cronGetDailyExchangeRates() {
+    void this.cronjobExecutionService.cronGetDailyExchangeRates();
   }
 
   @AuthenticatedUser({ isAdmin: true })
@@ -156,8 +156,8 @@ export class CronjobController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('fsps/onafriq/reconciliation-report')
-  public async generateReconciliationReport(): Promise<void> {
-    return await this.cronjobExecutionService.cronSendOnafriqReconciliationReport();
+  public generateReconciliationReport() {
+    void this.cronjobExecutionService.cronSendOnafriqReconciliationReport();
   }
 
   @ApiOperation({
