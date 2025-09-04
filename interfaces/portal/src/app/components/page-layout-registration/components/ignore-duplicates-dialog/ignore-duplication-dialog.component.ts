@@ -109,6 +109,6 @@ export class IgnoreDuplicationDialogComponent {
     'ignoreDuplicationDialog',
   );
   show() {
-    this.confirmationDialog().askForConfirmation();
+    this.confirmationDialog().show();
   }
 }

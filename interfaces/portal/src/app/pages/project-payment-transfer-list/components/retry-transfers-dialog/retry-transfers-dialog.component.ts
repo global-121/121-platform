@@ -74,6 +74,6 @@ export class RetryTransfersDialogComponent {
       return;
     }
     this.referenceIdsForRetryTransfers.set(referenceIds);
-    this.retryTransfersConfirmationDialog().askForConfirmation();
+    this.retryTransfersConfirmationDialog().show();
   }
 }

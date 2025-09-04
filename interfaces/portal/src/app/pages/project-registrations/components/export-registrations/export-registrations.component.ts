@@ -122,7 +122,7 @@ export class ExportRegistrationsComponent {
           return;
         }
         this.exportSelectedActionData.set(actionData);
-        this.exportSelectedDialog().askForConfirmation({
+        this.exportSelectedDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
@@ -141,7 +141,7 @@ export class ExportRegistrationsComponent {
         });
         this.dataChangesFormGroup.controls.fromDate.setValue(undefined);
         this.dataChangesFormGroup.controls.toDate.setValue(undefined);
-        this.exportDataChangesDialog().askForConfirmation({
+        this.exportDataChangesDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
@@ -164,7 +164,7 @@ export class ExportRegistrationsComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'account-number-verification',
         });
-        this.exportAccountVerificationDialog().askForConfirmation({
+        this.exportAccountVerificationDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,

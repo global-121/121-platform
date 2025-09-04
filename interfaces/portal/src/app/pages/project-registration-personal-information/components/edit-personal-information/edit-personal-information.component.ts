@@ -224,7 +224,7 @@ export class EditPersonalInformationComponent
       return;
     }
 
-    this.editPersonalInformationDialog().askForConfirmation();
+    this.editPersonalInformationDialog().show();
   }
 
   @HostListener('window:beforeunload', ['$event'])

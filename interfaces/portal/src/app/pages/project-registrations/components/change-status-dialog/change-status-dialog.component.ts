@@ -248,7 +248,7 @@ export class ChangeStatusDialogComponent
 
       // case #3: the change can be applied to only some of the registrations
       this.dialogVisible.set(false);
-      this.dryRunWarningDialog().askForConfirmation({
+      this.dryRunWarningDialog().show({
         resetMutation: false,
       });
     },

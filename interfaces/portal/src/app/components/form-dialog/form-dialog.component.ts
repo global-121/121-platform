@@ -50,7 +50,7 @@ export class FormDialogComponent<TMutationData = unknown> {
 
   private trackingEvent: TrackingEvent | undefined;
 
-  askForConfirmation({
+  show({
     resetMutation = true,
     trackingEvent = undefined,
   }: {

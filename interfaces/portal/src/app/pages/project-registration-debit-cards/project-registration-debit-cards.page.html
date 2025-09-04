@@ -14,7 +14,7 @@
             icon="pi pi-pause"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-auto"
-            (click)="pauseConfirmationDialog.askForConfirmation()"
+            (click)="pauseConfirmationDialog.show()"
           />
         }
         @if (currentCardHasAction()('unpause')) {
@@ -26,7 +26,7 @@
             icon="pi pi-play"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-auto"
-            (click)="unpauseConfirmationDialog.askForConfirmation()"
+            (click)="unpauseConfirmationDialog.show()"
           />
         }
         @if (currentCardHasAction()('reissue')) {
@@ -38,7 +38,7 @@
             icon="pi pi-refresh"
             [iconPos]="rtlHelper.createPosition('start')()"
             class="ms-4"
-            (click)="reissueConfirmationDialog.askForConfirmation()"
+            (click)="reissueConfirmationDialog.show()"
           />
         }
       </div>

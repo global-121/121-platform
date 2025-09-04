@@ -153,7 +153,7 @@ export class ProjectTeamPageComponent {
       icon: 'pi pi-times text-red-500',
       visible: this.canManageAidworkers(),
       command: () => {
-        this.removeUserConfirmationDialog().askForConfirmation();
+        this.removeUserConfirmationDialog().show();
       },
     },
   ]);

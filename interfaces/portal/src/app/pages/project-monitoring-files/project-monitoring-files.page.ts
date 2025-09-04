@@ -184,7 +184,7 @@ export class ProjectMonitoringFilesPageComponent {
       icon: 'pi pi-trash text-red-500',
       command: () => {
         this.deleteFileFormGroup.reset();
-        this.deleteFileConfirmationDialog().askForConfirmation({
+        this.deleteFileConfirmationDialog().show({
           resetMutation: true,
         });
       },

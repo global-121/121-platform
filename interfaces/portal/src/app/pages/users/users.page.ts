@@ -109,7 +109,7 @@ export class UsersPageComponent {
       label: $localize`:@@reset-password-button:Reset password`,
       icon: 'pi pi-refresh',
       command: () => {
-        this.resetPasswordConfirmationDialog().askForConfirmation();
+        this.resetPasswordConfirmationDialog().show();
       },
     },
     {
