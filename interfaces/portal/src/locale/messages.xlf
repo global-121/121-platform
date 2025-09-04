@@ -1688,6 +1688,9 @@
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
       </trans-unit>
+      <trans-unit id="generic-more-actions" datatype="html">
+        <source>More actions</source>
+      </trans-unit>
       <trans-unit id="3086423071988594984" datatype="html">
         <source>Assign scope*</source>
       </trans-unit>

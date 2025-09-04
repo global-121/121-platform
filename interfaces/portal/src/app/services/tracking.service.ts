@@ -43,10 +43,12 @@ export enum TrackingAction {
   clickGlobalFilterButton = 'click: Global-filter Button',
   clickGlobalFilterClearButton = 'click: Clear Global-filter Button',
   clickManageTableButton = 'click: Manage Table Button',
+  clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickProceedButton = 'click: Proceed Button',
   clickRevertToDefaultButton = 'click: Revert to Default Button',
   selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
+  showContextMenu = 'show: Context Menu',
 }
 
 /**
