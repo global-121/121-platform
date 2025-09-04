@@ -18,7 +18,10 @@ import {
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { RunCronjobsResponseDto } from '@121-service/src/cronjob/dtos/run-cronjobs-response.dto';
 import { CronjobExecutionService } from '@121-service/src/cronjob/services/cronjob-execution.service';
-import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
+import {
+  CronjobInitiateService,
+  CronMethodName,
+} from '@121-service/src/cronjob/services/cronjob-initiate.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { RemoveDeprecatedImageCodesDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/remove-deprecated-image-codes-dto';
 
@@ -176,13 +179,24 @@ export class CronjobController {
     console.log('cronJobMethodNames: ', cronJobMethodNames);
     const responses: RunCronjobsResponseDto[] = [];
     for (const cronJobMethodName of cronJobMethodNames) {
-      const response =
-        await this.cronjobInitiateService[cronJobMethodName](cronJobMethodName);
-      responses.push({
-        methodName: cronJobMethodName,
-        url: response.url,
-        responseStatus: response.responseStatus,
-      });
+      const response = await (
+        this.cronjobInitiateService[cronJobMethodName] as (
+          methodName: CronMethodName,
+        ) => Promise<
+          | {
+              url: string;
+              responseStatus: HttpStatus;
+            }
+          | false
+        >
+      )(cronJobMethodName);
+      if (response) {
+        responses.push({
+          methodName: cronJobMethodName,
+          url: response.url,
+          responseStatus: response.responseStatus,
+        });
+      }
     }
     return responses;
   }

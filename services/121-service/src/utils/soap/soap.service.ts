@@ -13,7 +13,7 @@ interface XmlElement {
   elements?: XmlElement[];
   text?: string;
   [key: string]: unknown;
-};
+}
 
 @Injectable()
 export class SoapService {

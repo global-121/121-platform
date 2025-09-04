@@ -637,7 +637,9 @@ export class UserService {
     return { user: userData };
   }
 
-  private async buildPermissionsObject(userId: number): Promise<Record<number, PermissionEnum[]>> {
+  private async buildPermissionsObject(
+    userId: number,
+  ): Promise<Record<number, PermissionEnum[]>> {
     const user = await this.userRepository.findOneOrFail({
       where: { id: Equal(userId) },
       relations: [

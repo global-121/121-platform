@@ -1,24 +1,25 @@
+import { AxiosResponse } from 'axios';
 import { CronjobInitiateService } from '@121-service/src/cronjob/services/cronjob-initiate.service';
 
 const exampleApiUrl = 'http://example.com/api';
 const expectedCronjobUrl = `${exampleApiUrl}/cronjobs`;
 
 describe('Cronjob initiation', () => {
-  let cronjobInitiateService;
+  let cronjobInitiateService: CronjobInitiateService;
   const testHeader = { name: 'test name', value: 'test value' };
   beforeAll(() => {
     cronjobInitiateService = new CronjobInitiateService();
     // Make this a noop.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'getAccessToken')
-      .mockResolvedValue(true);
+      .spyOn(cronjobInitiateService['axiosCallsService'], 'getAccessToken')
+      .mockResolvedValue('mocked-token');
     // Make this a noop. We assert on this return value.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'accesTokenToHeaders')
-      .mockResolvedValue(testHeader);
+      .spyOn(cronjobInitiateService['axiosCallsService'], 'accesTokenToHeaders')
+      .mockResolvedValue([testHeader]);
     // We assert on this return value.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'getBaseUrl')
+      .spyOn(cronjobInitiateService['axiosCallsService'], 'getBaseUrl')
       .mockResolvedValue(exampleApiUrl);
   });
 
@@ -27,16 +28,18 @@ describe('Cronjob initiation', () => {
   it('that do PUT requests should call httpService.put and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'put')
-      .mockResolvedValue(true);
+      .spyOn(cronjobInitiateService['httpService'], 'put')
+      .mockResolvedValue({ status: 200 } as AxiosResponse);
 
     // Act
-    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries();
+    await cronjobInitiateService.cronValidateCommercialBankEthiopiaAccountEnquiries(
+      'cronValidateCommercialBankEthiopiaAccountEnquiries',
+    );
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${expectedCronjobUrl}/fsps/commercial-bank-ethiopia/account-enquiries`;
-    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
+    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, [testHeader]);
 
     // Cleanup
     mockFn.mockRestore();
@@ -45,16 +48,18 @@ describe('Cronjob initiation', () => {
   it('that do PATCH requests should call httpService.patch and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'patch')
-      .mockResolvedValue(true);
+      .spyOn(cronjobInitiateService['httpService'], 'patch')
+      .mockResolvedValue({ status: 200 } as AxiosResponse);
 
     // Act
-    await cronjobInitiateService.cronRetrieveAndUpdatedUnusedIntersolveVouchers();
+    await cronjobInitiateService.cronRetrieveAndUpdatedUnusedIntersolveVouchers(
+      'cronRetrieveAndUpdatedUnusedIntersolveVouchers',
+    );
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/unused-vouchers`;
-    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
+    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, [testHeader]);
 
     // Cleanup
     mockFn.mockRestore();
@@ -63,16 +68,18 @@ describe('Cronjob initiation', () => {
   it('that do POST requests should call httpService.post and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'post')
-      .mockResolvedValue(true);
+      .spyOn(cronjobInitiateService['httpService'], 'post')
+      .mockResolvedValue({ status: 200 } as AxiosResponse);
 
     // Act
-    await cronjobInitiateService.cronCancelByRefposIntersolve();
+    await cronjobInitiateService.cronCancelByRefposIntersolve(
+      'cronCancelByRefposIntersolve',
+    );
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/cancel`;
-    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, testHeader);
+    expect(mockFn).toHaveBeenCalledWith(calledUrl, {}, [testHeader]);
 
     // Cleanup
     mockFn.mockRestore();
@@ -81,16 +88,18 @@ describe('Cronjob initiation', () => {
   it('that do DELETE requests should call httpService.delete and pass correct arguments', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'delete')
-      .mockResolvedValue(true);
+      .spyOn(cronjobInitiateService['httpService'], 'delete')
+      .mockResolvedValue({ status: 200 } as AxiosResponse);
 
     // Act
-    await cronjobInitiateService.cronRemoveDeprecatedImageCodes();
+    await cronjobInitiateService.cronRemoveDeprecatedImageCodes(
+      'cronRemoveDeprecatedImageCodes',
+    );
 
     // Assert
     expect(mockFn).toHaveBeenCalledTimes(1);
     const calledUrl = `${expectedCronjobUrl}/fsps/intersolve-voucher/deprecated-image-codes`;
-    expect(mockFn).toHaveBeenCalledWith(calledUrl, testHeader);
+    expect(mockFn).toHaveBeenCalledWith(calledUrl, [testHeader]);
 
     // Cleanup
     mockFn.mockRestore();
@@ -99,7 +108,7 @@ describe('Cronjob initiation', () => {
   it('should log a useful message when authentication fails', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService, 'getHeaders')
+      .spyOn(cronjobInitiateService as unknown as { getHeaders: () => unknown }, 'getHeaders')
       .mockImplementation(() => {
         throw new Error('could not get headers');
       });
@@ -124,7 +133,7 @@ describe('Cronjob initiation', () => {
   it('should log a useful message when a request fails', async () => {
     // Arrange
     const mockFn = jest
-      .spyOn(cronjobInitiateService.httpService, 'patch')
+      .spyOn(cronjobInitiateService['httpService'], 'patch')
       .mockImplementation(() => {
         throw new Error('patch request failed');
       });
