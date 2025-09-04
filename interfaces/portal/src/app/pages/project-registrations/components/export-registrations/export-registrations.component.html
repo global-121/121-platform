@@ -6,7 +6,7 @@
   [outlined]="true"
 />
 
-<app-confirmation-dialog
+<app-form-dialog
   #exportSelectedDialog
   header="Export selected registrations"
   i18n-header
@@ -64,8 +64,8 @@
       </label>
     }
   </div>
-</app-confirmation-dialog>
-<app-confirmation-dialog
+</app-form-dialog>
+<app-form-dialog
   #exportDataChangesDialog
   header="Export status & data changes"
   i18n-header
@@ -114,8 +114,8 @@
       />
     </app-form-field-wrapper>
   </div>
-</app-confirmation-dialog>
-<app-confirmation-dialog
+</app-form-dialog>
+<app-form-dialog
   #exportAccountVerificationDialog
   header="Export account number verification"
   i18n-header
@@ -127,4 +127,4 @@
     The data in this report is based on data that is imported every night from
     CBE. If you changed data today this will not be reflected in the report.
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>

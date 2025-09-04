@@ -37,7 +37,7 @@
     />
   </p-card>
 </app-page-layout>
-<app-confirmation-dialog
+<app-form-dialog
   #removeUserConfirmationDialog
   header="Remove user from team"
   i18n-header
@@ -52,4 +52,4 @@
     <b>{{ selectedUser()?.username }}</b> ({{ selectedUser()?.allRolesLabel }})
     from your team.<br />They will not have access to the project anymore.
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>

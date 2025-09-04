@@ -15,7 +15,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -36,7 +36,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     CardModule,
     QueryTableComponent,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     AddUserFormComponent,
   ],
   providers: [ToastService],
@@ -51,9 +51,7 @@ export class UsersPageComponent {
   private toastService = inject(ToastService);
 
   readonly resetPasswordConfirmationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'resetPasswordConfirmationDialog',
-    );
+    viewChild.required<FormDialogComponent>('resetPasswordConfirmationDialog');
 
   users = injectQuery(this.userApiService.getAllUsers());
 
@@ -111,7 +109,7 @@ export class UsersPageComponent {
       label: $localize`:@@reset-password-button:Reset password`,
       icon: 'pi pi-refresh',
       command: () => {
-        this.resetPasswordConfirmationDialog().askForConfirmation();
+        this.resetPasswordConfirmationDialog().show();
       },
     },
     {

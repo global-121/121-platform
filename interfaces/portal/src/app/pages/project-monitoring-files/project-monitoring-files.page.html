@@ -19,7 +19,7 @@
     </div>
   </app-query-table>
 </app-page-layout-monitoring>
-<app-confirmation-dialog
+<app-form-dialog
   #deleteFileConfirmationDialog
   header="Delete file"
   i18n-header
@@ -55,4 +55,4 @@
     </label>
   </div>
   <app-form-error [error]="deleteFileFormFieldErrors()('confirmAction')" />
-</app-confirmation-dialog>
+</app-form-dialog>

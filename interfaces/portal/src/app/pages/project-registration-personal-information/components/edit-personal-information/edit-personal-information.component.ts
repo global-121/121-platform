@@ -32,7 +32,7 @@ import { SelectModule } from 'primeng/select';
 import { pick } from 'radashi';
 import { Subscription } from 'rxjs';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
@@ -65,7 +65,7 @@ type DialogFormGroup =
     InputTextModule,
     InputNumberModule,
     CheckboxModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     FormsModule,
   ],
   templateUrl: './edit-personal-information.component.html',
@@ -95,11 +95,10 @@ export class EditPersonalInformationComponent
   );
 
   readonly editPersonalInformationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'editPersonalInformationDialog',
-    );
-  readonly unsavedChangesDialog =
-    viewChild.required<ConfirmationDialogComponent>('unsavedChangesDialog');
+    viewChild.required<FormDialogComponent>('editPersonalInformationDialog');
+  readonly unsavedChangesDialog = viewChild.required<FormDialogComponent>(
+    'unsavedChangesDialog',
+  );
 
   formGroup!: FormGroup<
     Record<string, FormControl<boolean | number | string | undefined>>
@@ -225,7 +224,7 @@ export class EditPersonalInformationComponent
       return;
     }
 
-    this.editPersonalInformationDialog().askForConfirmation();
+    this.editPersonalInformationDialog().show();
   }
 
   @HostListener('window:beforeunload', ['$event'])

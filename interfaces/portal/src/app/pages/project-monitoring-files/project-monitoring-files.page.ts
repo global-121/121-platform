@@ -25,7 +25,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import {
@@ -60,7 +60,7 @@ type DeleteFileFormGroup =
   imports: [
     QueryTableComponent,
     ButtonModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     CheckboxModule,
     FormErrorComponent,
     ReactiveFormsModule,
@@ -88,9 +88,7 @@ export class ProjectMonitoringFilesPageComponent {
   readonly selectedFile = signal<null | ProjectAttachment>(null);
 
   readonly deleteFileConfirmationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'deleteFileConfirmationDialog',
-    );
+    viewChild.required<FormDialogComponent>('deleteFileConfirmationDialog');
 
   deleteFileFormGroup = new FormGroup({
     confirmAction: new FormControl<boolean>(false, {
@@ -186,7 +184,7 @@ export class ProjectMonitoringFilesPageComponent {
       icon: 'pi pi-trash text-red-500',
       command: () => {
         this.deleteFileFormGroup.reset();
-        this.deleteFileConfirmationDialog().askForConfirmation({
+        this.deleteFileConfirmationDialog().show({
           resetMutation: true,
         });
       },

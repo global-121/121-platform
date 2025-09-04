@@ -19,7 +19,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -42,7 +42,7 @@ import { ToastService } from '~/services/toast.service';
     QueryTableComponent,
     AddProjectTeamUserFormComponent,
     ConfirmDialogModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-team.page.html',
@@ -58,9 +58,7 @@ export class ProjectTeamPageComponent {
   private toastService = inject(ToastService);
 
   readonly removeUserConfirmationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'removeUserConfirmationDialog',
-    );
+    viewChild.required<FormDialogComponent>('removeUserConfirmationDialog');
 
   readonly selectedUser = signal<ProjectUserWithRolesLabel | undefined>(
     undefined,
@@ -155,7 +153,7 @@ export class ProjectTeamPageComponent {
       icon: 'pi pi-times text-red-500',
       visible: this.canManageAidworkers(),
       command: () => {
-        this.removeUserConfirmationDialog().askForConfirmation();
+        this.removeUserConfirmationDialog().show();
       },
     },
   ]);
