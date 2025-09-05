@@ -67,8 +67,6 @@ export class MetricsController {
     type: 'string',
     enum: ExportType,
   })
-  @ApiQuery({ name: 'fromDate', required: false, type: 'string' })
-  @ApiQuery({ name: 'toDate', required: false, type: 'string' })
   @ApiQuery({
     name: 'limit',
     required: false,
@@ -90,7 +88,7 @@ export class MetricsController {
     description:
       'Format to return the data in. Options are "json" and "xlsx". Defaults to "json" if not specified.',
   })
-  // TODO: REFACTOR: move endpoint to registrations.controller and rename endpoint according to our guidelines
+  // TODO: REFACTOR: split this endpoint up in one endpoint per ExportType
   @Get('programs/:programId/metrics/export-list/:exportType')
   @PaginatedSwaggerDocs(
     RegistrationViewEntity,
@@ -124,6 +122,7 @@ export class MetricsController {
     if (format === ExportFileFormat.xlsx) {
       return sendXlsxReponse(result.data, result.fileName, res);
     }
+    // TODO: Filename is not used here by the frontend so we could consider removing it from the response when we send JSON format
     return res.send(result);
   }
 

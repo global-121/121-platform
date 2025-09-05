@@ -23,6 +23,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
+import { GetRegistrationEventsQueryDto } from '@121-service/src/registration-events/dto/get-registration-event-query.dto';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -64,7 +65,7 @@ export class RegistrationEventsController {
   @Get('programs/:programId/registration-events')
   public async getEvents(
     @Param('programId', ParseIntPipe) programId: number,
-    @Query() queryParams: Record<string, string>,
+    @Query() queryParams: GetRegistrationEventsQueryDto,
     @Query('format') format = 'json',
     @Req() req: ScopedUserRequest,
     @Res() res: Response,

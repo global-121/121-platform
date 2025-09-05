@@ -204,7 +204,7 @@ export async function getTransactions({
   return response;
 }
 
-export async function exportTransactions({
+export async function exportTransactionsAsBuffer({
   programId,
   accessToken,
   fromDate,
@@ -245,7 +245,7 @@ export async function exportTransactionsByDateRangeJson({
   fromDate?: string;
   toDate?: string;
 }): Promise<Record<string, unknown>[]> {
-  const response = await exportTransactions({
+  const response = await exportTransactionsAsBuffer({
     programId,
     accessToken,
     fromDate,
