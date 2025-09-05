@@ -1,19 +1,24 @@
+import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Injector } from '@angular/core';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { AuthService } from './auth.service';
+import { AuthService } from '~/services/auth.service';
 import { LogService } from '~/services/log.service';
 import { LocalStorageUser } from '~/utils/local-storage';
+
+interface MockAuthStrategy {
+  isUserExpired: jasmine.Spy<() => boolean>;
+  logout: jasmine.Spy<() => Promise<void>>;
+}
 
 describe('AuthService - hasDeprecatedPermissions', () => {
   let service: AuthService;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockLogService: jasmine.SpyObj<LogService>;
+  let mockAuthStrategy: MockAuthStrategy;
   let mockInjector: jasmine.SpyObj<Injector>;
-  let mockAuthStrategy: jasmine.SpyObj<{ isUserExpired: any; logout: any }>;
 
   const createMockUser = (
     permissions: Record<number, PermissionEnum[]>,
@@ -25,13 +30,18 @@ describe('AuthService - hasDeprecatedPermissions', () => {
   });
 
   beforeEach(() => {
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockLogService = jasmine.createSpyObj('LogService', ['logEvent']);
-    mockAuthStrategy = jasmine.createSpyObj('AuthStrategy', [
-      'logout',
-      'isUserExpired',
+    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    mockLogService = jasmine.createSpyObj<LogService>('LogService', [
+      'logEvent',
     ]);
-    mockInjector = jasmine.createSpyObj('Injector', ['get']);
+    mockInjector = jasmine.createSpyObj<Injector>('Injector', ['get']);
+    mockAuthStrategy = {
+      logout: jasmine.createSpy<() => Promise<void>>('logout'),
+      isUserExpired: jasmine.createSpy<() => boolean>('isUserExpired'),
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    mockInjector.get.and.returnValue(mockAuthStrategy);
 
     TestBed.configureTestingModule({
       providers: [
@@ -42,23 +52,18 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       ],
     });
 
-    mockInjector.get.and.returnValue(mockAuthStrategy);
     service = TestBed.inject(AuthService);
   });
 
   describe('user getter with deprecated permissions', () => {
-    let localStorageGetItemSpy: jasmine.Spy;
+    let localStorageGetItemSpy: jasmine.Spy<typeof localStorage.getItem>;
     beforeEach(() => {
       localStorageGetItemSpy = spyOn(localStorage, 'getItem').and.returnValue(
         null,
       );
       spyOn(localStorage, 'removeItem');
-      mockAuthStrategy.isUserExpired = jasmine
-        .createSpy()
-        .and.returnValue(false);
-      mockAuthStrategy.logout = jasmine
-        .createSpy()
-        .and.returnValue(Promise.resolve());
+      mockAuthStrategy.isUserExpired.and.returnValue(false);
+      mockAuthStrategy.logout.and.returnValue(Promise.resolve());
       mockRouter.navigate.and.returnValue(Promise.resolve(true));
     });
 
@@ -73,14 +78,14 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       localStorageGetItemSpy.and.returnValue(
         JSON.stringify(userWithDeprecatedPermissions),
       );
-      spyOn(service, 'logout').and.returnValue(Promise.resolve());
+      const logoutSpy = spyOn(service, 'logout').and.returnValue(
+        Promise.resolve(),
+      );
 
       const result = service.user;
 
       expect(result).toBeNull();
-      expect(service.logout).toHaveBeenCalledWith(
-        userWithDeprecatedPermissions,
-      );
+      expect(logoutSpy).toHaveBeenCalledWith(userWithDeprecatedPermissions);
     });
 
     it('should return user when permissions are valid', () => {
