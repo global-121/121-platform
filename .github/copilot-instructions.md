@@ -12,6 +12,22 @@ The 121 Platform is an open-source humanitarian aid platform built by the Nether
 - `e2e/`: End-to-end testing suite
 - `tools/`: Utility scripts and tools
 
+## VSCode Integration
+
+This file (`.github/copilot-instructions.md`) is automatically recognized by GitHub Copilot in both GitHub and VSCode environments. The repository includes VSCode-specific configurations:
+
+### VSCode Settings
+
+- **Prettier**: Default formatter with automatic formatting on save
+- **ESLint**: Enabled with auto-fix on save and unused import removal
+- **Azure DevOps Integration**: AB# links are automatically detected and made clickable
+- **Tailwind CSS**: Enhanced IntelliSense with pixel equivalents and custom class attributes
+- **TypeScript**: Uses workspace TypeScript version for consistency
+
+### Recommended Extensions
+
+Check `.vscode/extensions.json` for the complete list of recommended extensions that enhance the development experience.
+
 ## Architecture & Technology Stack
 
 ### Backend Services (Node.js/TypeScript)
@@ -553,22 +569,6 @@ npm run test:all           # Run all tests
 - [Service README](../services/121-service/README.md)
 - [Portal README](../interfaces/portal/README.md)
 - [Testing Guide](../guide-Writing-Tests.md)
-
-## VSCode Integration
-
-This file (`.github/copilot-instructions.md`) is automatically recognized by GitHub Copilot in both GitHub and VSCode environments. The repository includes VSCode-specific configurations:
-
-### VSCode Settings
-
-- **Prettier**: Default formatter with automatic formatting on save
-- **ESLint**: Enabled with auto-fix on save and unused import removal
-- **Azure DevOps Integration**: AB# links are automatically detected and made clickable
-- **Tailwind CSS**: Enhanced IntelliSense with pixel equivalents and custom class attributes
-- **TypeScript**: Uses workspace TypeScript version for consistency
-
-### Recommended Extensions
-
-Check `.vscode/extensions.json` for the complete list of recommended extensions that enhance the development experience.
 
 ## Instructions for Copilot Agents
 
