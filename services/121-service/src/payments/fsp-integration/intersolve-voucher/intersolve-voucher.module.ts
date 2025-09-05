@@ -9,7 +9,6 @@ import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/f
 import { IntersolveVoucherController } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.controller';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
 import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
-import { PaymentProcessorIntersolveVoucher } from '@121-service/src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
@@ -65,7 +64,6 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
     CustomHttpService,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
-    PaymentProcessorIntersolveVoucher,
     ProgramFspConfigurationRepository,
   ],
   controllers: [IntersolveVoucherController],
