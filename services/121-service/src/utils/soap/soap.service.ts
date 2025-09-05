@@ -7,17 +7,38 @@ import * as convert from 'xml-js';
 import { env } from '@121-service/src/env';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
+interface SoapResponse {
+  body: string;
+  response: {
+    statusCode: number;
+    statusMessage: string;
+  };
+}
+
+interface SoapElement {
+  elements?: SoapElement[];
+  name?: string;
+  text?: string;
+  [key: string]: unknown;
+}
+
+interface SoapRequestParams {
+  apiUrl: string | undefined;
+  payload: SoapElement;
+  soapAction: string;
+}
+
 @Injectable()
 export class SoapService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async post(
-    soapBodyPayload: any,
+    soapBodyPayload: Record<string, unknown>,
     headerFile: string,
     username: string,
     password: string,
     url: string,
-  ): Promise<any> {
+  ): Promise<SoapResponse> {
     const jsonSoapBody = convert.js2xml(soapBodyPayload);
     const payload = await this.setSoapHeader(
       soapBodyPayload,
@@ -36,7 +57,7 @@ export class SoapService {
       xml,
       timeout: 150000,
     })
-      .then((rawResponse: any) => {
+      .then((rawResponse: SoapResponse) => {
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
           { url, payload: jsonSoapBody },
@@ -50,7 +71,7 @@ export class SoapService {
         const jsonResponse = convert.xml2js(body, { compact: true });
         return jsonResponse['soap:Envelope']['soap:Body'];
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url, payload: jsonSoapBody },
           {
@@ -64,11 +85,11 @@ export class SoapService {
   }
 
   private async setSoapHeader(
-    payload: any,
+    payload: SoapElement,
     headerFile: string,
     username: string,
     password: string,
-  ): Promise<any> {
+  ): Promise<SoapElement> {
     const header = await this.readXmlAsJs(headerFile);
     let headerPart = this.getChild(header, 0);
     headerPart = this.setValue(headerPart, [0, 0, 0], username);
@@ -77,23 +98,23 @@ export class SoapService {
     return payload;
   }
 
-  public async readXmlAsJs(xmlName: string): Promise<any> {
+  public async readXmlAsJs(xmlName: string): Promise<SoapElement> {
     const path = './src/shared/xml/' + xmlName + '.xml';
     const xml = fs.readFileSync(path, 'utf-8');
     const jsObject = convert.xml2js(xml);
     return jsObject;
   }
 
-  public findSoapIndex(soapElement: any, q: string): any {
+  public findSoapIndex(soapElement: SoapElement, q: string): SoapElement {
     return soapElement['elements'].findIndex((x) => x.name === q);
   }
 
   public changeSoapBody(
-    payload: any,
+    payload: SoapElement,
     mainElement: string,
     subElements: string[],
     value: string,
-  ): any {
+  ): SoapElement {
     const envelopeXML = this.getChild(payload, 0);
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
@@ -117,11 +138,15 @@ export class SoapService {
     return payload;
   }
 
-  private getChild(xml: any, index: number): any {
+  private getChild(xml: SoapElement, index: number): SoapElement {
     return xml['elements'][index];
   }
 
-  private setValue(xml: any, indices: number[], value: string): any {
+  private setValue(
+    xml: SoapElement,
+    indices: number[],
+    value: string,
+  ): SoapElement {
     const firstIndex = indices.shift();
     if (firstIndex == undefined) {
       throw new Error('Invalid indices array.');
@@ -138,7 +163,11 @@ export class SoapService {
     return xml;
   }
 
-  public setValueByName(xml: any, attributeName: string, value?: string): any {
+  public setValueByName(
+    xml: SoapElement,
+    attributeName: string,
+    value?: string,
+  ): SoapElement {
     for (const el of xml.elements) {
       if (el.name === attributeName) {
         el.elements[0].text = value;
@@ -147,15 +176,8 @@ export class SoapService {
     return xml;
   }
 
-  async postCBERequest({
-    apiUrl,
-    payload,
-    soapAction,
-  }: {
-    apiUrl: string | undefined;
-    payload: any;
-    soapAction: string;
-  }): Promise<any> {
+  async postCBERequest(params: SoapRequestParams): Promise<SoapElement> {
+    const { apiUrl, payload, soapAction } = params;
     const soapRequestXml = convert.js2xml(payload, {
       compact: false,
       spaces: 4,
@@ -199,7 +221,7 @@ export class SoapService {
         httpsAgent: agent,
       },
     })
-      .then((rawResponse: any) => {
+      .then((rawResponse: SoapResponse) => {
         const response = rawResponse.response;
         this.httpService.logMessageRequest(
           { url: apiUrl, payload: soapRequestXml },
@@ -236,7 +258,7 @@ export class SoapService {
         }
         return null;
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         this.httpService.logErrorRequest(
           { url: apiUrl, payload: soapRequestXml },
           {
