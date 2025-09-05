@@ -1,5 +1,6 @@
 import { TestBed } from '@automock/jest';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
@@ -34,8 +35,8 @@ describe('RegistrationBulkService', () => {
 
     // Mock the findOne method
     jest
-      .spyOn(messageTemplateRepository as any, 'findOne')
-      .mockImplementation((arg: any) => {
+      .spyOn(messageTemplateRepository as Repository<MessageTemplateEntity>, 'findOne')
+      .mockImplementation((arg: { where: { programId: { _value: number }; type: { _value: string } } }) => {
         const programIdValue = arg.where.programId._value;
         const typeValue = arg.where.type._value;
 
@@ -56,7 +57,7 @@ describe('RegistrationBulkService', () => {
       });
 
     const dbQueryResult = null;
-    const createQueryBuilder: any = generateMockCreateQueryBuilder(
+    const createQueryBuilder = generateMockCreateQueryBuilder(
       dbQueryResult,
       {
         useGetMany: true,
@@ -68,8 +69,8 @@ describe('RegistrationBulkService', () => {
     );
 
     jest
-      .spyOn(registrationViewScopedRepository as any, 'createQueryBuilder')
-      .mockImplementation(() => createQueryBuilder) as any;
+      .spyOn(registrationViewScopedRepository, 'createQueryBuilder')
+      .mockImplementation(() => createQueryBuilder);
 
     const registrationsPaginationService = unitRef.get(
       RegistrationsPaginationService,

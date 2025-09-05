@@ -51,8 +51,8 @@ describe('MessageQueuesService', () => {
     programAttributesService = unitRef.get(ProgramAttributesService);
     registrationDataService = unitRef.get(RegistrationDataService);
     messageTemplateRepository = unitRef.get(
-      getRepositoryToken(MessageTemplateEntity) as any,
-    );
+      getRepositoryToken(MessageTemplateEntity),
+    ) as Repository<MessageTemplateEntity>;
   });
 
   it('should be defined', () => {
@@ -148,7 +148,7 @@ describe('MessageQueuesService', () => {
     it('should get the placeholders from custom message text', async () => {
       // Arrange
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(programAttributesService, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });
@@ -167,7 +167,7 @@ describe('MessageQueuesService', () => {
 
     it('should get the placeholders from a message that comes from messageTemplateRepository', async () => {
       jest
-        .spyOn(programAttributesService as any, 'getAttributes')
+        .spyOn(programAttributesService, 'getAttributes')
         .mockImplementation(() => {
           return [{ name: 'fullName' }, { name: 'namePartnerOrganization' }];
         });

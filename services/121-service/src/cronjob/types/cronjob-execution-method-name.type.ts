@@ -4,9 +4,13 @@ export type CronjobExecutionMethodName = keyof Pick<
   CronjobExecutionService,
   {
     [K in keyof CronjobExecutionService]: CronjobExecutionService[K] extends (
-      ...args: any[]
-    ) => any
+      ...args: never[]
+    ) => Promise<unknown>
       ? K
-      : never;
+      : CronjobExecutionService[K] extends () => Promise<unknown>
+        ? K
+        : CronjobExecutionService[K] extends (arg?: unknown) => Promise<unknown>
+          ? K
+          : never;
   }[keyof CronjobExecutionService]
 >;

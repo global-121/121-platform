@@ -4,13 +4,20 @@ import { AirtelDisbursementOrEnquiryResponseBodyDto } from '@121-service/src/pay
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelApiDisbursementStatusResponseCodeEnum } from '@121-service/src/payments/fsp-integration/airtel/services/enums/airtel-api-disbursement-result-status.enum';
 
+interface AirtelStatusResponse {
+  status?: {
+    response_code?: string;
+    message?: string;
+  };
+}
+
 @Injectable()
 export class AirtelApiHelperService {
   public isAirtelDisbursementOrEnquiryResponseBodyDto(
     responseObj: unknown,
   ): responseObj is AirtelDisbursementOrEnquiryResponseBodyDto {
-    const responseCode = (responseObj as any)?.status?.response_code;
-    const message = (responseObj as any)?.status?.message;
+    const responseCode = (responseObj as AirtelStatusResponse)?.status?.response_code;
+    const message = (responseObj as AirtelStatusResponse)?.status?.message;
 
     return responseCode !== undefined && message !== undefined;
   }

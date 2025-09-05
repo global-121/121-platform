@@ -74,7 +74,16 @@ interface MethodInfo {
   returnType?: string;
 }
 
-function generateSwaggerSummaryJson(app: INestApplication<any>): void {
+interface OpenApiParameter {
+  name: string;
+  in?: string;
+  required?: boolean;
+  schema?: {
+    type: string;
+  };
+}
+
+function generateSwaggerSummaryJson(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
@@ -95,7 +104,7 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
           .pop();
 
       const params =
-        methodInfo.parameters?.map((param: any) => param.name) || [];
+        methodInfo.parameters?.map((param: OpenApiParameter) => param.name) || [];
 
       const methodInfoObject: MethodInfo = {
         method,
