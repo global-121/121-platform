@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -22,7 +21,6 @@ import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-wit
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
-import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -30,22 +28,16 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -73,79 +65,36 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly queuesService: QueuesRegistryService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
   ) {}
 
+  // TODO: Remove this function when refactored out of all FSP integrations.
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
-    paPaymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentId: number,
-    useWhatsapp: boolean,
+    _paPaymentList: PaPaymentDataDto[],
+    _programId: number,
+    _paymentId: number,
+    _useWhatsapp: boolean,
   ): Promise<void> {
-    for (const paymentInfo of paPaymentList) {
-      const job =
-        await this.queuesService.transactionJobIntersolveVoucherQueue.add(
-          JobNames.default,
-          {
-            paymentInfo,
-            useWhatsapp,
-            paymentId,
-            programId,
-          },
-        );
-
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    throw new Error('Method should not be called anymore.');
   }
 
-  public async processQueuedPayment(
-    jobData: IntersolveVoucherJobDto,
-  ): Promise<void> {
-    const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        jobData.paymentInfo.programFspConfigurationId,
-      );
-    const paResult = await this.sendIndividualPayment(
-      jobData.paymentInfo,
-      jobData.useWhatsapp,
-      jobData.paymentInfo.transactionAmount,
-      jobData.paymentId,
-      credentials,
-    );
-    if (!paResult) {
-      return;
-    }
-
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(paResult.referenceId) },
-    });
-    await this.storeTransactionResult(
-      jobData.paymentId,
-      jobData.paymentInfo.transactionAmount,
-      registration.id,
-      1,
-      paResult.status,
-      paResult.message ?? null,
-      registration.programId,
-      {
-        programFspConfigurationId:
-          jobData.paymentInfo.programFspConfigurationId,
-        userId: jobData.paymentInfo.userId,
-      },
-    );
-  }
-
-  public async sendIndividualPayment(
-    paymentInfo: PaPaymentDataDto,
-    useWhatsapp: boolean,
-    calculatedAmount: number,
-    paymentId: number,
-    credentials: UsernamePasswordInterface,
-  ) {
+  public async sendIndividualPayment({
+    paymentInfo,
+    useWhatsapp,
+    calculatedAmount,
+    paymentId,
+    credentials,
+  }: {
+    paymentInfo: PaPaymentDataDto;
+    useWhatsapp: boolean;
+    calculatedAmount: number;
+    paymentId: number;
+    credentials: UsernamePasswordInterface;
+  }) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
 
@@ -638,11 +587,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return unusedVouchersDtos;
   }
 
-  public async storeTransactionResult(
+  public async storeTransactionResultStep2(
     paymentId: number,
     amount: number,
     registrationId: number,
-    transactionStep: number,
     status: TransactionStatusEnum,
     errorMessage: string | null,
     programId: number,
@@ -656,28 +604,25 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       intersolveVoucher.send = true;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     }
-    const transactionResultDto = await this.createTransactionResult(
+    const transactionResultDto = await this.createTransactionResultStep2(
       amount,
       registrationId,
-      transactionStep,
       status,
       errorMessage,
       options.messageSid,
     );
 
-    let userId = options.userId;
-    let programFspConfigurationId = options.programFspConfigurationId;
-    if (transactionStep === 2) {
-      const userFspConfigIdObject =
-        await this.getUserFspConfigIdForTransactionStep2(
-          registrationId,
-          paymentId,
-        );
-      if (userFspConfigIdObject) {
-        userId = userFspConfigIdObject.userId;
-        programFspConfigurationId =
-          userFspConfigIdObject.programFspConfigurationId;
-      }
+    let userId: number | undefined;
+    let programFspConfigurationId: number | undefined;
+    const userFspConfigIdObject =
+      await this.getUserFspConfigIdForTransactionStep2(
+        registrationId,
+        paymentId,
+      );
+    if (userFspConfigIdObject) {
+      userId = userFspConfigIdObject.userId;
+      programFspConfigurationId =
+        userFspConfigIdObject.programFspConfigurationId;
     }
 
     if (userId === undefined) {
@@ -701,6 +646,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
       transactionRelationDetails,
+      2,
     );
   }
 
@@ -722,10 +668,9 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return transaction;
   }
 
-  public async createTransactionResult(
+  public async createTransactionResultStep2(
     amount: number,
     registrationId: number,
-    transactionStep: number,
     status: TransactionStatusEnum,
     errorMessage: string | null,
     messageSid?: string,
@@ -741,27 +686,16 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     transactionResult.referenceId = registration.referenceId;
 
     transactionResult.message = errorMessage;
-    transactionResult.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
       transactionResult.messageSid = messageSid;
     }
 
-    const fspNameOfRegistration = registration.programFspConfiguration.fspName;
-    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
-      transactionResult.customData['IntersolvePayoutStatus'] =
-        transactionStep === 1
-          ? IntersolveVoucherPayoutStatus.InitialMessage
-          : IntersolveVoucherPayoutStatus.VoucherSent;
-    }
-
+    transactionResult.customData = JSON.parse(JSON.stringify({}));
+    transactionResult.customData['IntersolvePayoutStatus'] =
+      IntersolveVoucherPayoutStatus.VoucherSent;
     transactionResult.status = status;
+    transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
 
-    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
-      transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
-    }
-    if (fspNameOfRegistration === Fsps.intersolveVoucherPaper) {
-      transactionResult.fspName = Fsps.intersolveVoucherPaper;
-    }
     return transactionResult;
   }
 

@@ -140,6 +140,7 @@ graph LR
   ActivitiesModule-->UserModule
   TransactionJobsModule-->RedisModule
   TransactionJobsModule-->IntersolveVisaModule
+  TransactionJobsModule-->IntersolveVoucherModule
   TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->AirtelModule
   TransactionJobsModule-->NedbankModule

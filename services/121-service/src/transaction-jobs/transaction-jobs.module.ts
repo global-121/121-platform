@@ -5,6 +5,7 @@ import { MessageQueuesModule } from '@121-service/src/notifications/message-queu
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { AirtelModule } from '@121-service/src/payments/fsp-integration/airtel/airtel.module';
 import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa.module';
+import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { NedbankModule } from '@121-service/src/payments/fsp-integration/nedbank/nedbank.module';
 import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integration/onafriq/entities/onafriq-transaction.entity';
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
@@ -17,12 +18,14 @@ import { RegistrationsModule } from '@121-service/src/registration/registrations
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { TransactionJobsProcessorAirtel } from '@121-service/src/transaction-jobs/processors/transaction-jobs-airtel.processor';
 import { TransactionJobsProcessorIntersolveVisa } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-visa.processor';
+import { TransactionJobsProcessorIntersolveVoucher } from '@121-service/src/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor';
 import { TransactionJobsProcessorNedbank } from '@121-service/src/transaction-jobs/processors/transaction-jobs-nedbank.processor';
 import { TransactionJobsProcessorOnafriq } from '@121-service/src/transaction-jobs/processors/transaction-jobs-onafriq.processor';
 import { TransactionJobsProcessorSafaricom } from '@121-service/src/transaction-jobs/processors/transaction-jobs-safaricom.processor';
 import { TransactionJobsAirtelService } from '@121-service/src/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsIntersolveVisaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-visa.service';
+import { TransactionJobsIntersolveVoucherService } from '@121-service/src/transaction-jobs/services/transaction-jobs-intersolve-voucher.service';
 import { TransactionJobsNedbankService } from '@121-service/src/transaction-jobs/services/transaction-jobs-nedbank.service';
 import { TransactionJobsOnafriqService } from '@121-service/src/transaction-jobs/services/transaction-jobs-onafriq.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
@@ -32,6 +35,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   imports: [
     RedisModule,
     IntersolveVisaModule,
+    IntersolveVoucherModule,
     SafaricomModule,
     AirtelModule,
     NedbankModule,
@@ -51,8 +55,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionJobsSafaricomService,
     TransactionJobsAirtelService,
     TransactionJobsIntersolveVisaService,
+    TransactionJobsIntersolveVoucherService,
     TransactionJobsOnafriqService,
     TransactionJobsProcessorIntersolveVisa,
+    TransactionJobsProcessorIntersolveVoucher,
     TransactionJobsProcessorSafaricom,
     TransactionJobsProcessorAirtel,
     TransactionJobsProcessorNedbank,

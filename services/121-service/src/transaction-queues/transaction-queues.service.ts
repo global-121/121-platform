@@ -9,6 +9,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -27,6 +28,19 @@ export class TransactionQueuesService {
     for (const transferJob of transferJobs) {
       const job =
         await this.queuesService.transactionJobIntersolveVisaQueue.add(
+          JobNames.default,
+          transferJob,
+        );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
+  }
+
+  public async addIntersolveVoucherTransactionJobs(
+    transferJobs: IntersolveVoucherTransactionJobDto[],
+  ): Promise<void> {
+    for (const transferJob of transferJobs) {
+      const job =
+        await this.queuesService.transactionJobIntersolveVoucherQueue.add(
           JobNames.default,
           transferJob,
         );
