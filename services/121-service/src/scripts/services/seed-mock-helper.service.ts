@@ -346,7 +346,7 @@ export class SeedMockHelperService {
     programId: number,
     registrations: object[],
     accessToken: string,
-  ): Promise<any> {
+  ): Promise<unknown> {
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations`;
     const body = registrations;
     const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
@@ -360,7 +360,7 @@ export class SeedMockHelperService {
     status: RegistrationStatusEnum,
     accessToken: string,
     filter: Record<string, string> = {},
-  ): Promise<any> {
+  ): Promise<unknown> {
     let queryParams = '';
     if (referenceIds) {
       queryParams += `filter.referenceId=$in:${referenceIds.join(',')}&`;
@@ -432,7 +432,7 @@ export class SeedMockHelperService {
     page?: number,
     limit?: number,
     filter: Record<string, string> = {},
-  ): Promise<any> {
+  ): Promise<unknown> {
     const queryParams = new URLSearchParams();
     attributes.forEach((attr) => queryParams.append('select', attr));
     if (page) queryParams.append('page', page.toString());
@@ -451,7 +451,7 @@ export class SeedMockHelperService {
     referenceIds: string[],
     accessToken: string,
     filter: Record<string, string> = {},
-  ): Promise<any> {
+  ): Promise<unknown> {
     let queryParams = '';
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
