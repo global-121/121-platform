@@ -13,7 +13,7 @@ export class PaTransactionResultDto {
   public message?: string | null;
   public notificationObjects?: TransactionNotificationObject[];
   public date?: Date;
-  public customData?: any;
+  public customData?: Record<string, unknown>;
   public calculatedAmount: number;
   public fspName: Fsps;
   public messageSid?: string;

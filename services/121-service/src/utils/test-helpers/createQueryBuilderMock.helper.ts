@@ -1,19 +1,19 @@
-interface QueryBuilderMock {
-  where: () => QueryBuilderMock;
-  andWhere: () => QueryBuilderMock;
-  select: () => QueryBuilderMock;
-  addSelect: () => QueryBuilderMock;
-  leftJoin: () => QueryBuilderMock;
-  getMany?: () => any;
-  getRawMany?: () => any;
-  distinct?: () => QueryBuilderMock;
+interface QueryBuilderMock<T = unknown> {
+  where: () => QueryBuilderMock<T>;
+  andWhere: () => QueryBuilderMock<T>;
+  select: () => QueryBuilderMock<T>;
+  addSelect: () => QueryBuilderMock<T>;
+  leftJoin: () => QueryBuilderMock<T>;
+  getMany?: () => T[];
+  getRawMany?: () => T[];
+  distinct?: () => QueryBuilderMock<T>;
 }
 
-export function generateMockCreateQueryBuilder(
-  dbQueryResult?: any[] | null,
+export function generateMockCreateQueryBuilder<T = unknown>(
+  dbQueryResult?: T[] | null,
   options: { useGetMany?: boolean } = {},
-): QueryBuilderMock {
-  const mock: QueryBuilderMock = {
+): QueryBuilderMock<T> {
+  const mock: QueryBuilderMock<T> = {
     select: () => mock,
     addSelect: () => mock,
     where: () => mock,
@@ -23,9 +23,9 @@ export function generateMockCreateQueryBuilder(
   };
 
   if (options.useGetMany) {
-    mock.getMany = () => dbQueryResult;
+    mock.getMany = () => dbQueryResult || [];
   } else {
-    mock.getRawMany = () => dbQueryResult;
+    mock.getRawMany = () => dbQueryResult || [];
   }
 
   return mock;
