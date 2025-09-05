@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { SoapPayload } from '@mock-service/src/fsp-integration/commercial-bank-ethiopia/interfaces/soap-payload.interface';
 
@@ -132,74 +131,40 @@ export class CommercialBankEthiopiaMockService {
   public async doTransferCredit(
     payload: SoapPayload<any>, // ## TODO: Use value from payload in response structure
   ): Promise<Envelope<TransferCreditResponse>> {
-    // Extract values from the payload
-    const debitAmount =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:DEBITAMOUNT']['_text'];
-    const debitTheirRef =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:DEBITTHEIRREF']['_text'];
-    const creditAcctNo =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:CREDITACCTNO']['_text'];
-    const creditCurrency =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:CREDITCURRENCY']['_text'];
-    const creditValueDate =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:CREDITVALUEDATE']['_text'];
+    const {
+      debitAmount,
+      debitTheirRef,
+      creditAcctNo,
+      creditCurrency,
+      creditValueDate,
+      beneficiaryName,
+    } = this.extractTransferFields(payload);
 
-    // Switch between mock scenarios based on Beneficiary Name from the payload
-    const beneficiaryName =
-      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
-        'FUNDSTRANSFERCBEREMITANCEType'
-      ]?.['fun:BeneficiaryName']['_text'];
-
-    // Define the success transaction Status object
-    const successTransactionStatus = {
-      transactionId: { _text: 'FT212435G2ZD' },
-      messageId: {},
-      successIndicator: { _text: 'Success' },
-      application: { _text: 'FUNDS.TRANSFER' },
-    };
-    // Define the duplicated transaction Status object
-    const duplicatedTransactionStatus = {
-      transactionId: { _text: 'FT212435G2ZD' },
-      messageId: {},
-      successIndicator: { _text: 'T24Error' },
-      application: { _text: 'FUNDS.TRANSFER' },
-      messages: [
-        { _text: 'Transaction with number is DUPLICATED Transaction!' },
-        { _text: 'Transaction with number is DUPLICATED Transaction!' }, // It's needed here to add a second message to the array, because else our xml parser does not parse this as an array
-      ],
-    };
-    // Define the error transaction Status object
-    const errorStatus = {
-      transactionId: { _text: 'FT212435G2ZD' },
-      messageId: {},
-      successIndicator: { _text: 'T24Error' },
-      application: { _text: 'FUNDS.TRANSFER' },
-      messages: [{ _text: 'Other failure' }],
-    };
-
-    let Status;
-    if (debitTheirRef.includes('duplicate-')) {
-      Status = duplicatedTransactionStatus;
-    } else if (beneficiaryName === 'error') {
-      Status = errorStatus;
-    } else if (beneficiaryName === 'no-response') {
+    // TODO: We mock a timeout here by not returning anything, which is not the best solution. However waiting on an actual timeout takes too long in the tests.
+    if (beneficiaryName === 'no-response') {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    const missingFields = this.getMissingFields({
+      debitAmount,
+      debitTheirRef,
+      creditAcctNo,
+      creditCurrency,
+      beneficiaryName,
+    });
+
+    let status;
+    if (missingFields.length > 0) {
+      status = this.buildStatusObject('missing', missingFields);
+    } else if (debitTheirRef?.includes('duplicate-')) {
+      status = this.buildStatusObject('duplicate');
+    } else if (beneficiaryName === 'error') {
+      status = this.buildStatusObject('error');
     } else if (beneficiaryName === 'time-out') {
-      return; // TODO: We mock a timeout here by not returning anything, which is not the best solution. However waiting on an actual timeout takes too long in the tests.
+      return;
     } else {
-      // If no specific mock scenario is provided, use the success scenario
-      Status = successTransactionStatus;
+      status = this.buildStatusObject('success');
     }
 
     const response = {
@@ -221,7 +186,7 @@ export class CommercialBankEthiopiaMockService {
               'xmlns:ns3': 'http://temenos.com/FUNDSTRANSFER',
               'xmlns:ns2': 'http://temenos.com/FUNDSTRANSFERCBEREMITANCE',
             },
-            Status,
+            Status: status,
             FUNDSTRANSFERType: {
               _attributes: {
                 id: 'FT21243423L4',
@@ -308,6 +273,80 @@ export class CommercialBankEthiopiaMockService {
       },
     };
     return response;
+  }
+
+  private getMissingFields(fields: Record<string, unknown>): string[] {
+    return Object.entries(fields)
+      .filter(([, value]) => value === undefined || value === null)
+      .map(([key]) => key);
+  }
+
+  private extractTransferFields(payload: SoapPayload<any>): {
+    debitAmount: string | undefined;
+    debitTheirRef: string | undefined;
+    creditAcctNo: string | undefined;
+    creditCurrency: string | undefined;
+    creditValueDate: string | undefined;
+    beneficiaryName: string | undefined;
+  } {
+    const base =
+      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
+        'FUNDSTRANSFERCBEREMITANCEType'
+      ] ?? {};
+    return {
+      debitAmount: base['fun:DEBITAMOUNT']?._text,
+      debitTheirRef: base['fun:DEBITTHEIRREF']?._text,
+      creditAcctNo: base['fun:CREDITACCTNO']?._text,
+      creditCurrency: base['fun:CREDITCURRENCY']?._text,
+      creditValueDate: base['fun:CREDITVALUEDATE']?._text,
+      beneficiaryName: base['fun:BeneficiaryName']?._text,
+    };
+  }
+
+  private buildStatusObject(
+    type: 'success' | 'missing' | 'duplicate' | 'error',
+    missingFields: string[] = [],
+  ): Record<string, unknown> {
+    switch (type) {
+      case 'success':
+        return {
+          transactionId: { _text: 'FT212435G2ZD' },
+          messageId: {},
+          successIndicator: { _text: 'Success' },
+          application: { _text: 'FUNDS.TRANSFER' },
+        };
+      case 'missing':
+        return {
+          transactionId: { _text: '' },
+          messageId: {},
+          successIndicator: { _text: 'T24Error' },
+          application: { _text: 'FUNDS.TRANSFER' },
+          messages: [
+            {
+              _text: `Missing required field(s): ${missingFields.join(', ')}`,
+            },
+          ],
+        };
+      case 'duplicate':
+        return {
+          transactionId: { _text: 'FT212435G2ZD' },
+          messageId: {},
+          successIndicator: { _text: 'T24Error' },
+          application: { _text: 'FUNDS.TRANSFER' },
+          messages: [
+            { _text: 'Transaction with number is DUPLICATED Transaction!' },
+            { _text: 'Transaction with number is DUPLICATED Transaction!' },
+          ],
+        };
+      case 'error':
+        return {
+          transactionId: { _text: 'FT212435G2ZD' },
+          messageId: {},
+          successIndicator: { _text: 'T24Error' },
+          application: { _text: 'FUNDS.TRANSFER' },
+          messages: [{ _text: 'Other failure' }],
+        };
+    }
   }
 
   public async doTransactionStatusEnquiry(
