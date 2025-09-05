@@ -587,11 +587,10 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return unusedVouchersDtos;
   }
 
-  public async storeTransactionResult(
+  public async storeTransactionResultStep2(
     paymentId: number,
     amount: number,
     registrationId: number,
-    transactionStep: number,
     status: TransactionStatusEnum,
     errorMessage: string | null,
     programId: number,
@@ -605,28 +604,25 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       intersolveVoucher.send = true;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     }
-    const transactionResultDto = await this.createTransactionResult(
+    const transactionResultDto = await this.createTransactionResultStep2(
       amount,
       registrationId,
-      transactionStep,
       status,
       errorMessage,
       options.messageSid,
     );
 
-    let userId = options.userId;
-    let programFspConfigurationId = options.programFspConfigurationId;
-    if (transactionStep === 2) {
-      const userFspConfigIdObject =
-        await this.getUserFspConfigIdForTransactionStep2(
-          registrationId,
-          paymentId,
-        );
-      if (userFspConfigIdObject) {
-        userId = userFspConfigIdObject.userId;
-        programFspConfigurationId =
-          userFspConfigIdObject.programFspConfigurationId;
-      }
+    let userId: number | undefined;
+    let programFspConfigurationId: number | undefined;
+    const userFspConfigIdObject =
+      await this.getUserFspConfigIdForTransactionStep2(
+        registrationId,
+        paymentId,
+      );
+    if (userFspConfigIdObject) {
+      userId = userFspConfigIdObject.userId;
+      programFspConfigurationId =
+        userFspConfigIdObject.programFspConfigurationId;
     }
 
     if (userId === undefined) {
@@ -650,6 +646,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     await this.transactionsService.storeTransactionUpdateStatus(
       transactionResultDto,
       transactionRelationDetails,
+      2,
     );
   }
 
@@ -671,10 +668,9 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     return transaction;
   }
 
-  public async createTransactionResult(
+  public async createTransactionResultStep2(
     amount: number,
     registrationId: number,
-    transactionStep: number,
     status: TransactionStatusEnum,
     errorMessage: string | null,
     messageSid?: string,
@@ -690,27 +686,16 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     transactionResult.referenceId = registration.referenceId;
 
     transactionResult.message = errorMessage;
-    transactionResult.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
       transactionResult.messageSid = messageSid;
     }
 
-    const fspNameOfRegistration = registration.programFspConfiguration.fspName;
-    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
-      transactionResult.customData['IntersolvePayoutStatus'] =
-        transactionStep === 1
-          ? IntersolveVoucherPayoutStatus.InitialMessage
-          : IntersolveVoucherPayoutStatus.VoucherSent;
-    }
-
+    transactionResult.customData = JSON.parse(JSON.stringify({}));
+    transactionResult.customData['IntersolvePayoutStatus'] =
+      IntersolveVoucherPayoutStatus.VoucherSent;
     transactionResult.status = status;
+    transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
 
-    if (fspNameOfRegistration === Fsps.intersolveVoucherWhatsapp) {
-      transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
-    }
-    if (fspNameOfRegistration === Fsps.intersolveVoucherPaper) {
-      transactionResult.fspName = Fsps.intersolveVoucherPaper;
-    }
     return transactionResult;
   }
 
