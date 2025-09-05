@@ -92,6 +92,12 @@ class BasePage {
     await this.dismissToast();
   }
 
+  async dismissToastIfVisible() {
+    if (await this.toast.isVisible()) {
+      await this.dismissToast();
+    }
+  }
+
   async dismissToast() {
     await this.toast.getByRole('button').click();
     await expect(this.toast).toBeHidden();

@@ -48,6 +48,8 @@ class ExportData extends BasePage {
       snapshotName,
       sortFunction,
     });
+
+    await this.dismissToastIfVisible();
   }
 }
 

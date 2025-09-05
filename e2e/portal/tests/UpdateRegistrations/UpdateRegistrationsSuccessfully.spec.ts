@@ -63,6 +63,8 @@ test('[36349] Data should be updated according to selected columns and registrat
       columnName: 'Name',
       filterText: newName,
     });
-    await registrationsPage.table.validateTableRowCount(1);
+    await registrationsPage.table.validateWaitForTableRowCount({
+      expectedRowCount: 1,
+    });
   });
 });

@@ -45,14 +45,20 @@ test('Registration table should clear row selections when filter criteria change
       columnName: 'Name',
       filterText: 'Jan',
     });
-    expect(await tableComponent.getSelectedRowsCount()).toBe(0);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 0,
+    });
   });
 
   await test.step('should clear single row selection when removing a column filter', async () => {
     await tableComponent.selectRowByName('Jan Janssen');
-    expect(await tableComponent.getSelectedRowsCount()).toBe(1);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 1,
+    });
     await tableComponent.clearColumnFilter('Name');
-    expect(await tableComponent.getSelectedRowsCount()).toBe(0);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 0,
+    });
   });
 
   await test.step('should clear single row selection when clearing all filters', async () => {
@@ -61,18 +67,26 @@ test('Registration table should clear row selections when filter criteria change
       filterText: 'Jan',
     });
     await tableComponent.selectRowByName('Jan Janssen');
-    expect(await tableComponent.getSelectedRowsCount()).toBe(1);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 1,
+    });
     await tableComponent.clearAllFilters();
-    expect(await tableComponent.getSelectedRowsCount()).toBe(0);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 0,
+    });
   });
 
   await test.step('should clear all rows selection when applying a filter', async () => {
     await tableComponent.selectAll();
-    expect(await tableComponent.getSelectedRowsCount()).toBe(4);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 4,
+    });
     await tableComponent.filterColumnByText({
       columnName: 'Name',
       filterText: 'Jan',
     });
-    expect(await tableComponent.getSelectedRowsCount()).toBe(0);
+    await tableComponent.validateAndWaitForSelectedRowsCount({
+      expectedCount: 0,
+    });
   });
 });
