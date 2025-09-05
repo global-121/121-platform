@@ -22,7 +22,6 @@ import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-wit
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
-import { IntersolveVoucherJobDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-voucher-job.dto';
 import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
@@ -102,50 +101,19 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     }
   }
 
-  public async processQueuedPayment(
-    jobData: IntersolveVoucherJobDto,
-  ): Promise<void> {
-    const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        jobData.paymentInfo.programFspConfigurationId,
-      );
-    const paResult = await this.sendIndividualPayment(
-      jobData.paymentInfo,
-      jobData.useWhatsapp,
-      jobData.paymentInfo.transactionAmount,
-      jobData.paymentId,
-      credentials,
-    );
-    if (!paResult) {
-      return;
-    }
-
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(paResult.referenceId) },
-    });
-    await this.storeTransactionResult(
-      jobData.paymentId,
-      jobData.paymentInfo.transactionAmount,
-      registration.id,
-      1,
-      paResult.status,
-      paResult.message ?? null,
-      registration.programId,
-      {
-        programFspConfigurationId:
-          jobData.paymentInfo.programFspConfigurationId,
-        userId: jobData.paymentInfo.userId,
-      },
-    );
-  }
-
-  public async sendIndividualPayment(
-    paymentInfo: PaPaymentDataDto,
-    useWhatsapp: boolean,
-    calculatedAmount: number,
-    paymentId: number,
-    credentials: UsernamePasswordInterface,
-  ) {
+  public async sendIndividualPayment({
+    paymentInfo,
+    useWhatsapp,
+    calculatedAmount,
+    paymentId,
+    credentials,
+  }: {
+    paymentInfo: PaPaymentDataDto;
+    useWhatsapp: boolean;
+    calculatedAmount: number;
+    paymentId: number;
+    credentials: UsernamePasswordInterface;
+  }) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = paymentInfo.referenceId;
 

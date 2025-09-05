@@ -507,6 +507,8 @@ export class PaymentsExecutionService {
   }): Promise<void> {
     const fspsThatUseTransactionJobsCreationService = [
       Fsps.intersolveVisa,
+      Fsps.intersolveVoucherPaper,
+      Fsps.intersolveVoucherWhatsapp,
       Fsps.safaricom,
       Fsps.airtel,
       Fsps.nedbank,

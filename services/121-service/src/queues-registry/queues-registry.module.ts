@@ -84,11 +84,11 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsIntersolveVoucher,
       processors: [
         {
-          path: 'src/payments/fsp-integration/intersolve-voucher/processors/intersolve-voucher.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-intersolve-voucher.processor.ts',
         },
       ],
       limiter: {
-        max: 5, // Max number of jobs processed
+        max: 20, // Max number of jobs processed
         duration: 1000, // per duration in milliseconds
       },
     }),
