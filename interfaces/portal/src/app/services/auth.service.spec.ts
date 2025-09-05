@@ -40,7 +40,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
       isUserExpired: jasmine.createSpy<() => boolean>('isUserExpired'),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- Did not manage to get test working otherwise
     mockInjector.get.and.returnValue(mockAuthStrategy);
 
     TestBed.configureTestingModule({
