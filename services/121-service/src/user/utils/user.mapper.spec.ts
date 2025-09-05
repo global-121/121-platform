@@ -24,7 +24,7 @@ describe('User mapper', () => {
       salt: 'salt',
       active: true,
       lastLogin: new Date(),
-      hashPassword: async () => {},
+      hashPassword: async () => undefined,
       created: new Date(),
       updated: new Date(),
       isOrganizationAdmin: false,

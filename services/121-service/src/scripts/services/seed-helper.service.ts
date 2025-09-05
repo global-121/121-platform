@@ -284,7 +284,7 @@ export class SeedHelperService {
   }
 
   public async addProgram(
-    programExample: any,
+    programExample: Record<string, unknown>,
     isApiTests: boolean,
   ): Promise<ProgramEntity> {
     const programRepository = this.dataSource.getRepository(ProgramEntity);

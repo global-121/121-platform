@@ -24,14 +24,14 @@ export class ProgramFspConfigurationPropertyEntity extends Base121Entity {
   @Column({
     type: 'varchar',
     transformer: {
-      to: (value: any) => {
+      to: (value: string | string[] | Record<string, string>) => {
         if (Array.isArray(value) || isObject(value)) {
           return JSON.stringify(value);
         }
 
         return value;
       },
-      from: (value: any) => {
+      from: (value: string) => {
         try {
           const parsedValue = JSON.parse(value);
           if (Array.isArray(parsedValue) || isObject(parsedValue)) {

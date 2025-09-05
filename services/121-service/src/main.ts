@@ -74,7 +74,7 @@ interface MethodInfo {
   returnType?: string;
 }
 
-function generateSwaggerSummaryJson(app: INestApplication<any>): void {
+function generateSwaggerSummaryJson(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
@@ -85,17 +85,18 @@ function generateSwaggerSummaryJson(app: INestApplication<any>): void {
 
   for (const path in openApiDocument.paths) {
     for (const method in openApiDocument.paths[path]) {
-      const methodInfo = openApiDocument.paths[path][method];
+      const methodInfo = (openApiDocument.paths[path] as Record<string, unknown>)[method] as Record<string, unknown>;
       const returnType =
-        methodInfo.responses['200']?.content?.['application/json']?.schema?.$ref
+        (methodInfo.responses as Record<string, unknown>)?.['200']?.content?.['application/json']?.schema?.$ref
           ?.split('/')
           .pop() ||
-        methodInfo.responses['201']?.content?.['application/json']?.schema?.$ref
+        (methodInfo.responses as Record<string, unknown>)?.['201']?.content?.['application/json']?.schema?.$ref
           ?.split('/')
           .pop();
 
       const params =
-        methodInfo.parameters?.map((param: any) => param.name) || [];
+        (methodInfo.parameters as { name: string }[])?.map((param: { name: string }) => param.name) ||
+        [];
 
       const methodInfoObject: MethodInfo = {
         method,

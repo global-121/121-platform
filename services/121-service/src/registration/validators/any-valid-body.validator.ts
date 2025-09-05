@@ -7,7 +7,7 @@ import {
 import { ValidationPipeOptions } from '@121-service/src/validation-pipe-options.const';
 
 const RawBody = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): any => {
+  (_data: unknown, ctx: ExecutionContext): unknown => {
     const request = ctx.switchToHttp().getRequest();
     return request.body;
   },

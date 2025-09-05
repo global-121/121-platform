@@ -144,7 +144,7 @@ describe('AirtelApiService', () => {
         });
 
         // Act
-        let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
+        let error: AirtelApiError | Error; // Handle both custom and generic errors
         try {
           await airtelApiService.disburse(disburseInput);
         } catch (e) {
@@ -164,7 +164,7 @@ describe('AirtelApiService', () => {
         post.mockRejectedValue(new Error('Network error'));
 
         // Act
-        let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
+        let error: AirtelApiError | Error; // Handle both custom and generic errors
         try {
           await airtelApiService.disburse(disburseInput);
         } catch (e) {
@@ -184,7 +184,7 @@ describe('AirtelApiService', () => {
         post.mockResolvedValueOnce(unknownResponse);
 
         // Act
-        let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
+        let error: AirtelApiError | Error; // Handle both custom and generic errors
         try {
           await airtelApiService.disburse(disburseInput);
         } catch (e) {
@@ -384,7 +384,7 @@ describe('AirtelApiService', () => {
         post.mockRejectedValueOnce(new Error('Network error'));
 
         // Act
-        let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
+        let error: AirtelApiError | Error; // Handle both custom and generic errors
         try {
           await airtelApiService.disburse(disburseInput);
         } catch (e) {
@@ -460,7 +460,7 @@ describe('AirtelApiService', () => {
       get.mockRejectedValueOnce(new Error('Network error'));
 
       // Act
-      let error: AirtelApiError | any; // The any is unfortunately needed to prevent type errors
+      let error: AirtelApiError | Error; // Handle both custom and generic errors
       try {
         await airtelApiService.enquire(enquireInput);
       } catch (e) {

@@ -41,7 +41,7 @@ describe('createFindWhereOptions helper', () => {
     >(options, relationArrayToRegistration, requestScope);
 
     // Transform to comparable form
-    const transformToComparableForm = (obj: any) => {
+    const transformToComparableForm = (obj: unknown): unknown => {
       if (obj instanceof FindOperator) {
         return obj.value; // Use the value method
       }

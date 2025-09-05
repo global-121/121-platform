@@ -78,7 +78,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
   private async seedRegistrationForProgram(
     programId: number,
-    registration: any,
+    registration: Record<string, unknown>,
   ): Promise<void> {
     const accessToken = await this.axiosCallsService.getAccessToken();
     await this.seedMockHelper.importRegistrations(

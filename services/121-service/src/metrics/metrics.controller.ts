@@ -120,7 +120,7 @@ export class MetricsController {
     }
 
     if (format === ExportFileFormat.xlsx) {
-      return sendXlsxReponse(result.data, result.fileName, res);
+      return sendXlsxReponse(result.data as Record<string, unknown>[], result.fileName, res);
     }
     // TODO: Filename is not used here by the frontend so we could consider removing it from the response when we send JSON format
     return res.send(result);

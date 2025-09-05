@@ -405,7 +405,7 @@ export class RegistrationsImportService {
   }
 
   private async validateBulkUpdateInput(
-    csvArray: any[],
+    csvArray: Record<string, unknown>[],
     programId: number,
     userId: number,
   ): Promise<ValidatedRegistrationInput[]> {

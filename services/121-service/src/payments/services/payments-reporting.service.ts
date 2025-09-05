@@ -100,7 +100,7 @@ export class PaymentsReportingService {
   private async aggregateTransactionsByStatus(
     programId: number,
     paymentId: number,
-  ): Promise<any[]> {
+  ): Promise<{ status: string; count: number; totalamount: number }[]> {
     return await this.dataSource
       .createQueryBuilder()
       .select([

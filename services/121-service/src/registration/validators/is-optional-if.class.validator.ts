@@ -5,7 +5,7 @@ import { ValidateIf, type ValidationOptions } from 'class-validator';
 export const IsOptionalIf: IsOptionalIf =
   (condition, validationOptions?: ValidationOptions) =>
   (target: object, propertyKey: string | symbol) => {
-    ValidateIf((object: any, value: any): boolean => {
+    ValidateIf((object: Record<string, unknown>, value: unknown): boolean => {
       // if condition was true, just disable the validation on the null & undefined fields
       const isOptional = Boolean(condition(object, value));
       const isNull = object[propertyKey] === null;
@@ -18,8 +18,8 @@ export const IsOptionalIf: IsOptionalIf =
   };
 
 export type IsOptionalIf = <
-  T extends Record<string, any> = any, // class instance
-  Y extends keyof T = any, // propertyName
+  T extends Record<string, unknown> = Record<string, unknown>, // class instance
+  Y extends keyof T = keyof T, // propertyName
 >(
   condition: (object: T, value: T[Y]) => boolean,
   validationOptions?: ValidationOptions,

@@ -33,9 +33,13 @@ describe('RegistrationBulkService', () => {
     );
 
     // Mock the findOne method
-    jest
-      .spyOn(messageTemplateRepository as any, 'findOne')
-      .mockImplementation((arg: any) => {
+    jest.spyOn(messageTemplateRepository as any, 'findOne').mockImplementation(
+      (arg: {
+        where: {
+          programId: { _value: number };
+          type: { _value: RegistrationStatusEnum };
+        };
+      }) => {
         const programIdValue = arg.where.programId._value;
         const typeValue = arg.where.type._value;
 
@@ -53,15 +57,13 @@ describe('RegistrationBulkService', () => {
           });
         }
         return Promise.resolve(null);
-      });
-
-    const dbQueryResult = null;
-    const createQueryBuilder: any = generateMockCreateQueryBuilder(
-      dbQueryResult,
-      {
-        useGetMany: true,
       },
     );
+
+    const dbQueryResult = null;
+    const createQueryBuilder = generateMockCreateQueryBuilder(dbQueryResult, {
+      useGetMany: true,
+    });
 
     const registrationViewScopedRepository = unitRef.get(
       RegistrationViewScopedRepository,
