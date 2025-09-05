@@ -134,10 +134,12 @@ export class CommercialBankEthiopiaMockService {
     const {
       debitAmount,
       debitTheirRef,
+      creditTheirRef,
       creditAcctNo,
       creditCurrency,
       creditValueDate,
       beneficiaryName,
+      remitterName,
     } = this.extractTransferFields(payload);
 
     // TODO: We mock a timeout here by not returning anything, which is not the best solution. However waiting on an actual timeout takes too long in the tests.
@@ -145,13 +147,18 @@ export class CommercialBankEthiopiaMockService {
       const errors = 'No response';
       throw new HttpException({ errors }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    const { userName, password } = this.extractCredentials(payload);
 
     const missingFields = this.getMissingFields({
       debitAmount,
       debitTheirRef,
+      creditTheirRef,
       creditAcctNo,
       creditCurrency,
       beneficiaryName,
+      remitterName,
+      userName,
+      password,
     });
 
     let status;
@@ -275,6 +282,20 @@ export class CommercialBankEthiopiaMockService {
     return response;
   }
 
+  private extractCredentials(payload: SoapPayload<any>): {
+    userName: string | undefined;
+    password: string | undefined;
+  } {
+    const webRequestCommon =
+      payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
+        'WebRequestCommon'
+      ] ?? {};
+    return {
+      userName: webRequestCommon['userName'] ?? undefined,
+      password: webRequestCommon['password'] ?? undefined,
+    };
+  }
+
   private getMissingFields(fields: Record<string, unknown>): string[] {
     return Object.entries(fields)
       .filter(([, value]) => value === undefined || value === null)
@@ -284,10 +305,12 @@ export class CommercialBankEthiopiaMockService {
   private extractTransferFields(payload: SoapPayload<any>): {
     debitAmount: string | undefined;
     debitTheirRef: string | undefined;
+    creditTheirRef: string | undefined;
     creditAcctNo: string | undefined;
     creditCurrency: string | undefined;
     creditValueDate: string | undefined;
     beneficiaryName: string | undefined;
+    remitterName: string | undefined;
   } {
     const base =
       payload['soapenv:Envelope']?.['soapenv:Body']?.['cber:RMTFundtransfer']?.[
@@ -296,10 +319,12 @@ export class CommercialBankEthiopiaMockService {
     return {
       debitAmount: base['fun:DEBITAMOUNT']?._text,
       debitTheirRef: base['fun:DEBITTHEIRREF']?._text,
+      creditTheirRef: base['fun:CREDITTHEIRREF']?._text,
       creditAcctNo: base['fun:CREDITACCTNO']?._text,
       creditCurrency: base['fun:CREDITCURRENCY']?._text,
       creditValueDate: base['fun:CREDITVALUEDATE']?._text,
       beneficiaryName: base['fun:BeneficiaryName']?._text,
+      remitterName: base['fun:RemitterName']?._text,
     };
   }
 
@@ -315,7 +340,7 @@ export class CommercialBankEthiopiaMockService {
           successIndicator: { _text: 'Success' },
           application: { _text: 'FUNDS.TRANSFER' },
         };
-      case 'missing':
+      case 'missing': // TODO: Validate with CBE that this is the actual error that occurs if these fields are missing
         return {
           transactionId: { _text: '' },
           messageId: {},
