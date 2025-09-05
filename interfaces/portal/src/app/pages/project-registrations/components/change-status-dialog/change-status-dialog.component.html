@@ -117,7 +117,7 @@
     </div>
   </form>
 </p-dialog>
-<app-confirmation-dialog
+<app-form-dialog
   #dryRunWarningDialog
   header="Warning"
   i18n-header="@@generic-warning"
@@ -153,7 +153,7 @@
     {{ changeStatusMutation.data()?.applicableCount }}
     registration(s)?
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>
 
 <p-dialog
   [(visible)]="dryRunFailureDialogVisible"

@@ -68,7 +68,7 @@ abstract class RegistrationBasePage extends BasePage {
   async fillNote(note: string) {
     const noteInput = this.page.locator('textarea');
     await noteInput.fill(note);
-    await this.page.getByRole('button', { name: 'Submit' }).click();
+    await this.page.getByRole('button', { name: 'Add note' }).click();
     await this.validateToastMessageAndClose('Note successfully added.');
   }
 }

@@ -86,6 +86,7 @@ export class AirtelApiService {
     const url = this.airtelDisbursementAndEnquiryV2URL;
     const headers = this.addAuthHeaders(
       new Headers({
+        Accept: '*/*',
         'Content-Type': 'application/json',
         'X-Country': this.countryCode,
         'X-Currency': this.currencyCode,

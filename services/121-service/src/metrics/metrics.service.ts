@@ -4,18 +4,23 @@ import { Equal, In, Not } from 'typeorm';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
+import {
+  AggregatePerMonth,
+  AggregatePerPayment,
+} from '@121-service/src/metrics/dto/payment-aggregate.dto';
 import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { ExportVisaCardDetails } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details.interface';
 import { ExportVisaCardDetailsRawData } from '@121-service/src/payments/fsp-integration/intersolve-visa/interfaces/export-visa-card-details-raw-data.interface';
 import { IntersolveVisaStatusMapper } from '@121-service/src/payments/fsp-integration/intersolve-visa/mappers/intersolve-visa-status.mapper';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
+import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
-import { PaginationFilter } from '@121-service/src/registration/dto/filter-attribute.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
@@ -46,9 +51,10 @@ export class MetricsService {
     private readonly registrationsPaginationsService: RegistrationsPaginationService,
     private readonly intersolveVoucherService: IntersolveVoucherService,
     private readonly userService: UserService,
+    private readonly paymentsReportingService: PaymentsReportingService,
   ) {}
 
-  public async getExportList({
+  public async getExport({
     programId,
     type,
     userId,
@@ -59,6 +65,18 @@ export class MetricsService {
     type: ExportType;
     paginationQuery?: PaginateQuery;
   }): Promise<FileDto> {
+    const validExportType = [
+      ExportType.registrations,
+      ExportType.unusedVouchers,
+      ExportType.vouchersWithBalance,
+      ExportType.intersolveVisaCardDetails,
+    ];
+    if (type === undefined || !validExportType.includes(type)) {
+      throw new HttpException(
+        `Invalid export type: ${type}. Valid types are: ${validExportType.join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     await this.actionService.saveAction(userId, programId, type);
 
     const permission =
@@ -86,47 +104,35 @@ export class MetricsService {
             HttpStatus.BAD_REQUEST,
           );
         }
-        return this.getAllPeopleAffectedList({
+        return this.getRegistrationsExport({
           programId,
-          filter: paginationQuery.filter,
-          search: paginationQuery.search,
-          select: paginationQuery.select,
+          paginationQuery,
         });
       }
       case ExportType.unusedVouchers: {
-        return this.getUnusedVouchers(programId);
+        return this.getUnusedVouchersExport(programId);
       }
       case ExportType.vouchersWithBalance: {
-        return this.getVouchersWithBalance(programId);
+        return this.getVouchersWithBalanceExport(programId);
       }
       case ExportType.intersolveVisaCardDetails: {
-        return this.createIntersolveVisaBalancesExport(programId);
+        return this.getIntersolveVisaBalancesExport(programId);
       }
       default:
-        throw new HttpException(
-          'Unknown ExportList type',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new Error(`Unsupported export type: ${type}`);
     }
   }
 
-  private async getAllPeopleAffectedList({
+  private async getRegistrationsExport({
     programId,
-    filter,
-    search,
-    select,
+    paginationQuery,
   }: {
     programId: number;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
+    paginationQuery: PaginateQuery;
   }): Promise<FileDto> {
-    const data = await this.getRegistrationsList({
+    const data = await this.getRegistrationsData({
       programId,
-      exportType: ExportType.registrations,
-      filter,
-      search,
-      select,
+      paginationQuery,
     });
     const response = {
       fileName: ExportType.registrations,
@@ -135,26 +141,17 @@ export class MetricsService {
     return response;
   }
 
-  private async getRegistrationsList({
+  private async getRegistrationsData({
     programId,
-    exportType,
-    filter,
-    search,
-    select,
+    paginationQuery,
   }: {
     programId: number;
-    exportType: ExportType;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
+    paginationQuery: PaginateQuery;
   }): Promise<object[]> {
     let rows: Record<string, unknown>[] =
       await this.getRegistrationsGenericFields({
         programId,
-        exportType,
-        filter,
-        search,
-        select,
+        paginationQuery,
       });
 
     for await (const row of rows) {
@@ -172,7 +169,7 @@ export class MetricsService {
     }
     rows = await this.replaceValueWithDropdownLabel({
       rows,
-      select,
+      select: paginationQuery.select,
       programId,
     });
 
@@ -191,6 +188,38 @@ export class MetricsService {
       return this.orderObjectKeys(row, keyOrder);
     });
     return orderedObjects;
+  }
+
+  private async getRegistrationsGenericFields({
+    programId,
+    paginationQuery,
+  }: {
+    programId: number;
+    paginationQuery: PaginateQuery;
+  }): Promise<MappedPaginatedRegistrationDto[]> {
+    // Create an empty scoped querybuilder object
+    const queryBuilder = this.registrationScopedViewRepository
+      .createQueryBuilder('registration')
+      .andWhere({ programId });
+
+    const chunkSize = 10000;
+    const paginateQueryForBulk = {
+      path: 'registration',
+      filter: paginationQuery.filter,
+      limit: chunkSize,
+      page: 1,
+      select: paginationQuery.select,
+      search: paginationQuery.search,
+    };
+
+    const data =
+      await this.registrationsPaginationsService.getRegistrationsChunked(
+        programId,
+        paginateQueryForBulk,
+        chunkSize,
+        queryBuilder,
+      );
+    return data;
   }
 
   private orderObjectKeys<T extends Record<string, unknown>>(
@@ -214,7 +243,7 @@ export class MetricsService {
     return ordered;
   }
 
-  private async getUnusedVouchers(programId?: number): Promise<FileDto> {
+  private async getUnusedVouchersExport(programId?: number): Promise<FileDto> {
     const unusedVouchers =
       await this.intersolveVoucherService.getUnusedVouchers(programId);
 
@@ -226,7 +255,9 @@ export class MetricsService {
     return response;
   }
 
-  private async getVouchersWithBalance(programId: number): Promise<FileDto> {
+  private async getVouchersWithBalanceExport(
+    programId: number,
+  ): Promise<FileDto> {
     const vouchersWithBalance =
       await this.intersolveVoucherService.getVouchersWithBalance(programId);
     const response = {
@@ -246,52 +277,6 @@ export class MetricsService {
     };
 
     return response;
-  }
-
-  private async getRegistrationsGenericFields({
-    programId,
-    exportType,
-    filter,
-    search,
-    select,
-  }: {
-    programId: number;
-    exportType?: ExportType;
-    filter?: PaginationFilter;
-    search?: string;
-    select?: string[];
-  }): Promise<MappedPaginatedRegistrationDto[]> {
-    // Create an empty scoped querybuilder object
-    let queryBuilder = this.registrationScopedViewRepository
-      .createQueryBuilder('registration')
-      .andWhere({ programId });
-
-    if (exportType !== ExportType.registrations && !filter?.['status']) {
-      queryBuilder = queryBuilder.andWhere(
-        'registration."status" != :registrationStatus',
-        {
-          registrationStatus: RegistrationStatusEnum.deleted,
-        },
-      );
-    }
-    const chunkSize = 10000;
-    const paginateQuery = {
-      path: 'registration',
-      filter,
-      limit: chunkSize,
-      page: 1,
-      select,
-      search,
-    };
-
-    const data =
-      await this.registrationsPaginationsService.getRegistrationsChunked(
-        programId,
-        paginateQuery,
-        chunkSize,
-        queryBuilder,
-      );
-    return data;
   }
 
   private async replaceValueWithDropdownLabel({
@@ -369,7 +354,7 @@ export class MetricsService {
     };
   }
 
-  private async createIntersolveVisaBalancesExport(programId: number): Promise<{
+  private async getIntersolveVisaBalancesExport(programId: number): Promise<{
     fileName: ExportType;
     data: ExportVisaCardDetails[];
   }> {
@@ -432,6 +417,83 @@ export class MetricsService {
       .andWhere({ registrationStatus: Not(RegistrationStatusEnum.deleted) })
       .groupBy(`registration."registrationStatus"`);
     const res = await query.getRawMany<RegistrationStatusStats>();
+    return res;
+  }
+
+  public async getRegistrationCountByDate(
+    programId: number,
+  ): Promise<RegistrationCountByDate> {
+    const query = this.registrationScopedRepository
+      .createQueryBuilder('registration')
+      .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
+      .addSelect(`COUNT(*)`)
+      .andWhere({ programId })
+      .groupBy(`to_char("created", 'yyyy-mm-dd')`)
+      .orderBy(`to_char("created", 'yyyy-mm-dd')`);
+    console.log('query: ', query.getSql());
+    const res = (await query.getRawMany()).reduce(
+      (dates: Record<string, number>, r) => {
+        dates[r.created] = Number(r.count);
+        return dates;
+      },
+      {},
+    );
+    return res;
+  }
+
+  public async getAllPaymentsAggregates(
+    programId: number,
+  ): Promise<AggregatePerPayment> {
+    const res: AggregatePerPayment = {};
+
+    const payments = await this.paymentsReportingService.getPayments(programId);
+
+    for (const payment of payments) {
+      const aggregate =
+        await this.paymentsReportingService.getPaymentAggregation(
+          programId,
+          payment.paymentId,
+        );
+      res[payment.paymentId] = aggregate;
+    }
+
+    return res;
+  }
+
+  public async getAmountSentByMonth(
+    programId: number,
+  ): Promise<AggregatePerMonth> {
+    const res: AggregatePerMonth = {};
+
+    const payments = await this.paymentsReportingService.getPayments(programId);
+
+    const emptyMonth = {
+      success: 0,
+      waiting: 0,
+      failed: 0,
+    };
+
+    for (const payment of payments) {
+      const month = new Date(payment.paymentDate)
+        .toISOString()
+        .split('T')[0]
+        .slice(0, -3);
+
+      if (!res[month]) {
+        res[month] = emptyMonth;
+      }
+
+      const aggregate =
+        await this.paymentsReportingService.getPaymentAggregation(
+          programId,
+          payment.paymentId,
+        );
+
+      res[month].success += Number(aggregate.success.amount);
+      res[month].waiting += Number(aggregate.waiting.amount);
+      res[month].failed += Number(aggregate.failed.amount);
+    }
+
     return res;
   }
 }

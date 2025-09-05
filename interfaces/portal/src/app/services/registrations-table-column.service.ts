@@ -117,6 +117,7 @@ export class RegistrationsTableColumnService {
                   label: REGISTRATION_STATUS_LABELS[status],
                   value: status,
                 })),
+              displayAsChip: true,
               getCellChipData: (registration) =>
                 getChipDataByRegistrationStatus(registration.status),
             },
@@ -128,6 +129,7 @@ export class RegistrationsTableColumnService {
                 label: DUPLICATE_STATUS_LABELS[status],
                 value: status,
               })),
+              displayAsChip: true,
               getCellChipData: (registration) =>
                 getChipDataByDuplicateStatus(registration.duplicateStatus),
             },
@@ -140,6 +142,7 @@ export class RegistrationsTableColumnService {
                   this.translatableStringService.translate(config.label) ?? '',
                 value: config.name,
               })),
+              displayAsChip: true,
             },
             {
               field: 'created',

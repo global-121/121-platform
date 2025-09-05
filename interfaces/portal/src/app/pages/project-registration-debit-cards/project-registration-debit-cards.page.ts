@@ -20,11 +20,11 @@ import { VisaCardAction } from '@121-service/src/payments/fsp-integration/inters
 
 import { ColoredChipComponent } from '~/components/colored-chip/colored-chip.component';
 import { getChipDataByVisaCardStatus } from '~/components/colored-chip/colored-chip.helper';
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
 import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
@@ -40,7 +40,7 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     AccordionModule,
     ColoredChipComponent,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     PageLayoutRegistrationComponent,
   ],
   providers: [ToastService],

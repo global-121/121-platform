@@ -53,7 +53,7 @@ export class ActivityLogVoucherDialogComponent {
       voucherReferenceId: this.voucherReferenceId(),
       paymentId: this.paymentId(),
     })(),
-    enabled: !!this.dialogVisible(),
+    enabled: this.dialogVisible(),
   }));
 
   readonly sanitizedVoucherUrl = computed(() => {
@@ -78,7 +78,7 @@ export class ActivityLogVoucherDialogComponent {
 
   readonly voucherFileName = computed(
     () =>
-      `voucher-project-${this.projectId().toString()}-payment-${this.paymentId().toString()}-voucher-${this.voucherReferenceId()}.png`,
+      `voucher-project-${this.projectId()}-payment-${this.paymentId().toString()}-voucher-${this.voucherReferenceId()}.png`,
   );
 
   printVoucher() {

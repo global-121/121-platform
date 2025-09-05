@@ -1,22 +1,20 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { CreateMutationResult } from '@tanstack/angular-query-experimental';
+import { ButtonModule } from 'primeng/button';
 
-/**
- * Base class for forms.
- *
- * Do not use this component directly. Instead, use one of the following components:
- * - `FormDefaultComponent`
- * - `FormSidebarComponent`
- */
+import { FormErrorComponent } from '~/components/form-error/form-error.component';
+
 @Component({
-  selector: 'app-abstract-form-do-not-use',
-  imports: [],
-  template: '',
+  selector: 'app-form-default',
+  imports: [ButtonModule, ReactiveFormsModule, FormErrorComponent],
+  templateUrl: './form-default.component.html',
+  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export abstract class FormComponent<T extends FormGroup> {
+export class FormDefaultComponent<T extends FormGroup> {
   readonly formGroup = input.required<T>();
   readonly mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here

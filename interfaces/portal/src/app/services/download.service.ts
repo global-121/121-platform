@@ -33,13 +33,33 @@ export class DownloadService {
     data,
     fileName,
   }: {
-    data: unknown[];
+    data: Record<string, unknown>[];
     fileName: string;
   }) {
     const { utils: XLSXUtils, writeFile: writeXLSX } = await import(
       '~/utils/xlsx-wrapper'
     );
-    const worksheet = XLSXUtils.json_to_sheet(data);
+    const worksheet = XLSXUtils.json_to_sheet(data, {
+      header: Object.keys(data[0] ?? {}).sort((keyA, keyB) => {
+        // these are keys we want to appear in xlsx exports first, in this order
+        const order = ['id', 'referenceId', 'name', 'amount'];
+        const indexA = order.indexOf(keyA);
+        const indexB = order.indexOf(keyB);
+
+        if (indexA !== -1 && indexB !== -1) {
+          return indexA - indexB;
+        }
+        if (indexA !== -1) {
+          return -1;
+        }
+        if (indexB !== -1) {
+          return 1;
+        }
+
+        // if neither key is in the order list, sort alphabetically, to get consistent (especially test) results
+        return keyA.localeCompare(keyB);
+      }),
+    });
     const workbook = {
       Sheets: { data: worksheet },
       SheetNames: ['data'],

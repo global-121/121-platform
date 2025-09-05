@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Node.js version
         uses: actions/setup-node@v4
@@ -69,7 +69,7 @@ jobs:
         working-directory: ${{ env.interfacePath }}
         run: 'npm run test:coverage'
 
-      - uses: qltysh/qlty-action/coverage@v1
+      - uses: qltysh/qlty-action/coverage@v2
         with:
           oidc: true
           add-prefix: ${{ env.interfacePath }}

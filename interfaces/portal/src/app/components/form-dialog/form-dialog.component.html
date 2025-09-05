@@ -28,7 +28,7 @@
             (click)="confirmDialog.onReject()"
           />
         </div>
-        <div class="w-full py-4">
+        <div class="flex w-full grow flex-col gap-2 py-4">
           <ng-content></ng-content>
           @if (mutation().isError()) {
             <div class="mt-4">

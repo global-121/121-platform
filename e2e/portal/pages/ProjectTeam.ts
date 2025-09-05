@@ -27,7 +27,7 @@ class ProjectTeam extends BasePage {
       `[formControlName="rolesValue"]`,
     );
     this.addUserFormSubmitButton = this.page.getByRole('button', {
-      name: 'Submit',
+      name: 'Add to team',
     });
     this.removeUserButton = this.page.getByRole('button', {
       name: 'Remove user',
@@ -60,6 +60,7 @@ class ProjectTeam extends BasePage {
     await this.page.getByText(userEmail).click();
     await this.addUserFormChooseRoleDropdown.click();
     await this.page.getByText(role).click();
+    await this.page.keyboard.press('Escape'); // Close the roles dropdown which stays open because multiple roles can be selected
     await this.addUserFormSubmitButton.click();
   }
 

@@ -11,9 +11,9 @@
         rounded
         icon="pi pi-plus"
         [iconPos]="rtlHelper.createPosition('start')()"
-        (click)="formVisible.set(true)"
+        (click)="createProjectDialog.show()"
       />
-      <app-create-project-form [(formVisible)]="formVisible" />
+      <app-create-project-dialog #createProjectDialog />
     }
   </div>
 

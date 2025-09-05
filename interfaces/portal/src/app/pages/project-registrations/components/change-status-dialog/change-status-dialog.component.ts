@@ -24,7 +24,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
@@ -57,7 +57,7 @@ import { ToastService } from '~/services/toast.service';
     RadioButtonModule,
     ToggleSwitchModule,
     SkeletonModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     ChangeStatusContentsWithoutMessageComponent,
     ChangeStatusContentsWithTemplatedMessageComponent,
     ChangeStatusContentsWithCustomMessageComponent,
@@ -82,8 +82,9 @@ export class ChangeStatusDialogComponent
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
 
-  readonly dryRunWarningDialog =
-    viewChild.required<ConfirmationDialogComponent>('dryRunWarningDialog');
+  readonly dryRunWarningDialog = viewChild.required<FormDialogComponent>(
+    'dryRunWarningDialog',
+  );
 
   readonly actionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
@@ -247,7 +248,7 @@ export class ChangeStatusDialogComponent
 
       // case #3: the change can be applied to only some of the registrations
       this.dialogVisible.set(false);
-      this.dryRunWarningDialog().askForConfirmation({
+      this.dryRunWarningDialog().show({
         resetMutation: false,
       });
     },

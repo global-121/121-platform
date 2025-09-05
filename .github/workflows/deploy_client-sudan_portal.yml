@@ -39,7 +39,7 @@ jobs:
       MATOMO_CONNECTION_STRING: ${{ vars.MATOMO_CONNECTION_STRING }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 

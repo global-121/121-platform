@@ -1,9 +1,13 @@
-<app-form-sidebar
-  [(visible)]="formVisible"
+<app-form-dialog
+  #formDialog
   [formGroup]="formGroup"
   [mutation]="addNoteMutation"
-  formTitle="Add note"
-  i18n-formTitle="@@add-note"
+  [mutationData]="formGroup.getRawValue()"
+  header="Add note"
+  i18n-header="@@add-note"
+  headerIcon="pi pi-pen-to-square"
+  proceedLabel="Add note"
+  i18n-proceedLabel="@@add-note"
 >
   <p
     i18n
@@ -38,4 +42,4 @@
       </p>
     </ng-container>
   </app-form-field-wrapper>
-</app-form-sidebar>
+</app-form-dialog>

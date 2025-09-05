@@ -15,8 +15,8 @@
         [iconPos]="rtlHelper.createPosition('start')()"
         (click)="openForm('add')"
       />
-      <app-add-user-form
-        [(formVisible)]="formVisible"
+      <app-add-user-dialog
+        #addUserDialog
         [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
       />
     }
@@ -34,7 +34,7 @@
     />
   </p-card>
 </app-page-layout>
-<app-confirmation-dialog
+<app-form-dialog
   #resetPasswordConfirmationDialog
   header="Reset user password"
   i18n-header
@@ -51,4 +51,4 @@
     their registered email address. Only proceed if the user has requested this
     action.
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>

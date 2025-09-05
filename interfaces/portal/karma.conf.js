@@ -29,7 +29,6 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      '@angular-devkit/build-angular/plugins/karma',
     ],
     reporters: ['progress', 'kjhtml'],
     restartOnFileChange: true,

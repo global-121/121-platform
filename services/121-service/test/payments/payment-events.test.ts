@@ -55,10 +55,6 @@ describe('Payment Events API', () => {
     // Check meta structure
     const { meta, data } = paymentEventsResponse.body;
     expect(meta).toMatchObject({
-      availableTypes: expect.arrayContaining([
-        PaymentEvent.created,
-        PaymentEvent.note,
-      ]),
       count: expect.objectContaining({
         [PaymentEvent.created]: 1,
         [PaymentEvent.note]: 1,

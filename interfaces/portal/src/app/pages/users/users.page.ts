@@ -15,7 +15,7 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -24,7 +24,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
-import { AddUserFormComponent } from '~/pages/users/components/add-user-form/add-user-form.component';
+import { AddUserDialogComponent } from '~/pages/users/components/add-user-dialog/add-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -36,8 +36,8 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     CardModule,
     QueryTableComponent,
-    ConfirmationDialogComponent,
-    AddUserFormComponent,
+    FormDialogComponent,
+    AddUserDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './users.page.html',
@@ -51,14 +51,13 @@ export class UsersPageComponent {
   private toastService = inject(ToastService);
 
   readonly resetPasswordConfirmationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'resetPasswordConfirmationDialog',
-    );
+    viewChild.required<FormDialogComponent>('resetPasswordConfirmationDialog');
+  readonly addUserDialog =
+    viewChild.required<AddUserDialogComponent>('addUserDialog');
 
   users = injectQuery(this.userApiService.getAllUsers());
 
   readonly selectedUser = signal<undefined | User>(undefined);
-  readonly formVisible = signal(false);
   readonly formMode = signal<'add' | 'edit'>('add');
 
   readonly columns = computed<QueryTableColumn<User>[]>(() => [
@@ -111,7 +110,7 @@ export class UsersPageComponent {
       label: $localize`:@@reset-password-button:Reset password`,
       icon: 'pi pi-refresh',
       command: () => {
-        this.resetPasswordConfirmationDialog().askForConfirmation();
+        this.resetPasswordConfirmationDialog().show();
       },
     },
     {
@@ -132,6 +131,6 @@ export class UsersPageComponent {
   ]);
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
-    this.formVisible.set(true);
+    this.addUserDialog().show();
   }
 }

@@ -12,7 +12,7 @@ class CreateProject extends BasePage {
     super(page);
     this.page = page;
     this.submitButton = this.page.getByRole('button', {
-      name: 'Submit',
+      name: 'Create project',
     });
     this.assetIdInput = this.page.locator('[formcontrolname="assetId"]');
     this.tokenInput = this.page.locator('[formcontrolname="token"]');

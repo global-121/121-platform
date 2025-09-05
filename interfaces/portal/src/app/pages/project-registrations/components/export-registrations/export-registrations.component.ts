@@ -23,7 +23,7 @@ import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { Registration } from '~/domains/registration/registration.model';
@@ -40,7 +40,7 @@ import {
 @Component({
   selector: 'app-export-registrations',
   imports: [
-    ConfirmationDialogComponent,
+    FormDialogComponent,
     ButtonMenuComponent,
     DatePickerModule,
     FloatLabelModule,
@@ -66,14 +66,14 @@ export class ExportRegistrationsComponent {
   private toastService = inject(ToastService);
   private trackingService = inject(TrackingService);
 
-  readonly exportSelectedDialog =
-    viewChild.required<ConfirmationDialogComponent>('exportSelectedDialog');
-  readonly exportDataChangesDialog =
-    viewChild.required<ConfirmationDialogComponent>('exportDataChangesDialog');
+  readonly exportSelectedDialog = viewChild.required<FormDialogComponent>(
+    'exportSelectedDialog',
+  );
+  readonly exportDataChangesDialog = viewChild.required<FormDialogComponent>(
+    'exportDataChangesDialog',
+  );
   readonly exportAccountVerificationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'exportAccountVerificationDialog',
-    );
+    viewChild.required<FormDialogComponent>('exportAccountVerificationDialog');
 
   readonly exportSelectedActionData = signal<
     ActionDataWithPaginateQuery<Registration> | undefined
@@ -122,7 +122,7 @@ export class ExportRegistrationsComponent {
           return;
         }
         this.exportSelectedActionData.set(actionData);
-        this.exportSelectedDialog().askForConfirmation({
+        this.exportSelectedDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
@@ -141,7 +141,7 @@ export class ExportRegistrationsComponent {
         });
         this.dataChangesFormGroup.controls.fromDate.setValue(undefined);
         this.dataChangesFormGroup.controls.toDate.setValue(undefined);
-        this.exportDataChangesDialog().askForConfirmation({
+        this.exportDataChangesDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,
@@ -164,7 +164,7 @@ export class ExportRegistrationsComponent {
           action: TrackingAction.selectDropdownOption,
           name: 'account-number-verification',
         });
-        this.exportAccountVerificationDialog().askForConfirmation({
+        this.exportAccountVerificationDialog().show({
           trackingEvent: {
             category: TrackingCategory.export,
             action: TrackingAction.clickProceedButton,

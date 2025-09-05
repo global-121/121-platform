@@ -26,7 +26,7 @@ class UsersPage extends BasePage {
       .locator('label')
       .filter({ hasText: 'Full name' });
     this.emailInput = this.page.locator('label').filter({ hasText: 'E-mail' });
-    this.submitButton = this.page.getByRole('button', { name: 'Submit' });
+    this.submitButton = this.page.getByRole('button', { name: 'Add user' });
     this.resetPasswordButton = this.page
       .getByRole('button')
       .filter({ hasText: 'Reset password' });

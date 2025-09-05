@@ -19,7 +19,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
-import { ConfirmationDialogComponent } from '~/components/confirmation-dialog/confirmation-dialog.component';
+import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
 import {
   QueryTableColumn,
@@ -28,7 +28,7 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
-import { AddProjectTeamUserFormComponent } from '~/pages/project-team/components/add-project-team-user-form/add-project-team-user-form.component';
+import { AddProjectTeamUserDialogComponent } from '~/pages/project-team/components/add-project-team-user-dialog/add-project-team-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
@@ -40,9 +40,9 @@ import { ToastService } from '~/services/toast.service';
     ButtonModule,
     CardModule,
     QueryTableComponent,
-    AddProjectTeamUserFormComponent,
+    AddProjectTeamUserDialogComponent,
     ConfirmDialogModule,
-    ConfirmationDialogComponent,
+    FormDialogComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-team.page.html',
@@ -57,15 +57,14 @@ export class ProjectTeamPageComponent {
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
+  readonly addUserDialog =
+    viewChild.required<AddProjectTeamUserDialogComponent>('addUserDialog');
   readonly removeUserConfirmationDialog =
-    viewChild.required<ConfirmationDialogComponent>(
-      'removeUserConfirmationDialog',
-    );
+    viewChild.required<FormDialogComponent>('removeUserConfirmationDialog');
 
   readonly selectedUser = signal<ProjectUserWithRolesLabel | undefined>(
     undefined,
   );
-  readonly formVisible = signal(false);
   readonly formMode = signal<'add' | 'edit'>('add');
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
@@ -155,13 +154,13 @@ export class ProjectTeamPageComponent {
       icon: 'pi pi-times text-red-500',
       visible: this.canManageAidworkers(),
       command: () => {
-        this.removeUserConfirmationDialog().askForConfirmation();
+        this.removeUserConfirmationDialog().show();
       },
     },
   ]);
 
   openForm(formMode: 'add' | 'edit') {
     this.formMode.set(formMode);
-    this.formVisible.set(true);
+    this.addUserDialog().show();
   }
 }

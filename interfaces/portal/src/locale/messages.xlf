@@ -616,17 +616,8 @@
       <trans-unit id="add-team-member" datatype="html">
         <source>Add team member</source>
       </trans-unit>
-      <trans-unit id="2372906683883945604" datatype="html">
-        <source>Choose user</source>
-      </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
-      </trans-unit>
-      <trans-unit id="5017538200388607229" datatype="html">
-        <source>Assign roles</source>
-      </trans-unit>
-      <trans-unit id="5395278318341499807" datatype="html">
-        <source>Assign scope</source>
       </trans-unit>
       <trans-unit id="4273825032754891897" datatype="html">
         <source>* To use a subscope type a dot between the scope and subscope (e.g. <x ctype="x-code" equiv-text="&lt;code&gt;" id="START_TAG_CODE"/>amsterdam.west<x ctype="x-code" equiv-text="&lt;/code&gt;" id="CLOSE_TAG_CODE"/>)</source>
@@ -714,9 +705,6 @@
       </trans-unit>
       <trans-unit id="4902817035128594900" datatype="html">
         <source>Description</source>
-      </trans-unit>
-      <trans-unit id="5918723526444903137" datatype="html">
-        <source>Add user</source>
       </trans-unit>
       <trans-unit id="8301535046747035390" datatype="html">
         <source>Full name</source>
@@ -1175,7 +1163,7 @@
         <source>Payment status chart.</source>
       </trans-unit>
       <trans-unit id="2982203751444563776" datatype="html">
-        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link ms-1 text-sm&quot; &gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+        <source>There are no registrations in this project yet.<x ctype="lb" equiv-text="&lt;br /&gt;" id="LINE_BREAK"/> For information about importing registrations to your project check out the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
       </trans-unit>
       <trans-unit id="37959892232763790" datatype="html">
         <source>Welcome to <x equiv-text="{{ project.data()?.titlePortal | translatableString }}" id="INTERPOLATION"/></source>
@@ -1358,7 +1346,7 @@
         <source>Privacy</source>
       </trans-unit>
       <trans-unit id="privacy-notice-last-updated" datatype="html">
-        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;YYYYMMdd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
+        <source>Last updated: <x ctype="x-time" equiv-text="&lt;time [attr.datetime]=&quot;lastUpdated | date: &apos;yyyy-MM-dd&apos;&quot;&gt;" id="START_TAG_TIME"/><x equiv-text="{{ lastUpdated | date: &apos;shortDate&apos; }}" id="INTERPOLATION"/><x ctype="x-time" equiv-text="&lt;/time&gt;" id="CLOSE_TAG_TIME"/></source>
       </trans-unit>
       <trans-unit id="2669678082320549438" datatype="html">
         <source>Reference ID</source>
@@ -1699,6 +1687,39 @@
       </trans-unit>
       <trans-unit id="payment-event-log-item-type-note" datatype="html">
         <source>Note</source>
+      </trans-unit>
+      <trans-unit id="3086423071988594984" datatype="html">
+        <source>Assign scope*</source>
+      </trans-unit>
+      <trans-unit id="3553966999267805422" datatype="html">
+        <source>Choose a user from the dropdown and assign one or more roles.</source>
+      </trans-unit>
+      <trans-unit id="4045346346155035518" datatype="html">
+        <source>Select role(s)</source>
+      </trans-unit>
+      <trans-unit id="5719725512817410618" datatype="html">
+        <source>Select a user</source>
+      </trans-unit>
+      <trans-unit id="788860364636836173" datatype="html">
+        <source>Add a user to the 121 platform. Fill in the fields below to create a new user account.</source>
+      </trans-unit>
+      <trans-unit id="9048541856160254605" datatype="html">
+        <source>Add user to 121</source>
+      </trans-unit>
+      <trans-unit id="info-in-manual" datatype="html">
+        <source>For more information see the <x ctype="x-a" equiv-text="&lt;a href=&quot;https://manual.121.global/&quot; target=&quot;_blank&quot; title=&quot;Opens in a new window&quot; i18n-title=&quot;@@generic-opens-in-new-window&quot; class=&quot;p-button p-button-link gap-1&quot; &gt;" id="START_LINK"/> 121 Manual <x ctype="x-span" equiv-text="&lt;span class=&quot;p-button-icon pi pi-external-link text-sm&quot;&gt;" id="START_TAG_SPAN"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/><x ctype="x-a" equiv-text="&lt;/a &gt;" id="CLOSE_LINK"/>.</source>
+      </trans-unit>
+      <trans-unit id="3063750609223607355" datatype="html">
+        <source>Add to team</source>
+      </trans-unit>
+      <trans-unit id="541221802269521915" datatype="html">
+        <source>Add user to team</source>
+      </trans-unit>
+      <trans-unit id="create-project" datatype="html">
+        <source>Create project</source>
+      </trans-unit>
+      <trans-unit id="5918723526444903137" datatype="html">
+        <source>Add user</source>
       </trans-unit>
     </body>
   </file>

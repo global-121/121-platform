@@ -230,7 +230,7 @@ export class PaymentsReportingService {
       registrationViews.map((item) => [item.referenceId, item]),
     );
 
-    const result = transactions.map((transaction) => {
+    const transactionsEnriched = transactions.map((transaction) => {
       const registrationView = registrationViewMap.get(
         transaction.registrationReferenceId,
       );
@@ -247,7 +247,7 @@ export class PaymentsReportingService {
       };
     });
 
-    return result;
+    return transactionsEnriched;
   }
 
   public async getPaymentEvents({

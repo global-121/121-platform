@@ -19,6 +19,14 @@ export class FileImportService {
     }
 
     let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
+
+    // When there are 0 or 1 lines in the file we get an empty array.
+    if (importRecords.length === 0) {
+      throw new HttpException(
+        'Could not parse CSV file, please check it',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
     }

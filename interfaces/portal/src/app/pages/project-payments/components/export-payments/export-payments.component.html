@@ -6,7 +6,7 @@
   [outlined]="true"
   [attr.data-testid]="'export-payments-button'"
 />
-<app-confirmation-dialog
+<app-form-dialog
   #exportlastPaymentsDialog
   header="Export payments"
   i18n-header
@@ -56,8 +56,8 @@
       />
     </app-form-field-wrapper>
   </div>
-</app-confirmation-dialog>
-<app-confirmation-dialog
+</app-form-dialog>
+<app-form-dialog
   #exportUnusedVouchersDialog
   header="Export unused vouchers"
   i18n-header
@@ -76,8 +76,8 @@
     real-time. The report includes the date and time of each voucher's last
     external update.
   </p>
-</app-confirmation-dialog>
-<app-confirmation-dialog
+</app-form-dialog>
+<app-form-dialog
   #exportDebitCardUsageDialog
   header="Export debit card usage"
   i18n-header
@@ -99,4 +99,4 @@
     real-time. The report includes the date and time of each card's last
     external update.
   </p>
-</app-confirmation-dialog>
+</app-form-dialog>
