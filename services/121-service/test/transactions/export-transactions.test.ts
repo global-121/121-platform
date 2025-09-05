@@ -1,9 +1,10 @@
+import { HttpStatus } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
-  exportTransactions,
+  exportTransactionsAsBuffer,
   patchProgramRegistrationAttribute,
 } from '@121-service/test/helpers/program.helper';
 import {
@@ -12,6 +13,7 @@ import {
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
+  getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import { registrationSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
@@ -48,7 +50,7 @@ describe('Export transactions', () => {
     const toDate = new Date().toISOString();
 
     // Act
-    const transactionsResponse = await exportTransactions({
+    const transactionsResponse = await exportTransactionsAsBuffer({
       programId,
       fromDate,
       toDate,
@@ -120,7 +122,7 @@ describe('Export transactions', () => {
     });
 
     // Act
-    const transactionsResponse = await exportTransactions({
+    const transactionsResponse = await exportTransactionsAsBuffer({
       programId,
       fromDate,
       toDate,
@@ -163,7 +165,7 @@ describe('Export transactions', () => {
     });
 
     // Act: Export only payment 2
-    const transactionsResponse = await exportTransactions({
+    const transactionsResponse = await exportTransactionsAsBuffer({
       programId,
       paymentId: paymentIdOfSecondPayment,
       accessToken,
@@ -183,5 +185,35 @@ describe('Export transactions', () => {
       paymentId: paymentIdOfSecondPayment,
       paymentCount: 2,
     });
+  });
+
+  it('should return 400 for invalid query parameters', async () => {
+    // Arrange
+    const invalidFields = {
+      fromDate: 'not-a-date',
+      toDate: 'not-a-date',
+      paymentId: 'not-a-number' as unknown as number,
+      format: 'invalid-format',
+    };
+    // Act
+
+    const transactionsResponse = await getServer()
+      .get(`/programs/${programId}/transactions`)
+      .query({
+        ...invalidFields,
+      })
+      .set('Cookie', [accessToken]);
+
+    // Assert
+    expect(transactionsResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
+
+    // The test dynamically checks that all invalid fields are reported in the error message
+    const errorResponse = transactionsResponse.body;
+    const faultyPropertiesInMessage = errorResponse.message.map(
+      (messageObj) => messageObj.property,
+    );
+    expect(Object.keys(invalidFields)).toEqual(
+      expect.arrayContaining(faultyPropertiesInMessage),
+    );
   });
 });

@@ -828,8 +828,6 @@
       "search",
       "searchBy",
       "format",
-      "toDate",
-      "fromDate",
       "exportType"
     ]
   },
@@ -948,10 +946,10 @@
     "path": "/api/programs/{programId}/transactions",
     "params": [
       "programId",
-      "fromDate",
-      "toDate",
+      "format",
       "paymentId",
-      "format"
+      "toDate",
+      "fromDate"
     ]
   },
   {
