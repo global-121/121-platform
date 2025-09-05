@@ -393,7 +393,7 @@ export async function waitForStatusChangeToComplete(
 export async function waitForBulkRegistrationChanges(
   expectedChanges: {
     referenceId: string;
-    expectedPatch: Record<string, any>;
+    expectedPatch: Record<string, unknown>;
   }[],
   programId: number,
   accessToken: string,
@@ -586,7 +586,7 @@ export async function getAllActivitiesCount(
   programId: number,
   referenceId: string,
   accessToken: string,
-): Promise<{ body: any; totalCount: number }> {
+): Promise<{ body: Record<string, unknown>; totalCount: number }> {
   const registrationId = await getRegistrationIdByReferenceId({
     programId,
     referenceId,
@@ -635,8 +635,13 @@ export async function getMessageHistoryUntilX(
   return getMessageHistoryUntilX(programId, referenceId, accessToken, x);
 }
 
+interface MinimalRegistration {
+  referenceId: string;
+  [key: string]: unknown;
+}
+
 export async function seedPaidRegistrations(
-  registrations: any[],
+  registrations: MinimalRegistration[],
   programId: number,
   amount = 20,
   completeStatusses: TransactionStatusEnum[] = [
@@ -696,7 +701,7 @@ export async function doPaymentAndWaitForCompletion({
 }
 
 export async function seedRegistrations(
-  registrations: any[],
+  registrations: MinimalRegistration[],
   programId: number,
 ): Promise<void> {
   const accessToken = await getAccessToken();
@@ -704,7 +709,7 @@ export async function seedRegistrations(
 }
 
 export async function seedIncludedRegistrations(
-  registrations: any[],
+  registrations: MinimalRegistration[],
   programId: number,
   accessToken: string,
 ): Promise<void> {
@@ -729,7 +734,7 @@ export async function seedIncludedRegistrations(
 }
 
 export async function seedRegistrationsWithStatus(
-  registrations: any[],
+  registrations: MinimalRegistration[],
   programId: number,
   accessToken: string,
   status: RegistrationStatusEnum,
@@ -770,7 +775,7 @@ export async function getEvents({
   fromDate?: string;
   toDate?: string;
   referenceId?: string;
-}): Promise<any> {
+}): Promise<request.Response> {
   const queryParams: Record<string, string> = {};
 
   if (fromDate) {
@@ -794,7 +799,7 @@ export async function getEvents({
 
 export async function getImportRegistrationsTemplate(
   programId: number,
-): Promise<any> {
+): Promise<request.Response> {
   const accessToken = await getAccessToken();
 
   return getServer()
@@ -805,7 +810,7 @@ export async function getImportRegistrationsTemplate(
 
 export async function getImportFspReconciliationTemplate(
   programId: number,
-): Promise<any> {
+): Promise<request.Response> {
   const accessToken = await getAccessToken();
 
   return getServer()
@@ -822,7 +827,7 @@ export async function getDuplicates({
   programId: number;
   referenceId: string;
   accessToken: string;
-}): Promise<any> {
+}): Promise<request.Response> {
   return getServer()
     .get(`/programs/${programId}/registrations/${referenceId}/duplicates`)
     .set('Cookie', [accessToken])
@@ -839,7 +844,7 @@ export async function createRegistrationUniques({
   registrationIds: number[];
   accessToken: string;
   reason?: string;
-}): Promise<any> {
+}): Promise<request.Response> {
   return getServer()
     .post(`/programs/${programId}/registrations/uniques`)
     .set('Cookie', [accessToken])
@@ -854,7 +859,7 @@ export async function getActivities({
   programId: number;
   registrationId: number;
   accessToken: string;
-}): Promise<any> {
+}): Promise<request.Response> {
   return getServer()
     .get(`/programs/${programId}/registrations/${registrationId}/activities`)
     .set('Cookie', [accessToken])

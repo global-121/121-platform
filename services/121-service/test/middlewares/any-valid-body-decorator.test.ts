@@ -30,7 +30,7 @@ class TestController {
   }
 }
 
-function getTestServer(app: INestApplication): any {
+function getTestServer(app: INestApplication): request.SuperAgentTest {
   return request.agent(app.getHttpServer());
 }
 

@@ -11,6 +11,11 @@ import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
 
+interface FilterableAttribute {
+  filters: Array<{ name: string; [key: string]: unknown }>;
+  [key: string]: unknown;
+}
+
 export function getHostname(): string {
   return `${env.EXTERNAL_121_SERVICE_URL}/api`;
 }
@@ -202,7 +207,7 @@ function sortByAttribute(attribute: string) {
  * Beyond sorting the attributes, this function also removes certain
  * attributes that always change and that are also irrelevant for the test.
  */
-export function cleanProgramForAssertions(originalProgram: any): any {
+export function cleanProgramForAssertions(originalProgram: Record<string, unknown>): Record<string, unknown> {
   const program = removeNestedProperties(originalProgram, [
     'configuration',
     'startDate',
@@ -228,8 +233,8 @@ export function cleanProgramForAssertions(originalProgram: any): any {
   });
 
   if (program.filterableAttributes) {
-    program.filterableAttributes = program.filterableAttributes.map(
-      (filterableAttribute: any) => {
+    program.filterableAttributes = (program.filterableAttributes as FilterableAttribute[]).map(
+      (filterableAttribute: FilterableAttribute) => {
         return {
           ...filterableAttribute,
           filters: filterableAttribute.filters.sort(sortByAttribute('name')),

@@ -1,4 +1,5 @@
 import { TestBed } from '@automock/jest';
+import { Queue } from 'bull';
 
 import {
   FspConfigurationProperties,
@@ -11,6 +12,14 @@ import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-int
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { generateMockCreateQueryBuilder } from '@121-service/src/utils/test-helpers/createQueryBuilderMock.helper';
+
+interface MockJob {
+  id: number;
+  data: {
+    id: number;
+    programId: number;
+  };
+}
 
 const programId = 3;
 const paymentId = 5;
@@ -80,19 +89,18 @@ describe('CommercialBankEthiopiaService', () => {
         value: '1234',
       },
     ];
-    const createQueryBuilder: any =
-      generateMockCreateQueryBuilder(dbQueryResult);
+    const createQueryBuilder = generateMockCreateQueryBuilder(dbQueryResult);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'getRegistrationData')
+      .spyOn(commercialBankEthiopiaService, 'getRegistrationData' as keyof typeof commercialBankEthiopiaService)
       .mockImplementation(() => sendPaymentData[0].referenceId);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'getPaRegistrationData')
+      .spyOn(commercialBankEthiopiaService, 'getPaRegistrationData' as keyof typeof commercialBankEthiopiaService)
       .mockImplementation(() => [sendPaymentData[0], createQueryBuilder]);
 
     jest
-      .spyOn(commercialBankEthiopiaService as any, 'createPayloadPerPa')
+      .spyOn(commercialBankEthiopiaService, 'createPayloadPerPa' as keyof typeof commercialBankEthiopiaService)
       .mockReturnValue(paymentDetailsResult.payload);
 
     jest
@@ -100,11 +108,11 @@ describe('CommercialBankEthiopiaService', () => {
         commercialBankEthiopiaService.programFspConfigurationRepository,
         'createQueryBuilder',
       )
-      .mockImplementation(() => createQueryBuilder) as any;
+      .mockImplementation(() => createQueryBuilder);
 
     jest
       .spyOn(
-        queuesService.transactionJobCommercialBankEthiopiaQueue as any,
+        queuesService.transactionJobCommercialBankEthiopiaQueue as Queue,
         'add',
       )
       .mockReturnValue({
@@ -112,7 +120,7 @@ describe('CommercialBankEthiopiaService', () => {
           id: 1,
           programId: 3,
         },
-      });
+      } as MockJob);
 
     // Act
     await commercialBankEthiopiaService.sendPayment(
