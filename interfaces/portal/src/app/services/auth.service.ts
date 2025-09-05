@@ -70,11 +70,13 @@ export class AuthService {
 
     if (!user?.username) {
       console.warn('AuthService: No valid user');
+      void this.logout(user);
       return null;
     }
 
     if (this.authStrategy.isUserExpired(user)) {
       console.warn('AuthService: Expired token');
+      void this.logout(user);
       return null;
     }
 
@@ -83,6 +85,7 @@ export class AuthService {
       console.warn(
         'AuthService: Deprecated permission found. Forcing re-login',
       );
+      void this.logout(user);
       return null;
     }
 
@@ -104,11 +107,11 @@ export class AuthService {
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
-  public async logout() {
+  public async logout(user?: LocalStorageUser | null) {
     this.logService.logEvent(LogEvent.userLogout);
 
     try {
-      await this.authStrategy.logout(this.user);
+      await this.authStrategy.logout(user ?? this.user);
     } catch (error) {
       console.error('AuthService: Error logging out', error);
     }
