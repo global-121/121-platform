@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import {
   FilterOperator,
   paginate,
@@ -215,27 +216,27 @@ export class RegistrationsPaginationService {
     programId,
     referenceIds,
     select,
-    chunkSize = 20000,
   }: {
     programId: number;
     referenceIds: string[];
     select?: string[];
-    chunkSize?: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
+    const chunkSize = 20000;
+
     // Ensure that the a new qb is created for a chunk of referenceIds because limited query length
     const allResults: MappedPaginatedRegistrationDto[] = [];
 
-    for (let i = 0; i < referenceIds.length; i += chunkSize) {
-      const chunk = referenceIds.slice(i, i + chunkSize);
-      const qb =
+    const chunks = chunk(referenceIds, chunkSize);
+    for (const currentChunk of chunks) {
+      const querybuilder =
         this.registrationViewScopedRepository.createQueryBuilderToGetRegistrationViewsByReferenceIds(
-          chunk,
+          currentChunk,
         );
       const chunkResults = await this.getRegistrationsChunked(
         programId,
         { limit: chunkSize, path: '', select },
         chunkSize,
-        qb,
+        querybuilder,
       );
       allResults.push(...chunkResults);
     }
