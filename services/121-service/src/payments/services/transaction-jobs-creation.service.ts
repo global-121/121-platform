@@ -281,7 +281,7 @@ export class TransactionJobsCreationService {
             whatsappPhoneNumber: useWhatsapp
               ? registrationView[FspAttributes.whatsappPhoneNumber]!
               : null,
-            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has voucher as FSP //##TODO: check
+            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has voucher as FSP
           };
         },
       );

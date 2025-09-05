@@ -67,8 +67,6 @@ describe('TransactionQueuesService', () => {
     expect(transactionQueuesService).toBeDefined();
   });
 
-  // ##TODO: add test for intersolve-voucher
-
   it('should add transaction job to queue: intersolve-visa', async () => {
     jest
       .spyOn(queuesService.transactionJobIntersolveVisaQueue as any, 'add')

@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
-import Redis from 'ioredis';
 import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
@@ -29,22 +28,16 @@ import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integrati
 import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
@@ -72,33 +65,21 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     private readonly transactionsService: TransactionsService,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
-    private readonly queuesService: QueuesRegistryService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
   ) {}
 
+  // TODO: Remove this function when refactored out of all FSP integrations.
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
-    paPaymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentId: number,
-    useWhatsapp: boolean,
+    _paPaymentList: PaPaymentDataDto[],
+    _programId: number,
+    _paymentId: number,
+    _useWhatsapp: boolean,
   ): Promise<void> {
-    for (const paymentInfo of paPaymentList) {
-      const job =
-        await this.queuesService.transactionJobIntersolveVoucherQueue.add(
-          JobNames.default,
-          {
-            paymentInfo,
-            useWhatsapp,
-            paymentId,
-            programId,
-          },
-        );
-
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
+    throw new Error('Method should not be called anymore.');
   }
 
   public async sendIndividualPayment({
