@@ -16,7 +16,6 @@ const mockedIntersolveVoucherTransactionJob: IntersolveVoucherTransactionJobDto 
     isRetry: false,
     userId: 1,
     bulkSize: 10,
-    phoneNumber: '27831234567',
     programFspConfigurationId: 1,
     useWhatsapp: true,
     whatsappPhoneNumber: '27831234567',
