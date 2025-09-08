@@ -88,7 +88,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         },
       ],
       limiter: {
-        max: 20, // Max number of jobs processed
+        max: 5, // Max number of jobs processed -> relatively low because of all the message traffic related to one transaction
         duration: 1000, // per duration in milliseconds
       },
     }),
