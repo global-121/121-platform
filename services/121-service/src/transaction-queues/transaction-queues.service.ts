@@ -9,6 +9,7 @@ import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-r
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -106,6 +107,18 @@ export class TransactionQueuesService {
           JobNames.default,
           commercialBankOfEthiopiaTransactionJob,
         );
+      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
+    }
+  }
+
+  public async addExcelTransactionJobs(
+    excelTransactionJobs: ExcelTransactionJobDto[],
+  ): Promise<void> {
+    for (const excelTransactionJob of excelTransactionJobs) {
+      const job = await this.queuesService.transactionJobExcelQueue.add(
+        JobNames.default,
+        excelTransactionJob,
+      );
       await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
     }
   }
