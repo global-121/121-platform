@@ -46,6 +46,7 @@ import {
   IActionDataHandler,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-change-status-dialog',
@@ -81,6 +82,7 @@ export class ChangeStatusDialogComponent
   private messagingService = inject(MessagingService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+  private metricApiService = inject(MetricApiService);
 
   readonly dryRunWarningDialog =
     viewChild.required<ConfirmationDialogComponent>('dryRunWarningDialog');
@@ -228,6 +230,8 @@ export class ChangeStatusDialogComponent
         void this.registrationApiService.invalidateCache({
           projectId: this.projectId,
         });
+
+        void this.metricApiService.invalidateCache(this.projectId);
 
         setTimeout(() => {
           // invalidate the cache again after a delay to try and make the status change reflected in the UI

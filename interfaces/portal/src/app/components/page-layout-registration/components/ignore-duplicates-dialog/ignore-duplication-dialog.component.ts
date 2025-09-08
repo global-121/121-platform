@@ -27,6 +27,7 @@ import {
   generateFieldErrors,
   genericFieldIsRequiredValidationMessage,
 } from '~/utils/form-validation';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 type IgnoreDuplicationFormGroup =
   (typeof IgnoreDuplicationDialogComponent)['prototype']['formGroup'];
@@ -48,6 +49,7 @@ type IgnoreDuplicationFormGroup =
 })
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
+  private metricApiService = inject(MetricApiService);
   readonly projectId = input.required<string>();
   readonly referenceId = input.required<string>();
   readonly registrationId = input.required<string>();
@@ -100,6 +102,7 @@ export class IgnoreDuplicationDialogComponent {
       }),
     onSuccess: () => {
       this.formGroup.reset();
+      void this.metricApiService.invalidateCache(this.projectId);
       return this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
