@@ -27,6 +27,7 @@ import { EditPersonalInformationComponent } from '~/pages/project-registration-p
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-project-registration-personal-information',
@@ -51,6 +52,7 @@ export class ProjectRegistrationPersonalInformationPageComponent
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
   registrationAttributes = injectQuery(
@@ -125,6 +127,7 @@ export class ProjectRegistrationPersonalInformationPageComponent
 
   async onRegistrationUpdated() {
     this.isEditing.set(false);
+    void this.metricApiService.invalidateCache(this.projectId);
     await this.registrationApiService.invalidateCache({
       projectId: this.projectId,
     });
