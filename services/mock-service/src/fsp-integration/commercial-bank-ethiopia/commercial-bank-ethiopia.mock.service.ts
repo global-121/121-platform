@@ -164,7 +164,7 @@ export class CommercialBankEthiopiaMockService {
     let status;
     if (missingFields.length > 0) {
       status = this.buildStatusObject('missing', missingFields);
-    } else if (debitTheirRef?.includes('duplicate-')) {
+    } else if (beneficiaryName?.includes('duplicate-')) {
       status = this.buildStatusObject('duplicate');
     } else if (beneficiaryName === 'error') {
       status = this.buildStatusObject('error');
@@ -298,7 +298,15 @@ export class CommercialBankEthiopiaMockService {
 
   private getMissingFields(fields: Record<string, unknown>): string[] {
     return Object.entries(fields)
-      .filter(([, value]) => value === undefined || value === null)
+      .filter(
+        ([, value]) =>
+          value === undefined ||
+          value === null ||
+          value === 'undefined' || // The xml2js conversion does not replace null and undefined properly
+          value === 'null' || // The xml2js conversion does not replace null and undefined properly
+          value === '' ||
+          String(value).includes('${'), // This means the value in the template is not replaced
+      )
       .map(([key]) => key);
   }
 
