@@ -355,7 +355,7 @@ export class ProgramFspConfigurationsService {
     );
   }
 
-  private validateLabelHasEnglishTranslation(label: any): void {
+  private validateLabelHasEnglishTranslation(label: { en?: string }): void {
     if (!label.en) {
       throw new HttpException(
         `Label must have an English translation`,

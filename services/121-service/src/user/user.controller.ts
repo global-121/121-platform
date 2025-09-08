@@ -244,7 +244,7 @@ export class UserController {
   })
   public async update(
     @Body() userPasswordData: UpdateUserPasswordDto,
-  ): Promise<any> {
+  ): Promise<UserRO> {
     return this.userService.updatePassword(userPasswordData);
   }
 

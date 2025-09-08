@@ -51,7 +51,7 @@ describe('MessageService', () => {
     jest.spyOn(console, 'log').mockImplementation();
 
     getMessageTemplateForLanguageOrFallback = jest
-      .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+      .spyOn(messageService, 'getMessageTemplateForLanguageOrFallback' as any)
       .mockResolvedValue(mockDefaultNotificationText);
   });
 
@@ -125,7 +125,7 @@ describe('MessageService', () => {
         contentSid: 'h123',
       };
       getMessageTemplateForLanguageOrFallback = jest
-        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+        .spyOn(messageService, 'getMessageTemplateForLanguageOrFallback' as any)
         .mockResolvedValue(messageTemplateObject);
 
       // Act
@@ -158,7 +158,7 @@ describe('MessageService', () => {
         contentSid: 'h123',
       };
       getMessageTemplateForLanguageOrFallback = jest
-        .spyOn(messageService as any, 'getMessageTemplateForLanguageOrFallback')
+        .spyOn(messageService, 'getMessageTemplateForLanguageOrFallback' as any)
         .mockResolvedValue(messageTemplateObject);
 
       // Act

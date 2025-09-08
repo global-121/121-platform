@@ -1,10 +1,11 @@
 import { Processor } from '@nestjs/bull';
+import { Scope } from '@nestjs/common';
 
 export const REGISTERED_PROCESSORS = new Set<string>();
 
 export function RegisteredProcessor(
   queueName: string,
-  scope?: any,
+  scope?: Scope,
 ): ClassDecorator {
   return (target) => {
     if (REGISTERED_PROCESSORS.has(queueName)) {

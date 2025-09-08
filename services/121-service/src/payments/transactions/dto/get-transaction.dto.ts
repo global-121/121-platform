@@ -30,7 +30,7 @@ export class TransactionReturnDto {
   @ApiProperty({ example: null, type: 'string', required: false })
   public errorMessage: string;
   @ApiProperty()
-  public customData: any;
+  public customData: Record<string, unknown>;
   // FspName is used in the frontend to determine whether a transaction has a voucher
   @ApiProperty({ example: Fsps.excel })
   public fspName: Relation<Fsps>;

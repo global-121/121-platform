@@ -88,7 +88,7 @@ export class RegistrationsInputValidator {
       program.languages as unknown as string[],
     );
 
-    const validatedArray: any = [];
+    const validatedArray: ValidatedRegistrationInput[] = [];
 
     for (const [i, row] of registrationInputArray.entries()) {
       const originalRegistration = [
@@ -473,7 +473,7 @@ export class RegistrationsInputValidator {
     typeOfInput,
   }: {
     preferredLanguage: InputAttributeType;
-    languageMapping: any;
+    languageMapping: Record<string, string>;
     i: number;
     typeOfInput: RegistrationValidationInputType;
   }): {
@@ -682,7 +682,7 @@ export class RegistrationsInputValidator {
     program,
     typeOfInput,
   }: {
-    row: any;
+    row: Record<string, InputAttributeType>;
     i: number;
     program: ProgramEntity;
     typeOfInput: RegistrationValidationInputType;

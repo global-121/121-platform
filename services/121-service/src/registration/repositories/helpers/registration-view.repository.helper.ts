@@ -110,7 +110,7 @@ export class RegistrationViewRepositoryHelper {
 
   // TODO: Add unit tests for this function
   public static createRegistrationAttributeSubQuery(
-    subQuery: SelectQueryBuilder<any>,
+    subQuery: SelectQueryBuilder<Record<string, unknown>>,
     relation?: RegistrationDataRelation,
   ): SelectQueryBuilder<TransactionEntity> {
     const uniqueSubQueryId = uuid().replace(/-/g, '').toLowerCase();
