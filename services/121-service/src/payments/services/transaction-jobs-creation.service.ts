@@ -244,10 +244,7 @@ export class TransactionJobsCreationService {
     const intersolveVoucherAttributeNames = intersolveVoucherAttributes.map(
       (q) => q.name,
     );
-    const dataFieldNames = [
-      FspAttributes.phoneNumber,
-      ...intersolveVoucherAttributeNames,
-    ];
+    const dataFieldNames = [...intersolveVoucherAttributeNames];
     const registrationViews = await this.getRegistrationViews(
       referenceIdsTransactionAmounts,
       dataFieldNames,
@@ -281,7 +278,6 @@ export class TransactionJobsCreationService {
             whatsappPhoneNumber: useWhatsapp
               ? registrationView[FspAttributes.whatsappPhoneNumber]!
               : null,
-            phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has voucher as FSP
           };
         },
       );
