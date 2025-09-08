@@ -5,7 +5,6 @@ import {
   inject,
   input,
   signal,
-  Signal,
 } from '@angular/core';
 import { ChartData } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
@@ -14,11 +13,19 @@ import { CardModule } from 'primeng/card';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 
-import tailwindConfig from '~/../../tailwind.config';
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import {
+  duplicationColors,
+  getChartOptions,
+  getData,
+  getLabels,
+  paymentColors,
+  registrationsByDateColor,
+  registrationsPerStatusColors,
+} from './project-monitoring-dashboard.helper';
 
 @Component({
   selector: 'app-project-monitoring-dashboard',
@@ -34,47 +41,35 @@ export class ProjectMonitoringDashboardPageComponent {
 
   readonly projectId = input.required<string>();
 
-  private getLabels = (queryResult) =>
-    computed<string[]>(() => {
-      if (!queryResult.isSuccess()) {
-        return [];
-      }
+  chartOptions = getChartOptions;
 
-      return Object.keys(queryResult.data()).sort();
-    });
-
-  private getData = (queryResult, labels: Signal<string[]>) =>
-    computed(() => {
-      if (!queryResult.isSuccess() || !labels()) {
-        return [];
-      }
-
-      const data = queryResult.data();
-
-      return labels().map((k) => data[k]) || [];
-    });
-
-  private backgroundColor = [
-    tailwindConfig.theme.colors.green[100],
-    tailwindConfig.theme.colors.red[100],
-    tailwindConfig.theme.colors.yellow[100],
-    tailwindConfig.theme.colors.blue[100],
-    tailwindConfig.theme.colors.grey[100],
-  ];
-
-  registrationStatuses = injectQuery(() => ({
+  registrationsPerStatus = injectQuery(() => ({
     ...this.metricApiService.getRegistrationCountByStatus({
       projectId: this.projectId,
     })(),
     enabled: !!this.projectId(),
   }));
 
-  registrationStatusData = computed<ChartData>(() => ({
-    labels: this.registrationStatuses.data()?.map((s) => s.status) || [],
+  registrationsPerStatusLabels = getLabels(this.registrationsPerStatus);
+
+  registrationsPerStatusData = getData(
+    this.registrationsPerStatus,
+    this.registrationsPerStatusLabels,
+  );
+
+  registrationsPerStatusChartColors = computed(
+    () =>
+      this.registrationsPerStatusLabels().map(
+        (l) => registrationsPerStatusColors[l],
+      ) || [],
+  );
+
+  registrationsPerStatusChartData = computed<ChartData>(() => ({
+    labels: this.registrationsPerStatusLabels(),
     datasets: [
       {
-        data: this.registrationStatuses.data()?.map((s) => s.statusCount) || [],
-        backgroundColor: this.backgroundColor,
+        data: this.registrationsPerStatusData(),
+        backgroundColor: this.registrationsPerStatusChartColors(),
       },
     ],
   }));
@@ -95,7 +90,16 @@ export class ProjectMonitoringDashboardPageComponent {
     enabled: !!this.projectId(),
   }));
 
-  duplicationData = computed<ChartData>(() => ({
+  duplicationLabels = signal([
+    DuplicateStatus.duplicate,
+    DuplicateStatus.unique,
+  ]);
+
+  duplicationChartColors = computed(
+    () => this.duplicationLabels().map((l) => duplicationColors[l]) || [],
+  );
+
+  duplicationChartData = computed<ChartData>(() => ({
     labels: [DuplicateStatus.duplicate, DuplicateStatus.unique],
     datasets: [
       {
@@ -103,7 +107,7 @@ export class ProjectMonitoringDashboardPageComponent {
           this.duplicates.data()?.meta.totalItems ?? 0,
           this.uniques.data()?.meta.totalItems ?? 0,
         ],
-        backgroundColor: this.backgroundColor,
+        backgroundColor: this.duplicationChartColors(),
       },
     ],
   }));
@@ -115,30 +119,19 @@ export class ProjectMonitoringDashboardPageComponent {
     enabled: !!this.projectId(),
   }));
 
-  registrationsByDateLabels = this.getLabels(this.registrationCountByDate);
+  registrationsByDateLabels = getLabels(this.registrationCountByDate);
 
-  registrationsByDateData = this.getData(
+  registrationsByDateData = getData(
     this.registrationCountByDate,
     this.registrationsByDateLabels,
   );
 
-  registrationsByDate = computed<ChartData>(() => ({
+  registrationsByDateChartData = computed<ChartData>(() => ({
     labels: this.registrationsByDateLabels(),
     datasets: [
       {
         data: this.registrationsByDateData(),
-        backgroundColor: this.backgroundColor,
-      },
-    ],
-    xAxes: [
-      {
-        type: 'time',
-        position: 'bottom',
-        time: {
-          displayFormats: { day: 'MM/YY' },
-          tooltipFormat: 'DD/MM/YY',
-          unit: 'month',
-        },
+        backgroundColor: registrationsByDateColor,
       },
     ],
   }));
@@ -150,59 +143,59 @@ export class ProjectMonitoringDashboardPageComponent {
     enabled: !!this.projectId(),
   }));
 
-  aggregatePerPaymentLabels = this.getLabels(this.aggregatePerPayment);
+  aggregatePerPaymentLabels = getLabels(this.aggregatePerPayment);
 
-  aggregatePerPaymentData = this.getData(
+  aggregatePerPaymentData = getData(
     this.aggregatePerPayment,
     this.aggregatePerPaymentLabels,
   );
 
-  transfersPerPayment = computed<ChartData>(() => ({
+  transfersPerPaymentChartData = computed<ChartData>(() => ({
     labels: this.aggregatePerPaymentLabels(),
     datasets: [
       {
         label: TransactionStatusEnum.error,
         data: this.aggregatePerPaymentData().map((a) => a['failed'].count),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.error],
       },
       {
         label: TransactionStatusEnum.success,
         data: this.aggregatePerPaymentData().map(
           (a) => a[TransactionStatusEnum.success].count,
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.aggregatePerPaymentData().map(
           (a) => a[TransactionStatusEnum.waiting].count,
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.waiting],
       },
     ],
   }));
 
-  amountSentPerPayment = computed<ChartData>(() => ({
+  amountSentPerPaymentChartData = computed<ChartData>(() => ({
     labels: this.aggregatePerPaymentLabels(),
     datasets: [
       {
         label: TransactionStatusEnum.error,
         data: this.aggregatePerPaymentData().map((a) => a['failed'].amount),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.error],
       },
       {
         label: TransactionStatusEnum.success,
         data: this.aggregatePerPaymentData().map(
           (a) => a[TransactionStatusEnum.success].amount,
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.aggregatePerPaymentData().map(
           (a) => a[TransactionStatusEnum.waiting].amount,
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.waiting],
       },
     ],
   }));
@@ -214,9 +207,9 @@ export class ProjectMonitoringDashboardPageComponent {
     enabled: !!this.projectId(),
   }));
 
-  amountSentPerMonthLabels = this.getLabels(this.amountSentPerMonth);
+  amountSentPerMonthLabels = getLabels(this.amountSentPerMonth);
 
-  amountSentPerMonthData = this.getData(
+  amountSentPerMonthData = getData(
     this.amountSentPerMonth,
     this.amountSentPerMonthLabels,
   );
@@ -227,39 +220,22 @@ export class ProjectMonitoringDashboardPageComponent {
       {
         label: TransactionStatusEnum.error,
         data: this.amountSentPerMonthData().map((a) => a['failed']),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.error],
       },
       {
         label: TransactionStatusEnum.success,
         data: this.amountSentPerMonthData().map(
           (a) => a[TransactionStatusEnum.success],
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.amountSentPerMonthData().map(
           (a) => a[TransactionStatusEnum.waiting],
         ),
-        backgroundColor: this.backgroundColor,
+        backgroundColor: paymentColors[TransactionStatusEnum.waiting],
       },
     ],
   }));
-
-  commonChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Chart.js Pie Chart',
-      },
-    },
-  };
-
-  barOptions = { ...this.commonChartOptions };
-  pieOptions = { ...this.commonChartOptions };
-  lineOptions = { ...this.commonChartOptions };
 }
