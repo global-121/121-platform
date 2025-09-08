@@ -100,7 +100,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         },
       ],
       limiter: {
-        max: 20, // Max number of jobs processed ##TODO: can this be a lot more?
+        max: 1000, // Max number of jobs processed - processor just stores waiting transactions internally, so can be high
         duration: 1000, // per duration in milliseconds
       },
     }),
