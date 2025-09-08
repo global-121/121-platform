@@ -261,21 +261,6 @@ export class TransactionsService {
     });
   }
 
-  public async storeAllTransactions(
-    transactionResultObjects: {
-      paTransactionResultDto: PaTransactionResultDto;
-      transactionRelationDetailsDto: TransactionRelationDetailsDto;
-    }[],
-  ): Promise<void> {
-    // Currently only used for Excel FSP
-    for (const transactionResultObject of transactionResultObjects) {
-      await this.storeTransactionUpdateStatus(
-        transactionResultObject.paTransactionResultDto,
-        transactionResultObject.transactionRelationDetailsDto,
-      );
-    }
-  }
-
   public async storeReconciliationTransactionsBulk(
     transactionResults: PaTransactionResultDto[],
     transactionRelationDetails: TransactionRelationDetailsDto,
