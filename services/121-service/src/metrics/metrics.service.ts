@@ -467,12 +467,6 @@ export class MetricsService {
 
     const payments = await this.paymentsReportingService.getPayments(programId);
 
-    const emptyMonth = {
-      success: 0,
-      waiting: 0,
-      failed: 0,
-    };
-
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)
         .toISOString()
@@ -480,7 +474,11 @@ export class MetricsService {
         .slice(0, -3);
 
       if (!res[month]) {
-        res[month] = emptyMonth;
+        res[month] = {
+          success: 0,
+          waiting: 0,
+          failed: 0,
+        };
       }
 
       const aggregate =
