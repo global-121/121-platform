@@ -7,7 +7,6 @@ import { AppRoutes } from '~/app.routes';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
-import { LogEvent, LogService } from '~/services/log.service';
 import {
   getReturnUrlFromLocalStorage,
   getUserFromLocalStorage,
@@ -30,7 +29,6 @@ export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
 export class AuthService {
   public static APP_PROVIDERS = AuthStrategy.APP_PROVIDERS;
 
-  private readonly logService = inject(LogService);
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
 
@@ -84,7 +82,6 @@ export class AuthService {
     credentials: { username: string; password?: string },
     returnUrl?: string,
   ) {
-    this.logService.logEvent(LogEvent.userLogin);
     if (returnUrl) {
       setReturnUrlInLocalStorage(returnUrl);
     }
@@ -96,8 +93,6 @@ export class AuthService {
   }
 
   public async logout() {
-    this.logService.logEvent(LogEvent.userLogout);
-
     try {
       await this.authStrategy.logout(this.user);
     } catch (error) {
@@ -179,6 +174,7 @@ export class AuthService {
       }),
     );
   }
+
   public handleAuthCallback() {
     const returnUrl = getReturnUrlFromLocalStorage();
 
