@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -30,18 +29,13 @@ export class TransactionJobsIntersolveVoucherService {
 
     const sendIndividualPaymentResult =
       await this.intersolveVoucherService.sendIndividualPayment({
-        paymentInfo: {
-          referenceId: transactionJob.referenceId,
-          paymentAddress: transactionJob.whatsappPhoneNumber,
-          transactionAmount: transactionJob.transactionAmount,
-          programFspConfigurationId: transactionJob.programFspConfigurationId,
-          fspName: Fsps.intersolveVoucherWhatsapp,
-          bulkSize: transactionJob.bulkSize,
-          userId: transactionJob.userId,
-        },
+        referenceId: transactionJob.referenceId,
         useWhatsapp: transactionJob.useWhatsapp,
+        whatsappPhoneNumber: transactionJob.whatsappPhoneNumber,
+        userId: transactionJob.userId,
         calculatedAmount: transactionJob.transactionAmount,
         paymentId: transactionJob.paymentId,
+        bulkSize: transactionJob.bulkSize,
         credentials,
       });
     if (!sendIndividualPaymentResult) {

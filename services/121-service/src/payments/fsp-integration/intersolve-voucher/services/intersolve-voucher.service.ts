@@ -83,20 +83,26 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async sendIndividualPayment({
-    paymentInfo,
+    referenceId,
     useWhatsapp,
+    whatsappPhoneNumber,
+    userId,
     calculatedAmount,
     paymentId,
+    bulkSize,
     credentials,
   }: {
-    paymentInfo: PaPaymentDataDto;
+    referenceId: string;
     useWhatsapp: boolean;
+    whatsappPhoneNumber: string | null;
+    userId: number;
     calculatedAmount: number;
     paymentId: number;
+    bulkSize: number;
     credentials: UsernamePasswordInterface;
   }) {
     const paResult = new PaTransactionResultDto();
-    paResult.referenceId = paymentInfo.referenceId;
+    paResult.referenceId = referenceId;
 
     if (!credentials?.username || !credentials?.password) {
       paResult.status = TransactionStatusEnum.error;
@@ -108,16 +114,13 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     const intersolveRefPos = this.getIntersolveRefPos();
     paResult.calculatedAmount = calculatedAmount;
 
-    const voucher = await this.getReusableVoucher(
-      paymentInfo.referenceId,
-      paymentId,
-    );
+    const voucher = await this.getReusableVoucher(referenceId, paymentId);
 
     if (voucher) {
       if (voucher.send) {
         // If an existing voucher is found, but already claimed, then skip this PA (this route should never happen)
         console.log(
-          `Cannot submit payment ${paymentId} for PA ${paymentInfo.referenceId} as there is already a claimed voucher for this PA and this payment.`,
+          `Cannot submit payment ${paymentId} for PA ${referenceId} as there is already a claimed voucher for this PA and this payment.`,
         );
         return;
       } else {
@@ -137,9 +140,11 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       if (voucherInfo.resultCode == IntersolveVoucherResultCode.Ok) {
         voucherInfo.voucher = await this.storeVoucher(
           voucherInfo,
-          paymentInfo,
+          referenceId,
           paymentId,
           calculatedAmount,
+          whatsappPhoneNumber,
+          userId,
         );
         paResult.status = TransactionStatusEnum.success;
       } else {
@@ -168,10 +173,12 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
     // Continue with whatsapp:
     return await this.sendWhatsapp(
-      paymentInfo,
+      referenceId,
       paResult,
       calculatedAmount,
       paymentId,
+      bulkSize,
+      userId,
     );
   }
 
@@ -220,37 +227,43 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
 
   private async storeVoucher(
     voucherInfo: IntersolveIssueCardResponse,
-    paPaymentData: PaPaymentDataDto,
+    referenceId: string,
     paymentId: number,
     amount: number,
+    whatsappPhoneNumber: string | null,
+    userId: number,
   ): Promise<IntersolveVoucherEntity> {
     const voucherData = await this.storeVoucherData(
       voucherInfo.cardId,
       voucherInfo.pin,
-      paPaymentData.paymentAddress,
+      whatsappPhoneNumber,
       paymentId,
       amount,
-      paPaymentData.userId,
+      userId,
     );
 
     await this.imageCodeService.createVoucherExportVouchers(
       voucherData,
-      paPaymentData.referenceId,
+      referenceId,
     );
 
     return voucherData;
   }
 
   private async sendWhatsapp(
-    paymentInfo: PaPaymentDataDto,
+    referenceId: string,
     paResult: PaTransactionResultDto,
     amount: number,
     paymentId: number,
+    bulkSize: number,
+    userId: number,
   ): Promise<PaTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
-      paymentInfo,
+      referenceId,
       paymentId,
       amount,
+      bulkSize,
+      userId,
     );
 
     paResult.status = transferResult.status;
@@ -266,15 +279,17 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   }
 
   public async sendVoucherWhatsapp(
-    paymentInfo: PaPaymentDataDto,
+    referenceId: string,
     paymentId: number,
     calculatedAmount: number,
+    bulkSize: number,
+    userId: number,
   ): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
-    result.referenceId = paymentInfo.referenceId;
+    result.referenceId = referenceId;
 
     const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(paymentInfo.referenceId) },
+      where: { referenceId: Equal(referenceId) },
     });
 
     const programId = registration.programId;
@@ -294,8 +309,8 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
       customData: { paymentId, amount: calculatedAmount },
-      bulksize: paymentInfo.bulkSize,
-      userId: paymentInfo.userId,
+      bulksize: bulkSize,
+      userId,
     });
     result.status = TransactionStatusEnum.waiting;
     return result;
@@ -330,7 +345,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
   private async storeVoucherData(
     cardNumber: string,
     pin: string,
-    phoneNumber: string,
+    whatsappPhoneNumber: string | null,
     paymentId: number,
     amount: number,
     userId: number,
@@ -338,7 +353,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     const voucherData = new IntersolveVoucherEntity();
     voucherData.barcode = cardNumber;
     voucherData.pin = pin.toString();
-    voucherData.whatsappPhoneNumber = phoneNumber;
+    voucherData.whatsappPhoneNumber = whatsappPhoneNumber;
     voucherData.send = false;
     voucherData.paymentId = paymentId;
     voucherData.amount = amount;
