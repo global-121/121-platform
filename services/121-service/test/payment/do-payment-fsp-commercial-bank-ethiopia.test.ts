@@ -8,7 +8,10 @@ import {
   retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  seedIncludedRegistrations,
+  updateRegistration,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -222,6 +225,19 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     );
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.error,
+    );
+
+    // Ensure that the duplicate transaction flow is used by settings registrationsname to duplicate
+    // First the credit transfer API call should return a duplicated transaction error
+    // And than the get transaction status API call should return a success response
+    await updateRegistration(
+      programId,
+      registrationCbe.referenceId,
+      {
+        fullName: `duplicate-${registrationCbe.referenceId}`,
+      },
+      'test-reason',
+      accessToken,
     );
 
     // Act
