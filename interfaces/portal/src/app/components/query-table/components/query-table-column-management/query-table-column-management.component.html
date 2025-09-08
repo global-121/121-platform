@@ -30,11 +30,8 @@
       [pFocusTrapDisabled]="!formVisible()"
     >
       <div class="flex grow flex-col gap-2">
-        <h2
-          i18n="@@query-table-manage-table"
-          class="mb-5"
-        >
-          Manage table
+        <h2 class="mb-5">
+          <span i18n="@@query-table-manage-table">Manage table</span>
         </h2>
         <p-button
           label="Revert to default"
@@ -43,7 +40,7 @@
           [iconPos]="rtlHelper.createPosition('start')()"
           outlined
           rounded
-          (click)="resetColumnVisibility.emit(); formVisible.set(false)"
+          (click)="revertToDefault()"
         />
         <p
           i18n

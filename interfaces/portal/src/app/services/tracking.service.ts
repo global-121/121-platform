@@ -25,6 +25,8 @@ import { environment } from '~environment';
  */
 export enum TrackingCategory {
   export = 'Export',
+  manageRegistrations = 'Manage Registrations',
+  manageTableSettings = 'Manage Table-settings',
 }
 
 /**
@@ -37,8 +39,19 @@ export enum TrackingCategory {
  * - Use "human readable" values (but be concise.)
  */
 export enum TrackingAction {
+  clickBulkActionButton = 'click: Bulk Action Button',
+  clickClearAllFiltersButton = 'click: Clear All Filters Button',
+  clickClearColumnFilterButton = 'click: Clear Column-filter Button',
+  clickGlobalFilterButton = 'click: Global-filter Button',
+  clickGlobalFilterClearButton = 'click: Clear Global-filter Button',
+  clickManageTableButton = 'click: Manage Table Button',
+  clickMoreActionsMenuButton = 'click: More-Actions-menu Button',
   clickProceedButton = 'click: Proceed Button',
+  clickRevertToDefaultButton = 'click: Revert to Default Button',
+  selectContextMenuOption = 'select: Context-menu Option',
   selectDropdownOption = 'select: Dropdown Option',
+  showColumnFilter = 'show: Column-filter',
+  showContextMenu = 'show: Context Menu',
 }
 
 /**

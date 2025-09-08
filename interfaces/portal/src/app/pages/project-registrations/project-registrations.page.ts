@@ -35,6 +35,11 @@ import { AuthService } from '~/services/auth.service';
 import { RegistrationActionMenuService } from '~/services/registration-action-menu.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 import { getOriginUrl } from '~/utils/url-helper';
 
 @Component({
@@ -66,6 +71,7 @@ export class ProjectRegistrationsPageComponent {
   private projectApiService = inject(ProjectApiService);
   private toastService = inject(ToastService);
   readonly registrationMenuService = inject(RegistrationActionMenuService);
+  readonly trackingService = inject(TrackingService);
 
   readonly registrationsTable =
     viewChild.required<RegistrationsTableComponent>('registrationsTable');
@@ -116,6 +122,7 @@ export class ProjectRegistrationsPageComponent {
       command: () => {
         const registration =
           this.registrationsTable().contextMenuRegistration();
+
         if (!registration) {
           this.toastService.showGenericError();
           return;
@@ -128,7 +135,14 @@ export class ProjectRegistrationsPageComponent {
             }),
           ),
         );
+
         window.open(getOriginUrl() + url, '_blank');
+
+        this.trackingService.trackEvent({
+          category: TrackingCategory.manageRegistrations,
+          action: TrackingAction.selectContextMenuOption,
+          name: `open-in-new-tab`,
+        });
       },
     },
     this.registrationMenuService.createContextItemForMessage({
@@ -169,8 +183,24 @@ export class ProjectRegistrationsPageComponent {
     });
 
     if (!actionData) {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.manageRegistrations,
+        action: triggeredFromContextMenu
+          ? TrackingAction.selectContextMenuOption
+          : TrackingAction.clickBulkActionButton,
+        name: `send-message for:none`,
+      });
       return;
     }
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageRegistrations,
+      action: triggeredFromContextMenu
+        ? TrackingAction.selectContextMenuOption
+        : TrackingAction.clickBulkActionButton,
+      name: `send-message for:${actionData.selectAll ? 'all' : 'selection'}`,
+      value: actionData.count > 0 ? actionData.count : undefined,
+    });
 
     this.sendMessageDialog().triggerAction(actionData);
   }
@@ -187,8 +217,24 @@ export class ProjectRegistrationsPageComponent {
     });
 
     if (!actionData) {
+      this.trackingService.trackEvent({
+        category: TrackingCategory.manageRegistrations,
+        action: triggeredFromContextMenu
+          ? TrackingAction.selectContextMenuOption
+          : TrackingAction.clickBulkActionButton,
+        name: `change-status:${status} for:none`,
+      });
       return;
     }
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageRegistrations,
+      action: triggeredFromContextMenu
+        ? TrackingAction.selectContextMenuOption
+        : TrackingAction.clickBulkActionButton,
+      name: `change-status:${status} for:${actionData.selectAll ? 'all' : 'selection'}`,
+      value: actionData.count > 0 ? actionData.count : undefined,
+    });
 
     this.changeStatusDialog().triggerAction(actionData, status);
   }

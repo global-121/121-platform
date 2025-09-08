@@ -41,6 +41,7 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SkeletonModule } from 'primeng/skeleton';
 import {
+  ColumnFilter,
   Table,
   TableLazyLoadEvent,
   TableModule,
@@ -60,6 +61,11 @@ import {
 } from '~/services/paginate-query.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
+import {
+  TrackingAction,
+  TrackingCategory,
+  TrackingService,
+} from '~/services/tracking.service';
 import { Leaves } from '~/utils/leaves';
 import { Locale } from '~/utils/locale';
 
@@ -137,6 +143,7 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   paginateQueryService = inject(PaginateQueryService);
   toastService = inject(ToastService);
   readonly rtlHelper = inject(RtlHelperService);
+  readonly trackingService = inject(TrackingService);
 
   readonly items = input.required<TData[]>();
   readonly isPending = input.required<boolean>();
@@ -174,9 +181,9 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
   readonly tableFilters = signal<
     Record<string, FilterMetadata | FilterMetadata[] | undefined>
   >({});
-  // This is triggered whenever primeng saves the state of the table to local storage
-  // which is an optimal time to update our local state, and make sure the table is showing the correct data
 
+  // This is triggered whenever PrimeNG saves the state of the table to local storage which is an optimal time to update our local state,
+  //  and make sure the table is showing the correct data.
   onStateSave(event: TableState) {
     this.tableFilters.set({
       // clone to make sure to trigger change detection
@@ -273,6 +280,23 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     return column.type ?? QueryTableColumnType.TEXT;
   }
 
+  toggleMoreActionsMenu(event: Event, item: TData) {
+    this.updateContextMenuItem.emit(item);
+    this.extraOptionsMenu()?.toggle(event);
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickMoreActionsMenuButton,
+    });
+  }
+
+  showContextMenu() {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.showContextMenu,
+    });
+  }
+
   /**
    *  FILTERS
    */
@@ -287,6 +311,11 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
     this.globalFilterVisible.set(false);
     this.tableFilters.set({});
     this.resetSelection();
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickClearAllFiltersButton,
+    });
   }
 
   readonly globalFilterValue = computed(() => {
@@ -408,6 +437,25 @@ export class QueryTableComponent<TData extends { id: PropertyKey }, TContext> {
       return undefined;
     }
     return column.fieldForSort ?? column.field;
+  }
+
+  onShowColumnFilter(name: string, type: QueryTableColumnType) {
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.showColumnFilter,
+      name: `type:${type} name:${name}`,
+    });
+  }
+
+  clearColumnFilter(event: MouseEvent, columnFilter: ColumnFilter) {
+    event.stopPropagation();
+    columnFilter.clearFilter();
+
+    this.trackingService.trackEvent({
+      category: TrackingCategory.manageTableSettings,
+      action: TrackingAction.clickClearColumnFilterButton,
+      name: `type:${columnFilter.type} name:${columnFilter.field ?? 'unknown'}`,
+    });
   }
 
   /**
