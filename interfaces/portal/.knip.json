@@ -1,18 +1,10 @@
 {
   "$schema": "node_modules/knip/schema.json",
-  "angular": {
-    "config": ["angular.json"]
-  },
-  "entry": [
-    "index.{js,ts}",
-    "src/index.{js,ts}",
-    "src/logout/logout.js",
-    "./_env.utils.spec.ts"
-  ],
-  "project": ["**/*.{js,ts}"],
+  "project": ["src/**/*.ts", "**/_*.{mjs,js,ts}"],
   "rules": {
     "dependencies": "warn",
     "devDependencies": "warn",
     "unlisted": "warn"
-  }
+  },
+  "ignore": ["_env.utils.spec.ts", "src/app/services/log.service.ts"]
 }
