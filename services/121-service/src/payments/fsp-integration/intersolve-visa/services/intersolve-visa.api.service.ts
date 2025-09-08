@@ -503,7 +503,7 @@ export class IntersolveVisaApiService {
   }: {
     holderId: string;
     phoneNumber: string;
-  }): Promise<any> {
+  }): Promise<void> {
     // Create the request
 
     const requestBody = {

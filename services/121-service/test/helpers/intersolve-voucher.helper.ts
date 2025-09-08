@@ -15,8 +15,8 @@ export async function getTransactionsIntersolveVoucher({
   paymentId: number;
   referenceId: string;
   accessToken: string;
-}): Promise<any[]> {
-  let getTransactionsBody: any[] = [];
+}): Promise<Record<string, unknown>[]> {
+  let getTransactionsBody: Record<string, unknown>[] = [];
   let attempts = 0;
   while (attempts <= 10) {
     attempts++;

@@ -14,6 +14,11 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 import { registrationSafaricom } from '@121-service/test/registrations/pagination/pagination-data';
 
+interface PaymentEventData {
+  type: PaymentEvent;
+  [key: string]: unknown;
+}
+
 let accessToken: string;
 
 describe('Payment Events API', () => {
@@ -68,7 +73,7 @@ describe('Payment Events API', () => {
 
     // Check that we have a 'created' event
     const createdEvent = data.find(
-      (event: any) => event.type === PaymentEvent.created,
+      (event: PaymentEventData) => event.type === PaymentEvent.created,
     );
 
     expect(createdEvent).toMatchObject({
