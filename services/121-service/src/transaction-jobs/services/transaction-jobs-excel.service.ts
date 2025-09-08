@@ -23,7 +23,7 @@ export class TransactionJobsExcelService {
         registration,
         transactionJob,
         transferAmountInMajorUnit: transactionJob.transactionAmount,
-        status: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
+        status: TransactionStatusEnum.waiting,
       },
     );
   }
