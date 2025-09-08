@@ -72,6 +72,7 @@
     "@angular/compiler-cli": "^20.2.3",
     "@angular/localize": "^20.2.3",
     "@azure/static-web-apps-cli": "^2.0.6",
+    "@eslint/js": "^9.32.0",
     "@prettier/plugin-xml": "^3.4.2",
     "@tailwindcss/postcss": "^4.1.12",
     "@tanstack/eslint-plugin-query": "^5.83.1",
