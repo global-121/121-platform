@@ -4,7 +4,6 @@ export interface SharedTransactionJobDto {
   readonly paymentId: number;
   readonly userId: number;
   readonly referenceId: string;
-  readonly phoneNumber: string;
   readonly isRetry: boolean;
   readonly bulkSize: number;
 }

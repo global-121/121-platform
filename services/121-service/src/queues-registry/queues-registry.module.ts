@@ -72,7 +72,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.transactionJobsCommercialBankEthiopia,
       processors: [
         {
-          path: 'src/payments/fsp-integration/commercial-bank-ethiopia/processors/commercial-bank-ethiopia.processor.ts',
+          path: 'src/transaction-jobs/processors/transaction-jobs-commercial-bank-ethiopia.processor.ts',
         },
       ],
       limiter: {

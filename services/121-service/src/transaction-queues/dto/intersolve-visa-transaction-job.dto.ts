@@ -9,4 +9,5 @@ export interface IntersolveVisaTransactionJobDto
   readonly addressHouseNumberAddition: string;
   readonly addressPostalCode?: string;
   readonly addressCity: string;
+  readonly phoneNumber: string;
 }

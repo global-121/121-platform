@@ -46,10 +46,6 @@ graph LR
   IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaModule-->TransactionsModule
-  CommercialBankEthiopiaModule-->UserModule
-  CommercialBankEthiopiaModule-->RedisModule
-  CommercialBankEthiopiaModule-->QueuesRegistryModule
   CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
   RegistrationsModule-->UserModule
   RegistrationsModule-->LookupModule
@@ -145,6 +141,7 @@ graph LR
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
   TransactionJobsModule-->OnafriqModule
+  TransactionJobsModule-->CommercialBankEthiopiaModule
   TransactionJobsModule-->RegistrationsModule
   TransactionJobsModule-->ProgramModule
   TransactionJobsModule-->TransactionsModule

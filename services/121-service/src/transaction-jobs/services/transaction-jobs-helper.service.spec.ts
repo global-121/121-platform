@@ -133,7 +133,6 @@ describe('TransactionJobsHelperService', () => {
       programFspConfigurationId: 1,
       isRetry: false,
       referenceId: 'ref-123',
-      phoneNumber: '1234567890',
       bulkSize: 10,
     };
     it('should update the payment count', async () => {

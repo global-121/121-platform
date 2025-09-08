@@ -7,7 +7,7 @@ import {
 
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
+import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 @Component({
   selector: 'app-skeleton-inline',

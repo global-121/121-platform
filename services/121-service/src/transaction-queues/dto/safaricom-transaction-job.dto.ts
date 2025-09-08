@@ -4,4 +4,5 @@ export interface SafaricomTransactionJobDto extends SharedTransactionJobDto {
   readonly transactionAmount: number;
   readonly originatorConversationId: string;
   readonly idNumber: string;
+  readonly phoneNumber: string;
 }

@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { getRandomInt } from '@121-service/src/utils/getRandomValue.helper';
+import { getRandomInt } from '@121-service/src/utils/random-value.helper';
 
 import {
   ChipVariant,
