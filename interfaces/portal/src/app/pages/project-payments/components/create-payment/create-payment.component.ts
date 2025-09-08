@@ -49,6 +49,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
+import { MetricApiService } from '../../../../domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-create-payment',
@@ -84,6 +85,7 @@ export class CreatePaymentComponent {
   readonly projectApiService = inject(ProjectApiService);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly metricApiService = inject(MetricApiService);
 
   readonly createPaymentDialog =
     viewChild.required<FullscreenStepperDialogComponent>('createPaymentDialog');
@@ -255,6 +257,7 @@ export class CreatePaymentComponent {
       // this.dialogVisible.set(false);
       const paymentId = result.id;
       if (paymentId) {
+        void this.metricApiService.invalidateCache(this.projectId);
         await this.paymentApiService.invalidateCache(
           this.projectId,
           signal(paymentId),

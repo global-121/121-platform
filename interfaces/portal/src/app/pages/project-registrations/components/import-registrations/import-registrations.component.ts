@@ -23,6 +23,7 @@ import {
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-import-registrations',
@@ -40,6 +41,7 @@ export class ImportRegistrationsComponent {
   private downloadService = inject(DownloadService);
   private registrationApiService = inject(RegistrationApiService);
   private toastService = inject(ToastService);
+  private metricApiService = inject(MetricApiService);
 
   readonly registeredChipData = getChipDataByRegistrationStatus(
     RegistrationStatusEnum.new,
@@ -78,6 +80,8 @@ export class ImportRegistrationsComponent {
       void this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
+      void this.metricApiService.invalidateCache(this.projectId);
+
       this.dialogVisible.set(false);
       this.toastService.showToast({
         detail: $localize`:@@import-registrations-success:Registration(s) imported successfully.`,

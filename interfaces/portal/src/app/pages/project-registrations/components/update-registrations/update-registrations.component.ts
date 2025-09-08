@@ -49,6 +49,7 @@ import {
   generateFieldErrors,
   genericFieldIsRequiredValidationMessage,
 } from '~/utils/form-validation';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 type ExportCSVFormGroup =
   (typeof UpdateRegistrationsComponent)['prototype']['exportCSVFormGroup'];
@@ -86,6 +87,7 @@ export class UpdateRegistrationsComponent {
   readonly registrationAttributeService = inject(RegistrationAttributeService);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly metricApiService = inject(MetricApiService);
 
   protected registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -185,6 +187,8 @@ export class UpdateRegistrationsComponent {
         severity: 'info',
         showSpinner: true,
       });
+      void this.metricApiService.invalidateCache(this.projectId);
+
       setTimeout(() => {
         // invalidate the cache again after a delay to try and make the changes reflected in the UI
         void this.registrationApiService.invalidateCache({

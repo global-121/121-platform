@@ -60,8 +60,20 @@ export class MetricApiService extends DomainApiService {
   }: {
     projectId: Signal<number | string>;
   }) {
-    return this.generateQueryOptions<ProjectRegistrationStatusStats[]>({
+    return this.generateQueryOptions<
+      ProjectRegistrationStatusStats[],
+      { [status: string]: number }
+    >({
       path: [...BASE_ENDPOINT(projectId), 'registration-status'],
+      processResponse: (response) =>
+        response.reduce(
+          (statusObject: { [status: string]: number }, currentStatus) => {
+            statusObject[currentStatus.status] = currentStatus.statusCount;
+
+            return statusObject;
+          },
+          {},
+        ),
     });
   }
 
