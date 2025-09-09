@@ -60,7 +60,6 @@ test.describe('Export registrations with different formats and configurations', 
     });
 
     await test.step('Export list and validate CSV files downloaded', async () => {
-      await registrationsPage.dismissToast();
       await registrationsPage.clickAndSelectExportOption(
         'Selected registrations',
       );
@@ -102,7 +101,6 @@ test.describe('Export registrations with different formats and configurations', 
     });
 
     await test.step('Export list and validate CSV files downloaded', async () => {
-      await registrationsPage.dismissToast();
       await registrationsPage.clickAndSelectExportOption(
         'Selected registrations',
       );
