@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
-import { CommercialBankEthiopiaTransferPayload } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CreditTransferApiParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaSoapElements } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/enum/commercial-bank-ethiopia.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
@@ -16,13 +16,13 @@ export class CommercialBankEthiopiaApiService {
   public constructor(private readonly soapService: SoapService) {}
 
   public async creditTransfer(
-    payment: CommercialBankEthiopiaTransferPayload,
-    credentials: RequiredUsernamePasswordInterface,
+    payment: CreditTransferApiParams,
+    credentials: UsernamePasswordInterface,
   ): Promise<any> {
-    const payload = await this.createCreditTransferPayload(
+    const payload = await this.createCreditTransferPayload({
       payment,
       credentials,
-    );
+    });
 
     try {
       const responseBody = await this.soapService.postCBERequest({
@@ -74,10 +74,13 @@ export class CommercialBankEthiopiaApiService {
     }
   }
 
-  public async createCreditTransferPayload(
-    payment: CommercialBankEthiopiaTransferPayload,
-    credentials: RequiredUsernamePasswordInterface,
-  ): Promise<any> {
+  public async createCreditTransferPayload({
+    payment,
+    credentials,
+  }: {
+    payment: CreditTransferApiParams;
+    credentials: UsernamePasswordInterface;
+  }): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(
       CommercialBankEthiopiaSoapElements.CreditTransfer,
@@ -147,8 +150,8 @@ export class CommercialBankEthiopiaApiService {
   }
 
   public async getTransactionStatus(
-    payment: CommercialBankEthiopiaTransferPayload,
-    credentials: RequiredUsernamePasswordInterface,
+    payment: CreditTransferApiParams,
+    credentials: UsernamePasswordInterface,
   ): Promise<any> {
     const payload = await this.createTransactionStatusPayload(
       payment,
@@ -194,8 +197,8 @@ export class CommercialBankEthiopiaApiService {
   }
 
   public async createTransactionStatusPayload(
-    payment: CommercialBankEthiopiaTransferPayload,
-    credentials: RequiredUsernamePasswordInterface,
+    payment: CreditTransferApiParams,
+    credentials: UsernamePasswordInterface,
   ): Promise<any> {
     // Create the SOAP envelope for credit transfer
     const payload = await this.soapService.readXmlAsJs(

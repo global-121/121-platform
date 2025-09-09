@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CommercialBankEthiopiaTransferPayload {
+export class CreditTransferApiParams {
   public debitAmount: number;
   public debitTheirRef: string;
   public creditTheirRef: string | null;
@@ -9,12 +9,6 @@ export class CommercialBankEthiopiaTransferPayload {
   public remitterName: string | null;
   public beneficiaryName: string;
   public status?: string;
-}
-
-export class CommercialBankEthiopiaRegistrationData {
-  public fieldName: string;
-  public value: string;
-  public referenceId: string;
 }
 
 export class CommercialBankEthiopiaValidationData {

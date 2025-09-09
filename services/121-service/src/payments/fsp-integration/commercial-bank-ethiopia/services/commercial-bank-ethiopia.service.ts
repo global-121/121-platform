@@ -1,41 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import Redis from 'ioredis';
 import { Repository } from 'typeorm';
 
-import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import {
-  FspTransactionResultDto,
-  PaTransactionResultDto,
-} from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
-import { CommercialBankEthiopiaJobDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-job.dto';
-import {
-  CommercialBankEthiopiaRegistrationData,
-  CommercialBankEthiopiaTransferPayload,
-} from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CreditTransferApiParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { CreateCreditTransferOrGetTransactionStatusParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/interfaces/create-credit-transfer-or-get-transaction-status-params.interface';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
-import {
-  getRedisSetName,
-  REDIS_CLIENT,
-} from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
-import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
-import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
@@ -54,256 +37,95 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
   private readonly commercialBankEthiopiaAccountEnquiriesScopedRepo: ScopedRepository<CommercialBankEthiopiaAccountEnquiriesEntity>;
 
   public constructor(
-    private readonly queuesService: QueuesRegistryService,
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
-    private readonly transactionsService: TransactionsService,
-    @Inject(REDIS_CLIENT)
-    private readonly redisClient: Redis,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
 
+  /**
+   * Do not use! This function was previously used to send payments.
+   * It has been deprecated and should not be called anymore.
+   */
   public async sendPayment(
-    paPaymentList: PaPaymentDataDto[],
-    programId: number,
-    paymentId: number,
-  ): Promise<FspTransactionResultDto> {
-    const program = await this.programRepository.findOneByOrFail({
-      id: programId,
-    });
-
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.paList = [];
-    fspTransactionResult.fspName = Fsps.commercialBankEthiopia;
-
-    const referenceIds = paPaymentList.map(
-      (paPayment) => paPayment.referenceId,
-    );
-    const registrationData = await this.getRegistrationData(referenceIds);
-
-    // TODO Refactor this to get all data in one query instead of per PA
-    for (const paPayment of paPaymentList) {
-      const paRegistrationData = await this.getPaRegistrationData(
-        paPayment,
-        registrationData,
-      );
-
-      const payload = this.createPayloadPerPa(
-        paPayment,
-        paRegistrationData,
-        program,
-      );
-
-      const jobData: CommercialBankEthiopiaJobDto = {
-        paPaymentData: paPayment,
-        paymentId,
-        programId,
-        payload,
-        userId: paPayment.userId,
-      };
-      const job =
-        await this.queuesService.transactionJobCommercialBankEthiopiaQueue.add(
-          JobNames.default,
-          jobData,
-        );
-      await this.redisClient.sadd(getRedisSetName(job.data.programId), job.id);
-    }
-    return fspTransactionResult;
+    _paymentList: PaPaymentDataDto[],
+    _programId: number,
+    _paymentId: number,
+  ): Promise<void> {
+    throw new Error('Method should not be called anymore.');
   }
 
-  async processQueuedPayment(
-    data: CommercialBankEthiopiaJobDto,
-  ): Promise<void> {
-    const credentials =
-      await this.programFspConfigurationRepository.getUsernamePasswordProperties(
-        data.paPaymentData.programFspConfigurationId,
-      );
+  public async createCreditTransferOrGetTransactionStatus({
+    inputParams,
+    credentials,
+  }: {
+    inputParams: CreateCreditTransferOrGetTransactionStatusParams;
+    credentials: UsernamePasswordInterface;
+  }): Promise<any> {
+    const mappedParams = this.mapCreditTransferParams(inputParams);
 
-    const paymentRequestResultPerPa = await this.sendPaymentPerPa(
-      data.payload,
-      data.paPaymentData.referenceId,
+    let result = await this.commercialBankEthiopiaApiService.creditTransfer(
+      mappedParams,
       credentials,
     );
 
-    const transactionRelationDetails = {
-      programId: data.programId,
-      paymentId: data.paymentId,
-      userId: data.userId,
-      programFspConfigurationId: data.paPaymentData.programFspConfigurationId,
-    };
-    // Storing the per payment so you can continiously seed updates of transactions in Portal
-    await this.transactionsService.storeTransactionUpdateStatus(
-      paymentRequestResultPerPa,
-      transactionRelationDetails,
-    );
-  }
-
-  public async getPaRegistrationData(
-    paPayment: PaPaymentDataDto,
-    registrationData: CommercialBankEthiopiaRegistrationData[],
-  ): Promise<CommercialBankEthiopiaRegistrationData[]> {
-    const paRegistrationData = registrationData.filter(
-      (item) => item.referenceId === paPayment.referenceId,
-    );
-
-    if (paPayment.transactionId) {
-      const { customData } = await this.transactionRepository.findOneByOrFail({
-        id: paPayment.transactionId,
-      });
-      // BEWARE: CommercialBankEthiopiaTransferPayload was used to silence the TS error
-      // but in reality it might not be the actual type of requestResult
-      const value = (
-        customData.requestResult as CommercialBankEthiopiaTransferPayload
-      ).debitTheirRef;
-      paRegistrationData.push({
-        referenceId: paPayment.referenceId,
-        fieldName: 'debitTheirRef',
-        value,
-      });
+    if (result && result.resultDescription === 'Transaction is DUPLICATED') {
+      result = await this.commercialBankEthiopiaApiService.getTransactionStatus(
+        mappedParams,
+        credentials,
+      );
     }
 
-    return paRegistrationData;
+    let status: TransactionStatusEnum;
+    let errorMessage: string | undefined;
+
+    if (
+      result &&
+      result.Status &&
+      result.Status.successIndicator &&
+      result.Status.successIndicator._text === 'Success'
+    ) {
+      status = TransactionStatusEnum.success;
+      mappedParams.status = TransactionStatusEnum.success; //TODO: This code can probably be removed as it serves no purpose
+    } else {
+      status = TransactionStatusEnum.error;
+      errorMessage =
+        result.resultDescription ||
+        (result.Status &&
+          result.Status.messages &&
+          (result.Status.messages.length > 0
+            ? result.Status.messages[0]._text
+            : result.Status.messages._text));
+    }
+
+    // TODO: Refactor: This code can probably be removed as it serves no purpose we already store the request and response in Azure
+    // Only the debitTheirRef seems relevant to keep and that is now in mappedParams
+    const customData = {
+      requestResult: mappedParams,
+      paymentResult: result,
+    };
+    return { status, errorMessage, customData };
   }
 
-  public async getRegistrationData(
-    referenceIds: string[],
-  ): Promise<CommercialBankEthiopiaRegistrationData[]> {
-    const registrationData = await this.registrationRepository
-      .createQueryBuilder('registration')
-      .select([
-        'registration.referenceId AS "referenceId"',
-        'data.value AS value',
-        '"programRegistrationAttribute".name AS "fieldName"',
-      ])
-      .where('registration.referenceId IN (:...referenceIds)', {
-        referenceIds,
-      })
-      .andWhere('(programRegistrationAttribute.name IN (:...names))', {
-        names: [FspAttributes.fullName, FspAttributes.bankAccountNumber],
-      })
-      .leftJoin('registration.data', 'data')
-      .leftJoin(
-        'data.programRegistrationAttribute',
-        'programRegistrationAttribute',
-      )
-      .getRawMany();
-
-    // Filter out properties with null values from each object
-    const nonEmptyRegistrationData = registrationData.map(
-      (data: CommercialBankEthiopiaRegistrationData) => {
-        for (const key in data) {
-          if (
-            Object.prototype.hasOwnProperty.call(data, key) &&
-            data[key] === null
-          ) {
-            delete data[key];
-          }
-        }
-        return data;
-      },
-    );
-
-    return nonEmptyRegistrationData;
-  }
-
-  public createPayloadPerPa(
-    payment: PaPaymentDataDto,
-    paRegistrationData: CommercialBankEthiopiaRegistrationData[],
-    program: ProgramEntity,
-  ): CommercialBankEthiopiaTransferPayload {
-    let fullName = '';
-    let bankAccountNumber;
-    let debitTheirRefRetry;
-
-    paRegistrationData.forEach((data) => {
-      if (data.fieldName === FspAttributes.fullName) {
-        fullName = data.value;
-      } else if (data.fieldName === FspAttributes.bankAccountNumber) {
-        bankAccountNumber = data.value;
-      } else if ((data.fieldName = 'debitTheirRef')) {
-        // This is a test code which is used in mock mode to simulate a transfer credit that is duplicated
-        // The mock service checks if the debitTheirRef starts with 'duplicate-' and if so, will simulate a duplicate transfer flow
-        debitTheirRefRetry = data.value;
-      }
-    });
-
+  private mapCreditTransferParams({
+    debitTheirRef,
+    bankAccountNumber,
+    currency,
+    ngoName,
+    titlePortal,
+    fullName,
+    amount,
+  }: CreateCreditTransferOrGetTransactionStatusParams): CreditTransferApiParams {
     return {
-      debitAmount: payment.transactionAmount,
-      debitTheirRef: (
-        debitTheirRefRetry ||
-        `${formatDateYYMMDD(new Date())}${this.generateRandomNumerics(10)}`
-      ).substring(0, 16),
+      debitAmount: amount,
+      debitTheirRef,
       creditTheirRef:
-        program.titlePortal && program.titlePortal.en
-          ? program.titlePortal.en.replaceAll(/\W/g, '').substring(0, 16)
+        titlePortal && titlePortal.en
+          ? titlePortal.en.replaceAll(/\W/g, '').substring(0, 16)
           : null,
       creditAcctNo: bankAccountNumber,
-      creditCurrency: program.currency,
-      remitterName: program.ngo ? program.ngo.substring(0, 35) : null,
+      creditCurrency: currency,
+      remitterName: ngoName ? ngoName.substring(0, 35) : null,
       beneficiaryName: fullName.substring(0, 35),
     };
-  }
-
-  public async sendPaymentPerPa(
-    payload: CommercialBankEthiopiaTransferPayload,
-    referenceId: string,
-    credentials: UsernamePasswordInterface,
-  ): Promise<PaTransactionResultDto> {
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.fspName = Fsps.commercialBankEthiopia;
-    paTransactionResult.referenceId = referenceId;
-    paTransactionResult.date = new Date();
-    paTransactionResult.calculatedAmount = payload.debitAmount;
-
-    let requiredCredentials: RequiredUsernamePasswordInterface;
-    if (credentials.password == null || credentials.username == null) {
-      paTransactionResult.status = TransactionStatusEnum.error;
-      paTransactionResult.message =
-        'Missing username or password for program Fsp configuration of the registration';
-      return paTransactionResult;
-    } else {
-      requiredCredentials = {
-        username: credentials.username,
-        password: credentials.password,
-      };
-
-      let result = await this.commercialBankEthiopiaApiService.creditTransfer(
-        payload,
-        requiredCredentials,
-      );
-
-      if (result && result.resultDescription === 'Transaction is DUPLICATED') {
-        result =
-          await this.commercialBankEthiopiaApiService.getTransactionStatus(
-            payload,
-            requiredCredentials,
-          );
-      }
-
-      if (
-        result &&
-        result.Status &&
-        result.Status.successIndicator &&
-        result.Status.successIndicator._text === 'Success'
-      ) {
-        paTransactionResult.status = TransactionStatusEnum.success;
-        payload.status = TransactionStatusEnum.success;
-      } else {
-        paTransactionResult.status = TransactionStatusEnum.error;
-        paTransactionResult.message =
-          result.resultDescription ||
-          (result.Status &&
-            result.Status.messages &&
-            (result.Status.messages.length > 0
-              ? result.Status.messages[0]._text
-              : result.Status.messages._text));
-      }
-
-      paTransactionResult.customData = {
-        requestResult: payload,
-        paymentResult: result,
-      };
-      return paTransactionResult;
-    }
   }
 
   public async getCommercialBankEthiopiaCredentialsOrThrow({
@@ -372,19 +194,5 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
         .getRawMany();
 
     return { data: programPAs, fileName: 'cbe-validation-report' };
-  }
-
-  private generateRandomNumerics(length: number): string {
-    const alphanumericCharacters = '0123456789';
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(
-        Math.random() * alphanumericCharacters.length,
-      );
-      result += alphanumericCharacters.charAt(randomIndex);
-    }
-
-    return result;
   }
 }

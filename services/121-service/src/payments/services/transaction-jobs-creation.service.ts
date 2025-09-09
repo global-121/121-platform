@@ -9,11 +9,14 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
+import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
+import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
+import { generateRandomNumerics } from '@121-service/src/utils/random-value.helper';
 
 // TODO: Refactor: This class has a lot of duplicate code it should be refactored to reduce redundancy.
 
@@ -78,6 +81,14 @@ export class TransactionJobsCreationService {
         });
       case Fsps.onafriq:
         return await this.createAndAddOnafriqTransactionJobs({
+          referenceIdsAndTransactionAmounts,
+          programId,
+          userId,
+          paymentId,
+          isRetry,
+        });
+      case Fsps.commercialBankEthiopia:
+        return await this.createAndAddCommercialBankEthiopiaTransactionJobs({
           referenceIdsAndTransactionAmounts,
           programId,
           userId,
@@ -424,6 +435,87 @@ export class TransactionJobsCreationService {
       });
     await this.transactionQueuesService.addOnafriqTransactionJobs(
       onafriqTransactionJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Commercial Bank of Ethiopia transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Commercial Bank of Ethiopia.
+   * It fetches necessary PA data and maps it to a FSP-specific DTO, then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   */
+  private async createAndAddCommercialBankEthiopiaTransactionJobs({
+    referenceIdsAndTransactionAmounts,
+    programId,
+    userId,
+    paymentId,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: {
+      referenceId: string;
+      transactionAmount: number;
+    }[];
+    programId: number;
+    userId: number;
+    paymentId: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    // Attributes needed for CBE
+    const cbeAttributes = getFspSettingByNameOrThrow(
+      Fsps.commercialBankEthiopia,
+    ).attributes;
+    const cbeAttributeNames = cbeAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsAndTransactionAmounts,
+      cbeAttributeNames,
+      programId,
+    );
+
+    // Map for quick lookup of transaction amounts by referenceId
+    const transactionAmountsMap = new Map(
+      referenceIdsAndTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    // Build the job DTOs
+    const cbeTransferJobs: CommercialBankEthiopiaTransactionJobDto[] =
+      registrationViews.map((registrationView) => ({
+        programId,
+        paymentId,
+        referenceId: registrationView.referenceId,
+        programFspConfigurationId: registrationView.programFspConfigurationId,
+        transactionAmount: transactionAmountsMap.get(
+          registrationView.referenceId,
+        )!,
+        isRetry,
+        userId,
+        bulkSize: referenceIdsAndTransactionAmounts.length,
+        bankAccountNumber: registrationView[FspAttributes.bankAccountNumber]!,
+        fullName: registrationView[FspAttributes.fullName]!,
+      }));
+
+    // debitTheirRef is the idempotency key used by CBE
+    // When payment is not retry it is generated before the jobs are put into the queue
+    // If a 'job retry' happens because the service crashes while processing the queue,
+    // the same debitTheirRef will be used to attempt a transaction
+    // When payment is retried the debitTheirRef is already stored in the (failed) transaction entity
+    // During job processing, the previous debitTheirRef will be retrieved from the transaction entity and used to create call CBE api
+    if (!isRetry) {
+      cbeTransferJobs.forEach((job) => {
+        job.debitTheirRef =
+          `${formatDateYYMMDD(new Date())}${generateRandomNumerics(10)}`.substring(
+            0,
+            16,
+          );
+      });
+    }
+
+    await this.transactionQueuesService.addCommercialBankOfEthiopiaTransactionJobs(
+      cbeTransferJobs,
     );
   }
 

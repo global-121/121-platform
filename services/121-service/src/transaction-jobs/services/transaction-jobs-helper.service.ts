@@ -24,6 +24,7 @@ interface ProcessTransactionResultInput {
   transferAmountInMajorUnit: number;
   status: TransactionStatusEnum;
   errorText?: string;
+  customData?: Record<string, unknown>;
 }
 
 @Injectable()
@@ -59,6 +60,7 @@ export class TransactionJobsHelperService {
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     status,
     errorText: errorMessage,
+    customData: customData,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
       transactionJob;
@@ -71,6 +73,7 @@ export class TransactionJobsHelperService {
       userId,
       status,
       errorMessage,
+      customData,
     });
 
     await this.latestTransactionRepository.insertOrUpdateFromTransaction(
@@ -137,6 +140,7 @@ export class TransactionJobsHelperService {
     userId,
     status,
     errorMessage,
+    customData,
   }: {
     amount: number;
     registration: RegistrationEntity;
@@ -145,6 +149,7 @@ export class TransactionJobsHelperService {
     userId: number;
     status: TransactionStatusEnum;
     errorMessage?: string;
+    customData?: Record<string, unknown>;
   }) {
     const transaction = new TransactionEntity();
     transaction.amount = amount;
@@ -156,6 +161,7 @@ export class TransactionJobsHelperService {
     transaction.status = status;
     transaction.transactionStep = 1;
     transaction.errorMessage = errorMessage ?? null;
+    transaction.customData = customData ?? {};
 
     return await this.transactionScopedRepository.save(transaction);
   }

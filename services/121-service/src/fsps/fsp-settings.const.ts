@@ -169,6 +169,10 @@ export const FSP_SETTINGS: FspDto[] = [
         name: FspAttributes.bankAccountNumber,
         isRequired: true,
       },
+      {
+        name: FspAttributes.fullName,
+        isRequired: true,
+      },
     ],
     configurationProperties: [
       {
