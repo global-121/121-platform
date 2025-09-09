@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
@@ -36,23 +35,38 @@ describe('ExcelRecociliationService', () => {
         },
         {
           provide: ExcelService,
-          useValue: {},
+          useValue: {
+            getImportMatchColumn: jest.fn().mockResolvedValue('phoneNumber'),
+          },
         },
         {
           provide: RegistrationsPaginationService,
-          useValue: {},
+          useValue: {
+            getRegistrationsChunked: jest.fn(),
+          },
         },
+        // TODO: make this nicer?
         {
           provide: FileImportService,
-          useValue: {},
+          useValue: new FileImportService(),
         },
         {
           provide: RegistrationViewScopedRepository,
-          useValue: {},
+          useValue: {
+            getQueryBuilderForFspInstructions: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(ProgramEntity),
-          useClass: Repository,
+          useValue: {
+            // findOneByOrFail: jest.fn(),
+            findOneOrFail: jest.fn().mockReturnValue({
+              programFspConfigurations: [
+                { id: 1, fspName: 'Excel', label: 'Excel-A' },
+                { id: 2, fspName: 'Excel', label: 'Excel-B' },
+              ],
+            }),
+          },
         },
       ],
     }).compile();
@@ -66,7 +80,10 @@ describe('ExcelRecociliationService', () => {
 
   it('processes a reconciliation file', () => {
     // Arrange
-    const testFile = createCsvFile('phoneNumber,status\n1234567890,success');
+    const testFile = createCsvFile(
+      'phoneNumber,status\n1234567890,success',
+      'reconciliation.csv',
+    );
     const programId = 1;
     const paymentId = 1;
     const userId = 1;
