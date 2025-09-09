@@ -11,6 +11,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
+import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -54,6 +55,24 @@ export class TransactionJobsCreationService {
           userId,
           paymentId,
           isRetry,
+        });
+      case Fsps.intersolveVoucherWhatsapp:
+        return await this.createAndAddIntersolveVoucherTransactionJobs({
+          referenceIdsAndTransactionAmounts,
+          programId,
+          userId,
+          paymentId,
+          isRetry,
+          useWhatsapp: true,
+        });
+      case Fsps.intersolveVoucherPaper:
+        return await this.createAndAddIntersolveVoucherTransactionJobs({
+          referenceIdsAndTransactionAmounts,
+          programId,
+          userId,
+          paymentId,
+          isRetry,
+          useWhatsapp: false,
         });
       case Fsps.safaricom:
         return await this.createAndAddSafaricomTransactionJobs({
@@ -186,6 +205,84 @@ export class TransactionJobsCreationService {
       );
     await this.transactionQueuesService.addIntersolveVisaTransactionJobs(
       intersolveVisaTransferJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Intersolve Voucher transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Intersolve Voucher. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @param {string[]} referenceIds - The reference IDs for the transaction jobs.
+   * @param {number} programId - The ID of the program.
+   * @param {number} paymentAmount - The amount to be transferred.
+   * @param {number} paymentId - The payment number.
+   * @param {boolean} isRetry - Whether this is a retry.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddIntersolveVoucherTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentId,
+    isRetry,
+    useWhatsapp,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentId: number;
+    isRetry: boolean;
+    useWhatsapp: boolean;
+  }): Promise<void> {
+    const intersolveVoucherAttributes = getFspSettingByNameOrThrow(
+      Fsps.intersolveVoucherWhatsapp,
+    ).attributes;
+    const intersolveVoucherAttributeNames = intersolveVoucherAttributes.map(
+      (q) => q.name,
+    );
+    const dataFieldNames = [...intersolveVoucherAttributeNames];
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      dataFieldNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const intersolveVoucherTransferJobs: IntersolveVoucherTransactionJobDto[] =
+      registrationViews.map(
+        (registrationView): IntersolveVoucherTransactionJobDto => {
+          return {
+            programId,
+            userId,
+            paymentId,
+            referenceId: registrationView.referenceId,
+            programFspConfigurationId:
+              registrationView.programFspConfigurationId,
+            transactionAmount: transactionAmountsMap.get(
+              registrationView.referenceId,
+            )!,
+            isRetry,
+            bulkSize: referenceIdsTransactionAmounts.length,
+            useWhatsapp,
+            whatsappPhoneNumber: useWhatsapp
+              ? registrationView[FspAttributes.whatsappPhoneNumber]!
+              : null,
+          };
+        },
+      );
+    await this.transactionQueuesService.addIntersolveVoucherTransactionJobs(
+      intersolveVoucherTransferJobs,
     );
   }
 

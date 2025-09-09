@@ -1,11 +1,6 @@
-export interface AirtelTransactionJobDto {
-  readonly programId: number;
-  readonly programFspConfigurationId: number;
-  readonly paymentId: number;
-  readonly referenceId: string;
+import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
+
+export interface AirtelTransactionJobDto extends SharedTransactionJobDto {
   readonly transactionAmount: number;
-  readonly isRetry: boolean;
-  readonly userId: number;
-  readonly bulkSize: number;
   readonly phoneNumber: string;
 }

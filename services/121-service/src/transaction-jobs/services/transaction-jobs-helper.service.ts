@@ -60,7 +60,7 @@ export class TransactionJobsHelperService {
     transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
     status,
     errorText: errorMessage,
-    customData: customData,
+    customData,
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
       transactionJob;
