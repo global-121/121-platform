@@ -10,11 +10,8 @@ export class IntersolveVoucherMockService {
     username: string,
     password: string,
   ): Promise<any> {
-    const missingParams = this.getMissingParams(payload, username, password);
-    if (missingParams.length > 0) {
-      throw new Error(
-        `Missing required parameters in IntersolveVoucherMock: ${missingParams.join(', ')}`,
-      );
+    if (!username || !password) {
+      throw new Error('Missing username or password in IntersolveVoucherMock');
     }
 
     await waitForRandomDelay(100, 300);
@@ -36,6 +33,13 @@ export class IntersolveVoucherMockService {
         },
       };
     } else {
+      const missingParams = this.getMissingParamsIssueCard(payload);
+      if (missingParams.length > 0) {
+        throw new Error(
+          `Missing required parameters in IntersolveVoucherMock: ${missingParams.join(', ')}`,
+        );
+      }
+
       const amount = soapBody.elements[0].elements.find(
         (e) => e.name === 'Value',
       ).elements[0].text;
@@ -131,20 +135,9 @@ export class IntersolveVoucherMockService {
     return element?.elements?.[0]?.text || null;
   }
 
-  private getMissingParams(
-    payload: any,
-    username: string,
-    password: string,
-  ): string[] {
+  private getMissingParamsIssueCard(payload: any): string[] {
     const { amount, refPos } = this.extractSoapValues(payload);
     const missingParams: string[] = [];
-
-    if (!username) {
-      missingParams.push('username');
-    }
-    if (!password) {
-      missingParams.push('password');
-    }
     if (!amount || String(amount).includes('${')) {
       missingParams.push('amount');
     }
