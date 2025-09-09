@@ -23,7 +23,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
-export class ExcelRecociliationService {
+export class ExcelReconciliationService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -319,7 +319,9 @@ export class ExcelRecociliationService {
 
   private joinRegistrationsAndImportRecords(
     registrations: Awaited<
-      ReturnType<ExcelRecociliationService['getRegistrationsForReconciliation']>
+      ReturnType<
+        ExcelReconciliationService['getRegistrationsForReconciliation']
+      >
     >,
     importRecords: object[],
     matchColumn: string,

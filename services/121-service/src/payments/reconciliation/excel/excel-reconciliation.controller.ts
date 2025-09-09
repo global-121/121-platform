@@ -24,7 +24,7 @@ import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.de
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { GetImportTemplateResponseDto } from '@121-service/src/payments/dto/get-import-template-response.dto';
 import { ImportReconciliationResponseDto } from '@121-service/src/payments/dto/import-reconciliation-response.dto';
-import { ExcelRecociliationService } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.service';
+import { ExcelReconciliationService } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.service';
 import { FILE_UPLOAD_API_FORMAT } from '@121-service/src/shared/file-upload-api-format';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { RequestHelper } from '@121-service/src/utils/request-helper/request-helper.helper';
@@ -32,9 +32,9 @@ import { RequestHelper } from '@121-service/src/utils/request-helper/request-hel
 @UseGuards(AuthenticatedUserGuard)
 @ApiTags('payments')
 @Controller()
-export class ExcelRecociliationController {
+export class ExcelReconciliationController {
   public constructor(
-    private readonly excelReconciliationService: ExcelRecociliationService,
+    private readonly excelReconciliationService: ExcelReconciliationService,
   ) {}
 
   @AuthenticatedUser({
