@@ -23,6 +23,7 @@ const AuthStrategy = environment.use_sso_azure_entra
   : BasicAuthStrategy;
 
 export const AUTH_ERROR_IN_STATE_KEY = 'AUTH_ERROR';
+const VALID_PERMISSIONS = new Set(Object.values(PermissionEnum));
 
 @Injectable({
   providedIn: 'root',
@@ -69,11 +70,22 @@ export class AuthService {
 
     if (!user?.username) {
       console.warn('AuthService: No valid user');
+      void this.logout(user);
       return null;
     }
 
     if (this.authStrategy.isUserExpired(user)) {
       console.warn('AuthService: Expired token');
+      void this.logout(user);
+      return null;
+    }
+
+    // If user has deprecated permissions (e.g. after a deploy), force to re-login
+    if (this.hasDeprecatedPermissions(user)) {
+      console.warn(
+        'AuthService: Deprecated permission found. Forcing re-login',
+      );
+      void this.logout(user);
       return null;
     }
 
@@ -95,11 +107,11 @@ export class AuthService {
     return this.router.navigate(['/', AppRoutes.authCallback]);
   }
 
-  public async logout() {
+  public async logout(user?: LocalStorageUser | null) {
     this.logService.logEvent(LogEvent.userLogout);
 
     try {
-      await this.authStrategy.logout(this.user);
+      await this.authStrategy.logout(user ?? this.user);
     } catch (error) {
       console.error('AuthService: Error logging out', error);
     }
@@ -179,9 +191,21 @@ export class AuthService {
       }),
     );
   }
+
   public handleAuthCallback() {
     const returnUrl = getReturnUrlFromLocalStorage();
 
     this.authStrategy.handleAuthCallback(returnUrl ?? '/');
+  }
+
+  public hasDeprecatedPermissions(user: LocalStorageUser): boolean {
+    for (const projectId of Object.keys(user.permissions)) {
+      for (const permission of user.permissions[Number(projectId)]) {
+        if (!VALID_PERMISSIONS.has(permission)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
