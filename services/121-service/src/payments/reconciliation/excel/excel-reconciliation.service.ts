@@ -319,7 +319,9 @@ export class ExcelReconciliationService {
 
   private joinRegistrationsAndImportRecords(
     registrations: Awaited<
-      ReturnType<ExcelReconciliationService['getRegistrationsForReconciliation']>
+      ReturnType<
+        ExcelReconciliationService['getRegistrationsForReconciliation']
+      >
     >,
     importRecords: object[],
     matchColumn: string,
