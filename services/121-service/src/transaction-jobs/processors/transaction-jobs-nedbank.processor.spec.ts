@@ -21,6 +21,8 @@ const mockPaymentJob: NedbankTransactionJobDto = {
 };
 const testJob = { data: mockPaymentJob } as Job;
 
+// This processor code is the same for every FSP, so we only need to test one of them
+// REFACTOR: move common code into helper file, and put the unit test on that that one
 describe('TransactionJobsProcessorNedbank', () => {
   let transactionJobsNedbankService: jest.Mocked<TransactionJobsNedbankService>;
   let processor: TransactionJobsProcessorNedbank;

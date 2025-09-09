@@ -119,6 +119,7 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     if (voucher) {
       if (voucher.send) {
         // If an existing voucher is found, but already claimed, then skip this PA (this route should never happen)
+        // TODO REFACTOR: get rid of this empty return. Throw error instead.
         console.log(
           `Cannot submit payment ${paymentId} for PA ${referenceId} as there is already a claimed voucher for this PA and this payment.`,
         );
