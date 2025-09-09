@@ -68,6 +68,7 @@ describe('AuthService - hasDeprecatedPermissions', () => {
     });
 
     it('should trigger logout when user has deprecated permissions', () => {
+      // Arrange
       const userWithDeprecatedPermissions = createMockUser({
         1: [
           PermissionEnum.RegistrationREAD,
@@ -82,13 +83,16 @@ describe('AuthService - hasDeprecatedPermissions', () => {
         Promise.resolve(),
       );
 
+      // Act - the user getter is called
       const result = service.user;
 
+      // Assert
       expect(result).toBeNull();
       expect(logoutSpy).toHaveBeenCalledWith(userWithDeprecatedPermissions);
     });
 
     it('should return user when permissions are valid', () => {
+      // Arrange
       const userWithValidPermissions = createMockUser({
         1: [
           PermissionEnum.RegistrationREAD,
@@ -100,8 +104,10 @@ describe('AuthService - hasDeprecatedPermissions', () => {
         JSON.stringify(userWithValidPermissions),
       );
 
+      // Act - the user getter is called
       const result = service.user;
 
+      // Assert
       expect(result).toEqual(userWithValidPermissions);
     });
   });
