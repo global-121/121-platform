@@ -65,7 +65,7 @@ export class IntersolveVoucherApiService {
     let result = new IntersolveIssueCardResponse();
     try {
       const responseBody = env.MOCK_INTERSOLVE
-        ? await this.intersolveMock.post(payload)
+        ? await this.intersolveMock.post(payload, username, password)
         : await this.soapService.post(
             payload,
             IntersolveVoucherSoapElements.LoyaltyHeader,
@@ -122,7 +122,7 @@ export class IntersolveVoucherApiService {
     );
 
     const responseBody = env.MOCK_INTERSOLVE
-      ? await this.intersolveMock.post(payload)
+      ? await this.intersolveMock.post(payload, username, password)
       : await this.soapService.post(
           payload,
           IntersolveVoucherSoapElements.LoyaltyHeader,

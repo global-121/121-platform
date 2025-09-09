@@ -267,15 +267,14 @@ describe('MessageService', () => {
       });
 
       expect(
-        intersolveVoucherService.storeTransactionResult,
+        intersolveVoucherService.storeTransactionResultStep2,
       ).toHaveBeenCalledTimes(1);
       expect(
-        intersolveVoucherService.storeTransactionResult,
+        intersolveVoucherService.storeTransactionResultStep2,
       ).toHaveBeenCalledWith(
         testMessageJob.customData.paymentId,
         testMessageJob.customData.amount,
         testMessageJob.registrationId,
-        2,
         TransactionStatusEnum.success,
         null,
         testMessageJob.programId,

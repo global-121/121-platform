@@ -237,18 +237,16 @@ export class MessageService {
           errorMessage = 'code' in error ? error : `Unknown error occurred`;
         },
       );
-    const transactionStep = 2;
-    const status = TransactionStatusEnum.success;
 
+    const status = TransactionStatusEnum.success;
     if (
       messageJobDto.customData?.paymentId &&
       messageJobDto.customData.amount != undefined
     ) {
-      await this.intersolveVoucherService.storeTransactionResult(
+      await this.intersolveVoucherService.storeTransactionResultStep2(
         messageJobDto.customData.paymentId,
         messageJobDto.customData.amount,
         messageJobDto.registrationId,
-        transactionStep,
         status,
         errorMessage,
         messageJobDto.programId,

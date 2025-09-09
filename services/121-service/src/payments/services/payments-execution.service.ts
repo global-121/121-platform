@@ -34,10 +34,8 @@ import {
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
-import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -507,6 +505,8 @@ export class PaymentsExecutionService {
   }): Promise<void> {
     const fspsThatUseTransactionJobsCreationService = [
       Fsps.intersolveVisa,
+      Fsps.intersolveVoucherPaper,
+      Fsps.intersolveVoucherWhatsapp,
       Fsps.safaricom,
       Fsps.airtel,
       Fsps.nedbank,
@@ -602,21 +602,6 @@ export class PaymentsExecutionService {
       .addSelect('"fspConfig"."id" as "programFspConfigurationId"')
       .andWhere('registration."programId" = :programId', { programId })
       .leftJoin('registration.programFspConfiguration', 'fspConfig');
-    q.addSelect((subQuery) => {
-      return subQuery
-        .addSelect('value', 'paymentAddress')
-        .from(RegistrationAttributeDataEntity, 'data')
-        .leftJoin('data.programRegistrationAttribute', 'attribute')
-        .andWhere('attribute.name IN (:...names)', {
-          names: [
-            DefaultRegistrationDataAttributeNames.phoneNumber,
-            DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
-          ],
-        })
-        .andWhere('data.registrationId = registration.id')
-        .groupBy('data.id')
-        .limit(1);
-    }, 'paymentAddress');
     return q;
   }
 
@@ -695,7 +680,6 @@ export class PaymentsExecutionService {
         programFspConfigurationId: row.programFspConfigurationId,
         transactionAmount: amount * row.paymentAmountMultiplier,
         referenceId: row.referenceId,
-        paymentAddress: row.paymentAddress,
         fspName: row.fspName,
         bulkSize,
       };

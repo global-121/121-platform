@@ -29,8 +29,7 @@ describe('Do payment to 1 PA', () => {
     referenceId: '63e62864557597e0a-AH',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
-    nameFirst: 'John',
-    nameLast: 'Smith',
+    fullName: 'John Smith',
     phoneNumber: '14155238886',
     programFspConfigurationName: Fsps.intersolveVoucherWhatsapp,
     whatsappPhoneNumber: '14155238886',
@@ -221,6 +220,57 @@ describe('Do payment to 1 PA', () => {
         TransactionStatusEnum.waiting,
       );
       expect(getTransactionsBody.body[0].errorMessage).toBeNull();
+    });
+
+    it('should succesfully pay-out for Intersolve Voucher paper', async () => {
+      // Arrange
+      registrationAhCopy.programFspConfigurationName =
+        Fsps.intersolveVoucherPaper;
+      registrationAhCopy.whatsappPhoneNumber = null;
+      await seedIncludedRegistrations(
+        [registrationAhCopy],
+        programId,
+        accessToken,
+      );
+
+      // Act
+      const doPaymentResponse = await doPayment({
+        programId,
+        amount,
+        referenceIds: paymentReferenceIds,
+        accessToken,
+      });
+      const paymentId = doPaymentResponse.body.id;
+
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds,
+        accessToken,
+        maxWaitTimeMs: 20_000,
+        paymentId,
+      });
+
+      const getTransactionsBody = await getTransactionsIntersolveVoucher({
+        programId,
+        paymentId,
+        referenceId: registrationAhCopy.referenceId,
+        accessToken,
+      });
+
+      // Assert
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(doPaymentResponse.body.totalFilterCount).toBe(
+        paymentReferenceIds.length,
+      );
+      expect(doPaymentResponse.body.nonApplicableCount).toBe(0);
+      expect(doPaymentResponse.body.sumPaymentAmountMultiplier).toBe(
+        registrationAhCopy.paymentAmountMultiplier,
+      );
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
+      expect(getTransactionsBody[0].errorMessage).toBe(null);
     });
   });
 });
