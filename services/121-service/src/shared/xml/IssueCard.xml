@@ -6,11 +6,11 @@
             <SequenceNumber>0</SequenceNumber>
             <OperatorId>0</OperatorId>
             <ClientReference>nothing</ClientReference>
-            <RefPos>1</RefPos>
+            <RefPos>${refPos}</RefPos>
          </TransactionHeader>
         <EAN>0</EAN>
         <Currency>EUR</Currency>
-        <Value>0</Value>
+        <Value>${amount}</Value>
         <Mode>IssueAndActivateCard</Mode>
       </IssueCard>
    </soap:Body>
