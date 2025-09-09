@@ -49,7 +49,7 @@ class ExportData extends BasePage {
       sortFunction,
     });
 
-    await this.dismissToastIfVisible();
+    await this.dismissToastIfVisible('This might take a few minutes');
   }
 }
 
