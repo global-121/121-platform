@@ -214,6 +214,18 @@ export class ExcelReconciliationService {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
+      // If the csv does not contain a column for this FSP to match on, skip it
+      const csvHeaderRow = validatedExcelImport[0];
+      const csvHeaderRowValues = Object.keys(csvHeaderRow);
+      const matchColumnAccordingToCSV = csvHeaderRowValues.find(
+        (v) => v !== 'status',
+      );
+
+      if (matchColumnAccordingToCSV !== matchColumn) {
+        // If the expected match column is not found, skip this fspConfig
+        continue;
+      }
+
       this.validateNoDuplicateValuesInMatchColumn({
         importRecords: validatedExcelImport,
         matchColumn,
