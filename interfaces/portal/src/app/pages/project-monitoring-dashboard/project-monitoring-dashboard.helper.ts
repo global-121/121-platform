@@ -57,6 +57,9 @@ export const getChartOptions = ({
   title: string;
   showLegend: boolean;
 }): ChartOptions => ({
+  animation: {
+    duration: 0,
+  },
   plugins: {
     title: {
       display: true,
@@ -65,10 +68,34 @@ export const getChartOptions = ({
     legend: {
       display: showLegend,
       position: 'top',
-      align: 'start',
+      align: 'center',
       labels: {
         usePointStyle: true,
       },
     },
   },
 });
+
+export const offset = {
+  plugins: [
+    {
+      afterUpdate: function (chart) {
+        var dataset = chart.config.data.datasets[0];
+        var offset = 12;
+
+        // Blue offset left and right
+        var dataset = chart.config.data.datasets[1];
+        for (var i = 0; i < 6; i++) {
+          var model = dataset._meta[0].data[i]._model;
+          if (i + 1 == 6) {
+            model.x -= offset;
+          } else {
+            model.x += offset;
+          }
+          model.controlPointNextX += offset;
+          model.controlPointPreviousX += offset;
+        }
+      },
+    },
+  ],
+};
