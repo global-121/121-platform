@@ -121,6 +121,25 @@ export class ProjectMonitoringDashboardPageComponent {
 
   registrationsByDateLabels = getLabels(this.registrationCountByDate);
 
+  registrationsByDateAxisLabels = computed(() => {
+    if (!this.registrationsByDateLabels()) {
+      return [];
+    }
+
+    return this.registrationsByDateLabels().map((l) => {
+      const date = new Date(l);
+
+      if (date.getDate() !== 1) {
+        return '';
+      }
+
+      return date.toLocaleString('default', {
+        month: 'short',
+        year: 'numeric',
+      });
+    });
+  });
+
   registrationsByDateData = getData(
     this.registrationCountByDate,
     this.registrationsByDateLabels,
@@ -128,6 +147,7 @@ export class ProjectMonitoringDashboardPageComponent {
 
   registrationsByDateChartData = computed<ChartData>(() => ({
     labels: this.registrationsByDateLabels(),
+    xLabels: this.registrationsByDateAxisLabels(),
     datasets: [
       {
         data: this.registrationsByDateData(),
