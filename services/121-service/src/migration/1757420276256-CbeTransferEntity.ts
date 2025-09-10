@@ -23,6 +23,9 @@ export class CbeTransferEntity1757420276256 implements MigrationInterface {
         t."created",
         t."updated"
       FROM "121-service"."transaction" t
+      LEFT JOIN "121-service"."program_fsp_configuration" pfc
+        ON t."programFspConfigurationId" = pfc.id
+      WHERE pfc."fspName" = 'Commercial-bank-ethiopia'
     `);
   }
 
