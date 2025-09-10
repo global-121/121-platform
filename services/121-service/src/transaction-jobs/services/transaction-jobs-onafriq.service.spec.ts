@@ -78,7 +78,7 @@ describe('TransactionJobsOnafriqService', () => {
       expect(onafriqTransactionScopedRepository.save).not.toHaveBeenCalled();
       expect(onafriqService.createTransaction).toHaveBeenCalledWith({
         transferAmount: 100,
-        phoneNumber: '123',
+        phoneNumberPayment: '123',
         firstName: 'John',
         lastName: 'Doe',
         thirdPartyTransId: expect.any(String),
