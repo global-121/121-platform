@@ -8,21 +8,17 @@ export class FileImportService {
     csvFile: Express.Multer.File,
     maxRecords?: number,
   ): Promise<Record<string, string | number | boolean | undefined>[]> {
-    console.log('validateCsv');
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
       csvFile.originalname.length - indexLastPoint,
     );
-    console.log({ extension });
     if (extension !== '.csv') {
       const errors = [`Wrong file extension. It should be .csv`];
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    console.log('validateCsv: 2');
     let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
-    console.log('validateCsv: 3');
 
     // When there are 0 or 1 lines in the file we get an empty array.
     if (importRecords.length === 0) {
@@ -31,19 +27,16 @@ export class FileImportService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log('validateCsv: 4');
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(csvFile.buffer, ';');
     }
 
-    console.log('validateCsv: 5');
     if (maxRecords && importRecords.length > maxRecords) {
       const errors = [
         `Too many records. Maximum number of records is ${maxRecords}. You have ${importRecords.length} records.`,
       ];
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
-    console.log('validateCsv: end', importRecords);
     return importRecords;
   }
 
@@ -51,13 +44,11 @@ export class FileImportService {
     buffer,
     separator,
   ): Promise<Record<string, string | number | boolean | undefined>[]> {
-    console.log('csvBufferToArray 1');
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
     const parsedData: Record<string, string | number | boolean | undefined>[] =
       [];
-    console.log('csvBufferToArray 2');
     const result: Record<string, string | number | boolean | undefined>[] =
       await new Promise((resolve, reject): void => {
         stream
@@ -77,7 +68,6 @@ export class FileImportService {
             resolve(parsedData);
           });
       });
-    console.log('csvBufferToArray 3');
     return result;
   }
 

@@ -96,9 +96,9 @@ export class ExcelReconciliationService {
       },
       relations: ['programFspConfigurations'],
     });
-    console.log(1);
     const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
     for (const fspConfig of program.programFspConfigurations) {
+      console.log({ fspConfig });
       if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
@@ -110,15 +110,16 @@ export class ExcelReconciliationService {
       );
     }
 
-    console.log(2);
+    console.log({ fspConfigsExcel });
+
     const importResults = await this.processReconciliationData({
       file,
       paymentId,
       programId,
       fspConfigs: fspConfigsExcel,
     });
+    console.log({ importResults });
 
-    console.log(3);
     for (const fspConfig of fspConfigsExcel) {
       const transactions = importResults
         .filter((r) => r.programFspConfigurationId === fspConfig.id)
@@ -135,7 +136,6 @@ export class ExcelReconciliationService {
         },
       );
     }
-    console.log(4);
 
     const feedback: ReconciliationFeedbackDto[] = importResults.map(
       (r) => r.feedback,
@@ -191,20 +191,16 @@ export class ExcelReconciliationService {
     programId: number;
     fspConfigs: ProgramFspConfigurationEntity[];
   }): Promise<ReconciliationResult[]> {
-    console.log('processReconciliationData');
     const maxRecords = 10000;
     const validatedExcelImport = await this.fileImportService.validateCsv(
       file,
       maxRecords,
     );
-    console.log(2.1);
 
     // First set up unfilled feedback object based on import rows ..
     const crossFspConfigImportResults: ReconciliationResult[] = [];
-    console.log(2.2);
     for (const row of validatedExcelImport) {
       const resultRow = new ReconciliationResult();
-      console.log({ resultRow });
       resultRow.feedback = new ReconciliationFeedbackDto();
       resultRow.feedback = {
         ...row,
@@ -216,7 +212,6 @@ export class ExcelReconciliationService {
       resultRow.transaction = undefined;
       crossFspConfigImportResults.push(resultRow);
     }
-    console.log(2.3);
 
     // .. then loop over fspConfigs to update rows where matched
     for await (const fspConfig of fspConfigs) {
@@ -253,11 +248,11 @@ export class ExcelReconciliationService {
           item,
         ]),
       );
-      console.log('crossFspConfigImportResults');
-      console.dir(crossFspConfigImportResults, { depth: null });
+      // console.dir(crossFspConfigImportResults, { depth: null });
 
       // .. then loop over each row of the original import to update if a match has been found with this fspConfig
       crossFspConfigImportResults.forEach((row, index) => {
+        // console.log({ row });
         const importResultForFspConfigRow = importResultForFspConfigMap.get(
           row.feedback[matchColumn],
         );
@@ -269,7 +264,6 @@ export class ExcelReconciliationService {
         }
       });
     }
-    console.log(2.4);
     return crossFspConfigImportResults;
   }
 

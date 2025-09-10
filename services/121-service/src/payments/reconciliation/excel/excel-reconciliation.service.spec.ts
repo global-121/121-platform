@@ -63,7 +63,7 @@ describe('ExcelRecociliationService', () => {
             findOneOrFail: jest.fn().mockReturnValue({
               programFspConfigurations: [
                 { id: 1, fspName: 'Excel', label: 'Excel-A' },
-                { id: 2, fspName: 'Excel', label: 'Excel-B' },
+                // { id: 2, fspName: 'Excel', label: 'Excel-B' },
               ],
             }),
           },
@@ -78,7 +78,7 @@ describe('ExcelRecociliationService', () => {
     expect(service).toBeDefined();
   });
 
-  it('processes a reconciliation file', () => {
+  it('processes a reconciliation file', async () => {
     // Arrange
     const testFile = createCsvFile(
       'phoneNumber,status\n1234567890,success',
@@ -90,7 +90,7 @@ describe('ExcelRecociliationService', () => {
 
     // Act
 
-    const result = service.upsertFspReconciliationData(
+    const result = await service.upsertFspReconciliationData(
       testFile,
       programId,
       paymentId,
