@@ -34,7 +34,7 @@ export const paymentColors = {
 
 export const getChartOptions = ({
   title,
-  showLegend = false,
+  showLegend,
 }: {
   title: string;
   showLegend: boolean;
