@@ -20,10 +20,10 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-import-registrations',

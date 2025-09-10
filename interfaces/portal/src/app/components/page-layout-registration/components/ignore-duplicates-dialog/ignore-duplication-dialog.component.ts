@@ -22,12 +22,12 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   generateFieldErrors,
   genericFieldIsRequiredValidationMessage,
 } from '~/utils/form-validation';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 type IgnoreDuplicationFormGroup =
   (typeof IgnoreDuplicationDialogComponent)['prototype']['formGroup'];

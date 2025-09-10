@@ -10,6 +10,7 @@ import {
   ProjectAggregatePerPayment,
   ProjectMetrics,
   ProjectRegistrationCountByDate,
+  ProjectRegistrationsCountByStatus,
   ProjectRegistrationStatusStats,
 } from '~/domains/metric/metric.model';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
@@ -62,12 +63,12 @@ export class MetricApiService extends DomainApiService {
   }) {
     return this.generateQueryOptions<
       ProjectRegistrationStatusStats[],
-      { [status: string]: number }
+      ProjectRegistrationsCountByStatus
     >({
       path: [...BASE_ENDPOINT(projectId), 'registration-status'],
       processResponse: (response) =>
         response.reduce(
-          (statusObject: { [status: string]: number }, currentStatus) => {
+          (statusObject: Record<string, number>, currentStatus) => {
             statusObject[currentStatus.status] = currentStatus.statusCount;
 
             return statusObject;

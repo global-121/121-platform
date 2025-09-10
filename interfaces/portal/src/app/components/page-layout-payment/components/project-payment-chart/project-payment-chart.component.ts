@@ -1,4 +1,10 @@
-import { Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+} from '@angular/core';
 
 import { ChartData } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
@@ -15,6 +21,7 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   imports: [ChartModule],
   templateUrl: './project-payment-chart.component.html',
   styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectPaymentChartComponent {
   readonly paymentDetails = input.required<PaymentAggregate>();
