@@ -1,8 +1,8 @@
 import { TestBed } from '@automock/jest';
 
+import { CbeTransferScopedRepository } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
@@ -14,7 +14,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let service: TransactionJobsCommercialBankEthiopiaService;
   let commercialBankEthiopiaService: CommercialBankEthiopiaService;
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
-  let transactionScopedRepository: TransactionScopedRepository;
+  let cbeTransferScopedRepository: CbeTransferScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
   let programRepository: ProgramRepository;
 
@@ -24,9 +24,8 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let registration: RegistrationEntity;
   let transactionJob: CommercialBankEthiopiaTransactionJobDto;
   let transactionJobRetry: CommercialBankEthiopiaTransactionJobDto;
-  let previousTransaction: {
-    customData: { requestResult: { debitTheirRef: string } };
-  };
+  let existingCbeTransfer: { debitTheirRef: string };
+  let mockTransaction: TransactionEntity;
 
   beforeEach(() => {
     const { unit, unitRef } = TestBed.create(
@@ -37,7 +36,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     programFspConfigurationRepository = unitRef.get(
       ProgramFspConfigurationRepository,
     );
-    transactionScopedRepository = unitRef.get(TransactionScopedRepository);
+    cbeTransferScopedRepository = unitRef.get(CbeTransferScopedRepository);
     transactionJobsHelperService = unitRef.get(TransactionJobsHelperService);
     programRepository = unitRef.get(ProgramRepository);
 
@@ -69,11 +68,11 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       bankAccountNumber: 'acc-1',
       fullName: 'John Doe',
     };
-    previousTransaction = {
-      customData: {
-        requestResult: { debitTheirRef: 'retry-ref-from-previous-transaction' },
-      },
+    existingCbeTransfer = {
+      debitTheirRef: 'retry-ref-from-previous-transaction',
     };
+    mockTransaction = new TransactionEntity();
+    mockTransaction.id = 1;
   });
 
   it('should be defined', () => {
@@ -98,12 +97,14 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .mockResolvedValue({
         status: 'success',
         errorMessage: null,
-        customData: {},
       });
-    jest.spyOn(
-      transactionJobsHelperService,
-      'createTransactionAndUpdateRegistration',
-    );
+
+    jest
+      .spyOn(
+        transactionJobsHelperService,
+        'createTransactionAndUpdateRegistration',
+      )
+      .mockResolvedValue(mockTransaction);
 
     await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
 
@@ -132,8 +133,8 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programRepository, 'findOneOrFail')
       .mockResolvedValue(program as any);
     jest
-      .spyOn(transactionScopedRepository, 'findOneOrFail')
-      .mockResolvedValue(previousTransaction as any);
+      .spyOn(cbeTransferScopedRepository, 'getExistingCbeTransferOrFail')
+      .mockResolvedValue(existingCbeTransfer as any);
     const createCreditTransferSpy = jest
       .spyOn(
         commercialBankEthiopiaService,
@@ -142,14 +143,13 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .mockResolvedValue({
         status: 'success',
         errorMessage: null,
-        customData: {},
       });
     jest
       .spyOn(
         transactionJobsHelperService,
         'createTransactionAndUpdateRegistration',
       )
-      .mockResolvedValue(new TransactionEntity());
+      .mockResolvedValue(mockTransaction);
 
     await service.processCommercialBankEthiopiaTransactionJob(
       transactionJobRetry,

@@ -1,7 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
@@ -12,23 +10,14 @@ import { CreateCreditTransferOrGetTransactionStatusParams } from '@121-service/s
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
 export class CommercialBankEthiopiaService implements FspIntegrationInterface {
-  @InjectRepository(RegistrationEntity)
-  public registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(ProgramEntity)
-  public programRepository: Repository<ProgramEntity>;
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -84,7 +73,6 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
       result.Status.successIndicator._text === 'Success'
     ) {
       status = TransactionStatusEnum.success;
-      mappedParams.status = TransactionStatusEnum.success; //TODO: This code can probably be removed as it serves no purpose
     } else {
       status = TransactionStatusEnum.error;
       errorMessage =
@@ -96,13 +84,7 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
             : result.Status.messages._text));
     }
 
-    // TODO: Refactor: This code can probably be removed as it serves no purpose we already store the request and response in Azure
-    // Only the debitTheirRef seems relevant to keep and that is now in mappedParams
-    const customData = {
-      requestResult: mappedParams,
-      paymentResult: result,
-    };
-    return { status, errorMessage, customData };
+    return { status, errorMessage };
   }
 
   private mapCreditTransferParams({
