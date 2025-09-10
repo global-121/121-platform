@@ -39,5 +39,6 @@ test('[30579] All elements of Monitoring Dashboard tab are displayed', async ({
       peopleIncluded: 5,
       peopleRegistered: 5,
     });
+    await projectMonitoring.assertDashboardChartsPresentByType();
   });
 });
