@@ -41,8 +41,6 @@ export class ProjectMonitoringDashboardPageComponent {
 
   readonly projectId = input.required<string>();
 
-  chartOptions = getChartOptions;
-
   registrationsPerStatus = injectQuery(() => ({
     ...this.metricApiService.getRegistrationCountByStatus({
       projectId: this.projectId,
@@ -69,6 +67,11 @@ export class ProjectMonitoringDashboardPageComponent {
       );
     },
   );
+
+  registrationsPerStatusChartOptions = getChartOptions({
+    title: $localize`Registrations per status`,
+    showLegend: false,
+  });
 
   readonly registrationsPerStatusChartData = computed<ChartData>(() => ({
     labels: this.registrationsPerStatusLabelsAndData().labels,
@@ -104,6 +107,11 @@ export class ProjectMonitoringDashboardPageComponent {
   readonly duplicationChartColors = computed<string[]>(() =>
     this.duplicationLabels().map((l) => duplicationColors[l]),
   );
+
+  duplicationChartOptions = getChartOptions({
+    title: $localize`Registrations per duplicate status`,
+    showLegend: false,
+  });
 
   readonly duplicationChartData = computed<ChartData>(() => ({
     labels: [DuplicateStatus.duplicate, DuplicateStatus.unique],
@@ -150,6 +158,11 @@ export class ProjectMonitoringDashboardPageComponent {
     }),
   );
 
+  registrationsByDateChartOptions = getChartOptions({
+    title: $localize`Registrations by creation date`,
+    showLegend: false,
+  });
+
   readonly registrationsByDateChartData = computed<ChartData>(() => ({
     labels: this.registrationsByDateLabelsAndData().labels,
     xLabels: this.registrationsByDateAxisLabels(),
@@ -179,6 +192,11 @@ export class ProjectMonitoringDashboardPageComponent {
     return { labels, data };
   });
 
+  transfersPerPaymentChartOptions = getChartOptions({
+    title: $localize`Transfers per payment`,
+    showLegend: true,
+  });
+
   readonly transfersPerPaymentChartData = computed<ChartData>(() => ({
     labels: this.aggregatePerPaymentLabelsAndData().labels,
     datasets: [
@@ -205,6 +223,11 @@ export class ProjectMonitoringDashboardPageComponent {
       },
     ],
   }));
+
+  amountSentPerPaymentChartOptions = getChartOptions({
+    title: $localize`Amount sent per payment`,
+    showLegend: true,
+  });
 
   readonly amountSentPerPaymentChartData = computed<ChartData>(() => ({
     labels: this.aggregatePerPaymentLabelsAndData().labels,
@@ -248,6 +271,11 @@ export class ProjectMonitoringDashboardPageComponent {
     const labels = Object.keys(queryData).sort();
     const data = labels.map((k) => queryData[k]);
     return { labels, data };
+  });
+
+  amountSentPerMonthChartOptions = getChartOptions({
+    title: $localize`Amount Sent per month`,
+    showLegend: true,
   });
 
   readonly amountSentPerMonthChartData = computed<ChartData>(() => ({
