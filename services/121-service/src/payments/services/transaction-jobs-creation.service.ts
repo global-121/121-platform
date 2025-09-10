@@ -10,6 +10,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -108,6 +109,14 @@ export class TransactionJobsCreationService {
         });
       case Fsps.commercialBankEthiopia:
         return await this.createAndAddCommercialBankEthiopiaTransactionJobs({
+          referenceIdsAndTransactionAmounts,
+          programId,
+          userId,
+          paymentId,
+          isRetry,
+        });
+      case Fsps.excel:
+        return await this.createAndAddExcelTransactionJobs({
           referenceIdsAndTransactionAmounts,
           programId,
           userId,
@@ -532,6 +541,64 @@ export class TransactionJobsCreationService {
       });
     await this.transactionQueuesService.addOnafriqTransactionJobs(
       onafriqTransactionJobs,
+    );
+  }
+
+  /**
+   * Creates and adds Excel-FSP transaction jobs.
+   *
+   * This method is responsible for creating transaction jobs for Excel-FSP. It fetches necessary PA data and maps it to a FSP specific DTO.
+   * It then adds these jobs to the transaction queue.
+   *
+   * @returns {Promise<void>} A promise that resolves when the transaction jobs have been created and added.
+   *
+   */
+  private async createAndAddExcelTransactionJobs({
+    referenceIdsAndTransactionAmounts: referenceIdsTransactionAmounts,
+    programId,
+    userId,
+    paymentId,
+    isRetry,
+  }: {
+    referenceIdsAndTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    programId: number;
+    userId: number;
+    paymentId: number;
+    isRetry: boolean;
+  }): Promise<void> {
+    const excelAttributes = getFspSettingByNameOrThrow(Fsps.excel).attributes;
+    const excelAttributeNames = excelAttributes.map((q) => q.name);
+    const registrationViews = await this.getRegistrationViews(
+      referenceIdsTransactionAmounts,
+      excelAttributeNames,
+      programId,
+    );
+
+    // Convert the array into a map for increased performace (hashmap lookup)
+    const transactionAmountsMap = new Map(
+      referenceIdsTransactionAmounts.map((item) => [
+        item.referenceId,
+        item.transactionAmount,
+      ]),
+    );
+
+    const excelTransactionJobs: ExcelTransactionJobDto[] =
+      registrationViews.map((registrationView): ExcelTransactionJobDto => {
+        return {
+          programId,
+          paymentId,
+          referenceId: registrationView.referenceId,
+          programFspConfigurationId: registrationView.programFspConfigurationId,
+          transactionAmount: transactionAmountsMap.get(
+            registrationView.referenceId,
+          )!,
+          isRetry,
+          userId,
+          bulkSize: referenceIdsTransactionAmounts.length,
+        };
+      });
+    await this.transactionQueuesService.addExcelTransactionJobs(
+      excelTransactionJobs,
     );
   }
 

@@ -143,6 +143,7 @@ graph LR
   TransactionJobsModule-->ProgramFspConfigurationsModule
   TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
+  TransactionJobsModule-->ExcelModule
   TransactionJobsModule-->RegistrationsModule
   TransactionJobsModule-->ProgramModule
   TransactionJobsModule-->TransactionsModule

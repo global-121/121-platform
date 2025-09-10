@@ -512,6 +512,7 @@ export class PaymentsExecutionService {
       Fsps.nedbank,
       Fsps.onafriq,
       Fsps.commercialBankEthiopia,
+      Fsps.excel,
     ];
 
     await Promise.all(
