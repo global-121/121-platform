@@ -34,6 +34,7 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { DownloadService } from '~/services/download.service';
@@ -49,7 +50,6 @@ import {
   generateFieldErrors,
   genericFieldIsRequiredValidationMessage,
 } from '~/utils/form-validation';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 type ExportCSVFormGroup =
   (typeof UpdateRegistrationsComponent)['prototype']['exportCSVFormGroup'];
