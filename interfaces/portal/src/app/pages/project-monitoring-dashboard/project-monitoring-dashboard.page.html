@@ -4,36 +4,21 @@
     <p-chart
       type="bar"
       [data]="registrationsPerStatusChartData()"
-      [options]="
-        chartOptions({
-          title: 'Registrations per status',
-          showLegend: false,
-        })
-      "
+      [options]="registrationsPerStatusChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
     <p-chart
       type="bar"
       [data]="duplicationChartData()"
-      [options]="
-        chartOptions({
-          title: 'Registrations per duplicate status',
-          showLegend: false,
-        })
-      "
+      [options]="duplicationChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
     <p-chart
       type="line"
       [data]="registrationsByDateChartData()"
-      [options]="
-        chartOptions({
-          title: 'Registrations by creation date',
-          showLegend: false,
-        })
-      "
+      [options]="registrationsByDateChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
@@ -48,36 +33,21 @@
     <p-chart
       type="bar"
       [data]="transfersPerPaymentChartData()"
-      [options]="
-        chartOptions({
-          title: 'Transfers per payment',
-          showLegend: true,
-        })
-      "
+      [options]="transfersPerPaymentChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
     <p-chart
       type="bar"
       [data]="amountSentPerPaymentChartData()"
-      [options]="
-        chartOptions({
-          title: 'Amount sent per payment',
-          showLegend: true,
-        })
-      "
+      [options]="amountSentPerPaymentChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
     <p-chart
       type="bar"
       [data]="amountSentPerMonthChartData()"
-      [options]="
-        chartOptions({
-          title: 'Amount Sent per month',
-          showLegend: true,
-        })
-      "
+      [options]="amountSentPerMonthChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
     />
