@@ -14,6 +14,7 @@ import { TransactionScopedRepository } from '@121-service/src/payments/transacti
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
+import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -35,6 +36,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     MessageTemplateModule,
     RegistrationUtilsModule,
     RegistrationEventsModule,
+    RegistrationsModule,
   ],
   providers: [
     TransactionsService,

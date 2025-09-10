@@ -14,6 +14,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
@@ -37,6 +38,7 @@ export class TransactionJobsHelperService {
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly registrationEventsService: RegistrationEventsService,
+    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -54,6 +56,7 @@ export class TransactionJobsHelperService {
     return registration;
   }
 
+  //TODO: deze voor andere FSPs
   public async createTransactionAndUpdateRegistration({
     registration,
     transactionJob,
@@ -104,6 +107,19 @@ export class TransactionJobsHelperService {
             explicitRegistrationPropertyNames: ['status'],
           },
         );
+
+        //TODO
+        await this.registrationBulkService.postMessages({
+          paginateQuery: {
+            filter: { column: GenericRegistrationAttributes.referenceId },
+            path: '',
+          },
+          programId: registration.programId,
+          messageTemplateKey: MessageContentType.completed,
+          userId: registration.id,
+          message: '',
+          dryRun: false,
+        });
       }
     }
 

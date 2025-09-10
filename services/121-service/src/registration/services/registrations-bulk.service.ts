@@ -27,7 +27,6 @@ import { StatusChangeHelper } from '@121-service/src/registration/helpers/status
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
-import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {
@@ -50,7 +49,6 @@ export class RegistrationsBulkService {
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
 
   public constructor(
-    private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: MessageQueuesService,
@@ -172,14 +170,21 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  public async postMessages(
-    paginateQuery: PaginateQuery,
-    programId: number,
-    message: string,
-    messageTemplateKey: string,
-    dryRun: boolean,
-    userId: number,
-  ): Promise<BulkActionResultDto> {
+  public async postMessages({
+    paginateQuery,
+    programId,
+    message,
+    messageTemplateKey,
+    dryRun,
+    userId,
+  }: {
+    paginateQuery: PaginateQuery;
+    programId: number;
+    message: string;
+    messageTemplateKey: string;
+    dryRun: boolean;
+    userId: number;
+  }): Promise<BulkActionResultDto> {
     if (messageTemplateKey) {
       await this.validateTemplateKey(programId, messageTemplateKey);
     }

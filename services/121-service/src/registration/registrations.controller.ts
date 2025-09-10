@@ -619,14 +619,14 @@ export class RegistrationsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.registrationsBulkService.postMessages(
-      query,
+    const result = await this.registrationsBulkService.postMessages({
+      paginateQuery: query,
       programId,
-      body.message,
-      body.messageTemplateKey,
-      dryRunBoolean,
+      message: body.message,
+      messageTemplateKey: body.messageTemplateKey,
+      dryRun: dryRunBoolean,
       userId,
-    );
+    });
 
     if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
