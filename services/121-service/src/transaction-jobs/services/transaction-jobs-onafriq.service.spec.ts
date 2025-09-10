@@ -53,7 +53,7 @@ describe('TransactionJobsOnafriqService', () => {
         transactionAmount: 100,
         programFspConfigurationId: 1,
         isRetry: false,
-        phoneNumber: '123',
+        phoneNumberPayment: '123',
         firstName: 'John',
         lastName: 'Doe',
       };

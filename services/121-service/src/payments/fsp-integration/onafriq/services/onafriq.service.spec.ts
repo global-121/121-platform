@@ -9,7 +9,7 @@ import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafri
 
 const mockedCreateTransactionParams: CreateTransactionParams = {
   transferAmount: 100,
-  phoneNumber: '254708374149',
+  phoneNumberPayment: '254708374149',
   thirdPartyTransId: 'mocked_third_party_trans_id',
   firstName: 'mocked_first_name',
   lastName: 'mocked_last_name',

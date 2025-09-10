@@ -36,7 +36,7 @@ describe('OnafriqApiService', () => {
 
       const params = {
         transferAmount: 100,
-        phoneNumber: '123456789',
+        phoneNumberPayment: '123456789',
         firstName: 'John',
         lastName: 'Doe',
         thirdPartyTransId: 'abc123',
@@ -77,7 +77,7 @@ describe('OnafriqApiService', () => {
 
       const params = {
         transferAmount: 100,
-        phoneNumber: '123456789',
+        phoneNumberPayment: '123456789',
         firstName: 'John',
         lastName: 'Doe',
         thirdPartyTransId: 'abc123',
