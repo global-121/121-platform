@@ -27,6 +27,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
+    phoneNumberPayment: '24322222222',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
@@ -96,7 +97,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
   it('should give error on the initial request based on magic phonenumber', async () => {
     // Arrange
-    registrationOnafriq.phoneNumber = '24300000000'; // this magic number is configured in mock to return an error on request
+    registrationOnafriq.phoneNumberPayment = '24300000000'; // this magic number is configured in mock to return an error on request
     await importRegistrations(programId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
       programId,
@@ -143,7 +144,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
   it('should give error via callback based on magic phonenumber', async () => {
     // Arrange
-    registrationOnafriq.phoneNumber = '24300000002'; // this magic number is configured in mock to return an error on callback
+    registrationOnafriq.phoneNumberPayment = '24300000002'; // this magic number is configured in mock to return an error on callback
     await importRegistrations(programId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
       programId,
@@ -196,7 +197,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // Arrange
     // NOTE 1: we use a magic phone number here that is configured in the mock to return a duplicate thirdPartyTransId error on request.
     // We use this as we cannot actually easily test a duplicate thirdPartyTransId error in the mock.
-    registrationOnafriq.phoneNumber = '24300000001';
+    registrationOnafriq.phoneNumberPayment = '24300000001';
     await importRegistrations(programId, [registrationOnafriq], accessToken);
     await awaitChangeRegistrationStatus({
       programId,

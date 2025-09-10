@@ -4,5 +4,5 @@ export interface OnafriqTransactionJobDto extends SharedTransactionJobDto {
   readonly transactionAmount: number;
   readonly firstName: string;
   readonly lastName: string;
-  readonly phoneNumber: string;
+  readonly phoneNumberPayment: string;
 }

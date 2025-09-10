@@ -13,7 +13,7 @@ import { CallServiceResult } from '@121-service/src/payments/fsp-integration/ona
 export class OnafriqApiHelperService {
   public createCallServicePayload({
     transferAmount,
-    phoneNumber,
+    phoneNumberPayment,
     firstName,
     lastName,
     thirdPartyTransId,
@@ -53,7 +53,7 @@ export class OnafriqApiHelperService {
             },
           },
           recipient: {
-            msisdn: phoneNumber,
+            msisdn: phoneNumberPayment,
             toCountry: countryCode,
             name: firstName,
             surname: lastName,

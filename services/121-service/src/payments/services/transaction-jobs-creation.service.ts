@@ -534,7 +534,8 @@ export class TransactionJobsCreationService {
           isRetry,
           userId,
           bulkSize: referenceIdsTransactionAmounts.length,
-          phoneNumber: registrationView.phoneNumber!,
+          phoneNumberPayment:
+            registrationView[FspAttributes.phoneNumberPayment],
           firstName: registrationView[FspAttributes.firstName],
           lastName: registrationView[FspAttributes.lastName],
         };

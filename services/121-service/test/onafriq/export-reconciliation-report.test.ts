@@ -20,6 +20,7 @@ describe('Export reconciliation report', () => {
     referenceId: '01dc9451-1273-484c-b2e8-ae21b51a96ab',
     programFspConfigurationName: Fsps.onafriq,
     phoneNumber: '24311111111',
+    phoneNumberPayment: '24322222222',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
     maxPayments: 6,
@@ -60,7 +61,7 @@ describe('Export reconciliation report', () => {
     expect(firstDataRow).toMatchObject({
       Transaction_Type: 'Transfer',
       Transaction_Status: expect.stringMatching(/success|error/),
-      To_MSISDN: '24311111111',
+      To_MSISDN: baseRegistrationOnafriq.phoneNumberPayment,
       Receive_amount: amount,
       Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
       From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,

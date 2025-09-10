@@ -32,7 +32,7 @@ export class OnafriqService implements FspIntegrationInterface {
 
   public async createTransaction({
     transferAmount,
-    phoneNumber,
+    phoneNumberPayment,
     firstName,
     lastName,
     thirdPartyTransId,
@@ -43,7 +43,7 @@ export class OnafriqService implements FspIntegrationInterface {
 
     const mappedResponse = await this.onafriqApiService.callService({
       transferAmount,
-      phoneNumber,
+      phoneNumberPayment,
       firstName,
       lastName,
       thirdPartyTransId,
