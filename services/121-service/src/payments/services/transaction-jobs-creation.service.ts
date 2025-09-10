@@ -10,6 +10,7 @@ import { RegistrationsBulkService } from '@121-service/src/registration/services
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
+import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
 import { IntersolveVoucherTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-voucher-transaction-job.dto';
 import { NedbankTransactionJobDto } from '@121-service/src/transaction-queues/dto/nedbank-transaction-job.dto';
@@ -18,7 +19,6 @@ import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/
 import { TransactionQueuesService } from '@121-service/src/transaction-queues/transaction-queues.service';
 import { formatDateYYMMDD } from '@121-service/src/utils/formatDate';
 import { generateRandomNumerics } from '@121-service/src/utils/random-value.helper';
-import { ExcelTransactionJobDto } from '@121-service/src/transaction-queues/dto/excel-transaction-job.dto';
 
 // TODO: Refactor: This class has a lot of duplicate code it should be refactored to reduce redundancy.
 
