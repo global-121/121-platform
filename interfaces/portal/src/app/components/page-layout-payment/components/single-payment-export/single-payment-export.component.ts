@@ -7,7 +7,10 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
@@ -15,6 +18,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { ButtonMenuComponent } from '~/components/button-menu/button-menu.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
+import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { AuthService } from '~/services/auth.service';
 import { ExportService } from '~/services/export.service';
 import { ToastService } from '~/services/toast.service';
@@ -40,6 +44,7 @@ export class SinglePaymentExportComponent {
   private exportService = inject(ExportService);
   private toastService = inject(ToastService);
   private trackingService = inject(TrackingService);
+  private paymentApiService = inject(PaymentApiService);
 
   readonly exportFspPaymentListDialog = viewChild.required<FormDialogComponent>(
     'exportFspPaymentListDialog',
@@ -49,6 +54,10 @@ export class SinglePaymentExportComponent {
   );
 
   ExportType = ExportType;
+
+  paymentInProgress = injectQuery(
+    this.paymentApiService.getPaymentStatus(this.projectId),
+  );
 
   readonly fspPaymentListLabel = computed(
     () => $localize`:@@export-fsp-payment-list:Export FSP payment list`,
@@ -83,50 +92,74 @@ export class SinglePaymentExportComponent {
     }),
   );
 
-  readonly exportOptions = computed<MenuItem[]>(() => [
-    {
-      label: this.fspPaymentListLabel(),
-      visible:
-        this.canExportPaymentInstructions() && this.hasExportFileIntegration(),
-      command: () => {
-        this.trackingService.trackEvent({
-          category: TrackingCategory.export,
-          action: TrackingAction.selectDropdownOption,
-          name: 'fsp-payment-list',
-        });
-        this.exportFspPaymentListDialog().show({
-          trackingEvent: {
+  readonly exportOptions = computed<MenuItem[]>(() => {
+    const paymentStatus = this.paymentInProgress.data();
+    const paymentInProgress = paymentStatus?.inProgress ?? false;
+
+    return [
+      {
+        label: this.fspPaymentListLabel(),
+        visible:
+          this.canExportPaymentInstructions() &&
+          this.hasExportFileIntegration(),
+        command: () => {
+          this.trackingService.trackEvent({
             category: TrackingCategory.export,
-            action: TrackingAction.clickProceedButton,
+            action: TrackingAction.selectDropdownOption,
             name: 'fsp-payment-list',
-          },
-        });
+          });
+          if (this.handlePaymentInProgress(paymentInProgress)) {
+            return;
+          }
+          this.exportFspPaymentListDialog().show({
+            trackingEvent: {
+              category: TrackingCategory.export,
+              action: TrackingAction.clickProceedButton,
+              name: 'fsp-payment-list',
+            },
+          });
+        },
       },
-    },
-    {
-      label: this.paymentReportLabel(),
-      visible: this.authService.hasAllPermissions({
-        projectId: this.projectId(),
-        requiredPermissions: [
-          PermissionEnum.PaymentREAD,
-          PermissionEnum.PaymentTransactionREAD,
-          PermissionEnum.RegistrationPaymentExport,
-        ],
-      }),
-      command: () => {
-        this.trackingService.trackEvent({
-          category: TrackingCategory.export,
-          action: TrackingAction.selectDropdownOption,
-          name: 'payment-report',
-        });
-        this.paymentReportDialog().show({
-          trackingEvent: {
+      {
+        label: this.paymentReportLabel(),
+        visible: this.authService.hasAllPermissions({
+          projectId: this.projectId(),
+          requiredPermissions: [
+            PermissionEnum.PaymentREAD,
+            PermissionEnum.PaymentTransactionREAD,
+            PermissionEnum.RegistrationPaymentExport,
+          ],
+        }),
+        command: () => {
+          this.trackingService.trackEvent({
             category: TrackingCategory.export,
-            action: TrackingAction.clickProceedButton,
+            action: TrackingAction.selectDropdownOption,
             name: 'payment-report',
-          },
-        });
+          });
+          if (this.handlePaymentInProgress(paymentInProgress)) {
+            return;
+          }
+          this.paymentReportDialog().show({
+            trackingEvent: {
+              category: TrackingCategory.export,
+              action: TrackingAction.clickProceedButton,
+              name: 'payment-report',
+            },
+          });
+        },
       },
-    },
-  ]);
+    ];
+  });
+
+  handlePaymentInProgress(paymentInProgress: boolean): boolean {
+    if (paymentInProgress) {
+      this.toastService.showToast({
+        severity: 'warn',
+        summary: $localize`Export not possible`,
+        detail: $localize`A payment is currently in progress. Please try again later`,
+      });
+      return true;
+    }
+    return false;
+  }
 }
