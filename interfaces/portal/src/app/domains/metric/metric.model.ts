@@ -1,16 +1,31 @@
-import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
-import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
-import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
 import {
   AggregatePerMonth,
   AggregatePerPayment,
 } from '@121-service/src/metrics/dto/payment-aggregate.dto';
+import { ProgramStats } from '@121-service/src/metrics/dto/program-stats.dto';
+import { RegistrationCountByDate } from '@121-service/src/metrics/dto/registration-count-by-date.dto';
+import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrationstatus-stats.dto';
 
 import { Dto } from '~/utils/dto-type';
 
 export type ProjectMetrics = Dto<ProgramStats>;
 export type ProjectRegistrationStatusStats = Dto<RegistrationStatusStats>;
+export type ProjectRegistrationsCountByStatus = Record<string, number>;
 export type ProjectAggregatePerPayment = Dto<AggregatePerPayment>;
+export interface ProjectAggregatePerPaymentValue {
+  success: {
+    count: number;
+    amount: number;
+  };
+  waiting: {
+    count: number;
+    amount: number;
+  };
+  failed: {
+    count: number;
+    amount: number;
+  };
+}
 export type ProjectAggregatePerMonth = Dto<AggregatePerMonth>;
 export type ProjectRegistrationCountByDate = Dto<RegistrationCountByDate>;
 

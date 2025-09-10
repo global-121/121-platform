@@ -26,6 +26,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   REGISTRATION_STATUS_ICON,
@@ -46,7 +47,6 @@ import {
   IActionDataHandler,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-change-status-dialog',

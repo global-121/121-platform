@@ -39,6 +39,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { fspConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
@@ -49,7 +50,6 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import { Dto } from '~/utils/dto-type';
-import { MetricApiService } from '../../../../domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-create-payment',
