@@ -21,13 +21,13 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
-import { MetricApiService } from '~/domains/metric/metric.api.service';
 
 @Component({
   selector: 'app-project-registration-personal-information',
