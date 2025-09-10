@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -27,6 +28,7 @@ import { RegistrationDataScopedRepository } from '@121-service/src/registration/
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
@@ -53,6 +55,7 @@ export class RegistrationsImportService {
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async patchBulk(
@@ -167,6 +170,7 @@ export class RegistrationsImportService {
     );
   }
 
+  //TODO: deze voor new
   public async importValidatedRegistrations(
     validatedImportRecords: ValidatedRegistrationInput[],
     program: ProgramEntity,
@@ -226,6 +230,19 @@ export class RegistrationsImportService {
         await this.registrationUtilsService.save(registration);
       savedRegistrations.push(savedRegistration);
     }
+
+    //TODO: In deze gaat het fout
+    await this.registrationBulkService.postMessages({
+      paginateQuery: {
+        filter: { column: GenericRegistrationAttributes.referenceId },
+        path: '',
+      },
+      programId: program.id,
+      messageTemplateKey: MessageContentType.new,
+      userId,
+      message: '',
+      dryRun: false,
+    });
 
     // Save registration status change events they changed from null to 'new'
     await this.registrationEventsService.createFromRegistrationViews(

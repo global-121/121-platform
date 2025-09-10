@@ -24,15 +24,11 @@ graph LR
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->RegistrationEventsModule
   RegistrationEventsModule-->UserModule
-  IntersolveVoucherModule-->MessageQueuesModule
-  IntersolveVoucherModule-->MessageTemplateModule
-  IntersolveVoucherModule-->RegistrationDataModule
-  IntersolveVoucherModule-->RegistrationUtilsModule
-  IntersolveVoucherModule-->RedisModule
-  IntersolveVoucherModule-->QueuesRegistryModule
-  CronjobModule-->IntersolveVoucherReconciliationModule
-  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
-  IntersolveVoucherReconciliationModule-->ProgramModule
+  TransactionsModule-->RegistrationsModule
+  RegistrationsModule-->UserModule
+  RegistrationsModule-->LookupModule
+  RegistrationsModule-->ActionsModule
+  RegistrationsModule-->ProgramModule
   ProgramModule-->ActionsModule
   ProgramModule-->UserModule
   ProgramModule-->FspsModule
@@ -43,14 +39,6 @@ graph LR
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->IntersolveVisaModule
-  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
-  CronjobModule-->CommercialBankEthiopiaReconciliationModule
-  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
-  RegistrationsModule-->UserModule
-  RegistrationsModule-->LookupModule
-  RegistrationsModule-->ActionsModule
-  RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspsModule
   RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
@@ -59,6 +47,19 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
+  IntersolveVoucherModule-->MessageQueuesModule
+  IntersolveVoucherModule-->MessageTemplateModule
+  IntersolveVoucherModule-->RegistrationDataModule
+  IntersolveVoucherModule-->RegistrationUtilsModule
+  IntersolveVoucherModule-->RedisModule
+  IntersolveVoucherModule-->QueuesRegistryModule
+  CronjobModule-->IntersolveVoucherReconciliationModule
+  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
+  IntersolveVoucherReconciliationModule-->ProgramModule
+  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
+  CronjobModule-->CommercialBankEthiopiaReconciliationModule
+  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionsModule

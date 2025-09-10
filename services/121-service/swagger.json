@@ -283,16 +283,240 @@
     ]
   },
   {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/import",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "sortBy",
+      "search",
+      "searchBy"
+    ]
+  },
+  {
     "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "path": "/api/programs/{programId}/registrations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/registrations",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "dryRun",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "sortBy",
+      "search",
+      "searchBy"
+    ],
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/import/template",
     "params": [
       "programId"
     ]
   },
   {
     "method": "patch",
-    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
-    "params": []
+    "path": "/api/programs/{programId}/registrations/status",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "dryRun",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "sortBy",
+      "search",
+      "searchBy"
+    ],
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/registrations",
+    "params": [
+      "phonenumber"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/message",
+    "params": [
+      "programId",
+      "page",
+      "limit",
+      "dryRun",
+      "filter.referenceId",
+      "filter.status",
+      "filter.id",
+      "filter.created",
+      "filter.phoneNumber",
+      "filter.preferredLanguage",
+      "filter.inclusionScore",
+      "filter.paymentAmountMultiplier",
+      "filter.fspName",
+      "filter.programFspConfigurationName",
+      "filter.programFspConfigurationLabel",
+      "filter.registrationProgramId",
+      "filter.maxPayments",
+      "filter.paymentCount",
+      "filter.paymentCountRemaining",
+      "filter.personAffectedSequence",
+      "filter.lastMessageStatus",
+      "filter.duplicateStatus",
+      "sortBy",
+      "search",
+      "searchBy"
+    ],
+    "returnType": "BulkActionResultDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/duplicates",
+    "params": [
+      "referenceId",
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/uniques",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
+    "params": [
+      "programId",
+      "referenceId",
+      "tokenCode",
+      "pause"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
+    "params": [
+      "referenceId",
+      "programId"
+    ],
+    "returnType": "IntersolveVisaWalletDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
+    "params": [
+      "programId",
+      "referenceId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registrations/{id}",
+    "params": [
+      "programId",
+      "id"
+    ]
   },
   {
     "method": "get",
@@ -477,6 +701,18 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
+    "params": []
+  },
+  {
     "method": "put",
     "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
     "params": [
@@ -490,239 +726,6 @@
       "programId"
     ],
     "returnType": "CommercialBankEthiopiaValidationReportDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/import",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "sortBy",
-      "search",
-      "searchBy"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/registrations",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "dryRun",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "search",
-      "searchBy"
-    ],
-    "returnType": "BulkActionResultDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/import/template",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/status",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "dryRun",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "search",
-      "searchBy"
-    ],
-    "returnType": "BulkActionResultDto"
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/registrations",
-    "params": [
-      "phonenumber"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/message",
-    "params": [
-      "programId",
-      "page",
-      "limit",
-      "dryRun",
-      "filter.referenceId",
-      "filter.status",
-      "filter.id",
-      "filter.created",
-      "filter.phoneNumber",
-      "filter.preferredLanguage",
-      "filter.inclusionScore",
-      "filter.paymentAmountMultiplier",
-      "filter.fspName",
-      "filter.programFspConfigurationName",
-      "filter.programFspConfigurationLabel",
-      "filter.registrationProgramId",
-      "filter.maxPayments",
-      "filter.paymentCount",
-      "filter.paymentCountRemaining",
-      "filter.personAffectedSequence",
-      "filter.lastMessageStatus",
-      "filter.duplicateStatus",
-      "search",
-      "searchBy"
-    ],
-    "returnType": "BulkActionResultDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/duplicates",
-    "params": [
-      "referenceId",
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/uniques",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet/cards/{tokenCode}",
-    "params": [
-      "programId",
-      "referenceId",
-      "tokenCode",
-      "pause"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/wallet",
-    "params": [
-      "referenceId",
-      "programId"
-    ],
-    "returnType": "IntersolveVisaWalletDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registrations/{referenceId}/fsps/intersolve-visa/contact-information",
-    "params": [
-      "programId",
-      "referenceId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/registrations/{id}",
-    "params": [
-      "programId",
-      "id"
-    ]
   },
   {
     "method": "post",
@@ -821,6 +824,7 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
+      "sortBy",
       "search",
       "searchBy",
       "format",
@@ -900,6 +904,7 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
+      "sortBy",
       "search",
       "searchBy"
     ],
