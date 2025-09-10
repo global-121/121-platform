@@ -92,6 +92,22 @@ class BasePage {
     await this.dismissToast();
   }
 
+  async dismissToastIfVisible(message?: string) {
+    let toastLocator = this.toast;
+    if (message) {
+      toastLocator = this.toast.filter({ hasText: message });
+    }
+    // Handle multiple toasts, only dismiss the first visible one matching the filter
+    const visibleToasts = await toastLocator.all();
+    for (const toast of visibleToasts) {
+      if (await toast.isVisible()) {
+        await toast.getByRole('button').click();
+        await expect(toast).toBeHidden();
+        break;
+      }
+    }
+  }
+
   async dismissToast() {
     await this.toast.getByRole('button').click();
     await expect(this.toast).toBeHidden();

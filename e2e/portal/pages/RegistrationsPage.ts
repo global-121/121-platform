@@ -137,14 +137,30 @@ class RegistrationsPage extends BasePage {
     return fullNameText;
   }
 
+  async getColumnIndexByHeaderText(headerText: string): Promise<number> {
+    await expect(
+      this.table.tableHeader.locator('th', { hasText: headerText }),
+    ).toBeVisible({ timeout: 1000 });
+
+    const headerCells = await this.table.tableHeader
+      .locator('th')
+      .allTextContents();
+    const index = headerCells.findIndex(
+      (text) => text.trim() === headerText.trim(),
+    );
+    return index;
+  }
+
   async validateStatusOfFirstRegistration({ status }: { status: string }) {
     await this.table.waitForLoaded();
-    const registrationStatus = await this.table.getCell(0, 3);
-    const statusText = (await registrationStatus.textContent())?.trim();
-    if (!statusText) {
-      throw new Error('Could not find status in the table');
-    }
-    expect(statusText).toBe(status);
+    const columnIndex = await this.getColumnIndexByHeaderText(
+      'Registration Status',
+    );
+    const registrationStatus = this.table.tableRows
+      .nth(0)
+      .locator('td')
+      .nth(columnIndex);
+    await expect(registrationStatus).toHaveText(status);
   }
 
   async goToRegistrationByName({
@@ -345,8 +361,10 @@ class RegistrationsPage extends BasePage {
   }
 
   async assertDuplicateColumnValues(expectedValues: string[]) {
-    const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
-    expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+    await expect(async () => {
+      const duplicateColumnValues = await this.table.getTextArrayFromColumn(5);
+      expectedSortedArraysToEqual(duplicateColumnValues, expectedValues);
+    }).toPass({ timeout: 500 });
   }
 
   async waitForImportProcessToComplete() {

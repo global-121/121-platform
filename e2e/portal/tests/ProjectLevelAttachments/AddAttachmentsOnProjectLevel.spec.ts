@@ -80,7 +80,9 @@ test.describe('Attachments on Project Level', () => {
     await test.step('Validate uploaded files', async () => {
       await page.waitForTimeout(200); // Wait for last file to be present in the table
 
-      await tableComponent.validateTableRowCount(4);
+      await tableComponent.validateWaitForTableRowCount({
+        expectedRowCount: 4,
+      });
       const fileNamesArray = await tableComponent.getTextArrayFromColumn(2); // Column 2 is the 'Name' column
       const fileTypesArray = await tableComponent.getTextArrayFromColumn(1); // Column 1 is the 'Type' column
       for (let i = 0; i < testFilePaths.length; i++) {
