@@ -34,7 +34,7 @@ export class MonitoringMenuComponent {
     },
     {
       label: $localize`:@@page-title-project-monitoring-dashboard:Dashboard`,
-      routerLink: `/${AppRoutes.project}/${this.projectId().toString()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringDashboard}`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectMonitoring}/${AppRoutes.projectMonitoringDashboard}`,
       icon: 'pi pi-chart-line',
     },
     {
