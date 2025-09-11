@@ -24,7 +24,6 @@ import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-
 import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
-import { CreateRegistrationDto } from '@121-service/src/registration/dto/create-registration.dto';
 import { DuplicateReponseDto } from '@121-service/src/registration/dto/duplicate-response.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { ReferenceProgramIdScopeDto } from '@121-service/src/registration/dto/registrationProgramIdScope.dto';
@@ -130,62 +129,6 @@ export class RegistrationsService {
     return paginateResult.data[0];
   }
 
-  private async findUserOrThrow(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
-      where: { id: Equal(userId) },
-    });
-    if (!user) {
-      const errors = 'This user is not known.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return user;
-  }
-
-  public async create(
-    postData: CreateRegistrationDto,
-    programId: number,
-    userId: number,
-  ) {
-    const user = await this.findUserOrThrow(userId);
-    const registration = new RegistrationEntity();
-    registration.referenceId = postData.referenceId;
-    registration.user = user;
-    registration.program = await this.programRepository.findOneByOrFail({
-      id: programId,
-    });
-    await this.registrationUtilsService.save(registration);
-    return this.setRegistrationStatus(
-      postData.referenceId,
-      RegistrationStatusEnum.new,
-    );
-  }
-
-  private async setRegistrationStatus(
-    referenceId: string,
-    status: RegistrationStatusEnum,
-  ) {
-    const registrationBeforeUpdate =
-      await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: Equal(referenceId) },
-        select: ['id', 'status'],
-      });
-    await this.registrationScopedRepository.updateUnscoped(
-      { referenceId },
-      { registrationStatus: status },
-    );
-    const registrationAfterUpdate =
-      await this.registrationViewScopedRepository.findOneOrFail({
-        where: { referenceId: Equal(referenceId) },
-        select: ['id', 'status'],
-      });
-    await this.registrationEventsService.createFromRegistrationViews(
-      registrationBeforeUpdate,
-      registrationAfterUpdate,
-      { explicitRegistrationPropertyNames: ['status'] },
-    );
-    return registrationAfterUpdate;
-  }
-
   public async getRegistrationOrThrow({
     referenceId,
     relations = [],
@@ -214,7 +157,7 @@ export class RegistrationsService {
     return registration;
   }
 
-  public async cleanCustomDataIfPhoneNr(
+  private async cleanCustomDataIfPhoneNr(
     customDataKey: string,
     customDataValue: string | number | string[] | boolean | null,
     programId: number,
@@ -329,26 +272,6 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
-  }
-
-  public transformRegistrationByNamingConvention(
-    nameColumns: string[],
-    registrationObject: MappedPaginatedRegistrationDto, // Allow dynamic key access
-  ): MappedPaginatedRegistrationDto {
-    const fullnameConcat: string[] = [];
-
-    // Loop through nameColumns and access properties dynamically
-    for (const nameColumn of nameColumns) {
-      if (registrationObject[nameColumn]) {
-        fullnameConcat.push(registrationObject[nameColumn]);
-        delete registrationObject[nameColumn]; // Remove original properties
-      }
-    }
-
-    // Concatenate the full name and assign to the 'name' property
-    registrationObject.name = fullnameConcat.join(' ');
-
-    return registrationObject; // Return the modified object
   }
 
   public async validateInputAndUpdateRegistration({
@@ -760,7 +683,7 @@ export class RegistrationsService {
     return filteredRegistrations;
   }
 
-  public async getChosenFspConfigurationId({
+  private async getChosenFspConfigurationId({
     registration,
     newFspConfigurationName,
   }: {
