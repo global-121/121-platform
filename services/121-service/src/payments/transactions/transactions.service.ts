@@ -279,8 +279,6 @@ export class TransactionsService {
     await this.registrationScopedRepository.updateUnscoped(registration.id, {
       paymentCount: currentPaymentCount,
     });
-
-    //return registration;
   }
 
   public async storeReconciliationTransactionsBulk(
