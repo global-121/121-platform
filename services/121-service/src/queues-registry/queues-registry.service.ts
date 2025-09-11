@@ -37,6 +37,9 @@ export class QueuesRegistryService implements OnModuleInit {
     @InjectQueue(QueueNames.transactionJobsOnafriq)
     public transactionJobOnafriqQueue: Queue,
 
+    @InjectQueue(QueueNames.transactionJobsExcel)
+    public transactionJobExcelQueue: Queue,
+
     @InjectQueue(QueueNames.paymentCallbackSafaricomTransfer)
     public safaricomTransferCallbackQueue: Queue,
 
@@ -81,6 +84,7 @@ export class QueuesRegistryService implements OnModuleInit {
       [QueueNames.transactionJobsNedbank]: this.transactionJobNedbankQueue,
       [QueueNames.transactionJobsAirtel]: this.transactionJobAirtelQueue,
       [QueueNames.transactionJobsOnafriq]: this.transactionJobOnafriqQueue,
+      [QueueNames.transactionJobsExcel]: this.transactionJobExcelQueue,
       [QueueNames.paymentCallbackSafaricomTransfer]:
         this.safaricomTransferCallbackQueue,
       [QueueNames.paymentCallbackSafaricomTimeout]:

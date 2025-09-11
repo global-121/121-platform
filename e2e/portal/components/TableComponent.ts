@@ -92,9 +92,15 @@ class TableComponent {
     );
   }
 
-  async validateTableRowCount(expectedRowCount: number) {
-    const rowCount = await this.tableRows.count();
-    expect(rowCount).toEqual(expectedRowCount);
+  async validateWaitForTableRowCount({
+    expectedRowCount,
+  }: {
+    expectedRowCount: number;
+  }): Promise<void> {
+    await expect(async () => {
+      const rowCount = await this.tableRows.count();
+      expect(rowCount).toBe(expectedRowCount);
+    }).toPass({ timeout: 2000 });
   }
 
   async globalSearch(searchText: string) {
@@ -118,13 +124,32 @@ class TableComponent {
   }
 
   async getSortingTypeOfColumn(columnName: string) {
-    const sortColumnHeader = await this.table
-      .getByRole('columnheader', {
-        name: columnName,
-      })
-      .getAttribute('aria-sort');
+    const header = this.table.getByRole('columnheader', { name: columnName });
+    await header.waitFor({ state: 'attached' });
+    return await header.getAttribute('aria-sort');
+  }
 
-    return sortColumnHeader;
+  async waitForSortingIconOnTableHeader({
+    columnName,
+    type,
+  }: {
+    columnName: string;
+    type?: 'ascending' | 'descending';
+  }) {
+    const header = this.table.getByRole('columnheader', { name: columnName });
+    await header.waitFor({ state: 'attached' });
+
+    if (type === 'ascending' || type === 'descending') {
+      await expect(header).toHaveAttribute('aria-sort', type, {
+        timeout: 500,
+      });
+    } else {
+      await expect(header).toHaveAttribute(
+        'aria-sort',
+        /ascending|descending/,
+        { timeout: 500 },
+      );
+    }
   }
 
   async sortAndValidateColumnByName(columnName: string) {
@@ -133,45 +158,41 @@ class TableComponent {
       .locator('p-sorticon');
 
     await columnToSort.click();
-    let sortingType = await this.getSortingTypeOfColumn(columnName);
-    expect(sortingType).toContain('ascending');
+    await this.waitForSortingIconOnTableHeader({
+      columnName,
+      type: 'ascending',
+    });
 
     await columnToSort.click();
-    sortingType = await this.getSortingTypeOfColumn(columnName);
-    expect(sortingType).toContain('descending');
+    await this.waitForSortingIconOnTableHeader({
+      columnName,
+      type: 'descending',
+    });
   }
 
   async sortColumnByName(columnName: string, sort: 'ascending' | 'descending') {
+    // Find out what the current state is
+    const sortingType = await this.getSortingTypeOfColumn(columnName);
     const columnToSort = this.table
       .getByRole('columnheader', { name: columnName })
       .locator('p-sorticon');
 
-    let sortingType = await this.getSortingTypeOfColumn(columnName);
-
-    if (sortingType === 'none') {
-      // Click once to go to ascending
-      await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn(columnName);
-
-      if (sort === 'ascending') {
-        expect(sortingType).toContain('ascending');
-        return;
-      }
-    }
-
     // If the current state is not the desired state, click to change it
     if (sortingType !== sort) {
       await columnToSort.click();
-      sortingType = await this.getSortingTypeOfColumn(columnName);
+      await this.waitForSortingIconOnTableHeader({
+        columnName,
+      });
+      const sortingType = await this.getSortingTypeOfColumn(columnName);
 
       // If still not in the desired state, click again
       if (sortingType !== sort) {
         await columnToSort.click();
-        sortingType = await this.getSortingTypeOfColumn(columnName);
+        await this.waitForSortingIconOnTableHeader({
+          columnName,
+        });
       }
     }
-
-    expect(sortingType).toContain(sort);
   }
 
   async filterColumnByText({
@@ -289,8 +310,9 @@ class TableComponent {
   }
 
   async validateFirstLogActivity(activity: string) {
-    const firstRowText = await this.getTextArrayFromColumn(2);
-    expect(firstRowText[0]).toContain(activity);
+    // Wait until the first cell in column 2 contains the expected activity
+    const firstCell = this.tableRows.nth(0).locator('td').nth(1); // column index is zero-based
+    await expect(firstCell).toContainText(activity);
   }
 
   async validateSelectionCount(expectedCount: number) {
@@ -319,51 +341,49 @@ class TableComponent {
   async changeRegistrationStatusByNameWithOptions({
     registrationName,
     status,
-    sendMessage,
+    sendMessage = false,
     sendCustomMessage = false,
     sendTemplatedMessage = false,
     customMessage,
   }: {
     registrationName: string;
     status: string;
-    sendMessage: boolean;
+    sendMessage?: boolean;
     sendCustomMessage?: boolean;
     sendTemplatedMessage?: boolean;
     customMessage?: string;
   }) {
     const statusButton = this.page.getByRole('button', { name: status });
     const reasonField = this.page.getByPlaceholder('Enter reason');
-    const deleteLabel = this.page.getByLabel(
-      'I understand this action can not be undone',
-    );
 
     await this.selectRowByTextContent(registrationName);
     await statusButton.click();
 
     // Check for delete confirmation
-    if (await deleteLabel.isVisible()) {
+    if (status === 'Delete') {
+      const deleteLabel = this.page.getByLabel(
+        'I understand this action can not be undone',
+      );
+      await expect(deleteLabel).toBeVisible({ timeout: 500 });
       await deleteLabel.click();
+    }
+
+    const statusesThatRequireReason = ['Pause', 'Decline', 'Delete'];
+    if (statusesThatRequireReason.includes(status)) {
+      await expect(reasonField).toBeVisible({ timeout: 500 });
+      await reasonField.fill('Test reason');
     }
 
     if (sendMessage === true) {
       if (sendTemplatedMessage === true) {
         await this.sendMessageSwitch.check();
-        await this.approveButton.click();
       } else if (sendCustomMessage === true) {
         // Only fill reason field if it's visible
-        if (await reasonField.isVisible()) {
-          await reasonField.fill('Test reason');
-        }
         await this.fillCustomMessage(customMessage ?? '');
         await this.continueToPreviewButton.click();
-        await this.approveButton.click();
       }
-    } else {
-      if (await reasonField.isVisible()) {
-        await reasonField.fill('Test reason');
-      }
-      await this.approveButton.click();
     }
+    await this.approveButton.click();
   }
 
   async validateAllRecordsCount(expectedCount: number) {
@@ -418,6 +438,17 @@ class TableComponent {
       (elements) => elements.filter((el) => el.checked).length,
     );
     return count;
+  }
+
+  async validateAndWaitForSelectedRowsCount({
+    expectedCount,
+  }: {
+    expectedCount: number;
+  }): Promise<void> {
+    await expect(async () => {
+      const count = await this.getSelectedRowsCount();
+      expect(count).toBe(expectedCount);
+    }).toPass({ timeout: 2000 });
   }
 
   async clearColumnFilter(columnName: string): Promise<void> {

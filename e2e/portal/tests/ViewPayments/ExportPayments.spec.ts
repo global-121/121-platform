@@ -116,15 +116,22 @@ test('[36125] View available actions for admin', async () => {
 
     await paymentsPage.exportButton.click();
 
-    const exportOptions = await page.getByRole('menuitem').all();
-    const exportOptionsText = await Promise.all(
-      exportOptions.map((option) => option.textContent()),
-    );
-    expect(exportOptionsText).toEqual([
+    const expectedMenuItems = [
       'Payments',
       'Unused vouchers',
       'Debit card usage',
-    ]);
+    ];
+
+    // This part is to wait for the menu items to be visible before asserting
+    const menuItems = page.getByRole('menuitem');
+    await expect(menuItems).toHaveText(expectedMenuItems);
+
+    // This part is to assert the actual text content of the menu items, also ensures there are no extra items
+    const exportOptions = await menuItems.all();
+    const exportOptionsText = await Promise.all(
+      exportOptions.map((option) => option.textContent()),
+    );
+    expect(exportOptionsText).toEqual(expectedMenuItems);
   });
 });
 

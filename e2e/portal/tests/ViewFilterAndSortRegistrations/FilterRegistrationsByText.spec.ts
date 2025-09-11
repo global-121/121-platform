@@ -60,7 +60,7 @@ test('[34945] Filter registrations by text', async ({ page }) => {
     });
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
-    await tableComponent.validateTableRowCount(1);
+    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 1 });
     await tableComponent.clearAllFilters();
   });
 
@@ -72,7 +72,7 @@ test('[34945] Filter registrations by text', async ({ page }) => {
     });
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Jack Strong');
-    await tableComponent.validateTableRowCount(1);
+    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 1 });
     await tableComponent.clearAllFilters();
   });
 
@@ -84,6 +84,6 @@ test('[34945] Filter registrations by text', async ({ page }) => {
     });
     registrationName = await registrations.getFirstRegistrationNameFromTable();
     expect(registrationName).toBe('Gemma Houtenbos');
-    await tableComponent.validateTableRowCount(3);
+    await tableComponent.validateWaitForTableRowCount({ expectedRowCount: 3 });
   });
 });

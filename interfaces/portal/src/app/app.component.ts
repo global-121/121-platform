@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 
 import { AppRoutes } from '~/app.routes';
 import { AuthService } from '~/services/auth.service';
+import { LogService } from '~/services/log.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import { environment } from '~environment';
@@ -39,7 +40,11 @@ export class AppComponent implements OnInit, OnDestroy {
   readonly toastPosition = ('top-' +
     this.rtlHelper.createPosition('end')()) as ToastPositionType;
 
+  private readonly logService = inject(LogService);
+
   ngOnInit() {
+    this.logService.setupApplicationInsights();
+
     this.authSubscriptions = this.authService.initializeSubscriptions();
 
     if (!environment.production || isDevMode()) {

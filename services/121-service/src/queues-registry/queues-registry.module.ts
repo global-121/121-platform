@@ -92,6 +92,18 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
         duration: 1000, // per duration in milliseconds
       },
     }),
+    BullModule.registerQueue({
+      name: QueueNames.transactionJobsExcel,
+      processors: [
+        {
+          path: 'src/transaction-jobs/processors/transaction-jobs-excel.processor.ts',
+        },
+      ],
+      limiter: {
+        max: 100, // Max number of jobs processed - processor just stores waiting transactions internally, so can be high
+        duration: 1000, // per duration in milliseconds
+      },
+    }),
 
     // Safaricom Callback Queues
     BullModule.registerQueue({
