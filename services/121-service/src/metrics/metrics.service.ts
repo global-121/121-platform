@@ -431,13 +431,13 @@ export class MetricsService {
       .groupBy(`to_char("created", 'yyyy-mm-dd')`)
       .orderBy(`to_char("created", 'yyyy-mm-dd')`);
     console.log('query: ', query.getSql());
-    const res = (await query.getRawMany()).reduce(
-      (dates: Record<string, number>, r) => {
+    const res = (await query.getRawMany())
+      .reverse()
+      .slice(0, 100)
+      .reduce((dates: Record<string, number>, r) => {
         dates[r.created] = Number(r.count);
         return dates;
-      },
-      {},
-    );
+      }, {});
     return res;
   }
 
@@ -446,7 +446,9 @@ export class MetricsService {
   ): Promise<AggregatePerPayment> {
     const res: AggregatePerPayment = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = (
+      await this.paymentsReportingService.getPayments(programId)
+    ).slice(-5);
 
     for (const payment of payments) {
       const aggregate =
@@ -465,7 +467,9 @@ export class MetricsService {
   ): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = (
+      await this.paymentsReportingService.getPayments(programId)
+    ).slice(-5);
 
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)

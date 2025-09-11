@@ -7,7 +7,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import tailwindConfig from '~/../../tailwind.config';
 
 const colors = tailwindConfig.theme.colors;
-const shade = 100;
+const shade = 500;
 
 export const registrationsPerStatusColors = {
   [RegistrationStatusEnum.included]: colors.green[shade],
@@ -35,9 +35,11 @@ export const paymentColors = {
 export const getChartOptions = ({
   title,
   showLegend,
+  showDatalabels = true,
 }: {
   title: string;
   showLegend: boolean;
+  showDatalabels?: boolean;
 }): ChartOptions => ({
   animation: {
     duration: 0,
@@ -46,6 +48,17 @@ export const getChartOptions = ({
     title: {
       display: true,
       text: title,
+      padding: {
+        bottom: 20,
+      },
+    },
+    tooltip: {
+      backgroundColor: colors.black.DEFAULT,
+    },
+    datalabels: {
+      display: showDatalabels,
+      align: 'end',
+      anchor: 'end',
     },
     legend: {
       display: showLegend,
