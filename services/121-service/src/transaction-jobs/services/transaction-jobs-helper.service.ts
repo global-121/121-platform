@@ -55,7 +55,6 @@ export class TransactionJobsHelperService {
     return registration;
   }
 
-  //TODO: deze voor andere FSPs
   public async createTransactionAndUpdateRegistration({
     registration,
     transactionJob,
