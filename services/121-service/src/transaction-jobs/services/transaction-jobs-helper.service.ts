@@ -40,7 +40,6 @@ export class TransactionJobsHelperService {
     private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
-
   public async getRegistrationOrThrow(
     referenceId: string,
   ): Promise<RegistrationEntity> {
@@ -67,7 +66,6 @@ export class TransactionJobsHelperService {
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
       transactionJob;
-
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
@@ -108,15 +106,14 @@ export class TransactionJobsHelperService {
           },
         );
 
-        //TODO
         await this.registrationBulkService.postMessages({
           paginateQuery: {
-            filter: { column: GenericRegistrationAttributes.referenceId },
+            filter: { referenceId: `$eq:${registration.referenceId}` },
             path: '',
           },
-          programId: registration.programId,
+          programId,
           messageTemplateKey: MessageContentType.completed,
-          userId: registration.id,
+          userId,
           message: '',
           dryRun: false,
         });
