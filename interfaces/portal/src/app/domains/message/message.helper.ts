@@ -12,6 +12,8 @@ export const MESSAGE_CONTENT_TYPE_LABELS: Record<MessageContentType, string> = {
   [MessageContentType.paymentTemplated]: $localize`:@@message-content-type-payment-templated:Payment notification`,
   [MessageContentType.paymentVoucher]: $localize`:@@message-content-type-payment-voucher:Payment voucher`,
   [MessageContentType.paused]: $localize`:@@message-content-type-paused:Paused`,
+  [MessageContentType.completed]: $localize`:@@message-content-type-completed:Completed`,
+  [MessageContentType.new]: $localize`:@@message-content-type-new:New`,
 };
 
 export enum MessageStatus {
