@@ -170,7 +170,6 @@ export class RegistrationsImportService {
     );
   }
 
-  //TODO: deze voor new
   public async importValidatedRegistrations(
     validatedImportRecords: ValidatedRegistrationInput[],
     program: ProgramEntity,
@@ -231,10 +230,12 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    //TODO:
+    const referenceIds = savedRegistrations
+      .map((registration) => registration.referenceId)
+      .join(',');
     await this.registrationBulkService.postMessages({
       paginateQuery: {
-        filter: { column: GenericRegistrationAttributes.referenceId },
+        filter: { referenceId: `$in:${referenceIds}` },
         path: '',
       },
       programId: program.id,
