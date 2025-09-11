@@ -25,7 +25,6 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 @Injectable()
@@ -47,7 +46,6 @@ export class TransactionsService {
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     private readonly registrationEventsService: RegistrationEventsService,
-    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async getLastTransactions({
@@ -74,7 +72,6 @@ export class TransactionsService {
       .getRawMany();
   }
 
-  //TODO: voor Intersolve voucher
   public async storeTransactionUpdateStatus(
     transactionResponse: PaTransactionResultDto,
     relationDetails: TransactionRelationDetailsDto,
@@ -122,22 +119,6 @@ export class TransactionsService {
       registration,
       program.enableMaxPayments,
     );
-
-    //TODO
-    if (registration.registrationStatus === RegistrationStatusEnum.completed) {
-      await this.registrationBulkService.postMessages({
-        paginateQuery: {
-          filter: { column: GenericRegistrationAttributes.referenceId },
-          path: '',
-        },
-        programId: registration.programId,
-        messageTemplateKey: MessageContentType.completed,
-        userId: registration.id,
-        message: '',
-        dryRun: false,
-      });
-    }
-
     await this.updateLatestTransaction(transaction);
     if (
       transactionResponse.status === TransactionStatusEnum.success &&
@@ -231,7 +212,6 @@ export class TransactionsService {
     }
   }
 
-  //TODO: Deze momentel voor Intersolve
   private async updatePaymentCountRegistration(
     registration: RegistrationEntity,
     enableMaxPayments: boolean,
