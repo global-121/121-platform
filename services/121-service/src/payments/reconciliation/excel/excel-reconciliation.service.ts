@@ -306,7 +306,7 @@ export class ExcelReconciliationService {
       });
     // log query
     const chunkSize = 400000;
-    return await this.registrationsPaginationService.getRegistrationsChunked(
+    return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
       programId,
       {
         select: [matchColumn, 'referenceId', 'id'],

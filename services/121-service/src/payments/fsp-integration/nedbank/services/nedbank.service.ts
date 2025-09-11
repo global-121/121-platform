@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { NedbankApiErrorCode } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-api-error-code.enum';
 import { NedbankErrorCode } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-error-code.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -10,20 +8,8 @@ import { NedbankApiError } from '@121-service/src/payments/fsp-integration/nedba
 import { NedbankApiService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api.service';
 
 @Injectable()
-export class NedbankService implements FspIntegrationInterface {
+export class NedbankService {
   public constructor(private readonly nedbankApiService: NedbankApiService) {}
-
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async createVoucher({
     transferAmount,

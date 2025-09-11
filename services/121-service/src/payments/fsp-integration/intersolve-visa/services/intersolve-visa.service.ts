@@ -2,8 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveVisaWalletDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/internal/intersolve-visa-wallet.dto';
 import { IntersolveVisaChildWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-child-wallet.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
@@ -28,26 +26,13 @@ import { IntersolveVisaParentWalletScopedRepository } from '@121-service/src/pay
 import { IntersolveVisaApiService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.api.service';
 
 @Injectable()
-export class IntersolveVisaService implements FspIntegrationInterface {
+export class IntersolveVisaService {
   public constructor(
     private readonly intersolveVisaApiService: IntersolveVisaApiService,
     private readonly intersolveVisaCustomerScopedRepository: IntersolveVisaCustomerScopedRepository,
     private readonly intersolveVisaParentWalletScopedRepository: IntersolveVisaParentWalletScopedRepository,
     private readonly intersolveVisaChildWalletScopedRepository: IntersolveVisaChildWalletScopedRepository,
   ) {}
-
-  // TODO: Remove this function when refactored out of all FSP integrations.
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paPaymentArray: PaPaymentDataDto[],
-    _programId: number,
-    _payment: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   /**
    * This function handles the process of transferring money to a person using intersolve visa.

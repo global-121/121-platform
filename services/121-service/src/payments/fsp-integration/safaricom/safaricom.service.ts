@@ -1,29 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { DoTransferParams } from '@121-service/src/payments/fsp-integration/safaricom/interfaces/do-transfer-params.interface';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomApiService } from '@121-service/src/payments/fsp-integration/safaricom/services/safaricom.api.service';
 
 @Injectable()
-export class SafaricomService implements FspIntegrationInterface {
+export class SafaricomService {
   public constructor(
     private readonly safaricomApiService: SafaricomApiService,
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
   ) {}
-
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async doTransfer({
     transferAmount,

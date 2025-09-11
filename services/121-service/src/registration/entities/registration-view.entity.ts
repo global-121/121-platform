@@ -146,7 +146,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public fspName?: Fsps;
+  public fspName: Fsps;
 
   @ViewColumn()
   public programFspConfigurationId: number;

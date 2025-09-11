@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { OnafriqApiWebhookSubscribeResponseBody } from '@121-service/src/payments/fsp-integration/onafriq/dtos/onafriq-api/onafriq-api-webhook-subscribe-response-body.dto';
 import { OnafriqApiResponseStatusType } from '@121-service/src/payments/fsp-integration/onafriq/enum/onafriq-api-response-status-type.enum';
 import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/errors/onafriq.error';
@@ -9,20 +7,8 @@ import { CreateTransactionParams } from '@121-service/src/payments/fsp-integrati
 import { OnafriqApiService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.api.service';
 
 @Injectable()
-export class OnafriqService implements FspIntegrationInterface {
+export class OnafriqService {
   public constructor(private readonly onafriqApiService: OnafriqApiService) {}
-
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async subscribeWebhook(): Promise<
     OnafriqApiWebhookSubscribeResponseBody | undefined
