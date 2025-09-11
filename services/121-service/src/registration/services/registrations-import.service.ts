@@ -231,7 +231,7 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    //TODO: In deze gaat het fout
+    //TODO:
     await this.registrationBulkService.postMessages({
       paginateQuery: {
         filter: { column: GenericRegistrationAttributes.referenceId },
