@@ -98,6 +98,7 @@ export class ExcelReconciliationService {
     });
     const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
     for (const fspConfig of program.programFspConfigurations) {
+      console.log({ fspConfig });
       if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
@@ -109,12 +110,15 @@ export class ExcelReconciliationService {
       );
     }
 
+    console.log({ fspConfigsExcel });
+
     const importResults = await this.processReconciliationData({
       file,
       paymentId,
       programId,
       fspConfigs: fspConfigsExcel,
     });
+    console.log({ importResults });
 
     for (const fspConfig of fspConfigsExcel) {
       const transactions = importResults
@@ -214,6 +218,18 @@ export class ExcelReconciliationService {
       const matchColumn = await this.excelService.getImportMatchColumn(
         fspConfig.id,
       );
+      // If the csv does not contain a column for this FSP to match on, skip it
+      const csvHeaderRow = validatedExcelImport[0];
+      const csvHeaderRowValues = Object.keys(csvHeaderRow);
+      const matchColumnAccordingToCSV = csvHeaderRowValues.find(
+        (v) => v !== 'status',
+      );
+
+      if (matchColumnAccordingToCSV !== matchColumn) {
+        // If the expected match column is not found, skip this fspConfig
+        continue;
+      }
+
       this.validateNoDuplicateValuesInMatchColumn({
         importRecords: validatedExcelImport,
         matchColumn,
@@ -232,9 +248,11 @@ export class ExcelReconciliationService {
           item,
         ]),
       );
+      // console.dir(crossFspConfigImportResults, { depth: null });
 
       // .. then loop over each row of the original import to update if a match has been found with this fspConfig
       crossFspConfigImportResults.forEach((row, index) => {
+        // console.log({ row });
         const importResultForFspConfigRow = importResultForFspConfigMap.get(
           row.feedback[matchColumn],
         );

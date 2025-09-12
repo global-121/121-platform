@@ -49,24 +49,26 @@ export class FileImportService {
     stream.push(null);
     const parsedData: Record<string, string | number | boolean | undefined>[] =
       [];
-    return await new Promise((resolve, reject): void => {
-      stream
-        .pipe(csv({ separator }))
-        .on('error', (error): void => reject(error))
-        .on('data', (rowData) => {
-          // Clean up the keys in rowData
-          const cleanedRowData = Object.keys(rowData).reduce((acc, key) => {
-            // Use a regex to remove non-printable characters and trim whitespace
-            const cleanKey = key.replace(/[^\x20-\x7E]+/g, '').trim();
-            acc[cleanKey] = rowData[key];
-            return acc;
-          }, {});
-          parsedData.push(cleanedRowData);
-        })
-        .on('end', (): void => {
-          resolve(parsedData);
-        });
-    });
+    const result: Record<string, string | number | boolean | undefined>[] =
+      await new Promise((resolve, reject): void => {
+        stream
+          .pipe(csv({ separator }))
+          .on('error', (error): void => reject(error))
+          .on('data', (rowData) => {
+            // Clean up the keys in rowData
+            const cleanedRowData = Object.keys(rowData).reduce((acc, key) => {
+              // Use a regex to remove non-printable characters and trim whitespace
+              const cleanKey = key.replace(/[^\x20-\x7E]+/g, '').trim();
+              acc[cleanKey] = rowData[key];
+              return acc;
+            }, {});
+            parsedData.push(cleanedRowData);
+          })
+          .on('end', (): void => {
+            resolve(parsedData);
+          });
+      });
+    return result;
   }
 
   public checkForCompletelyEmptyRow(row): boolean {
