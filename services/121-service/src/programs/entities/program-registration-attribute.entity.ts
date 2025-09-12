@@ -10,9 +10,9 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { NameConstraintQuestions } from '@121-service/src/shared/const';
 import { QuestionOption } from '@121-service/src/shared/enum/question.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';

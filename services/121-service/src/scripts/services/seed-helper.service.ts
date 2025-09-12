@@ -22,19 +22,19 @@ import { OrganizationEntity } from '@121-service/src/organization/organization.e
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedMessageTemplateConfig } from '@121-service/src/seed-data/message-template/interfaces/seed-message-template-config.interface';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
-import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
 
 @Injectable()

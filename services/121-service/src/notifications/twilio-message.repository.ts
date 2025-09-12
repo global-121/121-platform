@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 

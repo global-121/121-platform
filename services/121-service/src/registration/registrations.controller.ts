@@ -51,10 +51,10 @@ import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dt
 import { RegistrationStatusPatchDto } from '@121-service/src/registration/dto/registration-status-patch.dto';
 import { SendCustomTextDto } from '@121-service/src/registration/dto/send-custom-text.dto';
 import { UpdateRegistrationDto } from '@121-service/src/registration/dto/update-registration.dto';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';

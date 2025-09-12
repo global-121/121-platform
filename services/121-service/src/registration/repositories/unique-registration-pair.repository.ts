@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UniqueRegistrationPairEntity } from '@121-service/src/registration/unique-registration-pair.entity';
+import { UniqueRegistrationPairEntity } from '@121-service/src/registration/entities/unique-registration-pair.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 

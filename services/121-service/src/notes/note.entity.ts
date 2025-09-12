@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('note')
 export class NoteEntity extends Base121AuditedEntity {

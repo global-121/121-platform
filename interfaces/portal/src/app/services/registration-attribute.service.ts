@@ -15,7 +15,7 @@ import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { FinancialAttributes } from '@121-service/src/user/enum/registration-financial-attributes.const';

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FilterOperator } from 'nestjs-paginate';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import {
   AllowedFiltersNumber,
   AllowedFiltersString,

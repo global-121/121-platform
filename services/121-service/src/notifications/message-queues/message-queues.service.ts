@@ -3,15 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { Equal, Repository } from 'typeorm';
 
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import {
   ExtendedMessageProccessType,
   MessageJobCustomDataDto,
   MessageJobDto,
   MessageProcessType,
   MessageProcessTypeExtension,
-} from '@121-service/src/notifications/message-job.dto';
+} from '@121-service/src/notifications/dto/message-job.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import {
   DEFAULT_QUEUE_CREATE_MESSAGE,
   MESSAGE_QUEUE_MAP,
@@ -21,10 +21,10 @@ import { MessageTemplateEntity } from '@121-service/src/notifications/message-te
 import { ProgramAttributesService } from '@121-service/src/program-attributes/program-attributes.service';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 @Injectable()

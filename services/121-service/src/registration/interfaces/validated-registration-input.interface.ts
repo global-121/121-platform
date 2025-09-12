@@ -1,4 +1,4 @@
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 export interface ValidatedRegistrationInput
   extends RegistrationEntityProperties {

@@ -51,9 +51,9 @@ import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,
 } from '@121-service/src/user/dto/userrole-response.dto';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { throwIfSelfUpdate } from '@121-service/src/user/helpers/throw-if-self-update';
-import { UserEntity } from '@121-service/src/user/user.entity';
 import { UserRO } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
 

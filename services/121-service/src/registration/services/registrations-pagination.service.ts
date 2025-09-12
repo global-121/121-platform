@@ -10,7 +10,7 @@ import {
 import { parseFilter } from 'nestjs-paginate/lib/filter';
 import { Equal, Repository } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import {
   AllowedFiltersNumber,
@@ -21,16 +21,16 @@ import {
 import { FindAllRegistrationsResultDto } from '@121-service/src/registration/dto/find-all-registrations-result.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   RegistrationAttributeTypes,
 } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationViewsMapper } from '@121-service/src/registration/mappers/registration-views.mapper';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { UserEntity } from '@121-service/src/user/user.entity';
 
 @Injectable()
 export class RegistrationsPaginationService {

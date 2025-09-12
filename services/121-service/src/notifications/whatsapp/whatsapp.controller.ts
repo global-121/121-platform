@@ -4,7 +4,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/dto/twilio.dto';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 

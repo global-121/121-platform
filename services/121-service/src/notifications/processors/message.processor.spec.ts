@@ -1,11 +1,11 @@
 import { TestBed } from '@automock/jest';
 import { Job } from 'bull';
 
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
   MessageJobDto,
   MessageProcessType,
-} from '@121-service/src/notifications/message-job.dto';
+} from '@121-service/src/notifications/dto/message-job.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageProcessorReplyOnIncoming } from '@121-service/src/notifications/processors/message.processor';
 import { MessageService } from '@121-service/src/notifications/services/message.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';

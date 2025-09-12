@@ -5,15 +5,15 @@ import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
-import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
-} from '@121-service/src/notifications/twilio.dto';
+} from '@121-service/src/notifications/dto/twilio.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
@@ -21,11 +21,11 @@ import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-wit
 import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
+import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
+import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
-import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
-import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher-instructions.entity';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -33,7 +33,7 @@ import { TransactionEntity } from '@121-service/src/payments/transactions/transa
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';

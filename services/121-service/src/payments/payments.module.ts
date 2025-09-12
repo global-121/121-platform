@@ -26,13 +26,13 @@ import { TransactionJobsCreationService } from '@121-service/src/payments/servic
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';

@@ -1,4 +1,4 @@
-import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
+import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import {

@@ -5,10 +5,10 @@ import Jimp from 'jimp';
 import { Equal, LessThan, Repository } from 'typeorm';
 
 import { EXTERNAL_API } from '@121-service/src/config';
-import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
-import { ImageCodeEntity } from '@121-service/src/payments/imagecode/image-code.entity';
-import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/image-code-export-vouchers.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
+import { ImageCodeEntity } from '@121-service/src/payments/imagecode/entities/image-code.entity';
+import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Injectable()
 export class ImageCodeService {

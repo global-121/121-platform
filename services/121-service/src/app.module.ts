@@ -28,7 +28,7 @@ import { IntersolveVoucherReconciliationModule } from '@121-service/src/payments
 import { NedbankReconciliationModule } from '@121-service/src/payments/reconciliation/nedbank-reconciliation/nedbank-reconciliation.module';
 import { OnafriqReconciliationModule } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.module';
 import { SafaricomReconciliationModule } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.module';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';

@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, OneToOne, Relation } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { IntersolveVisaParentWalletEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-parent-wallet.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Entity('intersolve_visa_customer')
 export class IntersolveVisaCustomerEntity extends Base121Entity {

@@ -1,4 +1,4 @@
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 
 export type MappedPaginatedRegistrationDto = Omit<
   RegistrationViewEntity,

@@ -5,11 +5,11 @@ import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAttachmentEntity } from '@121-service/src/programs/program-attachments/program-attachment.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 

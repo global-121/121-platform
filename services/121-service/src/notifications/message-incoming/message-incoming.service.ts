@@ -8,6 +8,13 @@ import {
   IS_DEVELOPMENT,
 } from '@121-service/src/config';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
+import {
+  TwilioIncomingCallbackDto,
+  TwilioStatus,
+  TwilioStatusCallbackDto,
+} from '@121-service/src/notifications/dto/twilio.dto';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import {
   MessageContentType,
   TemplatedMessages,
@@ -15,28 +22,21 @@ import {
 import { ProcessNameMessage } from '@121-service/src/notifications/enum/process-names.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import {
-  TwilioIncomingCallbackDto,
-  TwilioStatus,
-  TwilioStatusCallbackDto,
-} from '@121-service/src/notifications/twilio.dto';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 

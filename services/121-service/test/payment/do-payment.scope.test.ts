@@ -4,7 +4,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { registrationsPV } from '@121-service/test/fixtures/scoped-registrations';
 import {
   doPayment,

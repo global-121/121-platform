@@ -11,9 +11,9 @@ import { IntersolveVisaModule } from '@121-service/src/payments/fsp-integration/
 import { ProgramAttributesModule } from '@121-service/src/program-attributes/program-attributes.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramAttachmentsModule } from '@121-service/src/programs/program-attachments/program-attachments.module';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
 import { ProgramController } from '@121-service/src/programs/programs.controller';
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';

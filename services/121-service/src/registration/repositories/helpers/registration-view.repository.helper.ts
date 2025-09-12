@@ -11,8 +11,8 @@ import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 
 export class RegistrationViewRepositoryHelper {

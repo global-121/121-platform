@@ -1,12 +1,12 @@
 import { omit } from 'lodash';
 
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,
 } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 
 type RegistrationViewWithoutData = Omit<RegistrationViewEntity, 'data'>;
 

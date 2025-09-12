@@ -6,15 +6,15 @@ import { v4 as uuid } from 'uuid';
 
 import { EXTERNAL_API } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
-import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
-import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   NotificationType,
   TwilioMessageEntity,
-} from '@121-service/src/notifications/twilio.entity';
+} from '@121-service/src/notifications/entities/twilio.entity';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
+import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
+import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
