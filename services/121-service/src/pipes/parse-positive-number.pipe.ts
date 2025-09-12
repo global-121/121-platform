@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common/utils/http-error-by-code.util';
 import { isNil } from 'lodash';
 
+import { toTypeHelper } from '@121-service/src/utils/to-type.helper';
+
 export interface ParsePositiveNumberPipeOptions {
   errorHttpStatusCode?: ErrorHttpStatusCode;
   exceptionFactory?: (error: string) => any;
@@ -32,19 +34,19 @@ export class ParsePositiveNumberPipe implements PipeTransform<number> {
       ((error) => new HttpErrorByCode[errorHttpStatusCode](error));
   }
 
-  async transform(value: number): Promise<number> {
+  async transform(value?: number): Promise<number | undefined> {
     if (isNil(value) && this.options?.optional) {
       return value;
     }
 
     // we only allow using this pipe with numbers
-    if (isNaN(value)) {
+    if (toTypeHelper(value) !== 'number') {
       throw this.exceptionFactory(
         'Validation failed (numeric value is expected)',
       );
     }
 
-    if (value <= 0) {
+    if (Number(value) <= 0) {
       throw this.exceptionFactory(
         `Validation failed (value ${value} is not a positive number)`,
       );

@@ -9,59 +9,53 @@ class CustomTestError extends HttpException {
 }
 
 describe('ParsePositiveNumberPipe', () => {
-  let target: ParsePositiveNumberPipe;
-  beforeEach(() => {
-    target = new ParsePositiveNumberPipe({
-      exceptionFactory: (error: any) => {
-        console.log('🚀 ~ error:', error);
-        return new CustomTestError();
-      },
+  describe('value is optional', () => {
+    it('should not fail if value missing', async () => {
+      const pipe = new ParsePositiveNumberPipe({
+        optional: true,
+      });
+      // Arrange
+      const input = undefined;
+      // Act
+      const result = await pipe.transform(input);
+      // Assert
+      expect(result).toBeUndefined();
     });
   });
-  describe('transform', () => {
-    describe('when validation passes', () => {
-      it('should return number', async () => {
-        const num = 3;
-        const result = await target.transform(num);
-        expect(result).toBe(num);
-      });
-
-      it('should not fail if optional and value missing', async () => {
-        const target = new ParsePositiveNumberPipe({
-          optional: true,
-        });
-
-        const num = undefined;
-        const result = await target.transform(num);
-        expect(result).toBe(num);
-      });
-
-      // it('should return negative number', async () => {
-      //   const num = '-3';
-      //   expect(await target.transform(num)).to.equal(
-      //     -3,
-      //   );
-      // });
-      // it('should not throw an error if the value is undefined/null and optional is true', async () => {
-      //   const target = new ParsePositiveNumberPipe({ optional: true });
-      //   const value = await target.transform(
-      //     undefined!,
-      //     {} as ArgumentMetadata,
-      //   );
-      //   expect(value).to.equal(undefined);
-      // });
+  describe('value is non-optional', () => {
+    const pipe = new ParsePositiveNumberPipe({});
+    it('should throw for no value', async () => {
+      const input = undefined;
+      await expect(pipe.transform(input)).rejects.toThrow(
+        'Validation failed (numeric value is expected)',
+      );
     });
-    // describe('when validation fails', () => {
-    //   it('should throw an error', async () => {
-    //     return expect(
-    //       target.transform('123abc'),
-    //     ).to.be.rejectedWith(CustomTestError);
-    //   });
-    //   it('should throw an error when number has wrong number encoding', async () => {
-    //     return expect(
-    //       target.transform('0xFF'),
-    //     ).to.be.rejectedWith(CustomTestError);
-    //   });
-    // });
+
+    it('should throw for non-number', async () => {
+      // TypeScript does not correctly type check pipes, so we do in the pipe.
+      // Also means we need to test this like this.
+      const input = 'not-a-number' as unknown as number;
+      await expect(pipe.transform(input)).rejects.toThrow(
+        'Validation failed (numeric value is expected)',
+      );
+    });
+
+    it('should throw for non-positive number', async () => {
+      // Arrange
+      const input = -121;
+      // Act & Assert
+      await expect(pipe.transform(input)).rejects.toThrow(
+        'Validation failed (value -121 is not a positive number)',
+      );
+    });
+
+    it('should return number for positive number', async () => {
+      // Arrange
+      const num = 3;
+      // Act
+      const result = await pipe.transform(num);
+      // Assert
+      expect(result).toBe(num);
+    });
   });
 });
