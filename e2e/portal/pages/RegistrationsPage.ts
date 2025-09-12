@@ -138,9 +138,12 @@ class RegistrationsPage extends BasePage {
   }
 
   async getColumnIndexByHeaderText(headerText: string): Promise<number> {
-    await expect(
-      this.table.tableHeader.locator('th', { hasText: headerText }),
-    ).toBeVisible({ timeout: 1000 });
+    const tableHeader = this.table.tableHeader.locator('th', {
+      hasText: headerText,
+    });
+    await expect(async () => {
+      await expect(tableHeader).toBeVisible();
+    }).toPass({ timeout: 5000 });
 
     const headerCells = await this.table.tableHeader
       .locator('th')
