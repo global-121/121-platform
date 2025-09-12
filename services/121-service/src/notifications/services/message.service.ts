@@ -243,7 +243,7 @@ export class MessageService {
       messageJobDto.customData?.paymentId &&
       messageJobDto.customData.amount != undefined
     ) {
-      await this.intersolveVoucherService.storeTransactionResultStep2(
+      await this.intersolveVoucherService.processTransactionResultStep2(
         messageJobDto.customData.paymentId,
         messageJobDto.customData.amount,
         messageJobDto.registrationId,
