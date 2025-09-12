@@ -176,7 +176,7 @@ export class ExcelReconciliationService {
     return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 
-  public async processReconciliationData({
+  private async processReconciliationData({
     file,
     paymentId,
     programId,
