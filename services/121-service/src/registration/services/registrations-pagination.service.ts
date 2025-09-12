@@ -204,7 +204,7 @@ export class RegistrationsPaginationService {
         false,
         baseQuery ? baseQuery.clone() : undefined, // We need to create a seperate querybuilder object twice or it will be modified twice
       );
-      totalPages = paginateResult.meta.totalPages;
+      totalPages = paginateResult.meta.totalPages ?? 0;
       paginateQuery.page = paginateQuery.page + 1;
       allRegistrations = allRegistrations.concat(...paginateResult.data);
     }
