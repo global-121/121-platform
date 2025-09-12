@@ -22,7 +22,7 @@ const reset = async () => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
   await seedRegistrations([registrationPV5, registrationPV6], programIdPV);
 };
-// remove this comment later it was created to test the PR
+
 const login = async (page: Page, email?: string, password?: string) => {
   const loginPage = new LoginPage(page);
   await page.goto(`/`);
