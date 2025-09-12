@@ -39,6 +39,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { FullscreenStepperDialogComponent } from '~/components/fullscreen-stepper-dialog/fullscreen-stepper-dialog.component';
 import { RegistrationsTableComponent } from '~/components/registrations-table/registrations-table.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { PaymentApiService } from '~/domains/payment/payment.api.service';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { fspConfigurationNamesHaveIntegrationType } from '~/domains/project/project.helper';
@@ -84,6 +85,7 @@ export class CreatePaymentComponent {
   readonly projectApiService = inject(ProjectApiService);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly metricApiService = inject(MetricApiService);
 
   readonly createPaymentDialog =
     viewChild.required<FullscreenStepperDialogComponent>('createPaymentDialog');
@@ -255,6 +257,7 @@ export class CreatePaymentComponent {
       // this.dialogVisible.set(false);
       const paymentId = result.id;
       if (paymentId) {
+        void this.metricApiService.invalidateCache(this.projectId);
         await this.paymentApiService.invalidateCache(
           this.projectId,
           signal(paymentId),
