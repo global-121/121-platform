@@ -441,12 +441,24 @@ export class MetricsService {
     return res;
   }
 
-  public async getAllPaymentsAggregates(
-    programId: number,
-  ): Promise<AggregatePerPayment> {
+  public async getAllPaymentsAggregates({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerPayment> {
     const res: AggregatePerPayment = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    let payments = await this.paymentsReportingService.getPayments({
+      programId,
+    });
+
+    if (limitNumberOfPayments) {
+      payments = payments
+        .sort((p1, p2) => p1.paymentId - p2.paymentId)
+        .slice(-limitNumberOfPayments);
+    }
 
     for (const payment of payments) {
       const aggregate =
@@ -465,7 +477,9 @@ export class MetricsService {
   ): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = await this.paymentsReportingService.getPayments({
+      programId,
+    });
 
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)

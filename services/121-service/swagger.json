@@ -861,7 +861,8 @@
     "method": "get",
     "path": "/api/programs/{programId}/metrics/all-payments-aggregates",
     "params": [
-      "programId"
+      "programId",
+      "limitNumberOfPayments"
     ]
   },
   {
