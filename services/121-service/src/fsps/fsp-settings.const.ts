@@ -15,7 +15,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Excel Payment Instructions',
     },
-    notifyOnTransaction: false,
     attributes: [],
     configurationProperties: [
       {
@@ -34,7 +33,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Visa debit card',
     },
-    notifyOnTransaction: true,
     attributes: [
       {
         name: FspAttributes.fullName,
@@ -86,7 +84,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Albert Heijn voucher WhatsApp',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.whatsappPhoneNumber,
@@ -110,7 +107,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Albert Heijn voucher paper',
     },
-    notifyOnTransaction: false,
     attributes: [],
     configurationProperties: [
       {
@@ -129,7 +125,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Safaricom',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.phoneNumber,
@@ -148,7 +143,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Airtel',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.phoneNumber,
@@ -163,7 +157,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Commercial Bank of Ethiopia',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.bankAccountNumber,
@@ -191,7 +184,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Nedbank',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.phoneNumber,
@@ -211,7 +203,6 @@ export const FSP_SETTINGS: FspDto[] = [
     defaultLabel: {
       en: 'Onafriq',
     },
-    notifyOnTransaction: false,
     attributes: [
       {
         name: FspAttributes.phoneNumberPayment,
