@@ -115,6 +115,7 @@ export class TransactionJobsHelperService {
           userId,
           message: '',
           dryRun: false,
+          messageContentType: MessageContentType.completed,
         });
       }
     }

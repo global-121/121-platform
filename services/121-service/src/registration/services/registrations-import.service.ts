@@ -243,6 +243,7 @@ export class RegistrationsImportService {
       userId,
       message: '',
       dryRun: false,
+      messageContentType: MessageContentType.new,
     });
 
     // Save registration status change events they changed from null to 'new'

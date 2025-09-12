@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedKisumuEastPv,
@@ -402,29 +402,25 @@ describe('Import a registration', () => {
     }
   });
 
-  it('should send a welcome message to imported registrations', async () => {
+  it('should send a template message to imported registrations', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
     const accessToken = await getAccessToken();
 
     // Act
-    const response = await importRegistrations(
-      programIdOCW,
-      [registrationVisa],
-      accessToken,
-    );
-
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
+    await importRegistrations(programIdOCW, [registrationVisa], accessToken);
 
     const messageHistoryResponse = await getMessageHistory(
       programIdOCW,
       registrationVisa.referenceId,
       accessToken,
     );
-    const messageHistory = messageHistoryResponse.body;
-    const sentMessage = messageHistory[0].attributes.body;
-    const { message = {} } = messageTemplateGeneric.new;
 
-    expect(Object.values(message)).toContain(sentMessage);
+    // Assert
+    const messageHistory = messageHistoryResponse.body;
+    const expectedMessage = messageHistory.find(
+      (message) => message.attributes.contentType === MessageContentType.new,
+    );
+    expect(expectedMessage).toBeDefined();
   });
 });

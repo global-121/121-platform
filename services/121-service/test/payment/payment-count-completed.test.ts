@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -12,11 +13,14 @@ import {
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
+import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   getEvents,
+  getMessageHistory,
   getRegistrations,
   importRegistrations,
+  waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -123,6 +127,62 @@ describe('Do a payment to a PA with maxPayments=1', () => {
           event.attributes.newValue === RegistrationStatusEnum.completed,
       );
       expect(statusChangeToCompleted.length).toBe(1);
+    });
+
+    it('should send a template message when status is complete', async () => {
+      // Arrange
+      await importRegistrations(programId, [registrationAh], accessToken);
+      await awaitChangeRegistrationStatus({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        status: RegistrationStatusEnum.included,
+        accessToken,
+      });
+
+      // Act
+      await doPayment({
+        programId,
+        amount,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+      });
+
+      // Assert
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds: [registrationAh.referenceId],
+        accessToken,
+        maxWaitTimeMs: 10_000,
+      });
+
+      await waitForStatusChangeToComplete(
+        programId,
+        1,
+        RegistrationStatusEnum.completed,
+        8_000,
+        accessToken,
+      );
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+      });
+
+      const messageHistoryResponse = await getMessageHistory(
+        programId,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
+      const messageHistory = messageHistoryResponse.body;
+      const expectedMessage = messageHistory.find(
+        (message) =>
+          message.attributes.contentType === MessageContentType.completed,
+      );
+      console.log(messageHistory);
+      console.log('expectedMessage: ', expectedMessage);
+      expect(expectedMessage).toBeDefined();
     });
   });
 });
