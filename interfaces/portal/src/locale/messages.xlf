@@ -1141,14 +1141,8 @@
       <trans-unit id="495282157937447440" datatype="html">
         <source>Make sure to upload the correct file as this will override the current file.</source>
       </trans-unit>
-      <trans-unit id="5682129577475133431" datatype="html">
-        <source>Import not possible</source>
-      </trans-unit>
       <trans-unit id="581189508098722225" datatype="html">
         <source>Reconciliation data imported successfully.</source>
-      </trans-unit>
-      <trans-unit id="8705310124062464174" datatype="html">
-        <source>A payment is currently in progress. Please try again later</source>
       </trans-unit>
       <trans-unit id="2276030451798485888" datatype="html">
         <source>Amount of money successfully transferred.</source>
@@ -1723,9 +1717,6 @@
       </trans-unit>
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
-      </trans-unit>
-      <trans-unit id="5982069520336655984" datatype="html">
-        <source>Export not possible</source>
       </trans-unit>
     </body>
   </file>
