@@ -239,6 +239,19 @@ export class RegistrationsPaginationService {
     select?: string[];
     chunkSize?: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
+    // Validate referenceIds to prevent loop bound injection
+    const MAX_REFERENCE_IDS = 1000000; // safety limit: 1M
+    if (
+      !Array.isArray(referenceIds) ||
+      referenceIds.length > MAX_REFERENCE_IDS ||
+      !referenceIds.every((v) => typeof v === 'string')
+    ) {
+      throw new HttpException(
+        `referenceIds must be an array of strings (max length ${MAX_REFERENCE_IDS})`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const defaultChunkSize = 20000;
     const effectiveChunkSize = chunkSize || defaultChunkSize;
 
