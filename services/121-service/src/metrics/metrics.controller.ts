@@ -201,8 +201,7 @@ export class MetricsController {
   public async getAllPaymentsAggregates(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Param('limitNumberOfPayments')
-    limitNumberOfPayments: number,
+    @Query('limitNumberOfPayments') limitNumberOfPayments?: number,
   ): Promise<AggregatePerPayment> {
     return await this.metricsService.getAllPaymentsAggregates({
       programId,
