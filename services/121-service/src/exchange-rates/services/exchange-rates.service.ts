@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 
 import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
-import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/services/exchange-rates.api.service';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 @Injectable()
 export class ExchangeRatesService {

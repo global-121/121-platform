@@ -1,6 +1,6 @@
 import { FilterOperator, FilterSuffix, PaginateConfig } from 'nestjs-paginate';
 
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 
 type FilterOperatorOrSuffix = FilterOperator | FilterSuffix;
 

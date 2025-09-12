@@ -8,7 +8,7 @@ import { CreateProgramFspConfigurationDto } from '@121-service/src/program-fsp-c
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   doPayment,
   getTransactions,

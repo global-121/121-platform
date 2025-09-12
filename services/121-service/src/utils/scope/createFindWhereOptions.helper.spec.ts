@@ -1,6 +1,6 @@
 import { Equal, FindManyOptions, FindOperator } from 'typeorm';
 
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import {
   convertToScopedOptions,
   FindOptionsCombined,

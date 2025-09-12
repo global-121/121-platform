@@ -1,5 +1,5 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 interface RegistrationWithFspName extends RegistrationEntity {

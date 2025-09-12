@@ -4,7 +4,7 @@ import { REQUEST } from '@nestjs/core';
 import { Job } from 'bull';
 import { isEqual, isMatch, isObject } from 'lodash';
 
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { GetRegistrationEventDto } from '@121-service/src/registration-events/dto/get-registration-event.dto';
 import { GetRegistrationEventXlsxDto } from '@121-service/src/registration-events/dto/get-registration-event-xlsx.dto';
 import { RegistrationEventSearchOptionsDto } from '@121-service/src/registration-events/dto/registration-event-search-options.dto';
@@ -19,8 +19,8 @@ import { RegistrationEventScopedRepository } from '@121-service/src/registration
 import { ValueExtractor } from '@121-service/src/registration-events/utils/registration-events.helpers';
 import { RegistrationEventsMapper } from '@121-service/src/registration-events/utils/registration-events.mapper';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserType } from '@121-service/src/user/user-type-enum';
 
 // Define an interface that can contain any attribute of RegistrationViewEntity, but make sure at least id is in.
 interface RegistrationViewWithId extends Partial<RegistrationViewEntity> {

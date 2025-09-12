@@ -3,9 +3,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
-import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/exchange-rates.api.service';
-import { ExchangeRatesService as ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/services/exchange-rates.api.service';
+import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 // Mock for ExchangeRateApiService
 const mockExchangeRatesApiService = {

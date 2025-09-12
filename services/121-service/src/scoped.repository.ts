@@ -18,7 +18,7 @@ import {
 import { FindReturnType } from 'typeorm/find-options/FindReturnType';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   ScopedUserRequest,
   ScopedUserRequestWithUser,

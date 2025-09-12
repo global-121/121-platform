@@ -7,12 +7,12 @@ import { env } from '@121-service/src/env';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { PermissionEntity } from '@121-service/src/user/permissions.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
-import { UserType } from '@121-service/src/user/user-type-enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {

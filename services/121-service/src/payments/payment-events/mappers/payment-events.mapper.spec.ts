@@ -3,7 +3,7 @@ import { PaymentEventAttributeEntity } from '@121-service/src/payments/payment-e
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
 import { PaymentEventAttributeKey } from '@121-service/src/payments/payment-events/enums/payment-event-attribute-key.enum';
 import { PaymentEventsMapper } from '@121-service/src/payments/payment-events/mappers/payment-events.mapper';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 describe('PaymentEventsMapper', () => {
   const testUserId = 1;

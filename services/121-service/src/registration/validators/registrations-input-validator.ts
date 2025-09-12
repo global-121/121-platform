@@ -6,9 +6,10 @@ import { Equal, Repository } from 'typeorm';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { LookupService } from '@121-service/src/notifications/lookup/lookup.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { AdditionalAttributes } from '@121-service/src/registration/dto/update-registration.dto';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import {
   GenericRegistrationAttributes,
   RegistrationAttributeTypes,
@@ -17,7 +18,6 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidateRegistrationErrorObject } from '@121-service/src/registration/interfaces/validate-registration-error-object.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserService } from '@121-service/src/user/user.service';

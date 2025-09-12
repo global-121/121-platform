@@ -9,7 +9,7 @@ import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { UpdateUserRoleDto } from '@121-service/src/user/dto/update-user-role.dto';
 import { UserRoleResponseDTO } from '@121-service/src/user/dto/userrole-response.dto';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 export function getHostname(): string {
   return `${env.EXTERNAL_121_SERVICE_URL}/api`;

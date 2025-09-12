@@ -1,6 +1,6 @@
 import { TestBed } from '@automock/jest';
 
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 
 describe('ScopedRepository', () => {

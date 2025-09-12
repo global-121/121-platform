@@ -6,10 +6,10 @@ import { env } from '@121-service/src/env';
 import { IntersolveCancelTransactionByRefPosResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveGetCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-get-card-response.dto';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
+import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherSoapElements } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-soap.enum';
 import { IntersolveVoucherMockService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/instersolve-voucher.mock';
-import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-issue-voucher-request.entity';
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 @Injectable()

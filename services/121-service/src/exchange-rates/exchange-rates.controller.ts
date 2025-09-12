@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
-import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
+import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
 import { AuthenticatedUser } from '@121-service/src/guards/authenticated-user.decorator';
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';

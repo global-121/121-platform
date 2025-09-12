@@ -9,10 +9,10 @@ import {
 } from 'typeorm';
 
 import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationEventAttributeEntity } from '@121-service/src/registration-events/entities/registration-event-attribute.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('registration_event')
 export class RegistrationEventEntity extends Base121OptionalAuditedEntity {

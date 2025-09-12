@@ -3,11 +3,11 @@ import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 
 import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-user.guard';
-import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import {
   TwilioIncomingCallbackDto,
   TwilioStatusCallbackDto,
-} from '@121-service/src/notifications/twilio.dto';
+} from '@121-service/src/notifications/dto/twilio.dto';
+import { MessageIncomingService } from '@121-service/src/notifications/message-incoming/message-incoming.service';
 import { AnyValidBody } from '@121-service/src/registration/validators/any-valid-body.validator';
 
 @UseGuards(AuthenticatedUserGuard)

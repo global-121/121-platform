@@ -11,7 +11,7 @@ import { BearerStrategy } from 'passport-azure-ad';
 
 import { env } from '@121-service/src/env';
 import { AuthenticatedUserParameters } from '@121-service/src/guards/authenticated-user.decorator';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserRequestData } from '@121-service/src/user/user.interface';
 import { UserService } from '@121-service/src/user/user.service';
 

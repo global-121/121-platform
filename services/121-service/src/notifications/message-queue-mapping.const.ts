@@ -1,4 +1,4 @@
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { QueueNames } from '@121-service/src/queues-registry/enum/queue-names.enum';
 
 export class MessageQueueMap {

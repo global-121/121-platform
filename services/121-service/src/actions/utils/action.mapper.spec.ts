@@ -5,10 +5,10 @@ import {
 } from '@121-service/src/actions/action.entity';
 import { ActionReturnDto } from '@121-service/src/actions/dto/action-return.dto';
 import { ActionMapper } from '@121-service/src/actions/utils/action.mapper';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 
 describe('Action mapper', () => {
   it('should map to correct object', async () => {

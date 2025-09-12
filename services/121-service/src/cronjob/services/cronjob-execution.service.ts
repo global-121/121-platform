@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { CronjobExecutionHelperService } from '@121-service/src/cronjob/services/cronjob-execution-helper.service';
-import { ExchangeRatesService } from '@121-service/src/exchange-rates/exchange-rates.service';
+import { ExchangeRatesService } from '@121-service/src/exchange-rates/services/exchange-rates.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher-cron.service';
 import { CommercialBankEthiopiaReconciliationService } from '@121-service/src/payments/reconciliation/commercial-bank-ethiopia-reconciliation/commercial-bank-ethiopia-reconciliation.service';

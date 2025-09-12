@@ -1,10 +1,10 @@
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
+import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 import {
   FspConfigurationProperties,
   Fsps,
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
-import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 
 // Attributes are the programRegistrationAttributes that are required for a regisration to have a program fsp configuration with the fsp
 // Configuration properties are the program finacial service configuration properties that are required for the fsp to be able to send a payment
