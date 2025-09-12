@@ -450,15 +450,10 @@ export class MetricsService {
   }): Promise<AggregatePerPayment> {
     const res: AggregatePerPayment = {};
 
-    let payments = await this.paymentsReportingService.getPayments({
+    const payments = await this.paymentsReportingService.getPayments({
       programId,
+      limitNumberOfPayments,
     });
-
-    if (limitNumberOfPayments) {
-      payments = payments
-        .sort((p1, p2) => p1.paymentId - p2.paymentId)
-        .slice(-limitNumberOfPayments);
-    }
 
     for (const payment of payments) {
       const aggregate =
@@ -472,13 +467,18 @@ export class MetricsService {
     return res;
   }
 
-  public async getAmountSentByMonth(
-    programId: number,
-  ): Promise<AggregatePerMonth> {
+  public async getAmountSentByMonth({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
     const payments = await this.paymentsReportingService.getPayments({
       programId,
+      limitNumberOfPayments,
     });
 
     for (const payment of payments) {
@@ -505,6 +505,21 @@ export class MetricsService {
       res[month].waiting += Number(aggregate.waiting.amount);
       res[month].failed += Number(aggregate.failed.amount);
     }
+
+    /*
+      {
+        "2025-09": {
+          "success": 2400,
+          "waiting": 5,
+          "failed": 10
+        },
+        "2025-10": {
+          "success": 3500,
+          "waiting": 200,
+          "failed": 50
+        }
+      }
+    */
 
     return res;
   }

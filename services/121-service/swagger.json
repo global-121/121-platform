@@ -869,7 +869,8 @@
     "method": "get",
     "path": "/api/programs/{programId}/metrics/amount-sent-by-month",
     "params": [
-      "programId"
+      "programId",
+      "limitNumberOfPayments"
     ]
   },
   {

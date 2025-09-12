@@ -192,7 +192,7 @@ export class MetricsController {
     summary: '[SCOPED] Get aggregate results for all payments in a program',
   })
   @ApiParam({ name: 'programId', required: true })
-  @ApiParam({ name: 'limitNumberOfPayments', required: false })
+  @ApiQuery({ name: 'limitNumberOfPayments', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All payments aggregates',
@@ -214,6 +214,7 @@ export class MetricsController {
     summary: '[SCOPED] Get amount sent by month',
   })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({ name: 'limitNumberOfPayments', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Amount sent by month',
@@ -222,7 +223,11 @@ export class MetricsController {
   public async getAmountSentByMonth(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Query('limitNumberOfPayments') limitNumberOfPayments?: number,
   ): Promise<AggregatePerMonth> {
-    return await this.metricsService.getAmountSentByMonth(programId);
+    return await this.metricsService.getAmountSentByMonth({
+      programId,
+      limitNumberOfPayments,
+    });
   }
 }
