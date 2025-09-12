@@ -96,11 +96,22 @@ class TableComponent {
     expectedRowCount,
   }: {
     expectedRowCount: number;
-  }): Promise<void> {
-    await expect(async () => {
+  }) {
+    const timeout = 6000;
+    const pollInterval = 200;
+    const start = Date.now();
+
+    while (Date.now() - start < timeout) {
       const rowCount = await this.tableRows.count();
-      expect(rowCount).toBe(expectedRowCount);
-    }).toPass({ timeout: 4000 });
+      if (rowCount === expectedRowCount) {
+        expect(rowCount).toBe(expectedRowCount);
+        return;
+      }
+      await this.page.waitForTimeout(pollInterval);
+    }
+
+    const finalCount = await this.tableRows.count();
+    expect(finalCount).toBe(expectedRowCount);
   }
 
   async globalSearch(searchText: string) {
