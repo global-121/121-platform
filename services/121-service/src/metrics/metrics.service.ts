@@ -427,10 +427,6 @@ export class MetricsService {
     programId: number;
     limitNumberOfDays?: number;
   }): Promise<RegistrationCountByDate> {
-    console.log(
-      '🚀 ~ MetricsService ~ getRegistrationCountByDate ~ limitNumberOfDays:',
-      limitNumberOfDays,
-    );
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
@@ -438,7 +434,12 @@ export class MetricsService {
       .andWhere({ programId })
       .groupBy(`to_char("created", 'yyyy-mm-dd')`)
       .orderBy(`to_char("created", 'yyyy-mm-dd')`);
-    console.log('query: ', query.getSql());
+
+    if (limitNumberOfDays) {
+      const startFrom = new Date();
+      startFrom.setDate(startFrom.getDate() - limitNumberOfDays);
+      query.andWhere('created > :startFrom', { startFrom });
+    }
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
         dates[r.created] = Number(r.count);
