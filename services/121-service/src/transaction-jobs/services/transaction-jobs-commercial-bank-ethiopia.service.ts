@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Equal } from 'typeorm';
 
-import { CreditTransferApiParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
+import { CbeTransferScopedRepository } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
+import { CbeTransferEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -14,9 +14,9 @@ export class TransactionJobsCommercialBankEthiopiaService {
   constructor(
     private readonly commercialBankEthiopiaService: CommercialBankEthiopiaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly programRepository: ProgramRepository,
+    private readonly cbeTransferScopedRepository: CbeTransferScopedRepository,
   ) {}
 
   public async processCommercialBankEthiopiaTransactionJob(
@@ -41,24 +41,17 @@ export class TransactionJobsCommercialBankEthiopiaService {
 
     let debitTheirRef: string;
     if (transactionJob.isRetry) {
-      const existingTransaction =
-        await this.transactionScopedRepository.findOneOrFail({
-          where: {
-            paymentId: Equal(transactionJob.paymentId),
-            registrationId: Equal(registration.id),
-          },
-          order: {
-            created: 'DESC',
-          },
-        });
-      const requestResult = existingTransaction.customData
-        ?.requestResult as CreditTransferApiParams; // TODO: Create a commercial bank of ethiopia request entity to store this data in instead of transaction.customData
-      debitTheirRef = requestResult?.debitTheirRef;
+      const existingCbeTransfer =
+        await this.cbeTransferScopedRepository.getExistingCbeTransferOrFail(
+          transactionJob.paymentId,
+          registration.id,
+        );
+      debitTheirRef = existingCbeTransfer.debitTheirRef;
     } else {
       debitTheirRef = transactionJob.debitTheirRef as string;
     }
 
-    const { status, errorMessage, customData } =
+    const { status, errorMessage } =
       await this.commercialBankEthiopiaService.createCreditTransferOrGetTransactionStatus(
         {
           inputParams: {
@@ -73,15 +66,21 @@ export class TransactionJobsCommercialBankEthiopiaService {
           credentials,
         },
       );
-    await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
-      {
-        registration,
-        transactionJob,
-        transferAmountInMajorUnit: transactionJob.transactionAmount,
-        status,
-        errorText: errorMessage,
-        customData,
-      },
-    );
+
+    const transaction =
+      await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
+        {
+          registration,
+          transactionJob,
+          transferAmountInMajorUnit: transactionJob.transactionAmount,
+          status,
+          errorText: errorMessage,
+        },
+      );
+    // TODO: combine this with the transaction creation above in one SQL transaction
+    const newCbeTransfer = new CbeTransferEntity();
+    newCbeTransfer.debitTheirRef = debitTheirRef;
+    newCbeTransfer.transactionId = transaction.id;
+    await this.cbeTransferScopedRepository.save(newCbeTransfer);
   }
 }

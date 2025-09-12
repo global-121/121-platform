@@ -59,7 +59,6 @@ describe('CommercialBankEthiopiaService', () => {
       });
       expect(result.status).toBe(TransactionStatusEnum.success);
       expect(result.errorMessage).toBeUndefined();
-      expect(result.customData).toBeDefined();
     });
 
     it('should call getTransactionStatus if resultDescription is DUPLICATED', async () => {

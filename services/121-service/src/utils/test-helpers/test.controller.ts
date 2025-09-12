@@ -39,7 +39,6 @@ export class TestController {
   @Get('validate-indirect-relations')
   validateIndirectRelations(): string[] {
     const missing = this.performExhaustivenessCheck();
-    console.log('missing: ', missing);
     const missingEntries = Object.entries(missing).map(
       ([entity, path]) =>
         `${entity}: [${path.map((p) => `'${p}'`).join(', ')}]`,

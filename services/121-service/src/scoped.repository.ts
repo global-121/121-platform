@@ -56,6 +56,7 @@ export const indirectRelationConfig: EntityRelations = {
   NedbankVoucherEntity: ['transaction', 'registration'],
   OnafriqTransactionEntity: ['transaction', 'registration'],
   RegistrationEventAttributeEntity: ['event', 'registration'],
+  CbeTransferEntity: ['transaction', 'registration'],
 };
 
 export function hasUserScope(
