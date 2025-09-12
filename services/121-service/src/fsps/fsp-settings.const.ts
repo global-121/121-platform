@@ -214,7 +214,7 @@ export const FSP_SETTINGS: FspDto[] = [
     notifyOnTransaction: false,
     attributes: [
       {
-        name: FspAttributes.phoneNumber,
+        name: FspAttributes.phoneNumberPayment,
         isRequired: true,
       },
       {

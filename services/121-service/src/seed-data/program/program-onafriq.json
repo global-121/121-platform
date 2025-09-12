@@ -45,7 +45,20 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Phone Number"
+        "en": "Phone Number for communication"
+      },
+      "placeholder": {
+        "en": "+243000000000"
+      },
+      "includeInTransactionExport": true,
+      "type": "tel",
+      "options": null,
+      "showInPeopleAffectedTable": false
+    },
+    {
+      "name": "phoneNumberPayment",
+      "label": {
+        "en": "Phone Number for payment"
       },
       "placeholder": {
         "en": "+243000000000"
