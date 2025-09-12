@@ -95,7 +95,7 @@ export const messageTemplateNlrcOcw: SeedMessageTemplateConfig = {
     isSendMessageTemplate: false,
     isWhatsappTemplate: false,
     message: {
-      en: 'Welcome to our program. Whitin a couple of days your request will be validated.',
+      en: 'Welcome to our program. Within a couple of days your request will be validated.',
       nl: 'Welkom bij dit programma. Binnen enkele dagen zal uw verzoek worden behandeld.',
     },
   },

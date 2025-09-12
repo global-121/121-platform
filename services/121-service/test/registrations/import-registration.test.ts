@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedKisumuEastPv,
@@ -15,6 +16,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
+  getMessageHistory,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
@@ -398,5 +400,31 @@ describe('Import a registration', () => {
     for (const key in registrationWesterosEmpty) {
       expect(registration[key]).toBe(registrationWesterosEmpty[key]);
     }
+  });
+
+  it('should send a welcome message to imported registrations', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessToken();
+
+    // Act
+    const response = await importRegistrations(
+      programIdOCW,
+      [registrationVisa],
+      accessToken,
+    );
+
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const messageHistoryResponse = await getMessageHistory(
+      programIdOCW,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+    const messageHistory = messageHistoryResponse.body;
+    const sentMessage = messageHistory[0].attributes.body;
+    const { message = {} } = messageTemplateGeneric.new;
+
+    expect(Object.values(message)).toContain(sentMessage);
   });
 });
