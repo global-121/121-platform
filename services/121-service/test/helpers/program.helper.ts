@@ -368,7 +368,7 @@ export async function waitForPaymentTransactionsToComplete({
 
     // If not all transactions are successful, wait for a short interval before checking again
     if (!allTransactionsComplete) {
-      await waitFor(1_000); // Wait for 1 second (adjust as needed)
+      await waitFor(2_000); // Wait for 2 seconds (adjust as needed)
     }
   }
 
