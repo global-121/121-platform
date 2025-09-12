@@ -241,7 +241,7 @@ export class RegistrationsBulkService {
         this.getBaseQuery(),
       );
 
-    for (let i = 0; i < registrationsMetadata.meta.totalPages; i++) {
+    for (let i = 0; i < (registrationsMetadata.meta.totalPages ?? 0); i++) {
       paginateQuery.page = i + 1;
       const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
@@ -288,11 +288,11 @@ export class RegistrationsBulkService {
       );
 
     return {
-      totalFilterCount: selectedRegistrations.meta.totalItems,
-      applicableCount: applicableRegistrations.meta.totalItems,
+      totalFilterCount: selectedRegistrations.meta.totalItems ?? 0,
+      applicableCount: applicableRegistrations.meta.totalItems ?? 0,
       nonApplicableCount:
-        selectedRegistrations.meta.totalItems -
-        applicableRegistrations.meta.totalItems,
+        (selectedRegistrations.meta.totalItems ?? 0) -
+        (applicableRegistrations.meta.totalItems ?? 0),
     };
   }
 
@@ -417,7 +417,7 @@ export class RegistrationsBulkService {
         ),
       );
 
-    for (let i = 0; i < registrationForUpdateMeta.meta.totalPages; i++) {
+    for (let i = 0; i < (registrationForUpdateMeta.meta.totalPages ?? 0); i++) {
       const registrationsForUpdate =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
@@ -434,7 +434,7 @@ export class RegistrationsBulkService {
         userId,
         registrationStatus,
         messageContentDetails,
-        bulkSize: registrationsForUpdate.meta.totalItems,
+        bulkSize: registrationsForUpdate.meta.totalItems ?? 0,
         usedPlaceholders,
         reason,
       });
@@ -551,7 +551,7 @@ export class RegistrationsBulkService {
         ),
       );
 
-    for (let i = 0; i < registrationForDeleteMeta.meta.totalPages; i++) {
+    for (let i = 0; i < (registrationForDeleteMeta.meta.totalPages ?? 0); i++) {
       const registrationPaginateObject =
         await this.registrationsPaginationService.getPaginate(
           paginateQuery,
