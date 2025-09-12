@@ -192,6 +192,7 @@ export class MetricsController {
     summary: '[SCOPED] Get aggregate results for all payments in a program',
   })
   @ApiParam({ name: 'programId', required: true })
+  @ApiParam({ name: 'limitNumberOfPayments', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All payments aggregates',
@@ -200,8 +201,13 @@ export class MetricsController {
   public async getAllPaymentsAggregates(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Param('limitNumberOfPayments')
+    limitNumberOfPayments: number,
   ): Promise<AggregatePerPayment> {
-    return await this.metricsService.getAllPaymentsAggregates(programId);
+    return await this.metricsService.getAllPaymentsAggregates({
+      programId,
+      limitNumberOfPayments,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
