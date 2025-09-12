@@ -854,7 +854,8 @@
     "method": "get",
     "path": "/api/programs/{programId}/metrics/registration-count-by-date",
     "params": [
-      "programId"
+      "programId",
+      "limitNumberOfDays"
     ]
   },
   {
