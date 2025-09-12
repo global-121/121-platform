@@ -14,6 +14,6 @@ exports[`Do payment retry should thrown an error if payment has no failed transa
 
 exports[`Do payment retry should thrown an error if referenceId filter is used but no failed transactions found for that referenceId 1`] = `
 {
-  "errors": "No failed transaction found for registration with referenceId ref-success.",
+  "errors": "The registration with referenceId ref-success does not have a failed transaction for this payment.",
 }
 `;

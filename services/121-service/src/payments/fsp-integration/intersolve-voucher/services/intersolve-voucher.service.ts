@@ -14,11 +14,9 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
 import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
@@ -42,7 +40,7 @@ import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
-export class IntersolveVoucherService implements FspIntegrationInterface {
+export class IntersolveVoucherService {
   @InjectRepository(IntersolveVoucherInstructionsEntity)
   private readonly intersolveInstructionsRepository: Repository<IntersolveVoucherInstructionsEntity>;
   @InjectRepository(IntersolveIssueVoucherRequestEntity)
@@ -67,20 +65,6 @@ export class IntersolveVoucherService implements FspIntegrationInterface {
     private readonly messageTemplateService: MessageTemplateService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
-
-  // TODO: Remove this function when refactored out of all FSP integrations.
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paPaymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-    _useWhatsapp: boolean,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async sendIndividualPayment({
     referenceId,

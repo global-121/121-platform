@@ -9,5 +9,5 @@ export class RetryPaymentDto {
   public readonly paymentId: number;
   @ApiProperty()
   @IsOptional()
-  public readonly referenceIds?: ReferenceIdsDto;
+  public readonly referenceIds?: ReferenceIdsDto; // In the frontend we always send the referenceIds so we can consider making this required
 }

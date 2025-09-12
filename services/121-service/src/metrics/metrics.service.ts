@@ -213,7 +213,7 @@ export class MetricsService {
     };
 
     const data =
-      await this.registrationsPaginationsService.getRegistrationsChunked(
+      await this.registrationsPaginationsService.getRegistrationViewsChunkedByPaginateQuery(
         programId,
         paginateQueryForBulk,
         chunkSize,

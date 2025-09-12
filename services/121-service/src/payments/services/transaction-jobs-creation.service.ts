@@ -706,7 +706,7 @@ export class TransactionJobsCreationService {
       );
 
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationsChunked(
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
         programId,
         paginateQuery,
         4000,
