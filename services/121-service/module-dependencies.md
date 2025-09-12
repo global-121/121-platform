@@ -87,21 +87,10 @@ graph LR
   MetricsModule-->PaymentsModule
   PaymentsModule-->UserModule
   PaymentsModule-->ActionsModule
-  PaymentsModule-->IntersolveVoucherModule
-  PaymentsModule-->IntersolveVisaModule
   PaymentsModule-->TransactionsModule
-  PaymentsModule-->SafaricomModule
-  SafaricomModule-->RedisModule
-  SafaricomModule-->QueuesRegistryModule
-  PaymentsModule-->AirtelModule
-  AirtelModule-->RedisModule
-  AirtelModule-->QueuesRegistryModule
-  PaymentsModule-->NedbankModule
-  PaymentsModule-->OnafriqModule
   PaymentsModule-->ExcelModule
   ExcelModule-->TransactionsModule
   ExcelModule-->RegistrationsModule
-  PaymentsModule-->CommercialBankEthiopiaModule
   PaymentsModule-->RegistrationsModule
   PaymentsModule-->ProgramModule
   PaymentsModule-->RegistrationUtilsModule
@@ -138,7 +127,11 @@ graph LR
   TransactionJobsModule-->IntersolveVisaModule
   TransactionJobsModule-->IntersolveVoucherModule
   TransactionJobsModule-->SafaricomModule
+  SafaricomModule-->RedisModule
+  SafaricomModule-->QueuesRegistryModule
   TransactionJobsModule-->AirtelModule
+  AirtelModule-->RedisModule
+  AirtelModule-->QueuesRegistryModule
   TransactionJobsModule-->NedbankModule
   TransactionJobsModule-->ProgramFspConfigurationsModule
   TransactionJobsModule-->OnafriqModule

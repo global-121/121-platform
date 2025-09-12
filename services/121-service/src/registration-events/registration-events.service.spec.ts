@@ -2,16 +2,16 @@ import { TestBed } from '@automock/jest';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventEnum } from '@121-service/src/registration-events/enum/registration-event.enum';
 import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserService } from '@121-service/src/user/user.service';
-import { UserType } from '@121-service/src/user/user-type-enum';
 
 const programId = 1;
 

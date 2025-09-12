@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Entity('unique_registration_pair')
 @Unique(['smallerRegistrationId', 'largerRegistrationId'])

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('program_attachment')
 export class ProgramAttachmentEntity extends Base121Entity {

@@ -10,7 +10,7 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 @Entity('payment')
 export class PaymentEntity extends Base121Entity {

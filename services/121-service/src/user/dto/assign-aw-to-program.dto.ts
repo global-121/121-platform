@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray, IsOptional, IsString } from 'class-validator';
 
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 
 export class CreateProgramAssignmentDto {
   @ApiProperty({

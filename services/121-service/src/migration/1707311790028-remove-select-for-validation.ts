@@ -1,7 +1,7 @@
 import { Equal, MigrationInterface, QueryRunner } from 'typeorm';
 
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { PermissionEntity } from '@121-service/src/user/permissions.entity';
 
 export class RemoveSelectForValidation1707311790028
   implements MigrationInterface

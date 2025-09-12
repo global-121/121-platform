@@ -147,16 +147,21 @@ export async function retryPayment({
   programId,
   paymentId,
   accessToken,
+  referenceIds,
 }: {
   programId: number;
   paymentId: number;
   accessToken: string;
+  referenceIds?: string[];
 }): Promise<request.Response> {
   return await getServer()
     .patch(`/programs/${programId}/payments`)
     .set('Cookie', [accessToken])
     .send({
       paymentId,
+      referenceIds: {
+        referenceIds, // TODO REFACTOR this nested referenceIds structure
+      },
     });
 }
 
@@ -628,5 +633,19 @@ export async function getPaymentEvents({
 }) {
   return await getServer()
     .get(`/programs/${programId}/payments/${paymentId}/events`)
+    .set('Cookie', [accessToken]);
+}
+
+export async function getPaymentSummary({
+  programId,
+  paymentId,
+  accessToken,
+}: {
+  programId: number;
+  paymentId: number;
+  accessToken: string;
+}) {
+  return await getServer()
+    .get(`/programs/${programId}/payments/${paymentId}`)
     .set('Cookie', [accessToken]);
 }

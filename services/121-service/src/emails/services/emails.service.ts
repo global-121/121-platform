@@ -4,7 +4,7 @@ import {
   CreateUserEmailPayload,
   GenericEmailPayload,
 } from '@121-service/src/emails/dto/create-emails.dto';
-import { EmailsApiService } from '@121-service/src/emails/emails.api.service';
+import { EmailsApiService } from '@121-service/src/emails/services/emails.api.service';
 import { createNonSSOUserTemplate } from '@121-service/src/emails/templates/createNonSsoUserTemplate';
 import { createSSOUserTemplate } from '@121-service/src/emails/templates/createSsoUserTemplate';
 import { genericTemplate } from '@121-service/src/emails/templates/genericTemplate';

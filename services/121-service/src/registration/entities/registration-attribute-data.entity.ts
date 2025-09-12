@@ -11,8 +11,8 @@ import {
 
 import { AppDataSource } from '@121-service/src/appdatasource';
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/program-registration-attribute.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Unique('registrationProgramAttributeUnique', [
   'registrationId',

@@ -15,7 +15,7 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -176,7 +176,7 @@ export class ExcelReconciliationService {
     return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 
-  public async processReconciliationData({
+  private async processReconciliationData({
     file,
     paymentId,
     programId,
@@ -306,7 +306,7 @@ export class ExcelReconciliationService {
       });
     // log query
     const chunkSize = 400000;
-    return await this.registrationsPaginationService.getRegistrationsChunked(
+    return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
       programId,
       {
         select: [matchColumn, 'referenceId', 'id'],

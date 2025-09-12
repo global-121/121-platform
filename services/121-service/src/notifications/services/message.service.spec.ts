@@ -1,16 +1,16 @@
 import { TestBed } from '@automock/jest';
 
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import {
   MessageJobDto,
   MessageProcessType,
-} from '@121-service/src/notifications/message-job.dto';
+} from '@121-service/src/notifications/dto/message-job.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageService } from '@121-service/src/notifications/services/message.service';
 import { SmsService } from '@121-service/src/notifications/sms/sms.service';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 

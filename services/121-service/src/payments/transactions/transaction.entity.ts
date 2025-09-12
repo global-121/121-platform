@@ -12,8 +12,8 @@ import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('transaction')
 export class TransactionEntity extends Base121AuditedEntity {

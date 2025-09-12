@@ -12,7 +12,7 @@ import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.enti
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { PaymentEventAttributeEntity } from '@121-service/src/payments/payment-events/entities/payment-event-attribute.entity';
 import { PaymentEvent } from '@121-service/src/payments/payment-events/enums/payment-event.enum';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('payment_event')
 export class PaymentEventEntity extends Base121OptionalAuditedEntity {

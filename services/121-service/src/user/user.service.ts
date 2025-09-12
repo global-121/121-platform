@@ -9,10 +9,10 @@ import { Equal, FindOptionsRelations, In, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { CreateUserEmailPayload } from '@121-service/src/emails/dto/create-emails.dto';
-import { EmailsService } from '@121-service/src/emails/emails.service';
+import { EmailsService } from '@121-service/src/emails/services/emails.service';
 import { env } from '@121-service/src/env';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
-import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/program-aidworker.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
 import {
@@ -36,13 +36,13 @@ import {
   AssignmentResponseDTO,
   UserRoleResponseDTO,
 } from '@121-service/src/user/dto/userrole-response.dto';
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { PermissionEntity } from '@121-service/src/user/permissions.entity';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
-import { UserRoleEntity } from '@121-service/src/user/user-role.entity';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
-import { UserType } from '@121-service/src/user/user-type-enum';
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })

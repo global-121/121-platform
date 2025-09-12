@@ -3,8 +3,8 @@ import { Equal, In } from 'typeorm';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { FspIntegrationType } from '@121-service/src/fsps/fsp-integration-type.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';

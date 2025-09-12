@@ -1,7 +1,7 @@
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getRegistrations,
   importRegistrations,

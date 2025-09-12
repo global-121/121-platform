@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 
 export class MessageTemplate1699276319254 implements MigrationInterface {
   name = 'MessageTemplate1699276319254';

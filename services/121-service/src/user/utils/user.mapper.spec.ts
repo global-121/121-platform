@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { UserOwnerDto } from '@121-service/src/user/dto/user-owner.dto';
-import { UserEntity } from '@121-service/src/user/user.entity';
-import { UserType } from '@121-service/src/user/user-type-enum';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserMapper } from '@121-service/src/user/utils/user.mapper';
 
 describe('User mapper', () => {

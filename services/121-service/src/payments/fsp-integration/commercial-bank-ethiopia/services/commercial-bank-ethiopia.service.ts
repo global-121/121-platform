@@ -2,13 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { CommercialBankEthiopiaAccountEnquiriesEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-account-enquiries.entity';
 import { CreditTransferApiParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-transfer-payload.dto';
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
 import { CreateCreditTransferOrGetTransactionStatusParams } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/interfaces/create-credit-transfer-or-get-transaction-status-params.interface';
 import { CommercialBankEthiopiaApiService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.api.service';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RequiredUsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/required-username-password.interface';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
@@ -17,7 +15,7 @@ import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 
 @Injectable()
-export class CommercialBankEthiopiaService implements FspIntegrationInterface {
+export class CommercialBankEthiopiaService {
   @Inject(
     getScopedRepositoryProviderName(
       CommercialBankEthiopiaAccountEnquiriesEntity,
@@ -29,18 +27,6 @@ export class CommercialBankEthiopiaService implements FspIntegrationInterface {
     private readonly commercialBankEthiopiaApiService: CommercialBankEthiopiaApiService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
   ) {}
-
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async createCreditTransferOrGetTransactionStatus({
     inputParams,

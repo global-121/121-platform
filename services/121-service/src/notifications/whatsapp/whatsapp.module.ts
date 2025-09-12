@@ -8,15 +8,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { API_PATHS } from '@121-service/src/config';
 import { AuthMiddlewareTwilio } from '@121-service/src/notifications/auth.middlewareTwilio';
-import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
+import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { WhatsappController } from '@121-service/src/notifications/whatsapp/whatsapp.controller';
 import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsapp.service';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { UserModule } from '@121-service/src/user/user.module';
 
 @Module({

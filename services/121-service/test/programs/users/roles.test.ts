@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
-import { DefaultUserRole } from '@121-service/src/user/user-role.enum';
+import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import {
   getAccessToken,
   getServer,

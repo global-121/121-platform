@@ -6,7 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
-import { UserEntity } from '@121-service/src/user/user.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 export class NoteScopedRepository extends ScopedRepository<NoteEntity> {
   constructor(

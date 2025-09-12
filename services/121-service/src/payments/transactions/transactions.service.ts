@@ -4,7 +4,7 @@ import chunk from 'lodash/chunk';
 import { Equal, In, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
@@ -12,12 +12,9 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 @Injectable()
 export class TransactionsService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(LatestTransactionEntity)
   private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
 

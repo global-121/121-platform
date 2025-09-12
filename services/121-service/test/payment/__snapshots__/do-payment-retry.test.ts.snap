@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Do payment retry should thrown an error if payment does not exist yet 1`] = `
+{
+  "errors": "No failed transactions found for this payment.",
+}
+`;
+
+exports[`Do payment retry should thrown an error if payment has no failed transactions 1`] = `
+{
+  "errors": "No failed transactions found for this payment.",
+}
+`;
+
+exports[`Do payment retry should thrown an error if referenceId filter is used but no failed transactions found for that referenceId 1`] = `
+{
+  "errors": "The registration with referenceId ref-success does not have a failed transaction for this payment.",
+}
+`;

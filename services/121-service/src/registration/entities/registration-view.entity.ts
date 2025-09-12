@@ -12,11 +12,11 @@ import {
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
@@ -146,7 +146,7 @@ export class RegistrationViewEntity {
   public paymentAmountMultiplier: number;
 
   @ViewColumn()
-  public fspName?: Fsps;
+  public fspName: Fsps;
 
   @ViewColumn()
   public programFspConfigurationId: number;

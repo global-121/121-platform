@@ -9,20 +9,20 @@ import {
   TWILIO_SANDBOX_WHATSAPP_NUMBER,
 } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
+import { TwilioStatusCallbackDto } from '@121-service/src/notifications/dto/twilio.dto';
+import {
+  NotificationType,
+  TwilioMessageEntity,
+} from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
-import { MessageProcessType } from '@121-service/src/notifications/message-job.dto';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
-import { TwilioStatusCallbackDto } from '@121-service/src/notifications/twilio.dto';
-import {
-  NotificationType,
-  TwilioMessageEntity,
-} from '@121-service/src/notifications/twilio.entity';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()

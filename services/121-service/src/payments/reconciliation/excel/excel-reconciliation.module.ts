@@ -7,7 +7,7 @@ import { ExcelModule } from '@121-service/src/payments/fsp-integration/excel/exc
 import { ExcelReconciliationController } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.controller';
 import { ExcelReconciliationService } from '@121-service/src/payments/reconciliation/excel/excel-reconciliation.service';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 

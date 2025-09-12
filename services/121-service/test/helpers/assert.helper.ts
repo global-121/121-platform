@@ -1,6 +1,6 @@
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
 
 export function processMessagePlaceholders(
   messageTemplates: MessageTemplateEntity[],

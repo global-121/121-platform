@@ -3,18 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
 import { FspConfigurationProperties } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { PaPaymentDataDto } from '@121-service/src/payments/dto/pa-payment-data.dto';
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
-import { FspIntegrationInterface } from '@121-service/src/payments/fsp-integration/fsp-integration.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 
 @Injectable()
-export class ExcelService implements FspIntegrationInterface {
+export class ExcelService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
@@ -23,18 +21,6 @@ export class ExcelService implements FspIntegrationInterface {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
   ) {}
-
-  /**
-   * Do not use! This function was previously used to send payments.
-   * It has been deprecated and should not be called anymore.
-   */
-  public async sendPayment(
-    _paPaymentList: PaPaymentDataDto[],
-    _programId: number,
-    _paymentId: number,
-  ): Promise<void> {
-    throw new Error('Method should not be called anymore.');
-  }
 
   public async getFspInstructions({
     transactions,
@@ -63,7 +49,7 @@ export class ExcelService implements FspIntegrationInterface {
       });
     const chunkSize = 400000;
     const registrations =
-      await this.registrationsPaginationService.getRegistrationsChunked(
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
         programId,
         {
           select: [...new Set(exportColumns.concat(['referenceId']))], // add referenceId (and deduplicate) to join transaction amount later
@@ -116,7 +102,9 @@ export class ExcelService implements FspIntegrationInterface {
 
   public joinRegistrationsAndTransactions(
     orderedRegistrations: Awaited<
-      ReturnType<RegistrationsPaginationService['getRegistrationsChunked']>
+      ReturnType<
+        RegistrationsPaginationService['getRegistrationViewsChunkedByPaginateQuery']
+      >
     >,
     transactions: TransactionReturnDto[],
     exportColumns: string[],

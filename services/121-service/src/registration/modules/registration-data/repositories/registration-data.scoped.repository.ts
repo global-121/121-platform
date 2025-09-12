@@ -5,8 +5,8 @@ import { SelectQueryBuilder } from 'typeorm';
 import { Repository } from 'typeorm';
 
 import { RegistrationDataByNameDto } from '@121-service/src/registration/dto/registration-data-by-name.dto';
-import { RegistrationEntity } from '@121-service/src/registration/registration.entity';
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/registration-attribute-data.entity';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 

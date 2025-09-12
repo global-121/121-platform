@@ -5,18 +5,19 @@ import { Equal, In, Not, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
+import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
+import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
-import { LatestMessageEntity } from '@121-service/src/notifications/latest-message.entity';
-import { MessageProcessTypeExtension } from '@121-service/src/notifications/message-job.dto';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
-import { TwilioMessageEntity } from '@121-service/src/notifications/twilio.entity';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
-import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.entity';
+import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { BulkActionResultDto } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import {
   DefaultRegistrationDataAttributeNames,
   GenericRegistrationAttributes,
@@ -24,7 +25,6 @@ import {
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { StatusChangeHelper } from '@121-service/src/registration/helpers/status-change.helper';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';

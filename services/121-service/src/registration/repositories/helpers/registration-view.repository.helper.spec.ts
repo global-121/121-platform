@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { FindOperatorType } from 'typeorm';
 
-import { RegistrationViewEntity } from '@121-service/src/registration/registration-view.entity';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationViewRepositoryHelper } from '@121-service/src/registration/repositories/helpers/registration-view.repository.helper';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 

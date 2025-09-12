@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
-import { ProgramEntity } from '@121-service/src/programs/program.entity';
+import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 
 @Unique('uniqueTemplatePerTypeLanguageProgram', [
