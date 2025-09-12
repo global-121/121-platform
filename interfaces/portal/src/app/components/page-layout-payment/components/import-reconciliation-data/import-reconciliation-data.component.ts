@@ -9,7 +9,6 @@ import {
 
 import {
   injectMutation,
-  injectQuery,
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { ButtonModule } from 'primeng/button';
@@ -48,10 +47,6 @@ export class ImportReconciliationDataComponent {
   private toastService = inject(ToastService);
 
   readonly dialogVisible = model<boolean>(false);
-
-  paymentInProgress = injectQuery(
-    this.paymentApiService.getPaymentStatus(this.projectId),
-  );
 
   readonly canImportReconciliationData = computed(() =>
     this.authService.hasAllPermissions({
@@ -114,16 +109,8 @@ export class ImportReconciliationDataComponent {
       }
     },
   }));
-  importReconciliationData() {
-    if (this.paymentInProgress.data()?.inProgress) {
-      this.toastService.showToast({
-        severity: 'warn',
-        summary: $localize`Import not possible`,
-        detail: $localize`A payment is currently in progress. Please try again later`,
-      });
-      return;
-    }
 
+  importReconciliationData() {
     this.dialogVisible.set(true);
   }
 }

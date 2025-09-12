@@ -70,6 +70,10 @@ export class ExcelReconciliationController {
     description:
       'Uploaded payment excel reconciliation data - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'This endpoint cannot be used when a payment is in progress',
+  })
   @Post('programs/:programId/payments/:paymentId/excel-reconciliation')
   @ApiConsumes('multipart/form-data')
   @ApiBody(FILE_UPLOAD_API_FORMAT)
