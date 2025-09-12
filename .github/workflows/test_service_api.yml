@@ -124,6 +124,10 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run lint'
 
+      - name: Install Knip native bindings
+        working-directory: ${{ env.workingDirectory }}
+        run: 'npm install @oxc-resolver/binding-linux-x64-gnu --no-save'
+
       - name: Check for dead code
         working-directory: ${{ env.workingDirectory }}
         run: 'npm run knip'
