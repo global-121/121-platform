@@ -193,17 +193,15 @@ export class MessageService {
           errorMessage = error;
         },
       );
-    const transactionStep = 1;
     const status = messageSid
       ? TransactionStatusEnum.waiting
       : TransactionStatusEnum.error;
 
     if (messageJobDto.customData?.paymentId) {
-      await this.intersolveVoucherService.updateTransactionBasedTwilioMessageCreate(
+      await this.intersolveVoucherService.updateWaitingTransactionStep1(
         messageJobDto.customData.paymentId,
         messageJobDto.registrationId,
         status,
-        transactionStep,
         status === TransactionStatusEnum.error ? undefined : messageSid, // else = 'waiting'
         status === TransactionStatusEnum.error ? errorMessage : undefined, // else = 'waiting'
       );
