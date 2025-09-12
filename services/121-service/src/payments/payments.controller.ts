@@ -245,6 +245,10 @@ export class PaymentsController {
     description:
       'Get payments instructions for past payment to post in Fsp Portal - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
   })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'This endpoint cannot be used when a payment is in progress',
+  })
   @Get('programs/:programId/payments/:paymentId/fsp-instructions')
   public async getFspInstructions(
     @Param('programId', ParseIntPipe)

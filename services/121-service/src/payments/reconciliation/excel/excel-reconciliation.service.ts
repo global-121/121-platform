@@ -11,6 +11,7 @@ import { ReconciliationFeedbackDto } from '@121-service/src/payments/dto/reconci
 import { ExcelFspInstructions } from '@121-service/src/payments/fsp-integration/excel/dto/excel-fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
 import { ReconciliationResult } from '@121-service/src/payments/interfaces/reconciliation-result.interface';
+import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -36,6 +37,7 @@ export class ExcelReconciliationService {
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly fileImportService: FileImportService,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
+    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
   ) {}
 
   public async getImportInstructionsTemplate(
@@ -90,6 +92,15 @@ export class ExcelReconciliationService {
       countNotFound: number;
     };
   }> {
+    if (
+      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
+    ) {
+      throw new HttpException(
+        'Cannot import FSP reconciliation data while payment is in progress',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const program = await this.programRepository.findOneOrFail({
       where: {
         id: Equal(programId),

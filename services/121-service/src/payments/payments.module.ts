@@ -70,6 +70,10 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     createScopedRepositoryProvider(RegistrationAttributeDataEntity),
   ],
   controllers: [PaymentsController],
-  exports: [PaymentsExecutionService, PaymentsReportingService],
+  exports: [
+    PaymentsExecutionService,
+    PaymentsReportingService,
+    PaymentsProgressHelperService,
+  ],
 })
 export class PaymentsModule {}
