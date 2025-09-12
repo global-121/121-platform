@@ -587,7 +587,7 @@ export class IntersolveVoucherService {
     return unusedVouchersDtos;
   }
 
-  public async storeTransactionResultStep2(
+  public async processTransactionResultStep2(
     paymentId: number,
     amount: number,
     registrationId: number,
@@ -604,7 +604,7 @@ export class IntersolveVoucherService {
       intersolveVoucher.send = true;
       await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
     }
-    const transactionResultDto = await this.createTransactionResultStep2(
+    const transactionResultDto = await this.generateTransactionResultStep2Dto(
       amount,
       registrationId,
       status,
@@ -643,11 +643,10 @@ export class IntersolveVoucherService {
       programFspConfigurationId,
     };
 
-    await this.transactionsService.storeTransactionUpdateStatus(
-      transactionResultDto,
-      transactionRelationDetails,
-      2,
-    );
+    await this.transactionsService.storeTransactionForStep2({
+      transactionResponse: transactionResultDto,
+      relationDetails: transactionRelationDetails,
+    });
   }
 
   private async getUserFspConfigIdForTransactionStep2(
@@ -668,7 +667,7 @@ export class IntersolveVoucherService {
     return transaction;
   }
 
-  public async createTransactionResultStep2(
+  public async generateTransactionResultStep2Dto(
     amount: number,
     registrationId: number,
     status: TransactionStatusEnum,

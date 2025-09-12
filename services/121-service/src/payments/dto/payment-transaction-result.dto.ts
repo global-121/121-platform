@@ -7,7 +7,6 @@ export class PaTransactionResultDto {
   public referenceId: string;
   public status: TransactionStatusEnum;
   public message?: string | null;
-  public notificationObjects?: TransactionNotificationObject[];
   public date?: Date;
   public customData?: any;
   public calculatedAmount: number;
@@ -15,10 +14,4 @@ export class PaTransactionResultDto {
   public messageSid?: string;
   public registrationId?: number;
   public errorMessage?: string | null;
-}
-
-export class TransactionNotificationObject {
-  public notificationKey: string;
-  public bulkSize: number;
-  public dynamicContent?: string[] = [];
 }
