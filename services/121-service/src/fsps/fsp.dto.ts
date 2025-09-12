@@ -16,9 +16,6 @@ export class FspDto {
   @ApiProperty({ example: { en: 'default label' } })
   readonly defaultLabel: LocalizedString;
 
-  @ApiProperty({ example: true })
-  readonly notifyOnTransaction: boolean;
-
   @ApiProperty({
     example: [
       { name: 'houseNumber', isRequired: true },
