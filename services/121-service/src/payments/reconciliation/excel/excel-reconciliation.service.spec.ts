@@ -50,7 +50,7 @@ describe('ExcelReconciliationService', () => {
     };
 
     const mockRegistrationsPaginationService = {
-      getRegistrationsChunked: jest.fn(),
+      getRegistrationViewsChunkedByPaginateQuery: jest.fn(),
     };
 
     const mockFileImportService = {
@@ -167,7 +167,7 @@ describe('ExcelReconciliationService', () => {
       registrationViewScopedRepository.getQueryBuilderForFspInstructions.mockReturnValue(
         {} as any,
       );
-      registrationsPaginationService.getRegistrationsChunked.mockResolvedValue(
+      registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery.mockResolvedValue(
         [],
       );
       transactionsService.getLastTransactions.mockResolvedValue([]);
