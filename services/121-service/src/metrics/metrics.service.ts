@@ -420,9 +420,17 @@ export class MetricsService {
     return res;
   }
 
-  public async getRegistrationCountByDate(
-    programId: number,
-  ): Promise<RegistrationCountByDate> {
+  public async getRegistrationCountByDate({
+    programId,
+    limitNumberOfDays,
+  }: {
+    programId: number;
+    limitNumberOfDays?: number;
+  }): Promise<RegistrationCountByDate> {
+    console.log(
+      '🚀 ~ MetricsService ~ getRegistrationCountByDate ~ limitNumberOfDays:',
+      limitNumberOfDays,
+    );
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`to_char("created", 'yyyy-mm-dd') as "created"`)

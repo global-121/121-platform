@@ -175,6 +175,7 @@ export class MetricsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration count by created date.' })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({ name: 'limitNumberOfDays', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Registration count by created date',
@@ -183,8 +184,13 @@ export class MetricsController {
   public async getRegistrationCountByDate(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Query('limitNumberOfDays')
+    limitNumberOfDays: number,
   ): Promise<Record<string, number>> {
-    return await this.metricsService.getRegistrationCountByDate(programId);
+    return await this.metricsService.getRegistrationCountByDate({
+      programId,
+      limitNumberOfDays,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
