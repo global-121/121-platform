@@ -97,21 +97,10 @@ class TableComponent {
   }: {
     expectedRowCount: number;
   }) {
-    const timeout = 6000;
-    const pollInterval = 200;
-    const start = Date.now();
-
-    while (Date.now() - start < timeout) {
+    await expect(async () => {
       const rowCount = await this.tableRows.count();
-      if (rowCount === expectedRowCount) {
-        expect(rowCount).toBe(expectedRowCount);
-        return;
-      }
-      await this.page.waitForTimeout(pollInterval);
-    }
-
-    const finalCount = await this.tableRows.count();
-    expect(finalCount).toBe(expectedRowCount);
+      expect(rowCount).toBe(expectedRowCount);
+    }).toPass({ timeout: 2000 });
   }
 
   async globalSearch(searchText: string) {
