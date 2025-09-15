@@ -7,11 +7,12 @@ class CustomTestError extends HttpException {
     super('This is a TestException', 418);
   }
 }
+import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 
 describe('ParsePositiveNumberPipe', () => {
   describe('value is optional', () => {
     it('should not fail if value missing', () => {
-      const pipe = new ParsePositiveNumberPipe({
+      const pipe = new AssertPositiveNumberPipe({
         optional: true,
       });
       // Arrange
@@ -23,7 +24,7 @@ describe('ParsePositiveNumberPipe', () => {
     });
   });
   describe('value is non-optional', () => {
-    const pipe = new ParsePositiveNumberPipe({});
+    const pipe = new AssertPositiveNumberPipe({});
     it('should throw for no value', () => {
       const input = undefined;
       expect(() => pipe.transform(input)).toThrow(

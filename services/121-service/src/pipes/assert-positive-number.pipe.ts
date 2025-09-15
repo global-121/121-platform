@@ -12,19 +12,17 @@ import { isNil } from 'lodash';
 
 import { toTypeHelper } from '@121-service/src/utils/to-type.helper';
 
-export interface ParsePositiveNumberPipeOptions {
+interface Options {
   errorHttpStatusCode?: ErrorHttpStatusCode;
   exceptionFactory?: (error: string) => any;
   optional?: boolean;
 }
 
 @Injectable()
-export class ParsePositiveNumberPipe implements PipeTransform<number> {
+export class AssertPositiveNumberPipe implements PipeTransform<number> {
   protected exceptionFactory: (error: string) => any;
 
-  constructor(
-    @Optional() protected readonly options?: ParsePositiveNumberPipeOptions,
-  ) {
+  constructor(@Optional() protected readonly options?: Options) {
     options = options || {};
     const { exceptionFactory, errorHttpStatusCode = HttpStatus.BAD_REQUEST } =
       options;
