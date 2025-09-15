@@ -1,23 +1,15 @@
 {
   "$schema": "node_modules/knip/schema.json",
-  "entry": ["index.js"],
-  "project": [
-    "src/**/*.{js,ts}",
-    "!src/**/*.{spec,test}.{js,ts}",
-    "!src/migration/**/*.{js,ts}",
-    "!src/seed-data/**/*.{js,ts}",
-    "!src/datasource-manage-migrations.ts"
-  ],
-  "ignore": ["src/utils/test-helpers/**", "src/scoped.repository.ts"],
   "jest": {
-    "entry": []
+    "config": "jest.{integration,unit}.config.js"
   },
   "rules": {
+    "binaries": "warn",
     "dependencies": "warn",
     "devDependencies": "warn",
-    "unlisted": "warn",
-    "binaries": "warn",
     "enumMembers": "warn",
-    "types": "warn"
-  }
+    "types": "warn",
+    "unlisted": "warn"
+  },
+  "project": ["src/**/*.ts", "!src/migration/*.ts", "test/**/*.ts"]
 }
