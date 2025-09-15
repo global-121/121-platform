@@ -10,50 +10,50 @@ class CustomTestError extends HttpException {
 
 describe('ParsePositiveNumberPipe', () => {
   describe('value is optional', () => {
-    it('should not fail if value missing', async () => {
+    it('should not fail if value missing', () => {
       const pipe = new ParsePositiveNumberPipe({
         optional: true,
       });
       // Arrange
       const input = undefined;
       // Act
-      const result = await pipe.transform(input);
+      const result = pipe.transform(input);
       // Assert
       expect(result).toBeUndefined();
     });
   });
   describe('value is non-optional', () => {
     const pipe = new ParsePositiveNumberPipe({});
-    it('should throw for no value', async () => {
+    it('should throw for no value', () => {
       const input = undefined;
-      await expect(pipe.transform(input)).rejects.toThrow(
+      expect(() => pipe.transform(input)).toThrow(
         'Validation failed (numeric value is expected)',
       );
     });
 
-    it('should throw for non-number', async () => {
+    it('should throw for non-number', () => {
       // TypeScript does not correctly type check pipes, so we do in the pipe.
       // Also means we need to test this like this.
       const input = 'not-a-number' as unknown as number;
-      await expect(pipe.transform(input)).rejects.toThrow(
+      expect(() => pipe.transform(input)).toThrow(
         'Validation failed (numeric value is expected)',
       );
     });
 
-    it('should throw for non-positive number', async () => {
+    it('should throw for non-positive number', () => {
       // Arrange
       const input = -121;
       // Act & Assert
-      await expect(pipe.transform(input)).rejects.toThrow(
+      expect(() => pipe.transform(input)).toThrow(
         'Validation failed (value -121 is not a positive number)',
       );
     });
 
-    it('should return number for positive number', async () => {
+    it('should return number for positive number', () => {
       // Arrange
       const num = 3;
       // Act
-      const result = await pipe.transform(num);
+      const result = pipe.transform(num);
       // Assert
       expect(result).toBe(num);
     });

@@ -34,7 +34,7 @@ export class ParsePositiveNumberPipe implements PipeTransform<number> {
       ((error) => new HttpErrorByCode[errorHttpStatusCode](error));
   }
 
-  async transform(value?: number): Promise<number | undefined> {
+  transform(value?: number): number | undefined {
     if (isNil(value) && this.options?.optional) {
       return value;
     }
