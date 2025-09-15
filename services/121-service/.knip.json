@@ -11,5 +11,5 @@
     "types": "warn",
     "unlisted": "warn"
   },
-  "project": ["src/**/*.ts", "!src/migration/*.ts", "test/**/*.ts"]
+  "project": ["src/**/*.ts", "!src/migration/*.ts"]
 }
