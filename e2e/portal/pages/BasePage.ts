@@ -55,7 +55,11 @@ class BasePage {
   async navigateToProgramPage(
     pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Team',
   ) {
-    await this.projectHeader.getByRole('tab', { name: pageName }).click();
+    const tab = this.projectHeader.getByRole('tab', { name: pageName });
+    await expect(async () => {
+      await expect(tab).toBeVisible();
+      await tab.click();
+    }).toPass({ timeout: 5000 });
   }
 
   async selectProgram(programName: string) {

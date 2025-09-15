@@ -96,7 +96,7 @@ class TableComponent {
     expectedRowCount,
   }: {
     expectedRowCount: number;
-  }): Promise<void> {
+  }) {
     await expect(async () => {
       const rowCount = await this.tableRows.count();
       expect(rowCount).toBe(expectedRowCount);
