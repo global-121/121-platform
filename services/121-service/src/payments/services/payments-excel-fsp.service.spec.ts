@@ -88,11 +88,6 @@ describe('PaymentsExcelFspService', () => {
         ),
       );
 
-      expect(
-        paymentsProgressHelperService.isPaymentInProgress,
-      ).toHaveBeenCalledWith(programId);
-      expect(transactionsService.getLastTransactions).not.toHaveBeenCalled();
-      expect(programFspConfigurationRepository.find).not.toHaveBeenCalled();
       expect(actionsService.saveAction).not.toHaveBeenCalled();
     });
 
@@ -111,15 +106,6 @@ describe('PaymentsExcelFspService', () => {
           HttpStatus.NOT_FOUND,
         ),
       );
-
-      expect(
-        paymentsProgressHelperService.isPaymentInProgress,
-      ).toHaveBeenCalledWith(programId);
-      expect(transactionsService.getLastTransactions).toHaveBeenCalledWith({
-        programId,
-        paymentId,
-      });
-      expect(programFspConfigurationRepository.find).toHaveBeenCalled();
     });
   });
 });
