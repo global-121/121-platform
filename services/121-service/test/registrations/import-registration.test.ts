@@ -13,6 +13,7 @@ import {
   patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
   unpublishProgram,
+  waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
@@ -409,6 +410,12 @@ describe('Import a registration', () => {
 
     // Act
     await importRegistrations(programIdOCW, [registrationVisa], accessToken);
+
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+    });
 
     const messageHistoryResponse = await getMessageHistory(
       programIdOCW,
