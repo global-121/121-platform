@@ -70,7 +70,7 @@ test.describe('Export registrations with different formats and configurations', 
     });
   });
 
-  test('[37356] Export should only have selected columns', async () => {
+  test.only('[37356] Export should only have selected columns', async () => {
     const registrationsPage = new RegistrationsPage(page);
     const exportDataComponent = new ExportData(page);
 
@@ -81,8 +81,10 @@ test.describe('Export registrations with different formats and configurations', 
     });
 
     await test.step('Export list and validate XLSX files downloaded', async () => {
+      console.log('STEP 1');
       // Configure columns to be exported
       await registrationsPage.deselectAllColumns();
+      console.log('STEP 2');
       await registrationsPage.configureTableColumns([
         'FSP',
         'Address street',
@@ -90,7 +92,7 @@ test.describe('Export registrations with different formats and configurations', 
         'Scope',
         'Name',
       ]);
-
+      console.log('STEP 3');
       await registrationsPage.selectAllRegistrations();
       await registrationsPage.clickAndSelectExportOption(
         'Selected registrations',
