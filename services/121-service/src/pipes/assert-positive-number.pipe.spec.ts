@@ -1,12 +1,3 @@
-import { HttpException } from '@nestjs/common';
-
-import { ParsePositiveNumberPipe } from '@121-service/src/pipes/parse-positive-number.pipe';
-
-class CustomTestError extends HttpException {
-  constructor() {
-    super('This is a TestException', 418);
-  }
-}
 import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 
 describe('ParsePositiveNumberPipe', () => {
