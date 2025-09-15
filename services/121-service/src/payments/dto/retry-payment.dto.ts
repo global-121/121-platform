@@ -13,7 +13,7 @@ export class RetryPaymentDto {
     ],
   })
   @IsOptional()
-  @ArrayMaxSize(100000) // Arbitrary large number to prevent abuse
+  @ArrayMaxSize(100000) // to prevent abuse: 100k
   @IsArray()
   public readonly referenceIds?: string[]; // In the frontend we always send the referenceIds so we can consider making this required
 }
