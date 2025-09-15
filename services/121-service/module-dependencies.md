@@ -148,6 +148,7 @@ graph LR
   ExcelReconcilicationModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule
   ExcelReconcilicationModule-->RegistrationsModule
+  ExcelReconcilicationModule-->PaymentsModule
   SafaricomReconciliationModule-->SafaricomModule
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule

@@ -8,6 +8,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
 import { ExcelService } from '@121-service/src/payments/fsp-integration/excel/excel.service';
+import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
@@ -25,6 +26,7 @@ export class PaymentsExcelFspService {
     private readonly transactionsService: TransactionsService,
     private readonly excelService: ExcelService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
   ) {}
 
   public async getFspInstructions(
@@ -32,6 +34,15 @@ export class PaymentsExcelFspService {
     paymentId: number,
     userId: number,
   ): Promise<FspInstructions[]> {
+    if (
+      await this.paymentsProgressHelperService.isPaymentInProgress(programId)
+    ) {
+      throw new HttpException(
+        'Cannot export FSP instructions while payment is in progress',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const transactions = await this.transactionsService.getLastTransactions({
       programId,
       paymentId,
