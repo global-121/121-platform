@@ -215,15 +215,14 @@ describe('MessageService', () => {
       });
 
       expect(
-        intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
+        intersolveVoucherService.updateWaitingTransactionStep1,
       ).toHaveBeenCalledTimes(1);
       expect(
-        intersolveVoucherService.updateTransactionBasedTwilioMessageCreate,
+        intersolveVoucherService.updateWaitingTransactionStep1,
       ).toHaveBeenCalledWith(
         testMessageJob.customData.paymentId,
         testMessageJob.registrationId,
         TransactionStatusEnum.waiting,
-        1,
         testMessageID,
         undefined,
       );

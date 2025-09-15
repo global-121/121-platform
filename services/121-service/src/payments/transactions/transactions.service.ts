@@ -177,19 +177,18 @@ export class TransactionsService {
     }
   }
 
-  public async updateWaitingTransaction(
+  public async updateWaitingTransactionStep1(
     paymentId: number,
-    regisrationId: number,
+    registrationId: number,
     status: TransactionStatusEnum,
-    transactionStep: number,
     messageSid?: string,
     errorMessage?: string,
   ): Promise<void> {
     const foundTransaction = await this.transactionScopedRepository.findOne({
       where: {
         paymentId: Equal(paymentId),
-        registrationId: Equal(regisrationId),
-        transactionStep: Equal(transactionStep),
+        registrationId: Equal(registrationId),
+        transactionStep: Equal(1),
         status: Equal(TransactionStatusEnum.waiting),
       },
     });

@@ -383,19 +383,17 @@ export class IntersolveVoucherService {
     });
   }
 
-  public async updateTransactionBasedTwilioMessageCreate(
+  public async updateWaitingTransactionStep1(
     paymentId: number,
-    regisrationId: number,
+    registrationId: number,
     status: TransactionStatusEnum,
-    transactionStep: number,
     messageSid?: string,
     errorMessage?: string,
   ): Promise<void> {
-    await this.transactionsService.updateWaitingTransaction(
+    await this.transactionsService.updateWaitingTransactionStep1(
       paymentId,
-      regisrationId,
+      registrationId,
       status,
-      transactionStep,
       messageSid,
       errorMessage,
     );
