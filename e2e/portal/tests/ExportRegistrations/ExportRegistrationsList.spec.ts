@@ -92,6 +92,8 @@ test.describe('Export registrations with different formats and configurations', 
       ]);
 
       await registrationsPage.selectAllRegistrations();
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForLoadState('networkidle');
       await registrationsPage.clickAndSelectExportOption(
         'Selected registrations',
       );
