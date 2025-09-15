@@ -35,6 +35,7 @@ import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-form
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
 import { AssertDatePipe } from '@121-service/src/pipes/assert-date.pipe';
+import { AssertIso8601Pipe } from '@121-service/src/pipes/assert-iso8601.pipe';
 import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -189,6 +190,7 @@ export class MetricsController {
     programId: number,
     @Query(
       'startDate',
+      new AssertIso8601Pipe({ optional: true }),
       new ParseDatePipe({ optional: true }),
       new AssertDatePipe({ optional: true, allowFuture: false }),
     )
