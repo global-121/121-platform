@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseDatePipe,
   ParseIntPipe,
   Query,
   Req,
@@ -33,6 +34,7 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
+import { AssertDatePipe } from '@121-service/src/pipes/assert-date.pipe';
 import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
@@ -176,7 +178,7 @@ export class MetricsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration count by created date.' })
   @ApiParam({ name: 'programId', required: true })
-  @ApiQuery({ name: 'limitNumberOfDays', required: false })
+  @ApiQuery({ name: 'startDate', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Registration count by created date',
@@ -185,12 +187,16 @@ export class MetricsController {
   public async getRegistrationCountByDate(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('limitNumberOfDays')
-    limitNumberOfDays: number,
+    @Query(
+      'startDate',
+      new ParseDatePipe({ optional: true }),
+      new AssertDatePipe({ optional: true, allowFuture: false }),
+    )
+    startDate: Date,
   ): Promise<Record<string, number>> {
     return await this.metricsService.getRegistrationCountByDate({
       programId,
-      limitNumberOfDays,
+      startDate,
     });
   }
 
