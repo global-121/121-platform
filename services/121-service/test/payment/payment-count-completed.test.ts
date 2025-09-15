@@ -20,7 +20,6 @@ import {
   getMessageHistory,
   getRegistrations,
   importRegistrations,
-  waitForStatusChangeToComplete,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -155,18 +154,13 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         maxWaitTimeMs: 10_000,
       });
 
-      await waitForStatusChangeToComplete(
-        programId,
-        1,
-        RegistrationStatusEnum.completed,
-        8_000,
-        accessToken,
-      );
-
+      // This is a bit sketchy: if for example in the future more messages are sent in the registration phase, this test will fail.
+      // Is there a better way to do this?
       await waitForMessagesToComplete({
         programId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
+        minimumNumberOfMessagesPerReferenceId: 6,
       });
 
       const messageHistoryResponse = await getMessageHistory(
@@ -180,8 +174,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         (message) =>
           message.attributes.contentType === MessageContentType.completed,
       );
-      console.log(messageHistory);
-      console.log('expectedMessage: ', expectedMessage);
+
       expect(expectedMessage).toBeDefined();
     });
   });
