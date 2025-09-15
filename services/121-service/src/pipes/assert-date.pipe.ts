@@ -19,13 +19,25 @@ export class AssertDatePipe implements PipeTransform<Date> {
   protected exceptionFactory: (error: string) => any;
 
   constructor(protected readonly options: Options) {
-    //TODO: type check that options has at least one attribute
-    if (Object.keys(options).length === 0) {
+    // We do a lot of checks here to make sure this pipe is not used instead of
+    // the builtin parseDatePipe. This custom pipe should only be used when
+    // additional checks are needed. Using it *without* stating which additional
+    // check is not useful.
+
+    // Type checking here is difficult. Runtime is enough.
+    const optionsPassed = Object.keys(options);
+    const numberOfOptionsPassed = optionsPassed.length;
+
+    const noOptionsPassed = numberOfOptionsPassed === 0;
+    const onlyOptionalOptionPassed =
+      numberOfOptionsPassed === 1 && optionsPassed[0] === 'optional';
+
+    if (noOptionsPassed || onlyOptionalOptionPassed) {
       throw new Error(
-        'To use this pipe you must pass an options object with at least one attribute',
+        'To use this pipe you must pass an options object with at least one attribute that is not the "optional" option.',
       );
     }
-    options = options;
+
     const { exceptionFactory, errorHttpStatusCode = HttpStatus.BAD_REQUEST } =
       options;
 
