@@ -1,4 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
+
 exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should fail pay-out due to invalid phone number 1`] = `"Magic fail (ErrorCode: 1)"`;
 
 exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesfully pay-out 1`] = `
@@ -44,6 +45,7 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
+      "transactionId": 2,
     },
     "id": "message1",
     "type": "message",
@@ -68,6 +70,7 @@ Please reply “yes” to this message in order to receive:
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
+      "transactionId": 1,
     },
     "id": "message2",
     "type": "message",

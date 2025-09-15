@@ -15,5 +15,6 @@ export interface MessageActivity extends BaseActivity {
     contentType: MessageContentType;
     errorCode: string | null;
     notificationType: NotificationType;
+    transactionId?: number | null;
   };
 }

@@ -81,6 +81,7 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
         mediaUrl: true,
         contentType: true,
         errorCode: true,
+        transactionId: true,
       },
     });
 
