@@ -40,6 +40,7 @@ export class TransactionJobsHelperService {
     private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
+
   public async getRegistrationOrThrow(
     referenceId: string,
   ): Promise<RegistrationEntity> {
@@ -65,6 +66,7 @@ export class TransactionJobsHelperService {
   }: ProcessTransactionResultInput): Promise<TransactionEntity> {
     const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
       transactionJob;
+
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
