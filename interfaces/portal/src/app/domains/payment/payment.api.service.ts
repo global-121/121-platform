@@ -126,9 +126,7 @@ export class PaymentApiService extends DomainApiService {
   }) {
     const body: Dto<RetryPaymentDto> = {
       paymentId: Number(paymentId),
-      referenceIds: {
-        referenceIds,
-      },
+      referenceIds,
     };
 
     return this.httpWrapperService.perform121ServiceRequest<

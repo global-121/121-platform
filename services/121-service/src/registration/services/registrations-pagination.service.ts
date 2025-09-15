@@ -239,9 +239,6 @@ export class RegistrationsPaginationService {
     select?: string[];
     chunkSize?: number;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    // Validate referenceIds to prevent loop bound injection: https://github.com/global-121/121-platform/security/code-scanning/56
-    this.validateReferenceIdsArrayBeforeChunking(referenceIds);
-
     const defaultChunkSize = 20000;
     const effectiveChunkSize = chunkSize || defaultChunkSize;
 
@@ -264,27 +261,6 @@ export class RegistrationsPaginationService {
     }
 
     return allResults;
-  }
-
-  private validateReferenceIdsArrayBeforeChunking(referenceIds: string[]) {
-    const MAX_REFERENCE_IDS = 1000000; // safety limit: 1M
-    if (
-      !Array.isArray(referenceIds) ||
-      referenceIds.length > MAX_REFERENCE_IDS
-    ) {
-      throw new HttpException(
-        `referenceIds must be an array of strings (max length ${MAX_REFERENCE_IDS})`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    for (const referenceId of referenceIds) {
-      if (typeof referenceId !== 'string') {
-        throw new HttpException(
-          `referenceIds must be an array of strings (max length ${MAX_REFERENCE_IDS})`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
   }
 
   private async getFirstPageOfPaginatedRegistrations({
