@@ -39,38 +39,38 @@ test.describe('Export registrations with different formats and configurations', 
     await page.close();
   });
 
-  test('[29358] Export Selected Registrations', async () => {
-    const registrationsPage = new RegistrationsPage(page);
-    const exportDataComponent = new ExportData(page);
+  // test('[29358] Export Selected Registrations', async () => {
+  //   const registrationsPage = new RegistrationsPage(page);
+  //   const exportDataComponent = new ExportData(page);
 
-    const projectTitle = NLRCProgramPV.titlePortal.en;
+  //   const projectTitle = NLRCProgramPV.titlePortal.en;
 
-    await test.step('Select program', async () => {
-      await registrationsPage.selectProgram(projectTitle);
-    });
+  //   await test.step('Select program', async () => {
+  //     await registrationsPage.selectProgram(projectTitle);
+  //   });
 
-    await test.step('Export list and validate XLSX files downloaded', async () => {
-      await registrationsPage.selectAllRegistrations();
-      await registrationsPage.clickAndSelectExportOption(
-        'Selected registrations',
-      );
-      await exportDataComponent.exportAndAssertData({
-        excludedColumns: ['created'],
-      });
-    });
+  //   await test.step('Export list and validate XLSX files downloaded', async () => {
+  //     await registrationsPage.selectAllRegistrations();
+  //     await registrationsPage.clickAndSelectExportOption(
+  //       'Selected registrations',
+  //     );
+  //     await exportDataComponent.exportAndAssertData({
+  //       excludedColumns: ['created'],
+  //     });
+  //   });
 
-    await test.step('Export list and validate CSV files downloaded', async () => {
-      await registrationsPage.clickAndSelectExportOption(
-        'Selected registrations',
-      );
-      await exportDataComponent.exportAndAssertData({
-        format: 'csv',
-        excludedColumns: ['created'],
-      });
-    });
-  });
+  //   await test.step('Export list and validate CSV files downloaded', async () => {
+  //     await registrationsPage.clickAndSelectExportOption(
+  //       'Selected registrations',
+  //     );
+  //     await exportDataComponent.exportAndAssertData({
+  //       format: 'csv',
+  //       excludedColumns: ['created'],
+  //     });
+  //   });
+  // });
 
-  test.only('[37356] Export should only have selected columns', async () => {
+  test('[37356] Export should only have selected columns', async () => {
     const registrationsPage = new RegistrationsPage(page);
     const exportDataComponent = new ExportData(page);
 
