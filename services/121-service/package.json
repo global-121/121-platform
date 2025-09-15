@@ -135,7 +135,6 @@
     "istanbul-merge": "^2.0.0",
     "jest": "^29.7.0",
     "jest-ci-spec-reporter": "^1.0.4",
-    "knip": "^5.63.1",
     "nodemon": "^3.1.10",
     "nyc": "^17.1.0",
     "prettier": "^3.6.2",
