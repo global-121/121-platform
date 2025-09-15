@@ -92,8 +92,10 @@ test.describe('Export registrations with different formats and configurations', 
       ]);
 
       await registrationsPage.selectAllRegistrations();
+      // Add wait for page to load after selecting all registrations to avoid flakiness
       await page.waitForLoadState('domcontentloaded');
       await page.waitForLoadState('networkidle');
+
       await registrationsPage.clickAndSelectExportOption(
         'Selected registrations',
       );
