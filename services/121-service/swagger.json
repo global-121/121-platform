@@ -568,7 +568,6 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
-      "sortBy",
       "search",
       "searchBy"
     ],
@@ -607,7 +606,6 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
-      "sortBy",
       "search",
       "searchBy"
     ],
@@ -654,7 +652,6 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
-      "sortBy",
       "search",
       "searchBy"
     ],
@@ -824,7 +821,6 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
-      "sortBy",
       "search",
       "searchBy",
       "format",
@@ -904,7 +900,6 @@
       "filter.personAffectedSequence",
       "filter.lastMessageStatus",
       "filter.duplicateStatus",
-      "sortBy",
       "search",
       "searchBy"
     ],
