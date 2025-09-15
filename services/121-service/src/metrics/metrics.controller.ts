@@ -33,7 +33,7 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
-import { AssertPositiveNumberPipe } from '@121-service/src/pipes/parse-positive-number.pipe';
+import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';

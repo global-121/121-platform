@@ -1,17 +1,15 @@
-import { HttpException } from '@nestjs/common';
+import { AssertDatePipe } from '@121-service/src/pipes/assert-date.pipe';
 
-import { AssertPositiveNumberPipe } from '@121-service/src/pipes/parse-positive-number.pipe';
-
-class CustomTestError extends HttpException {
-  constructor() {
-    super('This is a TestException', 418);
-  }
-}
+// class CustomTestError extends HttpException {
+//   constructor() {
+//     super('This is a TestException', 418);
+//   }
+// }
 
 describe('ParsePositiveNumberPipe', () => {
   describe('value is optional', () => {
     it('should not fail if value missing', async () => {
-      const pipe = new AssertPositiveNumberPipe({
+      const pipe = new AssertDatePipe({
         optional: true,
       });
       // Arrange
@@ -23,7 +21,7 @@ describe('ParsePositiveNumberPipe', () => {
     });
   });
   describe('value is non-optional', () => {
-    const pipe = new AssertPositiveNumberPipe({});
+    const pipe = new AssertDatePipe({});
     it('should throw for no value', async () => {
       const input = undefined;
       await expect(pipe.transform(input)).rejects.toThrow(

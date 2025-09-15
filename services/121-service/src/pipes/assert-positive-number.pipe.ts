@@ -44,6 +44,9 @@ export class AssertPositiveNumberPipe implements PipeTransform<number> {
       );
     }
 
+    // We know better than TypeScript here.
+    value = value as number;
+
     if (Number(value) <= 0) {
       throw this.exceptionFactory(
         `Validation failed (value ${value} is not a positive number)`,
