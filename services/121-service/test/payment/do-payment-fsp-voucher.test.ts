@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -113,7 +114,7 @@ describe('Do payment to 1 PA', () => {
         const createdDate = new Date(message.created);
         expect(createdDate.toString()).not.toBe('Invalid Date');
 
-        // Remove the "created" and "from" fields from the messages
+        // Remove the "created" field from the messages
         // @ts-expect-error don't care about deleting non-optional properties
         delete message.created;
 
@@ -125,6 +126,18 @@ describe('Do payment to 1 PA', () => {
           message.attributes.mediaUrl = mediaUrlPath + 'imageCode/secret';
         }
       });
+
+      // Assert that both initial and voucher message are tied to a transaction
+      const initialMessage = messages.find(
+        (msg) =>
+          msg.attributes.contentType === MessageContentType.paymentTemplated,
+      );
+      expect(initialMessage?.attributes.transactionId).not.toBeNull();
+      const voucherMessage = messages.find(
+        (msg) =>
+          msg.attributes.contentType === MessageContentType.paymentVoucher,
+      );
+      expect(voucherMessage?.attributes.transactionId).not.toBeNull();
 
       // Assert the modified messages against the snapshot
       expect(messages).toMatchSnapshot();

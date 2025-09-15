@@ -152,6 +152,7 @@ export class ActivitiesMapper {
         contentType: message.contentType,
         errorCode: message.errorCode,
         notificationType: message.type,
+        transactionId: message.transactionId ?? undefined,
       },
     }));
   }
