@@ -159,9 +159,7 @@ export async function retryPayment({
     .set('Cookie', [accessToken])
     .send({
       paymentId,
-      referenceIds: {
-        referenceIds, // TODO REFACTOR this nested referenceIds structure
-      },
+      referenceIds,
     });
 }
 

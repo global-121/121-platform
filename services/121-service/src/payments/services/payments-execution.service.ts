@@ -20,7 +20,6 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -313,7 +312,7 @@ export class PaymentsExecutionService {
     userId: number,
     programId: number,
     paymentId: number,
-    referenceIdsDto?: ReferenceIdsDto,
+    referenceIds?: string[],
   ): Promise<BulkActionResultRetryPaymentDto> {
     await this.paymentsProgressHelperService.checkPaymentInProgressAndThrow(
       programId,
@@ -323,7 +322,7 @@ export class PaymentsExecutionService {
       await this.getRetryPaymentJobCreationDetailsOrThrow({
         programId,
         paymentId,
-        inputReferenceIds: referenceIdsDto?.referenceIds,
+        inputReferenceIds: referenceIds,
       });
 
     await this.actionService.saveAction(

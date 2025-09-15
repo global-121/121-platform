@@ -1,13 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
-
-import { ReferenceIdsDto } from '@121-service/src/registration/dto/reference-ids.dto';
+import { ArrayMaxSize, IsArray, IsNumber, IsOptional } from 'class-validator';
 
 export class RetryPaymentDto {
   @ApiProperty({ example: 1 })
   @IsNumber()
   public readonly paymentId: number;
-  @ApiProperty()
+
+  @ApiProperty({
+    example: [
+      '910c50be-f131-4b53-b06b-6506a40a2734',
+      '910c50be-f131-4b53-b06b-6506a40a2735',
+    ],
+  })
   @IsOptional()
-  public readonly referenceIds?: ReferenceIdsDto; // In the frontend we always send the referenceIds so we can consider making this required
+  @ArrayMaxSize(100000) // to prevent abuse: 100k
+  @IsArray()
+  public readonly referenceIds?: string[]; // In the frontend we always send the referenceIds so we can consider making this required
 }
