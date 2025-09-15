@@ -53,8 +53,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ['1', '2', '3', '4', '5', '6']
-        shardCount: ['6']
+        shard: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+        shardCount: ['12']
 
     steps:
       - name: Check out repository code
