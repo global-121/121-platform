@@ -135,7 +135,7 @@ describe('Do payment to 1 PA', () => {
       expect(initialMessage?.attributes.transactionId).not.toBeNull();
       const voucherMessage = messages.find(
         (msg) =>
-          msg.attributes.contentType === MessageContentType.paymentTemplated,
+          msg.attributes.contentType === MessageContentType.paymentVoucher,
       );
       expect(voucherMessage?.attributes.transactionId).not.toBeNull();
 
