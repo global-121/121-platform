@@ -53,10 +53,20 @@ jobs:
         run: |
           curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
-      - name: Run (some) k6 tests
+      - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js with DUPLICATE_NUMBER=7
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          ./run-all-tests.sh tests/retryFailedJobsOnStartupDuringQueueProcessing.js tests/findDuplicates100kRegistrations.js tests/BulkUpdate32kRegistration.js
+          DUPLICATE_NUMBER=7 ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
+
+      - name: Run findDuplicates100kRegistrations.js with DUPLICATE_NUMBER=17
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          DUPLICATE_NUMBER=17 ./k6 run tests/findDuplicates100kRegistrations.js
+
+      - name: Run BulkUpdate32kRegistration.js with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 ./k6 run tests/BulkUpdate32kRegistration.js
 
       - name: Docker logs
         if: always()
