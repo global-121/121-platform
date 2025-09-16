@@ -96,12 +96,12 @@ export class TransactionJobsHelperService {
       const isTemplateAvailable =
         await this.messageTemplateService.isTemplateAvailable(
           programId,
-          MessageContentType.completed,
+          RegistrationStatusEnum.completed,
         );
 
       if (isTemplateAvailable) {
         const messageContentDetails: MessageContentDetails = {
-          messageTemplateKey: MessageContentType.completed,
+          messageTemplateKey: RegistrationStatusEnum.completed,
         };
         await this.registrationBulkService.patchRegistrationsStatus({
           paginateQuery: {

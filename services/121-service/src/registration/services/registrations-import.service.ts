@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -235,7 +234,7 @@ export class RegistrationsImportService {
     const isTemplateAvailable =
       await this.messageTemplateService.isTemplateAvailable(
         program.id,
-        MessageContentType.completed,
+        RegistrationStatusEnum.completed,
       );
 
     if (isTemplateAvailable) {
@@ -248,7 +247,7 @@ export class RegistrationsImportService {
           path: '',
         },
         programId: program.id,
-        messageTemplateKey: MessageContentType.new,
+        messageTemplateKey: RegistrationStatusEnum.new,
         userId,
         message: '',
         dryRun: false,
