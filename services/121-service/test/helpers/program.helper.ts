@@ -414,17 +414,18 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
-// TODO: add check for template key or message body content?
 export async function waitForMessagesToComplete({
   programId,
   referenceIds,
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
+  expectedMessages,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
+  expectedMessages?: string[];
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -446,29 +447,41 @@ export async function waitForMessagesToComplete({
       }),
     );
 
-    const messageHistoriesWithoutMinimumMessages = messageHistories.filter(
-      ({ messageHistory }) => {
-        const messagesWithValidStatus = messageHistory.filter((m) => {
-          const validStatuses: MessageStatus[] = ['read', 'failed'];
+    let messageHistoriesWithoutExpectedMessages: typeof messageHistories;
 
-          if (m.attributes.notificationType === 'sms') {
-            validStatuses.push('sent');
-          }
+    if (expectedMessages && expectedMessages.length > 0) {
+      messageHistoriesWithoutExpectedMessages = messageHistories.filter(
+        ({ messageHistory }) =>
+          !messageHistory.some((m) =>
+            expectedMessages.includes(m.attributes.body),
+          ),
+      );
+    } else {
+      messageHistoriesWithoutExpectedMessages = messageHistories.filter(
+        ({ messageHistory }) => {
+          const messagesWithValidStatus = messageHistory.filter((m) => {
+            const validStatuses: MessageStatus[] = ['read', 'failed'];
 
-          // wait for messages actually being on a final status, given that's also something we check for in the test
-          return validStatuses.includes(m.attributes.status);
-        });
+            if (m.attributes.notificationType === 'sms') {
+              validStatuses.push('sent');
+            }
 
-        return (
-          messagesWithValidStatus.length < minimumNumberOfMessagesPerReferenceId
-        );
-      },
-    );
+            return validStatuses.includes(m.attributes.status);
+          });
 
-    referenceIdsWaitingForMessages = messageHistoriesWithoutMinimumMessages.map(
-      ({ referenceId }) => referenceId,
-    );
-    // To not overload the server and get 429
+          return (
+            messagesWithValidStatus.length <
+            minimumNumberOfMessagesPerReferenceId
+          );
+        },
+      );
+    }
+
+    referenceIdsWaitingForMessages =
+      messageHistoriesWithoutExpectedMessages.map(
+        ({ referenceId }) => referenceId,
+      );
+
     await waitFor(100);
   }
 
