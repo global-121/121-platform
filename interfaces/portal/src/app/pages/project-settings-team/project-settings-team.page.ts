@@ -20,7 +20,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
 import {
   QueryTableColumn,
   QueryTableColumnType,
@@ -36,13 +36,13 @@ import { ToastService } from '~/services/toast.service';
 @Component({
   selector: 'app-project-settings-team',
   imports: [
-    PageLayoutComponent,
     ButtonModule,
     CardModule,
     QueryTableComponent,
     AddProjectTeamUserDialogComponent,
     ConfirmDialogModule,
     FormDialogComponent,
+    PageLayoutProjectSettingsComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-settings-team.page.html',

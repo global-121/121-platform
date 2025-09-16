@@ -1,12 +1,5 @@
-<app-page-layout
-  pageTitle="Team"
-  i18n-pageTitle="@@page-title-project-team"
-  [projectId]="projectId()"
->
-  <div
-    header-actions
-    class="flex gap-x-2"
-  >
+<app-page-layout-project-settings [projectId]="projectId()">
+  <div class="flex gap-x-2">
     @if (canManageAidworkers()) {
       <p-button
         label="Add team member"
@@ -36,7 +29,7 @@
       [initialSortField]="'username'"
     />
   </p-card>
-</app-page-layout>
+</app-page-layout-project-settings>
 <app-form-dialog
   #removeUserConfirmationDialog
   header="Remove user from team"
