@@ -1727,6 +1727,12 @@
       <trans-unit id="7187838764371214919" datatype="html">
         <source>Edit user</source>
       </trans-unit>
+      <trans-unit id="page-title-project-settings" datatype="html">
+        <source>Settings</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-team" datatype="html">
+        <source>Team</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
