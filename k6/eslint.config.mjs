@@ -10,15 +10,6 @@ export default [
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
   {
-    languageOptions: {
-      globals: {
-        __ENV: 'readonly',
-        // ...other globals
-      },
-    },
-    files: ['**/*.js'],
-  },
-  {
     plugins: {
       'simple-import-sort': eslintPluginSortImports,
     },
