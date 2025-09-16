@@ -283,6 +283,215 @@
     ]
   },
   {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
+    "params": []
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}",
+    "params": [
+      "programId",
+      "formatProgramReturnDto"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}",
+    "params": [
+      "programId"
+    ],
+    "returnType": "ProgramReturnDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs",
+    "params": [
+      "importFromKobo",
+      "koboToken",
+      "koboAssetId"
+    ],
+    "returnType": "ProgramEntity"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/registration-attributes",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeName}",
+    "params": [
+      "programId",
+      "programRegistrationAttributeName"
+    ],
+    "returnType": "ProgramRegistrationAttributeEntity"
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeId}",
+    "params": [
+      "programId",
+      "programRegistrationAttributeId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attributes",
+    "params": [
+      "programId",
+      "includeProgramRegistrationAttributes",
+      "includeTemplateDefaultAttributes",
+      "filterShowInRegistrationsTable"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/intersolve-visa/funding-wallet",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/fsps",
+    "params": [],
+    "returnType": "FspDto"
+  },
+  {
+    "method": "get",
+    "path": "/api/fsps/{fspName}",
+    "params": [
+      "fspName"
+    ],
+    "returnType": "FspDto"
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/attachments/{attachmentId}",
+    "params": [
+      "programId",
+      "attachmentId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsp-configurations",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
+    "method": "post",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
+    "params": [
+      "programId",
+      "name"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
+    "params": [
+      "programId",
+      "name",
+      "propertyName"
+    ]
+  },
+  {
+    "method": "delete",
+    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
+    "params": [
+      "programId",
+      "name",
+      "propertyName"
+    ]
+  },
+  {
+    "method": "put",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
+    "params": [
+      "programId"
+    ],
+    "returnType": "CommercialBankEthiopiaValidationReportDto"
+  },
+  {
     "method": "post",
     "path": "/api/programs/{programId}/registrations/import",
     "params": [
@@ -514,215 +723,6 @@
       "programId",
       "id"
     ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}",
-    "params": [
-      "programId",
-      "formatProgramReturnDto"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}",
-    "params": [
-      "programId"
-    ],
-    "returnType": "ProgramReturnDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs",
-    "params": [
-      "importFromKobo",
-      "koboToken",
-      "koboAssetId"
-    ],
-    "returnType": "ProgramEntity"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/registration-attributes",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeName}",
-    "params": [
-      "programId",
-      "programRegistrationAttributeName"
-    ],
-    "returnType": "ProgramRegistrationAttributeEntity"
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/registration-attributes/{programRegistrationAttributeId}",
-    "params": [
-      "programId",
-      "programRegistrationAttributeId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/attributes",
-    "params": [
-      "programId",
-      "includeProgramRegistrationAttributes",
-      "includeTemplateDefaultAttributes",
-      "filterShowInRegistrationsTable"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/intersolve-visa/funding-wallet",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/fsps",
-    "params": [],
-    "returnType": "FspDto"
-  },
-  {
-    "method": "get",
-    "path": "/api/fsps/{fspName}",
-    "params": [
-      "fspName"
-    ],
-    "returnType": "FspDto"
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/attachments",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/attachments",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
-    "params": [
-      "programId",
-      "attachmentId"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/attachments/{attachmentId}",
-    "params": [
-      "programId",
-      "attachmentId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsp-configurations",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/fsp-configurations",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}",
-    "params": [
-      "programId",
-      "name"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}",
-    "params": [
-      "programId",
-      "name"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
-    "params": [
-      "programId",
-      "name"
-    ]
-  },
-  {
-    "method": "post",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties",
-    "params": [
-      "programId",
-      "name"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
-    "params": [
-      "programId",
-      "name",
-      "propertyName"
-    ]
-  },
-  {
-    "method": "delete",
-    "path": "/api/programs/{programId}/fsp-configurations/{name}/properties/{propertyName}",
-    "params": [
-      "programId",
-      "name",
-      "propertyName"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
-    "params": []
-  },
-  {
-    "method": "put",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "get",
-    "path": "/api/programs/{programId}/fsps/commercial-bank-ethiopia/account-enquiries",
-    "params": [
-      "programId"
-    ],
-    "returnType": "CommercialBankEthiopiaValidationReportDto"
   },
   {
     "method": "post",

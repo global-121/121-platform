@@ -83,6 +83,7 @@ export class TransactionJobsHelperService {
 
     if (!isRetry) {
       const paymentCount = await this.updateAndGetPaymentCount(registration.id);
+
       const maxPaymentsExceeded = await this.isMaxPaymentsExceeded({
         registration,
         programId,
@@ -98,22 +99,22 @@ export class TransactionJobsHelperService {
           MessageContentType.completed,
         );
 
-      const messageContentDetails: MessageContentDetails = {};
       if (isTemplateAvailable) {
-        messageContentDetails.messageContentType = MessageContentType.completed;
+        const messageContentDetails: MessageContentDetails = {
+          messageTemplateKey: MessageContentType.completed,
+        };
+        await this.registrationBulkService.patchRegistrationsStatus({
+          paginateQuery: {
+            filter: { referenceId: `$eq:${registration.referenceId}` },
+            path: '',
+          },
+          programId,
+          registrationStatus: RegistrationStatusEnum.completed,
+          dryRun: false,
+          userId,
+          messageContentDetails,
+        });
       }
-
-      await this.registrationBulkService.patchRegistrationsStatus({
-        paginateQuery: {
-          filter: { referenceId: `$eq:${registration.referenceId}` },
-          path: '',
-        },
-        programId,
-        registrationStatus: RegistrationStatusEnum.completed,
-        dryRun: false,
-        userId,
-        messageContentDetails,
-      });
     }
 
     return resultTransaction;

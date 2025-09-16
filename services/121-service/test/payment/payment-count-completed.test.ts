@@ -1,11 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
@@ -146,7 +146,6 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         accessToken,
       });
 
-      // Assert
       await waitForPaymentTransactionsToComplete({
         programId,
         paymentReferenceIds: [registrationAh.referenceId],
@@ -163,6 +162,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         minimumNumberOfMessagesPerReferenceId: 6,
       });
 
+      // Assert
       const messageHistoryResponse = await getMessageHistory(
         programId,
         registrationAh.referenceId,
@@ -170,12 +170,13 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       );
 
       const messageHistory = messageHistoryResponse.body;
-      const expectedMessage = messageHistory.find(
-        (message) =>
-          message.attributes.contentType === MessageContentType.completed,
+      const messageTranslations = Object.values(
+        messageTemplateGeneric.completed.message ?? {},
       );
-
-      expect(expectedMessage).toBeDefined();
+      const messageSent = messageHistory.some((message) =>
+        messageTranslations.includes(message.attributes.body),
+      );
+      expect(messageSent).toBe(true);
     });
   });
 });
