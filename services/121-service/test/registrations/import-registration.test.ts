@@ -417,18 +417,17 @@ describe('Import a registration', () => {
       accessToken,
     });
 
+    // Assert
     const messageHistoryResponse = await getMessageHistory(
       programIdOCW,
       registrationVisa.referenceId,
       accessToken,
     );
 
-    // Assert
     const messageHistory = messageHistoryResponse.body;
     const messageTranslations = Object.values(
       messageTemplateGeneric.new.message ?? {},
     );
-
     const messageSent = messageHistory.some((message) =>
       messageTranslations.includes(message.attributes.body),
     );
