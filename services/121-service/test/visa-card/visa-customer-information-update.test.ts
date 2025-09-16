@@ -17,8 +17,11 @@ import {
 
 describe('Update registration data of registration with visa customer', () => {
   let accessToken: string;
+  let registrationVisaCopy: typeof registrationVisa;
 
   beforeEach(async () => {
+    registrationVisaCopy = { ...registrationVisa };
+    registrationVisaCopy.referenceId = `test-reg-${Date.now()}`; // Make sure referenceId is unique for each test run this is useful when testing with the intersolve acceptance server
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
     await waitFor(2_000);
@@ -30,12 +33,12 @@ describe('Update registration data of registration with visa customer', () => {
   // We have no way to easily validate if the mock service is properly called, so we only check if no errors are thrown when updating a registration with a visa customer.
   it('should get a success response when updating registration data of a registration with a visa customer', async () => {
     // Arrange
-    await seedPaidRegistrations([registrationVisa], programIdVisa);
+    await seedPaidRegistrations([registrationVisaCopy], programIdVisa);
 
     // Act
     const responseUpdateBeforeFspChange = await updateRegistration(
       programIdVisa,
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       {
         phoneNumber: '123456789',
       },
@@ -45,7 +48,7 @@ describe('Update registration data of registration with visa customer', () => {
 
     await updateRegistration(
       programIdVisa,
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       {
         programFspConfigurationName: 'Intersolve-voucher-whatsapp',
       },
@@ -56,7 +59,7 @@ describe('Update registration data of registration with visa customer', () => {
     // Even if a registrations FSP is changed, if a visa customer exists, the visa customer is still updated
     const responseUpdateAfterFspChange = await updateRegistration(
       programIdVisa,
-      registrationVisa.referenceId,
+      registrationVisaCopy.referenceId,
       {
         phoneNumber: '987654321',
       },

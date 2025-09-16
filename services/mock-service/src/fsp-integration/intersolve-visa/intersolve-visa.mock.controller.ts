@@ -136,13 +136,22 @@ export class IntersolveVisaMockController {
     return this.intersolveVisaMockService.updateCustomerAddress(payload);
   }
 
-  @ApiOperation({ summary: 'Update customer name' })
+  // get customer individual
+  @ApiOperation({ summary: 'Get customer individual' })
+  @Get('customer/v1/customers/:holderId/individual')
+  public getCustomerIndividual(
+    @Param('holderId') _holderId: string,
+  ): IntersolveVisaMockResponseDto {
+    return this.intersolveVisaMockService.getCustomerIndividual(_holderId);
+  }
+
+  @ApiOperation({ summary: 'Update customer individual' })
   @Put('customer/v1/customers/:holderId/individual')
   public updateCustomerName(
     @Body() payload: Record<string, string>,
     @Param('holderId') _holderId: string,
   ): { status: number } {
-    return this.intersolveVisaMockService.updateCustomerName(payload);
+    return this.intersolveVisaMockService.updateCustomerIndividual(payload);
   }
 
   @ApiOperation({ summary: 'Link token' })

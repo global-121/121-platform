@@ -6,6 +6,7 @@ import { env } from '@121-service/src/env';
 import { CreateCustomerRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-request-intersolve-api.dto';
 import { CreateCustomerResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-customer-response-intersolve-api.dto';
 import { CreatePhysicalCardRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/create-physical-card-request-intersolve-api.dto';
+import { GetCustomerIndividualIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-customer-individual-intersolve-api.dto';
 import { GetPhysicalCardResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-physical-card-response-intersolve-api.dto';
 import { GetTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-token-response-intersolve-api.dto';
 import { GetTransactionsResponseIntersolveVisaDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-transactions-response-intersolve-api.dto';
@@ -528,16 +529,29 @@ export class IntersolveVisaApiService {
     holderId: string;
     name: string;
   }): Promise<void> {
-    // Create the request
-    const requestBody = {
-      lastName: name, // in 121 first name and last name are always combined into 1 "name" field, but Intersolve requires first name and last name seperately, so here we just update the last name with our full name
-    };
+    // Intersolve does not have an endpoint to update only the name, so we first get the customer individual and than PUT it back with updated name
+
+    // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
+    const getResponse =
+      await this.intersolveApiRequest<GetCustomerIndividualIntersolveApiDto>({
+        errorPrefix: IntersolveVisa121ErrorText.getCustomerIndividualError,
+        method: 'GET',
+        apiPath: 'customer',
+        endpoint: `customers/${holderId}/individual`,
+      });
+
+    const customerIndividual = getResponse.data.data;
+    customerIndividual.lastName = name;
+    // Strip these fields as according to Intersolve these may not be accepted in the PUT request
+    delete customerIndividual.kycStatus;
+    delete customerIndividual.kycRedirectUrl;
+    delete customerIndividual.rejectionReason;
 
     // Send the request: https://service-integration.intersolve.nl/customer/swagger/index.html
     await this.intersolveApiRequest<void>({
       errorPrefix: IntersolveVisa121ErrorText.updateCustomerIndividualNameError,
       method: 'PUT',
-      payload: requestBody,
+      payload: customerIndividual,
       apiPath: 'customer',
       endpoint: `customers/${holderId}/individual`,
     });

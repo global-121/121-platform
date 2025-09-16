@@ -642,7 +642,39 @@ export class IntersolveVisaMockService {
     };
   }
 
-  public updateCustomerName(
+  public getCustomerIndividual(
+    _holderId: string,
+  ): IntersolveVisaMockResponseDto {
+    const response = new IntersolveVisaMockResponseDto();
+    response.status = HttpStatus.OK;
+    response.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        holderId: _holderId,
+        firstName: 'John',
+        lastName: 'Doe',
+        middleName: 'Edward',
+        initials: 'J.E.D.',
+        gender: 'Male',
+        dateOfBirth: '1990-01-01',
+        countryOfBirth: 'Netherlands',
+        nationality: 'Dutch',
+        culture: 'Western',
+        extensions: {},
+        estimatedAnnualPaymentVolumeMajorUnit: 12000,
+        kycStatus: 'VERIFIED',
+        kycRedirectUrl: 'https://kyc.example.com/redirect',
+        rejectionReason: '',
+        description: 'Individual profile',
+      },
+    };
+    return response;
+  }
+
+  public updateCustomerIndividual(
     payload: Record<string, string>,
   ): IntersolveVisaMockResponseDto {
     const requiredKey = 'lastName';
