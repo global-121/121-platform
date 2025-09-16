@@ -153,13 +153,15 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         maxWaitTimeMs: 10_000,
       });
 
-      // This is a bit sketchy: if for example in the future more messages are sent in the registration phase, this test will fail.
-      // Is there a better way to do this?
+      const expectedMessageTranslations = Object.values(
+        messageTemplateGeneric.completed.message ?? {},
+      );
+
       await waitForMessagesToComplete({
         programId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
-        minimumNumberOfMessagesPerReferenceId: 6,
+        expectedMessages: expectedMessageTranslations,
       });
 
       // Assert
@@ -170,11 +172,8 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       );
 
       const messageHistory = messageHistoryResponse.body;
-      const messageTranslations = Object.values(
-        messageTemplateGeneric.completed.message ?? {},
-      );
       const messageSent = messageHistory.some((message) =>
-        messageTranslations.includes(message.attributes.body),
+        expectedMessageTranslations.includes(message.attributes.body),
       );
       expect(messageSent).toBe(true);
     });
