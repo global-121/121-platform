@@ -11,7 +11,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '17', 17); // '17' leads to 131k registrations
+const duplicateNumber = (__ENV.DUPLICATE_NUMBER || '17', 17); // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 
@@ -54,8 +54,9 @@ export default function () {
 
   // Check the request duration
   checkAndFail(getRegistration, {
-    'smaller than max request duration': (r) =>
-      r.timings.duration < maxRequestDuration,
+    'smaller than max request duration': (r) => {
+      return r.timings.duration < maxRequestDuration;
+    },
   });
 
   sleep(1);
