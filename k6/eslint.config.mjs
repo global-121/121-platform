@@ -5,7 +5,7 @@ import eslintPluginSortImports from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 
 export default [
-  { languageOptions: { globals: { ...globals.node } } },
+  { languageOptions: { globals: { ...globals.node, __ENV: 'readonly' } } },
   pluginJs.configs.recommended,
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
