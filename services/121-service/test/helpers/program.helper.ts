@@ -414,6 +414,7 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
+// TODO: add check for template key or message body content?
 export async function waitForMessagesToComplete({
   programId,
   referenceIds,
