@@ -11,6 +11,10 @@
               icon="pi pi-pencil"
               [iconPos]="rtlHelper.createPosition('start')()"
               (click)="isEditing.set(true)"
+              title="Edit team"
+              i18n-title
+              ariaLabel="Edit team"
+              i18n-ariaLabel
             />
           } @else {
             <p-button

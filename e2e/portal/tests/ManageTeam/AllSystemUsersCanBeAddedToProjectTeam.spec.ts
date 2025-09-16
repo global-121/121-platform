@@ -48,12 +48,13 @@ test('[29758] All system-users are available to be added to a "project team"', a
   const projectTitle = 'Cash program Westeros';
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Team');
+    await basePage.navigateToProgramPage('Settings');
   });
   await test.step('Validate assigned users are visible', async () => {
     await manageTeam.validateAssignedTeamMembers(expectedAssignedUsers);
   });
   await test.step('Validate available system users are visible', async () => {
+    await manageTeam.enableEditMode();
     await manageTeam.openAddUserForm();
     await manageTeam.validateAvailableSystemUsers(expectedAvailablesystemUsers);
   });
