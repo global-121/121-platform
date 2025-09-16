@@ -28,13 +28,13 @@ import {
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
-import { AddProjectTeamUserDialogComponent } from '~/pages/project-team/components/add-project-team-user-dialog/add-project-team-user-dialog.component';
+import { AddProjectTeamUserDialogComponent } from '~/pages/project-settings-team/components/add-project-team-user-dialog/add-project-team-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
-  selector: 'app-project-team',
+  selector: 'app-project-settings-team',
   imports: [
     PageLayoutComponent,
     ButtonModule,
@@ -45,11 +45,11 @@ import { ToastService } from '~/services/toast.service';
     FormDialogComponent,
   ],
   providers: [ToastService],
-  templateUrl: './project-team.page.html',
+  templateUrl: './project-settings-team.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectTeamPageComponent {
+export class ProjectSettingsTeamPageComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
