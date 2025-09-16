@@ -1718,6 +1718,15 @@
       <trans-unit id="5918723526444903137" datatype="html">
         <source>Add user</source>
       </trans-unit>
+      <trans-unit id="2431444055894735117" datatype="html">
+        <source>You&apos;re about to edit the user <x ctype="x-b" equiv-text="&lt;b&gt;" id="START_BOLD_TEXT"/><x equiv-text="{{ userToEdit()?.username }}" id="INTERPOLATION"/><x ctype="x-b" equiv-text="&lt;/b&gt;" id="CLOSE_BOLD_TEXT"/> in your project team.</source>
+      </trans-unit>
+      <trans-unit id="7000649363168371045" datatype="html">
+        <source>Save changes</source>
+      </trans-unit>
+      <trans-unit id="7187838764371214919" datatype="html">
+        <source>Edit user</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -111,6 +111,18 @@ export class AddProjectTeamUserDialogComponent {
     },
   );
 
+  readonly dialogHeader = computed(() =>
+    this.isEditing() ? $localize`Edit user` : $localize`Add user to team`,
+  );
+
+  readonly dialogHeaderIcon = computed(() =>
+    this.isEditing() ? 'pi pi-pencil' : 'pi pi-plus',
+  );
+
+  readonly dialogProceedLabel = computed(() =>
+    this.isEditing() ? $localize`Save changes` : $localize`Add to team`,
+  );
+
   readonly userIsUpdatingItself = computed(() => {
     const user = this.userToEdit();
     if (!user) {
