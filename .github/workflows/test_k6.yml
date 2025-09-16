@@ -44,9 +44,9 @@ jobs:
         run: |
           npm ci --omit=optional
 
-      - name: Start backend services
+      - name: Run Services with Docker
         run: |
-          docker compose up -d
+          npm run start:services:ci:production
 
       - name: Wait for API to be ready
         run: |
