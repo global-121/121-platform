@@ -56,7 +56,7 @@ jobs:
       - name: Run (some) k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          ./run-all-tests.sh tests/retryFailedJobsOnStartupDuringQueueProcessing.js tests/findDuplicates100kRegistrations.js
+          ./run-all-tests.sh tests/retryFailedJobsOnStartupDuringQueueProcessing.js tests/findDuplicates100kRegistrations.js tests/BulkUpdate32kRegistration.js
 
       - name: Docker logs
         if: always()
