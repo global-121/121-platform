@@ -11,7 +11,7 @@ async function getInstancesUrls() {
 
   const instances = root
     .querySelectorAll('instance-121')
-    .map((instance) => instance.attributes['data-name'] ?? instance.id)
+    .map((instance) => instance.attributes?.['data-name'] ?? instance.id)
     .filter((instance) => !instance.includes('mock'))
     .filter((instance) => !IGNORED_INSTANCES.includes(instance));
 
