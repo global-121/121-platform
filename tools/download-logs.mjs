@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * To use this script, you have to have the Azure CLI installed and logged in with "az login".
  * https://aka.ms/azure-cli
@@ -28,19 +30,18 @@ async function getInstancesLogsUrls() {
   const root = parse(data);
 
   // get all instances
-  const instances = root.querySelectorAll('.instance').filter(
-    // except for non-production instances
-    (instance) =>
-      !IGNORED_INSTANCES.includes(instance.id) && !instance.id.includes('mock'),
-  );
+  const instances = root
+    .querySelectorAll('instance-121')
+    .map((instance) => instance.attributes['data-name'] ?? instance.id)
+    .filter((instance) => !IGNORED_INSTANCES.includes(instance))
+    .filter((instance) => !instance.includes('mock'));
 
-  return instances.map((instance) => ({
-    instanceId: instance.id,
-    // get the url of the "logs" link for each instance
-    logsUrl: instance
-      .querySelector('a[href*="logs/docker"]')
-      .getAttribute('href'),
-  }));
+  return instances.map((instance) => {
+    return {
+      instanceId: instance,
+      logsUrl: `https://121-${instance}.scm.azurewebsites.net/api/logs/docker`,
+    };
+  });
 }
 
 async function main() {
