@@ -177,7 +177,6 @@ export class RegistrationsBulkService {
     messageTemplateKey,
     dryRun,
     userId,
-    messageContentType,
   }: {
     paginateQuery: PaginateQuery;
     programId: number;
@@ -185,7 +184,6 @@ export class RegistrationsBulkService {
     messageTemplateKey: string;
     dryRun: boolean;
     userId: number;
-    messageContentType?: MessageContentType;
   }): Promise<BulkActionResultDto> {
     if (messageTemplateKey) {
       await this.validateTemplateKey(programId, messageTemplateKey);
@@ -220,7 +218,6 @@ export class RegistrationsBulkService {
         usedPlaceholders,
         messageTemplateKey,
         userId,
-        messageContentType,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -237,7 +234,6 @@ export class RegistrationsBulkService {
     usedPlaceholders: string[],
     messageTemplateKey: string,
     userId: number,
-    messageContentType?: MessageContentType,
   ): Promise<void> {
     paginateQuery.limit = chunkSize;
     const registrationsMetadata =
@@ -261,14 +257,13 @@ export class RegistrationsBulkService {
           false,
           this.getBaseQuery(),
         );
-      this.sendTextMessagePerChunk(
+      this.sendCustomTextMessagePerChunk(
         registrationsForUpdate.data,
         message,
         bulkSize,
         usedPlaceholders,
         userId,
         messageTemplateKey,
-        messageContentType,
       ).catch((error) => {
         this.azureLogService.logError(error, true);
       });
@@ -642,7 +637,7 @@ export class RegistrationsBulkService {
     );
   }
 
-  private async sendTextMessagePerChunk(
+  private async sendCustomTextMessagePerChunk(
     registrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
     >['data'],
@@ -651,7 +646,6 @@ export class RegistrationsBulkService {
     usedPlaceholders: string[],
     userId: number,
     messageTemplateKey?: string,
-    messageContentType?: MessageContentType,
   ): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};
@@ -662,7 +656,7 @@ export class RegistrationsBulkService {
         registration,
         message,
         messageTemplateKey,
-        messageContentType: messageContentType ?? MessageContentType.custom,
+        messageContentType: MessageContentType.custom,
         messageProcessType:
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         customData: { placeholderData },

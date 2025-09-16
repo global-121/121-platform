@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedKisumuEastPv,
@@ -425,9 +425,13 @@ describe('Import a registration', () => {
 
     // Assert
     const messageHistory = messageHistoryResponse.body;
-    const expectedMessage = messageHistory.find(
-      (message) => message.attributes.contentType === MessageContentType.new,
+    const messageTranslations = Object.values(
+      messageTemplateGeneric.new.message ?? {},
     );
-    expect(expectedMessage).toBeDefined();
+
+    const messageSent = messageHistory.some((message) =>
+      messageTranslations.includes(message.attributes.body),
+    );
+    expect(messageSent).toBe(true);
   });
 });
