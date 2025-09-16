@@ -39,7 +39,7 @@
     "coverage:open:integration": "open coverage/integration/lcov-report/index.html",
     "coverage:open:combined": "open coverage/combined/lcov-report/index.html",
     "typeorm": "node node_modules/typeorm/cli.js --dataSource=dist/appdatasource.js",
-    "migration:create": "npm run typeorm migration:create",
+    "migration:create": "node node_modules/typeorm/cli.js migration:create",
     "migration:generate": "npm run typeorm migration:generate",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",
