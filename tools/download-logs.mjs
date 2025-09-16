@@ -32,7 +32,7 @@ async function getInstancesLogsUrls() {
   // get all instances
   const instances = root
     .querySelectorAll('instance-121')
-    .map((instance) => instance.attributes['data-name'] ?? instance.id)
+    .map((instance) => instance.attributes?.['data-name'] ?? instance.id)
     .filter((instance) => !IGNORED_INSTANCES.includes(instance))
     .filter((instance) => !instance.includes('mock'));
 
