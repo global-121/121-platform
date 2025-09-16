@@ -23,8 +23,8 @@ export class PageLayoutProjectSettingsComponent {
 
   readonly menuItems = computed<MenuItem[]>(() => [
     {
-      label: $localize`:@@page-title-project-settings-team:Team`,
-      icon: 'pi pi-user',
+      label: $localize`:@@page-title-project-settings-team:Project team`,
+      icon: 'pi pi-users',
       routerLink: [
         '/',
         AppRoutes.project,

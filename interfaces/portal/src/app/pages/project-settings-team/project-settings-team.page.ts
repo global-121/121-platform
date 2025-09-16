@@ -23,7 +23,6 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
 import {
   QueryTableColumn,
-  QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
@@ -66,6 +65,7 @@ export class ProjectSettingsTeamPageComponent {
     undefined,
   );
   readonly formMode = signal<'add' | 'edit'>('add');
+  readonly isEditing = signal(false);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   projectUsers = injectQuery(
@@ -105,11 +105,6 @@ export class ProjectSettingsTeamPageComponent {
           header: $localize`Roles`,
         },
         ...(this.enableScope() ? [scopeColumn] : []),
-        {
-          field: 'lastLogin',
-          header: $localize`Last log in`,
-          type: QueryTableColumnType.DATE,
-        },
       ];
     },
   );

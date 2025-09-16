@@ -1,32 +1,56 @@
 <app-page-layout-project-settings [projectId]="projectId()">
-  <div class="flex gap-x-2">
-    @if (canManageAidworkers()) {
-      <p-button
-        label="Add team member"
-        i18n-label="@@add-team-member"
-        rounded
-        icon="pi pi-plus"
-        [iconPos]="rtlHelper.createPosition('start')()"
-        (click)="openForm('add')"
-      />
-      <app-add-project-team-user-dialog
-        #addUserDialog
-        [projectId]="projectId()"
-        [enableScope]="enableScope()"
-        [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
-      />
-    }
-  </div>
   <p-card>
+    <div class="flex min-h-12 items-center gap-x-2">
+      <h2 i18n="@@page-title-project-settings-team">Project team</h2>
+      @if (canManageAidworkers()) {
+        <div class="ms-auto space-x-2">
+          @if (!isEditing()) {
+            <p-button
+              text
+              plain
+              icon="pi pi-pencil"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              (click)="isEditing.set(true)"
+            />
+          } @else {
+            <p-button
+              label="Add user to team"
+              i18n-label
+              rounded
+              outlined
+              icon="pi pi-plus"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              (click)="openForm('add')"
+            />
+            <p-button
+              label="Cancel"
+              i18n-label="@@generic-cancel"
+              (click)="isEditing.set(false)"
+              icon="pi pi-times"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              outlined
+              rounded
+              severity="contrast"
+            />
+          }
+        </div>
+      }
+    </div>
+    <p i18n>Add users to your project team and assign roles to them.</p>
     <app-query-table
       [items]="projectUsers.data() ?? []"
       [isPending]="projectUsers.isPending()"
       [columns]="columns()"
       localStorageKey="project-team-table"
-      [contextMenuItems]="contextMenuItems()"
+      [contextMenuItems]="isEditing() ? contextMenuItems() : undefined"
       (updateContextMenuItem)="selectedUser.set($event)"
-      [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
       [initialSortField]="'username'"
+    />
+    <app-add-project-team-user-dialog
+      #addUserDialog
+      [projectId]="projectId()"
+      [enableScope]="enableScope()"
+      [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
     />
   </p-card>
 </app-page-layout-project-settings>

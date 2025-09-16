@@ -153,7 +153,7 @@ export const routes: Routes = [
           {
             path: AppRoutes.projectSettingsTeam,
             title:
-              $localize`:@@page-title-project-settings-team:Team` +
+              $localize`:@@page-title-project-settings-team:Project team` +
               ' | ' +
               $localize`:@@page-title-project-settings:Settings`,
             loadComponent: () =>
