@@ -10,7 +10,7 @@ const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 7; // '7' leads to 128 registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7', 7); // '7' leads to 128 registrations
 const programId = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
