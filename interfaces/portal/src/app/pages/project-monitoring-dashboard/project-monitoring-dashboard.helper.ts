@@ -38,6 +38,7 @@ export const getChartOptions = ({
 }: {
   title: string;
   showLegend: boolean;
+  subtitle?: string;
 }): ChartOptions => ({
   animation: {
     duration: 0,

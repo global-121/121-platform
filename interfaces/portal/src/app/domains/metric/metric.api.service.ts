@@ -80,27 +80,53 @@ export class MetricApiService extends DomainApiService {
 
   getAllPaymentsAggregates({
     projectId,
+    limitNumberOfPayments,
   }: {
     projectId: Signal<number | string>;
+    limitNumberOfPayments?: string;
   }) {
+    let params = {};
+    if (limitNumberOfPayments) {
+      params = { ...params, limitNumberOfPayments };
+    }
     return this.generateQueryOptions<ProjectAggregatePerPayment>({
       path: [...BASE_ENDPOINT(projectId), 'all-payments-aggregates'],
+      params,
     });
   }
 
-  getAmountSentByMonth({ projectId }: { projectId: Signal<number | string> }) {
+  getAmountSentByMonth({
+    projectId,
+    limitNumberOfPayments,
+  }: {
+    projectId: Signal<number | string>;
+    limitNumberOfPayments?: string;
+  }) {
+    let params = {};
+    if (limitNumberOfPayments) {
+      params = { ...params, limitNumberOfPayments };
+    }
     return this.generateQueryOptions<ProjectAggregatePerMonth>({
       path: [...BASE_ENDPOINT(projectId), 'amount-sent-by-month'],
+      params,
     });
   }
 
   getRegistrationCountByDate({
     projectId,
+    startDate,
   }: {
     projectId: Signal<number | string>;
+    startDate?: string;
   }) {
+    let params = {};
+    if (startDate) {
+      params = { ...params, startDate };
+    }
+
     return this.generateQueryOptions<ProjectRegistrationCountByDate>({
       path: [...BASE_ENDPOINT(projectId), 'registration-count-by-date'],
+      params,
     });
   }
 
