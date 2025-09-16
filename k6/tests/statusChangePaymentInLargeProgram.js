@@ -1,3 +1,4 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
@@ -15,7 +16,7 @@ const paymentsPage = new PaymentsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';
-const duplicateNumber = 15; // should be 15
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15', 15); // should be 15
 const programId = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;

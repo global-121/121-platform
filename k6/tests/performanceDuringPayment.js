@@ -1,3 +1,4 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
@@ -13,7 +14,7 @@ const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
-const duplicateNumber = 5;
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5', 5);
 const programId = 3;
 const maxTimeoutAttempts = 600;
 const minPassRatePercentage = 50;

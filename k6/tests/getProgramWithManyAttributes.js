@@ -1,3 +1,4 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
@@ -13,7 +14,7 @@ const programsPage = new programsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';
-const duplicateNumber = 5;
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5', 5);
 const programId = 2;
 
 export const options = {

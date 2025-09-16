@@ -1,3 +1,4 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
@@ -11,7 +12,7 @@ import InitializePaymentModel from '../models/initalize-payment.js';
 
 const initializePayment = new InitializePaymentModel();
 
-const duplicateNumber = 17; // '17' leads to 131k registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '17', 17); // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 3;
 const maxTimeoutAttempts = 800;
