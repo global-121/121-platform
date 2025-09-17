@@ -159,8 +159,8 @@ export const routes: Routes = [
               $localize`:@@page-title-project-settings:Settings`,
             loadComponent: () =>
               import(
-                '~/pages/project-settings-team/project-settings-team.page'
-              ).then((x) => x.ProjectSettingsTeamPageComponent),
+                '~/pages/project-settings-information/project-settings-information.page'
+              ).then((x) => x.ProjectSettingsInformationPageComponent),
           },
           {
             path: AppRoutes.projectSettingsTeam,
