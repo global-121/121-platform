@@ -41,7 +41,7 @@ function checkAndFail(response, checks) {
 
 function isServiceUp() {
   const response = http.get(
-    `${__ENV.EXTERNAL_121_SERVICE_URL}api/health/health`,
+    `${__ENV.EXTERNAL_121_SERVICE_URL}/api/health/health`,
   );
   return response.status === 200;
 }
