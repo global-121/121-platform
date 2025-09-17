@@ -13,7 +13,7 @@
   </p>
 
   @if (!isEditing()) {
-    <p i18n>data list</p>
+    <app-data-list [data]="projectBasicInformationData()" />
   } @else {
     <ng-container [formGroup]="formGroup">
       <app-form-field-wrapper
