@@ -18,6 +18,16 @@ const programId = 2;
 // At the time of implementation, the request duration was 12s on the server and 3s on the local machine for 130k registrations and about 8k duplicates
 const maxRequestDuration = 12000;
 
+export const options = {
+  thresholds: {
+    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    failed_checks: ['count<1'], // fail the test if any check fails
+  },
+  vus: 1,
+  duration: '80m',
+  iterations: 1,
+};
+
 const failedChecks = new Counter('failed_checks');
 
 function checkAndFail(response, checks) {
@@ -45,11 +55,11 @@ export default function () {
     programId,
     queryParams,
   );
-
-  const getRegistrationBody = JSON.parse(getRegistration.body);
-  checkAndFail(getRegistrationBody, {
-    'totalItems between 3000 and 10000': (r) =>
-      r.meta.totalItems >= 3000 && r.meta.totalItems <= 10000,
+  checkAndFail(getRegistration, {
+    'totalItems between 3000 and 10000': (r) => {
+      const body = JSON.parse(r.body);
+      return body.meta.totalItems >= 3000 && body.meta.totalItems <= 10000;
+    },
   });
 
   // Check the request duration
