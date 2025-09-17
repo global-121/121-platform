@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { parse } from 'node-html-parser';
 
 const IGNORED_INSTANCES = ['test', 'staging'];
@@ -8,8 +10,9 @@ async function getInstancesUrls() {
   const root = parse(data);
 
   const instances = root
-    .querySelectorAll('.instance:not([id|=mock])')
-    .map((instance) => instance.id)
+    .querySelectorAll('instance-121')
+    .map((instance) => instance.attributes?.['data-name'] ?? instance.id)
+    .filter((instance) => !instance.includes('mock'))
     .filter((instance) => !IGNORED_INSTANCES.includes(instance));
 
   return instances;
