@@ -1,21 +1,17 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
 import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
-import { ToastService } from '~/services/toast.service';
+import { ProjectSettingsBasicInformationComponent } from '~/pages/project-settings-information/components/project-settings-basic-information/project-settings-basic-information.component';
+import { ProjectSettingsBudgetComponent } from '~/pages/project-settings-information/components/project-settings-budget/project-settings-budget.component';
 
 @Component({
   selector: 'app-project-settings-information',
   imports: [
-    ButtonModule,
-    CardModule,
-    ConfirmDialogModule,
     PageLayoutProjectSettingsComponent,
+    ProjectSettingsBasicInformationComponent,
+    ProjectSettingsBudgetComponent,
   ],
-  providers: [ToastService],
+  providers: [],
   templateUrl: './project-settings-information.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

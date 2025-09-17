@@ -16,16 +16,6 @@
             i18n-ariaLabel
           />
         } @else {
-          @if (isSaveable()) {
-            <p-button
-              label="Save"
-              i18n-label
-              (click)="save.emit()"
-              icon="pi pi-check"
-              [iconPos]="rtlHelper.createPosition('start')()"
-              rounded
-            />
-          }
           <p-button
             label="Cancel"
             i18n-label="@@generic-cancel"
@@ -36,6 +26,16 @@
             rounded
             severity="contrast"
           />
+          @if (isSaveable()) {
+            <p-button
+              label="Save"
+              i18n-label
+              (click)="save.emit()"
+              icon="pi pi-check"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              rounded
+            />
+          }
         }
       </div>
     }
