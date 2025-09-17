@@ -75,10 +75,10 @@ jobs:
         run: |
           DUPLICATE_NUMBER=7 npx dotenv -e ../services/.env -- ./k6 run tests/retryFailedJobsOnStartupDuringQueueProcessing.js
 
-      - name: Run findDuplicates100kRegistrations.js with DUPLICATE_NUMBER=17
+      - name: Run findDuplicates100kRegistrations.js with DUPLICATE_NUMBER=16
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          DUPLICATE_NUMBER=17 npx dotenv -e ../services/.env -- ./k6 run tests/findDuplicates100kRegistrations.js
+          DUPLICATE_NUMBER=16 npx dotenv -e ../services/.env -- ./k6 run tests/findDuplicates100kRegistrations.js
 
       - name: Run BulkUpdate32kRegistration.js with DUPLICATE_NUMBER=3
         working-directory: ${{ env.k6TestsPath }}
