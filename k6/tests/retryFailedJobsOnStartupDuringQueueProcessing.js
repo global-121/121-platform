@@ -3,9 +3,12 @@ import { check, fail, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
+import config from '../models/config.js';
 import loginModel from '../models/login.js';
 import PaymentsModel from '../models/payments.js';
 import resetModel from '../models/reset.js';
+
+const { baseUrl } = config;
 
 const resetPage = new resetModel();
 const paymentsPage = new PaymentsModel();
@@ -39,9 +42,7 @@ function checkAndFail(response, checks) {
 }
 
 function isServiceUp() {
-  const response = http.get(
-    `${process.env.EXTERNAL_121_SERVICE_URL}/api/health/health`,
-  );
+  const response = http.get(`${baseUrl}api/health/health`);
   return response.status === 200;
 }
 

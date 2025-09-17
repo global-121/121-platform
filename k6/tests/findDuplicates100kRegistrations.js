@@ -4,9 +4,12 @@ import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
 import { registrationPV } from '../helpers/registration-default.data.js';
+import config from '../models/config.js';
 import loginModel from '../models/login.js';
 import RegistrationsModel from '../models/registrations.js';
 import resetModel from '../models/reset.js';
+
+const { baseUrl } = config;
 
 const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
@@ -40,9 +43,7 @@ function checkAndFail(response, checks) {
 }
 
 function isServiceUp() {
-  const response = http.get(
-    `${__ENV.EXTERNAL_121_SERVICE_URL}/api/health/health`,
-  );
+  const response = http.get(`${baseUrl}api/health/health`);
   return response.status === 200;
 }
 
