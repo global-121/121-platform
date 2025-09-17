@@ -35,22 +35,36 @@ export const paymentColors = {
 export const getChartOptions = ({
   title,
   showLegend,
+  showDataLabels,
 }: {
   title: string;
   showLegend: boolean;
-  subtitle?: string;
+  showDataLabels?: boolean;
 }): ChartOptions => ({
   animation: {
     duration: 0,
   },
+  responsive: true,
   plugins: {
     title: {
       display: true,
       text: title,
+      padding: {
+        bottom: 40,
+      },
+    },
+    tooltip: {
+      backgroundColor: colors.black.DEFAULT,
+    },
+    datalabels: {
+      display: showDataLabels,
+      align: 'end',
+      anchor: 'end',
+      font: { weight: 'bold' },
     },
     legend: {
       display: showLegend,
-      position: 'top',
+      position: 'bottom',
       align: 'center',
       labels: {
         usePointStyle: true,

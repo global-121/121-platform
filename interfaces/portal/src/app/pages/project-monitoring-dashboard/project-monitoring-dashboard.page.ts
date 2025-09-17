@@ -175,6 +175,7 @@ export class ProjectMonitoringDashboardPageComponent {
   registrationsByDateChartOptions = getChartOptions({
     title: $localize`Registrations by creation date (last 2 weeks)`,
     showLegend: false,
+    showDataLabels: false,
   });
 
   readonly registrationsByDateChartData = computed<ChartData>(() => ({
