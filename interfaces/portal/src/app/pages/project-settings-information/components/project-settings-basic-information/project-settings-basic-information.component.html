@@ -3,8 +3,9 @@
   i18n-title
   [canEdit]="true"
   [(isEditing)]="isEditing"
-  [isSaveable]="true"
-  (save)="save()"
+  [formGroup]="formGroup"
+  [mutation]="updateProjectMutation"
+  [mutationData]="formGroup.getRawValue()"
 >
   <p i18n>
     Enter the basic details of your project, these details will define your
@@ -14,7 +15,7 @@
   @if (!isEditing()) {
     <p i18n>data list</p>
   } @else {
-    <form [formGroup]="formGroup">
+    <ng-container [formGroup]="formGroup">
       <app-form-field-wrapper
         label="*Project name"
         i18n-label
@@ -42,6 +43,6 @@
           i18n-placeholder
         ></textarea>
       </app-form-field-wrapper>
-    </form>
+    </ng-container>
   }
 </app-card-editable>
