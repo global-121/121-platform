@@ -11,7 +11,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = (__ENV.DUPLICATE_NUMBER || '17', 17); // '17' leads to 131k registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '17'); // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 

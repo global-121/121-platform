@@ -4,17 +4,17 @@ import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import metricstsModel from '../models/metrics.js';
-import paymentsModel from '../models/payments.js';
+import PaymentsModel from '../models/payments.js';
 import programsModel from '../models/programs.js';
 import resetModel from '../models/reset.js';
 
 const resetPage = new resetModel();
-const paymentsPage = new paymentsModel();
+const paymentsPage = new PaymentsModel();
 const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5', 5);
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
 const programId = 3;
 const maxTimeoutAttempts = 600;
 const minPassRatePercentage = 50;

@@ -5,7 +5,6 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class ProgramsModel {
-  constructor() {}
   sendBulkMessage(programId) {
     const url = `${baseUrl}api/programs/${programId}/registrations/message`;
     const payload = JSON.stringify({
