@@ -14,11 +14,11 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
+import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
 import {
@@ -36,12 +36,12 @@ import { ToastService } from '~/services/toast.service';
   selector: 'app-project-settings-team',
   imports: [
     ButtonModule,
-    CardModule,
     QueryTableComponent,
     AddProjectTeamUserDialogComponent,
     ConfirmDialogModule,
     FormDialogComponent,
     PageLayoutProjectSettingsComponent,
+    CardEditableComponent,
   ],
   providers: [ToastService],
   templateUrl: './project-settings-team.page.html',
