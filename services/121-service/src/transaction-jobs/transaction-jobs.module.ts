@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FspsModule } from '@121-service/src/fsps/fsp.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
@@ -13,6 +14,9 @@ import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integrat
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -39,6 +43,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([TransactionEventEntity]),
     RedisModule,
     IntersolveVisaModule,
     IntersolveVoucherModule,
@@ -56,6 +61,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     FspsModule,
     RegistrationEventsModule,
     MessageTemplateModule,
+    TransactionEventsModule,
   ],
   providers: [
     TransactionJobsHelperService,
@@ -76,6 +82,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     TransactionJobsProcessorCommercialBankEthiopia,
     TransactionJobsProcessorExcel,
     createScopedRepositoryProvider(OnafriqTransactionEntity),
+    TransactionEventsScopedRepository,
   ],
 })
 export class TransactionJobsModule {}

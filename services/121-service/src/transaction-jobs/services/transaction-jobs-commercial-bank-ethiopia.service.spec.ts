@@ -2,10 +2,10 @@ import { TestBed } from '@automock/jest';
 
 import { CbeTransferScopedRepository } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { TransactionJobsCommercialBankEthiopiaService } from '@121-service/src/transaction-jobs/services/transaction-jobs-commercial-bank-ethiopia.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { CommercialBankEthiopiaTransactionJobDto } from '@121-service/src/transaction-queues/dto/commercial-bank-ethiopia-transaction-job.dto';
@@ -16,12 +16,12 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
   let programFspConfigurationRepository: ProgramFspConfigurationRepository;
   let cbeTransferScopedRepository: CbeTransferScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
+  let transactionsService: TransactionsService;
   let programRepository: ProgramRepository;
 
   // Shared variables
   let credentials: { username: string; password: string };
   let program: { ngo: string; titlePortal: string; currency: string };
-  let registration: RegistrationEntity;
   let transactionJob: CommercialBankEthiopiaTransactionJobDto;
   let transactionJobRetry: CommercialBankEthiopiaTransactionJobDto;
   let existingCbeTransfer: { debitTheirRef: string };
@@ -38,14 +38,14 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     );
     cbeTransferScopedRepository = unitRef.get(CbeTransferScopedRepository);
     transactionJobsHelperService = unitRef.get(TransactionJobsHelperService);
+    transactionsService = unitRef.get(TransactionsService);
     programRepository = unitRef.get(ProgramRepository);
 
     credentials = { username: 'user', password: 'pass' };
     program = { ngo: 'NGO', titlePortal: 'Title', currency: 'ETB' };
-    registration = { id: 10 } as RegistrationEntity;
     transactionJob = {
       programId: 1,
-      paymentId: 2,
+      transactionId: 2,
       referenceId: 'ref-1',
       programFspConfigurationId: 3,
       transactionAmount: 100,
@@ -58,7 +58,7 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
     };
     transactionJobRetry = {
       programId: 1,
-      paymentId: 2,
+      transactionId: 2,
       referenceId: 'ref-1',
       programFspConfigurationId: 3,
       transactionAmount: 100,
@@ -84,8 +84,11 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
-      .mockResolvedValue(registration);
+      .spyOn(
+        transactionJobsHelperService,
+        'createInitiatedOrRetryTransactionEvent',
+      )
+      .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')
       .mockResolvedValue(program as any);
@@ -100,11 +103,8 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       });
 
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createTransactionAndUpdateRegistration',
-      )
-      .mockResolvedValue(mockTransaction);
+      .spyOn(transactionsService, 'saveTransactionProgress')
+      .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(transactionJob);
 
@@ -127,8 +127,11 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
       .spyOn(programFspConfigurationRepository, 'getUsernamePasswordProperties')
       .mockResolvedValue(credentials);
     jest
-      .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
-      .mockResolvedValue(registration);
+      .spyOn(
+        transactionJobsHelperService,
+        'createInitiatedOrRetryTransactionEvent',
+      )
+      .mockImplementation();
     jest
       .spyOn(programRepository, 'findOneOrFail')
       .mockResolvedValue(program as any);
@@ -145,11 +148,8 @@ describe('TransactionJobsCommercialBankEthiopiaService', () => {
         errorMessage: null,
       });
     jest
-      .spyOn(
-        transactionJobsHelperService,
-        'createTransactionAndUpdateRegistration',
-      )
-      .mockResolvedValue(mockTransaction);
+      .spyOn(transactionsService, 'saveTransactionProgress')
+      .mockImplementation();
 
     await service.processCommercialBankEthiopiaTransactionJob(
       transactionJobRetry,

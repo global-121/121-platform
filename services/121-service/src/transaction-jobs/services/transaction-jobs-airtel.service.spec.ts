@@ -2,7 +2,10 @@ import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-inte
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { TransactionJobsAirtelService } from '@121-service/src/transaction-jobs/services/transaction-jobs-airtel.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
@@ -10,13 +13,14 @@ import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto
 describe('TransactionJobsAirtelService', () => {
   let service: TransactionJobsAirtelService;
   let airtelService: jest.Mocked<AirtelService>;
-  let transactionScopedRepository: jest.Mocked<TransactionScopedRepository>;
+  let transactionEventScopedRepository: jest.Mocked<TransactionEventsScopedRepository>;
   let transactionJobsHelperService: jest.Mocked<TransactionJobsHelperService>;
+  let transactionsService: jest.Mocked<TransactionsService>;
 
   const transactionJob: AirtelTransactionJobDto = {
     programId: 3,
     programFspConfigurationId: 3,
-    paymentId: 3,
+    transactionId: 3,
     referenceId: 'ref-3',
     transactionAmount: 300,
     isRetry: false,
@@ -25,29 +29,29 @@ describe('TransactionJobsAirtelService', () => {
     phoneNumber: '123',
   };
 
-  const registrationId = 7;
-  const mockRegistration = {
-    id: registrationId,
-    firstName: 'Veriko',
-    lastName: 'Edgardo',
+  const transactionEventContext: TransactionEventCreationContext = {
+    transactionId: transactionJob.transactionId,
+    userId: transactionJob.userId,
+    programFspConfigurationId: transactionJob.programFspConfigurationId,
   };
 
   beforeEach(async () => {
     airtelService = { attemptOrCheckDisbursement: jest.fn() } as any;
     transactionJobsHelperService = {
-      getRegistrationOrThrow: jest.fn().mockResolvedValue(mockRegistration),
-      createTransactionAndUpdateRegistration: jest.fn(),
+      createInitiatedOrRetryTransactionEvent: jest.fn(),
     } as any;
-    transactionScopedRepository = {
-      // count should return 3
-      count: jest.fn().mockResolvedValue(6),
-      update: jest.fn(),
+    transactionEventScopedRepository = {
+      countFailedTransactionAttempts: jest.fn().mockResolvedValue(6),
+    } as any;
+    transactionsService = {
+      saveTransactionProgress: jest.fn(),
     } as any;
 
     service = new TransactionJobsAirtelService(
       airtelService,
-      transactionScopedRepository,
       transactionJobsHelperService,
+      transactionEventScopedRepository,
+      transactionsService,
     );
   });
 
@@ -60,6 +64,19 @@ describe('TransactionJobsAirtelService', () => {
       jest.restoreAllMocks();
     });
 
+    it('should call createInitiatedOrRetryTransactionEvent with the right arguments', async () => {
+      // Act
+      await service.processAirtelTransactionJob(transactionJob);
+
+      // Assert
+      expect(
+        transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+      ).toHaveBeenCalledWith({
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      });
+    });
+
     it('should call attemptOrCheckDisbursement with the right arguments', async () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
@@ -67,7 +84,7 @@ describe('TransactionJobsAirtelService', () => {
       // Assert
       // Deterministic based on input.
       const deterministicAirtelTransactionId =
-        'd4ffb98447c80798c9bfca8b466ae9046eff723efaca2de3968947eeca003dfd';
+        'd52e95c6213f718dd2825268239c12eaf80527a629ded5543bdbb07e73a2deff';
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
         airtelTransactionId: deterministicAirtelTransactionId,
         phoneNumber: transactionJob.phoneNumber,
@@ -77,7 +94,9 @@ describe('TransactionJobsAirtelService', () => {
 
     it('should call attemptOrCheckDisbursement with a different airtelTransactionId if the failedTransactionsCount is different', async () => {
       // Arrange
-      (transactionScopedRepository.count as jest.Mock).mockResolvedValue(4);
+      (
+        transactionEventScopedRepository.countFailedTransactionAttempts as jest.Mock
+      ).mockResolvedValue(4);
 
       // Act
       await service.processAirtelTransactionJob(transactionJob);
@@ -85,7 +104,7 @@ describe('TransactionJobsAirtelService', () => {
       // Assert
       // Different from the previous test.
       const deterministicAirtelTransactionId =
-        'c0e886dd4b5c144026222e7fa05ee41f1c952c5277cbdc929a2199b6bb86f018';
+        '6431440a8d588083454dfcc2c3ff4bd7005eebb2f0f3c446d1d162e7353c22f0';
       expect(airtelService.attemptOrCheckDisbursement).toHaveBeenCalledWith({
         airtelTransactionId: deterministicAirtelTransactionId,
         phoneNumber: transactionJob.phoneNumber,
@@ -93,27 +112,22 @@ describe('TransactionJobsAirtelService', () => {
       });
     });
 
-    it('should call createTransactionAndUpdateRegistration with the right arguments', async () => {
+    it('should call saveTransactionProcessingProgress with the right arguments', async () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
       // Assert
-      expect(
-        transactionJobsHelperService.createTransactionAndUpdateRegistration,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          registration: mockRegistration,
-          transactionJob,
-          transferAmountInMajorUnit: transactionJob.transactionAmount,
-          status: TransactionStatusEnum.success,
-          errorText: undefined,
-        }),
-      );
+      expect(transactionsService.saveTransactionProgress).toHaveBeenCalledWith({
+        context: transactionEventContext,
+        description: TransactionEventDescription.airtelRequestSent,
+        newTransactionStatus: TransactionStatusEnum.success,
+        errorMessage: undefined,
+      });
     });
   });
 
   describe('processAirtelTransactionJob - unhappy path', () => {
-    it("should call createTransactionAndUpdateRegistration with certain arguments when attemptOrCheckDisbursement throws an AirtelError that\'s AirtelDisbursementResultEnum.ambiguous", async () => {
+    it("should call saveTransactionProcessingProgress with certain arguments when attemptOrCheckDisbursement throws an AirtelError that\'s AirtelDisbursementResultEnum.ambiguous", async () => {
       // Arrange
       (airtelService.attemptOrCheckDisbursement as jest.Mock).mockRejectedValue(
         new AirtelError(
@@ -125,20 +139,15 @@ describe('TransactionJobsAirtelService', () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
-      expect(
-        transactionJobsHelperService.createTransactionAndUpdateRegistration,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          registration: mockRegistration,
-          transactionJob,
-          transferAmountInMajorUnit: transactionJob.transactionAmount,
-          status: TransactionStatusEnum.waiting,
-          errorText: 'Airtel Error: mock-ambiguous-message',
-        }),
-      );
+      expect(transactionsService.saveTransactionProgress).toHaveBeenCalledWith({
+        context: transactionEventContext,
+        description: TransactionEventDescription.airtelRequestSent,
+        newTransactionStatus: TransactionStatusEnum.waiting,
+        errorMessage: 'Airtel Error: mock-ambiguous-message',
+      });
     });
 
-    it("should call createTransactionAndUpdateRegistration with certain arguments when attemptOrCheckDisbursement throws an Airtel error that's not ambiguous", async () => {
+    it("should call saveTransactionProcessingProgress with certain arguments when attemptOrCheckDisbursement throws an Airtel error that's not ambiguous", async () => {
       // Arrange
       (airtelService.attemptOrCheckDisbursement as jest.Mock).mockRejectedValue(
         new AirtelError('mock-fail-message', AirtelDisbursementResultEnum.fail),
@@ -147,17 +156,12 @@ describe('TransactionJobsAirtelService', () => {
       // Act
       await service.processAirtelTransactionJob(transactionJob);
 
-      expect(
-        transactionJobsHelperService.createTransactionAndUpdateRegistration,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          registration: mockRegistration,
-          transactionJob,
-          transferAmountInMajorUnit: transactionJob.transactionAmount,
-          status: TransactionStatusEnum.error,
-          errorText: 'Airtel Error: mock-fail-message',
-        }),
-      );
+      expect(transactionsService.saveTransactionProgress).toHaveBeenCalledWith({
+        context: transactionEventContext,
+        description: TransactionEventDescription.airtelRequestSent,
+        newTransactionStatus: TransactionStatusEnum.error,
+        errorMessage: 'Airtel Error: mock-fail-message',
+      });
     });
 
     it('should throw when attemptOrCheckDisbursement throws a non-Airtel error', async () => {

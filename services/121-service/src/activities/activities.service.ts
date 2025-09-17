@@ -7,7 +7,7 @@ import { NoteScopedRepository } from '@121-service/src/notes/note.repository';
 import { TwilioMessageScopedRepository } from '@121-service/src/notifications/twilio-message.repository';
 import { MessageByRegistrationId } from '@121-service/src/notifications/types/twilio-message-by-registration-id.interface';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventScopedRepository } from '@121-service/src/registration-events/registration-event.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
@@ -18,7 +18,7 @@ export class ActivitiesService {
   constructor(
     private readonly eventScopedRepository: RegistrationEventScopedRepository,
     private readonly twilioMessageScopedRepository: TwilioMessageScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly noteScopedRepository: NoteScopedRepository,
     private readonly userService: UserService,
   ) {}
@@ -48,7 +48,7 @@ export class ActivitiesService {
       availableTypes.push(ActivityTypeEnum.Transaction);
 
       transactions =
-        await this.transactionScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
+        await this.transactionViewScopedRepository.getLatestTransactionsByRegistrationIdAndProgramId(
           registrationId,
           programId,
         );
