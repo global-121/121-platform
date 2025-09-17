@@ -1,5 +1,6 @@
 /* global __ENV */
 import { check, fail, sleep } from 'k6';
+import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
 import { registrationPV } from '../helpers/registration-default.data.js';
@@ -38,7 +39,21 @@ function checkAndFail(response, checks) {
   }
 }
 
+function isServiceUp() {
+  const response = http.get(
+    `${__ENV.EXTERNAL_121_SERVICE_URL}api/health/health`,
+  );
+  return response.status === 200;
+}
+
 export default function () {
+  // Wait for the service to restart and become available
+  let serviceUp = false;
+  while (!serviceUp) {
+    sleep(1); // wait for 1 second before retrying
+    serviceUp = isServiceUp();
+  }
+  // reset DB
   resetPage.resetDB(resetScript);
   // login
   loginPage.login();
