@@ -7,12 +7,12 @@ import {
   Relation,
 } from 'typeorm';
 
-import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Entity('transaction_event')
-export class TransactionEventEntity extends Base121AuditedEntity {
+export class TransactionEventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;

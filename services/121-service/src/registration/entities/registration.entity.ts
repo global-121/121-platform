@@ -26,7 +26,6 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twi
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVisaCustomerEntity } from '@121-service/src/payments/fsp-integration/intersolve-visa/entities/intersolve-visa-customer.entity';
 import { ImageCodeExportVouchersEntity } from '@121-service/src/payments/imagecode/entities/image-code-export-vouchers.entity';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/entities/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -134,12 +133,6 @@ export class RegistrationEntity extends Base121Entity {
     (whatsappPendingMessages) => whatsappPendingMessages.registration,
   )
   public whatsappPendingMessages: Relation<WhatsappPendingMessageEntity[]>;
-
-  @OneToMany(
-    () => LatestTransactionEntity,
-    (latestTransactions) => latestTransactions.registration,
-  )
-  public latestTransactions: Relation<LatestTransactionEntity[]>;
 
   @OneToOne(
     () => LatestMessageEntity,
