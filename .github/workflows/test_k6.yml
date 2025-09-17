@@ -49,17 +49,9 @@ jobs:
           npm run start:services:ci:production
 
       # - name: Wait for API to be ready
+      #   working-directory: ${{ env.k6TestsPath }}
       #   run: |
-      #     for i in {1..30}; do
-      #       if curl -s http://localhost:3000/api/health > /dev/null; then
-      #         echo "API is up!";
-      #         exit 0;
-      #       fi
-      #       echo "Waiting for API...";
-      #       sleep 2
-      #     done
-      #     echo "API did not start in time";
-      #     exit 1
+      #     ./wait-for-service.sh
 
       - name: Lint k6 tests
         working-directory: ${{ env.k6TestsPath }}
