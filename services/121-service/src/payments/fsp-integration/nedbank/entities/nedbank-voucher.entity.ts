@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 
 // TODO: REFACTOR: Consider splitting this entity into two separate entities NedbankOrderEntity and NedbankVoucherEntity
 @Entity('nedbank_voucher')
