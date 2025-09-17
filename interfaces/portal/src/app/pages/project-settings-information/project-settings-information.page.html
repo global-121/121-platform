@@ -1,5 +1,9 @@
-<app-page-layout-project-settings [projectId]="projectId()">
-  <p-card>
+<app-page-layout-project-settings
+  i18n
+  [projectId]="projectId()"
+>
+  foo
+  <!-- <p-card>
     <div class="flex min-h-12 items-center gap-x-2">
       <h2 i18n="@@page-title-project-settings-team">Project team</h2>
       @if (canManageAidworkers()) {
@@ -56,21 +60,5 @@
       [enableScope]="enableScope()"
       [userToEdit]="formMode() === 'edit' ? selectedUser() : undefined"
     />
-  </p-card>
+  </p-card> -->
 </app-page-layout-project-settings>
-<app-form-dialog
-  #removeUserConfirmationDialog
-  header="Remove user from team"
-  i18n-header
-  headerIcon="pi pi-trash"
-  proceedLabel="Remove user"
-  i18n-proceedLabel="@@remove-user-button"
-  [mutation]="removeUserMutation"
-  [mutationData]="{ userId: selectedUser()?.id }"
->
-  <p i18n>
-    You're about to remove
-    <b>{{ selectedUser()?.username }}</b> ({{ selectedUser()?.allRolesLabel }})
-    from your team.<br />They will not have access to the project anymore.
-  </p>
-</app-form-dialog>
