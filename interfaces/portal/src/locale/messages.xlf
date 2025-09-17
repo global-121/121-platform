@@ -1496,12 +1496,6 @@
       <trans-unit id="6350305312750969481" datatype="html">
         <source>Payment in progress</source>
       </trans-unit>
-      <trans-unit id="2470208422835223699" datatype="html">
-        <source>Go to payment page</source>
-      </trans-unit>
-      <trans-unit id="7393140533575161595" datatype="html">
-        <source>Transfer status updated</source>
-      </trans-unit>
       <trans-unit id="3153802600204818440" datatype="html">
         <source>Date and time</source>
       </trans-unit>
@@ -1837,6 +1831,20 @@
       </trans-unit>
       <trans-unit id="7750731471522839997" datatype="html">
         <source>Editing in <x equiv-text="{{ languageName }}" id="INTERPOLATION"/>.</source>
+      <trans-unit id="4031190280739566335" datatype="html">
+        <source>Last updated</source>
+      </trans-unit>
+      <trans-unit id="5402222769341074130" datatype="html">
+        <source>View transfer history</source>
+      </trans-unit>
+      <trans-unit id="6566240598427787934" datatype="html">
+        <source>Part of payment</source>
+      </trans-unit>
+      <trans-unit id="7833274025744181866" datatype="html">
+        <source>Transfer <x equiv-text="formattedDate" id="PH"/> - transfer history</source>
+      </trans-unit>
+      <trans-unit id="transaction-status-created" datatype="html">
+        <source>Created</source>
       </trans-unit>
       <trans-unit id="3578644052206125685" datatype="html">
         <source>Ukrainian</source>

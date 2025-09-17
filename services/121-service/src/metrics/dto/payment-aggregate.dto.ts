@@ -1,4 +1,4 @@
-import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { PaymentReturnDto } from '@121-service/src/payments/dto/payment-return.dto';
 
 export class AggregatePerPayment {
   id: number;
