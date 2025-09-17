@@ -109,23 +109,6 @@ export class ProjectSettingsBasicInformationComponent {
       });
 
       await this.projectApiService.invalidateCache();
-      this.isEditing.set(false);
-    },
-    onError: (error) => {
-      this.toastService.showToast({
-        severity: 'error',
-        detail: error.message,
-      });
     },
   }));
-
-  save() {
-    this.formGroup.markAllAsTouched();
-
-    if (!this.formGroup.valid) {
-      return;
-    }
-
-    this.updateProjectMutation.mutate(this.formGroup.getRawValue());
-  }
 }
