@@ -18,15 +18,6 @@
             />
           } @else {
             <p-button
-              label="Add user to team"
-              i18n-label
-              rounded
-              outlined
-              icon="pi pi-plus"
-              [iconPos]="rtlHelper.createPosition('start')()"
-              (click)="openForm('add')"
-            />
-            <p-button
               label="Cancel"
               i18n-label="@@generic-cancel"
               (click)="isEditing.set(false)"
@@ -41,6 +32,18 @@
       }
     </div>
     <p i18n>Add users to your project team and assign roles to them.</p>
+    @if (isEditing()) {
+      <p-button
+        label="Add user to team"
+        i18n-label
+        rounded
+        outlined
+        styleClass="mt-4"
+        icon="pi pi-plus"
+        [iconPos]="rtlHelper.createPosition('start')()"
+        (click)="openForm('add')"
+      />
+    }
     <app-query-table
       [items]="projectUsers.data() ?? []"
       [isPending]="projectUsers.isPending()"
