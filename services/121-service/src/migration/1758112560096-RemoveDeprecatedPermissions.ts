@@ -14,17 +14,12 @@ export class RemoveDeprecatedPermissions1758112560096
   }
 
   private async migrateData(queryRunner: QueryRunner): Promise<void> {
-    // Add the new permission
     const existingPermissions = await queryRunner.query(`
       SELECT id,name FROM "121-service".permission
     `);
     console.log('Total existing permissions: ', existingPermissions.length);
 
-    // Get all valid permission values from the enum
     const validPermissionValues = Object.values(PermissionEnum);
-
-    // Find permissions that exist in database but not in enum
-    // Find deprecated permissions
     const deprecatedPermissions = existingPermissions.filter(
       (permission) =>
         !validPermissionValues.includes(permission.name as PermissionEnum),
