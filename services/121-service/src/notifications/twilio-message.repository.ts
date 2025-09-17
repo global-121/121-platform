@@ -17,7 +17,7 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
   }
 
   // TODO: refactor to use this method in registrations service
-  async getByReferenceId(referenceId: string) {
+  public async getByReferenceId(referenceId: string) {
     const messageHistoryArray = await this.createQueryBuilder('registration')
       .select([
         'twilioMessage.dateCreated as created',
@@ -61,10 +61,19 @@ export class TwilioMessageScopedRepository extends ScopedRepository<TwilioMessag
     return result;
   }
 
-  async getManyByRegistrationId(registrationId: number) {
+  public async getManyByRegistrationId({
+    registrationId,
+    programId,
+  }: {
+    registrationId: number;
+    programId: number;
+  }) {
     const result = await this.find({
       where: {
-        registration: { id: Equal(registrationId) },
+        registration: {
+          id: Equal(registrationId),
+          programId: Equal(programId),
+        },
       },
       relations: ['user'],
       order: { dateCreated: 'DESC' },
