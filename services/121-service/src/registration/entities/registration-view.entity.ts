@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/entities/latest-transaction.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';

@@ -20,7 +20,7 @@ import { WhatsappModule } from '@121-service/src/notifications/whatsapp/whatsapp
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherModule } from '@121-service/src/payments/fsp-integration/intersolve-voucher/intersolve-voucher.module';
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
