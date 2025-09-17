@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial, Equal, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseSeedFactory } from '@121-service/src/scripts/factories/base-seed-factory';
 
