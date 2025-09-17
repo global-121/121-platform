@@ -1,5 +1,6 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import chunk from 'lodash/chunk';
 import {
   DataSource,
   DeleteResult,
@@ -342,5 +343,33 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       })
       .getRawMany();
     return wallets;
+  }
+
+  public async updatePaymentCounts(
+    registrationIds: number[],
+    chunkSize: number,
+  ): Promise<void> {
+    for (const chunkIds of chunk(registrationIds, chunkSize)) {
+      await this.repository
+        .createQueryBuilder('registration')
+        .update()
+        .set({ paymentCount: () => '"paymentCount" + 1' })
+        .whereInIds(chunkIds)
+        .execute();
+    }
+  }
+
+  public async getRegistrationsToComplete(
+    programId: number,
+  ): Promise<RegistrationEntity[]> {
+    const registrationsToComplete = await this.repository
+      .createQueryBuilder('registration')
+      .andWhere('registration."paymentCount" >= registration."maxPayments"')
+      .andWhere('registration."registrationStatus" != :completedStatus', {
+        completedStatus: RegistrationStatusEnum.completed,
+      })
+      .andWhere('registration."programId" = :programId', { programId })
+      .getMany();
+    return registrationsToComplete;
   }
 }
