@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Equal, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
@@ -12,7 +12,7 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -32,8 +32,7 @@ export class PaymentsReportingService {
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
     private readonly programRegistrationAttributeRepository: ProgramRegistrationAttributeRepository,
     private readonly registrationPaginationService: RegistrationsPaginationService,
-    private readonly dataSource: DataSource,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
@@ -67,10 +66,11 @@ export class PaymentsReportingService {
     paymentId: number,
   ): Promise<PaymentReturnDto> {
     // Scoped, as this.transactionScopedRepository is used in the transaction.service.ts
-    const statusAggregation = await this.aggregateTransactionsByStatus(
-      programId,
-      paymentId,
-    );
+    const statusAggregation =
+      await this.transactionViewScopedRepository.aggregateTransactionsByStatus({
+        programId,
+        paymentId,
+      });
 
     const totalAmountPerStatus: Record<
       string,
@@ -109,36 +109,6 @@ export class PaymentsReportingService {
         amount: 0,
       },
     };
-  }
-
-  // TODO: Move to scoped transaction repository however it will be changed when implementing segregation of duties, so let's leave the refactor until than
-  private async aggregateTransactionsByStatus(
-    programId: number,
-    paymentId: number,
-  ): Promise<any[]> {
-    return await this.dataSource
-      .createQueryBuilder()
-      .select([
-        'status',
-        'COUNT(*) as count',
-        // rounding individual transaction amounts to 2 decimal places before summing, in line with current FSPs:
-        'SUM(ROUND(amount::numeric, 2)) as totalamount',
-      ])
-      .from(
-        '(' +
-          this.transactionScopedRepository
-            .getLastTransactionsQuery({ programId, paymentId })
-            .getQuery() +
-          ')',
-        'transactions',
-      )
-      .setParameters(
-        this.transactionScopedRepository
-          .getLastTransactionsQuery({ programId, paymentId })
-          .getParameters(),
-      )
-      .groupBy('status')
-      .getRawMany();
   }
 
   public async getProgramPaymentsStatus(
@@ -218,15 +188,14 @@ export class PaymentsReportingService {
         programId,
       );
 
-    const transactions = await this.transactionScopedRepository.getTransactions(
-      {
+    const transactions =
+      await this.transactionViewScopedRepository.getTransactions({
         programId,
         paymentId,
         fromDate,
         toDate,
         fspSpecificJoinFields,
-      },
-    );
+      });
 
     if (!transactions || transactions.length === 0) {
       return [];
