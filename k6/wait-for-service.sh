@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-URL="http://localhost:3000/api/health" # Change to a real health endpoint if needed
+URL="http://localhost:3000/api/health/health"
 TIMEOUT=120
 INTERVAL=2
 ELAPSED=0
