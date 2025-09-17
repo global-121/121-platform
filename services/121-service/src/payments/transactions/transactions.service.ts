@@ -8,9 +8,9 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twi
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/entities/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';

@@ -11,7 +11,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 // This entity is used to store to link the lastest transaction for a payment to a registration
