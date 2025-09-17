@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Reconciliate excel FSP data should give me a CSV template when I request it 1`] = `
+[
+  {
+    "name": "gringotts",
+    "template": [
+      "phoneNumber",
+      "status",
+    ],
+  },
+  {
+    "name": "ironBank",
+    "template": [
+      "phoneNumber",
+      "status",
+    ],
+  },
+]
+`;

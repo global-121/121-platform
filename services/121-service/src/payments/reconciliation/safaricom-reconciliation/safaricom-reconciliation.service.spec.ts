@@ -9,12 +9,13 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
 describe('SafaricomReconciliationService', () => {
   let safaricomReconciliationService: SafaricomReconciliationService;
+  let _transactionsService: TransactionsService;
   let redisClient: Redis;
   let queuesService: QueuesRegistryService;
 
@@ -38,7 +39,7 @@ describe('SafaricomReconciliationService', () => {
           useValue: {},
         },
         {
-          provide: TransactionScopedRepository,
+          provide: TransactionsService,
           useValue: {},
         },
         {
