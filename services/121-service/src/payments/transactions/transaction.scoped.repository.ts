@@ -82,14 +82,13 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'r."id" as "registrationId"',
         'r."registrationStatus"',
         'transaction.status AS "status"',
-        'transaction.amount AS "amount"',
-        'transaction.errorMessage as "errorMessage"',
+        'transaction."transferValue" AS "amount"',
+        // 'transaction."errorMessage" as "errorMessage"', //##TODO: this was done at early stage to get to successful test
         'fspconfig.name as "programFspConfigurationName"',
       ])
       .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('p."programId" = :programId', {
         programId,
       });
@@ -121,6 +120,17 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     }
 
     return query.getRawMany();
+  }
+
+  public async getPaymentCount(registrationId: number): Promise<number> {
+    const distinctPayments = await this.createQueryBuilder('transaction')
+      .select('DISTINCT transaction."paymentId"')
+      .andWhere('transaction.registrationId = :registrationId', {
+        registrationId,
+      })
+      .getRawMany();
+
+    return distinctPayments.length;
   }
 
   // Make this private when all 'querying code' has been moved to this repository
@@ -157,7 +167,6 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('p."programId" = :programId', {
         programId,
       });

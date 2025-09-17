@@ -283,18 +283,6 @@
     ]
   },
   {
-    "method": "patch",
-    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
-    "params": [
-      "programId"
-    ]
-  },
-  {
-    "method": "patch",
-    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
-    "params": []
-  },
-  {
     "method": "get",
     "path": "/api/programs/{programId}",
     "params": [
@@ -475,6 +463,18 @@
       "name",
       "propertyName"
     ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
+    "params": [
+      "programId"
+    ]
+  },
+  {
+    "method": "patch",
+    "path": "/api/fsps/intersolve-voucher/unused-vouchers",
+    "params": []
   },
   {
     "method": "put",

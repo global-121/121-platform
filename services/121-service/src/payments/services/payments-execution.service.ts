@@ -20,12 +20,15 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { ScopedQueryBuilder } from '@121-service/src/scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
+import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 @Injectable()
 export class PaymentsExecutionService {
@@ -42,6 +45,7 @@ export class PaymentsExecutionService {
     private readonly paymentEventsService: PaymentEventsService,
     private readonly transactionJobsCreationService: TransactionJobsCreationService,
     private readonly paymentsProgressHelperService: PaymentsProgressHelperService,
+    private readonly registrationScopedRepository: RegistrationScopedRepository,
   ) {}
 
   public async createPayment({
@@ -151,6 +155,7 @@ export class PaymentsExecutionService {
           this.azureLogService.logError(e, true);
         })
         .finally(() => {
+          // Remove this
           void this.actionService.saveAction(
             userId,
             programId,
@@ -188,6 +193,58 @@ export class PaymentsExecutionService {
     }
 
     return savedPaymentEntity.id;
+  }
+
+  private async createTransactionAndEventEntities({
+    userId,
+    programId,
+    paymentId,
+    paymentJobCreationDetails,
+  }: {
+    userId: number;
+    programId: number;
+    paymentId: number;
+    paymentJobCreationDetails: PaymentJobCreationDetails[];
+  }): Promise<void> {
+    // ##TODO: optimize all of this for performance
+    // ##TODO: refactor dtos/interfaces to use in terms of naming and properties
+    for (const paymentJobCreationDetail of paymentJobCreationDetails) {
+      const registration = await this.getRegistrationOrThrow(
+        paymentJobCreationDetail.referenceId,
+      );
+      const transactionJob: SharedTransactionJobDto = {
+        programFspConfigurationId:
+          paymentJobCreationDetail.programFspConfigurationId,
+        programId,
+        paymentId,
+        userId,
+        referenceId: paymentJobCreationDetail.referenceId,
+        isRetry: false,
+        bulkSize: paymentJobCreationDetails.length,
+      };
+
+      await this.transactionsService.createTransactionAndUpdateRegistration({
+        registration,
+        transactionJob,
+        transferAmountInMajorUnit: paymentJobCreationDetail.transactionAmount,
+      });
+    }
+  }
+
+  // ##TODO: for now copied from transaction-jobs-helper.service, find better place
+  private async getRegistrationOrThrow(
+    referenceId: string,
+  ): Promise<RegistrationEntity> {
+    const registration =
+      await this.registrationScopedRepository.getByReferenceId({
+        referenceId,
+      });
+    if (!registration) {
+      throw new Error(
+        `Registration was not found for referenceId ${referenceId}`,
+      );
+    }
+    return registration;
   }
 
   private async checkFspConfigurationsOrThrow(
@@ -296,6 +353,13 @@ export class PaymentsExecutionService {
       referenceIds,
       amount,
       programId,
+    });
+
+    await this.createTransactionAndEventEntities({
+      userId,
+      programId,
+      paymentId,
+      paymentJobCreationDetails,
     });
 
     await this.createTransactionJobs({
@@ -466,7 +530,7 @@ export class PaymentsExecutionService {
     const latestFailedTransactionByReferenceId: Record<string, number> = {};
     for (const transaction of latestTransactionsFailedForPayment) {
       latestFailedTransactionByReferenceId[transaction.referenceId] =
-        transaction.amount;
+        transaction.transferValue;
     }
 
     const paymentJobCreationsDetailsList: RetryPaymentJobCreationDetails[] = [];
@@ -480,6 +544,7 @@ export class PaymentsExecutionService {
         referenceId: registration.referenceId,
         fspName: registration.fspName,
         programFspConfigurationName: registration.programFspConfigurationName,
+        programFspConfigurationId: registration.programFspConfigurationId,
       });
     }
 
@@ -500,7 +565,12 @@ export class PaymentsExecutionService {
         {
           programId,
           referenceIds,
-          select: ['referenceId', 'paymentAmountMultiplier', 'fspName'],
+          select: [
+            'referenceId',
+            'paymentAmountMultiplier',
+            'fspName',
+            'programFspConfigurationId',
+          ],
           chunkSize: 4000,
         },
       );
@@ -509,6 +579,7 @@ export class PaymentsExecutionService {
       transactionAmount: amount * row.paymentAmountMultiplier,
       referenceId: row.referenceId,
       fspName: row.fspName,
+      programFspConfigurationId: row.programFspConfigurationId,
     }));
   }
 }
