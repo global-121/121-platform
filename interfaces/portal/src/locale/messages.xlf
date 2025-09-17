@@ -1733,6 +1733,54 @@
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
       </trans-unit>
+      <trans-unit id="1704856330342999120" datatype="html">
+        <source>project-settings-budget works!</source>
+      </trans-unit>
+      <trans-unit id="2178250716184970067" datatype="html">
+        <source>Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team&apos;s page. To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.</source>
+      </trans-unit>
+      <trans-unit id="2651912264744301649" datatype="html">
+        <source>Project name</source>
+      </trans-unit>
+      <trans-unit id="307238733755178044" datatype="html">
+        <source>Enter the basic details of your project, these details will define your project&apos;s setup and structure.</source>
+      </trans-unit>
+      <trans-unit id="3102652680104066178" datatype="html">
+        <source>Project description</source>
+      </trans-unit>
+      <trans-unit id="3768927257183755959" datatype="html">
+        <source>Save</source>
+      </trans-unit>
+      <trans-unit id="3845427937485595400" datatype="html">
+        <source>Enable scope</source>
+      </trans-unit>
+      <trans-unit id="5927673166996679723" datatype="html">
+        <source>The amount of people/ households your project wishes to reach.</source>
+      </trans-unit>
+      <trans-unit id="6001336690636833920" datatype="html">
+        <source>Basic information details saved successfully.</source>
+      </trans-unit>
+      <trans-unit id="6189042919147070791" datatype="html">
+        <source>Turning on the verification option enables an additional registration status: &quot;verified&quot;.</source>
+      </trans-unit>
+      <trans-unit id="6230534888092191953" datatype="html">
+        <source>Project information</source>
+      </trans-unit>
+      <trans-unit id="7243649521435718104" datatype="html">
+        <source>Use &quot;scope&quot; in this project</source>
+      </trans-unit>
+      <trans-unit id="7307016430178924629" datatype="html">
+        <source>Hint text...</source>
+      </trans-unit>
+      <trans-unit id="7481522563867689810" datatype="html">
+        <source>Verification process</source>
+      </trans-unit>
+      <trans-unit id="8273519064602453308" datatype="html">
+        <source>Use verification process in this project</source>
+      </trans-unit>
+      <trans-unit id="8664841227839667914" datatype="html">
+        <source>Basic information</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

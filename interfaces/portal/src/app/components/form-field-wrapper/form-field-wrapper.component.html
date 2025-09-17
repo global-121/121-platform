@@ -1,6 +1,6 @@
 <div
   [attr.data-testid]="dataTestId()"
-  class="mb-2"
+  class="mb-4"
 >
   <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
   <label
@@ -8,9 +8,9 @@
   >
     <strong class="mb-2 block">
       @if (isRequired()) {
-        *
+        <span class="me-0">*</span>
       }
-      {{ label() | translatableString }}
+      <span class="ms-0">{{ label() | translatableString }}</span>
       @let tooltip = labelTooltip();
       @if (tooltip) {
         <app-info-tooltip [message]="tooltip"></app-info-tooltip>
