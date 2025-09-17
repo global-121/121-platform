@@ -3,18 +3,23 @@
   [formGroup]="formGroup"
   [mutation]="assignUserMutation"
   [mutationData]="formGroup.getRawValue()"
-  header="Add user to team"
-  i18n-header
-  headerIcon="pi pi-plus"
-  proceedLabel="Add to team"
-  i18n-proceedLabel
+  [header]="dialogHeader()"
+  [headerIcon]="dialogHeaderIcon()"
+  [proceedLabel]="dialogProceedLabel()"
 >
   <p class="mb-4">
-    <ng-container i18n
-      >Choose a user from the dropdown and assign one or more
-      roles.</ng-container
-    ><br />
-    <ng-container i18n="@@info-in-manual">
+    @if (!isEditing()) {
+      <ng-container i18n
+        >Choose a user from the dropdown and assign one or more
+        roles.</ng-container
+      >
+    } @else {
+      <ng-container i18n
+        >You're about to edit the user <b>{{ userToEdit()?.username }}</b> in
+        your project team.</ng-container
+      >
+    }
+    <br /><ng-container i18n="@@info-in-manual">
       For more information see the
       <a
         href="https://manual.121.global/"
