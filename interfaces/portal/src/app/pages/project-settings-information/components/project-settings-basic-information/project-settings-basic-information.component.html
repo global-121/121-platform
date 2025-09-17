@@ -1,0 +1,47 @@
+<app-card-editable
+  title="Basic information"
+  i18n-title
+  [canEdit]="true"
+  [(isEditing)]="isEditing"
+  [isSaveable]="true"
+  (save)="save()"
+>
+  <p i18n>
+    Enter the basic details of your project, these details will define your
+    project's setup and structure.
+  </p>
+
+  @if (!isEditing()) {
+    <p i18n>data list</p>
+  } @else {
+    <form [formGroup]="formGroup">
+      <app-form-field-wrapper
+        label="*Project name"
+        i18n-label
+        [errorMessage]="formFieldErrors()('name')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="Project name"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Project description"
+        i18n-label
+        [errorMessage]="formFieldErrors()('description')"
+      >
+        <textarea
+          rows="5"
+          pTextarea
+          formControlName="description"
+          autocomplete="off"
+          placeholder="Hint text..."
+          i18n-placeholder
+        ></textarea>
+      </app-form-field-wrapper>
+    </form>
+  }
+</app-card-editable>
