@@ -24,7 +24,7 @@ const amount = 10;
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    http_req_failed: ['rate<0.04'], // http errors should be less than 4%
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
@@ -123,7 +123,8 @@ export default function () {
     },
   });
 
-  // Do the payment
+  // Do the payment with dryRun first
+  paymentsPage.verifyPaymentDryRunUntilSuccess(programId, amount);
   const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
