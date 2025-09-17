@@ -334,8 +334,7 @@ export class MetricsService {
 
     const cashDisbursedQueryResult = await this.transactionScopedRepository
       .createQueryBuilder('transaction')
-      .select('SUM(transaction.amount::numeric)', 'cashDisbursed')
-      .innerJoin('transaction.latestTransaction', 'lt')
+      .select('SUM(transaction."transferValue"::numeric)', 'cashDisbursed')
       .leftJoin('transaction.payment', 'p')
       .andWhere({
         status: Not(TransactionStatusEnum.error),

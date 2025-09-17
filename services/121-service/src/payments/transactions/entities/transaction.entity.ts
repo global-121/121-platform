@@ -5,19 +5,19 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   Relation,
+  Unique,
 } from 'typeorm';
 
-import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
+import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/entities/latest-transaction.entity';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
+@Unique(['registrationId', 'paymentId'])
 @Entity('transaction')
-export class TransactionEntity extends Base121AuditedEntity {
+export class TransactionEntity extends Base121Entity {
   @Column({ nullable: true, type: 'real' })
   public transferValue: number | null;
 
@@ -63,12 +63,4 @@ export class TransactionEntity extends Base121AuditedEntity {
     (transactionEvents) => transactionEvents.transactionId,
   )
   public transactionsEvents: Relation<TransactionEventEntity[]>;
-
-  // ##TODO: refactor this out, but leave in for now to avoid breaking changes
-  @OneToOne(
-    () => LatestTransactionEntity,
-    (latestTransaction) => latestTransaction.transaction,
-    { onDelete: 'NO ACTION' },
-  )
-  public latestTransaction: Relation<LatestTransactionEntity>;
 }

@@ -13,6 +13,7 @@ import { OnafriqTransactionEntity } from '@121-service/src/payments/fsp-integrat
 import { OnafriqModule } from '@121-service/src/payments/fsp-integration/onafriq/onafriq.module';
 import { SafaricomModule } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
@@ -56,6 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     FspsModule,
     RegistrationEventsModule,
     MessageTemplateModule,
+    TransactionEventsModule,
   ],
   providers: [
     TransactionJobsHelperService,
