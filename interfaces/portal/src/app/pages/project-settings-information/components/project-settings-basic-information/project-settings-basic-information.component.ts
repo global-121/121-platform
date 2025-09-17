@@ -18,8 +18,10 @@ import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
+import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import {
@@ -27,6 +29,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ToastService } from '~/services/toast.service';
 import {
@@ -46,6 +49,9 @@ type ProjectSettingsBasicInformationFormGroup =
     InputTextModule,
     TextareaModule,
     DataListComponent,
+    DatePickerModule,
+    ToggleSwitchModule,
+    InfoTooltipComponent,
   ],
   templateUrl: './project-settings-basic-information.component.html',
   providers: [ToastService],
@@ -71,6 +77,22 @@ export class ProjectSettingsBasicInformationComponent {
     description: new FormControl('', {
       nonNullable: true,
     }),
+    startDate: new FormControl<Date | undefined>(undefined, {
+      nonNullable: true,
+    }),
+    endDate: new FormControl<Date | undefined>(undefined, {
+      nonNullable: true,
+    }),
+    location: new FormControl('', {
+      nonNullable: true,
+    }),
+    targetNrRegistrations: new FormControl<number | undefined>(undefined, {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    }),
+    validation: new FormControl(false, { nonNullable: true }),
+    enableScope: new FormControl(false, { nonNullable: true }),
   });
 
   formFieldErrors =
@@ -79,6 +101,12 @@ export class ProjectSettingsBasicInformationComponent {
       {
         name: genericFieldIsRequiredValidationMessage,
         description: genericFieldIsRequiredValidationMessage,
+        startDate: genericFieldIsRequiredValidationMessage,
+        endDate: genericFieldIsRequiredValidationMessage,
+        location: genericFieldIsRequiredValidationMessage,
+        targetNrRegistrations: genericFieldIsRequiredValidationMessage,
+        validation: genericFieldIsRequiredValidationMessage,
+        enableScope: genericFieldIsRequiredValidationMessage,
       },
     );
 
@@ -87,9 +115,17 @@ export class ProjectSettingsBasicInformationComponent {
       return;
     }
 
+    const { startDate, endDate } = this.project.data();
+
     this.formGroup.setValue({
       name: this.project.data().titlePortal?.en ?? '',
       description: this.project.data().description?.en ?? '',
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      location: this.project.data().location ?? '',
+      targetNrRegistrations: this.project.data().targetNrRegistrations,
+      validation: this.project.data().validation,
+      enableScope: this.project.data().enableScope,
     });
   });
 
@@ -97,6 +133,12 @@ export class ProjectSettingsBasicInformationComponent {
     mutationFn: async ({
       name,
       description,
+      startDate,
+      endDate,
+      location,
+      targetNrRegistrations,
+      validation,
+      enableScope,
     }: ReturnType<ProjectSettingsBasicInformationFormGroup['getRawValue']>) =>
       this.projectApiService.updateProject({
         projectId: this.projectId,
@@ -107,6 +149,12 @@ export class ProjectSettingsBasicInformationComponent {
           description: {
             en: description,
           },
+          startDate: startDate?.toISOString(),
+          endDate: endDate?.toISOString(),
+          location,
+          targetNrRegistrations,
+          validation,
+          enableScope,
         },
       }),
     onSuccess: async () => {
@@ -117,6 +165,12 @@ export class ProjectSettingsBasicInformationComponent {
       await this.projectApiService.invalidateCache();
     },
   }));
+
+  readonly tooltipTargetRegistrations = $localize`The amount of people/ households your project wishes to reach.`;
+  readonly tooltipVerificationProcess = $localize`Turning on the verification option enables an additional registration status: "verified".`;
+  readonly tooltipEnableScope = $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team's page.
+
+To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`;
 
   readonly projectBasicInformationData = computed(() => {
     const projectData = this.project.data();
@@ -134,12 +188,12 @@ export class ProjectSettingsBasicInformationComponent {
       },
       // XXX: share with Tal that we split this into 2 fields
       {
-        label: $localize`Project start date`,
+        label: $localize`Start date`,
         value: projectData?.startDate,
         type: 'date',
       },
       {
-        label: $localize`Project end date`,
+        label: $localize`End date`,
         value: projectData?.endDate,
         type: 'date',
       },
@@ -153,7 +207,7 @@ export class ProjectSettingsBasicInformationComponent {
         value: projectData?.targetNrRegistrations,
         fullWidth: true,
         type: 'number',
-        tooltip: $localize`The amount of people/ households your project wishes to reach.`,
+        tooltip: this.tooltipTargetRegistrations,
       },
       {
         // XXX: is this called differently elsewhere?
@@ -161,16 +215,14 @@ export class ProjectSettingsBasicInformationComponent {
         value: projectData?.validation ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: $localize`Turning on the verification option enables an additional registration status: "verified".`,
+        tooltip: this.tooltipVerificationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: projectData?.enableScope ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team's page.
-
-To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`,
+        tooltip: this.tooltipEnableScope,
       },
     ];
 
