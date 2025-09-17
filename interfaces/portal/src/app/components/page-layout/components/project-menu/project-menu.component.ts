@@ -45,10 +45,10 @@ export class ProjectMenuComponent {
       }),
     },
     {
-      label: $localize`:@@page-title-project-team:Team`,
-      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectTeam}`,
+      label: $localize`:@@page-title-project-settings:Settings`,
+      routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectSettings}`,
       styleClass: 'ms-auto',
-      icon: 'pi pi-users',
+      icon: 'pi pi-cog',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
         requiredPermission: PermissionEnum.AidWorkerProgramREAD,

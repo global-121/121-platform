@@ -20,36 +20,35 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
-import { PageLayoutComponent } from '~/components/page-layout/page-layout.component';
+import { PageLayoutProjectSettingsComponent } from '~/components/page-layout-project-settings/page-layout-project-settings.component';
 import {
   QueryTableColumn,
-  QueryTableColumnType,
   QueryTableComponent,
 } from '~/components/query-table/query-table.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
-import { AddProjectTeamUserDialogComponent } from '~/pages/project-team/components/add-project-team-user-dialog/add-project-team-user-dialog.component';
+import { AddProjectTeamUserDialogComponent } from '~/pages/project-settings-team/components/add-project-team-user-dialog/add-project-team-user-dialog.component';
 import { AuthService } from '~/services/auth.service';
 import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 
 @Component({
-  selector: 'app-project-team',
+  selector: 'app-project-settings-team',
   imports: [
-    PageLayoutComponent,
     ButtonModule,
     CardModule,
     QueryTableComponent,
     AddProjectTeamUserDialogComponent,
     ConfirmDialogModule,
     FormDialogComponent,
+    PageLayoutProjectSettingsComponent,
   ],
   providers: [ToastService],
-  templateUrl: './project-team.page.html',
+  templateUrl: './project-settings-team.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectTeamPageComponent {
+export class ProjectSettingsTeamPageComponent {
   readonly rtlHelper = inject(RtlHelperService);
   readonly projectId = input.required<string>();
 
@@ -66,6 +65,7 @@ export class ProjectTeamPageComponent {
     undefined,
   );
   readonly formMode = signal<'add' | 'edit'>('add');
+  readonly isEditing = signal(false);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
   projectUsers = injectQuery(
@@ -105,11 +105,6 @@ export class ProjectTeamPageComponent {
           header: $localize`Roles`,
         },
         ...(this.enableScope() ? [scopeColumn] : []),
-        {
-          field: 'lastLogin',
-          header: $localize`Last log in`,
-          type: QueryTableColumnType.DATE,
-        },
       ];
     },
   );

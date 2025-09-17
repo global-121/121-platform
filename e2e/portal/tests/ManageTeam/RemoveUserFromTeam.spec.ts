@@ -42,7 +42,7 @@ test('[29760] Users should be removable from "project team"', async ({
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Team');
+    await basePage.navigateToProgramPage('Settings');
   });
 
   await test.step('Validate assigned users are visible', async () => {
@@ -50,6 +50,7 @@ test('[29760] Users should be removable from "project team"', async ({
   });
 
   await test.step('Validate available system users are visible', async () => {
+    await manageTeam.enableEditMode();
     await manageTeam.removeUserFromTeam({
       userEmail: userToRemove,
     });

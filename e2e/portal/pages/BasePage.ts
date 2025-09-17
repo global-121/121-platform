@@ -53,7 +53,7 @@ class BasePage {
   }
 
   async navigateToProgramPage(
-    pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Team',
+    pageName: 'Registrations' | 'Payments' | 'Monitoring' | 'Settings',
   ) {
     const tab = this.projectHeader.getByRole('tab', { name: pageName });
     await expect(async () => {

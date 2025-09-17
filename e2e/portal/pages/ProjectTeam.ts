@@ -42,8 +42,12 @@ class ProjectTeam extends BasePage {
     expectedSortedArraysToEqual(actualAssignedUsers, expectedAssignedUsers);
   }
 
+  async enableEditMode() {
+    await this.page.getByRole('button', { name: 'Edit team' }).click();
+  }
+
   async openAddUserForm() {
-    await this.page.getByRole('button', { name: 'Add team member' }).click();
+    await this.page.getByRole('button', { name: 'Add user to team' }).click();
   }
 
   async addUserToTeam({

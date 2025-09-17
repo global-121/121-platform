@@ -83,9 +83,6 @@
       <trans-unit id="page-title-project-monitoring" datatype="html">
         <source>Monitoring</source>
       </trans-unit>
-      <trans-unit id="page-title-project-team" datatype="html">
-        <source>Team</source>
-      </trans-unit>
       <trans-unit id="add-note" datatype="html">
         <source>Add note</source>
       </trans-unit>
@@ -613,9 +610,6 @@
       <trans-unit id="no-registrations-selected" datatype="html">
         <source>Select one or more registrations and try again.</source>
       </trans-unit>
-      <trans-unit id="add-team-member" datatype="html">
-        <source>Add team member</source>
-      </trans-unit>
       <trans-unit id="generic-type-or-select" datatype="html">
         <source>Type or select</source>
       </trans-unit>
@@ -654,9 +648,6 @@
       </trans-unit>
       <trans-unit id="795890916060309463" datatype="html">
         <source>Roles</source>
-      </trans-unit>
-      <trans-unit id="5995811927641285296" datatype="html">
-        <source>Last log in</source>
       </trans-unit>
       <trans-unit id="2099886964241384522" datatype="html">
         <source>Copy email</source>
@@ -1726,6 +1717,21 @@
       </trans-unit>
       <trans-unit id="7187838764371214919" datatype="html">
         <source>Edit user</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings" datatype="html">
+        <source>Settings</source>
+      </trans-unit>
+      <trans-unit id="page-title-project-settings-team" datatype="html">
+        <source>Project team</source>
+      </trans-unit>
+      <trans-unit id="3737046735199959170" datatype="html">
+        <source>Project settings</source>
+      </trans-unit>
+      <trans-unit id="6409462749869510415" datatype="html">
+        <source>Add users to your project team and assign roles to them.</source>
+      </trans-unit>
+      <trans-unit id="5649335820714201159" datatype="html">
+        <source>Edit team</source>
       </trans-unit>
     </body>
   </file>
