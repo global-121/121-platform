@@ -487,7 +487,7 @@ function filterReferenceIdsWaitingForMessages(
   expectedMessages?: string[],
 ): string[] {
   if (expectedMessages && expectedMessages.length > 0) {
-    return filterOutExpectedMessages(messageHistories, expectedMessages);
+    return filterByExpectedMessages(messageHistories, expectedMessages);
   } else {
     return filterByMinimumMessages(
       messageHistories,
@@ -496,7 +496,7 @@ function filterReferenceIdsWaitingForMessages(
   }
 }
 
-function filterOutExpectedMessages(
+function filterByExpectedMessages(
   messageHistories: { referenceId: string; messageHistory: any[] }[],
   expectedMessages: string[],
 ): string[] {
