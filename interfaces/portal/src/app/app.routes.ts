@@ -176,7 +176,7 @@ export const routes: Routes = [
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.projectSettingsTeam,
+            redirectTo: AppRoutes.projectSettingsInformation,
           },
         ],
         canActivate: [
