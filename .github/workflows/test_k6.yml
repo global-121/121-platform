@@ -48,6 +48,11 @@ jobs:
         run: |
           npm run start:services:ci:production
 
+      - name: Wait for services to be ready
+        working-directory: ${{ env.k6TestsPath }}
+        run: |
+          ./wait-for-services.sh
+
       - name: Lint k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: 'npm run lint'
