@@ -429,89 +429,139 @@ export async function waitForMessagesToComplete({
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
-
   let referenceIdsWaitingForMessages = [...referenceIds];
 
   while (
     Date.now() - startTime < maxWaitTimeMs &&
     referenceIdsWaitingForMessages.length > 0
   ) {
-    const messageHistories = await Promise.all(
-      referenceIdsWaitingForMessages.map(async (referenceId) => {
-        const response = await getMessageHistory(
-          programId,
-          referenceId,
-          accessToken,
-        );
-        return { referenceId, messageHistory: response.body };
-      }),
+    const messageHistories = await fetchMessageHistories(
+      referenceIdsWaitingForMessages,
+      programId,
+      accessToken,
     );
 
-    let messageHistoriesWithoutExpectedMessages: typeof messageHistories;
-
-    if (expectedMessages && expectedMessages.length > 0) {
-      messageHistoriesWithoutExpectedMessages = messageHistories.filter(
-        ({ messageHistory }) =>
-          !messageHistory.some((m) =>
-            expectedMessages.includes(m.attributes.body),
-          ),
-      );
-    } else {
-      messageHistoriesWithoutExpectedMessages = messageHistories.filter(
-        ({ messageHistory }) => {
-          const messagesWithValidStatus = messageHistory.filter((m) => {
-            const validStatuses: MessageStatus[] = ['read', 'failed'];
-
-            if (m.attributes.notificationType === 'sms') {
-              validStatuses.push('sent');
-            }
-
-            return validStatuses.includes(m.attributes.status);
-          });
-
-          return (
-            messagesWithValidStatus.length <
-            minimumNumberOfMessagesPerReferenceId
-          );
-        },
-      );
-    }
-
-    referenceIdsWaitingForMessages =
-      messageHistoriesWithoutExpectedMessages.map(
-        ({ referenceId }) => referenceId,
-      );
+    referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages(
+      messageHistories,
+      minimumNumberOfMessagesPerReferenceId,
+      expectedMessages,
+    );
 
     await waitFor(100);
   }
 
   if (referenceIdsWaitingForMessages.length > 0) {
     if (IS_DEVELOPMENT) {
-      console.log('Reference Ids: ', referenceIds);
-      console.log(
-        'Reference Ids Waiting for Messages: ',
+      await logTimeoutDebugInfo({
+        expectedMessages: expectedMessages ?? [],
         referenceIdsWaitingForMessages,
-      );
-      console.log(
-        'Expected number of messages: ',
         minimumNumberOfMessagesPerReferenceId,
-      );
-      for (const referenceId of referenceIdsWaitingForMessages) {
-        const response = await getMessageHistory(
-          programId,
-          referenceId,
-          accessToken,
-        );
-        console.log('Message History for ', referenceId);
-        console.table(
-          response.body.map(({ ...m }) => ({
-            ...m,
-            status: m.attributes.status,
-          })),
-        );
-      }
+        programId,
+        accessToken,
+      });
     }
     throw new Error(`Timeout waiting for messages to be sent`);
+  }
+}
+
+async function fetchMessageHistories(
+  referenceIds: string[],
+  programId: number,
+  accessToken: string,
+): Promise<{ referenceId: string; messageHistory: any[] }[]> {
+  return Promise.all(
+    referenceIds.map(async (referenceId) => {
+      const response = await getMessageHistory(
+        programId,
+        referenceId,
+        accessToken,
+      );
+      return { referenceId, messageHistory: response.body };
+    }),
+  );
+}
+
+function filterReferenceIdsWaitingForMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  minimumNumberOfMessagesPerReferenceId: number,
+  expectedMessages?: string[],
+): string[] {
+  if (expectedMessages && expectedMessages.length > 0) {
+    return filterOutExpectedMessages(messageHistories, expectedMessages);
+  } else {
+    return filterByMinimumMessages(
+      messageHistories,
+      minimumNumberOfMessagesPerReferenceId,
+    );
+  }
+}
+
+function filterOutExpectedMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  expectedMessages: string[],
+): string[] {
+  return messageHistories
+    .filter(
+      ({ messageHistory }) =>
+        !messageHistory.some((m) =>
+          expectedMessages.includes(m.attributes.body),
+        ),
+    )
+    .map(({ referenceId }) => referenceId);
+}
+
+function filterByMinimumMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  minimumNumberOfMessages: number,
+): string[] {
+  return messageHistories
+    .filter(({ messageHistory }) => {
+      const messagesWithValidStatus = messageHistory.filter((m) => {
+        const validStatuses: MessageStatus[] = ['read', 'failed'];
+        if (m.attributes.notificationType === 'sms') {
+          validStatuses.push('sent');
+        }
+        return validStatuses.includes(m.attributes.status);
+      });
+      return messagesWithValidStatus.length < minimumNumberOfMessages;
+    })
+    .map(({ referenceId }) => referenceId);
+}
+
+async function logTimeoutDebugInfo({
+  expectedMessages,
+  referenceIdsWaitingForMessages,
+  minimumNumberOfMessagesPerReferenceId,
+  programId,
+  accessToken,
+}: {
+  expectedMessages: string[];
+  referenceIdsWaitingForMessages: string[];
+  minimumNumberOfMessagesPerReferenceId: number;
+  programId: number;
+  accessToken: string;
+}) {
+  if (expectedMessages && expectedMessages.length > 0) {
+    console.log('Expected messages: ', expectedMessages);
+  } else {
+    console.log(
+      'Expected number of messages: ',
+      minimumNumberOfMessagesPerReferenceId,
+    );
+  }
+  for (const referenceId of referenceIdsWaitingForMessages) {
+    const response = await getMessageHistory(
+      programId,
+      referenceId,
+      accessToken,
+    );
+    console.log('Message History for ', referenceId);
+    console.table(
+      response.body.map(({ ...m }) => ({
+        ...m,
+        status: m.attributes.status,
+      })),
+    );
   }
 }
 
