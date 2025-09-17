@@ -1,20 +1,11 @@
 #!/usr/bin/env bash
-set -e
-
-URL="http://localhost:3000/api/health/health"
-TIMEOUT=120
-INTERVAL=2
-ELAPSED=0
-
-echo "Waiting for API at $URL to be ready..."
-
-until curl -fsS "$URL" > /dev/null; do
-  sleep $INTERVAL
-  ELAPSED=$((ELAPSED + INTERVAL))
-  if [ $ELAPSED -ge $TIMEOUT ]; then
-    echo "Timeout waiting for API at $URL"
-    exit 1
+for i in {1..30}; do
+  if curl -s http://localhost:3000/api/health/health > /dev/null; then
+    echo "API is up!";
+    exit 0;
   fi
+  echo "Waiting for API...";
+  sleep 2
 done
-
-echo "API is up!"
+echo "API did not start in time";
+exit 1
