@@ -609,10 +609,10 @@ export class RegistrationsService {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      type ContactInformationKeys =
+      type CustomerInformationKeys =
         | keyof ContactInformation
         | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
-      const fieldNames: ContactInformationKeys[] = [
+      const fieldNames: CustomerInformationKeys[] = [
         FspAttributes.addressStreet,
         FspAttributes.addressHouseNumber,
         FspAttributes.addressHouseNumberAddition,

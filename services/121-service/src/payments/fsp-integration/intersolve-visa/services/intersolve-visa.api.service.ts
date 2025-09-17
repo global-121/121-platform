@@ -541,6 +541,8 @@ export class IntersolveVisaApiService {
       });
 
     const customerIndividual = getResponse.data.data;
+    // When creating the customer we set the firstName to an empty string, and the lastName to the full name.
+    // We do the same here, as we do not have a way to split the full name into first and last name.
     customerIndividual.lastName = name;
     // Strip these fields as according to Intersolve these may not be accepted in the PUT request
     delete customerIndividual.kycStatus;
