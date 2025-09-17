@@ -6,6 +6,7 @@ import {
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { ImportRegistrationsDto } from '@121-service/src/registration/dto/bulk-import.dto';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
+  getTransactionEventDescriptions,
   seedIncludedRegistrations,
   seedPaidRegistrations,
   updateRegistration,
@@ -144,6 +146,19 @@ describe('Do payment', () => {
         );
         expect(transaction.nedbankOrderCreateReference).toBeDefined();
         expect(transaction.nedbankPaymentReference).toMatchSnapshot();
+
+        const transactionEventDescriptions =
+          await getTransactionEventDescriptions({
+            programId,
+            transactionId: getTransactionsAfterCronjob.body[0].id,
+            accessToken,
+          });
+        expect(transactionEventDescriptions).toEqual([
+          TransactionEventDescription.created,
+          TransactionEventDescription.initiated,
+          TransactionEventDescription.nedbankVoucherCreationRequested,
+          TransactionEventDescription.nedbankCallbackReceived,
+        ]);
       });
 
       it('should create a transaction with status error when phone number is missing', async () => {
@@ -193,6 +208,18 @@ describe('Do payment', () => {
         // Assert
         expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
         expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+
+        const transactionEventDescriptions =
+          await getTransactionEventDescriptions({
+            programId,
+            transactionId: getTransactionsBody[0].id,
+            accessToken,
+          });
+        expect(transactionEventDescriptions).toEqual([
+          TransactionEventDescription.created,
+          TransactionEventDescription.initiated,
+          TransactionEventDescription.nedbankVoucherCreationRequested,
+        ]);
       });
 
       it('should create a transaction with status error when we make a payment with a payment amount of over 5000', async () => {
@@ -237,6 +264,18 @@ describe('Do payment', () => {
         // Assert
         expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
         expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+
+        const transactionEventDescriptions =
+          await getTransactionEventDescriptions({
+            programId,
+            transactionId: getTransactionsBody[0].id,
+            accessToken,
+          });
+        expect(transactionEventDescriptions).toEqual([
+          TransactionEventDescription.created,
+          TransactionEventDescription.initiated,
+          TransactionEventDescription.nedbankVoucherCreationRequested,
+        ]);
       });
 
       it('should set transaction status to error in reconciliation process if phonenumber is incorrect', async () => {
@@ -287,6 +326,19 @@ describe('Do payment', () => {
         // Assert
         expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.error);
         expect(getTransactionsBody[0].errorMessage).toMatchSnapshot();
+
+        const transactionEventDescriptions =
+          await getTransactionEventDescriptions({
+            programId,
+            transactionId: getTransactionsBody[0].id,
+            accessToken,
+          });
+        expect(transactionEventDescriptions).toEqual([
+          TransactionEventDescription.created,
+          TransactionEventDescription.initiated,
+          TransactionEventDescription.nedbankVoucherCreationRequested,
+          TransactionEventDescription.nedbankCallbackReceived,
+        ]);
       });
 
       it('should not update the transaction status and voucher status if we get a too many requests error from the Nedbank API', async () => {

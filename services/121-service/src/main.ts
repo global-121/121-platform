@@ -59,7 +59,7 @@ function generateModuleDependencyGraph(app: INestApplication): void {
     .map(({ from, to }) => `  ${from.module.name}-->${to.module.name}`);
   const mermaidGraph =
     '# Module Dependencies Graph\n\n```mermaid\ngraph LR\n' +
-    mermaidEdges.join('\n') +
+    mermaidEdges.sort().join('\n') +
     '\n```\n';
 
   fs.writeFile('module-dependencies.md', mermaidGraph, 'utf8', (err) => {
