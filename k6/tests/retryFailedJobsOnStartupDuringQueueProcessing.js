@@ -4,14 +4,14 @@ import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
-import paymentsModel from '../models/payments.js';
+import PaymentsModel from '../models/payments.js';
 import resetModel from '../models/reset.js';
 
 const resetPage = new resetModel();
-const paymentsPage = new paymentsModel();
+const paymentsPage = new PaymentsModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7', 7); // '7' leads to 128 registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
 const programId = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
