@@ -594,7 +594,7 @@ export class RegistrationsService {
       env.INTERSOLVE_VISA_SEND_UPDATED_CONTACT_INFORMATION &&
       intersolveVisaAttributeNames.includes(attribute)
     ) {
-      await this.sendContactInformationToIntersolve(registration);
+      await this.sendCustomerInformationToIntersolve(registration);
     }
 
     return this.getRegistrationOrThrow({
@@ -603,20 +603,23 @@ export class RegistrationsService {
     });
   }
 
-  private async sendContactInformationToIntersolve(
+  private async sendCustomerInformationToIntersolve(
     registration: RegistrationEntity,
   ): Promise<void> {
     const registrationHasVisaCustomer =
       await this.intersolveVisaService.hasIntersolveCustomer(registration.id);
     if (registrationHasVisaCustomer) {
-      type ContactInformationKeys = keyof ContactInformation;
-      const fieldNames: ContactInformationKeys[] = [
+      type CustomerInformationKeys =
+        | keyof ContactInformation
+        | FspAttributes.fullName; // Full name is not part of ContactInformation, but still needs to be updated via the same process
+      const fieldNames: CustomerInformationKeys[] = [
         FspAttributes.addressStreet,
         FspAttributes.addressHouseNumber,
         FspAttributes.addressHouseNumberAddition,
         FspAttributes.addressPostalCode,
         FspAttributes.addressCity,
         FspAttributes.phoneNumber,
+        FspAttributes.fullName,
       ];
       const registrationData =
         await this.registrationDataScopedRepository.getRegistrationDataArrayByName(
@@ -639,7 +642,7 @@ export class RegistrationsService {
         {},
       );
 
-      await this.intersolveVisaService.sendUpdatedContactInformation({
+      await this.intersolveVisaService.sendUpdatedCustomerInformation({
         registrationId: registration.id,
         contactInformation: {
           addressStreet: mappedRegistrationData[`addressStreet`],
@@ -650,6 +653,7 @@ export class RegistrationsService {
           addressCity: mappedRegistrationData[`addressCity`],
           phoneNumber: mappedRegistrationData[`phoneNumber`],
         },
+        name: mappedRegistrationData[`fullName`],
       });
     }
   }
@@ -1044,7 +1048,7 @@ export class RegistrationsService {
         );
       }
     }
-    await this.sendContactInformationToIntersolve(registration);
+    await this.sendCustomerInformationToIntersolve(registration);
 
     try {
       await this.intersolveVisaService.reissueCard({
@@ -1141,6 +1145,6 @@ export class RegistrationsService {
       referenceId,
       programId,
     });
-    await this.sendContactInformationToIntersolve(registration);
+    await this.sendCustomerInformationToIntersolve(registration);
   }
 }

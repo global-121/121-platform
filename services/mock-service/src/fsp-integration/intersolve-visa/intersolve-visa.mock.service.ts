@@ -642,6 +642,67 @@ export class IntersolveVisaMockService {
     };
   }
 
+  public getCustomerIndividual(
+    _holderId: string,
+  ): IntersolveVisaMockResponseDto {
+    const response = new IntersolveVisaMockResponseDto();
+    response.status = HttpStatus.OK;
+    response.data = {
+      success: true,
+      errors: [],
+      code: 'string',
+      correlationId: 'string',
+      data: {
+        holderId: _holderId,
+        firstName: 'John',
+        lastName: 'Doe',
+        middleName: 'Edward',
+        initials: 'J.E.D.',
+        gender: 'Male',
+        dateOfBirth: '1990-01-01',
+        countryOfBirth: 'Netherlands',
+        nationality: 'Dutch',
+        culture: 'Western',
+        extensions: {},
+        estimatedAnnualPaymentVolumeMajorUnit: 12000,
+        kycStatus: 'VERIFIED',
+        kycRedirectUrl: 'https://kyc.example.com/redirect',
+        rejectionReason: '',
+        description: 'Individual profile',
+      },
+    };
+    return response;
+  }
+
+  public updateCustomerIndividual(
+    payload: Record<string, string>,
+  ): IntersolveVisaMockResponseDto {
+    const requiredKey = 'lastName';
+    if (!payload[requiredKey] || payload[requiredKey].includes('undefined')) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        statusText: 'Bad Request',
+        data: {
+          success: false,
+          errors: [
+            {
+              code: 'INVALID_PARAMETERS',
+              field: requiredKey,
+              description: `The ${requiredKey} field is required.`,
+            },
+          ],
+        },
+      };
+    }
+    return {
+      status: HttpStatus.OK,
+      statusText: 'OK',
+      data: {
+        success: true,
+      },
+    };
+  }
+
   public linkToken(parentTokenCode: string): IntersolveVisaMockResponseDto {
     if (parentTokenCode.includes('mock-fail-link-token')) {
       return {
