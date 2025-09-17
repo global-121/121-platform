@@ -3,7 +3,6 @@ export enum MessageContentType {
   invited = 'invited',
   paused = 'paused',
   custom = 'custom',
-  completed = 'completed',
   new = 'new',
   genericTemplated = 'generic-templated',
   paymentTemplated = 'payment-templated', // This is only used for AH vouchers
