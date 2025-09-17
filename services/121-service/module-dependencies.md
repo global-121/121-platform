@@ -24,15 +24,7 @@ graph LR
   RegistrationUtilsModule-->RegistrationDataModule
   TransactionsModule-->RegistrationEventsModule
   RegistrationEventsModule-->UserModule
-  IntersolveVoucherModule-->MessageQueuesModule
-  IntersolveVoucherModule-->MessageTemplateModule
-  IntersolveVoucherModule-->RegistrationDataModule
-  IntersolveVoucherModule-->RegistrationUtilsModule
-  IntersolveVoucherModule-->RedisModule
-  IntersolveVoucherModule-->QueuesRegistryModule
-  CronjobModule-->IntersolveVoucherReconciliationModule
-  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
-  IntersolveVoucherReconciliationModule-->ProgramModule
+  TransactionsModule-->ProgramModule
   ProgramModule-->ActionsModule
   ProgramModule-->UserModule
   ProgramModule-->FspsModule
@@ -43,6 +35,16 @@ graph LR
   ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFspConfigurationsModule
   ProgramModule-->IntersolveVisaModule
+  TransactionsModule-->TransactionEventsModule
+  IntersolveVoucherModule-->MessageQueuesModule
+  IntersolveVoucherModule-->MessageTemplateModule
+  IntersolveVoucherModule-->RegistrationDataModule
+  IntersolveVoucherModule-->RegistrationUtilsModule
+  IntersolveVoucherModule-->RedisModule
+  IntersolveVoucherModule-->QueuesRegistryModule
+  CronjobModule-->IntersolveVoucherReconciliationModule
+  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
+  IntersolveVoucherReconciliationModule-->ProgramModule
   IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
@@ -69,6 +71,7 @@ graph LR
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionsModule
   OnafriqReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->TransactionEventsModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
   OrganizationModule-->UserModule
@@ -144,6 +147,7 @@ graph LR
   TransactionJobsModule-->FspsModule
   TransactionJobsModule-->RegistrationEventsModule
   TransactionJobsModule-->MessageTemplateModule
+  TransactionJobsModule-->TransactionEventsModule
   ExcelReconcilicationModule-->ActionsModule
   ExcelReconcilicationModule-->TransactionsModule
   ExcelReconcilicationModule-->ExcelModule

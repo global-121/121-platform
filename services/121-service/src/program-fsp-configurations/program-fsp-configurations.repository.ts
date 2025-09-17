@@ -67,8 +67,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     const programFspConfig = await this.baseRepository
       .createQueryBuilder('configuration')
       .leftJoin('configuration.transactions', 'transactions')
-      .innerJoin('transactions.latestTransaction', 'latestTransaction')
-      .leftJoin('latestTransaction.registration', 'registration')
+      .leftJoin('transactions.registration', 'registration')
       .leftJoin('registration.images', 'images')
       .leftJoin('images.voucher', 'voucher')
       .where('voucher.id = :intersolveVoucherId', {

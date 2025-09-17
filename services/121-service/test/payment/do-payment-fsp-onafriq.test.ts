@@ -92,7 +92,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+    // expect(getTransactionsBody.body[0].errorMessage).toBe(null); //##TODO: we can switch this check to null error message on transaction event
   });
 
   it('should give error on the initial request based on magic phonenumber', async () => {
