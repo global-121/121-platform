@@ -2,8 +2,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { LatestTransactionEntity } from '@121-service/src/payments/transactions/entities/latest-transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 
