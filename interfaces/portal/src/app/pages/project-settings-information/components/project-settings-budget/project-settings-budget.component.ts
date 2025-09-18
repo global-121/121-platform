@@ -95,13 +95,10 @@ export class ProjectSettingsBudgetComponent {
         return;
       },
       currency: (control) => {
-        if (control.errors?.required) {
-          return $localize`:@@generic-required-field:This field is required.`;
-        }
         if (control.errors?.pattern) {
           return $localize`The currency must be a 3-letter uppercase code.`;
         }
-        return;
+        return genericFieldIsRequiredValidationMessage(control);
       },
       distributionFrequency: genericFieldIsRequiredValidationMessage,
       distributionDuration: (control) => {
@@ -111,13 +108,10 @@ export class ProjectSettingsBudgetComponent {
         return;
       },
       fixedTransferValue: (control) => {
-        if (control.errors?.required) {
-          return $localize`:@@generic-required-field:This field is required.`;
-        }
         if (control.errors?.min) {
           return $localize`This needs to be at least 0.`;
         }
-        return;
+        return genericFieldIsRequiredValidationMessage(control);
       },
     },
   );
