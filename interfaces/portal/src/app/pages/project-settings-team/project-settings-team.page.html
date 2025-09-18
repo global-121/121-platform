@@ -31,19 +31,13 @@
         </div>
       }
     </div>
-    <p i18n>Add users to your project team and assign roles to them.</p>
-    @if (isEditing()) {
-      <p-button
-        label="Add user to team"
-        i18n-label
-        rounded
-        outlined
-        styleClass="mt-4"
-        icon="pi pi-plus"
-        [iconPos]="rtlHelper.createPosition('start')()"
-        (click)="openForm('add')"
-      />
-    }
+    <p
+      i18n
+      class="mb-4"
+    >
+      Add users to your project team and assign roles to them.
+    </p>
+
     <app-query-table
       [items]="projectUsers.data() ?? []"
       [isPending]="projectUsers.isPending()"
@@ -53,7 +47,20 @@
       (updateContextMenuItem)="selectedUser.set($event)"
       [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
       [initialSortField]="'username'"
-    />
+    >
+      @if (isEditing()) {
+        <p-button
+          table-actions
+          label="Add user to team"
+          i18n-label
+          rounded
+          outlined
+          icon="pi pi-plus"
+          [iconPos]="rtlHelper.createPosition('start')()"
+          (click)="openForm('add')"
+        />
+      }
+    </app-query-table>
     <app-add-project-team-user-dialog
       #addUserDialog
       [projectId]="projectId()"
