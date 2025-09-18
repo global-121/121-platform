@@ -186,7 +186,6 @@ To use this feature, make sure scope is defined in your integrated Kobo form or 
         value: projectData?.description?.en,
         fullWidth: true,
       },
-      // XXX: share with Tal that we split this into 2 fields
       {
         label: $localize`Start date`,
         value: projectData?.startDate,
@@ -210,7 +209,6 @@ To use this feature, make sure scope is defined in your integrated Kobo form or 
         tooltip: this.tooltipTargetRegistrations,
       },
       {
-        // XXX: is this called differently elsewhere?
         label: $localize`Verification process`,
         value: projectData?.validation ?? false,
         fullWidth: true,
