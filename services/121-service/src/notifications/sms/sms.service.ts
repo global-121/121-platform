@@ -53,7 +53,6 @@ export class SmsService {
         messageProcessType,
       });
     } catch (error) {
-      console.log('Error from Twilio:', error);
       await this.storeSendSms({
         message: {
           accountSid: env.TWILIO_SID,
