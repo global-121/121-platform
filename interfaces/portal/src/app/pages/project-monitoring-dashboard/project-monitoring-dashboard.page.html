@@ -4,6 +4,7 @@
     <p-chart
       type="bar"
       [data]="registrationsPerStatusChartData()"
+      [ariaLabel]="registrationsPerStatusAriaLabel()"
       [options]="registrationsPerStatusChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
@@ -11,6 +12,7 @@
     <p-chart
       type="bar"
       [data]="duplicationChartData()"
+      [ariaLabel]="duplicationAriaLabel()"
       [options]="duplicationChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
@@ -18,6 +20,7 @@
     <p-chart
       type="line"
       [data]="registrationsByDateChartData()"
+      [ariaLabel]="registrationsByDateAriaLabel()"
       [options]="registrationsByDateChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
@@ -33,6 +36,7 @@
     <p-chart
       type="bar"
       [data]="transfersPerPaymentChartData()"
+      [ariaLabel]="transfersPerPaymentAriaLabel()"
       [options]="transfersPerPaymentChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
@@ -40,6 +44,7 @@
     <p-chart
       type="bar"
       [data]="amountSentPerPaymentChartData()"
+      [ariaLabel]="amountSentPerPaymentAriaLabel()"
       [options]="amountSentPerPaymentChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
@@ -47,6 +52,7 @@
     <p-chart
       type="bar"
       [data]="amountSentPerMonthChartData()"
+      [ariaLabel]="amountSentPerMonthAriaLabel()"
       [options]="amountSentPerMonthChartOptions"
       class="mt-3 w-1/3 ps-12 pe-12"
       responsive
