@@ -74,7 +74,7 @@ export class ProjectSettingsBasicInformationComponent {
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    description: new FormControl('', {
+    description: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
     }),
     startDate: new FormControl<Date | undefined>(undefined, {
@@ -83,10 +83,10 @@ export class ProjectSettingsBasicInformationComponent {
     endDate: new FormControl<Date | undefined>(undefined, {
       nonNullable: true,
     }),
-    location: new FormControl('', {
+    location: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
     }),
-    targetNrRegistrations: new FormControl<number | undefined>(undefined, {
+    targetNrRegistrations: new FormControl(0, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
@@ -119,11 +119,11 @@ export class ProjectSettingsBasicInformationComponent {
 
     this.formGroup.setValue({
       name: this.project.data().titlePortal?.en ?? '',
-      description: this.project.data().description?.en ?? '',
+      description: this.project.data().description?.en,
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
-      location: this.project.data().location ?? '',
-      targetNrRegistrations: this.project.data().targetNrRegistrations,
+      location: this.project.data().location,
+      targetNrRegistrations: this.project.data().targetNrRegistrations ?? 0,
       validation: this.project.data().validation,
       enableScope: this.project.data().enableScope,
     });
@@ -183,7 +183,7 @@ To use this feature, make sure scope is defined in your integrated Kobo form or 
       },
       {
         label: $localize`Project description`,
-        value: projectData?.description?.en ?? '',
+        value: projectData?.description?.en,
         fullWidth: true,
       },
       // XXX: share with Tal that we split this into 2 fields
