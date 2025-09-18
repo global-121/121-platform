@@ -31,10 +31,7 @@ export default function () {
   // login
   loginPage.login();
   // Upload registration
-  const importRegistrations = registrationsModel.importRegistrations(
-    programId,
-    registrationPV,
-  );
+  registrationsModel.importRegistrations(programId, registrationPV);
   // Duplicate registration to be 32k
   resetPage.duplicateRegistrations(duplicateNumber);
   // export registrations
