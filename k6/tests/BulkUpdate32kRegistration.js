@@ -35,7 +35,6 @@ export default function () {
     programId,
     registrationPV,
   );
-  console.log('importRegistrations: ', importRegistrations.body);
   // Duplicate registration to be 32k
   resetPage.duplicateRegistrations(duplicateNumber);
   // export registrations
