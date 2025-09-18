@@ -47,7 +47,7 @@ export class RegistrationUtilsService {
           '23505', // '23505' is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
         ];
         if (
-          errorCodesThatShouldBeRetried.includes(error['code']) &&
+          errorCodesThatShouldBeRetried.includes(String(error['code'])) &&
           saveRetriesCount < 3
         ) {
           saveRetriesCount++;
