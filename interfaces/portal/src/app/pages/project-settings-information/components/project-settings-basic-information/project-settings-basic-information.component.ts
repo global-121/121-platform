@@ -210,16 +210,16 @@ To use this feature, make sure scope is defined in your integrated Kobo form or 
       },
       {
         label: $localize`Verification process`,
-        value: projectData?.validation ?? false,
+        value: projectData?.validation ? $localize`On` : $localize`Off`,
         fullWidth: true,
-        type: 'boolean',
+        type: 'text',
         tooltip: this.tooltipVerificationProcess,
       },
       {
         label: $localize`Enable scope`,
-        value: projectData?.enableScope ?? false,
+        value: projectData?.enableScope ? $localize`On` : $localize`Off`,
         fullWidth: true,
-        type: 'boolean',
+        type: 'text',
         tooltip: this.tooltipEnableScope,
       },
     ];
