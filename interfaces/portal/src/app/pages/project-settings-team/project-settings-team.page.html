@@ -51,6 +51,7 @@
       localStorageKey="project-team-table"
       [contextMenuItems]="isEditing() ? contextMenuItems() : undefined"
       (updateContextMenuItem)="selectedUser.set($event)"
+      [globalFilterFields]="['username', 'allRolesLabel', 'scope']"
       [initialSortField]="'username'"
     />
     <app-add-project-team-user-dialog
