@@ -1,6 +1,6 @@
 import { isSameStatus } from '@121-service/src/utils/comparison.helper';
 
-describe('comparisson.helper', () => {
+describe('comparison.helper', () => {
   describe('isSameStatus', () => {
     it('should retun the correct outcome for all values', () => {
       // // Arrange
