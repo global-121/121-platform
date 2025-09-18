@@ -1733,6 +1733,9 @@
       <trans-unit id="7689060614126076538" datatype="html">
         <source>Add users to your project team and assign roles to them.</source>
       </trans-unit>
+      <trans-unit id="message-content-type-new" datatype="html">
+        <source>New</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
