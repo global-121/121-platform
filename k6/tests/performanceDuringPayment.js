@@ -22,7 +22,7 @@ const amount = 11.11;
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.3'], // http errors should be less than 1%
+    http_req_failed: ['rate<0.3'], // http errors should be less than 30%
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
