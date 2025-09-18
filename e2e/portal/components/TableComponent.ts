@@ -92,6 +92,11 @@ class TableComponent {
     );
   }
 
+  async getTextArrayFromHeader() {
+    const headerCells = await this.tableHeader.locator('th').allTextContents();
+    return headerCells.map((text) => text.trim());
+  }
+
   async validateWaitForTableRowCount({
     expectedRowCount,
   }: {
