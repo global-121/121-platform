@@ -39,6 +39,14 @@ const envUrl = '${env.EXTERNAL_121_SERVICE_URL}/';
 if (currentUrl !== envUrl ) {
   loc.replace(loc.href.replace(currentUrl,envUrl));
 }
+// Allow to "collapse all" with Alt+Click on any collapsable heading
+document.body.addEventListener('click', (event) => {
+  if (!event.altKey) return;
+  if (event.target && !!event.target.dataset.isOpen) {
+    const opposite = !(event.target.dataset.isOpen === 'true');
+    document.querySelectorAll('h3[data-is-open="' + opposite + '"]').forEach(element => element.click());
+  }
+}, { capture: false, passive: true });
 `;
 
 // Configure Internal and External API URL's
