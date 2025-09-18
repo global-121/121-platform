@@ -4,12 +4,12 @@ import { Counter } from 'k6/metrics';
 
 import loginModel from '../models/login.js';
 import metricstsModel from '../models/metrics.js';
-import PaymentsModel from '../models/payments.js';
+import paymentsModel from '../models/payments.js';
 import programsModel from '../models/programs.js';
 import resetModel from '../models/reset.js';
 
 const resetPage = new resetModel();
-const paymentsPage = new PaymentsModel();
+const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 const programsPage = new programsModel();
 const metricsPage = new metricstsModel();

@@ -4,7 +4,7 @@ import { Counter } from 'k6/metrics';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import LoginModel from '../models/login.js';
-import PaymentsModel from '../models/payments.js';
+import paymentsModel from '../models/payments.js';
 import ProgramsModel from '../models/programs.js';
 import RegistrationsModel from '../models/registrations.js';
 import ResetModel from '../models/reset.js';
@@ -12,7 +12,7 @@ import ResetModel from '../models/reset.js';
 const resetPage = new ResetModel();
 const loginPage = new LoginModel();
 const programsPage = new ProgramsModel();
-const paymentsPage = new PaymentsModel();
+const paymentsPage = new paymentsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';

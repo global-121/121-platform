@@ -5,13 +5,13 @@ import { Counter } from 'k6/metrics';
 
 import config from '../models/config.js';
 import loginModel from '../models/login.js';
-import PaymentsModel from '../models/payments.js';
+import paymentsModel from '../models/payments.js';
 import resetModel from '../models/reset.js';
 
 const { baseUrl } = config;
 
 const resetPage = new resetModel();
-const paymentsPage = new PaymentsModel();
+const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
