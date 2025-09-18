@@ -13,6 +13,7 @@ import { LatestTransactionEntity } from '@121-service/src/payments/transactions/
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { isSameStatus } from '@121-service/src/utils/comparison.helper';
 @Injectable()
 export class TransactionsService {
   @InjectRepository(LatestTransactionEntity)
@@ -102,8 +103,12 @@ export class TransactionsService {
       // Try to insert a new LatestTransactionEntity
       await this.latestTransactionRepository.insert(latestTransaction);
     } catch (error) {
-      if (error.code === '23505') {
-        // 23505 is the code for unique violation in PostgreSQL
+      if (
+        isSameStatus(
+          error.code,
+          '23505', // 23505 is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
+        )
+      ) {
         // If a unique constraint violation occurred, update the existing LatestTransactionEntity
         await this.latestTransactionRepository.update(
           {
