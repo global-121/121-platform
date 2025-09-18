@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-GB" datatype="plaintext" original="ng2.template">
     <body>
@@ -1732,9 +1732,6 @@
       </trans-unit>
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
-      </trans-unit>
-      <trans-unit id="1274201607838073851" datatype="html">
-        <source>Registrations by creation date</source>
       </trans-unit>
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
