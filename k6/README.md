@@ -33,6 +33,7 @@ brew install k6
 ### Setup
 
 1. **Install K6 dependencies:**
+
    ```shell
    cd /k6
    npm install
@@ -48,11 +49,13 @@ brew install k6
 Since CI tests use a differently composed baseUrl, you may encounter extra slashes in your API calls when running locally. If this happens, remove the extra `+` and `'/'` from baseUrl in `.k6/models/config.js`.
 
 **Change from:**
+
 ```javascript
 baseUrl: __ENV.EXTERNAL_121_SERVICE_URL + '/' || 'http://localhost:3000/',
 ```
 
 **To:**
+
 ```javascript
 baseUrl: __ENV.EXTERNAL_121_SERVICE_URL || 'http://localhost:3000/',
 ```
@@ -67,6 +70,7 @@ npm run test -- tests/<name-of-the-test>.js
 #### Adjusting Test Load
 
 For faster CI execution, tests use:
+
 ```javascript
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
 ```
@@ -78,6 +82,7 @@ The test results will be displayed in your terminal.
 ## CI Configuration
 
 Tests are configured in:
+
 - [`.github/workflows/test_k6.yml`](../.github/workflows/test_k6.yml) - Fast tests
 - [`.github/workflows/test_k6_cronjob.yml`](../.github/workflows/test_k6_cronjob.yml) - Overnight full load tests
 
