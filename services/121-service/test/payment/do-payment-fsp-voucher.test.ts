@@ -97,7 +97,10 @@ describe('Do payment to 1 PA', () => {
         programId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
-        minimumNumberOfMessagesPerReferenceId: 3,
+        expectedContentTypes: [
+          MessageContentType.paymentTemplated,
+          MessageContentType.paymentVoucher,
+        ],
       });
 
       const { body: messages } = await getMessageHistory(

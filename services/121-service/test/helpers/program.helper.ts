@@ -420,12 +420,14 @@ export async function waitForMessagesToComplete({
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
   expectedMessages,
+  expectedContentTypes,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
   expectedMessages?: string[];
+  expectedContentTypes?: string[];
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -445,6 +447,7 @@ export async function waitForMessagesToComplete({
       messageHistories,
       minimumNumberOfMessagesPerReferenceId,
       expectedMessages,
+      expectedContentTypes,
     );
 
     await waitFor(100);
@@ -453,7 +456,8 @@ export async function waitForMessagesToComplete({
   if (referenceIdsWaitingForMessages.length > 0) {
     if (IS_DEVELOPMENT) {
       await logTimeoutDebugInfo({
-        expectedMessages: expectedMessages ?? [],
+        expectedMessages,
+        expectedContentTypes,
         referenceIdsWaitingForMessages,
         minimumNumberOfMessagesPerReferenceId,
         programId,
@@ -485,18 +489,27 @@ function filterReferenceIdsWaitingForMessages(
   messageHistories: { referenceId: string; messageHistory: any[] }[],
   minimumNumberOfMessagesPerReferenceId: number,
   expectedMessages?: string[],
+  expectedContentTypes?: string[],
 ): string[] {
   if (expectedMessages && expectedMessages.length > 0) {
-    return filterByExpectedMessages(messageHistories, expectedMessages);
-  } else {
-    return filterByMinimumMessages(
+    return filterReferenceIdsWithoutExpectedMessages(
       messageHistories,
-      minimumNumberOfMessagesPerReferenceId,
+      expectedMessages,
     );
   }
+  if (expectedContentTypes && expectedContentTypes.length > 0) {
+    return filterReferenceIdsWithoutExpectedContentTypes(
+      messageHistories,
+      expectedContentTypes,
+    );
+  }
+  return filterByMinimumMessages(
+    messageHistories,
+    minimumNumberOfMessagesPerReferenceId,
+  );
 }
 
-function filterByExpectedMessages(
+function filterReferenceIdsWithoutExpectedMessages(
   messageHistories: { referenceId: string; messageHistory: any[] }[],
   expectedMessages: string[],
 ): string[] {
@@ -505,6 +518,20 @@ function filterByExpectedMessages(
       ({ messageHistory }) =>
         !messageHistory.some((m) =>
           expectedMessages.includes(m.attributes.body),
+        ),
+    )
+    .map(({ referenceId }) => referenceId);
+}
+
+function filterReferenceIdsWithoutExpectedContentTypes(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  expectedContentTypes: string[],
+): string[] {
+  return messageHistories
+    .filter(
+      ({ messageHistory }) =>
+        !messageHistory.some((m) =>
+          expectedContentTypes.includes(m.attributes.contentType),
         ),
     )
     .map(({ referenceId }) => referenceId);
@@ -530,12 +557,14 @@ function filterByMinimumMessages(
 
 async function logTimeoutDebugInfo({
   expectedMessages,
+  expectedContentTypes,
   referenceIdsWaitingForMessages,
   minimumNumberOfMessagesPerReferenceId,
   programId,
   accessToken,
 }: {
-  expectedMessages: string[];
+  expectedMessages?: string[];
+  expectedContentTypes?: string[];
   referenceIdsWaitingForMessages: string[];
   minimumNumberOfMessagesPerReferenceId: number;
   programId: number;
@@ -543,6 +572,9 @@ async function logTimeoutDebugInfo({
 }) {
   if (expectedMessages && expectedMessages.length > 0) {
     console.log('Expected messages: ', expectedMessages);
+  }
+  if (expectedContentTypes && expectedContentTypes.length > 0) {
+    console.log('Expected content types: ', expectedContentTypes);
   } else {
     console.log(
       'Expected number of messages: ',
