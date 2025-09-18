@@ -1,5 +1,3 @@
-import { ChartOptions } from 'chart.js';
-
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -7,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import tailwindConfig from '~/../../tailwind.config';
 
 const colors = tailwindConfig.theme.colors;
-const shade = 100;
+const shade = 500;
 
 export const registrationsPerStatusColors = {
   [RegistrationStatusEnum.included]: colors.green[shade],
@@ -35,21 +33,36 @@ export const paymentColors = {
 export const getChartOptions = ({
   title,
   showLegend,
+  showDataLabels,
 }: {
   title: string;
   showLegend: boolean;
-}): ChartOptions => ({
+  showDataLabels?: boolean;
+}) => ({
   animation: {
     duration: 0,
   },
+  responsive: true,
   plugins: {
     title: {
       display: true,
       text: title,
+      padding: {
+        bottom: 40,
+      },
+    },
+    tooltip: {
+      backgroundColor: colors.black.DEFAULT,
+    },
+    datalabels: {
+      display: showDataLabels,
+      align: 'end',
+      anchor: 'end',
+      font: { weight: 'bold' },
     },
     legend: {
       display: showLegend,
-      position: 'top',
+      position: 'bottom',
       align: 'center',
       labels: {
         usePointStyle: true,

@@ -1733,9 +1733,6 @@
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
       </trans-unit>
-      <trans-unit id="1274201607838073851" datatype="html">
-        <source>Registrations by creation date</source>
-      </trans-unit>
       <trans-unit id="1918076919963278361" datatype="html">
         <source>Registration information</source>
       </trans-unit>
@@ -1751,14 +1748,17 @@
       <trans-unit id="4275051684912699373" datatype="html">
         <source>Amount sent per payment</source>
       </trans-unit>
-      <trans-unit id="8022754325081923988" datatype="html">
-        <source>Payment information</source>
-      </trans-unit>
       <trans-unit id="8988239608752913304" datatype="html">
         <source>Transfers per payment</source>
       </trans-unit>
       <trans-unit id="page-title-project-monitoring-dashboard" datatype="html">
         <source>Dashboard</source>
+      </trans-unit>
+      <trans-unit id="2483631699978730341" datatype="html">
+        <source>Registrations by creation date (last 2 weeks)</source>
+      </trans-unit>
+      <trans-unit id="358807055517116989" datatype="html">
+        <source>Payment information (last 5 payments)</source>
       </trans-unit>
     </body>
   </file>
