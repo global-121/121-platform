@@ -48,7 +48,7 @@ jobs:
         run: |
           npm run start:services:ci:production
 
-      - name: Wait for services to be ready
+      - name: Wait for 121-service to be ready
         working-directory: ${{ env.k6TestsPath }}
         run: |
           ./wait-for-service.sh
