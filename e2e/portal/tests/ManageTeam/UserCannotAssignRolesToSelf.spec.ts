@@ -37,7 +37,7 @@ test('User cannot assign role to self', async ({ page }) => {
   // Arrange
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Settings');
+    await basePage.navigateToProgramSettingsPage('Project team');
   });
 
   // Act

@@ -38,7 +38,7 @@ test('[29759] Assign successfully roles to a user ', async ({ page }) => {
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Settings');
+    await basePage.navigateToProgramSettingsPage('Project team');
   });
 
   await test.step('Validate available system users are visible', async () => {

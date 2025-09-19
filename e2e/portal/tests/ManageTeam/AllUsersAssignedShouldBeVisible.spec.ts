@@ -38,7 +38,7 @@ test('[29748] All users assigned to the project should be visible', async ({
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Settings');
+    await basePage.navigateToProgramSettingsPage('Project team');
   });
 
   await test.step('Validate assigned users are visible', async () => {
