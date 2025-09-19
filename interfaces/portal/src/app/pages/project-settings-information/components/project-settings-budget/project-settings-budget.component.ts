@@ -20,6 +20,8 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
 
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
+
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import {
   DataListComponent,
@@ -27,6 +29,7 @@ import {
 } from '~/components/data-list/data-list.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -55,6 +58,7 @@ export class ProjectSettingsBudgetComponent {
 
   readonly isEditing = signal(false);
 
+  authService = inject(AuthService);
   projectApiService = inject(ProjectApiService);
   toastService = inject(ToastService);
 
@@ -157,6 +161,14 @@ export class ProjectSettingsBudgetComponent {
       await this.projectApiService.invalidateCache();
     },
   }));
+
+  readonly canEdit = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      // XXX: to be checked
+      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+    }),
+  );
 
   readonly tooltipDistributionDuration = $localize`The number of times each registration will receive transfers in the project as a default.`;
 

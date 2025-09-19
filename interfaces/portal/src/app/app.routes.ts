@@ -161,6 +161,10 @@ export const routes: Routes = [
               import(
                 '~/pages/project-settings-information/project-settings-information.page'
               ).then((x) => x.ProjectSettingsInformationPageComponent),
+            canActivate: [
+              // XXX: to be checked
+              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+            ],
           },
           {
             path: AppRoutes.projectSettingsTeam,
@@ -172,15 +176,15 @@ export const routes: Routes = [
               import(
                 '~/pages/project-settings-team/project-settings-team.page'
               ).then((x) => x.ProjectSettingsTeamPageComponent),
+            canActivate: [
+              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+            ],
           },
           {
             path: ``,
             pathMatch: 'full',
             redirectTo: AppRoutes.projectSettingsInformation,
           },
-        ],
-        canActivate: [
-          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
         ],
       },
       {
