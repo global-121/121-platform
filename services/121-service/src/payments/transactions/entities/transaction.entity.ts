@@ -48,5 +48,5 @@ export class TransactionEntity extends Base121Entity {
     () => TransactionEventEntity,
     (transactionEvents) => transactionEvents.transactionId,
   )
-  public transactionsEvents: Relation<TransactionEventEntity[]>;
+  public transactionEvents: Relation<TransactionEventEntity[]>;
 }
