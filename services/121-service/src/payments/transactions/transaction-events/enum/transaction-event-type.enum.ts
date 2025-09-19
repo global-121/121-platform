@@ -1,5 +1,6 @@
 export enum TransactionEventType {
   created = 'created',
   initiated = 'initiated',
-  callbackReceived = 'callback-received',
+  retry = 'retry',
+  paymentProgress = 'payment-progress', // ##TODO better name
 }

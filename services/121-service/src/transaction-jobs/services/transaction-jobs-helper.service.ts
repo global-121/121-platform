@@ -6,16 +6,15 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -24,8 +23,6 @@ export class TransactionJobsHelperService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly programRepository: ProgramRepository,
-    private readonly registrationEventsService: RegistrationEventsService,
     private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
@@ -49,40 +46,68 @@ export class TransactionJobsHelperService {
     paymentId,
     userId,
     programFspConfigurationId,
-    transactionStatus,
     transactionEventType,
+    description,
     errorMessage,
+    transactionStatus,
   }: {
     registrationId: number;
     paymentId: number;
     userId: number;
     programFspConfigurationId: number;
-    transactionStatus: string;
     transactionEventType: TransactionEventType;
+    description: string;
     errorMessage?: string;
-  }): Promise<TransactionEntity> {
+    transactionStatus?: TransactionStatusEnum;
+  }): Promise<number> {
     // get transaction
+    // ##TODO is it possible to pass transactionId along already via the job instead of finding this via registrationId + paymentId?
     const transaction = await this.transactionScopedRepository.findOneOrFail({
       where: {
         registrationId: Equal(registrationId),
         paymentId: Equal(paymentId),
       },
     });
-    // update transaction status
-    await this.transactionScopedRepository.update(transaction.id, {
-      status: transactionStatus,
-    });
+
+    // update transaction status - if provided
+    if (transactionStatus) {
+      await this.transactionScopedRepository.update(transaction.id, {
+        status: transactionStatus,
+      });
+    }
 
     // create transaction event
     await this.transactionEventsService.createEvent({
       transactionId: transaction.id,
       type: transactionEventType,
+      description,
       userId,
       errorMessage,
       programFspConfigurationId,
     });
 
-    return transaction;
+    return transaction.id;
+  }
+
+  public async createInitiatedOrRetryTransactionEvent({
+    registrationId,
+    transactionJob,
+  }: {
+    registrationId: number;
+    transactionJob: SharedTransactionJobDto;
+  }): Promise<number> {
+    return await this.createTransactionEventAndUpdateTransaction({
+      registrationId,
+      paymentId: transactionJob.paymentId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+      transactionEventType: transactionJob.isRetry
+        ? TransactionEventType.retry
+        : TransactionEventType.initiated,
+      description: transactionJob.isRetry
+        ? 'Onafriq transfer retry initiated'
+        : 'Onafriq transfer initiated',
+    });
   }
 
   private async addMessageJobToQueue({
