@@ -36,6 +36,8 @@ const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
   ? `${env.MOCK_SERVICE_URL}/api/fsp/intersolve-visa`
   : env.INTERSOLVE_VISA_API_URL;
 
+const estimatedAnnualPaymentVolumeMajorUnit = 12 * 44 * 100;
+
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
     Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externaly used API) uses "121" terminology.
@@ -79,12 +81,10 @@ export class IntersolveVisaApiService {
     externalReference,
     name,
     contactInformation,
-    estimatedAnnualPaymentVolumeMajorUnit,
   }: {
     externalReference: string;
     name: string;
     contactInformation: ContactInformation;
-    estimatedAnnualPaymentVolumeMajorUnit: number;
   }): Promise<CreateCustomerResult> {
     // Create the request body to send
     const createCustomerRequestDto: CreateCustomerRequestIntersolveApiDto = {
@@ -544,6 +544,8 @@ export class IntersolveVisaApiService {
     // When creating the customer we set the firstName to an empty string, and the lastName to the full name.
     // We do the same here, as we do not have a way to split the full name into first and last name.
     customerIndividual.lastName = name;
+    customerIndividual.estimatedAnnualPaymentVolumeMajorUnit =
+      estimatedAnnualPaymentVolumeMajorUnit;
     // Strip these fields as according to Intersolve these may not be accepted in the PUT request
     delete customerIndividual.kycStatus;
     delete customerIndividual.kycRedirectUrl;

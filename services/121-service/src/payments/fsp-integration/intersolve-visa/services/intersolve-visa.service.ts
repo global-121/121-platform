@@ -236,7 +236,6 @@ export class IntersolveVisaService {
           addressCity: contactInformation.addressCity,
           phoneNumber: contactInformation.phoneNumber,
         },
-        estimatedAnnualPaymentVolumeMajorUnit: 12 * 44 * 100,
       });
 
     // if success, store customer
