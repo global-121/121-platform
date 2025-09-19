@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
@@ -86,7 +87,23 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         // 'transaction."errorMessage" as "errorMessage"', //##TODO: this was done at early stage to get to successful test
         // 'fspconfig.name as "programFspConfigurationName"', ##TODO: this was done at early stage to get to successful test
       ])
-      // .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      // ##TODO: for now join latest event to get e.g. errorMessage. Re-evaluate this later.
+      .leftJoin(
+        (qb) =>
+          qb
+            .subQuery()
+            .select([
+              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
+              'te."errorMessage" AS "errorMessage"',
+              'te."created" AS "created"',
+            ])
+            .from(TransactionEventEntity, 'te')
+            .orderBy('te."transactionId"', 'ASC')
+            .addOrderBy('te."created"', 'DESC'),
+        'lte',
+        'lte."transactionId" = transaction.id',
+      )
+      .addSelect('lte."errorMessage" AS "errorMessage"')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .andWhere('p."programId" = :programId', {

@@ -46,7 +46,7 @@ export class TransactionEntity extends Base121Entity {
 
   @OneToMany(
     () => TransactionEventEntity,
-    (transactionEvents) => transactionEvents.transactionId,
+    (transactionEvent) => transactionEvent.transaction,
   )
   public transactionEvents: Relation<TransactionEventEntity[]>;
 }
