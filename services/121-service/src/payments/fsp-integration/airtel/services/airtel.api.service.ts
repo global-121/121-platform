@@ -97,12 +97,6 @@ export class AirtelApiService {
       payee: {
         currency: this.currencyCode,
         msisdn: phoneNumberWithoutCountryCode,
-        // This value can be the same for all subscribers.
-        // Subscribers probably don't see this.
-        // The official Airtel docs say this value is optional, but Airtel told
-        // us it's not.
-        // "121-platform" in hexadecimal.
-        name: '3132312D706C6174666F726D',
       },
       // The docs say "Reference for service / goods purchased."
       // We can just use a static non-relevant value here. Needs to be alphanumeric and 4 - 64 characters long.
