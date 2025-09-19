@@ -47,6 +47,7 @@ graph LR
   CronjobModule-->CommercialBankEthiopiaReconciliationModule
   CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
   CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
+  RegistrationsModule-->MessageTemplateModule
   RegistrationsModule-->UserModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->ActionsModule

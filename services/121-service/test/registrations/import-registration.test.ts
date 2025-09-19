@@ -3,6 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
   registrationScopedKisumuEastPv,
@@ -12,9 +13,11 @@ import {
   patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
   unpublishProgram,
+  waitForMessagesToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
+  getMessageHistory,
   importRegistrations,
   searchRegistrationByReferenceId,
 } from '@121-service/test/helpers/registration.helper';
@@ -398,5 +401,38 @@ describe('Import a registration', () => {
     for (const key in registrationWesterosEmpty) {
       expect(registration[key]).toBe(registrationWesterosEmpty[key]);
     }
+  });
+
+  it('should send a template message to imported registrations', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessToken();
+
+    // Act
+    await importRegistrations(programIdOCW, [registrationVisa], accessToken);
+
+    const expectedMessageTranslations = Object.values(
+      messageTemplateGeneric.new.message ?? {},
+    );
+
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+      expectedMessages: expectedMessageTranslations,
+    });
+
+    // Assert
+    const messageHistoryResponse = await getMessageHistory(
+      programIdOCW,
+      registrationVisa.referenceId,
+      accessToken,
+    );
+
+    const messageHistory = messageHistoryResponse.body;
+    const messageSent = messageHistory.some((message) =>
+      expectedMessageTranslations.includes(message.attributes.body),
+    );
+    expect(messageSent).toBe(true);
   });
 });

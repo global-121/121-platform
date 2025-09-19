@@ -1733,6 +1733,9 @@
       <trans-unit id="5649335820714201159" datatype="html">
         <source>Edit team</source>
       </trans-unit>
+      <trans-unit id="message-content-type-new" datatype="html">
+        <source>New</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

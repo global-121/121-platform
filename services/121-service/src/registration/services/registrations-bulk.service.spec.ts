@@ -114,14 +114,14 @@ describe('RegistrationBulkService', () => {
       // Act
       // Assert
       await expect(
-        registrationsBulkService.postMessages(
+        registrationsBulkService.postMessages({
           paginateQuery,
           programId,
-          'randomMessage',
-          'randomNotDefinedStatus',
-          false,
+          message: 'randomMessage',
+          messageTemplateKey: 'randomNotDefinedStatus',
+          dryRun: false,
           userId,
-        ),
+        }),
       ).rejects.toHaveProperty('status', 404);
     });
 
@@ -129,14 +129,14 @@ describe('RegistrationBulkService', () => {
       // Arrange
 
       // Act
-      const postMessageResult = await registrationsBulkService.postMessages(
+      const postMessageResult = await registrationsBulkService.postMessages({
         paginateQuery,
         programId,
-        'randomMessage',
-        RegistrationStatusEnum.new,
-        true,
+        message: 'randomMessage',
+        messageTemplateKey: RegistrationStatusEnum.new,
+        dryRun: true,
         userId,
-      );
+      });
       // Assert
       expect(postMessageResult).toBeDefined();
       expect(postMessageResult).toStrictEqual({
@@ -149,14 +149,14 @@ describe('RegistrationBulkService', () => {
 
     it('should return result and add messages to queue', async () => {
       // Act
-      const postMessageResult = await registrationsBulkService.postMessages(
+      const postMessageResult = await registrationsBulkService.postMessages({
         paginateQuery,
         programId,
-        'randomMessage',
-        RegistrationStatusEnum.new,
-        false,
+        message: 'randomMessage',
+        messageTemplateKey: RegistrationStatusEnum.new,
+        dryRun: false,
         userId,
-      );
+      });
 
       // Assert
       expect(postMessageResult).toBeDefined();

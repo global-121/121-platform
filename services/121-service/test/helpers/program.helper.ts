@@ -419,85 +419,181 @@ export async function waitForMessagesToComplete({
   referenceIds,
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
+  expectedMessages,
+  expectedContentTypes,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
+  expectedMessages?: string[];
+  expectedContentTypes?: string[];
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
-
   let referenceIdsWaitingForMessages = [...referenceIds];
 
   while (
     Date.now() - startTime < maxWaitTimeMs &&
     referenceIdsWaitingForMessages.length > 0
   ) {
-    const messageHistories = await Promise.all(
-      referenceIdsWaitingForMessages.map(async (referenceId) => {
-        const response = await getMessageHistory(
-          programId,
-          referenceId,
-          accessToken,
-        );
-        return { referenceId, messageHistory: response.body };
-      }),
+    const messageHistories = await fetchMessageHistories(
+      referenceIdsWaitingForMessages,
+      programId,
+      accessToken,
     );
 
-    const messageHistoriesWithoutMinimumMessages = messageHistories.filter(
-      ({ messageHistory }) => {
-        const messagesWithValidStatus = messageHistory.filter((m) => {
-          const validStatuses: MessageStatus[] = ['read', 'failed'];
-
-          if (m.attributes.notificationType === 'sms') {
-            validStatuses.push('sent');
-          }
-
-          // wait for messages actually being on a final status, given that's also something we check for in the test
-          return validStatuses.includes(m.attributes.status);
-        });
-
-        return (
-          messagesWithValidStatus.length < minimumNumberOfMessagesPerReferenceId
-        );
-      },
+    referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages(
+      messageHistories,
+      minimumNumberOfMessagesPerReferenceId,
+      expectedMessages,
+      expectedContentTypes,
     );
 
-    referenceIdsWaitingForMessages = messageHistoriesWithoutMinimumMessages.map(
-      ({ referenceId }) => referenceId,
-    );
-    // To not overload the server and get 429
     await waitFor(100);
   }
 
   if (referenceIdsWaitingForMessages.length > 0) {
     if (IS_DEVELOPMENT) {
-      console.log('Reference Ids: ', referenceIds);
-      console.log(
-        'Reference Ids Waiting for Messages: ',
+      await logTimeoutDebugInfo({
+        expectedMessages,
+        expectedContentTypes,
         referenceIdsWaitingForMessages,
-      );
-      console.log(
-        'Expected number of messages: ',
         minimumNumberOfMessagesPerReferenceId,
-      );
-      for (const referenceId of referenceIdsWaitingForMessages) {
-        const response = await getMessageHistory(
-          programId,
-          referenceId,
-          accessToken,
-        );
-        console.log('Message History for ', referenceId);
-        console.table(
-          response.body.map(({ ...m }) => ({
-            ...m,
-            status: m.attributes.status,
-          })),
-        );
-      }
+        programId,
+        accessToken,
+      });
     }
     throw new Error(`Timeout waiting for messages to be sent`);
+  }
+}
+
+async function fetchMessageHistories(
+  referenceIds: string[],
+  programId: number,
+  accessToken: string,
+): Promise<{ referenceId: string; messageHistory: any[] }[]> {
+  return Promise.all(
+    referenceIds.map(async (referenceId) => {
+      const response = await getMessageHistory(
+        programId,
+        referenceId,
+        accessToken,
+      );
+      return { referenceId, messageHistory: response.body };
+    }),
+  );
+}
+
+function filterReferenceIdsWaitingForMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  minimumNumberOfMessagesPerReferenceId: number,
+  expectedMessages?: string[],
+  expectedContentTypes?: string[],
+): string[] {
+  if (expectedMessages && expectedMessages.length > 0) {
+    return filterReferenceIdsWithoutExpectedMessages(
+      messageHistories,
+      expectedMessages,
+    );
+  }
+  if (expectedContentTypes && expectedContentTypes.length > 0) {
+    return filterReferenceIdsWithoutExpectedContentTypes(
+      messageHistories,
+      expectedContentTypes,
+    );
+  }
+  return filterByMinimumMessages(
+    messageHistories,
+    minimumNumberOfMessagesPerReferenceId,
+  );
+}
+
+function filterReferenceIdsWithoutExpectedMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  expectedMessages: string[],
+): string[] {
+  return messageHistories
+    .filter(
+      ({ messageHistory }) =>
+        !messageHistory.some((m) =>
+          expectedMessages.includes(m.attributes.body),
+        ),
+    )
+    .map(({ referenceId }) => referenceId);
+}
+
+function filterReferenceIdsWithoutExpectedContentTypes(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  expectedContentTypes: string[],
+): string[] {
+  return messageHistories
+    .filter(
+      ({ messageHistory }) =>
+        !messageHistory.some((m) =>
+          expectedContentTypes.includes(m.attributes.contentType),
+        ),
+    )
+    .map(({ referenceId }) => referenceId);
+}
+
+function filterByMinimumMessages(
+  messageHistories: { referenceId: string; messageHistory: any[] }[],
+  minimumNumberOfMessages: number,
+): string[] {
+  return messageHistories
+    .filter(({ messageHistory }) => {
+      const messagesWithValidStatus = messageHistory.filter((m) => {
+        const validStatuses: MessageStatus[] = ['read', 'failed'];
+        if (m.attributes.notificationType === 'sms') {
+          validStatuses.push('sent');
+        }
+        return validStatuses.includes(m.attributes.status);
+      });
+      return messagesWithValidStatus.length < minimumNumberOfMessages;
+    })
+    .map(({ referenceId }) => referenceId);
+}
+
+async function logTimeoutDebugInfo({
+  expectedMessages,
+  expectedContentTypes,
+  referenceIdsWaitingForMessages,
+  minimumNumberOfMessagesPerReferenceId,
+  programId,
+  accessToken,
+}: {
+  expectedMessages?: string[];
+  expectedContentTypes?: string[];
+  referenceIdsWaitingForMessages: string[];
+  minimumNumberOfMessagesPerReferenceId: number;
+  programId: number;
+  accessToken: string;
+}) {
+  if (expectedMessages && expectedMessages.length > 0) {
+    console.log('Expected messages: ', expectedMessages);
+  }
+  if (expectedContentTypes && expectedContentTypes.length > 0) {
+    console.log('Expected content types: ', expectedContentTypes);
+  } else {
+    console.log(
+      'Expected number of messages: ',
+      minimumNumberOfMessagesPerReferenceId,
+    );
+  }
+  for (const referenceId of referenceIdsWaitingForMessages) {
+    const response = await getMessageHistory(
+      programId,
+      referenceId,
+      accessToken,
+    );
+    console.log('Message History for ', referenceId);
+    console.table(
+      response.body.map(({ ...m }) => ({
+        ...m,
+        status: m.attributes.status,
+      })),
+    );
   }
 }
 

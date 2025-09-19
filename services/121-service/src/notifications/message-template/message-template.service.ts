@@ -191,4 +191,17 @@ export class MessageTemplateService {
       }
     }
   }
+
+  public async isTemplateAvailable(
+    programId: number,
+    type: string,
+  ): Promise<boolean> {
+    const template = await this.messageTemplateRepository.findOne({
+      where: {
+        programId: Equal(programId),
+        type: Equal(type),
+      },
+    });
+    return !!template;
+  }
 }
