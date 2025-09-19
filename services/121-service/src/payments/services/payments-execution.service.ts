@@ -232,7 +232,7 @@ export class PaymentsExecutionService {
     }
   }
 
-  // ##TODO: for now copied from transaction-jobs-helper.service, find better place
+  // ##TODO: for now copied from transaction-jobs-helper.service, find better place. Or get rid of need for full registration entity altogether.
   private async getRegistrationOrThrow(
     referenceId: string,
   ): Promise<RegistrationEntity> {

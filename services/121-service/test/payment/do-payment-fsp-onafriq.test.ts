@@ -92,7 +92,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    // expect(getTransactionsBody.body[0].errorMessage).toBe(null); //##TODO: we can switch this check to null error message on transaction event
+    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
   });
 
   it('should give error on the initial request based on magic phonenumber', async () => {
@@ -121,7 +121,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.waiting,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -242,7 +246,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 3: this is the critical assertion, as in case of a duplicate thirdPartyTransId error, the transaction should not be updated to an error status.
     // This test is not following the real-life use case of making 2 calls, but does test the different handling in the code of this type of error.
     expect(getTransactionsBody.body[0].status).toBe(
-      TransactionStatusEnum.waiting,
+      TransactionStatusEnum.created,
     );
   });
 });

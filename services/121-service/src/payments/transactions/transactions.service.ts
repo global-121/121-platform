@@ -190,6 +190,7 @@ export class TransactionsService {
       transactionId: resultTransaction.id,
       userId,
       type: TransactionEventType.created,
+      description: 'Transaction created', // ##TODO also put all possible values in enum?
       programFspConfigurationId,
     });
 
