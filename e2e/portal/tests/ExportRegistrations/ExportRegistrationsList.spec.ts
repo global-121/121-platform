@@ -82,14 +82,17 @@ test.describe('Export registrations with different formats and configurations', 
 
     await test.step('Export list and validate XLSX files downloaded', async () => {
       // Configure columns to be exported
-      await registrationsPage.deselectAllColumns();
-      await registrationsPage.configureTableColumns([
-        'FSP',
-        'Address street',
-        'Phone Number',
-        'Scope',
-        'Name',
-      ]);
+      await registrationsPage.configureTableColumns({
+        columns: [
+          'Reg. #',
+          'FSP',
+          'Address street',
+          'Phone Number',
+          'Scope',
+          'Name',
+        ],
+        onlyGivenColumns: true,
+      });
 
       await registrationsPage.selectAllRegistrations();
       await registrationsPage.clickAndSelectExportOption(
