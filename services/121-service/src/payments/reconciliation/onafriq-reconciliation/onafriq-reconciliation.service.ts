@@ -61,17 +61,23 @@ export class OnafriqReconciliationService {
   public async processOnafriqTransactionCallbackJob(
     onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto,
   ): Promise<void> {
-    const { transactionId } =
+    const onafriqTransaction =
       await this.onafriqTransactionScopedRepository.findOneOrFail({
         where: {
           thirdPartyTransId: Equal(
             onafriqTransactionCallbackJob.thirdPartyTransId,
           ),
         },
-        select: {
-          transactionId: true,
+        relations: {
+          transaction: {
+            transactionsEvents: true,
+          },
         },
       });
+    const transactionId = onafriqTransaction.transactionId;
+    const programFspConfigurationId =
+      onafriqTransaction.transaction.transactionsEvents[0]
+        .programFspConfigurationId;
 
     // Update the Onafriq transaction with the mfsTransId
     await this.onafriqTransactionScopedRepository.update(
@@ -111,6 +117,7 @@ export class OnafriqReconciliationService {
       userId: null,
       type: TransactionEventType.callbackReceived,
       errorMessage,
+      programFspConfigurationId,
     });
   }
 
