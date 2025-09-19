@@ -3,7 +3,7 @@
   i18n-title="@@card-title-project-settings-basic-information"
   editPencilTitle="Edit basic information"
   i18n-editPencilTitle
-  [canEdit]="true"
+  [canEdit]="canEdit()"
   [(isEditing)]="isEditing"
   [formGroup]="formGroup"
   [mutation]="updateProjectMutation"
