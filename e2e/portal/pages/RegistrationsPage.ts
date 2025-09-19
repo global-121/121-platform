@@ -18,6 +18,7 @@ class RegistrationsPage extends BasePage {
   readonly importFileButton: Locator;
   readonly exportCSVFieldsDropdown: Locator;
   readonly exportCSVButton: Locator;
+  readonly manageTableSidebar: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -41,6 +42,7 @@ class RegistrationsPage extends BasePage {
     this.exportCSVButton = this.page.getByRole('button', {
       name: 'Export CSV',
     });
+    this.manageTableSidebar = this.page.getByRole('complementary');
   }
 
   async waitForLoaded(registrationsCount: number) {
@@ -111,24 +113,41 @@ class RegistrationsPage extends BasePage {
   }) {
     await this.page.getByTitle('Manage table').click();
 
+    // wait for columns to be loaded
+    // without these waits, the test fails intermittently
+    await expect(this.manageTableSidebar).toBeVisible();
+    await expect(async () => {
+      expect(
+        await this.manageTableSidebar.getByRole('checkbox').count(),
+      ).toBeGreaterThan(0);
+    }).toPass({ timeout: 5000 });
+
     if (onlyGivenColumns) {
       // Deselect all columns first
-      const dialog = this.page.locator('form');
-      const checkboxes = dialog.getByRole('checkbox');
-      const checkboxesCount = await checkboxes.count();
-      for (let i = 0; i < checkboxesCount; i++) {
-        const checkbox = checkboxes.nth(i);
+      const checkboxes = await this.manageTableSidebar
+        .getByRole('checkbox')
+        .all();
+
+      for (const checkbox of checkboxes) {
         if (await checkbox.isChecked()) {
           await checkbox.click();
         }
       }
+
+      expect(
+        await this.manageTableSidebar
+          .getByRole('checkbox', { checked: true })
+          .count(),
+      ).toBe(0);
     }
 
     for (const column of columns) {
-      await this.page.getByLabel(column).first().check();
+      await this.manageTableSidebar.getByLabel(column).check();
     }
 
-    await this.page.getByRole('button', { name: 'Apply' }).click();
+    await this.manageTableSidebar
+      .getByRole('button', { name: 'Apply' })
+      .click();
 
     if (onlyGivenColumns) {
       // Validate only the given columns are visible in the table
