@@ -1808,6 +1808,12 @@
       <trans-unit id="773471341435150258" datatype="html">
         <source>Enable validation</source>
       </trans-unit>
+      <trans-unit id="631812235369405800" datatype="html">
+        <source>Edit budget</source>
+      </trans-unit>
+      <trans-unit id="6820887192467365708" datatype="html">
+        <source>Edit basic information</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
