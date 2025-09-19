@@ -17,6 +17,7 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -33,6 +34,8 @@ export class OnafriqReconciliationService {
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
+    @Inject(getScopedRepositoryProviderName(TransactionEventEntity))
+    private readonly transactionEventScopedRepository: ScopedRepository<TransactionEventEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly queuesService: QueuesRegistryService,
@@ -68,16 +71,17 @@ export class OnafriqReconciliationService {
             onafriqTransactionCallbackJob.thirdPartyTransId,
           ),
         },
-        relations: {
-          transaction: {
-            transactionsEvents: true,
-          },
-        },
       });
+    // ##TODO: do this in one query
+    const transactionEvents = await this.transactionEventScopedRepository.find({
+      where: {
+        transactionId: Equal(onafriqTransaction.transactionId),
+      },
+    });
+
     const transactionId = onafriqTransaction.transactionId;
     const programFspConfigurationId =
-      onafriqTransaction.transaction.transactionsEvents[0]
-        .programFspConfigurationId;
+      transactionEvents[0].programFspConfigurationId;
 
     // Update the Onafriq transaction with the mfsTransId
     await this.onafriqTransactionScopedRepository.update(
