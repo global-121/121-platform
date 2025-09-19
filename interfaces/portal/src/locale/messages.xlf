@@ -1754,9 +1754,6 @@
       <trans-unit id="6001336690636833920" datatype="html">
         <source>Basic information details saved successfully.</source>
       </trans-unit>
-      <trans-unit id="6189042919147070791" datatype="html">
-        <source>Turning on the verification option enables an additional registration status: &quot;verified&quot;.</source>
-      </trans-unit>
       <trans-unit id="6230534888092191953" datatype="html">
         <source>Project information</source>
       </trans-unit>
@@ -1768,12 +1765,6 @@
       </trans-unit>
       <trans-unit id="7307016430178924629" datatype="html">
         <source>Hint text...</source>
-      </trans-unit>
-      <trans-unit id="7481522563867689810" datatype="html">
-        <source>Verification process</source>
-      </trans-unit>
-      <trans-unit id="8273519064602453308" datatype="html">
-        <source>Use verification process in this project</source>
       </trans-unit>
       <trans-unit id="1200281517601565877" datatype="html">
         <source>The number of times each registration will receive transfers in the project as a default.</source>
@@ -1807,6 +1798,15 @@
       </trans-unit>
       <trans-unit id="card-title-project-settings-budget" datatype="html">
         <source>Budget</source>
+      </trans-unit>
+      <trans-unit id="1321992891688971593" datatype="html">
+        <source>Use &quot;validation&quot; in this project</source>
+      </trans-unit>
+      <trans-unit id="3772482029498071398" datatype="html">
+        <source>Turning on the validation option enables an additional registration status: &quot;<x equiv-text="REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]" id="PH"/>&quot;.</source>
+      </trans-unit>
+      <trans-unit id="773471341435150258" datatype="html">
+        <source>Enable validation</source>
       </trans-unit>
     </body>
   </file>
