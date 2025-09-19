@@ -228,7 +228,6 @@ describe('AirtelApiService', () => {
           payee: {
             currency: 'ZMW',
             msisdn: '000000000',
-            name: '3132312D706C6174666F726D',
           },
           pin: 'mock-encrypted-pin',
           reference: '1234',
