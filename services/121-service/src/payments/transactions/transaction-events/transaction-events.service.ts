@@ -14,17 +14,20 @@ export class TransactionEventsService {
     transactionId,
     type,
     userId,
+    programFspConfigurationId,
     errorMessage,
   }: {
     transactionId: number;
     type: TransactionEventType;
     userId: number | null; // null for system events
+    programFspConfigurationId: number;
     errorMessage?: string;
   }): Promise<void> {
     await this.transactionEventRepository.save({
       type,
       transactionId,
       userId,
+      programFspConfigurationId,
       errorMessage,
     });
   }

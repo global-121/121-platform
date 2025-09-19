@@ -84,9 +84,9 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.status AS "status"',
         'transaction."transferValue" AS "amount"',
         // 'transaction."errorMessage" as "errorMessage"', //##TODO: this was done at early stage to get to successful test
-        'fspconfig.name as "programFspConfigurationName"',
+        // 'fspconfig.name as "programFspConfigurationName"', ##TODO: this was done at early stage to get to successful test
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      // .leftJoin('transaction.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .andWhere('p."programId" = :programId', {

@@ -67,6 +67,7 @@ export class TransactionJobsOnafriqService {
             registrationId: registration.id,
             paymentId: transactionJob.paymentId,
             userId: transactionJob.userId,
+            programFspConfigurationId: transactionJob.programFspConfigurationId,
             transactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
             transactionEventType: TransactionEventType.initiated,
           },
