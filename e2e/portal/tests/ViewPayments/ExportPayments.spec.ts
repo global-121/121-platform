@@ -91,6 +91,7 @@ test('[35621] ExportPayments', async () => {
         const registrationProgramIdIndex = headerCells.indexOf(
           'registrationProgramId',
         );
+        expect(registrationProgramIdIndex).toBeGreaterThan(-1);
         const aId = a[registrationProgramIdIndex];
         const bId = b[registrationProgramIdIndex];
 
@@ -98,7 +99,8 @@ test('[35621] ExportPayments', async () => {
           return parseInt(aId, 10) - parseInt(bId, 10);
         }
 
-        const paymentIdIndex = headerCells.indexOf('payment');
+        const paymentIdIndex = headerCells.indexOf('paymentId');
+        expect(paymentIdIndex).toBeGreaterThan(-1);
         const aPaymentId = a[paymentIdIndex];
         const bPaymentId = b[paymentIdIndex];
 
