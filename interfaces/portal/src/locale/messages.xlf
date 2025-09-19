@@ -1757,9 +1757,6 @@
       <trans-unit id="6230534888092191953" datatype="html">
         <source>Project information</source>
       </trans-unit>
-      <trans-unit id="6409462749869510415" datatype="html">
-        <source>Add users to your project team and assign roles to them.</source>
-      </trans-unit>
       <trans-unit id="7243649521435718104" datatype="html">
         <source>Use &quot;scope&quot; in this project</source>
       </trans-unit>
@@ -1813,6 +1810,9 @@
       </trans-unit>
       <trans-unit id="6820887192467365708" datatype="html">
         <source>Edit basic information</source>
+      </trans-unit>
+      <trans-unit id="7689060614126076538" datatype="html">
+        <source>Add users to your project team and assign roles to them.</source>
       </trans-unit>
     </body>
   </file>
