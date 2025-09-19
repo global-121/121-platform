@@ -10,6 +10,12 @@ import LoginPage from '@121-e2e/portal/pages/LoginPage';
 import ProjectSettings from '@121-e2e/portal/pages/ProjectSettings';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
+const currentDate = new Date();
+const todaysDate = new Date(currentDate);
+todaysDate.setDate(currentDate.getDate());
+const futureDate = new Date(currentDate);
+futureDate.setDate(currentDate.getDate() + 1);
+
 // Arrange
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -22,9 +28,18 @@ test.beforeEach(async ({ page }) => {
   // Navigate to program
   await loginPage.selectProgram('NLRC OCW program');
 });
+
 test('[38155] Edit Project Information', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
   const projectSettings = new ProjectSettings(page);
+
+  const projectInfo = {
+    name: 'TUiR Warta',
+    description: 'TUiR Warta description',
+    dateRange: { start: todaysDate, end: futureDate },
+    location: 'Polen',
+    targetRegistrations: '2000',
+  };
 
   // Act
   await test.step('Navigate to project settings', async () => {
@@ -36,6 +51,26 @@ test('[38155] Edit Project Information', async ({ page }) => {
   });
 
   await test.step('Edit basic information', async () => {
-    console.log('Skipping - not implemented yet');
+    await projectSettings.clickEditBasicInformationButton();
+    await projectSettings.editInformationFieldByLabel(
+      'Project name',
+      projectInfo.name,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      'Project description',
+      projectInfo.description,
+    );
+    await projectSettings.selectDateRange({
+      dateRange: projectInfo.dateRange,
+    });
+    await projectSettings.editInformationFieldByLabel(
+      'Location',
+      projectInfo.location,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      '*Target registrations',
+      projectInfo.targetRegistrations,
+    );
+    await projectSettings.saveChanges();
   });
 });
