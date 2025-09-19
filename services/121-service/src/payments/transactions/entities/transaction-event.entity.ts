@@ -28,7 +28,7 @@ export class TransactionEventEntity extends Base121OptionalAuditedEntity {
 
   @ManyToOne(
     (_type) => TransactionEntity,
-    (transaction) => transaction.transactionsEvents,
+    (transaction) => transaction.transactionEvents,
     { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'transactionId' })
