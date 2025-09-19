@@ -74,11 +74,8 @@ class ProjectSettings extends BasePage {
     await this.page.getByText(settingName).click();
   }
 
-  async clickEditBasicInformationButton() {
-    await this.page
-      .getByTitle('Basic information')
-      .getByLabel('Edit team')
-      .click();
+  async clickEditSectionByTitle(title: string) {
+    await this.page.getByTitle(title).getByLabel('Edit team').click();
   }
 
   async editInformationFieldByLabel(label: string, value: string) {

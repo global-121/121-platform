@@ -41,6 +41,14 @@ test('[38155] Edit Project Information', async ({ page }) => {
     targetRegistrations: '2000',
   };
 
+  const budgetInfo = {
+    fundsAvailable: '2000',
+    currency: 'USD',
+    paymentFrequency: '2-months',
+    defaultTransferAmount: '200',
+    fixedTransferValue: '100',
+  };
+
   // Act
   await test.step('Navigate to project settings', async () => {
     await registrations.navigateToProgramPage('Settings');
@@ -51,7 +59,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
   });
 
   await test.step('Edit basic information', async () => {
-    await projectSettings.clickEditBasicInformationButton();
+    await projectSettings.clickEditSectionByTitle('Basic information');
     await projectSettings.editInformationFieldByLabel(
       'Project name',
       projectInfo.name,
@@ -72,5 +80,36 @@ test('[38155] Edit Project Information', async ({ page }) => {
       projectInfo.targetRegistrations,
     );
     await projectSettings.saveChanges();
+    await projectSettings.validateToastMessageAndClose(
+      'Basic information details saved successfully.',
+    );
+  });
+
+  await test.step('Edit Budget information', async () => {
+    await projectSettings.clickEditSectionByTitle('Budget');
+    await projectSettings.editInformationFieldByLabel(
+      'Funds available',
+      budgetInfo.fundsAvailable,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      'Currency',
+      budgetInfo.currency,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      'Payment frequency',
+      budgetInfo.paymentFrequency,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      'Default transfers per registration',
+      budgetInfo.defaultTransferAmount,
+    );
+    await projectSettings.editInformationFieldByLabel(
+      '*Fixed transfer value',
+      budgetInfo.fixedTransferValue,
+    );
+    await projectSettings.saveChanges();
+    await projectSettings.validateToastMessageAndClose(
+      'Budget details saved successfully.',
+    );
   });
 });
