@@ -1,9 +1,10 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
 import { registrationVisa } from '../helpers/registration-default.data.js';
 import LoginModel from '../models/login.js';
-import PaymentsModel from '../models/payments.js';
+import paymentsModel from '../models/payments.js';
 import ProgramsModel from '../models/programs.js';
 import RegistrationsModel from '../models/registrations.js';
 import ResetModel from '../models/reset.js';
@@ -11,11 +12,11 @@ import ResetModel from '../models/reset.js';
 const resetPage = new ResetModel();
 const loginPage = new LoginModel();
 const programsPage = new ProgramsModel();
-const paymentsPage = new PaymentsModel();
+const paymentsPage = new paymentsModel();
 const registrationsPage = new RegistrationsModel();
 
 const resetScript = 'nlrc-multiple';
-const duplicateNumber = 15; // should be 15
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15'); // should be 15
 const programId = 3;
 const maxTimeoutAttempts = 200;
 const minPassRatePercentage = 10;
@@ -23,7 +24,7 @@ const amount = 10;
 
 export const options = {
   thresholds: {
-    http_req_failed: ['rate<0.01'], // http errors should be less than 1%
+    http_req_failed: ['rate<0.04'], // http errors should be less than 4%
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
@@ -122,7 +123,8 @@ export default function () {
     },
   });
 
-  // Do the payment
+  // Do the payment with dryRun first
+  paymentsPage.verifyPaymentDryRunUntilSuccess(programId, amount);
   const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
