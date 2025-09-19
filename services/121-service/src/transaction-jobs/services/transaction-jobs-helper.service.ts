@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Equal } from 'typeorm';
 
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -6,26 +7,14 @@ import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/pro
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
-
-interface ProcessTransactionResultInput {
-  registration: RegistrationEntity;
-  transactionJob: SharedTransactionJobDto;
-  transferAmountInMajorUnit: number;
-  status: TransactionStatusEnum;
-  errorText?: string;
-  customData?: Record<string, unknown>;
-}
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -34,9 +23,7 @@ export class TransactionJobsHelperService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly latestTransactionRepository: LatestTransactionRepository,
-    private readonly programRepository: ProgramRepository,
-    private readonly registrationEventsService: RegistrationEventsService,
+    private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -54,60 +41,73 @@ export class TransactionJobsHelperService {
     return registration;
   }
 
-  public async createTransactionAndUpdateRegistration({
-    registration,
-    transactionJob,
-    transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
-    status,
-    errorText: errorMessage,
-    customData,
-  }: ProcessTransactionResultInput): Promise<TransactionEntity> {
-    const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
-      transactionJob;
-
-    const resultTransaction = await this.createTransaction({
-      amount: calculatedTransferAmountInMajorUnit,
-      registration,
-      programFspConfigurationId,
-      paymentId,
-      userId,
-      status,
-      errorMessage,
-      customData,
+  public async createTransactionEventAndUpdateTransaction({
+    registrationId,
+    paymentId,
+    userId,
+    programFspConfigurationId,
+    transactionEventType,
+    description,
+    errorMessage,
+    transactionStatus,
+  }: {
+    registrationId: number;
+    paymentId: number;
+    userId: number;
+    programFspConfigurationId: number;
+    transactionEventType: TransactionEventType;
+    description: string;
+    errorMessage?: string;
+    transactionStatus?: TransactionStatusEnum;
+  }): Promise<number> {
+    // get transaction
+    // ##TODO is it possible to pass transactionId along already via the job instead of finding this via registrationId + paymentId?
+    const transaction = await this.transactionScopedRepository.findOneOrFail({
+      where: {
+        registrationId: Equal(registrationId),
+        paymentId: Equal(paymentId),
+      },
     });
 
-    await this.latestTransactionRepository.insertOrUpdateFromTransaction(
-      resultTransaction,
-    );
-
-    if (!isRetry) {
-      const paymentCount = await this.updateAndGetPaymentCount(registration.id);
-      const currentStatusIsCompleted =
-        await this.setStatusToCompleteIfApplicable({
-          registration,
-          programId,
-          paymentCount,
-        });
-
-      // Added this check to avoid a bit of processing time if the status is the same
-      if (currentStatusIsCompleted) {
-        await this.registrationEventsService.createFromRegistrationViews(
-          {
-            id: registration.id,
-            status: registration.registrationStatus ?? undefined,
-          },
-          {
-            id: registration.id,
-            status: RegistrationStatusEnum.completed,
-          },
-          {
-            explicitRegistrationPropertyNames: ['status'],
-          },
-        );
-      }
+    // update transaction status - if provided
+    if (transactionStatus) {
+      await this.transactionScopedRepository.update(transaction.id, {
+        status: transactionStatus,
+      });
     }
 
-    return resultTransaction;
+    // create transaction event
+    await this.transactionEventsService.createEvent({
+      transactionId: transaction.id,
+      type: transactionEventType,
+      description,
+      userId,
+      errorMessage,
+      programFspConfigurationId,
+    });
+
+    return transaction.id;
+  }
+
+  public async createInitiatedOrRetryTransactionEvent({
+    registrationId,
+    transactionJob,
+  }: {
+    registrationId: number;
+    transactionJob: SharedTransactionJobDto;
+  }): Promise<number> {
+    return await this.createTransactionEventAndUpdateTransaction({
+      registrationId,
+      paymentId: transactionJob.paymentId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+      transactionEventType: transactionJob.isRetry
+        ? TransactionEventType.retry
+        : TransactionEventType.initiated,
+      description: transactionJob.isRetry
+        ? 'Onafriq transfer retry initiated'
+        : 'Onafriq transfer initiated',
+    });
   }
 
   private async addMessageJobToQueue({
@@ -130,88 +130,6 @@ export class TransactionJobsHelperService {
       bulksize,
       userId,
     });
-  }
-
-  private async createTransaction({
-    amount, // transaction entity are always in major unit
-    registration,
-    programFspConfigurationId,
-    paymentId,
-    userId,
-    status,
-    errorMessage,
-    customData,
-  }: {
-    amount: number;
-    registration: RegistrationEntity;
-    programFspConfigurationId: number;
-    paymentId: number;
-    userId: number;
-    status: TransactionStatusEnum;
-    errorMessage?: string;
-    customData?: Record<string, unknown>;
-  }) {
-    const transaction = new TransactionEntity();
-    transaction.amount = amount;
-    transaction.created = new Date();
-    transaction.registration = registration;
-    transaction.programFspConfigurationId = programFspConfigurationId;
-    transaction.paymentId = paymentId;
-    transaction.userId = userId;
-    transaction.status = status;
-    transaction.transactionStep = 1;
-    transaction.errorMessage = errorMessage ?? null;
-    transaction.customData = customData ?? {};
-
-    return await this.transactionScopedRepository.save(transaction);
-  }
-
-  private async updateAndGetPaymentCount(
-    registrationId: number,
-  ): Promise<number> {
-    const paymentCount =
-      await this.latestTransactionRepository.getPaymentCount(registrationId);
-
-    await this.registrationScopedRepository.updateUnscoped(registrationId, {
-      paymentCount,
-    });
-    return paymentCount;
-  }
-
-  private async setStatusToCompleteIfApplicable({
-    registration,
-    programId,
-    paymentCount,
-  }: {
-    registration: RegistrationEntity;
-    programId: number;
-    paymentCount: number;
-  }): Promise<boolean> {
-    const program = await this.programRepository.findByIdOrFail(programId);
-
-    if (!program.enableMaxPayments) {
-      return false;
-    }
-
-    // registration.maxPayments can only be a positive integer or null
-    // This situation will only occur when enableMaxPayments is turned on after
-    // the registration was created.
-    if (
-      registration.maxPayments === null ||
-      registration.maxPayments === undefined
-    ) {
-      return false;
-    }
-
-    if (paymentCount < registration.maxPayments) {
-      return false;
-    }
-
-    await this.registrationScopedRepository.updateUnscoped(registration.id, {
-      registrationStatus: RegistrationStatusEnum.completed,
-    });
-
-    return true;
   }
 
   public async createMessageAndAddToQueue({

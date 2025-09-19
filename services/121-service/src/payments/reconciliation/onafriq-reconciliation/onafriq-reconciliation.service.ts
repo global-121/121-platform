@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import { Redis } from 'ioredis';
 import SftpClient from 'ssh2-sftp-client';
 import { Between, Equal } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { IS_PRODUCTION } from '@121-service/src/config';
 import { env } from '@121-service/src/env';
@@ -18,9 +17,11 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -33,7 +34,10 @@ export class OnafriqReconciliationService {
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
+    @Inject(getScopedRepositoryProviderName(TransactionEventEntity))
+    private readonly transactionEventScopedRepository: ScopedRepository<TransactionEventEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionEventsService: TransactionEventsService,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -60,17 +64,20 @@ export class OnafriqReconciliationService {
   public async processOnafriqTransactionCallbackJob(
     onafriqTransactionCallbackJob: OnafriqTransactionCallbackJobDto,
   ): Promise<void> {
-    const { transactionId } =
+    const onafriqTransaction =
       await this.onafriqTransactionScopedRepository.findOneOrFail({
         where: {
           thirdPartyTransId: Equal(
             onafriqTransactionCallbackJob.thirdPartyTransId,
           ),
         },
-        select: {
-          transactionId: true,
-        },
+        relations: { transaction: { transactionEvents: true } },
       });
+
+    const transactionId = onafriqTransaction.transactionId;
+    const programFspConfigurationId =
+      onafriqTransaction.transaction.transactionEvents[0] // ##TODO: take latest
+        .programFspConfigurationId;
 
     // Update the Onafriq transaction with the mfsTransId
     await this.onafriqTransactionScopedRepository.update(
@@ -78,34 +85,41 @@ export class OnafriqReconciliationService {
       { mfsTransId: onafriqTransactionCallbackJob.mfsTransId },
     );
 
-    // Prepare the transaction status based on statusCode from callback
-    let updatedTransactionStatusAndErrorMessage: QueryDeepPartialEntity<TransactionEntity> =
-      {};
-    switch (
-      this.classifyOnafriqStatus(onafriqTransactionCallbackJob.statusCode)
-    ) {
+    const onafriqTransactionStatus = this.classifyOnafriqStatus(
+      onafriqTransactionCallbackJob.statusCode,
+    );
+
+    let transactionStatus: TransactionStatusEnum;
+    let errorMessage: string | undefined;
+    switch (onafriqTransactionStatus) {
       case OnafriqTransactionStatus.success:
-        updatedTransactionStatusAndErrorMessage = {
-          status: TransactionStatusEnum.success,
-        };
+        transactionStatus = TransactionStatusEnum.success;
         break;
       case OnafriqTransactionStatus.error:
-        updatedTransactionStatusAndErrorMessage = {
-          status: TransactionStatusEnum.error,
-          errorMessage: `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`,
-        };
+        transactionStatus = TransactionStatusEnum.error;
+        errorMessage = `Error: ${onafriqTransactionCallbackJob.statusCode} - ${onafriqTransactionCallbackJob.statusMessage}`;
         break;
       default:
         // NOTE: This should not happen according to Onafriq. Does this cover this unexpected situation enough?
         console.log(
           `POST /onafriq/callback - Unexpected status code received. Code: ${onafriqTransactionCallbackJob.statusCode}, Message: ${onafriqTransactionCallbackJob.statusMessage}`,
         );
+        return; // Exit early for unexpected status codes
     }
-
     await this.transactionScopedRepository.update(
       { id: transactionId },
-      updatedTransactionStatusAndErrorMessage,
+      { status: transactionStatus },
     );
+
+    // create transaction event
+    await this.transactionEventsService.createEvent({
+      transactionId,
+      userId: null,
+      type: TransactionEventType.paymentProgress,
+      description: 'Onafriq callback received',
+      errorMessage,
+      programFspConfigurationId,
+    });
   }
 
   private classifyOnafriqStatus(code: string): OnafriqTransactionStatus {

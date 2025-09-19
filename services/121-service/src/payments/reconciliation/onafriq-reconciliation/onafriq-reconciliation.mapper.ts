@@ -18,7 +18,7 @@ export class OnafriqReconciliationMapper {
       Send_Currency: null, // We use 'Receive' type, so this is  N.A.
       Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
       Send_amount: null, // We use 'Receive' type, so this is  N.A.
-      Receive_amount: onafriqTransaction.transaction.amount,
+      Receive_amount: onafriqTransaction.transaction.transferValue,
       Fee_Amount: null, // We use 'Receive' type, so this is  N.A.
       Balance_before: null, // leave empty for now, take up again if requested
       Balance_after: null, // leave empty for now, take up again if requested
