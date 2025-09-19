@@ -44,6 +44,7 @@ export class TransactionJobsHelperService {
     registrationId,
     paymentId,
     userId,
+    programFspConfigurationId,
     transactionStatus,
     transactionEventType,
     errorMessage,
@@ -51,6 +52,7 @@ export class TransactionJobsHelperService {
     registrationId: number;
     paymentId: number;
     userId: number;
+    programFspConfigurationId: number;
     transactionStatus: string;
     transactionEventType: TransactionEventType;
     errorMessage?: string;
@@ -73,6 +75,7 @@ export class TransactionJobsHelperService {
       type: transactionEventType,
       userId,
       errorMessage,
+      programFspConfigurationId,
     });
 
     return transaction;

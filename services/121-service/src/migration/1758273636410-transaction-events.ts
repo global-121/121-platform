@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TransactionEvent1758099928516 implements MigrationInterface {
-  name = 'TransactionEvent1758099928516';
+export class TransactionEvents1758273636410 implements MigrationInterface {
+  name = 'TransactionEvents1758273636410';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -11,7 +11,7 @@ export class TransactionEvent1758099928516 implements MigrationInterface {
       `DROP INDEX "121-service"."IDX_edc9246b11c7368ca48fce10f4"`,
     );
     await queryRunner.query(
-      `CREATE TABLE "121-service"."transaction_event" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, "errorMessage" character varying, "type" character varying NOT NULL, "transactionId" integer NOT NULL, CONSTRAINT "PK_1b4101c76f4a2c8168aeb8f3bad" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "121-service"."transaction_event" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer, "errorMessage" character varying, "type" character varying NOT NULL, "transactionId" integer NOT NULL, "programFspConfigurationId" integer, CONSTRAINT "PK_1b4101c76f4a2c8168aeb8f3bad" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_b636b04e270121a24f08d1af9b" ON "121-service"."transaction_event" ("created") `,
@@ -23,6 +23,9 @@ export class TransactionEvent1758099928516 implements MigrationInterface {
       `CREATE INDEX "IDX_f4f1b2124aaac715c149460ef4" ON "121-service"."transaction_event" ("transactionId") `,
     );
     await queryRunner.query(
+      `CREATE INDEX "IDX_ccc33883aa7599801353e53cf1" ON "121-service"."transaction_event" ("programFspConfigurationId") `,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP COLUMN "errorMessage"`,
     );
     await queryRunner.query(
@@ -32,10 +35,16 @@ export class TransactionEvent1758099928516 implements MigrationInterface {
       `ALTER TABLE "121-service"."transaction" DROP COLUMN "transactionStep"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" DROP COLUMN "amount"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP COLUMN "userId"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" RENAME COLUMN "amount" TO "transferValue"`,
+      `ALTER TABLE "121-service"."transaction" ADD "transferValue" real`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "UQ_5ad8525fef1696e4388e007b4bc" UNIQUE ("registrationId", "paymentId")`,
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction_event" ADD CONSTRAINT "FK_a6376dce877de0841fe63085ad4" FOREIGN KEY ("userId") REFERENCES "121-service"."user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -44,9 +53,8 @@ export class TransactionEvent1758099928516 implements MigrationInterface {
       `ALTER TABLE "121-service"."transaction_event" ADD CONSTRAINT "FK_f4f1b2124aaac715c149460ef45" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "121-service"."transaction" ADD CONSTRAINT "UQ_5ad8525fef1696e4388e007b4bc" UNIQUE ("registrationId", "paymentId")`,
+      `ALTER TABLE "121-service"."transaction_event" ADD CONSTRAINT "FK_ccc33883aa7599801353e53cf19" FOREIGN KEY ("programFspConfigurationId") REFERENCES "121-service"."program_fsp_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
-
     await queryRunner.query(
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
       ['VIEW', 'registration_view', '121-service'],
@@ -76,6 +84,6 @@ export class TransactionEvent1758099928516 implements MigrationInterface {
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {
-    console.log('only going up...');
+    console.log('We only go forwards!');
   }
 }
