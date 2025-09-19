@@ -18,7 +18,10 @@ export class CbeTransferEntity1757420276256 implements MigrationInterface {
     await queryRunner.query(`
       INSERT INTO "121-service"."cbe_transfer" ("debitTheirRef", "transactionId", "created", "updated")
       SELECT
-        (t."customData"::jsonb -> 'requestResult' ->> 'debitTheirRef')::character varying as "debitTheirRef",
+        COALESCE(
+          (t."customData"::jsonb -> 'requestResult' ->> 'debitTheirRef'),
+          (t."customData"::jsonb -> 'requestResult' ->> 'debitTheIrRef')
+        )::character varying as "debitTheirRef",
         t."id" as "transactionId",
         t."created",
         t."updated"
