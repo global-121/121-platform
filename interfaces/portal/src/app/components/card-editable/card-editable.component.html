@@ -7,7 +7,7 @@
     [pFocusTrapDisabled]="!isEditing()"
   >
     <div class="flex min-h-12 items-center gap-x-2">
-      <h2>{{ title() }}</h2>
+      <h2>{{ header() }}</h2>
       @if (canEdit()) {
         <div class="ms-auto space-x-2">
           @if (!isEditing()) {

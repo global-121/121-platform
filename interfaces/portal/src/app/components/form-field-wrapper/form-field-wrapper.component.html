@@ -13,7 +13,10 @@
       <span class="ms-0">{{ label() | translatableString }}</span>
       @let tooltip = labelTooltip();
       @if (tooltip) {
-        <app-info-tooltip [message]="tooltip"></app-info-tooltip>
+        <app-info-tooltip
+          [message]="tooltip"
+          class="ms-1"
+        ></app-info-tooltip>
       }
     </strong>
     <ng-content></ng-content>
