@@ -34,8 +34,8 @@ export class CardEditableComponent<TMutationData = unknown> {
   readonly canEdit = input.required<boolean>();
   readonly isEditing = model.required<boolean>();
 
-  // XXX: this should become required once the "project settings team" page
-  // has a mutation to update the checklist on save
+  // TODO: AB#38151 this mutation and mutationData should become required once the "project settings team"
+  // page uses a mutation to update the checklist on save
   readonly mutation =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- couldn't find a way to avoid any here
     input<CreateMutationResult<any, Error, TMutationData>>();
@@ -45,7 +45,7 @@ export class CardEditableComponent<TMutationData = unknown> {
 
   readonly rtlHelper = inject(RtlHelperService);
 
-  // XXX: this should become redundant once "mutation" is required
+  // TODO: this should become redundant once "mutation" is required (see above)
   readonly isSaveable = computed(() => !!this.mutation());
 
   onFormSubmit() {
