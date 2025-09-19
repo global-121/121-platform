@@ -170,6 +170,7 @@ export class ProjectSettingsBudgetComponent {
     }),
   );
 
+  readonly tooltipCurrency = $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`;
   readonly tooltipDistributionDuration = $localize`The number of times each registration will receive transfers in the project as a default.`;
 
   readonly dataListData = computed(() => {
@@ -184,6 +185,7 @@ export class ProjectSettingsBudgetComponent {
       {
         label: '*' + $localize`Currency`,
         value: projectData?.currency,
+        tooltip: this.tooltipCurrency,
         type: 'text',
       },
       {
