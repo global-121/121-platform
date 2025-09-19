@@ -49,16 +49,17 @@
       [initialSortField]="'username'"
     >
       @if (isEditing()) {
-        <p-button
-          table-actions
-          label="Add user to team"
-          i18n-label
-          rounded
-          outlined
-          icon="pi pi-plus"
-          [iconPos]="rtlHelper.createPosition('start')()"
-          (click)="openForm('add')"
-        />
+        <div table-actions>
+          <p-button
+            label="Add user to team"
+            i18n-label
+            rounded
+            outlined
+            icon="pi pi-plus"
+            [iconPos]="rtlHelper.createPosition('start')()"
+            (click)="openForm('add')"
+          />
+        </div>
       }
     </app-query-table>
     <app-add-project-team-user-dialog
