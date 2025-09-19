@@ -7,7 +7,12 @@
     [canEdit]="canManageAidworkers()"
     [(isEditing)]="isEditing"
   >
-    <p i18n>Add users to your project team and assign roles to them.</p>
+    <p
+      i18n
+      class="mb-4"
+    >
+      Add users to your project team and assign roles to them.
+    </p>
     <app-query-table
       [items]="projectUsers.data() ?? []"
       [isPending]="projectUsers.isPending()"
