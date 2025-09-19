@@ -159,7 +159,7 @@ class RegistrationsPage extends BasePage {
     }).toPass({ timeout: 5000 });
 
     const headerTexts = await this.table.getTextArrayFromHeader();
-    return headerTexts.findIndex((text) => text.trim() === headerText);
+    return headerTexts.findIndex((text) => text === headerText);
   }
 
   async validateStatusOfFirstRegistration({ status }: { status: string }) {
