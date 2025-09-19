@@ -24,6 +24,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
 import {
@@ -34,6 +35,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
+import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -66,6 +68,7 @@ export class ProjectSettingsBasicInformationComponent {
 
   readonly isEditing = signal(false);
 
+  authService = inject(AuthService);
   projectApiService = inject(ProjectApiService);
   toastService = inject(ToastService);
 
@@ -168,6 +171,14 @@ export class ProjectSettingsBasicInformationComponent {
       await this.projectApiService.invalidateCache();
     },
   }));
+
+  readonly canEdit = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      // XXX: to be checked
+      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+    }),
+  );
 
   readonly tooltipTargetRegistrations = $localize`The amount of people/ households your project wishes to reach.`;
   readonly tooltipValidationProcess = $localize`Turning on the validation option enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`;
