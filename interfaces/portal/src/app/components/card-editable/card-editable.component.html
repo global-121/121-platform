@@ -1,0 +1,57 @@
+<p-card>
+  <form
+    (ngSubmit)="onFormSubmit()"
+    (keydown.control.enter)="onFormSubmit()"
+    (keydown.meta.enter)="onFormSubmit()"
+    pFocusTrap
+    [pFocusTrapDisabled]="!isEditing()"
+  >
+    <div class="flex min-h-12 items-center gap-x-2">
+      <h2>{{ header() }}</h2>
+      @if (canEdit()) {
+        <div class="ms-auto space-x-2">
+          @if (!isEditing()) {
+            <p-button
+              text
+              plain
+              icon="pi pi-pencil"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              (click)="isEditing.set(true)"
+              [title]="editPencilTitle()"
+              [ariaLabel]="editPencilTitle()"
+            />
+          } @else {
+            <p-button
+              label="Cancel"
+              i18n-label="@@generic-cancel"
+              (click)="isEditing.set(false)"
+              icon="pi pi-times"
+              [iconPos]="rtlHelper.createPosition('start')()"
+              outlined
+              rounded
+              severity="contrast"
+              [disabled]="mutation()?.isPending()"
+            />
+            @if (isSaveable()) {
+              <p-button
+                type="submit"
+                label="Save"
+                i18n-label
+                icon="pi pi-check"
+                [iconPos]="rtlHelper.createPosition('start')()"
+                rounded
+                [loading]="mutation()?.isPending()"
+              />
+            }
+          }
+        </div>
+      }
+    </div>
+    @if (mutation()?.isError()) {
+      <div class="my-4">
+        <app-form-error [error]="mutation()?.failureReason()?.message" />
+      </div>
+    }
+    <ng-content></ng-content>
+  </form>
+</p-card>

@@ -51,6 +51,7 @@ export class ProjectMenuComponent {
       icon: 'pi pi-cog',
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
+        // XXX: to be checked
         requiredPermission: PermissionEnum.AidWorkerProgramREAD,
       }),
     },
