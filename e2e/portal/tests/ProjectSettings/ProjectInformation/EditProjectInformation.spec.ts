@@ -7,6 +7,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
+import ProjectSettings from '@121-e2e/portal/pages/ProjectSettings';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 // Arrange
@@ -19,13 +20,22 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await loginPage.login();
   // Navigate to program
-  await loginPage.selectProgram('NLRC Direct Digital Aid Program (PV)');
+  await loginPage.selectProgram('NLRC OCW program');
 });
 test('[38155] Edit Project Information', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
+  const projectSettings = new ProjectSettings(page);
 
   // Act
   await test.step('Navigate to project settings', async () => {
     await registrations.navigateToProgramPage('Settings');
+  });
+
+  await test.step('Select: Project Information', async () => {
+    await projectSettings.selectSettings('Project information');
+  });
+
+  await test.step('Edit basic information', async () => {
+    console.log('Skipping - not implemented yet');
   });
 });
