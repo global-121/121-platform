@@ -183,7 +183,6 @@ export class TransactionsService {
     const resultTransaction = await this.createTransaction({
       amount: calculatedTransferAmountInMajorUnit,
       registration,
-      programFspConfigurationId,
       paymentId,
     });
 
@@ -191,6 +190,7 @@ export class TransactionsService {
       transactionId: resultTransaction.id,
       userId,
       type: TransactionEventType.created,
+      programFspConfigurationId,
     });
 
     if (!isRetry) {
@@ -226,19 +226,16 @@ export class TransactionsService {
   private async createTransaction({
     amount, // transaction entity are always in major unit
     registration,
-    programFspConfigurationId,
     paymentId,
   }: {
     amount: number;
     registration: RegistrationEntity;
-    programFspConfigurationId: number;
     paymentId: number;
   }) {
     const transaction = new TransactionEntity();
     transaction.transferValue = amount;
     transaction.created = new Date();
     transaction.registration = registration;
-    transaction.programFspConfigurationId = programFspConfigurationId;
     transaction.paymentId = paymentId;
     transaction.status = TransactionStatusEnum.created;
 

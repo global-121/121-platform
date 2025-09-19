@@ -12,7 +12,6 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Unique(['registrationId', 'paymentId'])
@@ -33,19 +32,6 @@ export class TransactionEntity extends Base121Entity {
   @Index()
   @Column({ type: 'int' })
   public paymentId: number;
-
-  @ManyToOne(
-    (_type) => ProgramFspConfigurationEntity,
-    (programFspConfiguration) => programFspConfiguration.transactions,
-    { onDelete: 'SET NULL' },
-  )
-  @JoinColumn({
-    name: 'programFspConfigurationId',
-  })
-  public programFspConfiguration: Relation<ProgramFspConfigurationEntity>;
-  @Index()
-  @Column({ type: 'int', nullable: true })
-  public programFspConfigurationId: number;
 
   @ManyToOne(
     (_type) => RegistrationEntity,
