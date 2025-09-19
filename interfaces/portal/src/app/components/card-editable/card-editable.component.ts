@@ -30,7 +30,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardEditableComponent<TMutationData = unknown> {
-  readonly title = input.required<string>();
+  readonly header = input.required<string>();
   readonly canEdit = input.required<boolean>();
   readonly isEditing = model.required<boolean>();
   readonly editPencilTitle = input.required<string>();
