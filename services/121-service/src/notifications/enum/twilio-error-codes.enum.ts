@@ -5,6 +5,7 @@
  * Used to handle specific errors from Twilio's API responses.
  *
  * @see https://www.twilio.com/docs/api/errors
+ * @link mock-service/src/twilio/twilio.service.ts - Duplicate hard-copy as we cannot share enums between services yet.
  */
 export const enum TwilioErrorCodes {
   toNumberDoesNotExist = '21211',

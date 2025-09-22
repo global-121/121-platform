@@ -4,6 +4,9 @@ import { IsOptional, IsString } from 'class-validator';
 import { env } from '@121-service/src/env';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
+/**
+ * @link mock-service/src/twilio/twilio.dto.ts - Duplicate hard-copy as we cannot share enums between services yet.
+ */
 export enum TwilioStatus {
   delivered = 'delivered',
   read = 'read',
@@ -13,6 +16,7 @@ export enum TwilioStatus {
   sent = 'sent',
   failed = 'failed',
 }
+
 export class TwilioStatusCallbackDto {
   @ApiProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()

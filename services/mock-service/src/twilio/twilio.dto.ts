@@ -3,6 +3,9 @@ import { IsOptional, IsString, IsUrl } from 'class-validator';
 
 import { formatWhatsAppNumber } from '@mock-service/src/utils/phone-number.helpers';
 
+/**
+ * @link 121-service/src/notifications/dto/twilio.dto.ts - Duplicate hard-copy as we cannot share enums between services yet.
+ */
 export enum TwilioStatus {
   delivered = 'delivered',
   read = 'read',

@@ -119,7 +119,7 @@ export class WhatsappService {
       ) {
         firstAttempt = false;
         // Retry once due to Twilio bug (error 63021) that randomly occurs when sending messages with mediaUrl
-        // Reference: backlog item 34346
+        // Reference: backlog item AB#34346
         return this.sendWhatsapp({
           message,
           contentSid,
