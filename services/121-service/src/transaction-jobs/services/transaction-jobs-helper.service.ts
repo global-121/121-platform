@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Equal } from 'typeorm';
 
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
@@ -8,6 +7,7 @@ import { MessageQueuesService } from '@121-service/src/notifications/message-que
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -41,72 +41,46 @@ export class TransactionJobsHelperService {
     return registration;
   }
 
-  public async createTransactionEventAndUpdateTransaction({
-    registrationId,
-    paymentId,
-    userId,
-    programFspConfigurationId,
+  public async createTransactionEvent({
+    transactionJob,
     transactionEventType,
     description,
     errorMessage,
-    transactionStatus,
   }: {
-    registrationId: number;
-    paymentId: number;
-    userId: number;
-    programFspConfigurationId: number;
+    transactionJob: SharedTransactionJobDto;
     transactionEventType: TransactionEventType;
-    description: string;
+    description: TransactionEventDescription;
     errorMessage?: string;
     transactionStatus?: TransactionStatusEnum;
-  }): Promise<number> {
-    // get transaction
-    // ##TODO is it possible to pass transactionId along already via the job instead of finding this via registrationId + paymentId?
-    const transaction = await this.transactionScopedRepository.findOneOrFail({
-      where: {
-        registrationId: Equal(registrationId),
-        paymentId: Equal(paymentId),
-      },
-    });
-
-    // update transaction status - if provided
-    if (transactionStatus) {
-      await this.transactionScopedRepository.update(transaction.id, {
-        status: transactionStatus,
-      });
-    }
-
-    // create transaction event
+  }) {
     await this.transactionEventsService.createEvent({
-      transactionId: transaction.id,
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
       type: transactionEventType,
       description,
-      userId,
       errorMessage,
-      programFspConfigurationId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
     });
-
-    return transaction.id;
   }
 
-  public async createInitiatedOrRetryTransactionEvent({
-    registrationId,
-    transactionJob,
-  }: {
-    registrationId: number;
-    transactionJob: SharedTransactionJobDto;
-  }): Promise<number> {
-    return await this.createTransactionEventAndUpdateTransaction({
-      registrationId,
-      paymentId: transactionJob.paymentId,
-      userId: transactionJob.userId,
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
+  public async updateTransactionStatus(
+    transactionId: number,
+    status: TransactionStatusEnum,
+  ) {
+    await this.transactionScopedRepository.update(transactionId, { status });
+  }
+
+  public async createInitiatedOrRetryTransactionEvent(
+    transactionJob: SharedTransactionJobDto,
+  ) {
+    await this.createTransactionEvent({
+      transactionJob,
       transactionEventType: transactionJob.isRetry
         ? TransactionEventType.retry
         : TransactionEventType.initiated,
       description: transactionJob.isRetry
-        ? 'Onafriq transfer retry initiated'
-        : 'Onafriq transfer initiated',
+        ? TransactionEventDescription.retry
+        : TransactionEventDescription.initiated,
     });
   }
 
