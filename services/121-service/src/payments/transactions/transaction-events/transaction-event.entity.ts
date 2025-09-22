@@ -9,25 +9,25 @@ import {
 
 import { Base121OptionalAuditedEntity } from '@121-service/src/base-audited.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
-// ##TODO: move to own module
 @Entity('transaction_event')
 export class TransactionEventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
   public user: Relation<UserEntity>;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'character varying' })
   @Index()
   public type: TransactionEventType;
 
-  @Column()
-  public description: string;
+  @Column({ type: 'character varying' })
+  public description: TransactionEventDescription;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: 'boolean' })
   public isSuccessfullyCompleted: boolean;
 
   @Column({ type: 'character varying', nullable: true })
