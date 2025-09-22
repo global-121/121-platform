@@ -15,6 +15,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/entities/program-aidworker.entity';
 import { CookieNames } from '@121-service/src/shared/enum/cookie.enums';
 import { InterfaceNames } from '@121-service/src/shared/enum/interface-names.enum';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 import {
   CreateProgramAssignmentDto,
   UpdateProgramAssignmentDto,
@@ -43,6 +44,7 @@ import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
 import { UserType } from '@121-service/src/user/enum/user-type-enum';
 import { UserData, UserRO } from '@121-service/src/user/user.interface';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 const tokenExpirationDays = 14;
 
 @Injectable({ scope: Scope.REQUEST })
@@ -497,7 +499,7 @@ export class UserService {
     try {
       return await this.userRepository.remove(user);
     } catch (e) {
-      if (e.code === '23503') {
+      if (isSameAsString(e.code, PostgresStatusCodes.FOREIGN_KEY_VIOLATION)) {
         throw new HttpException(
           'User cannot be removed because it is related to other entities for logging purposes',
           HttpStatus.CONFLICT,

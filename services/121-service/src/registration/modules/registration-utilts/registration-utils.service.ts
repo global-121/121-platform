@@ -6,6 +6,7 @@ import { ProgramEntity } from '@121-service/src/programs/entities/program.entity
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
 
 @Injectable()
 export class RegistrationUtilsService {
@@ -43,8 +44,8 @@ export class RegistrationUtilsService {
     } catch (error) {
       if (error instanceof QueryFailedError) {
         const errorCodesThatShouldBeRetried = [
-          '23502', // This is the error code for not null violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
-          '23505', // '23505' is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
+          PostgresStatusCodes.NOT_NULL_VIOLATION,
+          PostgresStatusCodes.UNIQUE_VIOLATION,
         ];
         if (
           errorCodesThatShouldBeRetried.includes(String(error['code'])) &&
