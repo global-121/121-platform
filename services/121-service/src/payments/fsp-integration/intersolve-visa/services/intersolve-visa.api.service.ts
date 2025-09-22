@@ -39,12 +39,12 @@ const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
 // Number of months in a year
 const monthsPerYear = 12;
 // Weekly payment amount in major units (euros)
-const weeklyAmountMajorUnit = 44;
+const monthlyAmountMajorUnit = 44;
 // Conversion factor from major units to minor units (cents)
 const minorUnitsPerMajorUnit = 100;
 
 const estimatedAnnualPaymentVolumeMajorUnit =
-  monthsPerYear * weeklyAmountMajorUnit * minorUnitsPerMajorUnit;
+  monthsPerYear * monthlyAmountMajorUnit * minorUnitsPerMajorUnit;
 
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
