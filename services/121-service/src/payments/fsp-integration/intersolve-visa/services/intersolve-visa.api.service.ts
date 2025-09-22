@@ -36,8 +36,15 @@ const intersolveVisaApiUrl = env.MOCK_INTERSOLVE
   ? `${env.MOCK_SERVICE_URL}/api/fsp/intersolve-visa`
   : env.INTERSOLVE_VISA_API_URL;
 
-const estimatedAnnualPaymentVolumeMajorUnit = 12 * 44 * 100;
+// Number of months in a year
+const MONTHS_PER_YEAR = 12;
+// Weekly payment amount in major units (e.g., euros, dollars)
+const WEEKLY_AMOUNT_MAJOR_UNIT = 44;
+// Conversion factor from major units to minor units (e.g., cents)
+const MINOR_UNITS_PER_MAJOR_UNIT = 100;
 
+const estimatedAnnualPaymentVolumeMajorUnit =
+  MONTHS_PER_YEAR * WEEKLY_AMOUNT_MAJOR_UNIT * MINOR_UNITS_PER_MAJOR_UNIT;
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
     Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externaly used API) uses "121" terminology.
