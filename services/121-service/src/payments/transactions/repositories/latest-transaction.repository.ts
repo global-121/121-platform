@@ -4,7 +4,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 
 import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
-import { isSameStatus } from '@121-service/src/utils/comparison.helper';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 
 export class LatestTransactionRepository extends Repository<LatestTransactionEntity> {
   constructor(
@@ -31,7 +31,7 @@ export class LatestTransactionRepository extends Repository<LatestTransactionEnt
       await this.baseRepository.insert(latestTransaction);
     } catch (error) {
       if (
-        isSameStatus(
+        isSameAsString(
           error.code,
           '23505', // 23505 is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
         )

@@ -23,7 +23,7 @@ import { LastMessageStatusService } from '@121-service/src/notifications/service
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
 import { WhatsappTemplateTestEntity } from '@121-service/src/notifications/whatsapp/whatsapp-template-test.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { isSameStatus } from '@121-service/src/utils/comparison.helper';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
@@ -113,7 +113,7 @@ export class WhatsappService {
       return messageToStore.sid;
     } catch (error) {
       if (
-        isSameStatus(error.code, TwilioErrorCodes.mediaUrlInvalid) &&
+        isSameAsString(error.code, TwilioErrorCodes.mediaUrlInvalid) &&
         mediaUrl &&
         firstAttempt
       ) {
@@ -153,7 +153,7 @@ export class WhatsappService {
         messageProcessType,
         existingSidToUpdateDueToFailure: existingSidToUpdate,
       });
-      if (isSameStatus(error.code, TwilioErrorCodes.toNumberDoesNotExist)) {
+      if (isSameAsString(error.code, TwilioErrorCodes.toNumberDoesNotExist)) {
         console.log(
           `WhatsApp message not sent to: "${payload.to}". Error: ${error.message}. Twilio-Error code: ${error.code}`,
         );

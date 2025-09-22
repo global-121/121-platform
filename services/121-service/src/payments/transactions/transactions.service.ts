@@ -13,7 +13,7 @@ import { LatestTransactionEntity } from '@121-service/src/payments/transactions/
 import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { isSameStatus } from '@121-service/src/utils/comparison.helper';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 @Injectable()
 export class TransactionsService {
   @InjectRepository(LatestTransactionEntity)
@@ -104,7 +104,7 @@ export class TransactionsService {
       await this.latestTransactionRepository.insert(latestTransaction);
     } catch (error) {
       if (
-        isSameStatus(
+        isSameAsString(
           error.code,
           '23505', // 23505 is the error code for unique_violation (see: https://www.postgresql.org/docs/current/errcodes-appendix.html)
         )

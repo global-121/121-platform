@@ -15,7 +15,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
-import { isSameStatus } from '@121-service/src/utils/comparison.helper';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
@@ -70,7 +70,7 @@ export class SmsService {
         messageContentType,
         messageProcessType,
       });
-      if (isSameStatus(error.code, TwilioErrorCodes.toNumberDoesNotExist)) {
+      if (isSameAsString(error.code, TwilioErrorCodes.toNumberDoesNotExist)) {
         console.log(
           `SMS not sent to "${to}". Error: ${error.message}. Twilio-Error code: ${error.code}`,
         );

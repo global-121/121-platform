@@ -1,7 +1,7 @@
-import { isSameStatus } from '@121-service/src/utils/comparison.helper';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 
 describe('comparison.helper', () => {
-  describe('isSameStatus', () => {
+  describe('isSameAsString', () => {
     it('should return the correct outcome for all values', () => {
       // // Arrange
       const testCases = [
@@ -42,7 +42,7 @@ describe('comparison.helper', () => {
 
       testCases.forEach((testCase) => {
         // Act
-        const result = isSameStatus(testCase.a, testCase.b);
+        const result = isSameAsString(testCase.a, testCase.b);
 
         // Assert
         expect(result).toBe(testCase.is);
