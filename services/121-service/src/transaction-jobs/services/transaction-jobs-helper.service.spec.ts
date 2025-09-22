@@ -134,6 +134,7 @@ describe('TransactionJobsHelperService', () => {
       isRetry: false,
       referenceId: 'ref-123',
       bulkSize: 10,
+      transactionAmount: 100,
     };
     it('should update the payment count', async () => {
       // Arrange

@@ -393,11 +393,12 @@ export class PaymentsExecutionService {
         await this.transactionJobsCreationService.createAndAddFspSpecificTransactionJobs(
           {
             fspName,
-            referenceIdsAndTransactionAmounts:
-              paymentJobCreationDetailsForFsp.map((job) => ({
+            referenceIdsTransactionAmounts: paymentJobCreationDetailsForFsp.map(
+              (job) => ({
                 referenceId: job.referenceId,
                 transactionAmount: job.transactionAmount,
-              })),
+              }),
+            ),
             userId,
             programId,
             paymentId,
