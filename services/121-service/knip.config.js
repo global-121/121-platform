@@ -1,6 +1,9 @@
 /** @type {import('knip').KnipConfig} */
 module.exports = {
-  project: ['src/**/*.ts', '!src/migration/*.ts'],
+  project: [
+    'src/**/*.ts',
+    '!src/migration/*.ts', // Migrations don't have an 'entry point'
+  ],
   rules: {
     binaries: 'warn',
     dependencies: 'warn',
