@@ -43,12 +43,13 @@ export class RegistrationUtilsService {
       return await this.registrationScopedRepository.save(registration);
     } catch (error) {
       if (error instanceof QueryFailedError) {
-        const errorCodesThatShouldBeRetried = [
+        const errorCodesThatShouldBeRetried: string[] = [
           PostgresStatusCodes.NOT_NULL_VIOLATION,
           PostgresStatusCodes.UNIQUE_VIOLATION,
         ];
         if (
-          errorCodesThatShouldBeRetried.includes(String(error['code'])) &&
+          'code' in error &&
+          errorCodesThatShouldBeRetried.includes(String(error.code)) &&
           saveRetriesCount < 3
         ) {
           saveRetriesCount++;
