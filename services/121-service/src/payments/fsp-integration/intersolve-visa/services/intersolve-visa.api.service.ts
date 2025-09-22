@@ -544,6 +544,9 @@ export class IntersolveVisaApiService {
     // When creating the customer we set the firstName to an empty string, and the lastName to the full name.
     // We do the same here, as we do not have a way to split the full name into first and last name.
     customerIndividual.lastName = name;
+    // We set firstName explicitly to an empty string here again, this is important for intersolve customers that were created with our old flow (before a refactor) where we did set the set the firstName
+    // Now we just store the fullName so we need to clear the firstName to prevent confusion
+    customerIndividual.firstName = '';
     customerIndividual.estimatedAnnualPaymentVolumeMajorUnit =
       estimatedAnnualPaymentVolumeMajorUnit;
     // Strip these fields as according to Intersolve these may not be accepted in the PUT request
