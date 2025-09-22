@@ -32,8 +32,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaService.calculateTransferAmountWithWalletRetrieval(
           {
             registrationId: registration.id,
-            inputTransferAmountInMajorUnit:
-              transactionJob.transactionAmountInMajorUnit,
+            inputTransferAmountInMajorUnit: transactionJob.transactionAmount,
           },
         );
     } catch (error) {
@@ -42,8 +41,7 @@ export class TransactionJobsIntersolveVisaService {
           {
             registration,
             transactionJob,
-            transferAmountInMajorUnit:
-              transactionJob.transactionAmountInMajorUnit, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
+            transferAmountInMajorUnit: transactionJob.transactionAmount, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
             status: TransactionStatusEnum.error,
             errorText: `Error calculating transfer amount: ${error?.message}`,
           },
