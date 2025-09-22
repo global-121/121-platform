@@ -1,10 +1,10 @@
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
+import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
 
 export interface ProcessTransactionResultInput {
-  registration: RegistrationEntity;
-  transactionJob: SharedTransactionJobDto;
-  transferAmountInMajorUnit: number;
-  errorText?: string;
-  customData?: Record<string, unknown>;
+  paymentJobCreationDetailsItem: PaymentJobCreationDetails;
+  programId: number;
+  paymentId: number;
+  userId: number;
+  isRetry: boolean;
+  bulkSize: number;
 }

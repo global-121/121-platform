@@ -11,7 +11,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 
 @Unique(['registrationId', 'paymentId'])
