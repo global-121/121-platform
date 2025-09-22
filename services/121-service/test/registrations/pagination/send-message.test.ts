@@ -219,13 +219,13 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(messageHistory1.length).toBe(1);
     expect(messageHistory1[0].attributes.status).toBe('failed');
     expect(messageHistory1[0].attributes.errorCode).toEqual(
-      `${TwilioErrorCodes.toNumberDoesNotExist}`,
+      TwilioErrorCodes.toNumberDoesNotExist,
     );
 
     expect(messageHistory2.length).toBe(1);
     expect(messageHistory2[0].attributes.status).toBe('failed');
     expect(messageHistory2[0].attributes.errorCode).toEqual(
-      `${TwilioErrorCodes.toNumberDoesNotExist}`,
+      TwilioErrorCodes.toNumberDoesNotExist,
     );
   });
 });

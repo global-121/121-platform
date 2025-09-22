@@ -15,6 +15,7 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { twilioClient } from '@121-service/src/notifications/twilio.client';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { formatPhoneNumber } from '@121-service/src/utils/phone-number.helpers';
 
 @Injectable()
@@ -52,7 +53,6 @@ export class SmsService {
         messageProcessType,
       });
     } catch (error) {
-      console.log('Error from Twilio:', error);
       await this.storeSendSms({
         message: {
           accountSid: env.TWILIO_SID,
@@ -70,12 +70,12 @@ export class SmsService {
         messageContentType,
         messageProcessType,
       });
-      if (error.code !== TwilioErrorCodes.toNumberDoesNotExist) {
-        throw error;
-      } else {
+      if (isSameAsString(error.code, TwilioErrorCodes.toNumberDoesNotExist)) {
         console.log(
-          `SMS not sent to ${to}. Error: ${error.message}. Error code: ${error.code}`,
+          `SMS not sent to "${to}". Error: ${error.message}. Twilio-Error code: ${error.code}`,
         );
+      } else {
+        throw error;
       }
     }
   }

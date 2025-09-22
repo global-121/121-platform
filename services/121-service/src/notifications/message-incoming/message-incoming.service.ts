@@ -37,6 +37,7 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
+import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 import { maskValueKeepEnd } from '@121-service/src/utils/mask-value.helper';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 
@@ -159,7 +160,10 @@ export class MessageIncomingService {
 
     // if we get a faulty 63016 we retry sending a message, and we don't need to update the status
     if (
-      callbackData.ErrorCode === `${TwilioErrorCodes.failedFreeFormMessage}` &&
+      isSameAsString(
+        callbackData.ErrorCode,
+        TwilioErrorCodes.failedFreeFormMessage,
+      ) &&
       [TwilioStatus.undelivered, TwilioStatus.failed].includes(
         callbackData.MessageStatus,
       )
@@ -273,9 +277,11 @@ export class MessageIncomingService {
       );
     }
     if (
-      callbackData.MessageStatus === TwilioStatus.failed &&
-      callbackData.ErrorCode ===
-        `${TwilioErrorCodes.channelCouldNotFindToAddress}`
+      isSameAsString(callbackData.MessageStatus, TwilioStatus.failed) &&
+      isSameAsString(
+        callbackData.ErrorCode,
+        TwilioErrorCodes.channelCouldNotFindToAddress,
+      )
     ) {
       // PA does not have whatsapp
       // Send pending message via sms
