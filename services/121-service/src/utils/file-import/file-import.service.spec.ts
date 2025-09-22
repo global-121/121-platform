@@ -1,15 +1,8 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { createCsvFile } from '@121-service/src/utils/file-import/file-import.helpers';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-
-const createCsvFile = (csvContents: string, filename = 'test.csv') => {
-  const buffer = Buffer.from(csvContents);
-  return {
-    buffer,
-    originalname: filename,
-  } as Express.Multer.File;
-};
 
 describe('FileImportService', () => {
   let service: FileImportService;

@@ -108,11 +108,13 @@ export class ExcelReconciliationService {
       relations: ['programFspConfigurations'],
     });
     const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
+
     for (const fspConfig of program.programFspConfigurations) {
       if (fspConfig.fspName === Fsps.excel) {
         fspConfigsExcel.push(fspConfig);
       }
     }
+
     if (!fspConfigsExcel.length) {
       throw new HttpException(
         'Other reconciliation FSPs than `Excel` are currently not supported.',
