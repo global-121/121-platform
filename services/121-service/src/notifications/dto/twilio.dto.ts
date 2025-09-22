@@ -5,6 +5,9 @@ import { env } from '@121-service/src/env';
 import { formatWhatsAppNumber } from '@121-service/src/utils/phone-number.helpers';
 
 /**
+ * @public - As used by the Twilio API.
+ * @see https://www.twilio.com/docs/messaging/api/message-resource#message-status-values
+ * @link MessageStatus from 'twilio/lib/rest/api/v2010/account/message'
  * @link mock-service/src/twilio/twilio.dto.ts - Duplicate hard-copy as we cannot share enums between services yet.
  */
 export enum TwilioStatus {
