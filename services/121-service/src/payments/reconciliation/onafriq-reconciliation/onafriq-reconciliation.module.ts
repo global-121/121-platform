@@ -6,7 +6,7 @@ import { OnafriqReconciliationController } from '@121-service/src/payments/recon
 import { OnafriqReconciliationService as OnafriqReconciliationService } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/onafriq-reconciliation.service';
 import { TransactionCallbackJobProcessorOnafriq } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/processors/onafriq-transaction-callback-job.processor';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';

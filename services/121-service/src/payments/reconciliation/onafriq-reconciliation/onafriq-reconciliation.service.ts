@@ -17,10 +17,11 @@ import {
   getRedisSetName,
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/entities/transaction-event.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -73,11 +74,13 @@ export class OnafriqReconciliationService {
         },
         relations: { transaction: { transactionEvents: true } },
       });
-
     const transactionId = onafriqTransaction.transactionId;
-    const programFspConfigurationId =
-      onafriqTransaction.transaction.transactionEvents[0] // ##TODO: take latest
-        .programFspConfigurationId;
+
+    // Infer programFspConfigurationId from latest transaction event
+    const latestEvent = [
+      ...onafriqTransaction.transaction.transactionEvents,
+    ].sort((a, b) => b.created.getTime() - a.created.getTime())[0];
+    const programFspConfigurationId = latestEvent.programFspConfigurationId;
 
     // Update the Onafriq transaction with the mfsTransId
     await this.onafriqTransactionScopedRepository.update(
@@ -115,8 +118,8 @@ export class OnafriqReconciliationService {
     await this.transactionEventsService.createEvent({
       transactionId,
       userId: null,
-      type: TransactionEventType.paymentProgress,
-      description: 'Onafriq callback received',
+      type: TransactionEventType.processingStep,
+      description: TransactionEventDescription.onafriqCallbackReceived,
       errorMessage,
       programFspConfigurationId,
     });

@@ -6,15 +6,15 @@ import { Equal, Repository } from 'typeorm';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { ProcessTransactionResultInput } from '@121-service/src/payments/transactions/interfaces/process-transaction-result-input.interface';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
@@ -173,16 +173,29 @@ export class TransactionsService {
   }
 
   public async createTransactionAndUpdateRegistration({
-    registration,
-    transactionJob,
-    transferAmountInMajorUnit: calculatedTransferAmountInMajorUnit,
-  }: ProcessTransactionResultInput): Promise<TransactionEntity> {
-    const { programFspConfigurationId, programId, paymentId, userId, isRetry } =
-      transactionJob;
+    paymentJobCreationDetailsItem,
+    programId,
+    paymentId,
+    userId,
+    isRetry,
+  }: {
+    paymentJobCreationDetailsItem: PaymentJobCreationDetails;
+    programId: number;
+    paymentId: number;
+    userId: number;
+    isRetry: boolean;
+  }): Promise<number> {
+    const {
+      registrationId,
+      registrationMaxPayments,
+      registrationStatus,
+      transactionAmount,
+      programFspConfigurationId,
+    } = paymentJobCreationDetailsItem;
 
     const resultTransaction = await this.createTransaction({
-      amount: calculatedTransferAmountInMajorUnit,
-      registration,
+      transactionAmount,
+      registrationId,
       paymentId,
     });
 
@@ -190,15 +203,16 @@ export class TransactionsService {
       transactionId: resultTransaction.id,
       userId,
       type: TransactionEventType.created,
-      description: 'Transaction created', // ##TODO also put all possible values in enum?
+      description: TransactionEventDescription.created,
       programFspConfigurationId,
     });
 
     if (!isRetry) {
-      const paymentCount = await this.updateAndGetPaymentCount(registration.id);
+      const paymentCount = await this.updateAndGetPaymentCount(registrationId);
       const currentStatusIsCompleted =
         await this.setStatusToCompleteIfApplicable({
-          registration,
+          registrationId,
+          registrationMaxPayments,
           programId,
           paymentCount,
         });
@@ -207,11 +221,11 @@ export class TransactionsService {
       if (currentStatusIsCompleted) {
         await this.registrationEventsService.createFromRegistrationViews(
           {
-            id: registration.id,
-            status: registration.registrationStatus ?? undefined,
+            id: registrationId,
+            status: registrationStatus ?? undefined,
           },
           {
-            id: registration.id,
+            id: registrationId,
             status: RegistrationStatusEnum.completed,
           },
           {
@@ -221,22 +235,22 @@ export class TransactionsService {
       }
     }
 
-    return resultTransaction;
+    return resultTransaction.id;
   }
 
   private async createTransaction({
-    amount, // transaction entity are always in major unit
-    registration,
+    transactionAmount,
+    registrationId,
     paymentId,
   }: {
-    amount: number;
-    registration: RegistrationEntity;
+    transactionAmount: number;
+    registrationId: number;
     paymentId: number;
   }) {
     const transaction = new TransactionEntity();
-    transaction.transferValue = amount;
+    transaction.transferValue = transactionAmount;
     transaction.created = new Date();
-    transaction.registration = registration;
+    transaction.registrationId = registrationId;
     transaction.paymentId = paymentId;
     transaction.status = TransactionStatusEnum.created;
 
@@ -256,11 +270,13 @@ export class TransactionsService {
   }
 
   private async setStatusToCompleteIfApplicable({
-    registration,
+    registrationId,
+    registrationMaxPayments,
     programId,
     paymentCount,
   }: {
-    registration: RegistrationEntity;
+    registrationId: number;
+    registrationMaxPayments: number | null;
     programId: number;
     paymentCount: number;
   }): Promise<boolean> {
@@ -274,17 +290,17 @@ export class TransactionsService {
     // This situation will only occur when enableMaxPayments is turned on after
     // the registration was created.
     if (
-      registration.maxPayments === null ||
-      registration.maxPayments === undefined
+      registrationMaxPayments === null ||
+      registrationMaxPayments === undefined
     ) {
       return false;
     }
 
-    if (paymentCount < registration.maxPayments) {
+    if (paymentCount < registrationMaxPayments) {
       return false;
     }
 
-    await this.registrationScopedRepository.updateUnscoped(registration.id, {
+    await this.registrationScopedRepository.updateUnscoped(registrationId, {
       registrationStatus: RegistrationStatusEnum.completed,
     });
 
