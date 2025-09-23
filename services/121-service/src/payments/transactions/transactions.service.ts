@@ -197,6 +197,7 @@ export class TransactionsService {
       transactionAmount,
       registrationId,
       paymentId,
+      userId,
     });
 
     await this.transactionEventsService.createEvent({
@@ -242,10 +243,12 @@ export class TransactionsService {
     transactionAmount,
     registrationId,
     paymentId,
+    userId,
   }: {
     transactionAmount: number;
     registrationId: number;
     paymentId: number;
+    userId: number;
   }) {
     const transaction = new TransactionEntity();
     transaction.transferValue = transactionAmount;
@@ -253,6 +256,7 @@ export class TransactionsService {
     transaction.registrationId = registrationId;
     transaction.paymentId = paymentId;
     transaction.status = TransactionStatusEnum.created;
+    transaction.userId = userId;
 
     return await this.transactionScopedRepository.save(transaction);
   }
