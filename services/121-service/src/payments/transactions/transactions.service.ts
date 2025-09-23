@@ -283,14 +283,6 @@ export class TransactionsService {
       currentStatus: RegistrationStatusEnum;
     }[]
   > {
-    // const paymentCount =
-    //   await this.transactionScopedRepository.getPaymentCount(registrationId);
-
-    // await this.registrationScopedRepository.updateUnscoped(registrationId, {
-    //   paymentCount,
-    // });
-    // return paymentCount;
-
     const registrationIds = [
       ...new Set(paymentJobCreationDetails.map((i) => i.registrationId)),
     ];
@@ -367,32 +359,6 @@ export class TransactionsService {
     programId: number;
     queryRunner: QueryRunner;
   }): Promise<void> {
-    // const program = await this.programRepository.findByIdOrFail(programId);
-
-    // if (!program.enableMaxPayments) {
-    //   return false;
-    // }
-
-    // // registration.maxPayments can only be a positive integer or null
-    // // This situation will only occur when enableMaxPayments is turned on after
-    // // the registration was created.
-    // if (
-    //   registrationMaxPayments === null ||
-    //   registrationMaxPayments === undefined
-    // ) {
-    //   return false;
-    // }
-
-    // if (paymentCount < registrationMaxPayments) {
-    //   return false;
-    // }
-
-    // await this.registrationScopedRepository.updateUnscoped(registrationId, {
-    //   registrationStatus: RegistrationStatusEnum.completed,
-    // });
-
-    // return true;
-
     const program = await this.programRepository.findByIdOrFail(programId);
     if (program.enableMaxPayments) {
       const newlyCompleted = updatedCounts.filter(
