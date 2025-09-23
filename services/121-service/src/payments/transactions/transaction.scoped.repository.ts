@@ -140,17 +140,6 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     return query.getRawMany();
   }
 
-  public async getPaymentCount(registrationId: number): Promise<number> {
-    const distinctPayments = await this.createQueryBuilder('transaction')
-      .select('DISTINCT transaction."paymentId"')
-      .andWhere('transaction.registrationId = :registrationId', {
-        registrationId,
-      })
-      .getRawMany();
-
-    return distinctPayments.length;
-  }
-
   // Make this private when all 'querying code' has been moved to this repository
   public getLastTransactionsQuery({
     programId,
