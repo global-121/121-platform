@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -49,14 +50,15 @@ test('[34619] User can view debit cards of a registration with a single active d
   );
 
   await test.step('User can view current debit card data', async () => {
-    const datePattern = /^\d{1,2}\s[A-Za-z]{3,4}\s\d{4}$/; // e.g. 21 Jan 2022
+    const currentDate = new Date();
+    const currentDateString = format(currentDate, 'dd MMMM yyyy');
     const expectedDebitCardData = {
       'Card number': expect.any(String),
       'Card status': 'Active',
       'Current balance': '€25.00',
       'Spent this month (max. EUR 150)': '€3.00',
-      'Issued on': expect.stringMatching(datePattern),
-      'Last used': expect.stringMatching(datePattern),
+      'Issued on': currentDateString,
+      'Last used': currentDateString,
     };
     const debitCardData = await debitCardPage.getCurrentDebitCardDataList();
     expect(debitCardData).toMatchObject(expectedDebitCardData);
