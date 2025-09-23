@@ -175,8 +175,7 @@ export class ProjectSettingsBasicInformationComponent {
   readonly canEdit = computed(() =>
     this.authService.hasPermission({
       projectId: this.projectId(),
-      // XXX: to be checked
-      requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+      requiredPermission: PermissionEnum.ProgramUPDATE,
     }),
   );
 

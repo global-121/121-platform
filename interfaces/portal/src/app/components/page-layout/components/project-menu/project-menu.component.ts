@@ -49,11 +49,15 @@ export class ProjectMenuComponent {
       routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectSettings}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-cog',
-      visible: this.authService.hasPermission({
-        projectId: this.projectId(),
-        // TODO: AB:38143: to be checked
-        requiredPermission: PermissionEnum.AidWorkerProgramREAD,
-      }),
+      visible:
+        this.authService.hasPermission({
+          projectId: this.projectId(),
+          requiredPermission: PermissionEnum.AidWorkerProgramREAD,
+        }) ||
+        this.authService.hasPermission({
+          projectId: this.projectId(),
+          requiredPermission: PermissionEnum.ProgramUPDATE,
+        }),
     },
   ]);
 }

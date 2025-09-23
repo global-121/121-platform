@@ -162,8 +162,7 @@ export const routes: Routes = [
                 '~/pages/project-settings-information/project-settings-information.page'
               ).then((x) => x.ProjectSettingsInformationPageComponent),
             canActivate: [
-              // XXX: to be checked
-              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+              projectPermissionsGuard(PermissionEnum.ProgramUPDATE),
             ],
           },
           {
