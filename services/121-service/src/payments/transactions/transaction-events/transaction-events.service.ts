@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -36,5 +36,40 @@ export class TransactionEventsService {
       userId,
       programFspConfigurationId,
     });
+  }
+
+  public async createEventsBulk(
+    items: {
+      transactionId: number;
+      userId: number;
+      type: TransactionEventType;
+      description: TransactionEventDescription;
+      programFspConfigurationId: number;
+      errorMessage?: string | null;
+    }[],
+    manager?: EntityManager,
+  ): Promise<void> {
+    if (items.length === 0) {
+      return;
+    }
+    const repo = manager
+      ? manager.getRepository(TransactionEventEntity)
+      : this.transactionEventRepository;
+    await repo
+      .createQueryBuilder()
+      .insert()
+      .into(TransactionEventEntity)
+      .values(
+        items.map((i) => ({
+          transactionId: i.transactionId,
+          userId: i.userId,
+          type: i.type,
+          description: i.description,
+          programFspConfigurationId: i.programFspConfigurationId,
+          errorMessage: i.errorMessage ?? null,
+          isSuccessfullyCompleted: !i.errorMessage,
+        })),
+      )
+      .execute();
   }
 }
