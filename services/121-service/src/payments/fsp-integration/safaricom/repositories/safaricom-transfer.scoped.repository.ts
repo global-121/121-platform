@@ -21,7 +21,7 @@ export class SafaricomTransferScopedRepository extends ScopedRepository<Safarico
   ): Promise<SafaricomTransferEntity> {
     const safaricomTransfer = await this.findOne({
       where: { originatorConversationId: Equal(originatorConversationId) },
-      relations: ['transaction'],
+      relations: { transaction: { transactionEvents: true } },
     });
 
     if (!safaricomTransfer) {
