@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not, Repository } from 'typeorm';
 
@@ -68,7 +69,7 @@ export class RegistrationsBulkService {
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
-  public async patchRegistrationsStatus({
+  public async updateRegistrationStatusOrDryRun({
     paginateQuery,
     programId,
     registrationStatus,
@@ -94,7 +95,7 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
     if (!dryRun) {
-      this.updateRegistrationStatusBatchFilter({
+      this.applyRegistrationStatusUpdate({
         paginateQuery,
         programId,
         registrationStatus,
@@ -366,7 +367,7 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private async updateRegistrationStatusBatchFilter({
+  private async applyRegistrationStatusUpdate({
     paginateQuery,
     programId,
     registrationStatus,
@@ -383,62 +384,109 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
-    const includeSendingMessage =
-      !!messageContentDetails.message ||
-      !!messageContentDetails.messageTemplateKey;
+    const referenceIdsForWhichStatusChangeIsApllicable =
+      await this.getReferenceIdsForWhichStatusChangeIsApllicable(
+        programId,
+        allowedCurrentStatuses,
+        registrationStatus,
+        paginateQuery,
+      );
+
+    await this.applyRegistrationStatusUpdateAndSendMessageByIds({
+      referenceIds: referenceIdsForWhichStatusChangeIsApllicable,
+      programId,
+      registrationStatus,
+      userId,
+      messageContentDetails,
+      reason,
+    });
+  }
+
+  public async applyRegistrationStatusUpdateAndSendMessageByIds({
+    referenceIds,
+    programId,
+    registrationStatus,
+    userId,
+    messageContentDetails,
+    reason,
+  }: {
+    referenceIds: string[];
+    programId: number;
+    registrationStatus: RegistrationStatusEnum;
+    userId: number;
+    messageContentDetails: MessageContentDetails;
+    reason?: string;
+  }): Promise<void> {
     const usedPlaceholders =
       await this.queueMessageService.getPlaceholdersInMessageText(
         programId,
         messageContentDetails.message,
         messageContentDetails.messageTemplateKey,
       );
-    paginateQuery = this.setQueryPropertiesBulkAction({
-      query: paginateQuery,
-      includePaymentAttributes: false,
-      includeSendMessageProperties: includeSendingMessage,
-      includeStatusChangeProperties: true,
-      usedPlaceholders,
-    });
 
-    const chunkSize = 10000;
-    paginateQuery.limit = chunkSize;
-    const registrationForUpdateMeta =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
-        programId,
-        true,
-        false,
-        this.getStatusUpdateBaseQuery(
-          allowedCurrentStatuses,
-          registrationStatus,
-        ),
+    const selectedColumns = [
+      ...usedPlaceholders,
+      GenericRegistrationAttributes.referenceId,
+      'id',
+      GenericRegistrationAttributes.status,
+    ];
+
+    const includeSendingMessage =
+      !!messageContentDetails.message ||
+      !!messageContentDetails.messageTemplateKey;
+
+    if (includeSendingMessage) {
+      selectedColumns.push(GenericRegistrationAttributes.preferredLanguage);
+      selectedColumns.push(
+        DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
+      );
+      selectedColumns.push(GenericRegistrationAttributes.phoneNumber);
+    }
+
+    const registrationsForUpdate =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds, select: selectedColumns },
       );
 
-    for (let i = 0; i < (registrationForUpdateMeta.meta.totalPages ?? 0); i++) {
-      const registrationsForUpdate =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          this.getStatusUpdateBaseQuery(
-            allowedCurrentStatuses,
-            registrationStatus,
-          ),
-        );
-      await this.updateRegistrationStatusChunk({
-        filteredRegistrations: registrationsForUpdate.data,
+    const chunks = chunk(registrationsForUpdate, 10000);
+
+    for (const registrationChunk of chunks) {
+      await this.updateRegistrationStatusPerChunk({
+        filteredRegistrations: registrationChunk,
         userId,
         registrationStatus,
         messageContentDetails,
-        bulkSize: registrationsForUpdate.meta.totalItems ?? 0,
+        bulkSize: registrationChunk.length,
         usedPlaceholders,
         reason,
       });
     }
   }
 
-  private async updateRegistrationStatusChunk({
+  private async getReferenceIdsForWhichStatusChangeIsApllicable(
+    programId: number,
+    allowedCurrentStatuses: RegistrationStatusEnum[],
+    newStatus: RegistrationStatusEnum,
+    paginateQuery: PaginateQuery,
+  ): Promise<string[]> {
+    paginateQuery.select = [GenericRegistrationAttributes.referenceId];
+
+    const queryBuilder = this.getStatusUpdateBaseQuery(
+      allowedCurrentStatuses,
+      newStatus,
+    );
+    const data =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
+        programId,
+        paginateQuery,
+        10000,
+        queryBuilder,
+      );
+
+    return data.map((r) => r.referenceId);
+  }
+
+  private async updateRegistrationStatusPerChunk({
     filteredRegistrations,
     userId,
     registrationStatus,
@@ -580,7 +628,7 @@ export class RegistrationsBulkService {
     userId: number;
     reason: string;
   }): Promise<void> {
-    await this.updateRegistrationStatusChunk({
+    await this.updateRegistrationStatusPerChunk({
       filteredRegistrations: registrationsForDelete,
       userId,
       registrationStatus: RegistrationStatusEnum.deleted,
