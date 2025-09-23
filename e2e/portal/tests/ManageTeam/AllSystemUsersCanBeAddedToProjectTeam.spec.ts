@@ -7,10 +7,9 @@ import {
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 
+import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-
-import BasePage from '../../pages/BasePage';
-import ProjectTeam from '../../pages/ProjectTeam';
+import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
 
 const expectedAssignedUsers = ['admin@example.org'];
 const expectedAvailablesystemUsers = [
@@ -44,7 +43,7 @@ test('[29758] All system-users are available to be added to a "project team"', a
   page,
 }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeam(page);
+  const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);

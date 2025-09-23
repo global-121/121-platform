@@ -7,7 +7,7 @@ import {
 } from '@121-service/test/helpers/utility.helper';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectSettings from '@121-e2e/portal/pages/ProjectSettings';
+import ProjectSettingsPage from '@121-e2e/portal/pages/ProjectSettingsPage';
 import RegistrationsPage from '@121-e2e/portal/pages/RegistrationsPage';
 
 const currentDate = new Date();
@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
 
 test('[38155] Edit Project Information', async ({ page }) => {
   const registrations = new RegistrationsPage(page);
-  const projectSettings = new ProjectSettings(page);
+  const projectSettings = new ProjectSettingsPage(page);
 
   const projectInfo = {
     name: 'TUiR Warta',
@@ -55,7 +55,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
   });
 
   await test.step('Select: Project Information', async () => {
-    await projectSettings.selectSettings('Project information');
+    await projectSettings.navigateToProgramSettingsPage('Project information');
   });
 
   await test.step('Edit basic information', async () => {
@@ -68,9 +68,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
       'Project description',
       projectInfo.description,
     );
-    await projectSettings.selectDateRange({
-      dateRange: projectInfo.dateRange,
-    });
+    await projectSettings.selectDateRange(projectInfo.dateRange);
     await projectSettings.editInformationFieldByLabel(
       'Location',
       projectInfo.location,

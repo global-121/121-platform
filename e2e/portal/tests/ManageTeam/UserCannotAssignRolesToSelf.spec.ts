@@ -10,7 +10,7 @@ import {
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
+import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
 
 const programId = 2;
 
@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
 
 test('User cannot assign role to self', async ({ page }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeam(page);
+  const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';
 
   // Arrange
