@@ -8,7 +8,10 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
+import {
+  PaymentJobCreationDetails,
+  PaymentJobCreationDetailsBase,
+} from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
 import { RetryPaymentJobCreationDetails } from '@121-service/src/payments/interfaces/retry-payment-job-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
@@ -414,7 +417,7 @@ export class PaymentsExecutionService {
     userId,
     isRetry = false,
   }: {
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
+    paymentJobCreationDetails: PaymentJobCreationDetailsBase[];
     programId: number;
     paymentId: number;
     userId: number;
@@ -500,24 +503,29 @@ export class PaymentsExecutionService {
 
     // Create a map of latest failed transaction by referenceId with the transaction amount
     // Hashmap is faster than find in array when having a lot of registrations to process
-    const latestFailedTransactionByReferenceId: Record<string, number> = {};
+    const latestFailedTransactionByReferenceId: Record<
+      string,
+      { amount: number; transactionId: number }
+    > = {};
     for (const transaction of latestTransactionsFailedForPayment) {
-      latestFailedTransactionByReferenceId[transaction.referenceId] =
-        transaction.transferValue;
+      latestFailedTransactionByReferenceId[transaction.referenceId] = {
+        amount: transaction.amount,
+        transactionId: transaction.transactionId,
+      };
     }
 
     const paymentJobCreationsDetailsList: RetryPaymentJobCreationDetails[] = [];
 
     for (const registration of registrations) {
-      const transactionAmount =
+      const transactionData =
         latestFailedTransactionByReferenceId[registration.referenceId];
 
       paymentJobCreationsDetailsList.push({
-        transactionAmount,
+        transactionAmount: transactionData.amount,
+        transactionId: transactionData.transactionId,
         referenceId: registration.referenceId,
         fspName: registration.fspName,
         programFspConfigurationName: registration.programFspConfigurationName,
-        programFspConfigurationId: registration.programFspConfigurationId,
       });
     }
 
