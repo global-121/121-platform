@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Do payment to 1 PA with Fsp Onafriq should give error on the initial request based on magic phonenumber 1`] = `"Error: 101 - Rejected - Generic mock error on request"`;
+exports[`Do payment to 1 PA with Fsp Onafriq should give error on the initial request based on magic phonenumber and succeed on retry 1`] = `"Error: 101 - Rejected - Generic mock error on request"`;
 
 exports[`Do payment to 1 PA with Fsp Onafriq should give error via callback based on magic phonenumber 1`] = `"Error: ER103 - Mock error on callback"`;

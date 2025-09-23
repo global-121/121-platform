@@ -7,6 +7,7 @@ import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   ScopedQueryBuilder,
@@ -168,20 +169,41 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
+        'transaction.id AS "transactionId"',
         'transaction.created AS "paymentDate"',
         'transaction.updated AS updated',
         'transaction.paymentId AS "paymentId"',
         'r."referenceId"',
         'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
+        'transaction.transferValue AS "transferValue"',
+        'lte."errorMessage" as "errorMessage"',
         'fspconfig.fspName as "fspName"',
-        'transaction.programFspConfigurationId as "programFspConfigurationId"',
+        'lte."programFspConfigurationId" as "programFspConfigurationId"',
         'fspconfig.label as "programFspConfigurationLabel"',
         'fspconfig.name as "programFspConfigurationName"',
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      // ##TODO: for now join latest event to get e.g. errorMessage/FSP. Re-evaluate this later.
+      .leftJoin(
+        (qb) =>
+          qb
+            .subQuery()
+            .select([
+              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
+              'te."errorMessage" AS "errorMessage"',
+              'te."programFspConfigurationId" AS "programFspConfigurationId"',
+              'te."created" AS "created"',
+            ])
+            .from(TransactionEventEntity, 'te')
+            .orderBy('te."transactionId"', 'ASC')
+            .addOrderBy('te."created"', 'DESC'),
+        'lte',
+        'lte."transactionId" = transaction.id',
+      )
+      .leftJoin(
+        ProgramFspConfigurationEntity,
+        'fspconfig',
+        'fspconfig.id = lte."programFspConfigurationId"',
+      )
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .andWhere('p."programId" = :programId', {
