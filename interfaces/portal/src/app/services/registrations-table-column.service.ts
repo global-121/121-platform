@@ -64,7 +64,8 @@ export class RegistrationsTableColumnService {
   getColumns(projectId: Signal<number | string>) {
     return () =>
       queryOptions({
-        queryKey: ['filterableAttributes', projectId, projectId()],
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- eslint is complaining about missing projectId for some reason but it's wrong
+        queryKey: ['RegistrationsTableColumns', projectId().toString()],
         queryFn: async () => {
           const project = await this.queryClient.fetchQuery(
             this.projectApiService.getProject(projectId)(),
@@ -234,6 +235,12 @@ export class RegistrationsTableColumnService {
           return columns;
         },
       });
+  }
+
+  invalidateCache(projectId: Signal<number | string>) {
+    return this.queryClient.invalidateQueries({
+      queryKey: this.getColumns(projectId)().queryKey,
+    });
   }
 
   private mapAttributeTypeToQueryTableColumnType(

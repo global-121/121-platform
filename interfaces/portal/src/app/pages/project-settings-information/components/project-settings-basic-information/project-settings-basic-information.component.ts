@@ -36,6 +36,7 @@ import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.com
 import { ProjectApiService } from '~/domains/project/project.api.service';
 import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 import { AuthService } from '~/services/auth.service';
+import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
@@ -70,6 +71,7 @@ export class ProjectSettingsBasicInformationComponent {
 
   authService = inject(AuthService);
   projectApiService = inject(ProjectApiService);
+  registrationsTableColumnService = inject(RegistrationsTableColumnService);
   toastService = inject(ToastService);
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
@@ -163,12 +165,13 @@ export class ProjectSettingsBasicInformationComponent {
           enableScope,
         },
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       this.toastService.showToast({
         detail: $localize`Basic information details saved successfully.`,
       });
 
-      await this.projectApiService.invalidateCache();
+      void this.projectApiService.invalidateCache(this.projectId);
+      void this.registrationsTableColumnService.invalidateCache(this.projectId);
     },
   }));
 
