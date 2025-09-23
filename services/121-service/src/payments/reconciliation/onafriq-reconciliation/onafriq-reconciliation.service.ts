@@ -21,7 +21,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -35,8 +34,6 @@ export class OnafriqReconciliationService {
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
-    @Inject(getScopedRepositoryProviderName(TransactionEventEntity))
-    private readonly transactionEventScopedRepository: ScopedRepository<TransactionEventEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly queuesService: QueuesRegistryService,
