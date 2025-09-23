@@ -85,23 +85,6 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<BulkActionResultDto> {
-    const includeSendingMessage =
-      !!messageContentDetails.message ||
-      !!messageContentDetails.messageTemplateKey;
-    const usedPlaceholders =
-      await this.queueMessageService.getPlaceholdersInMessageText(
-        programId,
-        messageContentDetails.message,
-        messageContentDetails.messageTemplateKey,
-      );
-    paginateQuery = this.setQueryPropertiesBulkAction({
-      query: paginateQuery,
-      includePaymentAttributes: false,
-      includeSendMessageProperties: includeSendingMessage,
-      includeStatusChangeProperties: true,
-      usedPlaceholders,
-    });
-
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
@@ -115,7 +98,6 @@ export class RegistrationsBulkService {
         paginateQuery,
         programId,
         registrationStatus,
-        usedPlaceholders,
         allowedCurrentStatuses,
         userId,
         messageContentDetails,
@@ -388,7 +370,6 @@ export class RegistrationsBulkService {
     paginateQuery,
     programId,
     registrationStatus,
-    usedPlaceholders,
     allowedCurrentStatuses,
     userId,
     messageContentDetails,
@@ -397,12 +378,28 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery;
     programId: number;
     registrationStatus: RegistrationStatusEnum;
-    usedPlaceholders: string[];
     allowedCurrentStatuses: RegistrationStatusEnum[];
     userId: number;
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
+    const includeSendingMessage =
+      !!messageContentDetails.message ||
+      !!messageContentDetails.messageTemplateKey;
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        messageContentDetails.message,
+        messageContentDetails.messageTemplateKey,
+      );
+    paginateQuery = this.setQueryPropertiesBulkAction({
+      query: paginateQuery,
+      includePaymentAttributes: false,
+      includeSendMessageProperties: includeSendingMessage,
+      includeStatusChangeProperties: true,
+      usedPlaceholders,
+    });
+
     const chunkSize = 10000;
     paginateQuery.limit = chunkSize;
     const registrationForUpdateMeta =
