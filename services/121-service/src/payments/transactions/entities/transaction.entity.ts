@@ -9,14 +9,19 @@ import {
   Unique,
 } from 'typeorm';
 
-import { Base121Entity } from '@121-service/src/base.entity';
+import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
 @Unique(['registrationId', 'paymentId'])
 @Entity('transaction')
-export class TransactionEntity extends Base121Entity {
+export class TransactionEntity extends Base121AuditedEntity {
+  @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
+  @JoinColumn({ name: 'userId' })
+  public user: Relation<UserEntity>;
+
   @Column({ nullable: true, type: 'real' })
   public transferValue: number | null;
 
