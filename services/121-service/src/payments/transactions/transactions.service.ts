@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
-import { Equal, Repository } from 'typeorm';
+import { Equal, InsertResult, QueryRunner, Repository } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
@@ -15,6 +15,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
@@ -172,142 +173,263 @@ export class TransactionsService {
     }
   }
 
-  public async createTransactionAndUpdateRegistration({
-    paymentJobCreationDetailsItem,
+  public async createTransactionAndUpdateRegistrationBulk({
+    paymentJobCreationDetails,
     programId,
     paymentId,
     userId,
     isRetry,
   }: {
-    paymentJobCreationDetailsItem: PaymentJobCreationDetails;
+    paymentJobCreationDetails: PaymentJobCreationDetails[];
     programId: number;
     paymentId: number;
     userId: number;
     isRetry: boolean;
-  }): Promise<number> {
-    const {
-      registrationId,
-      registrationMaxPayments,
-      registrationStatus,
-      transactionAmount,
-      programFspConfigurationId,
-    } = paymentJobCreationDetailsItem;
-
-    const resultTransaction = await this.createTransaction({
-      transactionAmount,
-      registrationId,
-      paymentId,
-      userId,
-    });
-
-    await this.transactionEventsService.createEvent({
-      transactionId: resultTransaction.id,
-      userId,
-      type: TransactionEventType.created,
-      description: TransactionEventDescription.created,
-      programFspConfigurationId,
-    });
-
-    if (!isRetry) {
-      const paymentCount = await this.updateAndGetPaymentCount(registrationId);
-      const currentStatusIsCompleted =
-        await this.setStatusToCompleteIfApplicable({
-          registrationId,
-          registrationMaxPayments,
-          programId,
-          paymentCount,
-        });
-
-      // Added this check to avoid a bit of processing time if the status is the same
-      if (currentStatusIsCompleted) {
-        await this.registrationEventsService.createFromRegistrationViews(
-          {
-            id: registrationId,
-            status: registrationStatus ?? undefined,
-          },
-          {
-            id: registrationId,
-            status: RegistrationStatusEnum.completed,
-          },
-          {
-            explicitRegistrationPropertyNames: ['status'],
-          },
-        );
-      }
+  }): Promise<Map<number, number>> {
+    if (paymentJobCreationDetails.length === 0) {
+      return new Map();
     }
 
-    return resultTransaction.id;
+    const queryRunner =
+      this.transactionScopedRepository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const insertResult = await this.createTransactionsBulk({
+        paymentJobCreationDetails,
+        paymentId,
+        userId,
+        queryRunner,
+      });
+
+      const transactionIdByRegistrationId = new Map<number, number>();
+      insertResult.raw.forEach(
+        (row: { id: number; registrationId: number }) => {
+          transactionIdByRegistrationId.set(row.registrationId, row.id);
+        },
+      );
+
+      const eventsInput = paymentJobCreationDetails.map((i) => ({
+        transactionId: transactionIdByRegistrationId.get(i.registrationId)!,
+        userId,
+        type: TransactionEventType.created,
+        description: TransactionEventDescription.created,
+        programFspConfigurationId: i.programFspConfigurationId,
+      }));
+      await this.transactionEventsService.createEventsBulk(
+        eventsInput,
+        queryRunner.manager,
+      );
+
+      if (!isRetry) {
+        const updatedCounts = await this.updateAndGetPaymentCountBulk(
+          paymentJobCreationDetails,
+          queryRunner,
+        );
+
+        await this.setStatusToCompleteIfApplicableBulk({
+          updatedCounts,
+          programId,
+          queryRunner,
+        });
+      }
+
+      await queryRunner.commitTransaction();
+      return new Map(Array.from(transactionIdByRegistrationId.entries()));
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
-  private async createTransaction({
-    transactionAmount,
-    registrationId,
+  private async createTransactionsBulk({
+    paymentJobCreationDetails,
     paymentId,
     userId,
+    queryRunner,
   }: {
-    transactionAmount: number;
-    registrationId: number;
+    paymentJobCreationDetails: PaymentJobCreationDetails[];
     paymentId: number;
     userId: number;
-  }) {
-    const transaction = new TransactionEntity();
-    transaction.transferValue = transactionAmount;
-    transaction.created = new Date();
-    transaction.registrationId = registrationId;
-    transaction.paymentId = paymentId;
-    transaction.status = TransactionStatusEnum.created;
-    transaction.userId = userId;
-
-    return await this.transactionScopedRepository.save(transaction);
+    queryRunner: QueryRunner;
+  }): Promise<InsertResult> {
+    const transactionValues = paymentJobCreationDetails.map((i) => ({
+      transferValue: i.transactionAmount,
+      registrationId: i.registrationId,
+      paymentId,
+      status: TransactionStatusEnum.created,
+      userId,
+    }));
+    const insertResult = await queryRunner.manager
+      .createQueryBuilder()
+      .insert()
+      .into(TransactionEntity)
+      .values(transactionValues)
+      .returning(['id', 'registrationId'])
+      .execute();
+    return insertResult;
   }
 
-  private async updateAndGetPaymentCount(
-    registrationId: number,
-  ): Promise<number> {
-    const paymentCount =
-      await this.transactionScopedRepository.getPaymentCount(registrationId);
+  private async updateAndGetPaymentCountBulk(
+    paymentJobCreationDetails: PaymentJobCreationDetails[],
+    queryRunner: QueryRunner,
+  ): Promise<
+    {
+      registrationId: number;
+      newCount: number;
+      maxPayments: number | null;
+      currentStatus: RegistrationStatusEnum;
+    }[]
+  > {
+    // const paymentCount =
+    //   await this.transactionScopedRepository.getPaymentCount(registrationId);
 
-    await this.registrationScopedRepository.updateUnscoped(registrationId, {
-      paymentCount,
+    // await this.registrationScopedRepository.updateUnscoped(registrationId, {
+    //   paymentCount,
+    // });
+    // return paymentCount;
+
+    const registrationIds = [
+      ...new Set(paymentJobCreationDetails.map((i) => i.registrationId)),
+    ];
+    const existingCountsRaw = await queryRunner.manager
+      .createQueryBuilder()
+      .select('r.id', 'registrationId')
+      .addSelect('r."paymentCount"', 'paymentCount')
+      .addSelect('r."registrationStatus"', 'registrationStatus')
+      .addSelect('r."maxPayments"', 'maxPayments')
+      .from('registration', 'r')
+      .where('r.id IN (:...ids)', { ids: registrationIds })
+      .getRawMany<{
+        registrationId: number;
+        paymentCount: number | null;
+        registrationStatus: RegistrationStatusEnum;
+        maxPayments: number | null;
+      }>();
+
+    const paymentCountIncrements = new Map<number, number>();
+    for (const id of registrationIds) {
+      paymentCountIncrements.set(id, (paymentCountIncrements.get(id) ?? 0) + 1);
+    }
+
+    const updatedCounts = existingCountsRaw.map((r) => {
+      const increment = paymentCountIncrements.get(r.registrationId) ?? 0;
+      const newCount = (r.paymentCount ?? 0) + increment;
+      return {
+        registrationId: r.registrationId,
+        newCount,
+        maxPayments: r.maxPayments,
+        currentStatus: r.registrationStatus,
+      };
     });
-    return paymentCount;
+
+    const updatesNeedingCount = updatedCounts.filter(
+      (u) =>
+        u.newCount !==
+        (existingCountsRaw.find((e) => e.registrationId === u.registrationId)
+          ?.paymentCount ?? 0),
+    );
+    if (updatesNeedingCount.length > 0) {
+      const ids: number[] = [];
+      const caseFragments: string[] = [];
+      for (const u of updatesNeedingCount) {
+        ids.push(u.registrationId);
+        caseFragments.push(`WHEN ${u.registrationId} THEN ${u.newCount}`);
+      }
+      const caseExpression = `CASE id ${caseFragments.join(' ')} ELSE "paymentCount" END`;
+
+      // this is unscoped as desired
+      await queryRunner.manager
+        .createQueryBuilder()
+        .update(RegistrationEntity)
+        .set({
+          paymentCount: () => caseExpression,
+        })
+        .whereInIds(ids)
+        .execute();
+    }
+    return updatedCounts;
   }
 
-  private async setStatusToCompleteIfApplicable({
-    registrationId,
-    registrationMaxPayments,
+  private async setStatusToCompleteIfApplicableBulk({
+    updatedCounts,
     programId,
-    paymentCount,
+    queryRunner,
   }: {
-    registrationId: number;
-    registrationMaxPayments: number | null;
+    updatedCounts: {
+      registrationId: number;
+      newCount: number;
+      maxPayments: number | null;
+      currentStatus: RegistrationStatusEnum;
+    }[];
     programId: number;
-    paymentCount: number;
-  }): Promise<boolean> {
+    queryRunner: QueryRunner;
+  }): Promise<void> {
+    // const program = await this.programRepository.findByIdOrFail(programId);
+
+    // if (!program.enableMaxPayments) {
+    //   return false;
+    // }
+
+    // // registration.maxPayments can only be a positive integer or null
+    // // This situation will only occur when enableMaxPayments is turned on after
+    // // the registration was created.
+    // if (
+    //   registrationMaxPayments === null ||
+    //   registrationMaxPayments === undefined
+    // ) {
+    //   return false;
+    // }
+
+    // if (paymentCount < registrationMaxPayments) {
+    //   return false;
+    // }
+
+    // await this.registrationScopedRepository.updateUnscoped(registrationId, {
+    //   registrationStatus: RegistrationStatusEnum.completed,
+    // });
+
+    // return true;
+
     const program = await this.programRepository.findByIdOrFail(programId);
+    if (program.enableMaxPayments) {
+      const newlyCompleted = updatedCounts.filter(
+        (u) =>
+          u.maxPayments !== null &&
+          u.maxPayments !== undefined &&
+          u.newCount >= (u.maxPayments ?? Infinity) &&
+          u.currentStatus !== RegistrationStatusEnum.completed,
+      );
 
-    if (!program.enableMaxPayments) {
-      return false;
+      if (newlyCompleted.length > 0) {
+        const completeIds = newlyCompleted.map((n) => n.registrationId);
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update('registration')
+          .set({ registrationStatus: RegistrationStatusEnum.completed })
+          .where('id IN (:...ids)', { ids: completeIds })
+          .execute();
+
+        for (const reg of newlyCompleted) {
+          await this.registrationEventsService.createFromRegistrationViews(
+            {
+              id: reg.registrationId,
+              status: updatedCounts.find(
+                (e) => e.registrationId === reg.registrationId,
+              )?.currentStatus,
+            },
+            {
+              id: reg.registrationId,
+              status: RegistrationStatusEnum.completed,
+            },
+            {
+              explicitRegistrationPropertyNames: ['status'],
+            },
+          );
+        }
+      }
     }
-
-    // registration.maxPayments can only be a positive integer or null
-    // This situation will only occur when enableMaxPayments is turned on after
-    // the registration was created.
-    if (
-      registrationMaxPayments === null ||
-      registrationMaxPayments === undefined
-    ) {
-      return false;
-    }
-
-    if (paymentCount < registrationMaxPayments) {
-      return false;
-    }
-
-    await this.registrationScopedRepository.updateUnscoped(registrationId, {
-      registrationStatus: RegistrationStatusEnum.completed,
-    });
-
-    return true;
   }
 }
