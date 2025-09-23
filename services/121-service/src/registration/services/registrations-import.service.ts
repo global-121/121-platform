@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -33,7 +34,6 @@ import { RegistrationsInputValidatorHelpers } from '@121-service/src/registratio
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
-
 const BATCH_SIZE = 500;
 const MASS_UPDATE_ROW_LIMIT = 50_000;
 
@@ -193,7 +193,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.registrationStatus = RegistrationStatusEnum.new;
+      registration.registrationStatus = null;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
@@ -241,19 +241,21 @@ export class RegistrationsImportService {
       const referenceIds = savedRegistrations
         .map((registration) => registration.referenceId)
         .join(',');
-      await this.registrationBulkService.postMessages({
+      const messageContentDetails: MessageContentDetails = {
+        messageTemplateKey: RegistrationStatusEnum.new,
+      };
+      await this.registrationBulkService.patchRegistrationsStatus({
         paginateQuery: {
-          filter: { referenceId: `$in:${referenceIds}` },
+          filter: { referenceId: `$eq:${referenceIds}` },
           path: '',
         },
         programId: program.id,
-        messageTemplateKey: RegistrationStatusEnum.new,
-        userId,
-        message: '',
+        registrationStatus: RegistrationStatusEnum.new,
         dryRun: false,
+        userId,
+        messageContentDetails,
       });
     }
-
     // Save registration status change events they changed from null to 'new'
     await this.registrationEventsService.createFromRegistrationViews(
       savedRegistrations.map((r) => ({

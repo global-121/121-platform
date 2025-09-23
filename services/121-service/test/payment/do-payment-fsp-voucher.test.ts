@@ -98,6 +98,7 @@ describe('Do payment to 1 PA', () => {
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
         expectedContentTypes: [
+          MessageContentType.new,
           MessageContentType.paymentTemplated,
           MessageContentType.paymentVoucher,
         ],

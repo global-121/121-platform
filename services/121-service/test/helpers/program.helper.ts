@@ -442,7 +442,6 @@ export async function waitForMessagesToComplete({
       programId,
       accessToken,
     );
-
     referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages(
       messageHistories,
       minimumNumberOfMessagesPerReferenceId,
