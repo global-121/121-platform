@@ -9,11 +9,13 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -95,7 +97,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].errorMessage).toBe(null);
   });
 
-  it('should give error on the initial request based on magic phonenumber', async () => {
+  it('should give error on the initial request based on magic phonenumber and succeed on retry', async () => {
     // Arrange
     registrationOnafriq.phoneNumberPayment = '24300000000'; // this magic number is configured in mock to return an error on request
     await importRegistrations(programId, [registrationOnafriq], accessToken);
@@ -144,6 +146,44 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       TransactionStatusEnum.error,
     );
     expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+
+    // RETRY
+    // Arrange
+    await updateRegistration(
+      programId,
+      registrationOnafriq.referenceId,
+      { phoneNumberPayment: '24333333333' }, // change to a number that will succeed
+      'test reason',
+      accessToken,
+    );
+
+    // Act
+    const retryResponse = await retryPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4000,
+      completeStatusses: [TransactionStatusEnum.success],
+    });
+
+    // Assert
+    const getTransactionsAfterRetryBody = await getTransactions({
+      programId,
+      paymentId,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
+    expect(retryResponse.status).toBe(HttpStatus.OK);
+    expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
+    expect(getTransactionsAfterRetryBody.body[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
+    expect(getTransactionsAfterRetryBody.body[0].errorMessage).toBe(null);
   });
 
   it('should give error via callback based on magic phonenumber', async () => {
