@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 
 import { FspAttributes } from '@121-service/src/fsps/enums/fsp-attributes.enum';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
@@ -292,7 +291,6 @@ export class TransactionJobsCreationService {
           // FSP-specific additions:
           phoneNumber: registrationView.phoneNumber!, // Phonenumber is a required field if a registration has safaricom as FSP
           idNumber: registrationView[FspAttributes.nationalId],
-          originatorConversationId: uuid(), // REFACTOR: switch to nedbank/onafriq approach for idempotency key
         };
       });
     await this.transactionQueuesService.addSafaricomTransactionJobs(
