@@ -1,4 +1,5 @@
-import test from '@playwright/test';
+import test, { expect } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -38,11 +39,11 @@ test('[38155] Edit Project Information', async ({ page }) => {
     description: 'TUiR Warta description',
     dateRange: { start: todaysDate, end: futureDate },
     location: 'Polen',
-    targetRegistrations: '2000',
+    targetRegistrations: '200',
   };
 
   const budgetInfo = {
-    fundsAvailable: '2000',
+    fundsAvailable: '200',
     currency: 'USD',
     paymentFrequency: '2-months',
     defaultTransferAmount: '200',
@@ -81,6 +82,22 @@ test('[38155] Edit Project Information', async ({ page }) => {
     await projectSettings.validateToastMessageAndClose(
       'Basic information details saved successfully.',
     );
+
+    // expect with a timeout because we might need to wait for the cache to invalidate
+    await expect(async () => {
+      const basicInformationData =
+        await projectSettings.basicInformationDataList.getData();
+      expect(basicInformationData).toEqual({
+        '*Project name': projectInfo.name,
+        'Project description': projectInfo.description,
+        'Start date': format(projectInfo.dateRange.start, 'dd MMMM yyyy'),
+        'End date': format(projectInfo.dateRange.end, 'dd MMMM yyyy'),
+        Location: projectInfo.location,
+        '*Target registrations': projectInfo.targetRegistrations,
+        'Enable validation': 'No',
+        'Enable scope': 'No',
+      });
+    }).toPass({ timeout: 2000 });
   });
 
   await test.step('Edit Budget information', async () => {
@@ -109,5 +126,17 @@ test('[38155] Edit Project Information', async ({ page }) => {
     await projectSettings.validateToastMessageAndClose(
       'Budget details saved successfully.',
     );
+
+    // expect with a timeout because we might need to wait for the cache to invalidate
+    await expect(async () => {
+      const budgetData = await projectSettings.budgetDataList.getData();
+      expect(budgetData).toEqual({
+        'Funds available': budgetInfo.fundsAvailable,
+        '*Currency': budgetInfo.currency,
+        'Payment frequency': budgetInfo.paymentFrequency,
+        'Default transfers per registration': budgetInfo.defaultTransferAmount,
+        '*Fixed transfer value': budgetInfo.fixedTransferValue,
+      });
+    }).toPass({ timeout: 2000 });
   });
 });

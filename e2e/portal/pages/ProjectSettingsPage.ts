@@ -1,5 +1,6 @@
 import { Locator, Page } from 'playwright';
 
+import DataListComponent from '../components/DataListComponent';
 import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
 import BasePage from './BasePage';
 
@@ -8,6 +9,8 @@ class ProjectSettingsPage extends BasePage {
   readonly projectDescriptionInput: Locator;
   readonly dateRangeStartInput: PrimeNGDatePicker;
   readonly dateRangeEndInput: PrimeNGDatePicker;
+  readonly basicInformationDataList: DataListComponent;
+  readonly budgetDataList: DataListComponent;
 
   constructor(page: Page) {
     super(page);
@@ -21,6 +24,12 @@ class ProjectSettingsPage extends BasePage {
       page: this.page,
       datePicker: this.page.getByLabel('End date'),
     });
+    this.basicInformationDataList = new DataListComponent(
+      this.page.getByTestId('project-basic-information-data-list'),
+    );
+    this.budgetDataList = new DataListComponent(
+      this.page.getByTestId('project-budget-data-list'),
+    );
   }
 
   async selectDateRange({ start, end }: { start: Date; end: Date }) {

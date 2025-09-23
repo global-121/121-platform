@@ -104,13 +104,7 @@ class RegistrationsPage extends BasePage {
     await this.table.validateSelectionCount(0);
   }
 
-  async configureTableColumns({
-    columns,
-    onlyGivenColumns,
-  }: {
-    columns: string[];
-    onlyGivenColumns?: boolean;
-  }) {
+  async openManageTableSidebar() {
     await this.page.getByTitle('Manage table').click();
 
     // wait for columns to be loaded
@@ -121,6 +115,16 @@ class RegistrationsPage extends BasePage {
         await this.manageTableSidebar.getByRole('checkbox').count(),
       ).toBeGreaterThan(0);
     }).toPass({ timeout: 5000 });
+  }
+
+  async configureTableColumns({
+    columns,
+    onlyGivenColumns,
+  }: {
+    columns: string[];
+    onlyGivenColumns?: boolean;
+  }) {
+    await this.openManageTableSidebar();
 
     if (onlyGivenColumns) {
       // Deselect all columns first
@@ -149,6 +153,8 @@ class RegistrationsPage extends BasePage {
       .getByRole('button', { name: 'Apply' })
       .click();
 
+    await expect(this.manageTableSidebar).not.toBeVisible();
+
     if (onlyGivenColumns) {
       // Validate only the given columns are visible in the table
       const headerTexts = await this.table.getTextArrayFromHeader();
@@ -156,6 +162,31 @@ class RegistrationsPage extends BasePage {
       headerTexts.pop(); // Remove last column (actions)
       expect(headerTexts).toEqual(columns);
     }
+  }
+
+  async checkColumnAvailability({
+    column,
+    shouldBeAvailable,
+  }: {
+    column: string;
+    shouldBeAvailable: boolean;
+  }) {
+    await this.openManageTableSidebar();
+
+    await expect(async () => {
+      const checkbox = await this.manageTableSidebar.getByLabel(column);
+      if (shouldBeAvailable) {
+        await expect(checkbox).toBeVisible();
+      } else {
+        await expect(checkbox).not.toBeVisible();
+      }
+    }).toPass({ timeout: 5000 });
+
+    await this.manageTableSidebar
+      .getByRole('button', { name: 'Cancel' })
+      .click();
+
+    await expect(this.manageTableSidebar).not.toBeVisible();
   }
 
   async getFirstRegistrationNameFromTable() {

@@ -10,7 +10,10 @@
   [mutationData]="formGroup.getRawValue()"
 >
   @if (!isEditing()) {
-    <app-data-list [data]="dataListData()" />
+    <app-data-list
+      [data]="dataListData()"
+      data-testid="project-budget-data-list"
+    />
   } @else {
     <ng-container [formGroup]="formGroup">
       <div class="flex w-full flex-row gap-4 [&>*]:w-1/2">
