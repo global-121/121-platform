@@ -207,17 +207,21 @@ export class PaymentsExecutionService {
     paymentId: number;
     paymentJobCreationDetails: PaymentJobCreationDetails[];
   }): Promise<PaymentJobCreationDetails[]> {
-    // ##TODO: optimize all of this for performance
-    for (const paymentJobCreationDetailsItem of paymentJobCreationDetails) {
-      const transactionId =
-        await this.transactionsService.createTransactionAndUpdateRegistration({
-          paymentJobCreationDetailsItem,
+    const transactionByRegistrationIdMap =
+      await this.transactionsService.createTransactionAndUpdateRegistrationBulk(
+        {
+          paymentJobCreationDetails,
           programId,
           paymentId,
           userId,
           isRetry: false,
-        });
-      paymentJobCreationDetailsItem.transactionId = transactionId;
+        },
+      );
+    for (const item of paymentJobCreationDetails) {
+      const transactionId = transactionByRegistrationIdMap.get(
+        item.registrationId,
+      );
+      item.transactionId = transactionId;
     }
     return paymentJobCreationDetails;
   }
