@@ -32,7 +32,7 @@ export class TransactionJobsCreationService {
   /**
    * Generic method to create FSP-specific transaction jobs based on FSP name
    */
-  public async createAndAddFspSpecificTransactionJobs({
+  public async addTransactionJobsForFsp({
     fspName,
     transactionInputData,
     programId,
