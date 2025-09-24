@@ -450,9 +450,10 @@ export class RegistrationsBulkService {
     registrationStatus: RegistrationStatusEnum;
     reason?: string;
   }): Promise<void> {
+    const idColumn: keyof RegistrationViewEntity = 'id';
     const selectedColumns = [
       GenericRegistrationAttributes.referenceId,
-      'id',
+      idColumn,
       GenericRegistrationAttributes.status,
     ];
     const registrationsForUpdate =
@@ -489,10 +490,11 @@ export class RegistrationsBulkService {
         messageContentDetails.messageTemplateKey,
       );
 
+    const idColumn: keyof RegistrationViewEntity = 'id';
     const selectedColumns = [
       ...usedPlaceholders,
       GenericRegistrationAttributes.referenceId,
-      'id',
+      idColumn,
     ];
 
     selectedColumns.push(GenericRegistrationAttributes.preferredLanguage);
