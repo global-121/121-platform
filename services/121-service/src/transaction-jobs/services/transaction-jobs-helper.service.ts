@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -14,6 +15,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
@@ -37,6 +39,7 @@ export class TransactionJobsHelperService {
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
     private readonly registrationEventsService: RegistrationEventsService,
+    private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
   public async getRegistrationOrThrow(
@@ -82,28 +85,37 @@ export class TransactionJobsHelperService {
 
     if (!isRetry) {
       const paymentCount = await this.updateAndGetPaymentCount(registration.id);
-      const currentStatusIsCompleted =
-        await this.setStatusToCompleteIfApplicable({
-          registration,
-          programId,
-          paymentCount,
-        });
+      const maxPaymentsExceeded = await this.isMaxPaymentsExceeded({
+        registration,
+        programId,
+        paymentCount,
+      });
 
-      // Added this check to avoid a bit of processing time if the status is the same
-      if (currentStatusIsCompleted) {
-        await this.registrationEventsService.createFromRegistrationViews(
-          {
-            id: registration.id,
-            status: registration.registrationStatus ?? undefined,
-          },
-          {
-            id: registration.id,
-            status: RegistrationStatusEnum.completed,
-          },
-          {
-            explicitRegistrationPropertyNames: ['status'],
-          },
+      if (!maxPaymentsExceeded) {
+        return resultTransaction;
+      }
+
+      const isTemplateAvailable =
+        await this.messageTemplateService.isTemplateAvailable(
+          programId,
+          RegistrationStatusEnum.completed,
         );
+
+      if (isTemplateAvailable) {
+        const messageContentDetails: MessageContentDetails = {
+          messageTemplateKey: RegistrationStatusEnum.completed,
+        };
+        await this.registrationBulkService.patchRegistrationsStatus({
+          paginateQuery: {
+            filter: { referenceId: `$eq:${registration.referenceId}` },
+            path: '',
+          },
+          programId,
+          registrationStatus: RegistrationStatusEnum.completed,
+          dryRun: false,
+          userId,
+          messageContentDetails,
+        });
       }
     }
 
@@ -178,7 +190,7 @@ export class TransactionJobsHelperService {
     return paymentCount;
   }
 
-  private async setStatusToCompleteIfApplicable({
+  private async isMaxPaymentsExceeded({
     registration,
     programId,
     paymentCount,
@@ -206,10 +218,6 @@ export class TransactionJobsHelperService {
     if (paymentCount < registration.maxPayments) {
       return false;
     }
-
-    await this.registrationScopedRepository.updateUnscoped(registration.id, {
-      registrationStatus: RegistrationStatusEnum.completed,
-    });
 
     return true;
   }
