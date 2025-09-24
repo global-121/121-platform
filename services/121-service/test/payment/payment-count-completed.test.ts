@@ -5,16 +5,19 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   getEvents,
+  getMessageHistory,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -123,6 +126,56 @@ describe('Do a payment to a PA with maxPayments=1', () => {
           event.attributes.newValue === RegistrationStatusEnum.completed,
       );
       expect(statusChangeToCompleted.length).toBe(1);
+    });
+
+    it('should send a template message when status is complete', async () => {
+      // Arrange
+      await importRegistrations(programId, [registrationAh], accessToken);
+      await awaitChangeRegistrationStatus({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        status: RegistrationStatusEnum.included,
+        accessToken,
+      });
+
+      // Act
+      await doPayment({
+        programId,
+        amount,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+      });
+
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds: [registrationAh.referenceId],
+        accessToken,
+        maxWaitTimeMs: 10_000,
+      });
+
+      const expectedMessageTranslations = Object.values(
+        messageTemplateGeneric.completed.message ?? {},
+      );
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+      });
+
+      // Assert
+      const messageHistoryResponse = await getMessageHistory(
+        programId,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
+      const messageHistory = messageHistoryResponse.body;
+      const messageSent = messageHistory.some((message) =>
+        expectedMessageTranslations.includes(message.attributes.body),
+      );
+
+      expect(messageSent).toBe(true);
     });
   });
 });
