@@ -22,7 +22,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('Toggle scope in project settings', async ({ page }) => {
+test('[38156] Toggle scope in project settings', async ({ page }) => {
   const homePage = new HomePage(page);
   const registrations = new RegistrationsPage(page);
   const projectSettings = new ProjectSettingsPage(page);
