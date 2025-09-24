@@ -1,6 +1,9 @@
-import { PaymentJobCreationDetailsBase } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 
-export interface RetryPaymentJobCreationDetails
-  extends PaymentJobCreationDetailsBase {
+export interface RetryPaymentJobCreationDetails {
   programFspConfigurationName: string;
+  referenceId: string;
+  fspName: Fsps;
+  transactionAmount: number;
+  transactionId?: number;
 }
