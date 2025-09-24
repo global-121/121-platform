@@ -27,7 +27,6 @@ import { StatusChangeHelper } from '@121-service/src/registration/helpers/status
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
-import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {
@@ -50,7 +49,6 @@ export class RegistrationsBulkService {
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
 
   public constructor(
-    private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: MessageQueuesService,
@@ -58,7 +56,6 @@ export class RegistrationsBulkService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
-    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
