@@ -1,37 +1,49 @@
-<app-form-dialog
-  #formDialog
-  [formGroup]="formGroup"
-  [mutation]="createProjectMutation"
-  [mutationData]="formGroup.getRawValue()"
-  header="Create project"
-  i18n-header="@@create-project"
-  headerIcon="pi pi-plus"
-  proceedLabel="Create project"
-  i18n-proceedLabel="@@create-project"
+<app-fullscreen-stepper-dialog
+  #createProjectDialog
+  [dialogVisible]="currentStep() > 0"
+  (dialogVisibleChange)="currentStep.set($event ? 1 : 0)"
+  [currentStep]="currentStep()"
+  [proceedLabel]="proceedLabel()"
+  [cannotProceed]="createProjectMutation.isPending()"
+  [queryParamStep]="'create-project-step'"
+  (goBack)="goBack()"
+  (proceed)="goToNextStep()"
 >
-  <app-form-field-wrapper
-    label="Kobo Asset ID"
-    i18n-label
-    [errorMessage]="formFieldErrors()('assetId')"
-  >
-    <input
-      pInputText
-      type="text"
-      formControlName="assetId"
-      autocomplete="one-time-code"
-      class="font-mono"
+  <ng-template #header>
+    <i class="pi pi-plus me-2"></i>
+    <ng-container i18n>Create new project</ng-container>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2 i18n>Project name</h2>
+      <p i18n>
+        Add a name and description to your project to help your users find it.
+      </p>
+      <app-project-form-name #formName />
+    </p-card>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2 i18n>Project information</h2>
+      <p i18n>Explanation for users</p>
+      <app-project-form-information #formInformation />
+    </p-card>
+  </ng-template>
+  <ng-template #step>
+    <p-card>
+      <h2 i18n>Budget</h2>
+      <p i18n>Explanation for users</p>
+      <app-project-form-budget #formBudget />
+    </p-card>
+  </ng-template>
+  <ng-template #illustration>
+    <img
+      ngSrc="assets/create-project.png"
+      height="1024"
+      width="1024"
+      alt=""
+      aria-hidden="true"
+      role="presentation"
     />
-  </app-form-field-wrapper>
-  <app-form-field-wrapper
-    label="Kobo Token"
-    i18n-label
-    [errorMessage]="formFieldErrors()('token')"
-  >
-    <p-password
-      formControlName="token"
-      autocomplete="one-time-code"
-      [toggleMask]="true"
-      [feedback]="false"
-    />
-  </app-form-field-wrapper>
-</app-form-dialog>
+  </ng-template>
+</app-fullscreen-stepper-dialog>
