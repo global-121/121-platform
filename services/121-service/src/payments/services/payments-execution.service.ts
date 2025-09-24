@@ -156,7 +156,7 @@ export class PaymentsExecutionService {
           this.azureLogService.logError(e, true);
         })
         .finally(() => {
-          // Remove this
+          // TODO: Remove this, along with all payment action saving?
           void this.actionService.saveAction(
             userId,
             programId,
@@ -432,21 +432,17 @@ export class PaymentsExecutionService {
       );
 
       if (paymentJobCreationDetailsForFsp.length > 0) {
-        await this.transactionJobsCreationService.createAndAddFspSpecificTransactionJobs(
-          {
-            fspName,
-            transactionInputData: paymentJobCreationDetailsForFsp.map(
-              (job) => ({
-                referenceId: job.referenceId,
-                transactionAmount: job.transactionAmount,
-                transactionId: job.transactionId!,
-              }),
-            ),
-            userId,
-            programId,
-            isRetry,
-          },
-        );
+        await this.transactionJobsCreationService.addTransactionJobsForFsp({
+          fspName,
+          transactionInputData: paymentJobCreationDetailsForFsp.map((job) => ({
+            referenceId: job.referenceId,
+            transactionAmount: job.transactionAmount,
+            transactionId: job.transactionId!,
+          })),
+          userId,
+          programId,
+          isRetry,
+        });
       }
     }
   }

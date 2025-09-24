@@ -47,10 +47,7 @@ export class TransactionJobsOnafriqService {
     );
 
     // 3. Create or update Onafriq Transaction with thirdPartyTransId
-    await this.createOrUpdateOnafriqTransactionIfNeeded(
-      thirdPartyTransId,
-      transactionJob,
-    );
+    await this.upsertOnafriqTransaction(thirdPartyTransId, transactionJob);
 
     // 4. Start the transfer, if failure: update to error transaction and return early
     try {
@@ -100,35 +97,23 @@ export class TransactionJobsOnafriqService {
     );
   }
 
-  private async createOrUpdateOnafriqTransactionIfNeeded(
+  private async upsertOnafriqTransaction(
     thirdPartyTransId: string,
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
-    const onafriqTransactionWithSameThirdPartyTransId =
-      await this.onafriqTransactionScopedRepository.findOne({
-        where: {
-          thirdPartyTransId: Equal(thirdPartyTransId),
-        },
-      });
-
-    // if found (implies: queue-retry), no action needed. Continue with trying API-request with existing thirdPartyTransId, which will be blocked by Onafriq API or not, depending on prior use.
-    if (onafriqTransactionWithSameThirdPartyTransId) {
-      return;
-    }
-
-    // .. if not found: check for existing Onafriq Transaction with the same transactionId ..
-    const onafriqTransactionWithSameTransactionId =
+    // Check for existing Onafriq Transactions with the same transactionId
+    const existingOnafriqTransaction =
       await this.onafriqTransactionScopedRepository.findOne({
         where: {
           transactionId: Equal(transactionJob.transactionId),
         },
       });
 
-    // .. if found (implies: payment-retry), update existing Onafriq Transaction with new thirdPartyTransId
-    if (onafriqTransactionWithSameTransactionId) {
+    // .. if found (implies: payment-retry or queue-retry), update existing Onafriq Transaction with thirdPartyTransId. In case of queue-retry the thirdPartyTransId is the same, so the update is not needed. But this leads to easier code.
+    if (existingOnafriqTransaction) {
       await this.onafriqTransactionScopedRepository.update(
         {
-          id: onafriqTransactionWithSameTransactionId.id,
+          id: existingOnafriqTransaction.id,
         },
         {
           thirdPartyTransId,
@@ -137,7 +122,7 @@ export class TransactionJobsOnafriqService {
       return;
     }
 
-    // .. if not found (implies: also nor queue-retry nor payment-retry), create new Onafriq Transaction
+    // .. if not found, create new Onafriq Transaction
     const newOnafriqTransaction = new OnafriqTransactionEntity();
     newOnafriqTransaction.thirdPartyTransId = thirdPartyTransId;
     newOnafriqTransaction.recipientMsisdn = transactionJob.phoneNumberPayment;
