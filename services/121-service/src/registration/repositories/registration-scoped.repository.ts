@@ -343,4 +343,42 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .getRawMany();
     return wallets;
   }
+
+  public async updatePaymentCountBulk(
+    registrationIdsToUpdate: number[],
+  ): Promise<void> {
+    await this.repository
+      .createQueryBuilder('registration')
+      .update()
+      .set({
+        paymentCount: () => '"paymentCount" + 1',
+      })
+      .whereInIds(registrationIdsToUpdate)
+      .execute();
+  }
+
+  public async getRegistrationsToComplete(
+    programId: number,
+  ): Promise<RegistrationEntity[]> {
+    const registrationsToComplete = await this.repository
+      .createQueryBuilder('registration')
+      .andWhere('registration."paymentCount" >= registration."maxPayments"')
+      .andWhere('registration."registrationStatus" != :completedStatus', {
+        completedStatus: RegistrationStatusEnum.completed,
+      })
+      .andWhere('registration."programId" = :programId', { programId })
+      .getMany();
+    return registrationsToComplete;
+  }
+
+  public async updateRegistrationsToCompleted(
+    registrationIdsToComplete: number[],
+  ): Promise<void> {
+    await this.repository
+      .createQueryBuilder('registration')
+      .update()
+      .set({ registrationStatus: RegistrationStatusEnum.completed })
+      .whereInIds(registrationIdsToComplete)
+      .execute();
+  }
 }

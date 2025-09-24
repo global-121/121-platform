@@ -2,64 +2,119 @@
 
 ```mermaid
 graph LR
-  CronjobModule-->IntersolveVisaReconciliationModule
-  IntersolveVisaReconciliationModule-->IntersolveVisaModule
-  IntersolveVisaModule-->UserModule
-  UserModule-->EmailsModule
-  CronjobModule-->IntersolveVoucherModule
-  IntersolveVoucherModule-->ImageCodeModule
-  IntersolveVoucherModule-->UserModule
-  IntersolveVoucherModule-->TransactionsModule
-  TransactionsModule-->UserModule
-  TransactionsModule-->ActionsModule
   ActionsModule-->UserModule
-  TransactionsModule-->MessageQueuesModule
-  MessageQueuesModule-->ProgramAttributesModule
-  MessageQueuesModule-->RegistrationDataModule
-  MessageQueuesModule-->QueuesRegistryModule
-  TransactionsModule-->MessageTemplateModule
-  MessageTemplateModule-->UserModule
-  MessageTemplateModule-->ProgramAttributesModule
-  TransactionsModule-->RegistrationUtilsModule
-  RegistrationUtilsModule-->RegistrationDataModule
-  TransactionsModule-->RegistrationEventsModule
-  RegistrationEventsModule-->UserModule
-  TransactionsModule-->ProgramModule
-  ProgramModule-->ActionsModule
-  ProgramModule-->UserModule
-  ProgramModule-->FspsModule
+  ActivitiesModule-->MessageModule
+  ActivitiesModule-->NoteModule
+  ActivitiesModule-->RegistrationEventsModule
+  ActivitiesModule-->TransactionsModule
+  ActivitiesModule-->UserModule
+  AirtelModule-->QueuesRegistryModule
+  AirtelModule-->RedisModule
+  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
+  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
+  CronjobModule-->CommercialBankEthiopiaReconciliationModule
+  CronjobModule-->ExchangeRatesModule
+  CronjobModule-->IntersolveVisaReconciliationModule
+  CronjobModule-->IntersolveVoucherModule
+  CronjobModule-->IntersolveVoucherReconciliationModule
+  CronjobModule-->NedbankReconciliationModule
+  CronjobModule-->OnafriqReconciliationModule
+  ExcelModule-->RegistrationsModule
+  ExcelModule-->TransactionsModule
+  ExcelReconcilicationModule-->ActionsModule
+  ExcelReconcilicationModule-->ExcelModule
+  ExcelReconcilicationModule-->PaymentsModule
+  ExcelReconcilicationModule-->RegistrationsModule
+  ExcelReconcilicationModule-->TransactionsModule
+  ExchangeRatesModule-->UserModule
   FspsModule-->UserModule
+  IntersolveVisaModule-->UserModule
+  IntersolveVisaReconciliationModule-->IntersolveVisaModule
+  IntersolveVoucherModule-->ImageCodeModule
+  IntersolveVoucherModule-->MessageQueuesModule
+  IntersolveVoucherModule-->MessageTemplateModule
+  IntersolveVoucherModule-->QueuesRegistryModule
+  IntersolveVoucherModule-->RedisModule
+  IntersolveVoucherModule-->RegistrationDataModule
+  IntersolveVoucherModule-->RegistrationUtilsModule
+  IntersolveVoucherModule-->TransactionsModule
+  IntersolveVoucherModule-->UserModule
+  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
+  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
+  IntersolveVoucherReconciliationModule-->ProgramModule
+  MessageIncomingModule-->ImageCodeModule
+  MessageIncomingModule-->IntersolveVoucherModule
+  MessageIncomingModule-->MessageQueuesModule
+  MessageIncomingModule-->MessageTemplateModule
+  MessageIncomingModule-->QueuesRegistryModule
+  MessageIncomingModule-->RegistrationDataModule
+  MessageIncomingModule-->TransactionsModule
+  MessageIncomingModule-->UserModule
+  MessageIncomingModule-->WhatsappModule
+  MessageModule-->IntersolveVoucherModule
+  MessageModule-->MessageQueuesModule
+  MessageModule-->MessageTemplateModule
+  MessageModule-->ProgramModule
+  MessageModule-->SmsModule
+  MessageModule-->WhatsappModule
+  MessageQueuesModule-->ProgramAttributesModule
+  MessageQueuesModule-->QueuesRegistryModule
+  MessageQueuesModule-->RegistrationDataModule
+  MessageTemplateModule-->ProgramAttributesModule
+  MessageTemplateModule-->UserModule
+  MetricsModule-->ActionsModule
+  MetricsModule-->IntersolveVisaModule
+  MetricsModule-->IntersolveVoucherModule
+  MetricsModule-->PaymentsModule
+  MetricsModule-->ProgramModule
+  MetricsModule-->RegistrationDataModule
+  MetricsModule-->RegistrationEventsModule
+  MetricsModule-->RegistrationsModule
+  MetricsModule-->UserModule
+  NedbankReconciliationModule-->NedbankModule
+  NedbankReconciliationModule-->TransactionsModule
+  NoteModule-->RegistrationsModule
+  NoteModule-->UserModule
+  OnafriqModule-->QueuesRegistryModule
+  OnafriqModule-->RedisModule
+  OnafriqReconciliationModule-->OnafriqModule
+  OnafriqReconciliationModule-->QueuesRegistryModule
+  OnafriqReconciliationModule-->RedisModule
+  OnafriqReconciliationModule-->TransactionEventsModule
+  OnafriqReconciliationModule-->TransactionsModule
+  OrganizationModule-->UserModule
+  PaymentsModule-->ActionsModule
+  PaymentsModule-->ExcelModule
+  PaymentsModule-->FspsModule
+  PaymentsModule-->PaymentEventsModule
+  PaymentsModule-->ProgramFspConfigurationsModule
+  PaymentsModule-->ProgramModule
+  PaymentsModule-->RedisModule
+  PaymentsModule-->RegistrationDataModule
+  PaymentsModule-->RegistrationEventsModule
+  PaymentsModule-->RegistrationUtilsModule
+  PaymentsModule-->RegistrationsModule
+  PaymentsModule-->TransactionQueuesModule
+  PaymentsModule-->TransactionsModule
+  PaymentsModule-->UserModule
+  ProgramModule-->ActionsModule
+  ProgramModule-->FspsModule
+  ProgramModule-->IntersolveVisaModule
+  ProgramModule-->KoboConnectModule
   ProgramModule-->LookupModule
   ProgramModule-->ProgramAttachmentsModule
   ProgramModule-->ProgramAttributesModule
-  ProgramModule-->KoboConnectModule
   ProgramModule-->ProgramFspConfigurationsModule
-  ProgramModule-->IntersolveVisaModule
-  TransactionsModule-->TransactionEventsModule
-  IntersolveVoucherModule-->MessageQueuesModule
-  IntersolveVoucherModule-->MessageTemplateModule
-  IntersolveVoucherModule-->RegistrationDataModule
-  IntersolveVoucherModule-->RegistrationUtilsModule
-  IntersolveVoucherModule-->RedisModule
-  IntersolveVoucherModule-->QueuesRegistryModule
-  CronjobModule-->IntersolveVoucherReconciliationModule
-  IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
-  IntersolveVoucherReconciliationModule-->ProgramModule
-  IntersolveVoucherReconciliationModule-->ProgramFspConfigurationsModule
-  CronjobModule-->CommercialBankEthiopiaReconciliationModule
-  CommercialBankEthiopiaReconciliationModule-->CommercialBankEthiopiaModule
-  CommercialBankEthiopiaReconciliationModule-->RegistrationsModule
-  RegistrationsModule-->UserModule
-  RegistrationsModule-->LookupModule
+  ProgramModule-->UserModule
+  RegistrationEventsModule-->UserModule
+  RegistrationUtilsModule-->RegistrationDataModule
   RegistrationsModule-->ActionsModule
-  RegistrationsModule-->ProgramModule
   RegistrationsModule-->FspsModule
-  RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->IntersolveVisaModule
-  RegistrationsModule-->RegistrationDataModule
-  RegistrationsModule-->RegistrationUtilsModule
-  RegistrationsModule-->RegistrationEventsModule
+  RegistrationsModule-->LookupModule
+  RegistrationsModule-->MessageQueuesModule
   RegistrationsModule-->ProgramFspConfigurationsModule
+  RegistrationsModule-->ProgramModule
   RegistrationsModule-->QueuesRegistryModule
   RegistrationsModule-->MessageTemplateModule
   CronjobModule-->NedbankReconciliationModule
@@ -131,31 +186,45 @@ graph LR
   TransactionJobsModule-->IntersolveVoucherModule
   TransactionJobsModule-->SafaricomModule
   SafaricomModule-->RedisModule
+  RegistrationsModule-->RegistrationDataModule
+  RegistrationsModule-->RegistrationEventsModule
+  RegistrationsModule-->RegistrationUtilsModule
+  RegistrationsModule-->UserModule
   SafaricomModule-->QueuesRegistryModule
+  SafaricomModule-->RedisModule
+  SafaricomReconciliationModule-->QueuesRegistryModule
+  SafaricomReconciliationModule-->RedisModule
+  SafaricomReconciliationModule-->SafaricomModule
+  SafaricomReconciliationModule-->TransactionEventsModule
+  SafaricomReconciliationModule-->TransactionsModule
   TransactionJobsModule-->AirtelModule
-  AirtelModule-->RedisModule
-  AirtelModule-->QueuesRegistryModule
-  TransactionJobsModule-->NedbankModule
-  TransactionJobsModule-->ProgramFspConfigurationsModule
-  TransactionJobsModule-->OnafriqModule
   TransactionJobsModule-->CommercialBankEthiopiaModule
   TransactionJobsModule-->ExcelModule
-  TransactionJobsModule-->RegistrationsModule
-  TransactionJobsModule-->ProgramModule
-  TransactionJobsModule-->TransactionsModule
-  TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->FspsModule
-  TransactionJobsModule-->RegistrationEventsModule
+  TransactionJobsModule-->IntersolveVisaModule
+  TransactionJobsModule-->IntersolveVoucherModule
+  TransactionJobsModule-->MessageQueuesModule
   TransactionJobsModule-->MessageTemplateModule
+  TransactionJobsModule-->NedbankModule
+  TransactionJobsModule-->OnafriqModule
+  TransactionJobsModule-->ProgramFspConfigurationsModule
+  TransactionJobsModule-->ProgramModule
+  TransactionJobsModule-->RedisModule
+  TransactionJobsModule-->RegistrationEventsModule
+  TransactionJobsModule-->RegistrationsModule
+  TransactionJobsModule-->SafaricomModule
   TransactionJobsModule-->TransactionEventsModule
-  ExcelReconcilicationModule-->ActionsModule
-  ExcelReconcilicationModule-->TransactionsModule
-  ExcelReconcilicationModule-->ExcelModule
-  ExcelReconcilicationModule-->RegistrationsModule
-  ExcelReconcilicationModule-->PaymentsModule
-  SafaricomReconciliationModule-->SafaricomModule
-  SafaricomReconciliationModule-->RedisModule
-  SafaricomReconciliationModule-->TransactionsModule
-  SafaricomReconciliationModule-->TransactionEventsModule
-  SafaricomReconciliationModule-->QueuesRegistryModule
+  TransactionJobsModule-->TransactionsModule
+  TransactionQueuesModule-->QueuesRegistryModule
+  TransactionQueuesModule-->RedisModule
+  TransactionsModule-->ActionsModule
+  TransactionsModule-->MessageQueuesModule
+  TransactionsModule-->MessageTemplateModule
+  TransactionsModule-->RegistrationUtilsModule
+  TransactionsModule-->TransactionEventsModule
+  TransactionsModule-->UserModule
+  UserModule-->EmailsModule
+  WhatsappModule-->ImageCodeModule
+  WhatsappModule-->MessageTemplateModule
+  WhatsappModule-->UserModule
 ```

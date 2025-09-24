@@ -28,6 +28,7 @@ import { RegistrationDataModule } from '@121-service/src/registration/modules/re
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
+import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -56,6 +57,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     ProgramFspConfigurationsModule,
     RedisModule,
     PaymentEventsModule,
+    RegistrationEventsModule,
   ],
   providers: [
     PaymentsExecutionService,
