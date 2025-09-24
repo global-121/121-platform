@@ -34,9 +34,12 @@ import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
+import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { TestController } from '@121-service/src/utils/test-helpers/test.controller';
 
 @Module({
@@ -44,7 +47,11 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
   imports: [
     QueuesRegistryModule,
     TypeOrmModule,
-    TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
+    TypeORMNestJS.forFeature([
+      ProgramAidworkerAssignmentEntity,
+      UserRoleEntity,
+      PermissionEntity,
+    ]),
     HealthModule,
     CronjobModule,
     ExchangeRatesModule,
@@ -102,12 +109,20 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
       provide: APP_INTERCEPTOR,
       useClass: ProgramExistenceInterceptor,
     },
+    PermissionMaintenanceService,
   ],
 })
 export class ApplicationModule implements OnApplicationBootstrap {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    private permissionMaintenanceService: PermissionMaintenanceService,
+  ) {}
 
-  async onApplicationBootstrap(): Promise<void> {
+  public async onApplicationBootstrap(): Promise<void> {
+    // Always start with running (all) migrations (not handled automatically via TypeORM)
     await this.dataSource.runMigrations();
+
+    // Any additional bootstrap tasks only AFTER successful migrations
+    await this.permissionMaintenanceService.removeExtraneousPermissions();
   }
 }
