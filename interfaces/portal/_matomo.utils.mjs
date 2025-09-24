@@ -19,7 +19,7 @@ export const parseMatomoConnectionString = (connectionString) => {
     let [key, value] = part.split('=');
 
     key = key?.toLowerCase().trim();
-    value = value?.toLowerCase().trim();
+    value = value?.trim();
 
     if (Object.keys(connection).includes(key)) {
       connection[key] = value;
