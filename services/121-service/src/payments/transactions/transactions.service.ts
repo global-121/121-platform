@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
-import { Equal, InsertResult, QueryRunner, Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
@@ -13,12 +13,9 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
-import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 @Injectable()
 export class TransactionsService {
   @InjectRepository(TwilioMessageEntity)
@@ -27,8 +24,6 @@ export class TransactionsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly programRepository: ProgramRepository,
-    private readonly registrationEventsService: RegistrationEventsService,
     private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
@@ -173,229 +168,46 @@ export class TransactionsService {
     }
   }
 
-  public async createTransactionAndUpdateRegistrationBulk({
+  public async createTransactionsAndEventsBulk({
     paymentJobCreationDetails,
-    programId,
     paymentId,
     userId,
-    isRetry,
   }: {
     paymentJobCreationDetails: PaymentJobCreationDetails[];
-    programId: number;
     paymentId: number;
     userId: number;
-    isRetry: boolean;
   }): Promise<Map<number, number>> {
-    if (paymentJobCreationDetails.length === 0) {
-      return new Map();
+    const transactionsToSave: TransactionEntity[] = [];
+    for (const item of paymentJobCreationDetails) {
+      const transactionToSave = new TransactionEntity();
+      transactionToSave.registrationId = item.registrationId;
+      transactionToSave.transferValue = item.transactionAmount;
+      transactionToSave.paymentId = paymentId;
+      transactionToSave.status = TransactionStatusEnum.created;
+      transactionToSave.userId = userId;
+      transactionsToSave.push(transactionToSave);
     }
 
-    const queryRunner =
-      this.transactionScopedRepository.manager.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const insertResult = await this.createTransactionsBulk({
-        paymentJobCreationDetails,
-        paymentId,
-        userId,
-        queryRunner,
-      });
-
-      const transactionIdByRegistrationId = new Map<number, number>();
-      insertResult.raw.forEach(
-        (row: { id: number; registrationId: number }) => {
-          transactionIdByRegistrationId.set(row.registrationId, row.id);
-        },
-      );
-
-      const eventsInput = paymentJobCreationDetails.map((i) => ({
-        transactionId: transactionIdByRegistrationId.get(i.registrationId)!,
-        userId,
-        type: TransactionEventType.created,
-        description: TransactionEventDescription.created,
-        programFspConfigurationId: i.programFspConfigurationId,
-      }));
-      await this.transactionEventsService.createEventsBulk(
-        eventsInput,
-        queryRunner.manager,
-      );
-
-      if (!isRetry) {
-        const updatedCounts = await this.updateAndGetPaymentCountBulk(
-          paymentJobCreationDetails,
-          queryRunner,
-        );
-
-        await this.setStatusToCompleteIfApplicableBulk({
-          updatedCounts,
-          programId,
-          queryRunner,
-        });
-      }
-
-      await queryRunner.commitTransaction();
-      return new Map(Array.from(transactionIdByRegistrationId.entries()));
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-  private async createTransactionsBulk({
-    paymentJobCreationDetails,
-    paymentId,
-    userId,
-    queryRunner,
-  }: {
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
-    paymentId: number;
-    userId: number;
-    queryRunner: QueryRunner;
-  }): Promise<InsertResult> {
-    const transactionValues = paymentJobCreationDetails.map((i) => ({
-      transferValue: i.transactionAmount,
-      registrationId: i.registrationId,
-      paymentId,
-      status: TransactionStatusEnum.created,
-      userId,
-    }));
-    const insertResult = await queryRunner.manager
-      .createQueryBuilder()
-      .insert()
-      .into(TransactionEntity)
-      .values(transactionValues)
-      .returning(['id', 'registrationId'])
-      .execute();
-    return insertResult;
-  }
-
-  private async updateAndGetPaymentCountBulk(
-    paymentJobCreationDetails: PaymentJobCreationDetails[],
-    queryRunner: QueryRunner,
-  ): Promise<
-    {
-      registrationId: number;
-      newCount: number;
-      maxPayments: number | null;
-      currentStatus: RegistrationStatusEnum;
-    }[]
-  > {
-    const registrationIds = [
-      ...new Set(paymentJobCreationDetails.map((i) => i.registrationId)),
-    ];
-    const existingCountsRaw = await queryRunner.manager
-      .createQueryBuilder()
-      .select('r.id', 'registrationId')
-      .addSelect('r."paymentCount"', 'paymentCount')
-      .addSelect('r."registrationStatus"', 'registrationStatus')
-      .addSelect('r."maxPayments"', 'maxPayments')
-      .from('registration', 'r')
-      .where('r.id IN (:...ids)', { ids: registrationIds })
-      .getRawMany<{
-        registrationId: number;
-        paymentCount: number | null;
-        registrationStatus: RegistrationStatusEnum;
-        maxPayments: number | null;
-      }>();
-
-    const paymentCountIncrements = new Map<number, number>();
-    for (const id of registrationIds) {
-      paymentCountIncrements.set(id, (paymentCountIncrements.get(id) ?? 0) + 1);
+    for (const transaction of transactionsToSave) {
+      const transactionEvent = new TransactionEventEntity();
+      transactionEvent.type = TransactionEventType.created;
+      transactionEvent.description = TransactionEventDescription.created;
+      transactionEvent.isSuccessfullyCompleted = true;
+      transactionEvent.userId = userId;
+      transaction.transactionEvents = [transactionEvent];
     }
 
-    const updatedCounts = existingCountsRaw.map((r) => {
-      const increment = paymentCountIncrements.get(r.registrationId) ?? 0;
-      const newCount = (r.paymentCount ?? 0) + increment;
-      return {
-        registrationId: r.registrationId,
-        newCount,
-        maxPayments: r.maxPayments,
-        currentStatus: r.registrationStatus,
-      };
-    });
-
-    const updatesNeedingCount = updatedCounts.filter(
-      (u) =>
-        u.newCount !==
-        (existingCountsRaw.find((e) => e.registrationId === u.registrationId)
-          ?.paymentCount ?? 0),
+    const savedTransactions = await this.transactionScopedRepository.save(
+      transactionsToSave,
+      {
+        chunk: 2000,
+      },
     );
-    if (updatesNeedingCount.length > 0) {
-      const ids: number[] = [];
-      const caseFragments: string[] = [];
-      for (const u of updatesNeedingCount) {
-        ids.push(u.registrationId);
-        caseFragments.push(`WHEN ${u.registrationId} THEN ${u.newCount}`);
-      }
-      const caseExpression = `CASE id ${caseFragments.join(' ')} ELSE "paymentCount" END`;
 
-      // this is unscoped as desired
-      await queryRunner.manager
-        .createQueryBuilder()
-        .update(RegistrationEntity)
-        .set({
-          paymentCount: () => caseExpression,
-        })
-        .whereInIds(ids)
-        .execute();
-    }
-    return updatedCounts;
-  }
-
-  private async setStatusToCompleteIfApplicableBulk({
-    updatedCounts,
-    programId,
-    queryRunner,
-  }: {
-    updatedCounts: {
-      registrationId: number;
-      newCount: number;
-      maxPayments: number | null;
-      currentStatus: RegistrationStatusEnum;
-    }[];
-    programId: number;
-    queryRunner: QueryRunner;
-  }): Promise<void> {
-    const program = await this.programRepository.findByIdOrFail(programId);
-    if (program.enableMaxPayments) {
-      const newlyCompleted = updatedCounts.filter(
-        (u) =>
-          u.maxPayments !== null &&
-          u.maxPayments !== undefined &&
-          u.newCount >= (u.maxPayments ?? Infinity) &&
-          u.currentStatus !== RegistrationStatusEnum.completed,
-      );
-
-      if (newlyCompleted.length > 0) {
-        const completeIds = newlyCompleted.map((n) => n.registrationId);
-        await queryRunner.manager
-          .createQueryBuilder()
-          .update('registration')
-          .set({ registrationStatus: RegistrationStatusEnum.completed })
-          .where('id IN (:...ids)', { ids: completeIds })
-          .execute();
-
-        for (const reg of newlyCompleted) {
-          await this.registrationEventsService.createFromRegistrationViews(
-            {
-              id: reg.registrationId,
-              status: updatedCounts.find(
-                (e) => e.registrationId === reg.registrationId,
-              )?.currentStatus,
-            },
-            {
-              id: reg.registrationId,
-              status: RegistrationStatusEnum.completed,
-            },
-            {
-              explicitRegistrationPropertyNames: ['status'],
-            },
-          );
-        }
-      }
-    }
+    const transactionIdByRegistrationId = new Map<number, number>();
+    savedTransactions.forEach((row: { id: number; registrationId: number }) => {
+      transactionIdByRegistrationId.set(row.registrationId, row.id);
+    });
+    return transactionIdByRegistrationId;
   }
 }
