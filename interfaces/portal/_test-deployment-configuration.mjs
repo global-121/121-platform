@@ -104,7 +104,7 @@ test(
   { skip: !process.env.MATOMO_CONNECTION_STRING },
   () => {
     const matomoConnectionInfo = parseMatomoConnectionString(
-      process.env.MATOMO_CONNECTION_STRING ?? '',
+      process.env.MATOMO_CONNECTION_STRING,
     );
 
     const matomoApiOrigin = new URL(matomoConnectionInfo.api).origin;
