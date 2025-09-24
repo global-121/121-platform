@@ -76,6 +76,13 @@ export class ProjectSettingsBasicInformationComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
+  readonly canEdit = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.ProgramUPDATE,
+    }),
+  );
+
   formGroup = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
@@ -174,13 +181,6 @@ export class ProjectSettingsBasicInformationComponent {
       void this.registrationsTableColumnService.invalidateCache(this.projectId);
     },
   }));
-
-  readonly canEdit = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.ProgramUPDATE,
-    }),
-  );
 
   readonly tooltipTargetRegistrations = $localize`The amount of people/ households your project wishes to reach.`;
   readonly tooltipValidationProcess = $localize`Turning on the validation option enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`;
