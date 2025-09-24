@@ -62,6 +62,17 @@ class BasePage {
     }).toPass({ timeout: 5000 });
   }
 
+  async navigateToProgramSettingsPage(
+    pageName: 'Project information' | 'Project team',
+  ) {
+    await this.navigateToProgramPage('Settings');
+    const link = this.page.getByRole('link', { name: pageName });
+    await expect(async () => {
+      await expect(link).toBeVisible();
+      await link.click();
+    }).toPass({ timeout: 5000 });
+  }
+
   async selectProgram(programName: string) {
     await this.page.getByRole('link', { name: programName }).click();
   }

@@ -9,16 +9,18 @@
       </h1>
       <ul class="space-y-3">
         @for (item of menuItems(); track $index) {
-          <li>
-            <a
-              [routerLink]="item.routerLink"
-              routerLinkActive="text-purple !border-l-purple"
-              class="txt-body-m hover:text-purple focus:text-purple flex items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
-            >
-              <i [class]="item.icon"></i>
-              {{ item.label }}
-            </a>
-          </li>
+          @if (item.visible) {
+            <li>
+              <a
+                [routerLink]="item.routerLink"
+                routerLinkActive="text-purple !border-l-purple"
+                class="txt-body-m hover:text-purple focus:text-purple flex items-center gap-2 border-l border-l-transparent ps-1 font-semibold text-black"
+              >
+                <i [class]="item.icon"></i>
+                {{ item.label }}
+              </a>
+            </li>
+          }
         }
       </ul>
     </aside>

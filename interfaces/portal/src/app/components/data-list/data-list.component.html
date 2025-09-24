@@ -32,9 +32,17 @@
             @switch (item.type) {
               @case ('boolean') {
                 @if (item.value) {
-                  <span i18n="@@generic-boolean-true">Yes</span>
+                  <span
+                    i18n="@@generic-boolean-true"
+                    class="ms-1"
+                    >Yes</span
+                  >
                 } @else {
-                  <span i18n="@@generic-boolean-false">No</span>
+                  <span
+                    i18n="@@generic-boolean-false"
+                    class="ms-1"
+                    >No</span
+                  >
                 }
               }
               @case ('currency') {
@@ -47,7 +55,7 @@
                 }}
               }
               @case ('date') {
-                {{ item.value | date }}
+                {{ item.value | date: 'longDate' }}
               }
               @case ('number') {
                 {{ item.value | number }}

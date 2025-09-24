@@ -1,0 +1,92 @@
+<app-card-editable
+  header="Budget"
+  i18n-header="@@card-title-project-settings-budget"
+  editPencilTitle="Edit budget"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateProjectMutation"
+  [mutationData]="formGroup.getRawValue()"
+>
+  @if (!isEditing()) {
+    <app-data-list
+      [data]="dataListData()"
+      data-testid="project-budget-data-list"
+    />
+  } @else {
+    <ng-container [formGroup]="formGroup">
+      <div class="flex w-full flex-row gap-4 [&>*]:w-1/2">
+        <app-form-field-wrapper
+          label="Funds available"
+          i18n-label
+          [errorMessage]="formFieldErrors()('budget')"
+        >
+          <input
+            pInputText
+            type="number"
+            formControlName="budget"
+            placeholder="Funds available"
+            i18n-placeholder
+          />
+        </app-form-field-wrapper>
+        <app-form-field-wrapper
+          label="Currency"
+          i18n-label
+          [errorMessage]="formFieldErrors()('currency')"
+          [labelTooltip]="tooltipCurrency"
+          [isRequired]="true"
+        >
+          <input
+            pInputText
+            type="text"
+            formControlName="currency"
+            placeholder="3 letter code, e.g. EUR"
+            i18n-placeholder
+          />
+        </app-form-field-wrapper>
+      </div>
+      <app-form-field-wrapper
+        label="Payment frequency"
+        i18n-label
+        [errorMessage]="formFieldErrors()('distributionFrequency')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="distributionFrequency"
+          placeholder="Payment frequency"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Default transfers per registration"
+        i18n-label
+        [errorMessage]="formFieldErrors()('distributionDuration')"
+        [labelTooltip]="tooltipDistributionDuration"
+      >
+        <input
+          pInputText
+          type="number"
+          formControlName="distributionDuration"
+          placeholder="Default transfers per registration"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Fixed transfer value"
+        i18n-label
+        [errorMessage]="formFieldErrors()('fixedTransferValue')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="number"
+          formControlName="fixedTransferValue"
+          placeholder="Fixed transfer value"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+    </ng-container>
+  }
+</app-card-editable>

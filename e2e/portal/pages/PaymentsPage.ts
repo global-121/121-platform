@@ -4,6 +4,8 @@ import { Locator, Page } from 'playwright';
 import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 
+import { PrimeNGDatePicker } from '../components/PrimeNGDatePicker';
+
 class PaymentsPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
@@ -15,8 +17,8 @@ class PaymentsPage extends BasePage {
   readonly paymentSummaryMetrics: Locator;
   readonly paymentSummaryWithInstructions: Locator;
   readonly exportButton: Locator;
-  readonly dateRangeStartInput: Locator;
-  readonly dateRangeEndInput: Locator;
+  readonly dateRangeStartInput: PrimeNGDatePicker;
+  readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly noteInput: Locator;
 
   constructor(page: Page) {
@@ -43,11 +45,17 @@ class PaymentsPage extends BasePage {
     this.exportButton = this.page.getByRole('button', {
       name: 'Export',
     });
-    this.dateRangeStartInput = this.page.getByRole('combobox', {
-      name: 'Start Date',
+    this.dateRangeStartInput = new PrimeNGDatePicker({
+      page: this.page,
+      datePicker: this.page.getByRole('combobox', {
+        name: 'Start Date',
+      }),
     });
-    this.dateRangeEndInput = this.page.getByRole('combobox', {
-      name: 'End Date',
+    this.dateRangeEndInput = new PrimeNGDatePicker({
+      page: this.page,
+      datePicker: this.page.getByRole('combobox', {
+        name: 'End Date',
+      }),
     });
     this.noteInput = this.page.locator('input[formControlName="note"]');
   }
@@ -204,12 +212,10 @@ class PaymentsPage extends BasePage {
     await this.exportButton.click();
     await this.page.getByRole('menuitem', { name: option }).click();
     if (dateRange) {
-      await this.navigateToDateInPicker(
-        this.dateRangeStartInput,
-        dateRange.start,
-      );
-      await this.page.waitForTimeout(500); // Wait for datePicker to be set
-      await this.navigateToDateInPicker(this.dateRangeEndInput, dateRange.end);
+      await this.dateRangeStartInput.selectDate({
+        targetDate: dateRange.start,
+      });
+      await this.dateRangeEndInput.selectDate({ targetDate: dateRange.end });
     }
   }
 

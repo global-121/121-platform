@@ -9,7 +9,7 @@ import {
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
+import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
 
 const expectedAssignedUsers = ['admin@example.org', 'cva-officer@example.org'];
 const userSearchPhrase = 'cva-officer';
@@ -33,12 +33,12 @@ test.beforeEach(async ({ page }) => {
 
 test('[29759] Assign successfully roles to a user ', async ({ page }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeam(page);
+  const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
     await basePage.selectProgram(projectTitle);
-    await basePage.navigateToProgramPage('Settings');
+    await basePage.navigateToProgramSettingsPage('Project team');
   });
 
   await test.step('Validate available system users are visible', async () => {

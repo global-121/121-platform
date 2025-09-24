@@ -26,6 +26,7 @@ export enum AppRoutes {
   projectRegistrations = 'registrations',
   projects = 'projects',
   projectSettings = 'settings',
+  projectSettingsInformation = 'information',
   projectSettingsTeam = 'team',
   registrationByReferenceId = 'registration-by-reference-id',
   registrationLookup = 'registration-lookup',
@@ -151,6 +152,20 @@ export const routes: Routes = [
         title: $localize`:@@page-title-project-settings:Settings`,
         children: [
           {
+            path: AppRoutes.projectSettingsInformation,
+            title:
+              $localize`Project information` +
+              ' | ' +
+              $localize`:@@page-title-project-settings:Settings`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-settings-information/project-settings-information.page'
+              ).then((x) => x.ProjectSettingsInformationPageComponent),
+            canActivate: [
+              projectPermissionsGuard(PermissionEnum.ProgramUPDATE),
+            ],
+          },
+          {
             path: AppRoutes.projectSettingsTeam,
             title:
               $localize`:@@page-title-project-settings-team:Project team` +
@@ -160,15 +175,15 @@ export const routes: Routes = [
               import(
                 '~/pages/project-settings-team/project-settings-team.page'
               ).then((x) => x.ProjectSettingsTeamPageComponent),
+            canActivate: [
+              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+            ],
           },
           {
             path: ``,
             pathMatch: 'full',
-            redirectTo: AppRoutes.projectSettingsTeam,
+            redirectTo: AppRoutes.projectSettingsInformation,
           },
-        ],
-        canActivate: [
-          projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
         ],
       },
       {

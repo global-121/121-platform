@@ -1,0 +1,132 @@
+<app-card-editable
+  header="Basic information"
+  i18n-header="@@card-title-project-settings-basic-information"
+  editPencilTitle="Edit basic information"
+  i18n-editPencilTitle
+  [canEdit]="canEdit()"
+  [(isEditing)]="isEditing"
+  [formGroup]="formGroup"
+  [mutation]="updateProjectMutation"
+  [mutationData]="formGroup.getRawValue()"
+>
+  <p
+    i18n
+    class="mb-4"
+  >
+    Enter the basic details of your project, these details will define your
+    project's setup and structure.
+  </p>
+
+  @if (!isEditing()) {
+    <app-data-list
+      [data]="projectBasicInformationData()"
+      data-testid="project-basic-information-data-list"
+    />
+  } @else {
+    <ng-container [formGroup]="formGroup">
+      <app-form-field-wrapper
+        label="Project name"
+        i18n-label
+        [errorMessage]="formFieldErrors()('name')"
+        [isRequired]="true"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="name"
+          placeholder="Project name"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Project description"
+        i18n-label
+        [errorMessage]="formFieldErrors()('description')"
+      >
+        <textarea
+          rows="5"
+          pTextarea
+          formControlName="description"
+          autocomplete="off"
+          placeholder="Hint text..."
+          i18n-placeholder
+        ></textarea>
+      </app-form-field-wrapper>
+      <div class="flex w-full flex-row gap-4 [&>*]:w-1/2">
+        <app-form-field-wrapper
+          label="Start Date"
+          i18n-label
+        >
+          <p-datepicker
+            formControlName="startDate"
+            appendTo="body"
+          />
+        </app-form-field-wrapper>
+
+        <app-form-field-wrapper
+          label="End Date"
+          i18n-label
+        >
+          <p-datepicker
+            formControlName="endDate"
+            appendTo="body"
+          />
+        </app-form-field-wrapper>
+      </div>
+      <app-form-field-wrapper
+        label="Location"
+        i18n-label
+        [errorMessage]="formFieldErrors()('location')"
+      >
+        <input
+          pInputText
+          type="text"
+          formControlName="location"
+          placeholder="Location"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <app-form-field-wrapper
+        label="Target registrations"
+        i18n-label
+        [errorMessage]="formFieldErrors()('targetNrRegistrations')"
+        [isRequired]="true"
+        [labelTooltip]="tooltipTargetRegistrations"
+      >
+        <input
+          pInputText
+          type="number"
+          formControlName="targetNrRegistrations"
+          placeholder="Target registrations"
+          i18n-placeholder
+        />
+      </app-form-field-wrapper>
+      <div class="mt-4 flex justify-items-center">
+        <p-toggleSwitch
+          inputId="validation"
+          formControlName="validation"
+        />
+        <label
+          class="ms-2 me-1"
+          for="validation"
+          i18n
+          >Use "validation" in this project</label
+        >
+        <app-info-tooltip [message]="tooltipValidationProcess" />
+      </div>
+      <div class="mt-4 flex justify-items-center">
+        <p-toggleSwitch
+          inputId="enableScope"
+          formControlName="enableScope"
+        />
+        <label
+          class="ms-2 me-1"
+          for="enableScope"
+          i18n
+          >Use "scope" in this project</label
+        >
+        <app-info-tooltip [message]="tooltipEnableScope" />
+      </div>
+    </ng-container>
+  }
+</app-card-editable>
