@@ -534,7 +534,6 @@ export class RegistrationsController {
       paginateQuery: query,
       programId,
       dryRun: dryRunBoolean,
-      userId,
       reason: body.reason,
     });
 
