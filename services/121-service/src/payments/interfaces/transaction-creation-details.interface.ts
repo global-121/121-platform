@@ -7,10 +7,13 @@ export interface PaymentJobCreationDetailsBase {
   transactionAmount: number;
   transactionId?: number; // only added after creating the transaction
 }
-export interface PaymentJobCreationDetails
-  extends PaymentJobCreationDetailsBase {
+
+export interface TransactionCreationDetails {
   registrationId: number;
   registrationMaxPayments: number | null;
   registrationStatus: RegistrationStatusEnum;
   programFspConfigurationId: number;
+  referenceId: string;
+  fspName: Fsps;
+  transactionAmount: number;
 }
