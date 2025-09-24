@@ -114,7 +114,7 @@ describe('RegistrationBulkService', () => {
       // Act
       // Assert
       await expect(
-        registrationsBulkService.postMessages(
+        registrationsBulkService.sendMessagesOrDryRun(
           paginateQuery,
           programId,
           'randomMessage',
@@ -129,14 +129,15 @@ describe('RegistrationBulkService', () => {
       // Arrange
 
       // Act
-      const postMessageResult = await registrationsBulkService.postMessages(
-        paginateQuery,
-        programId,
-        'randomMessage',
-        RegistrationStatusEnum.new,
-        true,
-        userId,
-      );
+      const postMessageResult =
+        await registrationsBulkService.sendMessagesOrDryRun(
+          paginateQuery,
+          programId,
+          'randomMessage',
+          RegistrationStatusEnum.new,
+          true,
+          userId,
+        );
       // Assert
       expect(postMessageResult).toBeDefined();
       expect(postMessageResult).toStrictEqual({
@@ -149,14 +150,15 @@ describe('RegistrationBulkService', () => {
 
     it('should return result and add messages to queue', async () => {
       // Act
-      const postMessageResult = await registrationsBulkService.postMessages(
-        paginateQuery,
-        programId,
-        'randomMessage',
-        RegistrationStatusEnum.new,
-        false,
-        userId,
-      );
+      const postMessageResult =
+        await registrationsBulkService.sendMessagesOrDryRun(
+          paginateQuery,
+          programId,
+          'randomMessage',
+          RegistrationStatusEnum.new,
+          false,
+          userId,
+        );
 
       // Assert
       expect(postMessageResult).toBeDefined();

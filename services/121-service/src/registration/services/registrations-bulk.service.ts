@@ -151,7 +151,7 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  public async postMessages(
+  public async sendMessagesOrDryRun(
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
@@ -183,7 +183,7 @@ export class RegistrationsBulkService {
 
     if (!dryRun) {
       const chunkSize = 10000;
-      this.sendMessagesBatch(
+      this.applySendMessages(
         paginateQuery,
         programId,
         message,
@@ -199,7 +199,7 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  private async sendMessagesBatch(
+  private async applySendMessages(
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
@@ -237,7 +237,7 @@ export class RegistrationsBulkService {
           false,
           this.getBaseQuery(),
         );
-      this.sendTextMessagePerChunk({
+      this.sendMessagesPerChunk({
         registrations: registrationsForUpdate.data,
         messageContentDetails,
         bulksize: bulkSize,
@@ -509,7 +509,7 @@ export class RegistrationsBulkService {
     const chunks = chunk(registrationsToSendMessageTo, 10000);
 
     for (const registrationChunk of chunks) {
-      await this.sendTextMessagePerChunk({
+      await this.sendMessagesPerChunk({
         registrations: registrationChunk,
         userId,
         bulksize: registrationChunk.length,
@@ -682,7 +682,7 @@ export class RegistrationsBulkService {
     );
   }
 
-  private async sendTextMessagePerChunk({
+  private async sendMessagesPerChunk({
     registrations,
     messageContentDetails,
     bulksize,

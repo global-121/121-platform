@@ -617,7 +617,7 @@ export class RegistrationsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.registrationsBulkService.postMessages(
+    const result = await this.registrationsBulkService.sendMessagesOrDryRun(
       query,
       programId,
       body.message,
