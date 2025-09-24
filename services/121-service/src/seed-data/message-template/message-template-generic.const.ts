@@ -33,4 +33,12 @@ export const messageTemplateGeneric: SeedMessageTemplateConfig = {
       nl: 'Dummy text NL: whatsappReply',
     },
   },
+  new: {
+    isSendMessageTemplate: false,
+    isWhatsappTemplate: false,
+    message: {
+      en: 'Welcome to our program. Within a couple of days your request will be validated.',
+      nl: 'Welkom bij dit programma. Binnen enkele dagen zal uw verzoek worden behandeld.',
+    },
+  },
 };

@@ -91,4 +91,12 @@ export const messageTemplateNlrcOcw: SeedMessageTemplateConfig = {
       tr: 'Sevgili veli/bakıcı, alışveriş kartınızın blokajı açıldı. Kartı yeniden kullanabilirsiniz. Sorunuz var mı? 097 010 204 851 numaralı telefonu arayın ya da Whatsapp mesajı gönderin. Okul Öğünleri',
     },
   },
+  new: {
+    isSendMessageTemplate: false,
+    isWhatsappTemplate: false,
+    message: {
+      en: 'Welcome to our program. Within a couple of days your request will be validated.',
+      nl: 'Welkom bij dit programma. Binnen enkele dagen zal uw verzoek worden behandeld.',
+    },
+  },
 };
