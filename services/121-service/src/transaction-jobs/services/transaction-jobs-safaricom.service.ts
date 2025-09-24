@@ -45,7 +45,7 @@ export class TransactionJobsSafaricomService {
     );
 
     // 3. Create or update Safaricom Transfer with originatorConversationId
-    await this.createOrUpdateSafaricomTransferIfNeeded(
+    await this.upsertSafaricomTransfer(
       originatorConversationId,
       transactionJob,
     );
@@ -93,24 +93,11 @@ export class TransactionJobsSafaricomService {
     );
   }
 
-  // ##TODO this code is exactly equal to onafriq code. Share more?
-  private async createOrUpdateSafaricomTransferIfNeeded(
+  private async upsertSafaricomTransfer(
     originatorConversationId: string,
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
-    const safaricomTransferWithSameOriginatorConversationId =
-      await this.safaricomTransferScopedRepository.findOne({
-        where: {
-          originatorConversationId: Equal(originatorConversationId),
-        },
-      });
-
-    // if found (implies: queue-retry), no action needed. Continue with trying API-request with existing originatorConversationId, which will be blocked by Onafriq API or not, depending on prior use.
-    if (safaricomTransferWithSameOriginatorConversationId) {
-      return;
-    }
-
-    // .. if not found: check for existing Safaricom Transfer with the same transactionId ..
+    // Check for existing Safaricom Transactions with the same transactionId
     const safaricomTransferWithSameTransactionId =
       await this.safaricomTransferScopedRepository.findOne({
         where: {
@@ -118,7 +105,7 @@ export class TransactionJobsSafaricomService {
         },
       });
 
-    // .. if found (implies: payment-retry), update existing Safaricom Transfer with new originatorConversationId
+    // .. if found (implies: payment-retry or queue-retry), update existing Safaricom Transfer with originatorConversationId. In case of queue-retry the originatorConversationId is the same, so the update is not needed. But this leads to easier code.
     if (safaricomTransferWithSameTransactionId) {
       await this.safaricomTransferScopedRepository.update(
         {
@@ -131,7 +118,7 @@ export class TransactionJobsSafaricomService {
       return;
     }
 
-    // .. if not found (implies: also nor queue-retry nor payment-retry), create new Safaricom Transfer
+    // .. if not found, create new Safaricom Transfer
     const newSafaricomTransfer = new SafaricomTransferEntity();
     newSafaricomTransfer.originatorConversationId = originatorConversationId;
     newSafaricomTransfer.transactionId = transactionJob.transactionId;
