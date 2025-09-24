@@ -122,7 +122,7 @@ export class ApplicationModule implements OnApplicationBootstrap {
     // Always start with running (all) migrations (not handled automatically via TypeORM)
     await this.dataSource.runMigrations();
 
-    // Any additional bootstrap tasks only AFTER succesful migrations
+    // Any additional bootstrap tasks only AFTER successful migrations
     await this.permissionMaintenanceService.removeExtraneousPermissions();
   }
 }
