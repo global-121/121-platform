@@ -52,6 +52,7 @@ export class TransactionEntity extends Base121AuditedEntity {
   @OneToMany(
     () => TransactionEventEntity,
     (transactionEvent) => transactionEvent.transaction,
+    { cascade: true },
   )
   public transactionEvents: Relation<TransactionEventEntity[]>;
 }
