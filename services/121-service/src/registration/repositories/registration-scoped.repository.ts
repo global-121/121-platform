@@ -344,19 +344,6 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return wallets;
   }
 
-  public async updatePaymentCountBulk(
-    registrationIdsToUpdate: number[],
-  ): Promise<void> {
-    await this.repository
-      .createQueryBuilder('registration')
-      .update()
-      .set({
-        paymentCount: () => '"paymentCount" + 1',
-      })
-      .whereInIds(registrationIdsToUpdate)
-      .execute();
-  }
-
   public async getRegistrationsToComplete(
     programId: number,
   ): Promise<RegistrationEntity[]> {

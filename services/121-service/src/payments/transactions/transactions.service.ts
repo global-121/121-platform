@@ -14,7 +14,6 @@ import { TransactionScopedRepository } from '@121-service/src/payments/transacti
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 @Injectable()
 export class TransactionsService {
@@ -24,7 +23,6 @@ export class TransactionsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
   public async getLastTransactions({
@@ -168,17 +166,17 @@ export class TransactionsService {
     }
   }
 
-  public async createTransactionsAndEventsBulk({
-    paymentJobCreationDetails,
+  public async createTransactionsAndEvents({
+    transactionCreationDetails,
     paymentId,
     userId,
   }: {
-    paymentJobCreationDetails: TransactionCreationDetails[];
+    transactionCreationDetails: TransactionCreationDetails[];
     paymentId: number;
     userId: number;
   }): Promise<number[]> {
     const transactionsToSave: TransactionEntity[] = [];
-    for (const item of paymentJobCreationDetails) {
+    for (const item of transactionCreationDetails) {
       const transactionToSave = new TransactionEntity();
       transactionToSave.registrationId = item.registrationId;
       transactionToSave.transferValue = item.transactionAmount;
