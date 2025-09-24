@@ -8,12 +8,13 @@ import { ActionsService } from '@121-service/src/actions/actions.service';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspConfigurationRequiredProperties } from '@121-service/src/fsps/fsp-settings.helpers';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
 import { RetryPaymentJobCreationDetails } from '@121-service/src/payments/interfaces/retry-payment-job-creation-details.interface';
+import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -39,6 +40,7 @@ export class PaymentsExecutionService {
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -198,62 +200,35 @@ export class PaymentsExecutionService {
     return savedPaymentEntity.id;
   }
 
-  private async createTransactionAndEventEntities({
-    userId,
-    programId,
-    paymentId,
-    paymentJobCreationDetails,
-  }: {
-    userId: number;
-    programId: number;
-    paymentId: number;
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
-  }): Promise<PaymentJobCreationDetails[]> {
-    const transactionByRegistrationIdMap =
-      await this.createTransactionAndUpdateRegistrationBulk({
-        paymentJobCreationDetails,
-        programId,
-        paymentId,
-        userId,
-      });
-    for (const item of paymentJobCreationDetails) {
-      const transactionId = transactionByRegistrationIdMap.get(
-        item.registrationId,
-      );
-      item.transactionId = transactionId;
-    }
-    return paymentJobCreationDetails;
-  }
-
-  public async createTransactionAndUpdateRegistrationBulk({
-    paymentJobCreationDetails,
+  public async createTransactionsAndUpdateRegistrations({
+    transactionCreationDetails,
     programId,
     paymentId,
     userId,
   }: {
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
+    transactionCreationDetails: TransactionCreationDetails[];
     programId: number;
     paymentId: number;
     userId: number;
-  }): Promise<Map<number, number>> {
-    if (paymentJobCreationDetails.length === 0) {
-      return new Map();
+  }): Promise<number[]> {
+    if (transactionCreationDetails.length === 0) {
+      return [];
     }
 
-    const transactionIdByRegistrationId =
+    const transactionIds =
       await this.transactionsService.createTransactionsAndEventsBulk({
-        paymentJobCreationDetails,
+        paymentJobCreationDetails: transactionCreationDetails,
         paymentId,
         userId,
       });
 
     await this.registrationScopedRepository.updatePaymentCountBulk(
-      paymentJobCreationDetails.map((i) => i.registrationId),
+      transactionCreationDetails.map((i) => i.registrationId),
     );
 
     await this.setStatusToCompleteIfApplicableBulk(programId);
 
-    return new Map(Array.from(transactionIdByRegistrationId.entries()));
+    return transactionIds;
   }
 
   // TODO: we will likely need to move this to a later stage (upon initiating the payment after approval)
@@ -399,18 +374,16 @@ export class PaymentsExecutionService {
       programId,
     });
 
-    const paymentJobCreationDetailsWithTransactionId =
-      await this.createTransactionAndEventEntities({
-        userId,
-        programId,
-        paymentId,
-        paymentJobCreationDetails,
-      });
-
-    await this.createTransactionJobs({
-      paymentJobCreationDetails: paymentJobCreationDetailsWithTransactionId,
+    const transactionIds = await this.createTransactionsAndUpdateRegistrations({
+      userId,
       programId,
       paymentId,
+      transactionCreationDetails: paymentJobCreationDetails,
+    });
+
+    await this.createTransactionJobs({
+      programId,
+      transactionIds,
       userId,
       isRetry: false,
     });
@@ -480,30 +453,50 @@ export class PaymentsExecutionService {
   }
 
   public async createTransactionJobs({
-    paymentJobCreationDetails,
     programId,
     userId,
+    transactionIds,
     isRetry = false,
   }: {
-    paymentJobCreationDetails: PaymentJobCreationDetailsBase[];
     programId: number;
-    paymentId: number;
+    transactionIds: number[];
     userId: number;
     isRetry?: boolean;
   }): Promise<void> {
-    for (const fspName of Object.values(Fsps)) {
-      const paymentJobCreationDetailsForFsp = paymentJobCreationDetails.filter(
-        (job) => job.fspName === fspName,
-      );
+    // Get transferValue and referenceId from registrations
+    // ##TODO move to transactionScopedRepository
+    const transactionJobCreationDetails = await this.transactionScopedRepository
+      .createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.registration', 'registration')
+      .innerJoinAndSelect('registration.programFspConfiguration', 'fspConfig')
+      .andWhere('transaction.id IN (:...transactionIds)', { transactionIds })
+      .select([
+        'transaction.id as "transactionId"',
+        'transaction.transferValue as "transferValue"',
+        'registration."referenceId" as "referenceId"',
+        'fspConfig."fspName" as "fspName"',
+      ])
+      .getRawMany<{
+        transactionId: number;
+        transferValue: number;
+        referenceId: string;
+        fspName: Fsps;
+      }>();
 
-      if (paymentJobCreationDetailsForFsp.length > 0) {
+    for (const fspName of Object.values(Fsps)) {
+      const transactionJobCreationDetailsForFsp =
+        transactionJobCreationDetails.filter((job) => job.fspName === fspName);
+
+      if (transactionJobCreationDetailsForFsp.length > 0) {
         await this.transactionJobsCreationService.addTransactionJobsForFsp({
           fspName,
-          transactionInputData: paymentJobCreationDetailsForFsp.map((job) => ({
-            referenceId: job.referenceId,
-            transactionAmount: job.transactionAmount,
-            transactionId: job.transactionId!,
-          })),
+          transactionInputData: transactionJobCreationDetailsForFsp.map(
+            (job) => ({
+              referenceId: job.referenceId,
+              transactionAmount: job.transferValue,
+              transactionId: job.transactionId!,
+            }),
+          ),
           userId,
           programId,
           isRetry,
@@ -604,7 +597,7 @@ export class PaymentsExecutionService {
     referenceIds: string[];
     amount: number;
     programId: number;
-  }): Promise<PaymentJobCreationDetails[]> {
+  }): Promise<TransactionCreationDetails[]> {
     const registrations =
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
