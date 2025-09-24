@@ -3,6 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -230,5 +231,31 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       );
     }
     return transactionQuery;
+  }
+
+  public async getTransactionCreationDetails(transactionIds: number[]): Promise<
+    {
+      transactionId: number;
+      transferValue: number;
+      referenceId: string;
+      fspName: Fsps;
+    }[]
+  > {
+    return await this.createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.registration', 'registration')
+      .innerJoinAndSelect('registration.programFspConfiguration', 'fspConfig')
+      .andWhere('transaction.id IN (:...transactionIds)', { transactionIds })
+      .select([
+        'transaction.id as "transactionId"',
+        'transaction.transferValue as "transferValue"',
+        'registration."referenceId" as "referenceId"',
+        '"fspConfig"."fspName" as "fspName"',
+      ])
+      .getRawMany<{
+        transactionId: number;
+        transferValue: number;
+        referenceId: string;
+        fspName: Fsps;
+      }>();
   }
 }
