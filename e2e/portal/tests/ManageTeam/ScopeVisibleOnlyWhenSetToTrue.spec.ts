@@ -4,7 +4,7 @@ import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
+import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
 
 test.beforeEach(async ({ page }) => {
   await resetDB(SeedScript.nlrcMultiple, __filename);
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test('[29761] "Scope" column should only be loaded when "enableScope": is set to true under the program configuration', async ({
   page,
 }) => {
-  const manageTeam = new ProjectTeam(page);
+  const manageTeam = new ProjectTeamPage(page);
 
   await test.step('Navigate to Manage team in PV program and validate scope column is hidden per configuration', async () => {
     await page.goto('/en-GB/project/2/settings/team');

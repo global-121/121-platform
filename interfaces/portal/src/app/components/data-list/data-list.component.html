@@ -55,7 +55,7 @@
                 }}
               }
               @case ('date') {
-                {{ item.value | date }}
+                {{ item.value | date: 'longDate' }}
               }
               @case ('number') {
                 {{ item.value | number }}

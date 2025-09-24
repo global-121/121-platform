@@ -5,7 +5,7 @@ import TableComponent from '@121-e2e/portal/components/TableComponent';
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import { expectedSortedArraysToEqual } from '@121-e2e/portal/utils';
 
-class ProjectTeam extends BasePage {
+class ProjectTeamPage extends BasePage {
   readonly page: Page;
   readonly table: TableComponent;
   readonly addUserFormUsersDropdown: Locator;
@@ -103,4 +103,4 @@ class ProjectTeam extends BasePage {
   }
 }
 
-export default ProjectTeam;
+export default ProjectTeamPage;

@@ -5,7 +5,7 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import BasePage from '@121-e2e/portal/pages/BasePage';
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
-import ProjectTeam from '@121-e2e/portal/pages/ProjectTeam';
+import ProjectTeamPage from '@121-e2e/portal/pages/ProjectTeamPage';
 
 const expectedAssignedUsers = [
   'admin@example.org',
@@ -33,7 +33,7 @@ test('[29748] All users assigned to the project should be visible', async ({
   page,
 }) => {
   const basePage = new BasePage(page);
-  const manageTeam = new ProjectTeam(page);
+  const manageTeam = new ProjectTeamPage(page);
   const projectTitle = 'Cash program Westeros';
 
   await test.step('Select program and navigate to Manage team', async () => {
