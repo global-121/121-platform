@@ -33,4 +33,12 @@ export const messageTemplateGeneric: SeedMessageTemplateConfig = {
       nl: 'Dummy text NL: whatsappReply',
     },
   },
+  completed: {
+    isSendMessageTemplate: false,
+    isWhatsappTemplate: false,
+    message: {
+      en: "You're receiving this message because you've received your last payment from us. If you have any questions, please contact us.",
+      nl: 'U krijgt dit bericht omdat u uw laatste betaling van ons heeft ontvangen. Mocht u hier vragen over hebben kunt u contact met ons opnemen.',
+    },
+  },
 };
