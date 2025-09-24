@@ -71,8 +71,8 @@ npm run test -- tests/<name-of-the-test>.js
 
 For faster CI execution, tests use:
 
-```javascript
-const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
+```shell
+DUPLICATE_NUMBER=5 npm run test -- tests/<name-of-the-test>.js
 ```
 
 This number defines the number of duplicates for both local and CI cron job runs and can be adjusted for testing purposes.
