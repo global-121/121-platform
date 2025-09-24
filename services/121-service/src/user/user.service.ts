@@ -564,39 +564,6 @@ export class UserService {
     return await this.buildUserRO(user, tokenExpiration);
   }
 
-  public async removeExtraneousPermissions(): Promise<void> {
-    const supportedPermissions = Object.values(PermissionEnum);
-    const allPermissions = await this.permissionRepository.find();
-
-    const extraneousPermissions = allPermissions.filter(
-      (permission) =>
-        !supportedPermissions.includes(permission.name as PermissionEnum),
-    );
-
-    if (extraneousPermissions.length === 0) {
-      return;
-    }
-
-    // First, delete related records that reference these permissions
-    await this.userRoleRepository
-      .createQueryBuilder()
-      .relation(UserRoleEntity, 'permissions')
-      .of(extraneousPermissions)
-      .remove(extraneousPermissions);
-
-    // Remove extraneous permissions
-    const response = await this.permissionRepository.remove(
-      extraneousPermissions,
-    );
-    const removedPermissions = response.map((permission) => permission.name);
-
-    console.log(
-      'Extraneous permissions removed:',
-      `${removedPermissions.length} of ${extraneousPermissions.length}`,
-      removedPermissions,
-    );
-  }
-
   public generateJWT(user: UserEntity): string {
     const today = new Date();
     const exp = new Date(today);

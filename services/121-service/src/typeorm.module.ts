@@ -1,4 +1,4 @@
-import { Global, Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { AppDataSource } from '@121-service/src/appdatasource';
@@ -17,10 +17,4 @@ import { AppDataSource } from '@121-service/src/appdatasource';
   ],
   exports: [DataSource],
 })
-export class TypeOrmModule implements OnApplicationBootstrap {
-  constructor(private dataSource: DataSource) {}
-
-  public async onApplicationBootstrap(): Promise<void> {
-    await this.dataSource.runMigrations();
-  }
-}
+export class TypeOrmModule {}

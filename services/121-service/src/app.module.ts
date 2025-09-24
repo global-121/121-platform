@@ -1,10 +1,11 @@
 import { BullModule } from '@nestjs/bull';
-import { Module } from '@nestjs/common';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AppController } from '@121-service/src/app.controller';
@@ -33,9 +34,12 @@ import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { ScriptsModule } from '@121-service/src/scripts/scripts.module';
 import { ProgramExistenceInterceptor } from '@121-service/src/shared/interceptors/program-existence.interceptor';
+import { PermissionMaintenanceService } from '@121-service/src/shared/services/permission-maintenance.service';
 import { TransactionJobsModule } from '@121-service/src/transaction-jobs/transaction-jobs.module';
 import { TransactionQueuesModule } from '@121-service/src/transaction-queues/transaction-queues.module';
 import { TypeOrmModule } from '@121-service/src/typeorm.module';
+import { PermissionEntity } from '@121-service/src/user/entities/permissions.entity';
+import { UserRoleEntity } from '@121-service/src/user/entities/user-role.entity';
 import { TestController } from '@121-service/src/utils/test-helpers/test.controller';
 
 @Module({
@@ -43,7 +47,11 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
   imports: [
     QueuesRegistryModule,
     TypeOrmModule,
-    TypeORMNestJS.forFeature([ProgramAidworkerAssignmentEntity]),
+    TypeORMNestJS.forFeature([
+      ProgramAidworkerAssignmentEntity,
+      UserRoleEntity,
+      PermissionEntity,
+    ]),
     HealthModule,
     CronjobModule,
     ExchangeRatesModule,
@@ -101,6 +109,20 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
       provide: APP_INTERCEPTOR,
       useClass: ProgramExistenceInterceptor,
     },
+    PermissionMaintenanceService,
   ],
 })
-export class ApplicationModule {}
+export class ApplicationModule implements OnApplicationBootstrap {
+  constructor(
+    private dataSource: DataSource,
+    private permissionMaintenanceService: PermissionMaintenanceService,
+  ) {}
+
+  public async onApplicationBootstrap(): Promise<void> {
+    // Always start with running (all) migrations (not handled automatically via TypeORM)
+    await this.dataSource.runMigrations();
+
+    // Any additional bootstrap tasks only AFTER succesful migrations
+    await this.permissionMaintenanceService.removeExtraneousPermissions();
+  }
+}

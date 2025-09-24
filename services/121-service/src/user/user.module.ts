@@ -1,4 +1,4 @@
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EmailsModule } from '@121-service/src/emails/emails.module';
@@ -25,10 +25,4 @@ import { UserService } from '@121-service/src/user/user.service';
   controllers: [UserController],
   exports: [UserService],
 })
-export class UserModule implements OnApplicationBootstrap {
-  constructor(private readonly userService: UserService) {}
-
-  public async onApplicationBootstrap(): Promise<void> {
-    await this.userService.removeExtraneousPermissions();
-  }
-}
+export class UserModule {}
