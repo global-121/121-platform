@@ -1,11 +1,10 @@
 import { BullModule } from '@nestjs/bull';
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule as TypeORMNestJS } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 
 import { ActivitiesModule } from '@121-service/src/activities/activities.module';
 import { AppController } from '@121-service/src/app.controller';
@@ -104,10 +103,4 @@ import { TestController } from '@121-service/src/utils/test-helpers/test.control
     },
   ],
 })
-export class ApplicationModule implements OnApplicationBootstrap {
-  constructor(private dataSource: DataSource) {}
-
-  async onApplicationBootstrap(): Promise<void> {
-    await this.dataSource.runMigrations();
-  }
-}
+export class ApplicationModule {}
