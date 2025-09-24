@@ -386,7 +386,7 @@ export class RegistrationsBulkService {
     reason?: string;
   }): Promise<void> {
     const referenceIdsForWhichStatusChangeIsApllicable =
-      await this.getReferenceIdsForWhichStatusChangeIsApllicable(
+      await this.getReferenceIdsForWhichStatusChangeIsApplicable(
         programId,
         allowedCurrentStatuses,
         registrationStatus,
@@ -521,7 +521,7 @@ export class RegistrationsBulkService {
     }
   }
 
-  private async getReferenceIdsForWhichStatusChangeIsApllicable(
+  private async getReferenceIdsForWhichStatusChangeIsApplicable(
     programId: number,
     allowedCurrentStatuses: RegistrationStatusEnum[],
     newStatus: RegistrationStatusEnum,
