@@ -5,6 +5,7 @@ import { queryOptions } from '@tanstack/angular-query-experimental';
 import { unique } from 'radashi';
 
 import { CommercialBankEthiopiaValidationReportDto } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/dto/commercial-bank-ethiopia-validation-report.dto';
+import { CreateProgramDto } from '@121-service/src/programs/dto/create-program.dto';
 import { UpdateProgramDto } from '@121-service/src/programs/dto/update-program.dto';
 
 import { DomainApiService } from '~/domains/domain-api.service';
@@ -50,23 +51,13 @@ export class ProjectApiService extends DomainApiService {
     TranslatableStringService,
   );
 
-  createProjectFromKobo({
-    token,
-    assetId,
-  }: {
-    token: string;
-    assetId: string;
-  }) {
+  createProject(newProject: Dto<CreateProgramDto>) {
     return this.httpWrapperService.perform121ServiceRequest<
       Project | undefined
     >({
       method: 'POST',
       endpoint: BASE_ENDPOINT,
-      httpParams: {
-        importFromKobo: true,
-        koboToken: token,
-        koboAssetId: assetId,
-      },
+      body: newProject,
     });
   }
 
