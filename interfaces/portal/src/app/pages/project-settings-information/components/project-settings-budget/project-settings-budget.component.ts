@@ -64,6 +64,13 @@ export class ProjectSettingsBudgetComponent {
 
   project = injectQuery(this.projectApiService.getProject(this.projectId));
 
+  readonly canEdit = computed(() =>
+    this.authService.hasPermission({
+      projectId: this.projectId(),
+      requiredPermission: PermissionEnum.ProgramUPDATE,
+    }),
+  );
+
   formGroup = new FormGroup({
     budget: new FormControl<number | undefined>(undefined, {
       nonNullable: true,
@@ -161,13 +168,6 @@ export class ProjectSettingsBudgetComponent {
       await this.projectApiService.invalidateCache();
     },
   }));
-
-  readonly canEdit = computed(() =>
-    this.authService.hasPermission({
-      projectId: this.projectId(),
-      requiredPermission: PermissionEnum.ProgramUPDATE,
-    }),
-  );
 
   readonly tooltipCurrency = $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`;
   readonly tooltipDistributionDuration = $localize`The number of times each registration will receive transfers in the project as a default.`;
