@@ -6,7 +6,7 @@ import { Equal, Repository } from 'typeorm';
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
-import { PaymentJobCreationDetails } from '@121-service/src/payments/interfaces/payment-job-creation-details.interface';
+import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -173,10 +173,10 @@ export class TransactionsService {
     paymentId,
     userId,
   }: {
-    paymentJobCreationDetails: PaymentJobCreationDetails[];
+    paymentJobCreationDetails: TransactionCreationDetails[];
     paymentId: number;
     userId: number;
-  }): Promise<Map<number, number>> {
+  }): Promise<number[]> {
     const transactionsToSave: TransactionEntity[] = [];
     for (const item of paymentJobCreationDetails) {
       const transactionToSave = new TransactionEntity();
@@ -204,10 +204,6 @@ export class TransactionsService {
       },
     );
 
-    const transactionIdByRegistrationId = new Map<number, number>();
-    savedTransactions.forEach((row: { id: number; registrationId: number }) => {
-      transactionIdByRegistrationId.set(row.registrationId, row.id);
-    });
-    return transactionIdByRegistrationId;
+    return savedTransactions.map((t) => t.id);
   }
 }
