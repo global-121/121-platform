@@ -32,7 +32,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     phoneNumberPayment: '24322222222',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
-    maxPayments: 6,
+    maxPayments: 1, // Set to 1 to be able to test maxPayments functionality
     firstName: 'Barbara',
     lastName: 'Floyd',
     gender: 'male',
