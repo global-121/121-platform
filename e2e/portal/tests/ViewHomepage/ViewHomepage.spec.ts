@@ -5,21 +5,28 @@ import { resetDB } from '@121-service/test/helpers/utility.helper';
 
 import LoginPage from '@121-e2e/portal/pages/LoginPage';
 
-test.beforeEach(async ({ page }) => {
-  await resetDB(SeedScript.testMultiple, __filename);
+/**
+ * This test is here to just load the homepage and check if it loads without any errors to make sure we don't break the infrastructure that runs the tests.
+ */
+test('Load Portal', async ({ page }) => {
+  await page.goto('/');
+  expect(await page.title()).toBe('121 Portal'); // This is the title in the downloaded HTML, not the rendered Angular-app page-title
+});
 
+test('View All projects', async ({ page }) => {
+  // Arrange
+  await resetDB(SeedScript.testMultiple, __filename);
   // Login
   const loginPage = new LoginPage(page);
   await page.goto('/');
   await loginPage.login();
-});
 
-// This test is here to just load the homepage
-// and check if it loads without any errors.
-// Later we can port the existing tests to check the functionality
-// but for now, this is just a placeholder to make sure
-// we don't break the infrastructure that runs the tests.
-test('Load Homepage', async ({ page }) => {
+  // Act
   await page.goto('/');
-  expect(await page.title()).toBe('121 Portal');
+
+  await page.waitForURL((url) => url.pathname.startsWith('/en-GB/projects'));
+
+  // Assert
+  await expect(page.locator('h1')).toContainText('All projects');
+  await expect(page.locator('a[href^="/en-GB/project/"]')).toHaveCount(2);
 });
