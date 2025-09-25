@@ -2,26 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
 
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 
-import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -29,27 +20,21 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import {
+  ProjectBudgetFormGroup,
+  ProjectFormBudgetComponent,
+} from '~/components/project-form-budget/project-form-budget.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
+import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type ProjectSettingsBudgetFormGroup =
-  (typeof ProjectSettingsBudgetComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-project-settings-budget',
   imports: [
     CardEditableComponent,
-    FormFieldWrapperComponent,
-    ReactiveFormsModule,
-    InputTextModule,
     DataListComponent,
-    SelectModule,
+    ProjectFormBudgetComponent,
   ],
   templateUrl: './project-settings-budget.component.html',
   providers: [ToastService],
@@ -74,78 +59,9 @@ export class ProjectSettingsBudgetComponent {
     }),
   );
 
-  readonly currencies = Object.values(CurrencyCode)
-    .map((code) => ({
-      label: code,
-      value: code,
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
-
-  formGroup = new FormGroup({
-    budget: new FormControl<number | undefined>(undefined, {
-      nonNullable: true,
-      validators: [Validators.min(0)],
-    }),
-    currency: new FormControl<CurrencyCode | undefined>(undefined, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-    distributionFrequency: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-      validators: [],
-    }),
-    distributionDuration: new FormControl<number | undefined>(undefined, {
-      nonNullable: true,
-      validators: [Validators.min(0)],
-    }),
-    fixedTransferValue: new FormControl(0, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required, Validators.min(0)],
-    }),
-  });
-
-  formFieldErrors = generateFieldErrors<ProjectSettingsBudgetFormGroup>(
-    this.formGroup,
-    {
-      budget: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return;
-      },
-      currency: genericFieldIsRequiredValidationMessage,
-      distributionFrequency: genericFieldIsRequiredValidationMessage,
-      distributionDuration: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return;
-      },
-      fixedTransferValue: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return genericFieldIsRequiredValidationMessage(control);
-      },
-    },
-  );
-
-  updateFormGroup = effect(() => {
-    if (!this.project.isSuccess()) {
-      return;
-    }
-
-    this.formGroup.setValue({
-      budget: this.project.data().budget,
-      currency: this.project.data().currency,
-      distributionFrequency:
-        this.project.data().distributionFrequency ?? undefined,
-      distributionDuration: this.project.data().distributionDuration,
-      fixedTransferValue: this.project.data().fixedTransferValue ?? 0,
-    });
-  });
+  readonly projectFormBudget =
+    viewChild<ProjectFormBudgetComponent>('projectFormBudget');
+  readonly formGroup = computed(() => this.projectFormBudget()?.formGroup);
 
   updateProjectMutation = injectMutation(() => ({
     mutationFn: async ({
@@ -154,7 +70,7 @@ export class ProjectSettingsBudgetComponent {
       distributionFrequency,
       distributionDuration,
       fixedTransferValue,
-    }: ReturnType<ProjectSettingsBudgetFormGroup['getRawValue']>) =>
+    }: ReturnType<ProjectBudgetFormGroup['getRawValue']>) =>
       this.projectApiService.updateProject({
         projectId: this.projectId,
         projectPatch: {
@@ -174,9 +90,6 @@ export class ProjectSettingsBudgetComponent {
     },
   }));
 
-  readonly tooltipCurrency = $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`;
-  readonly tooltipDistributionDuration = $localize`The number of times each registration will receive transfers in the project as a default.`;
-
   readonly dataListData = computed(() => {
     const projectData = this.project.data();
 
@@ -189,7 +102,7 @@ export class ProjectSettingsBudgetComponent {
       {
         label: '*' + $localize`Currency`,
         value: projectData?.currency,
-        tooltip: this.tooltipCurrency,
+        tooltip: PROJECT_FORM_TOOLTIPS.currency,
         type: 'text',
       },
       {
@@ -203,7 +116,7 @@ export class ProjectSettingsBudgetComponent {
         value: projectData?.distributionDuration,
         type: 'number',
         fullWidth: true,
-        tooltip: this.tooltipDistributionDuration,
+        tooltip: PROJECT_FORM_TOOLTIPS.distributionDuration,
       },
       {
         label: '*' + $localize`Fixed transfer value`,
