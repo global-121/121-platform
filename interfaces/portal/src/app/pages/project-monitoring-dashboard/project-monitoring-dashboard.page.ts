@@ -53,7 +53,7 @@ export class ProjectMonitoringDashboardPageComponent {
     labels: string[];
     data: number[];
   }) =>
-    // The reason for having an aria label
+    // XXX: finish comment: The reason for having an aria label....
     // XXX: Each chart should have the correct title, also in the aria label.
     `${title}. ` +
     this.translatableStringService.commaSeparatedList(
