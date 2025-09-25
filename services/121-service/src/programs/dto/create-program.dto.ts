@@ -5,11 +5,11 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  Length,
   ValidateNested,
 } from 'class-validator';
 
@@ -131,10 +131,7 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
-  @IsString()
-  @Length(3, 3, {
-    message: 'Currency should be a 3 letter abbreviation',
-  })
+  @IsEnum(CurrencyCode)
   public readonly currency: WrapperType<CurrencyCode>;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
