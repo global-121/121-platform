@@ -18,14 +18,14 @@ import {
 } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 
 @Component({
-  selector: 'app-registrations-by-creation-date',
+  selector: 'app-registrations-by-creation-date-chart',
   imports: [ChartModule],
 
-  templateUrl: './registrations-by-creation-date.component.html',
+  templateUrl: './registrations-by-creation-date-chart.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationsByCreationDateComponent {
+export class RegistrationsByCreationDateChartComponent {
   private metricApiService = inject(MetricApiService);
   readonly projectId = input.required<string>();
 
