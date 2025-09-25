@@ -151,19 +151,19 @@ export class ProjectMonitoringDashboardPageComponent {
     ),
   );
 
-  readonly startDate = computed<string>(() => {
+  registrationCountByDate = injectQuery(() => {
     const date = new Date();
     date.setDate(date.getDate() - 14);
-    return date.toISOString().split('T')[0];
-  });
+    const twoWeeksAgo = date.toISOString().split('T')[0];
 
-  registrationCountByDate = injectQuery(() => ({
-    ...this.metricApiService.getRegistrationCountByDate({
-      projectId: this.projectId,
-      startDate: this.startDate(),
-    })(),
-    enabled: !!this.projectId(),
-  }));
+    return {
+      ...this.metricApiService.getRegistrationCountByDate({
+        projectId: this.projectId,
+        startDate: twoWeeksAgo,
+      })(),
+      enabled: !!this.projectId(),
+    };
+  });
 
   readonly registrationsByDateLabelsAndData = computed(() => {
     if (!this.registrationCountByDate.isSuccess()) {
