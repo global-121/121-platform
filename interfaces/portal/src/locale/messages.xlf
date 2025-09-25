@@ -1811,6 +1811,9 @@
       <trans-unit id="6342731461089211149" datatype="html">
         <source>Should be an ISO 4217 currency code (full list available on Wikipedia).</source>
       </trans-unit>
+      <trans-unit id="message-content-type-new" datatype="html">
+        <source>New</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
