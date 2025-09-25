@@ -37,13 +37,24 @@ export class PaymentsReportingService {
     private readonly paymentEventsService: PaymentEventsService,
   ) {}
 
-  public async getPayments(programId: number) {
+  public async getPayments({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }) {
     const rawPayments = await this.paymentRepository.find({
       where: {
         programId: Equal(programId),
       },
       select: ['id', 'created'],
+      order: {
+        id: 'DESC',
+      },
+      take: limitNumberOfPayments,
     });
+
     const payments = rawPayments.map((payment) => ({
       paymentId: payment.id,
       paymentDate: payment.created,
