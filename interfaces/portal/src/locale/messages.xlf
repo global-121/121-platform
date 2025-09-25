@@ -1838,6 +1838,9 @@
       <trans-unit id="7407759016156383088" datatype="html">
         <source>Amount sent per month</source>
       </trans-unit>
+      <trans-unit id="message-content-type-new" datatype="html">
+        <source>New</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
