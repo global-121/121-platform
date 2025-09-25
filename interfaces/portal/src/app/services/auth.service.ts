@@ -63,18 +63,16 @@ export class AuthService {
     return this.authStrategy.LoginComponent;
   }
 
-  get user(): LocalStorageUser | null {
+  public get user(): LocalStorageUser | null {
     const user = getUserFromLocalStorage();
 
     if (!user?.username) {
-      console.warn('AuthService: No valid user');
-      void this.logout(user);
+      console.info('AuthService: No (valid) user');
       return null;
     }
 
     if (this.authStrategy.isUserExpired(user)) {
       console.warn('AuthService: Expired token');
-      void this.logout(user);
       return null;
     }
 
@@ -83,6 +81,7 @@ export class AuthService {
       console.warn(
         'AuthService: Deprecated permission found. Forcing re-login',
       );
+      // Because the user is still "validly logged in", we have to actively use logout, to force a refresh of the permissions from login.
       void this.logout(user);
       return null;
     }
