@@ -6,5 +6,5 @@
     "devDependencies": "warn",
     "unlisted": "warn"
   },
-  "ignore": ["_env.utils.spec.ts"]
+  "ignore": ["_env.utils.spec.ts", "_matomo.utils.spec.ts"]
 }
