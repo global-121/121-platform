@@ -414,20 +414,25 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
+export enum messageValueTypeEnum {
+  body = 'body',
+  contentType = 'contentType',
+}
+
 export async function waitForMessagesToComplete({
   programId,
   referenceIds,
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
-  expectedMessages,
-  expectedContentTypes,
+  expectedValues,
+  expectedValueType,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
-  expectedMessages?: string[];
-  expectedContentTypes?: string[];
+  expectedValues?: string[];
+  expectedValueType?: messageValueTypeEnum;
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -438,17 +443,17 @@ export async function waitForMessagesToComplete({
     Date.now() - startTime < maxWaitTimeMs &&
     referenceIdsWaitingForMessages.length > 0
   ) {
-    const messageHistories = await fetchMessageHistories(
-      referenceIdsWaitingForMessages,
+    const messageHistories = await fetchMessageHistories({
+      referenceIds: referenceIdsWaitingForMessages,
       programId,
       accessToken,
-    );
-    referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages(
+    });
+    referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages({
       messageHistories,
       minimumNumberOfMessagesPerReferenceId,
-      expectedMessages,
-      expectedContentTypes,
-    );
+      expectedValues,
+      expectedValueType,
+    });
     // To not overload the server and get 429
     await waitFor(100);
   }
@@ -483,11 +488,15 @@ export async function waitForMessagesToComplete({
   }
 }
 
-async function fetchMessageHistories(
-  referenceIds: string[],
-  programId: number,
-  accessToken: string,
-): Promise<{ referenceId: string; messageHistory: any[] }[]> {
+async function fetchMessageHistories({
+  referenceIds,
+  programId,
+  accessToken,
+}: {
+  referenceIds: string[];
+  programId: number;
+  accessToken: string;
+}): Promise<{ referenceId: string; messageHistory: any[] }[]> {
   return Promise.all(
     referenceIds.map(async (referenceId) => {
       const response = await getMessageHistory(
@@ -500,62 +509,57 @@ async function fetchMessageHistories(
   );
 }
 
-function filterReferenceIdsWaitingForMessages(
-  messageHistories: { referenceId: string; messageHistory: any[] }[],
-  minimumNumberOfMessagesPerReferenceId: number,
-  expectedMessages?: string[],
-  expectedContentTypes?: string[],
-): string[] {
-  if (expectedMessages && expectedMessages.length > 0) {
-    return filterReferenceIdsWithoutExpectedMessages(
+function filterReferenceIdsWaitingForMessages({
+  messageHistories,
+  minimumNumberOfMessagesPerReferenceId,
+  expectedValues,
+  expectedValueType,
+}: {
+  messageHistories: { referenceId: string; messageHistory: any[] }[];
+  minimumNumberOfMessagesPerReferenceId: number;
+  expectedValues?: string[];
+  expectedValueType?: messageValueTypeEnum;
+}): string[] {
+  if (expectedValues && expectedValues.length > 0 && expectedValueType) {
+    return filterReferenceIdsWithoutexpectedValues({
       messageHistories,
-      expectedMessages,
-    );
-  }
-  if (expectedContentTypes && expectedContentTypes.length > 0) {
-    return filterReferenceIdsWithoutExpectedContentTypes(
+      expectedValues,
+      expectedValueType,
+    });
+  } else {
+    return filterByMinimumMessages({
       messageHistories,
-      expectedContentTypes,
-    );
+      minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
+    });
   }
-  return filterByMinimumMessages(
-    messageHistories,
-    minimumNumberOfMessagesPerReferenceId,
-  );
 }
 
-function filterReferenceIdsWithoutExpectedMessages(
-  messageHistories: { referenceId: string; messageHistory: any[] }[],
-  expectedMessages: string[],
-): string[] {
+function filterReferenceIdsWithoutexpectedValues({
+  messageHistories,
+  expectedValues,
+  expectedValueType,
+}: {
+  messageHistories: { referenceId: string; messageHistory: any[] }[];
+  expectedValues: string[];
+  expectedValueType: messageValueTypeEnum;
+}): string[] {
   return messageHistories
     .filter(
       ({ messageHistory }) =>
         !messageHistory.some((m) =>
-          expectedMessages.includes(m.attributes.body),
+          expectedValues.includes(m.attributes[expectedValueType]),
         ),
     )
     .map(({ referenceId }) => referenceId);
 }
 
-function filterReferenceIdsWithoutExpectedContentTypes(
-  messageHistories: { referenceId: string; messageHistory: any[] }[],
-  expectedContentTypes: string[],
-): string[] {
-  return messageHistories
-    .filter(
-      ({ messageHistory }) =>
-        !messageHistory.some((m) =>
-          expectedContentTypes.includes(m.attributes.contentType),
-        ),
-    )
-    .map(({ referenceId }) => referenceId);
-}
-
-function filterByMinimumMessages(
-  messageHistories: { referenceId: string; messageHistory: any[] }[],
-  minimumNumberOfMessages: number,
-): string[] {
+function filterByMinimumMessages({
+  messageHistories,
+  minimumNumberOfMessages,
+}: {
+  messageHistories: { referenceId: string; messageHistory: any[] }[];
+  minimumNumberOfMessages: number;
+}): string[] {
   return messageHistories
     .filter(({ messageHistory }) => {
       const messagesWithValidStatus = messageHistory.filter((m) => {
