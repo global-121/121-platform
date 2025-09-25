@@ -86,8 +86,7 @@ export class RegistrationEntity extends Base121Entity {
   @Column({ type: 'integer', nullable: true })
   public programFspConfigurationId: number;
 
-  @Column({ nullable: false, default: 1 })
-  @IsInt()
+  @Column({ type: 'float', nullable: false, default: 1 })
   @IsPositive()
   @IsNotEmpty()
   public paymentAmountMultiplier: number;
