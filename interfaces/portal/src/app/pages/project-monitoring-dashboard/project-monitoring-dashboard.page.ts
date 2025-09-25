@@ -17,6 +17,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { ProjectAggregatePerPaymentValue } from '~/domains/metric/metric.model';
+import { RegistrationsByCreationDateComponent } from '~/pages/project-monitoring-dashboard/components/registrations-by-creation-date/registrations-by-creation-date.component';
+import { RegistrationsPerDuplicateStatusComponentChart } from '~/pages/project-monitoring-dashboard/components/registrations-per-duplicate-status-chart/registrations-per-duplicate-status-chart.component';
 import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring-dashboard/components/registrations-per-status-chart/registrations-per-status-chart.component';
 import {
   getChartOptions,
@@ -35,6 +37,8 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
     ChartModule,
     CardModule,
     RegistrationsPerStatusChartComponent,
+    RegistrationsPerDuplicateStatusComponentChart,
+    RegistrationsByCreationDateComponent,
   ],
 })
 export class ProjectMonitoringDashboardPageComponent {

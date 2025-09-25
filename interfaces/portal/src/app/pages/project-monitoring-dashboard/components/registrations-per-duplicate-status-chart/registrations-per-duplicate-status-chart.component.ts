@@ -10,15 +10,17 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
-import colors from 'tailwindcss/colors';
 
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 
+import tailwindConfig from '~/../../tailwind.config';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   getChartOptions,
   shade,
 } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
+
+const colors = tailwindConfig.theme.colors;
 
 const duplicationColors = {
   [DuplicateStatus.unique]: colors.green[shade],
@@ -26,14 +28,14 @@ const duplicationColors = {
 };
 
 @Component({
-  selector: 'app-registrations-per-duplicate-status',
+  selector: 'app-registrations-per-duplicate-status-chart',
   imports: [ChartModule],
 
-  templateUrl: './registrations-per-duplicate-status.component.html',
+  templateUrl: './registrations-per-duplicate-status-chart.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrationsPerDuplicateStatusComponent {
+export class RegistrationsPerDuplicateStatusComponentChart {
   private registrationApiService = inject(RegistrationApiService);
 
   readonly projectId = input.required<string>();
