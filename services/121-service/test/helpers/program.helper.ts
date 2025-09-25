@@ -441,7 +441,7 @@ export async function waitForMessagesToComplete({
     referenceIdsWaitingForMessages.length > 0
   ) {
     const messageHistories = await Promise.all(
-      referenceIds.map(async (referenceId) => {
+      referenceIdsWaitingForMessages.map(async (referenceId) => {
         const response = await getMessageHistory(
           programId,
           referenceId,
@@ -452,7 +452,7 @@ export async function waitForMessagesToComplete({
     );
 
     referenceIdsWaitingForMessages = expectedMessageAttribute
-      ? filterByExpectedValues({
+      ? filterByExpectedAttribute({
           messageHistories,
           expectedMessageAttribute,
         })
@@ -486,7 +486,7 @@ export async function waitForMessagesToComplete({
   }
 }
 
-function filterByExpectedValues({
+function filterByExpectedAttribute({
   messageHistories,
   expectedMessageAttribute,
 }: {
