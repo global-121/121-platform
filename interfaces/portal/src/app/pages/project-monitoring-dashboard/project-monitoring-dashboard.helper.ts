@@ -1,32 +1,10 @@
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import tailwindConfig from '~/../../tailwind.config';
 
-// this is the order in the registration table buttons
-export const registrationStatusSortOrder = [
-  RegistrationStatusEnum.new,
-  RegistrationStatusEnum.validated,
-  RegistrationStatusEnum.included,
-  RegistrationStatusEnum.completed,
-  RegistrationStatusEnum.declined,
-  RegistrationStatusEnum.paused,
-  RegistrationStatusEnum.deleted,
-];
-
 const colors = tailwindConfig.theme.colors;
-const shade = 500;
-
-export const registrationsPerStatusColors = {
-  [RegistrationStatusEnum.included]: colors.green[shade],
-  [RegistrationStatusEnum.new]: colors.blue[shade],
-  [RegistrationStatusEnum.validated]: colors.yellow[shade],
-  [RegistrationStatusEnum.declined]: colors.red[shade],
-  [RegistrationStatusEnum.completed]: colors.purple[shade],
-  [RegistrationStatusEnum.deleted]: colors.grey[shade],
-  [RegistrationStatusEnum.paused]: colors.orange[shade],
-};
+export const shade = 500;
 
 export const duplicationColors = {
   [DuplicateStatus.unique]: colors.green[shade],

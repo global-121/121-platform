@@ -19,13 +19,12 @@ import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitori
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { ProjectAggregatePerPaymentValue } from '~/domains/metric/metric.model';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
+import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring-dashboard/components/registrations-per-status-chart/registrations-per-status-chart.component';
 import {
   duplicationColors,
   getChartOptions,
   paymentColors,
   registrationsByDateColor,
-  registrationsPerStatusColors,
-  registrationStatusSortOrder,
 } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -35,7 +34,12 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [PageLayoutMonitoringComponent, ChartModule, CardModule],
+  imports: [
+    PageLayoutMonitoringComponent,
+    ChartModule,
+    CardModule,
+    RegistrationsPerStatusChartComponent,
+  ],
 })
 export class ProjectMonitoringDashboardPageComponent {
   private metricApiService = inject(MetricApiService);
@@ -44,62 +48,21 @@ export class ProjectMonitoringDashboardPageComponent {
 
   readonly projectId = input.required<string>();
 
-  private getTranslatedAriaLabel = (labels: string[], data: number[]) =>
-    $localize`Payment status chart. ` +
+  getTranslatedAriaLabel = ({
+    title,
+    labels,
+    data,
+  }: {
+    title: string;
+    labels: string[];
+    data: number[];
+  }) =>
+    // The reason for having an aria label
+    // XXX: Each chart should have the correct title, also in the aria label.
+    `${title}. ` +
     this.translatableStringService.commaSeparatedList(
       labels.map((label, index) => `${label}: ${String(data[index])}`),
     );
-
-  registrationsPerStatus = injectQuery(() => ({
-    ...this.metricApiService.getRegistrationCountByStatus({
-      projectId: this.projectId,
-    })(),
-    enabled: !!this.projectId(),
-  }));
-
-  readonly registrationsPerStatusLabelsAndData = computed(() => {
-    if (!this.registrationsPerStatus.isSuccess()) {
-      return { labels: [], data: [] };
-    }
-    const queryData = this.registrationsPerStatus.data();
-    const labels = registrationStatusSortOrder.filter((status) =>
-      Object.keys(queryData).includes(status),
-    );
-    const data = labels.map((k) => queryData[k]);
-    return { labels, data };
-  });
-
-  readonly registrationsPerStatusChartColors = computed<string[]>(
-    (): string[] => {
-      const colors: Record<string, string> = registrationsPerStatusColors;
-
-      return this.registrationsPerStatusLabelsAndData().labels.map(
-        (l): string => colors[l],
-      );
-    },
-  );
-
-  registrationsPerStatusChartOptions = getChartOptions({
-    title: $localize`Registrations per status`,
-    showLegend: false,
-  });
-
-  readonly registrationsPerStatusChartData = computed<ChartData>(() => ({
-    labels: this.registrationsPerStatusLabelsAndData().labels,
-    datasets: [
-      {
-        data: this.registrationsPerStatusLabelsAndData().data,
-        backgroundColor: this.registrationsPerStatusChartColors(),
-      },
-    ],
-  }));
-
-  readonly registrationsPerStatusAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.registrationsPerStatusLabelsAndData().labels,
-      this.registrationsPerStatusChartData().datasets[0].data as number[],
-    ),
-  );
 
   duplicates = injectQuery(() => ({
     ...this.registrationApiService.getManyByQuery(
@@ -145,10 +108,11 @@ export class ProjectMonitoringDashboardPageComponent {
   }));
 
   readonly duplicationAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.duplicationLabels(),
-      this.duplicationChartData().datasets[0].data as number[],
-    ),
+    this.getTranslatedAriaLabel({
+      title: $localize`Registrations per duplicate status`,
+      labels: this.duplicationLabels(),
+      data: this.duplicationChartData().datasets[0].data as number[],
+    }),
   );
 
   registrationCountByDate = injectQuery(() => {
@@ -192,10 +156,11 @@ export class ProjectMonitoringDashboardPageComponent {
   }));
 
   readonly registrationsByDateAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.registrationsByDateLabelsAndData().labels,
-      this.registrationsByDateChartData().datasets[0].data as number[],
-    ),
+    this.getTranslatedAriaLabel({
+      title: $localize`Registrations by creation date (last 2 weeks)`,
+      labels: this.registrationsByDateLabelsAndData().labels,
+      data: this.registrationsByDateChartData().datasets[0].data as number[],
+    }),
   );
 
   readonly limitNumberOfPayments = signal('5');
@@ -253,10 +218,11 @@ export class ProjectMonitoringDashboardPageComponent {
   }));
 
   readonly transfersPerPaymentAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.aggregatePerPaymentLabelsAndData().labels,
-      this.transfersPerPaymentChartData().datasets[0].data as number[],
-    ),
+    this.getTranslatedAriaLabel({
+      title: $localize`Transfers per payment`,
+      labels: this.aggregatePerPaymentLabelsAndData().labels,
+      data: this.transfersPerPaymentChartData().datasets[0].data as number[],
+    }),
   );
 
   amountSentPerPaymentChartOptions = getChartOptions({
@@ -292,10 +258,11 @@ export class ProjectMonitoringDashboardPageComponent {
   }));
 
   readonly amountSentPerPaymentAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.aggregatePerPaymentLabelsAndData().labels,
-      this.amountSentPerPaymentChartData().datasets[0].data as number[],
-    ),
+    this.getTranslatedAriaLabel({
+      title: $localize`Amount sent per payment`,
+      labels: this.aggregatePerPaymentLabelsAndData().labels,
+      data: this.amountSentPerPaymentChartData().datasets[0].data as number[],
+    }),
   );
 
   amountSentPerMonth = injectQuery(() => ({
@@ -347,9 +314,10 @@ export class ProjectMonitoringDashboardPageComponent {
   }));
 
   readonly amountSentPerMonthAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel(
-      this.amountSentPerMonthLabelsAndData().labels,
-      this.amountSentPerMonthChartData().datasets[0].data as number[],
-    ),
+    this.getTranslatedAriaLabel({
+      title: $localize`Amount Sent per month`,
+      labels: this.amountSentPerMonthLabelsAndData().labels,
+      data: this.amountSentPerMonthChartData().datasets[0].data as number[],
+    }),
   );
 }
