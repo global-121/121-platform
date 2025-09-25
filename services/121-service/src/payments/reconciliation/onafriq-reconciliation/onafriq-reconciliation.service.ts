@@ -21,6 +21,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
@@ -36,6 +37,7 @@ export class OnafriqReconciliationService {
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
+    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -74,9 +76,10 @@ export class OnafriqReconciliationService {
     const transactionId = onafriqTransaction.transactionId;
 
     // Infer programFspConfigurationId from latest transaction event
-    const latestEvent = [
-      ...onafriqTransaction.transaction.transactionEvents,
-    ].sort((a, b) => b.created.getTime() - a.created.getTime())[0];
+    const latestEvent =
+      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
+        transactionId,
+      );
     const programFspConfigurationId = latestEvent.programFspConfigurationId;
 
     // Update the Onafriq transaction with the mfsTransId

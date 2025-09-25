@@ -9,4 +9,5 @@ export enum TransactionEventDescription {
   // Safaricom processing-step events // ##TODO: these are exactly the same as onafriq, can we generalize?
   safaricomRequestSent = 'Safaricom request sent',
   safaricomCallbackReceived = 'Safaricom callback received',
+  nedbankVoucherCreationRequested = 'Nedbank voucher creation requested',
 }

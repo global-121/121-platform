@@ -72,6 +72,7 @@ graph LR
   MetricsModule-->RegistrationsModule
   MetricsModule-->UserModule
   NedbankReconciliationModule-->NedbankModule
+  NedbankReconciliationModule-->TransactionEventsModule
   NedbankReconciliationModule-->TransactionsModule
   NoteModule-->RegistrationsModule
   NoteModule-->UserModule

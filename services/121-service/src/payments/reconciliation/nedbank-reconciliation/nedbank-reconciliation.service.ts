@@ -7,6 +7,10 @@ import { NedbankVoucherScopedRepository } from '@121-service/src/payments/fsp-in
 import { NedbankService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 
 @Injectable()
 export class NedbankReconciliationService {
@@ -14,6 +18,8 @@ export class NedbankReconciliationService {
     private readonly nedbankService: NedbankService,
     private readonly nedbankVoucherScopedRepository: NedbankVoucherScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionEventsService: TransactionEventsService,
+    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async doNedbankReconciliation(): Promise<number> {
@@ -75,9 +81,26 @@ export class NedbankReconciliationService {
         voucherInfo.errorCode,
       );
     }
+
+    const latestEvent =
+      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
+        transactionId,
+      );
+    const programFspConfigurationId = latestEvent.programFspConfigurationId;
+
+    await this.transactionEventsService.createEvent({
+      context: {
+        transactionId,
+        userId: null,
+        programFspConfigurationId,
+      },
+      type: TransactionEventType.processingStep,
+      description: TransactionEventDescription.onafriqCallbackReceived,
+      errorMessage,
+    });
     await this.transactionScopedRepository.update(
       { id: transactionId },
-      { status: newTransactionStatus, errorMessage },
+      { status: newTransactionStatus },
     );
   }
 

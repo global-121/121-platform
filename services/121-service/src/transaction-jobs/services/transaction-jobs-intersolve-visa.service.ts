@@ -31,6 +31,13 @@ export class TransactionJobsIntersolveVisaService {
       programFspConfigurationId: transactionJob.programFspConfigurationId,
     };
 
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
     const registration =
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
