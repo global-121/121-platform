@@ -400,8 +400,7 @@ export class RegistrationsBulkService {
     });
   }
 
-  // TODO make this public when we also call it on registration import
-  private async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
+  public async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
     referenceIds,
     programId,
     registrationStatus,
