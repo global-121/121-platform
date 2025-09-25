@@ -3,12 +3,13 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
-  Length,
 } from 'class-validator';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
 import { WrapperType } from '@121-service/src/wrapper.type';
@@ -45,11 +46,8 @@ export class UpdateProgramDto {
 
   @ApiProperty({ example: 'MWK' })
   @IsOptional()
-  @IsString()
-  @Length(3, 3, {
-    message: 'Currency should be a 3 letter abbreviation',
-  })
-  public readonly currency?: string;
+  @IsEnum(CurrencyCode)
+  public readonly currency?: WrapperType<CurrencyCode>;
 
   @ApiProperty()
   @IsOptional()

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { GetExchangeRateDto } from '@121-service/src/exchange-rates/dtos/get-exchange-rate.dto';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { ExchangeRateEntity } from '@121-service/src/exchange-rates/exchange-rate.entity';
 import { ExchangeRatesApiService } from '@121-service/src/exchange-rates/services/exchange-rates.api.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -36,7 +37,7 @@ export class ExchangeRatesService {
   }
 
   private async createExchangeRate(
-    currency: string,
+    currency: CurrencyCode,
     euroExchangeRate: number,
     closeTime: string,
   ): Promise<void> {
@@ -48,8 +49,8 @@ export class ExchangeRatesService {
     await this.exchangeRateRepository.save(exchangeRate);
   }
 
-  private async getAllProgramCurrencies(): Promise<string[]> {
-    const euroCode = 'EUR';
+  private async getAllProgramCurrencies(): Promise<CurrencyCode[]> {
+    const euroCode = CurrencyCode.EUR;
 
     return (
       await this.programRepository

@@ -1766,9 +1766,6 @@
       <trans-unit id="1200281517601565877" datatype="html">
         <source>The number of times each registration will receive transfers in the project as a default.</source>
       </trans-unit>
-      <trans-unit id="1363469379432960513" datatype="html">
-        <source>3 letter code, e.g. EUR</source>
-      </trans-unit>
       <trans-unit id="3033425005384068594" datatype="html">
         <source>Budget details saved successfully.</source>
       </trans-unit>
@@ -1786,9 +1783,6 @@
       </trans-unit>
       <trans-unit id="7003847942368840790" datatype="html">
         <source>Funds available</source>
-      </trans-unit>
-      <trans-unit id="7596383400498502117" datatype="html">
-        <source>The currency must be a 3-letter uppercase code.</source>
       </trans-unit>
       <trans-unit id="card-title-project-settings-basic-information" datatype="html">
         <source>Basic information</source>

@@ -1,6 +1,7 @@
 import test, { expect } from '@playwright/test';
 import { format } from 'date-fns';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   getAccessToken,
@@ -44,7 +45,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
 
   const budgetInfo = {
     fundsAvailable: '200',
-    currency: 'USD',
+    currency: CurrencyCode.CAD,
     paymentFrequency: '2-months',
     defaultTransferAmount: '200',
     fixedTransferValue: '100',
@@ -106,10 +107,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
       'Funds available',
       budgetInfo.fundsAvailable,
     );
-    await projectSettings.editInformationFieldByLabel(
-      'Currency',
-      budgetInfo.currency,
-    );
+    await projectSettings.selectCurrency(budgetInfo.currency);
     await projectSettings.editInformationFieldByLabel(
       'Payment frequency',
       budgetInfo.paymentFrequency,

@@ -19,7 +19,9 @@ import {
   injectQuery,
 } from '@tanstack/angular-query-experimental';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -47,6 +49,7 @@ type ProjectSettingsBudgetFormGroup =
     ReactiveFormsModule,
     InputTextModule,
     DataListComponent,
+    SelectModule,
   ],
   templateUrl: './project-settings-budget.component.html',
   providers: [ToastService],
@@ -71,15 +74,22 @@ export class ProjectSettingsBudgetComponent {
     }),
   );
 
+  readonly currencies = Object.values(CurrencyCode)
+    .map((code) => ({
+      label: code,
+      value: code,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
   formGroup = new FormGroup({
     budget: new FormControl<number | undefined>(undefined, {
       nonNullable: true,
       validators: [Validators.min(0)],
     }),
-    currency: new FormControl('', {
+    currency: new FormControl<CurrencyCode | undefined>(undefined, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required, Validators.pattern('^[A-Z]{3}$')],
+      validators: [Validators.required],
     }),
     distributionFrequency: new FormControl<string | undefined>(undefined, {
       nonNullable: true,
@@ -105,12 +115,7 @@ export class ProjectSettingsBudgetComponent {
         }
         return;
       },
-      currency: (control) => {
-        if (control.errors?.pattern) {
-          return $localize`The currency must be a 3-letter uppercase code.`;
-        }
-        return genericFieldIsRequiredValidationMessage(control);
-      },
+      currency: genericFieldIsRequiredValidationMessage,
       distributionFrequency: genericFieldIsRequiredValidationMessage,
       distributionDuration: (control) => {
         if (control.errors?.min) {
@@ -134,7 +139,7 @@ export class ProjectSettingsBudgetComponent {
 
     this.formGroup.setValue({
       budget: this.project.data().budget,
-      currency: this.project.data().currency ?? '',
+      currency: this.project.data().currency,
       distributionFrequency:
         this.project.data().distributionFrequency ?? undefined,
       distributionDuration: this.project.data().distributionDuration,

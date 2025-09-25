@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { env } from '@121-service/src/env';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 interface ExchangeRateApiResponse {
   data: {
@@ -16,7 +17,7 @@ export class ExchangeRatesApiService {
   public constructor(private readonly httpService: CustomHttpService) {}
 
   public async retrieveExchangeRate(
-    currency: string,
+    currency: CurrencyCode,
   ): Promise<{ rate: string; closeTime: string }> {
     const now = new Date();
     const today = now.toISOString().split('T')[0];

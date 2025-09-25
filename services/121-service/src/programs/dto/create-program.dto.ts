@@ -5,14 +5,15 @@ import {
   IsBoolean,
   IsDateString,
   IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  Length,
   ValidateNested,
 } from 'class-validator';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -130,11 +131,8 @@ export class CreateProgramDto {
 
   @ApiProperty({ example: 'MWK' })
   @IsNotEmpty()
-  @IsString()
-  @Length(3, 3, {
-    message: 'Currency should be a 3 letter abbreviation',
-  })
-  public readonly currency: string;
+  @IsEnum(CurrencyCode)
+  public readonly currency: WrapperType<CurrencyCode>;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()
