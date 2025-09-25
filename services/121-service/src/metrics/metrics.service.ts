@@ -420,9 +420,13 @@ export class MetricsService {
     return res;
   }
 
-  public async getRegistrationCountByDate(
-    programId: number,
-  ): Promise<RegistrationCountByDate> {
+  public async getRegistrationCountByDate({
+    programId,
+    startDate,
+  }: {
+    programId: number;
+    startDate?: Date;
+  }): Promise<RegistrationCountByDate> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
@@ -430,7 +434,10 @@ export class MetricsService {
       .andWhere({ programId })
       .groupBy(`to_char("created", 'yyyy-mm-dd')`)
       .orderBy(`to_char("created", 'yyyy-mm-dd')`);
-    console.log('query: ', query.getSql());
+
+    if (startDate) {
+      query.andWhere('created >= :startDate', { startDate });
+    }
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
         dates[r.created] = Number(r.count);
@@ -441,12 +448,19 @@ export class MetricsService {
     return res;
   }
 
-  public async getAllPaymentsAggregates(
-    programId: number,
-  ): Promise<AggregatePerPayment> {
+  public async getAllPaymentsAggregates({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerPayment> {
     const res: AggregatePerPayment = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = await this.paymentsReportingService.getPayments({
+      programId,
+      limitNumberOfPayments,
+    });
 
     for (const payment of payments) {
       const aggregate =
@@ -460,12 +474,19 @@ export class MetricsService {
     return res;
   }
 
-  public async getAmountSentByMonth(
-    programId: number,
-  ): Promise<AggregatePerMonth> {
+  public async getAmountSentByMonth({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = await this.paymentsReportingService.getPayments({
+      programId,
+      limitNumberOfPayments,
+    });
 
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)
@@ -491,6 +512,21 @@ export class MetricsService {
       res[month].waiting += Number(aggregate.waiting.amount);
       res[month].failed += Number(aggregate.failed.amount);
     }
+
+    /*
+      {
+        "2025-09": {
+          "success": 2400,
+          "waiting": 5,
+          "failed": 10
+        },
+        "2025-10": {
+          "success": 3500,
+          "waiting": 200,
+          "failed": 50
+        }
+      }
+    */
 
     return res;
   }

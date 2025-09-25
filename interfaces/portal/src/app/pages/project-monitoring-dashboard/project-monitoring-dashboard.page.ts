@@ -157,6 +157,7 @@ export class ProjectMonitoringDashboardPageComponent {
   registrationCountByDate = injectQuery(() => ({
     ...this.metricApiService.getRegistrationCountByDate({
       projectId: this.projectId,
+      startDate: this.startDate(),
     })(),
     enabled: !!this.projectId(),
   }));
@@ -171,29 +172,14 @@ export class ProjectMonitoringDashboardPageComponent {
     return { labels, data };
   });
 
-  readonly registrationsByDateAxisLabels = computed<string[]>(() =>
-    this.registrationsByDateLabelsAndData().labels.map((l) => {
-      const date = new Date(l);
-
-      if (date.getDate() !== 1) {
-        return '';
-      }
-
-      return date.toLocaleString('default', {
-        month: 'short',
-        year: 'numeric',
-      });
-    }),
-  );
-
   registrationsByDateChartOptions = getChartOptions({
-    title: $localize`Registrations by creation date`,
+    title: $localize`Registrations by creation date (last 2 weeks)`,
     showLegend: false,
+    showDataLabels: false,
   });
 
   readonly registrationsByDateChartData = computed<ChartData>(() => ({
     labels: this.registrationsByDateLabelsAndData().labels,
-    xLabels: this.registrationsByDateAxisLabels(),
     datasets: [
       {
         data: this.registrationsByDateLabelsAndData().data,
@@ -214,6 +200,7 @@ export class ProjectMonitoringDashboardPageComponent {
   aggregatePerPayment = injectQuery(() => ({
     ...this.metricApiService.getAllPaymentsAggregates({
       projectId: this.projectId,
+      limitNumberOfPayments: this.limitNumberOfPayments(),
     })(),
     enabled: !!this.projectId(),
   }));
@@ -224,7 +211,7 @@ export class ProjectMonitoringDashboardPageComponent {
     }
     const queryData: Record<string, ProjectAggregatePerPaymentValue> =
       this.aggregatePerPayment.data();
-    const labels = Object.keys(queryData).sort();
+    const labels = Object.keys(queryData).sort((a, b) => Number(a) - Number(b));
     const data = labels.map((k) => queryData[k]);
     return { labels, data };
   });
@@ -310,6 +297,7 @@ export class ProjectMonitoringDashboardPageComponent {
   amountSentPerMonth = injectQuery(() => ({
     ...this.metricApiService.getAmountSentByMonth({
       projectId: this.projectId,
+      limitNumberOfPayments: this.limitNumberOfPayments(),
     })(),
     enabled: !!this.projectId(),
   }));
