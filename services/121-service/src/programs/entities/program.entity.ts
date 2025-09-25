@@ -51,6 +51,9 @@ export class ProgramEntity extends Base121Entity {
   @Column('json', { nullable: true })
   public description: LocalizedString | null;
 
+  @Column({ default: false })
+  public published: boolean;
+
   @Column({ default: true })
   public validation: boolean;
 
