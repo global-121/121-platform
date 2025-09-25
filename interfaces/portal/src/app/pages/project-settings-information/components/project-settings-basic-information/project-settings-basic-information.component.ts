@@ -2,28 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 import {
   injectMutation,
   injectQuery,
 } from '@tanstack/angular-query-experimental';
-import { DatePickerModule } from 'primeng/datepicker';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { CardEditableComponent } from '~/components/card-editable/card-editable.component';
@@ -31,33 +21,27 @@ import {
   DataListComponent,
   DataListItem,
 } from '~/components/data-list/data-list.component';
-import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
-import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
+import {
+  ProjectFormInformationComponent,
+  ProjectInformationFormGroup,
+} from '~/components/project-form-information/project-form-information.component';
+import {
+  ProjectFormNameComponent,
+  ProjectNameFormGroup,
+} from '~/components/project-form-name/project-form-name.component';
 import { ProjectApiService } from '~/domains/project/project.api.service';
-import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
+import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { AuthService } from '~/services/auth.service';
 import { RegistrationsTableColumnService } from '~/services/registrations-table-column.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
-} from '~/utils/form-validation';
-
-type ProjectSettingsBasicInformationFormGroup =
-  (typeof ProjectSettingsBasicInformationComponent)['prototype']['formGroup'];
 
 @Component({
   selector: 'app-project-settings-basic-information',
   imports: [
     CardEditableComponent,
-    FormFieldWrapperComponent,
-    ReactiveFormsModule,
-    InputTextModule,
-    TextareaModule,
+    ProjectFormNameComponent,
+    ProjectFormInformationComponent,
     DataListComponent,
-    DatePickerModule,
-    ToggleSwitchModule,
-    InfoTooltipComponent,
   ],
   templateUrl: './project-settings-basic-information.component.html',
   providers: [ToastService],
@@ -83,78 +67,43 @@ export class ProjectSettingsBasicInformationComponent {
     }),
   );
 
-  formGroup = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-    description: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    startDate: new FormControl<Date | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    endDate: new FormControl<Date | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    location: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    targetNrRegistrations: new FormControl(0, {
-      nonNullable: true,
-      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
-    }),
-    validation: new FormControl(false, { nonNullable: true }),
-    enableScope: new FormControl(false, { nonNullable: true }),
-  });
+  readonly projectFormName =
+    viewChild<ProjectFormNameComponent>('projectFormName');
+  readonly projectFormInformation = viewChild<ProjectFormInformationComponent>(
+    'projectFormInformation',
+  );
 
-  formFieldErrors =
-    generateFieldErrors<ProjectSettingsBasicInformationFormGroup>(
-      this.formGroup,
-      {
-        name: genericFieldIsRequiredValidationMessage,
-        description: genericFieldIsRequiredValidationMessage,
-        startDate: genericFieldIsRequiredValidationMessage,
-        endDate: genericFieldIsRequiredValidationMessage,
-        location: genericFieldIsRequiredValidationMessage,
-        targetNrRegistrations: genericFieldIsRequiredValidationMessage,
-        validation: genericFieldIsRequiredValidationMessage,
-        enableScope: genericFieldIsRequiredValidationMessage,
-      },
-    );
+  readonly formGroup = computed(() => {
+    const nameGroup = this.projectFormName()?.formGroup;
+    const informationGroup = this.projectFormInformation()?.formGroup;
 
-  updateFormGroup = effect(() => {
-    if (!this.project.isSuccess()) {
-      return;
+    if (!nameGroup || !informationGroup) {
+      return undefined;
     }
 
-    const { startDate, endDate } = this.project.data();
-
-    this.formGroup.setValue({
-      name: this.project.data().titlePortal?.en ?? '',
-      description: this.project.data().description?.en,
-      startDate: startDate ? new Date(startDate) : undefined,
-      endDate: endDate ? new Date(endDate) : undefined,
-      location: this.project.data().location,
-      targetNrRegistrations: this.project.data().targetNrRegistrations ?? 0,
-      validation: this.project.data().validation,
-      enableScope: this.project.data().enableScope,
+    return new FormGroup({
+      nameGroup,
+      informationGroup,
     });
   });
 
   updateProjectMutation = injectMutation(() => ({
     mutationFn: async ({
-      name,
-      description,
-      startDate,
-      endDate,
-      location,
-      targetNrRegistrations,
-      validation,
-      enableScope,
-    }: ReturnType<ProjectSettingsBasicInformationFormGroup['getRawValue']>) =>
+      nameGroup: { name, description },
+      informationGroup: {
+        startDate,
+        endDate,
+        location,
+        targetNrRegistrations,
+        validation,
+        enableScope,
+      },
+    }: ReturnType<
+      FormGroup<{
+        nameGroup: ProjectNameFormGroup;
+        informationGroup: ProjectInformationFormGroup;
+      }>['getRawValue']
+    >) =>
       this.projectApiService.updateProject({
         projectId: this.projectId,
         projectPatch: {
@@ -181,12 +130,6 @@ export class ProjectSettingsBasicInformationComponent {
       void this.registrationsTableColumnService.invalidateCache(this.projectId);
     },
   }));
-
-  readonly tooltipTargetRegistrations = $localize`The amount of people/ households your project wishes to reach.`;
-  readonly tooltipValidationProcess = $localize`Turning on the validation option enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`;
-  readonly tooltipEnableScope = $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team's page.
-
-To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`;
 
   readonly projectBasicInformationData = computed(() => {
     const projectData = this.project.data();
@@ -222,21 +165,21 @@ To use this feature, make sure scope is defined in your integrated Kobo form or 
         value: projectData?.targetNrRegistrations,
         fullWidth: true,
         type: 'number',
-        tooltip: this.tooltipTargetRegistrations,
+        tooltip: PROJECT_FORM_TOOLTIPS.targetRegistrations,
       },
       {
         label: $localize`Enable validation`,
         value: projectData?.validation ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: this.tooltipValidationProcess,
+        tooltip: PROJECT_FORM_TOOLTIPS.validationProcess,
       },
       {
         label: $localize`Enable scope`,
         value: projectData?.enableScope ?? false,
         fullWidth: true,
         type: 'boolean',
-        tooltip: this.tooltipEnableScope,
+        tooltip: PROJECT_FORM_TOOLTIPS.enableScope,
       },
     ];
 

@@ -1,0 +1,30 @@
+<ng-container [formGroup]="formGroup">
+  <app-form-field-wrapper
+    label="Project name"
+    i18n-label
+    [errorMessage]="formFieldErrors()('name')"
+    [isRequired]="true"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="name"
+      placeholder="Project name"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Project description"
+    i18n-label
+    [errorMessage]="formFieldErrors()('description')"
+  >
+    <textarea
+      rows="5"
+      pTextarea
+      formControlName="description"
+      autocomplete="off"
+      placeholder="Hint text..."
+      i18n-placeholder
+    ></textarea>
+  </app-form-field-wrapper>
+</ng-container>
