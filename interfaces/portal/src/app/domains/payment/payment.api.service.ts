@@ -82,16 +82,6 @@ export class PaymentApiService extends DomainApiService {
     });
   }
 
-  getProjectTransactions({
-    projectId,
-  }: {
-    projectId: Signal<number | string | undefined>;
-  }) {
-    return this.generateQueryOptions<PaymentTransaction[]>({
-      path: [...BASE_ENDPOINT(projectId as Signal<number | string>)],
-    });
-  }
-
   getPaymentStatus(projectId: Signal<number | string>) {
     return this.generateQueryOptions<PaymentStatus>({
       path: [...BASE_ENDPOINT(projectId), 'status'],
