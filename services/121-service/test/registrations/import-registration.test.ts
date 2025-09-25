@@ -34,6 +34,7 @@ import {
   registrationPV5,
   registrationWesteros1,
 } from '@121-service/test/registrations/pagination/pagination-data';
+
 describe('Import a registration', () => {
   let accessToken: string;
 
@@ -428,7 +429,6 @@ describe('Import a registration', () => {
     );
 
     const messageHistory = messageHistoryResponse.body;
-    console.log('messageHistory', messageHistory);
     const messageSent = messageHistory.some((message) =>
       expectedMessageTranslations.includes(message.attributes.body),
     );
