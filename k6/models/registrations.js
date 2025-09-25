@@ -1,4 +1,3 @@
-// import { open } from 'k6';
 import http from 'k6/http';
 
 import config from './config.js'; // Import your configuration file

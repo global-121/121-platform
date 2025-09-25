@@ -1,3 +1,4 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
@@ -10,7 +11,7 @@ const registrationsModel = new RegistrationsModel();
 const resetPage = new resetModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 15; // '15' leads to 32k registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15'); // Default'15' leads to 32k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 2;
 const MAX_BULK_UPDATE_DURATION_MS = 15714; // 15.714 seconds approx. duration for 100k registrations

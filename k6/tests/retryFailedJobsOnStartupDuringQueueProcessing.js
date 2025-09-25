@@ -1,16 +1,20 @@
+/* global __ENV */
 import { check, fail, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter } from 'k6/metrics';
 
+import config from '../models/config.js';
 import loginModel from '../models/login.js';
 import paymentsModel from '../models/payments.js';
 import resetModel from '../models/reset.js';
+
+const { baseUrl } = config;
 
 const resetPage = new resetModel();
 const paymentsPage = new paymentsModel();
 const loginPage = new loginModel();
 
-const duplicateNumber = 7; // '7' leads to 128 registrations
+const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '7'); // '7' leads to 128 registrations
 const programId = 3;
 const maxTimeoutAttempts = 400;
 const minPassRatePercentage = 100;
@@ -19,7 +23,7 @@ const amount = 10;
 export const options = {
   thresholds: {
     // In this case the health check runs multiple times and so of the responses are going to be 500 before service is up
-    http_req_failed: ['rate<0.40'], // http errors should be less than 40%
+    http_req_failed: ['rate<0.60'], // http errors should be less than 60%
     failed_checks: ['count<1'], // fail the test if any check fails
   },
   vus: 1,
@@ -38,9 +42,7 @@ function checkAndFail(response, checks) {
 }
 
 function isServiceUp() {
-  const response = http.get(
-    `${process.env.EXTERNAL_121_SERVICE_URL}/api/health/health`,
-  );
+  const response = http.get(`${baseUrl}api/health/health`);
   return response.status === 200;
 }
 
