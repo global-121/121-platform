@@ -230,6 +230,7 @@ export class ProjectMonitoringDashboardPageComponent {
       {
         label: TransactionStatusEnum.error,
         data: this.aggregatePerPaymentLabelsAndData().data.map(
+          // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
           (a) => a.failed.count,
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.error],
