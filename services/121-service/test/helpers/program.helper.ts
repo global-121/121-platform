@@ -2,6 +2,7 @@ import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
 
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
@@ -414,25 +415,21 @@ export async function waitForStatusUpdateToComplete(
   }
 }
 
-export enum messageValueTypeEnum {
-  body = 'body',
-  contentType = 'contentType',
-}
-
 export async function waitForMessagesToComplete({
   programId,
   referenceIds,
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
-  expectedValues,
-  expectedValueType,
+  expectedMessageAttribute,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
-  expectedValues?: string[];
-  expectedValueType?: messageValueTypeEnum;
+  expectedMessageAttribute?: {
+    key: keyof MessageActivity['attributes'];
+    values: string[];
+  };
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -454,17 +451,15 @@ export async function waitForMessagesToComplete({
       }),
     );
 
-    referenceIdsWaitingForMessages =
-      expectedValues && expectedValues.length > 0 && expectedValueType
-        ? filterByExpectedValues({
-            messageHistories,
-            expectedValues,
-            expectedValueType,
-          })
-        : filterByMinimumMessages({
-            messageHistories,
-            minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
-          });
+    referenceIdsWaitingForMessages = expectedMessageAttribute
+      ? filterByExpectedValues({
+          messageHistories,
+          expectedMessageAttribute,
+        })
+      : filterByMinimumMessages({
+          messageHistories,
+          minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
+        });
 
     // To not overload the server and get 429
     await waitFor(100);
@@ -493,18 +488,21 @@ export async function waitForMessagesToComplete({
 
 function filterByExpectedValues({
   messageHistories,
-  expectedValues,
-  expectedValueType,
+  expectedMessageAttribute,
 }: {
   messageHistories: { referenceId: string; messageHistory: any[] }[];
-  expectedValues: string[];
-  expectedValueType: messageValueTypeEnum;
+  expectedMessageAttribute: {
+    key: keyof MessageActivity['attributes'];
+    values: string[];
+  };
 }): string[] {
   return messageHistories
     .filter(
       ({ messageHistory }) =>
         !messageHistory.some((m) =>
-          expectedValues.includes(m.attributes[expectedValueType]),
+          expectedMessageAttribute.values.includes(
+            m.attributes[expectedMessageAttribute.key],
+          ),
         ),
     )
     .map(({ referenceId }) => referenceId);
