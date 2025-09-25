@@ -443,17 +443,29 @@ export async function waitForMessagesToComplete({
     Date.now() - startTime < maxWaitTimeMs &&
     referenceIdsWaitingForMessages.length > 0
   ) {
-    const messageHistories = await fetchMessageHistories({
-      referenceIds: referenceIdsWaitingForMessages,
-      programId,
-      accessToken,
-    });
-    referenceIdsWaitingForMessages = filterReferenceIdsWaitingForMessages({
-      messageHistories,
-      minimumNumberOfMessagesPerReferenceId,
-      expectedValues,
-      expectedValueType,
-    });
+    const messageHistories = await Promise.all(
+      referenceIds.map(async (referenceId) => {
+        const response = await getMessageHistory(
+          programId,
+          referenceId,
+          accessToken,
+        );
+        return { referenceId, messageHistory: response.body };
+      }),
+    );
+
+    referenceIdsWaitingForMessages =
+      expectedValues && expectedValues.length > 0 && expectedValueType
+        ? filterByExpectedValues({
+            messageHistories,
+            expectedValues,
+            expectedValueType,
+          })
+        : filterByMinimumMessages({
+            messageHistories,
+            minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
+          });
+
     // To not overload the server and get 429
     await waitFor(100);
   }
@@ -476,52 +488,6 @@ export async function waitForMessagesToComplete({
       }
     }
     throw new Error(`Timeout waiting for messages to be sent`);
-  }
-}
-
-async function fetchMessageHistories({
-  referenceIds,
-  programId,
-  accessToken,
-}: {
-  referenceIds: string[];
-  programId: number;
-  accessToken: string;
-}): Promise<{ referenceId: string; messageHistory: any[] }[]> {
-  return Promise.all(
-    referenceIds.map(async (referenceId) => {
-      const response = await getMessageHistory(
-        programId,
-        referenceId,
-        accessToken,
-      );
-      return { referenceId, messageHistory: response.body };
-    }),
-  );
-}
-
-function filterReferenceIdsWaitingForMessages({
-  messageHistories,
-  minimumNumberOfMessagesPerReferenceId,
-  expectedValues,
-  expectedValueType,
-}: {
-  messageHistories: { referenceId: string; messageHistory: any[] }[];
-  minimumNumberOfMessagesPerReferenceId: number;
-  expectedValues?: string[];
-  expectedValueType?: messageValueTypeEnum;
-}): string[] {
-  if (expectedValues && expectedValues.length > 0 && expectedValueType) {
-    return filterByExpectedValues({
-      messageHistories,
-      expectedValues,
-      expectedValueType,
-    });
-  } else {
-    return filterByMinimumMessages({
-      messageHistories,
-      minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
-    });
   }
 }
 
