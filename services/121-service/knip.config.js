@@ -12,7 +12,7 @@ module.exports = {
     exports: 'error',
     enumMembers: 'error',
     types: 'error',
-    unlisted: 'warn',
+    unlisted: 'error',
   },
 
   // Plugin-specific:
