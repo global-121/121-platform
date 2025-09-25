@@ -25,6 +25,7 @@ import {
   paymentColors,
   registrationsByDateColor,
   registrationsPerStatusColors,
+  registrationStatusSortOrder,
 } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -61,7 +62,9 @@ export class ProjectMonitoringDashboardPageComponent {
       return { labels: [], data: [] };
     }
     const queryData = this.registrationsPerStatus.data();
-    const labels = Object.keys(queryData).sort();
+    const labels = registrationStatusSortOrder.filter((status) =>
+      Object.keys(queryData).includes(status),
+    );
     const data = labels.map((k) => queryData[k]);
     return { labels, data };
   });

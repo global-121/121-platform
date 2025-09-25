@@ -4,6 +4,17 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 
 import tailwindConfig from '~/../../tailwind.config';
 
+// this is the order in the registration table buttons
+export const registrationStatusSortOrder = [
+  RegistrationStatusEnum.new,
+  RegistrationStatusEnum.validated,
+  RegistrationStatusEnum.included,
+  RegistrationStatusEnum.completed,
+  RegistrationStatusEnum.declined,
+  RegistrationStatusEnum.paused,
+  RegistrationStatusEnum.deleted,
+];
+
 const colors = tailwindConfig.theme.colors;
 const shade = 500;
 
