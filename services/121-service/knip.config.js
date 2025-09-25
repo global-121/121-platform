@@ -5,10 +5,18 @@ module.exports = {
     '!src/migration/*.ts', // Migrations don't have an 'entry point'
   ],
   includeEntryExports: true,
+  ignoreBinaries: [
+    'open', // Default available on macOS
+  ],
+  ignoreDependencies: [
+    // Known issues with devDependencies:
+    '@automock/adapters.nestjs', // Auto-loaded by @automock/jest
+    '@compodoc/compodoc', // Only used 'manually', see README.md
+  ],
   rules: {
-    binaries: 'warn', // Known issues: open (default available on macOS)
+    binaries: 'error',
     dependencies: 'error',
-    devDependencies: 'warn', // Known isues: @automock/adapters.nestjs, compodoc
+    devDependencies: 'error',
     exports: 'error',
     enumMembers: 'error',
     types: 'error',
