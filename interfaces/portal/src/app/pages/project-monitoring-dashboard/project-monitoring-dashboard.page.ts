@@ -13,15 +13,12 @@ import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-status.enum';
 
 import { PageLayoutMonitoringComponent } from '~/components/page-layout-monitoring/page-layout-monitoring.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { ProjectAggregatePerPaymentValue } from '~/domains/metric/metric.model';
-import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring-dashboard/components/registrations-per-status-chart/registrations-per-status-chart.component';
 import {
-  duplicationColors,
   getChartOptions,
   paymentColors,
   registrationsByDateColor,
@@ -43,7 +40,6 @@ import { TranslatableStringService } from '~/services/translatable-string.servic
 })
 export class ProjectMonitoringDashboardPageComponent {
   private metricApiService = inject(MetricApiService);
-  private registrationApiService = inject(RegistrationApiService);
   private translatableStringService = inject(TranslatableStringService);
 
   readonly projectId = input.required<string>();
@@ -63,57 +59,6 @@ export class ProjectMonitoringDashboardPageComponent {
     this.translatableStringService.commaSeparatedList(
       labels.map((label, index) => `${label}: ${String(data[index])}`),
     );
-
-  duplicates = injectQuery(() => ({
-    ...this.registrationApiService.getManyByQuery(
-      this.projectId,
-      signal({ filter: { duplicateStatus: DuplicateStatus.duplicate } }),
-    )(),
-    enabled: !!this.projectId(),
-  }));
-
-  uniques = injectQuery(() => ({
-    ...this.registrationApiService.getManyByQuery(
-      this.projectId,
-      signal({ filter: { duplicateStatus: DuplicateStatus.unique } }),
-    )(),
-    enabled: !!this.projectId(),
-  }));
-
-  readonly duplicationLabels = signal([
-    DuplicateStatus.duplicate,
-    DuplicateStatus.unique,
-  ]);
-
-  readonly duplicationChartColors = computed<string[]>(() =>
-    this.duplicationLabels().map((l) => duplicationColors[l]),
-  );
-
-  duplicationChartOptions = getChartOptions({
-    title: $localize`Registrations per duplicate status`,
-    showLegend: false,
-  });
-
-  readonly duplicationChartData = computed<ChartData>(() => ({
-    labels: [DuplicateStatus.duplicate, DuplicateStatus.unique],
-    datasets: [
-      {
-        data: [
-          this.duplicates.data()?.meta.totalItems ?? 0,
-          this.uniques.data()?.meta.totalItems ?? 0,
-        ],
-        backgroundColor: this.duplicationChartColors(),
-      },
-    ],
-  }));
-
-  readonly duplicationAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel({
-      title: $localize`Registrations per duplicate status`,
-      labels: this.duplicationLabels(),
-      data: this.duplicationChartData().datasets[0].data as number[],
-    }),
-  );
 
   registrationCountByDate = injectQuery(() => {
     const date = new Date();
