@@ -13,7 +13,7 @@
       <ng-container [ngTemplateOutlet]="header()"></ng-container>
     </h3>
   </ng-template>
-  <div class="flex w-full items-start gap-5 px-6 lg:px-24">
+  <div class="flex h-full w-full items-start gap-5 px-6 lg:px-24">
     @defer (when dialogVisible()) {
       <!-- This ngClass is a trick where we are hiding the table instead of not rendering it -->
       <!-- because this makes the selection in the table persist without saving it to local storage. -->
@@ -23,7 +23,7 @@
         <div
           [ngClass]="{
             hidden: currentStep() !== $index + 1,
-            'w-1/2': !!illustration(),
+            'w-1/2 self-center': !!illustration(),
             'w-full': !illustration(),
           }"
         >
@@ -32,7 +32,7 @@
       }
 
       @if (illustration()) {
-        <div class="w-1/2">
+        <div class="w-1/2 self-center">
           <ng-container [ngTemplateOutlet]="illustration()"></ng-container>
         </div>
       }
