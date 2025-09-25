@@ -21,7 +21,6 @@ import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring
 import {
   getChartOptions,
   paymentColors,
-  registrationsByDateColor,
 } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
@@ -59,54 +58,6 @@ export class ProjectMonitoringDashboardPageComponent {
     this.translatableStringService.commaSeparatedList(
       labels.map((label, index) => `${label}: ${String(data[index])}`),
     );
-
-  registrationCountByDate = injectQuery(() => {
-    const date = new Date();
-    date.setDate(date.getDate() - 14);
-    const twoWeeksAgo = date.toISOString().split('T')[0];
-
-    return {
-      ...this.metricApiService.getRegistrationCountByDate({
-        projectId: this.projectId,
-        startDate: twoWeeksAgo,
-      })(),
-      enabled: !!this.projectId(),
-    };
-  });
-
-  readonly registrationsByDateLabelsAndData = computed(() => {
-    if (!this.registrationCountByDate.isSuccess()) {
-      return { labels: [], data: [] };
-    }
-    const queryData = this.registrationCountByDate.data();
-    const labels = Object.keys(queryData).sort();
-    const data = labels.map((k) => queryData[k]);
-    return { labels, data };
-  });
-
-  registrationsByDateChartOptions = getChartOptions({
-    title: $localize`Registrations by creation date (last 2 weeks)`,
-    showLegend: false,
-    showDataLabels: false,
-  });
-
-  readonly registrationsByDateChartData = computed<ChartData>(() => ({
-    labels: this.registrationsByDateLabelsAndData().labels,
-    datasets: [
-      {
-        data: this.registrationsByDateLabelsAndData().data,
-        backgroundColor: registrationsByDateColor,
-      },
-    ],
-  }));
-
-  readonly registrationsByDateAriaLabel = computed(() =>
-    this.getTranslatedAriaLabel({
-      title: $localize`Registrations by creation date (last 2 weeks)`,
-      labels: this.registrationsByDateLabelsAndData().labels,
-      data: this.registrationsByDateChartData().datasets[0].data as number[],
-    }),
-  );
 
   readonly limitNumberOfPayments = signal('5');
 
