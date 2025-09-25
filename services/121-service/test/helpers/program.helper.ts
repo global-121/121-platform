@@ -460,15 +460,6 @@ export async function waitForMessagesToComplete({
 
   if (referenceIdsWaitingForMessages.length > 0) {
     if (IS_DEVELOPMENT) {
-      console.log('Reference Ids: ', referenceIds);
-      console.log(
-        'Reference Ids Waiting for Messages: ',
-        referenceIdsWaitingForMessages,
-      );
-      console.log(
-        'Expected number of messages: ',
-        minimumNumberOfMessagesPerReferenceId,
-      );
       for (const referenceId of referenceIdsWaitingForMessages) {
         const response = await getMessageHistory(
           programId,
@@ -521,7 +512,7 @@ function filterReferenceIdsWaitingForMessages({
   expectedValueType?: messageValueTypeEnum;
 }): string[] {
   if (expectedValues && expectedValues.length > 0 && expectedValueType) {
-    return filterReferenceIdsWithoutexpectedValues({
+    return filterByExpectedValues({
       messageHistories,
       expectedValues,
       expectedValueType,
@@ -534,7 +525,7 @@ function filterReferenceIdsWaitingForMessages({
   }
 }
 
-function filterReferenceIdsWithoutexpectedValues({
+function filterByExpectedValues({
   messageHistories,
   expectedValues,
   expectedValueType,
