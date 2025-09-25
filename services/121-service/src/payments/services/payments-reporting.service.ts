@@ -90,7 +90,7 @@ export class PaymentsReportingService {
       totalAmountPerStatus[status].count = Number(row.count);
       totalAmountPerStatus[status].amount = Number(row.totalamount);
     }
-
+    // XXX: object keys should be TransactionStatusEnum
     return {
       success: totalAmountPerStatus[TransactionStatusEnum.success] || {
         count: 0,
@@ -100,6 +100,7 @@ export class PaymentsReportingService {
         count: 0,
         amount: 0,
       },
+      // XXX: as soon as this has changed update metric.model.ts in the frontend
       failed: totalAmountPerStatus[TransactionStatusEnum.error] || {
         count: 0,
         amount: 0,
