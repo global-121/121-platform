@@ -52,7 +52,7 @@ export class PaymentsReportingService {
       order: {
         id: 'DESC',
       },
-      take: limitNumberOfPayments ? limitNumberOfPayments : undefined,
+      take: limitNumberOfPayments,
     });
 
     const payments = rawPayments.map((payment) => ({

@@ -436,7 +436,7 @@ export class MetricsService {
       .orderBy(`to_char("created", 'yyyy-mm-dd')`);
 
     if (startDate) {
-      query.andWhere('created > :startDate', { startDate });
+      query.andWhere('created >= :startDate', { startDate });
     }
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {

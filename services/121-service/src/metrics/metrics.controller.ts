@@ -243,7 +243,11 @@ export class MetricsController {
   public async getAmountSentByMonth(
     @Param('programId', ParseIntPipe)
     programId: number,
-    @Query('limitNumberOfPayments', new ParseIntPipe({ optional: true }))
+    @Query(
+      'limitNumberOfPayments',
+      new ParseIntPipe({ optional: true }),
+      new AssertPositiveNumberPipe({ optional: true }),
+    )
     limitNumberOfPayments?: number,
   ): Promise<AggregatePerMonth> {
     return await this.metricsService.getAmountSentByMonth({
