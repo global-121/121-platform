@@ -113,12 +113,14 @@ export class OnafriqReconciliationService {
 
     // create transaction event
     await this.transactionEventsService.createEvent({
-      transactionId,
-      userId: null,
+      context: {
+        transactionId,
+        userId: null,
+        programFspConfigurationId,
+      },
       type: TransactionEventType.processingStep,
       description: TransactionEventDescription.onafriqCallbackReceived,
       errorMessage,
-      programFspConfigurationId,
     });
   }
 

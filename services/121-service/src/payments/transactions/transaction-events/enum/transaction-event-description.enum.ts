@@ -3,6 +3,7 @@ export enum TransactionEventDescription {
   initiated = 'Transaction initiated',
   retry = 'Transaction retry initiated',
   // Onafriq processing-step events
+  visaPaymentRequested = 'Visa payment requested',
   onafriqRequestSent = 'Onafriq request sent',
   onafriqCallbackReceived = 'Onafriq callback received',
   // Safaricom processing-step events // ##TODO: these are exactly the same as onafriq, can we generalize?
