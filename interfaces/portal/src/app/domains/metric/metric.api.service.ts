@@ -67,14 +67,11 @@ export class MetricApiService extends DomainApiService {
     >({
       path: [...BASE_ENDPOINT(projectId), 'registration-status'],
       processResponse: (response) =>
-        response.reduce(
-          (statusObject: Record<string, number>, currentStatus) => {
-            statusObject[currentStatus.status] = currentStatus.statusCount;
+        response.reduce((statusObject, currentStatus) => {
+          statusObject[currentStatus.status] = currentStatus.statusCount;
 
-            return statusObject;
-          },
-          {},
-        ),
+          return statusObject;
+        }, {}),
     });
   }
 
