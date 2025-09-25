@@ -11,6 +11,7 @@ class ProjectSettingsPage extends BasePage {
   readonly dateRangeEndInput: PrimeNGDatePicker;
   readonly basicInformationDataList: DataListComponent;
   readonly budgetDataList: DataListComponent;
+  readonly currencyDropdown: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -30,11 +31,19 @@ class ProjectSettingsPage extends BasePage {
     this.budgetDataList = new DataListComponent(
       this.page.getByTestId('project-budget-data-list'),
     );
+    this.currencyDropdown = this.page.locator(`[formControlName="currency"]`);
   }
 
   async selectDateRange({ start, end }: { start: Date; end: Date }) {
     await this.dateRangeStartInput.selectDate({ targetDate: start });
     await this.dateRangeEndInput.selectDate({ targetDate: end });
+  }
+
+  async selectCurrency(currency: string) {
+    await this.currencyDropdown.click();
+    await this.page
+      .getByRole('option', { name: currency, exact: true })
+      .click();
   }
 
   async clickEditSectionByTitle(title: 'Basic information' | 'Budget') {

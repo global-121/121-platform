@@ -44,7 +44,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
 
   const budgetInfo = {
     fundsAvailable: '200',
-    currency: 'USD',
+    currency: 'CAD',
     paymentFrequency: '2-months',
     defaultTransferAmount: '200',
     fixedTransferValue: '100',
@@ -106,10 +106,7 @@ test('[38155] Edit Project Information', async ({ page }) => {
       'Funds available',
       budgetInfo.fundsAvailable,
     );
-    await projectSettings.editInformationFieldByLabel(
-      'Currency',
-      budgetInfo.currency,
-    );
+    await projectSettings.selectCurrency(budgetInfo.currency);
     await projectSettings.editInformationFieldByLabel(
       'Payment frequency',
       budgetInfo.paymentFrequency,

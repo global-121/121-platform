@@ -13,6 +13,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { ProgramRegistrationAttributeDto } from '@121-service/src/programs/dto/program-registration-attribute.dto';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -134,7 +135,7 @@ export class CreateProgramDto {
   @Length(3, 3, {
     message: 'Currency should be a 3 letter abbreviation',
   })
-  public readonly currency: string;
+  public readonly currency: WrapperType<CurrencyCode>;
 
   @ApiProperty({ example: 'week', enum: ['week', 'month'] })
   @IsString()

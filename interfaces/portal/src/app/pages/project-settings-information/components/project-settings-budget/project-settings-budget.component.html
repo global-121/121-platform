@@ -37,12 +37,12 @@
           [labelTooltip]="tooltipCurrency"
           [isRequired]="true"
         >
-          <input
-            pInputText
-            type="text"
+          <p-select
+            [options]="currencies"
             formControlName="currency"
-            placeholder="3 letter code, e.g. EUR"
-            i18n-placeholder
+            [showClear]="false"
+            class="w-full"
+            [filter]="true"
           />
         </app-form-field-wrapper>
       </div>

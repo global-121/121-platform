@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 import { ActionEntity } from '@121-service/src/actions/action.entity';
 import { Base121Entity } from '@121-service/src/base.entity';
+import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
@@ -12,6 +13,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { Attribute } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { LocalizedString } from '@121-service/src/shared/types/localized-string.type';
+import { WrapperType } from '@121-service/src/wrapper.type';
 
 @Entity('program')
 export class ProgramEntity extends Base121Entity {
@@ -31,7 +33,7 @@ export class ProgramEntity extends Base121Entity {
   public endDate: Date | null;
 
   @Column({ type: 'character varying', nullable: true })
-  public currency: string | null;
+  public currency: WrapperType<CurrencyCode> | null;
 
   @Column({ type: 'character varying', nullable: true })
   public distributionFrequency: string | null;
