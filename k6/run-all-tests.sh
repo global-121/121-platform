@@ -22,10 +22,9 @@ for file in "${test_files[@]}"; do
   # Log the contents of summary.json for debugging
   echo "Contents of summary.json:"
   cat summary.json
-  # XXX: fix when summary.json doesn't have "checks" key
-  HAS_FAILURE=$(jq '.metrics.checks.fails' summary.json)
-  # Check if there are any failed checks
-  if [[ ${HAS_FAILURE} -gt 0 ]]; then
+  # default to 1 because if "fails" is not present, it means that no checks were run at all, which is likely due to a failure
+  FAILURE_COUNT=$(jq '.metrics.checks.fails // 1' summary.json)
+  if [[ ${FAILURE_COUNT} -gt 0 ]]; then
       echo "Test failed: ${file}"
       failed_tests+=("${file}")
   fi
