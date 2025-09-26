@@ -9,12 +9,12 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
-import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 @Injectable()
 export class TransactionJobsHelperService {
@@ -41,44 +41,55 @@ export class TransactionJobsHelperService {
     return registration;
   }
 
-  public async createTransactionEvent({
-    transactionJob,
-    transactionEventType,
+  public async saveTransactionProcessingProgress({
+    context,
     description,
     errorMessage,
+    newTransactionStatus,
   }: {
-    transactionJob: SharedTransactionJobDto;
-    transactionEventType: TransactionEventType;
+    context: TransactionEventCreationContext;
     description: TransactionEventDescription;
     errorMessage?: string;
-    transactionStatus?: TransactionStatusEnum;
+    newTransactionStatus?: TransactionStatusEnum;
   }) {
+    const transactionEventType = TransactionEventType.processingStep;
     await this.transactionEventsService.createEvent({
-      transactionId: transactionJob.transactionId,
-      userId: transactionJob.userId,
+      context,
       type: transactionEventType,
       description,
       errorMessage,
-      programFspConfigurationId: transactionJob.programFspConfigurationId,
     });
+    if (newTransactionStatus) {
+      await this.updateTransactionStatus({
+        transactionId: context.transactionId,
+        status: newTransactionStatus,
+      });
+    }
   }
 
-  public async updateTransactionStatus(
-    transactionId: number,
-    status: TransactionStatusEnum,
-  ) {
+  public async updateTransactionStatus({
+    transactionId,
+    status,
+  }: {
+    transactionId: number;
+    status: TransactionStatusEnum;
+  }) {
     await this.transactionScopedRepository.update(transactionId, { status });
   }
 
-  public async createInitiatedOrRetryTransactionEvent(
-    transactionJob: SharedTransactionJobDto,
-  ) {
-    await this.createTransactionEvent({
-      transactionJob,
-      transactionEventType: transactionJob.isRetry
+  public async createInitiatedOrRetryTransactionEvent({
+    context,
+    isRetry,
+  }: {
+    context: TransactionEventCreationContext;
+    isRetry: boolean;
+  }) {
+    await this.transactionEventsService.createEvent({
+      context,
+      type: isRetry
         ? TransactionEventType.retry
         : TransactionEventType.initiated,
-      description: transactionJob.isRetry
+      description: isRetry
         ? TransactionEventDescription.retry
         : TransactionEventDescription.initiated,
     });

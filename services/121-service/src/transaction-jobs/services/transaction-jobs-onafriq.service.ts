@@ -7,7 +7,7 @@ import { OnafriqError } from '@121-service/src/payments/fsp-integration/onafriq/
 import { OnafriqService } from '@121-service/src/payments/fsp-integration/onafriq/services/onafriq.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -28,9 +28,18 @@ export class TransactionJobsOnafriqService {
   public async processOnafriqTransactionJob(
     transactionJob: OnafriqTransactionJobDto,
   ): Promise<void> {
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+
     // 1. Create transaction event 'initiated' or 'retry'
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      transactionJob,
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
     );
 
     // 2. Create idempotency key
@@ -69,15 +78,13 @@ export class TransactionJobsOnafriqService {
         return;
       } else if (error instanceof OnafriqError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.createTransactionEvent({
-          transactionJob,
-          transactionEventType: TransactionEventType.processingStep,
-          description: TransactionEventDescription.onafriqRequestSent,
-          errorMessage: error.message,
-        });
-        await this.transactionJobsHelperService.updateTransactionStatus(
-          transactionJob.transactionId,
-          TransactionStatusEnum.error,
+        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
+          {
+            context: transactionEventContext,
+            description: TransactionEventDescription.onafriqRequestSent,
+            errorMessage: error.message,
+            newTransactionStatus: TransactionStatusEnum.error,
+          },
         );
         return;
       } else {
@@ -86,15 +93,11 @@ export class TransactionJobsOnafriqService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.createTransactionEvent({
-      transactionJob,
-      transactionEventType: TransactionEventType.processingStep,
+    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+      context: transactionEventContext,
       description: TransactionEventDescription.onafriqRequestSent,
+      newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
-    await this.transactionJobsHelperService.updateTransactionStatus(
-      transactionJob.transactionId,
-      TransactionStatusEnum.waiting, // This will only go to 'success' via callback
-    );
   }
 
   private async upsertOnafriqTransaction(
