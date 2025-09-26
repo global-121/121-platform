@@ -42,6 +42,7 @@ function checkAndFail(response, checks) {
 export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
+    __filename,
     programId,
     registrationVisa,
     duplicateNumber,

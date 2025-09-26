@@ -13,6 +13,7 @@ const programsPage = new ProgramsModel();
 export default class InitializePaymentModel {
   initializePayment(
     resetScript,
+    resetIdentifier,
     programId,
     registration,
     duplicateNumber,
@@ -21,7 +22,7 @@ export default class InitializePaymentModel {
     amount,
   ) {
     // reset db
-    resetPage.resetDB(resetScript);
+    resetPage.resetDB(resetScript, resetIdentifier);
     // login
     loginPage.login();
     // Upload registration
