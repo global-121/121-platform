@@ -53,7 +53,6 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
   }: {
     transactionId: number;
   }): Promise<NedbankVoucherEntity | null> {
-    // use .findone instead
     return await this.findOne({
       where: { transactionId: Equal(transactionId), status: IsNull() },
     });
