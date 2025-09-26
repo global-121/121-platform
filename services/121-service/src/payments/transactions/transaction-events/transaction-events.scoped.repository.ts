@@ -28,4 +28,12 @@ export class TransactionEventsScopedRepository extends ScopedRepository<Transact
       },
     });
   }
+  public async findLatestEventByTransactionId(
+    transactionId: number,
+  ): Promise<TransactionEventEntity> {
+    return this.findOneOrFail({
+      where: { transactionId: Equal(transactionId) },
+      order: { created: 'DESC' },
+    });
+  }
 }
