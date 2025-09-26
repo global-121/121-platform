@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   input,
-  signal,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -14,7 +13,6 @@ import { ChartModule } from 'primeng/chart';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-import { ProjectAggregatePerPaymentValue } from '~/domains/metric/metric.model';
 import {
   getChartOptions,
   paymentColors,
@@ -32,7 +30,7 @@ export class PaymentsAggregateChartComponent {
   // This component can show a chart for either the amount or count of payments.
   private metricApiService = inject(MetricApiService);
   readonly projectId = input.required<string>();
-  readonly aggregateType = input<'amount' | 'count'>();
+  readonly aggregateType = input.required<'amount' | 'count'>();
 
   readonly getLabelFunction =
     input.required<
@@ -45,27 +43,29 @@ export class PaymentsAggregateChartComponent {
       : $localize`Transfers per payment`,
   );
 
-  // XXX: not make this a signal
-  readonly limitNumberOfPayments = signal('5');
-
-  aggregatePerPayment = injectQuery(() => ({
+  query = injectQuery(() => ({
     ...this.metricApiService.getAllPaymentsAggregates({
       projectId: this.projectId,
-      limitNumberOfPayments: this.limitNumberOfPayments(),
+      limitNumberOfPayments: '5',
     })(),
     enabled: !!this.projectId(),
   }));
 
-  readonly labelsAndData = computed(() => {
-    if (!this.aggregatePerPayment.isSuccess()) {
-      return { labels: [], data: [] };
+  readonly queryData = computed(() => {
+    if (!this.query.isSuccess()) {
+      return {};
     }
-    const queryData: Record<string, ProjectAggregatePerPaymentValue> =
-      this.aggregatePerPayment.data();
-    const labels = Object.keys(queryData).sort((a, b) => Number(a) - Number(b));
-    const data = labels.map((k) => queryData[k]);
-    return { labels, data };
+
+    return this.query.data();
   });
+
+  readonly labels = computed<string[]>(() =>
+    Object.keys(this.queryData()).sort((a, b) => Number(a) - Number(b)),
+  );
+
+  readonly data = computed(() =>
+    this.labels().map((k) => this.queryData()[Number(k)]),
+  );
 
   chartOptions = getChartOptions({
     title: this.title(),
@@ -73,11 +73,11 @@ export class PaymentsAggregateChartComponent {
   });
 
   readonly chartData = computed<ChartData>(() => ({
-    labels: this.labelsAndData().labels,
+    labels: this.labels(),
     datasets: [
       {
         label: TransactionStatusEnum.error,
-        data: this.labelsAndData().data.map(
+        data: this.data().map(
           // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
           (a) => a.failed[this.aggregateType()],
         ),
@@ -85,14 +85,14 @@ export class PaymentsAggregateChartComponent {
       },
       {
         label: TransactionStatusEnum.success,
-        data: this.labelsAndData().data.map(
+        data: this.data().map(
           (a) => a[TransactionStatusEnum.success][this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
-        data: this.labelsAndData().data.map(
+        data: this.data().map(
           (a) => a[TransactionStatusEnum.waiting][this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.waiting],
@@ -102,8 +102,8 @@ export class PaymentsAggregateChartComponent {
 
   readonly ariaLabel = computed(() =>
     this.getLabelFunction()({
-      title: $localize`Transfers per payment`,
-      labels: this.labelsAndData().labels,
+      title: this.title(),
+      labels: this.labels(),
       data: this.chartData().datasets[0].data as number[],
     }),
   );
