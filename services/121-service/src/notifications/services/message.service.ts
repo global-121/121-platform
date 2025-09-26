@@ -193,17 +193,24 @@ export class MessageService {
           errorMessage = error;
         },
       );
-    const status = messageSid
+    const newTransactionStatus = messageSid
       ? TransactionStatusEnum.waiting
       : TransactionStatusEnum.error;
 
-    if (messageJobDto.customData?.paymentId) {
-      await this.intersolveVoucherService.updateWaitingTransactionStep1(
-        messageJobDto.customData.paymentId,
-        messageJobDto.registrationId,
-        status,
-        status === TransactionStatusEnum.error ? undefined : messageSid, // else = 'waiting'
-        status === TransactionStatusEnum.error ? errorMessage : undefined, // else = 'waiting'
+    if (messageJobDto.customData?.transactionId) {
+      await this.intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage(
+        {
+          transactionId: messageJobDto.customData.transactionId,
+          newTransactionStatus,
+          messageSid:
+            newTransactionStatus === TransactionStatusEnum.error
+              ? undefined
+              : messageSid, // else = 'waiting'
+          errorMessage:
+            newTransactionStatus === TransactionStatusEnum.error
+              ? errorMessage
+              : undefined, // else = 'waiting'
+        },
       );
     }
   }
@@ -236,21 +243,16 @@ export class MessageService {
         },
       );
 
-    const status = TransactionStatusEnum.success;
-    if (
-      messageJobDto.customData?.paymentId &&
-      messageJobDto.customData.amount != undefined
-    ) {
-      await this.intersolveVoucherService.processTransactionResultStep2(
-        messageJobDto.customData.paymentId,
-        messageJobDto.customData.amount,
-        messageJobDto.registrationId,
-        status,
-        errorMessage,
-        messageJobDto.programId,
+    // ##TODO why is this always success, and not error if it fails, like on 'initial message' above?
+    const newTransactionStatus = TransactionStatusEnum.success;
+    if (messageJobDto.customData?.transactionId) {
+      await this.intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage(
         {
+          transactionId: messageJobDto.customData.transactionId,
+          newTransactionStatus,
+          errorMessage,
           messageSid,
-          intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
+          intersolveVoucherId: messageJobDto.customData?.intersolveVoucherId,
         },
       );
     }

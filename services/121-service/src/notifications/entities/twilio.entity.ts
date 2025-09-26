@@ -5,7 +5,6 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   Relation,
 } from 'typeorm';
 
@@ -80,7 +79,7 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column({ type: 'int', default: 0 })
   public retryCount: number;
 
-  @OneToOne(() => TransactionEntity, {
+  @ManyToOne(() => TransactionEntity, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'transactionId' })

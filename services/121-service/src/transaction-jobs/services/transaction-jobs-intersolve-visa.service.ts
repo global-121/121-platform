@@ -9,6 +9,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
@@ -20,6 +21,7 @@ export class TransactionJobsIntersolveVisaService {
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
@@ -55,14 +57,12 @@ export class TransactionJobsIntersolveVisaService {
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
         // Do not update the transaction amount since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
-          {
-            context: transactionEventContext,
-            description: TransactionEventDescription.visaPaymentRequested,
-            errorMessage: `Error calculating transfer amount: ${error?.message}`,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionsService.saveTransactionProcessingProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.visaPaymentRequested,
+          errorMessage: `Error calculating transfer amount: ${error?.message}`,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       }
       throw error;
@@ -102,14 +102,12 @@ export class TransactionJobsIntersolveVisaService {
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
-          {
-            context: transactionEventContext,
-            description: TransactionEventDescription.visaPaymentRequested,
-            errorMessage: error?.message,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionsService.saveTransactionProcessingProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.visaPaymentRequested,
+          errorMessage: error?.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       } else {
         throw error;
@@ -130,7 +128,7 @@ export class TransactionJobsIntersolveVisaService {
       userId: transactionJob.userId,
     });
 
-    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProcessingProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.visaPaymentRequested,
       newTransactionStatus: TransactionStatusEnum.success,
