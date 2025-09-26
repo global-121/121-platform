@@ -84,7 +84,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
           createCustomerReference: transactionJob.referenceId,
-          transferReference: `ReferenceId=${transactionJob.referenceId},TransferId=${transactionJob.transactionId}`, // Will be used to generate idempotency key for the transfer
+          transferReference: `ReferenceId=${transactionJob.referenceId},TransactionId=${transactionJob.transactionId}`, // Will be used to generate idempotency key for the transfer
           name: transactionJob.name!,
           contactInformation: {
             addressStreet: transactionJob.addressStreet!,
