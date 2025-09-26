@@ -32,7 +32,7 @@ export default class InitializePaymentModel {
     // Change status of all PAs to included and check response
     programsPage.updateRegistrationStatusAndLog(programId, 'included');
     // Create payment only if dry run is successful
-    paymentsPage.verifyPaymentDryRunUntilSuccess(programId, amount);
+    paymentsPage.verifyPaymentDryRunUntilSuccess(programId);
     const doPaymentResult = paymentsPage.createPayment(programId, amount);
     const paymentId = JSON.parse(doPaymentResult.body).id;
     // Monitor that 10% of payments is successful and then stop the test
