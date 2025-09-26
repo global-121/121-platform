@@ -22,6 +22,7 @@ import {
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
+import { GenericRegistrationAttributes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -556,12 +557,16 @@ export class PaymentsExecutionService {
     amount: number;
     programId: number;
   }): Promise<TransactionCreationDetails[]> {
+    const idColumn: keyof RegistrationViewEntity = 'id';
     const registrations =
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
           programId,
           referenceIds,
-          select: ['id', 'paymentAmountMultiplier'],
+          select: [
+            idColumn,
+            GenericRegistrationAttributes.paymentAmountMultiplier,
+          ],
           chunkSize: 4000,
         },
       );
