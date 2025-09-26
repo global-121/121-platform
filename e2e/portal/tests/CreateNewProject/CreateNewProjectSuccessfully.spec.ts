@@ -13,6 +13,7 @@ const todaysDate = new Date();
 const futureDate = new Date();
 futureDate.setDate(futureDate.getDate() + 1);
 
+// XXX: add test for failing on step 1, 2, 3
 test('[29635] Create project successfully', async ({ page }) => {
   // Arrange
   await resetDB(SeedScript.testMultiple, __filename);
