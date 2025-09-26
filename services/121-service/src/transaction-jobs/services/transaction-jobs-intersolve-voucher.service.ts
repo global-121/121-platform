@@ -53,7 +53,6 @@ export class TransactionJobsIntersolveVoucherService {
     if (!sendIndividualPaymentResult) {
       return;
     }
-    console.log('sendIndividualPaymentResult: ', sendIndividualPaymentResult);
 
     await this.transactionsService.saveTransactionProcessingProgress({
       context: transactionEventContext,
