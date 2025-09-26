@@ -1,25 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
-import { Equal, In, Repository } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { Equal, Repository } from 'typeorm';
 
 import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
+import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LatestTransactionEntity } from '@121-service/src/payments/transactions/latest-transaction.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
-import { PostgresStatusCodes } from '@121-service/src/shared/enum/postgres-status-codes.enum';
-import { isSameAsString } from '@121-service/src/utils/comparison.helper';
 @Injectable()
 export class TransactionsService {
-  @InjectRepository(LatestTransactionEntity)
-  private readonly latestTransactionRepository: Repository<LatestTransactionEntity>;
-
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
@@ -64,7 +61,7 @@ export class TransactionsService {
     });
 
     const transaction = new TransactionEntity();
-    transaction.amount = transactionResponse.calculatedAmount;
+    transaction.transferValue = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.registration = registration;
     transaction.programFspConfigurationId =
@@ -87,37 +84,8 @@ export class TransactionsService {
         },
       );
     }
-    await this.updateLatestTransaction(transaction);
     // Transaction step 2 does not need to update payment count or send notification
     // As transaction step 1 already did that
-  }
-
-  private async updateLatestTransaction(
-    transaction: TransactionEntity,
-  ): Promise<void> {
-    const latestTransaction =
-      new LatestTransactionEntity() as QueryDeepPartialEntity<LatestTransactionEntity>;
-    latestTransaction.registrationId = transaction.registrationId;
-    latestTransaction.paymentId = transaction.paymentId;
-    latestTransaction.transactionId = transaction.id;
-    try {
-      // Try to insert a new LatestTransactionEntity
-      await this.latestTransactionRepository.insert(latestTransaction);
-    } catch (error) {
-      if (isSameAsString(error.code, PostgresStatusCodes.UNIQUE_VIOLATION)) {
-        // If a unique constraint violation occurred, update the existing LatestTransactionEntity
-        await this.latestTransactionRepository.update(
-          {
-            registrationId: latestTransaction.registrationId ?? undefined,
-            paymentId: latestTransaction.paymentId ?? undefined,
-          },
-          latestTransaction,
-        );
-      } else {
-        // If some other error occurred, rethrow it
-        throw error;
-      }
-    }
   }
 
   public async storeReconciliationTransactionsBulk(
@@ -143,7 +111,7 @@ export class TransactionsService {
         }
 
         const transaction = new TransactionEntity();
-        transaction.amount = transactionResponse.calculatedAmount;
+        transaction.transferValue = transactionResponse.calculatedAmount;
         transaction.registrationId = transactionResponse.registrationId;
         transaction.programFspConfigurationId =
           transactionRelationDetails.programFspConfigurationId;
@@ -162,19 +130,7 @@ export class TransactionsService {
     const transactionChunks = chunk(transactionsToSave, BATCH_SIZE);
 
     for (const chunkedTransactions of transactionChunks) {
-      const savedTransactions =
-        await this.transactionScopedRepository.save(chunkedTransactions);
-      const savedTransactionEntities =
-        await this.transactionScopedRepository.find({
-          where: {
-            id: In(savedTransactions.map((i) => i.id)),
-          },
-        });
-
-      // Leaving this per transaction for now, as it is not a performance bottleneck
-      for (const transaction of savedTransactionEntities) {
-        await this.updateLatestTransaction(transaction);
-      }
+      await this.transactionScopedRepository.save(chunkedTransactions);
     }
   }
 
@@ -208,5 +164,44 @@ export class TransactionsService {
         await this.transactionScopedRepository.save(foundTransaction);
       }
     }
+  }
+
+  public async createTransactionsAndEvents({
+    transactionCreationDetails,
+    paymentId,
+    userId,
+  }: {
+    transactionCreationDetails: TransactionCreationDetails[];
+    paymentId: number;
+    userId: number;
+  }): Promise<number[]> {
+    const transactionsToSave: TransactionEntity[] = [];
+    for (const item of transactionCreationDetails) {
+      const transactionToSave = new TransactionEntity();
+      transactionToSave.registrationId = item.registrationId;
+      transactionToSave.transferValue = item.transactionAmount;
+      transactionToSave.paymentId = paymentId;
+      transactionToSave.status = TransactionStatusEnum.created;
+      transactionToSave.userId = userId;
+      transactionsToSave.push(transactionToSave);
+    }
+
+    for (const transaction of transactionsToSave) {
+      const transactionEvent = new TransactionEventEntity();
+      transactionEvent.type = TransactionEventType.created;
+      transactionEvent.description = TransactionEventDescription.created;
+      transactionEvent.isSuccessfullyCompleted = true;
+      transactionEvent.userId = userId;
+      transaction.transactionEvents = [transactionEvent];
+    }
+
+    const savedTransactions = await this.transactionScopedRepository.save(
+      transactionsToSave,
+      {
+        chunk: 2000,
+      },
+    );
+
+    return savedTransactions.map((t) => t.id);
   }
 }

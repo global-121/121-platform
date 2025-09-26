@@ -66,7 +66,10 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId,
     });
 
@@ -129,7 +132,10 @@ describe('Do payment with FSP Visa Debit and than retry it', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId,
     });
 

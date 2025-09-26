@@ -272,17 +272,6 @@
     "returnType": "DeleteResult"
   },
   {
-    "method": "get",
-    "path": "/api/programs/{programId}/registration-events",
-    "params": [
-      "programId",
-      "format",
-      "toDate",
-      "fromDate",
-      "referenceId"
-    ]
-  },
-  {
     "method": "patch",
     "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
     "params": [
@@ -722,6 +711,17 @@
     "params": [
       "programId",
       "id"
+    ]
+  },
+  {
+    "method": "get",
+    "path": "/api/programs/{programId}/registration-events",
+    "params": [
+      "programId",
+      "format",
+      "toDate",
+      "fromDate",
+      "referenceId"
     ]
   },
   {

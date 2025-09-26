@@ -12,7 +12,7 @@ import {
 import { Base121Entity } from '@121-service/src/base.entity';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 

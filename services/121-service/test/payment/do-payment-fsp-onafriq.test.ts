@@ -9,11 +9,13 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  retryPayment,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
   importRegistrations,
+  updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
@@ -30,7 +32,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     phoneNumberPayment: '24322222222',
     preferredLanguage: LanguageEnum.en,
     paymentAmountMultiplier: 1,
-    maxPayments: 6,
+    maxPayments: 1, // Set to 1 to be able to test maxPayments functionality
     firstName: 'Barbara',
     lastName: 'Floyd',
     gender: 'male',
@@ -95,7 +97,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].errorMessage).toBe(null);
   });
 
-  it('should give error on the initial request based on magic phonenumber', async () => {
+  it('should give error on the initial request based on magic phonenumber and succeed on retry', async () => {
     // Arrange
     registrationOnafriq.phoneNumberPayment = '24300000000'; // this magic number is configured in mock to return an error on request
     await importRegistrations(programId, [registrationOnafriq], accessToken);
@@ -121,7 +123,11 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.waiting,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -140,6 +146,44 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       TransactionStatusEnum.error,
     );
     expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+
+    // RETRY
+    // Arrange
+    await updateRegistration(
+      programId,
+      registrationOnafriq.referenceId,
+      { phoneNumberPayment: '24333333333' }, // change to a number that will succeed
+      'test reason',
+      accessToken,
+    );
+
+    // Act
+    const retryResponse = await retryPayment({
+      programId,
+      paymentId,
+      accessToken,
+    });
+    await waitForPaymentTransactionsToComplete({
+      programId,
+      paymentReferenceIds,
+      accessToken,
+      maxWaitTimeMs: 4000,
+      completeStatusses: [TransactionStatusEnum.success],
+    });
+
+    // Assert
+    const getTransactionsAfterRetryBody = await getTransactions({
+      programId,
+      paymentId,
+      registrationReferenceId: registrationOnafriq.referenceId,
+      accessToken,
+    });
+    expect(retryResponse.status).toBe(HttpStatus.OK);
+    expect(retryResponse.body.applicableCount).toBe(paymentReferenceIds.length);
+    expect(getTransactionsAfterRetryBody.body[0].status).toBe(
+      TransactionStatusEnum.success,
+    );
+    expect(getTransactionsAfterRetryBody.body[0].errorMessage).toBe(null);
   });
 
   it('should give error via callback based on magic phonenumber', async () => {
@@ -242,7 +286,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // NOTE 3: this is the critical assertion, as in case of a duplicate thirdPartyTransId error, the transaction should not be updated to an error status.
     // This test is not following the real-life use case of making 2 calls, but does test the different handling in the code of this type of error.
     expect(getTransactionsBody.body[0].status).toBe(
-      TransactionStatusEnum.waiting,
+      TransactionStatusEnum.created,
     );
   });
 });
