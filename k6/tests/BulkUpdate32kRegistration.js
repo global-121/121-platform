@@ -27,7 +27,7 @@ function checkAndFail(response, checks) {
 }
 
 export default function () {
-  resetPage.resetDB(resetScript);
+  resetPage.resetDB(resetScript, __filename);
   // login
   loginPage.login();
   // Upload registration

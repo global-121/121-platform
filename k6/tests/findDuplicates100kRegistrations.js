@@ -55,7 +55,7 @@ export default function () {
     serviceUp = isServiceUp();
   }
   // reset DB
-  resetPage.resetDB(resetScript);
+  resetPage.resetDB(resetScript, __filename);
   // login
   loginPage.login();
   // Upload registration

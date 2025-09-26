@@ -42,7 +42,7 @@ function checkAndFail(response, checks) {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
+  const reset = resetPage.resetDBMockRegistrations(duplicateNumber, __filename);
   checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
