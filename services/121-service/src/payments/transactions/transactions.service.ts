@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
-import { Equal, Repository } from 'typeorm';
+import { Equal } from 'typeorm';
 
-import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-transaction-result.dto';
 import { TransactionRelationDetailsDto } from '@121-service/src/payments/dto/transaction-relation-details.dto';
 import { TransactionCreationDetails } from '@121-service/src/payments/interfaces/transaction-creation-details.interface';
@@ -13,16 +11,16 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 @Injectable()
 export class TransactionsService {
-  @InjectRepository(TwilioMessageEntity)
-  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
   public async getLastTransactions({
@@ -47,45 +45,6 @@ export class TransactionsService {
         programFspConfigId,
       })
       .getRawMany();
-  }
-
-  public async storeTransactionForStep2({
-    transactionResponse,
-    relationDetails,
-  }: {
-    transactionResponse: PaTransactionResultDto;
-    relationDetails: TransactionRelationDetailsDto;
-  }): Promise<void> {
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { referenceId: Equal(transactionResponse.referenceId) },
-    });
-
-    const transaction = new TransactionEntity();
-    transaction.transferValue = transactionResponse.calculatedAmount;
-    transaction.created = transactionResponse.date || new Date();
-    transaction.registration = registration;
-    transaction.programFspConfigurationId =
-      relationDetails.programFspConfigurationId;
-    transaction.paymentId = relationDetails.paymentId;
-    transaction.userId = relationDetails.userId;
-    transaction.status = transactionResponse.status;
-    transaction.errorMessage = transactionResponse.message ?? null;
-    transaction.customData = transactionResponse.customData;
-    transaction.transactionStep = 2;
-
-    const resultTransaction =
-      await this.transactionScopedRepository.save(transaction);
-
-    if (transactionResponse.messageSid) {
-      await this.twilioMessageRepository.update(
-        { sid: transactionResponse.messageSid },
-        {
-          transactionId: resultTransaction.id,
-        },
-      );
-    }
-    // Transaction step 2 does not need to update payment count or send notification
-    // As transaction step 1 already did that
   }
 
   public async storeReconciliationTransactionsBulk(
@@ -134,38 +93,6 @@ export class TransactionsService {
     }
   }
 
-  public async updateWaitingTransactionStep1(
-    paymentId: number,
-    registrationId: number,
-    status: TransactionStatusEnum,
-    messageSid?: string,
-    errorMessage?: string,
-  ): Promise<void> {
-    const foundTransaction = await this.transactionScopedRepository.findOne({
-      where: {
-        paymentId: Equal(paymentId),
-        registrationId: Equal(registrationId),
-        transactionStep: Equal(1),
-        status: Equal(TransactionStatusEnum.waiting),
-      },
-    });
-    if (foundTransaction) {
-      if (status === TransactionStatusEnum.waiting && messageSid) {
-        await this.twilioMessageRepository.update(
-          { sid: messageSid },
-          {
-            transactionId: foundTransaction.id,
-          },
-        );
-      }
-      if (status === TransactionStatusEnum.error) {
-        foundTransaction.status = status;
-        foundTransaction.errorMessage = errorMessage ?? null;
-        await this.transactionScopedRepository.save(foundTransaction);
-      }
-    }
-  }
-
   public async createTransactionsAndEvents({
     transactionCreationDetails,
     paymentId,
@@ -203,5 +130,41 @@ export class TransactionsService {
     );
 
     return savedTransactions.map((t) => t.id);
+  }
+
+  public async saveTransactionProcessingProgress({
+    context,
+    description,
+    errorMessage,
+    newTransactionStatus,
+  }: {
+    context: TransactionEventCreationContext;
+    description: TransactionEventDescription;
+    errorMessage?: string;
+    newTransactionStatus?: TransactionStatusEnum;
+  }) {
+    const transactionEventType = TransactionEventType.processingStep;
+    await this.transactionEventsService.createEvent({
+      context,
+      type: transactionEventType,
+      description,
+      errorMessage,
+    });
+    if (newTransactionStatus) {
+      await this.updateTransactionStatus({
+        transactionId: context.transactionId,
+        status: newTransactionStatus,
+      });
+    }
+  }
+
+  public async updateTransactionStatus({
+    transactionId,
+    status,
+  }: {
+    transactionId: number;
+    status: TransactionStatusEnum;
+  }) {
+    await this.transactionScopedRepository.update(transactionId, { status });
   }
 }

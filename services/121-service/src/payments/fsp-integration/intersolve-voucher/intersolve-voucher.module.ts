@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
@@ -15,6 +16,7 @@ import { IntersolveVoucherCronService } from '@121-service/src/payments/fsp-inte
 import { ImageCodeModule } from '@121-service/src/payments/imagecode/image-code.module';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -43,10 +45,12 @@ import { SoapService } from '@121-service/src/utils/soap/soap.service';
       ProgramFspConfigurationEntity,
       ProgramAidworkerAssignmentEntity,
       IntersolveVoucherEntity,
+      TwilioMessageEntity,
     ]),
     ImageCodeModule,
     UserModule,
     TransactionsModule,
+    TransactionEventsModule,
     MessageQueuesModule,
     MessageTemplateModule,
     RegistrationDataModule,
