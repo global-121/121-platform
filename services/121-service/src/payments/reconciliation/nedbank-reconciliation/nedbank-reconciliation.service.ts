@@ -95,7 +95,7 @@ export class NedbankReconciliationService {
         programFspConfigurationId,
       },
       type: TransactionEventType.processingStep,
-      description: TransactionEventDescription.onafriqCallbackReceived,
+      description: TransactionEventDescription.nedbankCallbackReceived,
       errorMessage,
     });
     await this.transactionScopedRepository.update(
