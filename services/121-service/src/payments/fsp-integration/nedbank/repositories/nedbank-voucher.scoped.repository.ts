@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -17,7 +17,7 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
     super(request, scopedRepository);
   }
 
-  public async storeVoucher({
+  public async upsertVoucherByTransactionId({
     paymentReference,
     orderCreateReference,
     transactionId,
@@ -28,28 +28,36 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
     transactionId: number;
     voucherStatus?: NedbankVoucherStatus;
   }): Promise<void> {
-    const nedbankVoucherEntity = this.create({
-      paymentReference,
-      orderCreateReference,
-      status: voucherStatus,
-      transactionId,
+    const existingVoucher = await this.findOne({
+      where: { transactionId: Equal(transactionId) },
     });
-    await this.save(nedbankVoucherEntity);
+
+    if (existingVoucher) {
+      existingVoucher.paymentReference = paymentReference;
+      existingVoucher.orderCreateReference = orderCreateReference;
+      existingVoucher.status = voucherStatus;
+      await this.save(existingVoucher);
+    } else {
+      const nedbankVoucherEntity = this.create({
+        paymentReference,
+        orderCreateReference,
+        status: voucherStatus,
+        transactionId,
+      });
+      await this.save(nedbankVoucherEntity);
+    }
   }
 
   public async getVoucherWhereStatusNull({
-    registrationId,
-    paymentId,
+    transactionId,
   }: {
-    registrationId: number;
-    paymentId: number;
+    transactionId: number;
   }): Promise<NedbankVoucherEntity | null> {
     return await this.createQueryBuilder('nedbankVoucher')
       .leftJoin('nedbankVoucher.transaction', 'transaction')
-      .andWhere('transaction.registrationId = :registrationId', {
-        registrationId,
+      .andWhere('transaction."id" = :transactionId', {
+        transactionId,
       })
-      .andWhere('transaction.payment = :paymentId', { paymentId })
       .andWhere('nedbankVoucher.status IS NULL')
       .getOne();
   }
