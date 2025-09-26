@@ -39,7 +39,10 @@ function checkAndFail(response, checks) {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB(resetScript, __filename);
+  const reset = resetPage.resetDB(
+    resetScript,
+    'getProgramWithManyAttributes.js',
+  );
   checkAndFail(reset, {
     'Reset succesfull status was 202': (r) => r.status == 202,
   });

@@ -55,7 +55,7 @@ export default function () {
     serviceUp = isServiceUp();
   }
   // reset DB
-  resetPage.resetDB(resetScript, __filename);
+  resetPage.resetDB(resetScript, 'findDuplicates100kRegistrations.js');
   // login
   loginPage.login();
   // Upload registration

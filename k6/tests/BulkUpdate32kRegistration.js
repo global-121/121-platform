@@ -27,7 +27,7 @@ function checkAndFail(response, checks) {
 }
 
 export default function () {
-  resetPage.resetDB(resetScript, __filename);
+  resetPage.resetDB(resetScript, 'BulkUpdate32kRegistration.js');
   // login
   loginPage.login();
   // Upload registration

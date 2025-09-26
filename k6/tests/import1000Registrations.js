@@ -45,7 +45,10 @@ function checkAndFail(response, checks) {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDB(resetScript, __filename);
+  const reset = resetPage.resetDB(
+    resetScript,
+    'statusChangePaymentInLargeProgram.js',
+  );
   checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
