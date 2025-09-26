@@ -28,6 +28,10 @@ for file in "${test_files[@]}"; do
       echo "Test failed: ${file}"
       failed_tests+=("${file}")
   fi
+  echo "Stopping services"
+  cd ../services || exit 1
+  docker compose -f docker-compose.yml logs
+  docker compose -f docker-compose.yml down
 done
 
 # Check if there were any failed tests
