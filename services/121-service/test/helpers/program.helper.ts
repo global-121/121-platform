@@ -2,6 +2,7 @@ import * as request from 'supertest';
 import { MessageStatus } from 'twilio/lib/rest/api/v2010/account/message';
 import * as XLSX from 'xlsx';
 
+import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
 import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import {
@@ -419,11 +420,16 @@ export async function waitForMessagesToComplete({
   referenceIds,
   accessToken,
   minimumNumberOfMessagesPerReferenceId = 1,
+  expectedMessageAttribute,
 }: {
   programId: number;
   referenceIds: string[];
   accessToken: string;
   minimumNumberOfMessagesPerReferenceId?: number;
+  expectedMessageAttribute?: {
+    key: keyof MessageActivity['attributes'];
+    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
+  };
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
   const startTime = Date.now();
@@ -445,43 +451,22 @@ export async function waitForMessagesToComplete({
       }),
     );
 
-    const messageHistoriesWithoutMinimumMessages = messageHistories.filter(
-      ({ messageHistory }) => {
-        const messagesWithValidStatus = messageHistory.filter((m) => {
-          const validStatuses: MessageStatus[] = ['read', 'failed'];
-
-          if (m.attributes.notificationType === 'sms') {
-            validStatuses.push('sent');
-          }
-
-          // wait for messages actually being on a final status, given that's also something we check for in the test
-          return validStatuses.includes(m.attributes.status);
+    referenceIdsWaitingForMessages = expectedMessageAttribute
+      ? filterByExpectedAttribute({
+          messageHistories,
+          expectedMessageAttribute,
+        })
+      : filterByMinimumMessages({
+          messageHistories,
+          minimumNumberOfMessages: minimumNumberOfMessagesPerReferenceId,
         });
 
-        return (
-          messagesWithValidStatus.length < minimumNumberOfMessagesPerReferenceId
-        );
-      },
-    );
-
-    referenceIdsWaitingForMessages = messageHistoriesWithoutMinimumMessages.map(
-      ({ referenceId }) => referenceId,
-    );
     // To not overload the server and get 429
     await waitFor(100);
   }
 
   if (referenceIdsWaitingForMessages.length > 0) {
     if (IS_DEVELOPMENT) {
-      console.log('Reference Ids: ', referenceIds);
-      console.log(
-        'Reference Ids Waiting for Messages: ',
-        referenceIdsWaitingForMessages,
-      );
-      console.log(
-        'Expected number of messages: ',
-        minimumNumberOfMessagesPerReferenceId,
-      );
       for (const referenceId of referenceIdsWaitingForMessages) {
         const response = await getMessageHistory(
           programId,
@@ -499,6 +484,55 @@ export async function waitForMessagesToComplete({
     }
     throw new Error(`Timeout waiting for messages to be sent`);
   }
+}
+
+function filterByExpectedAttribute({
+  messageHistories,
+  expectedMessageAttribute,
+}: {
+  messageHistories: {
+    referenceId: string;
+    messageHistory: MessageActivity[];
+  }[];
+  expectedMessageAttribute: {
+    key: keyof MessageActivity['attributes'];
+    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
+  };
+}): string[] {
+  return messageHistories
+    .filter(
+      ({ messageHistory }) =>
+        !messageHistory.some((m) =>
+          expectedMessageAttribute.values.includes(
+            m.attributes[expectedMessageAttribute.key],
+          ),
+        ),
+    )
+    .map(({ referenceId }) => referenceId);
+}
+
+function filterByMinimumMessages({
+  messageHistories,
+  minimumNumberOfMessages,
+}: {
+  messageHistories: {
+    referenceId: string;
+    messageHistory: MessageActivity[];
+  }[];
+  minimumNumberOfMessages: number;
+}): string[] {
+  return messageHistories
+    .filter(({ messageHistory }) => {
+      const messagesWithValidStatus = messageHistory.filter((m) => {
+        const validStatuses: MessageStatus[] = ['read', 'failed'];
+        if (m.attributes.notificationType === 'sms') {
+          validStatuses.push('sent');
+        }
+        return validStatuses.includes(m.attributes.status);
+      });
+      return messagesWithValidStatus.length < minimumNumberOfMessages;
+    })
+    .map(({ referenceId }) => referenceId);
 }
 
 export async function startCbeValidationProcess(
