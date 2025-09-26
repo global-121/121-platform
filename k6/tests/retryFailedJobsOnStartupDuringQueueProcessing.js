@@ -48,7 +48,10 @@ function isServiceUp() {
 
 export default function () {
   // reset db
-  const reset = resetPage.resetDBMockRegistrations(duplicateNumber, __filename);
+  const reset = resetPage.resetDBMockRegistrations(
+    duplicateNumber,
+    'retryFailedJobsOnStartupDuringQueueProcessing.js',
+  );
   checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });

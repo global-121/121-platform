@@ -45,7 +45,10 @@ function checkAndFail(response, checks) {
 export default function () {
   // REFACTOR: this test requires the same setup as getProgramWithManyAttributes.js. Move setup code to shared place.
   // reset db
-  const reset = resetPage.resetDB(resetScript, __filename);
+  const reset = resetPage.resetDB(
+    resetScript,
+    'statusChangePaymentInLargeProgram.js',
+  );
   checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
@@ -124,7 +127,7 @@ export default function () {
   });
 
   // Do the payment with dryRun first
-  paymentsPage.verifyPaymentDryRunUntilSuccess(programId, amount);
+  paymentsPage.verifyPaymentDryRunUntilSuccess(programId);
   const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {

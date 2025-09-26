@@ -42,7 +42,7 @@ function checkAndFail(response, checks) {
 export default function () {
   const monitorPayment = initializePayment.initializePayment(
     resetScript,
-    __filename,
+    'payment100kRegistrationIntersolveVisa.js',
     programId,
     registrationVisa,
     duplicateNumber,
