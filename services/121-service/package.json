@@ -103,6 +103,7 @@
     "typescript": "^5.9.2",
     "ufo": "^1.6.1",
     "uuid": "^11.1.0",
+    "validator": "^13.15.15",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "xml-js": "^1.6.11",
     "zod": "^3.25.71"
