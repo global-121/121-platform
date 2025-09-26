@@ -5,18 +5,15 @@ import config from './config.js';
 const { baseUrl } = config;
 
 export default class PaymentsModel {
-  verifyPaymentDryRun(programId, amount) {
+  verifyPaymentDryRun(programId) {
     const url = `${baseUrl}api/programs/${programId}/payments?dryRun=true`;
-    const payload = JSON.stringify({
-      amount,
-    });
     const params = {
       headers: {
         'Content-Type': 'application/json',
         accept: 'application/json',
       },
     };
-    const res = http.post(url, payload, params);
+    const res = http.post(url, null, params);
     return res;
   }
 
@@ -85,14 +82,14 @@ export default class PaymentsModel {
     };
   }
 
-  verifyPaymentDryRunUntilSuccess(programId, amount, maxRetryDuration = 10) {
+  verifyPaymentDryRunUntilSuccess(programId, maxRetryDuration = 10) {
     const delayBetweenAttempts = 1; // seconds
     let attempts = 0;
     while (attempts * delayBetweenAttempts < maxRetryDuration) {
       console.log(
-        `Attempt ${attempts + 1} to verify payment dry run for programId: ${programId}, amount: ${amount}`,
+        `Attempt ${attempts + 1} to verify payment dry run for programId: ${programId}`,
       );
-      const result = this.verifyPaymentDryRun(programId, amount);
+      const result = this.verifyPaymentDryRun(programId);
       if (!result.status || result.status === 200) {
         console.log(`Payment dry run successful on attempt ${attempts + 1}`);
         return result;
@@ -101,7 +98,7 @@ export default class PaymentsModel {
       sleep(delayBetweenAttempts);
     }
     throw new Error(
-      `Failed to verify payment dry run after ${maxRetryDuration} seconds for programId: ${programId}, amount: ${amount}`,
+      `Failed to verify payment dry run after ${maxRetryDuration} seconds for programId: ${programId}`,
     );
   }
 }
