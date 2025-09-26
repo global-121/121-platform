@@ -152,7 +152,7 @@ export class SoapService {
     payload,
     soapAction,
   }: {
-    apiUrl: string | undefined;
+    apiUrl: string;
     payload: any;
     soapAction: string;
   }): Promise<any> {

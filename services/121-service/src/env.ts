@@ -191,7 +191,7 @@ export const env = createEnv({
     COMMERCIAL_BANK_ETHIOPIA_URL: z
       .url()
       .pipe(z.transform((url) => withoutTrailingSlash(url)))
-      .optional(),
+      .default(''),
     COMMERCIAL_BANK_ETHIOPIA_CERTIFICATE_PATH: z.string().default(''),
 
     // FSP: Safaricom

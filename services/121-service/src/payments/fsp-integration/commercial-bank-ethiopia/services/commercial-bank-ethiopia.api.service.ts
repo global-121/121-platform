@@ -8,7 +8,7 @@ import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configur
 import { SoapService } from '@121-service/src/utils/soap/soap.service';
 
 const cbeApiUrl = env.MOCK_COMMERCIAL_BANK_ETHIOPIA
-  ? `${env.MOCK_SERVICE_URL}/api/fsp/commercial-bank-ethiopia/services` // Mock URL
+  ? `${env.MOCK_SERVICE_URL}/api/fsp/commercial-bank-ethiopia/services`
   : env.COMMERCIAL_BANK_ETHIOPIA_URL;
 
 @Injectable()

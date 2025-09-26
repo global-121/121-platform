@@ -118,7 +118,7 @@ jobs:
 
       - name: Install
         working-directory: ${{ env.workingDirectory }}
-        run: 'npm ci --omit=optional'
+        run: 'npm ci'
 
       - name: Lint
         working-directory: ${{ env.workingDirectory }}

@@ -3,5 +3,4 @@ export enum IntersolveVoucherSoapElements {
   IssueCard = 'IssueCard',
   LoyaltyHeader = 'LoyaltyHeader',
   CancelTransactionByRefPos = 'CancelTransactionByRefPos',
-  Cancel = 'Cancel',
 }

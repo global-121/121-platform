@@ -1,4 +1,4 @@
-/** @type {import('@typescript-eslint/utils/dist/ts-eslint/Linter').Linter.Config} */
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
   overrides: [
     {
