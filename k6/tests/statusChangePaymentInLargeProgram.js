@@ -18,7 +18,7 @@ const registrationsPage = new RegistrationsModel();
 const resetScript = 'nlrc-multiple';
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '15'); // should be 15
 const programId = 3;
-const maxTimeoutAttempts = 200;
+const maxRetryDuration = 3000; // seconds
 const minPassRatePercentage = 10;
 const amount = 10;
 
@@ -45,7 +45,10 @@ function checkAndFail(response, checks) {
 export default function () {
   // REFACTOR: this test requires the same setup as getProgramWithManyAttributes.js. Move setup code to shared place.
   // reset db
-  const reset = resetPage.resetDB(resetScript);
+  const reset = resetPage.resetDB(
+    resetScript,
+    'statusChangePaymentInLargeProgram.js',
+  );
   checkAndFail(reset, {
     'Reset successful status was 202': (r) => r.status == 202,
   });
@@ -124,32 +127,40 @@ export default function () {
   });
 
   // Do the payment with dryRun first
-  paymentsPage.verifyPaymentDryRunUntilSuccess(programId, amount);
+  paymentsPage.verifyPaymentDryRunUntilSuccess(programId);
   const doPayment = paymentsPage.createPayment(programId, amount);
   checkAndFail(doPayment, {
     'Payment successfully done status 202': (r) => {
-      if (r.status != 202) {
+      if (r.status !== 202) {
+        console.log('Payment failed with status:', r.status);
         console.log(r.body);
+      } else {
+        console.log('Payment initiated, payment id:', JSON.parse(r.body).id);
       }
-      return r.status == 202;
+      return r.status === 202;
+    },
+    'Payment contains a valid id': (r) => {
+      return r.body && JSON.parse(r.body).id;
     },
   });
 
   // Monitor that 10% of payments is successful and then stop the test
+  const paymentId = JSON.parse(doPayment.body).id;
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
-    maxTimeoutAttempts,
-    doPayment.body.id,
+    maxRetryDuration,
+    paymentId,
     duplicateNumber,
     minPassRatePercentage,
   );
   checkAndFail(monitorPayment, {
     'Payment progressed successfully status 200': (r) => {
-      if (r.status != 200) {
+      if (r.status !== 200) {
         const responseBody = JSON.parse(r.body);
-        console.log(responseBody.error || r.status);
+        console.log('Payment monitoring failed with status:', r.status);
+        console.log(responseBody.error);
       }
-      return r.status == 200;
+      return r.status === 200;
     },
   });
 
