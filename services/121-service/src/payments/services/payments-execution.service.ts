@@ -21,7 +21,6 @@ import {
   BulkActionResultPaymentDto,
   BulkActionResultRetryPaymentDto,
 } from '@121-service/src/registration/dto/bulk-action-result.dto';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
@@ -35,8 +34,6 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
 export class PaymentsExecutionService {
   @InjectRepository(PaymentEntity)
   private readonly paymentRepository: Repository<PaymentEntity>;
-  @InjectRepository(RegistrationEntity)
-  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly actionService: ActionsService,
@@ -223,53 +220,51 @@ export class PaymentsExecutionService {
         userId,
       });
 
-    // This is unscoped as desired
-    await this.registrationRepository
-      .createQueryBuilder('registration')
-      .update()
-      .set({
-        paymentCount: () => '"paymentCount" + 1',
-      })
-      .whereInIds(transactionCreationDetails.map((i) => i.registrationId))
-      .execute();
+    await this.registrationScopedRepository.updatePaymentCounts(
+      transactionCreationDetails.map((t) => t.registrationId),
+      2000,
+    );
 
-    await this.setStatusToCompleteIfApplicableBulk(programId);
+    await this.setStatusToCompleteIfApplicable(programId);
 
     return transactionIds;
   }
 
   // TODO: we will likely need to move this to a later stage (upon initiating the payment after approval)
-  private async setStatusToCompleteIfApplicableBulk(
+  private async setStatusToCompleteIfApplicable(
     programId: number,
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
-    if (program.enableMaxPayments) {
-      const registrationsToComplete =
-        await this.registrationScopedRepository.getRegistrationsToComplete(
-          programId,
-        );
+    if (!program.enableMaxPayments) {
+      return;
+    }
 
-      // update those to completed
-      await this.registrationScopedRepository.updateRegistrationsToCompleted(
-        registrationsToComplete.map((r) => r.id),
+    const registrationsToComplete =
+      await this.registrationScopedRepository.getRegistrationsToComplete(
+        programId,
       );
 
-      // create registration events for the status changes
-      for (const reg of registrationsToComplete) {
-        await this.registrationEventsService.createFromRegistrationViews(
-          {
-            id: reg.id,
-            status: reg.registrationStatus!,
-          },
-          {
-            id: reg.id,
-            status: RegistrationStatusEnum.completed,
-          },
-          {
-            explicitRegistrationPropertyNames: ['status'],
-          },
-        );
-      }
+    // update those to completed
+    await this.registrationScopedRepository.updateRegistrationsToCompleted(
+      registrationsToComplete.map((r) => r.id),
+      2000,
+    );
+
+    // create registration events for the status changes
+    for (const reg of registrationsToComplete) {
+      await this.registrationEventsService.createFromRegistrationViews(
+        {
+          id: reg.id,
+          status: reg.registrationStatus!,
+        },
+        {
+          id: reg.id,
+          status: RegistrationStatusEnum.completed,
+        },
+        {
+          explicitRegistrationPropertyNames: ['status'],
+        },
+      );
     }
   }
 
