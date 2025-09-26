@@ -8,6 +8,6 @@ import { TransactionEventsService } from '@121-service/src/payments/transactions
 @Module({
   imports: [TypeOrmModule.forFeature([TransactionEventEntity])],
   providers: [TransactionEventsService, TransactionEventsScopedRepository],
-  exports: [TransactionEventsService],
+  exports: [TransactionEventsService, TransactionEventsScopedRepository],
 })
 export class TransactionEventsModule {}

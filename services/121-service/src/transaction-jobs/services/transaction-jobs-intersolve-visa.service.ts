@@ -6,6 +6,9 @@ import { DoTransferOrIssueCardResult } from '@121-service/src/payments/fsp-integ
 import { IntersolveVisaApiError } from '@121-service/src/payments/fsp-integration/intersolve-visa/intersolve-visa-api.error';
 import { IntersolveVisaService } from '@121-service/src/payments/fsp-integration/intersolve-visa/services/intersolve-visa.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { IntersolveVisaTransactionJobDto } from '@121-service/src/transaction-queues/dto/intersolve-visa-transaction-job.dto';
@@ -16,11 +19,25 @@ export class TransactionJobsIntersolveVisaService {
     private readonly intersolveVisaService: IntersolveVisaService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
   public async processIntersolveVisaTransactionJob(
     transactionJob: IntersolveVisaTransactionJobDto,
   ): Promise<void> {
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
     const registration =
       await this.transactionJobsHelperService.getRegistrationOrThrow(
         transactionJob.referenceId,
@@ -37,20 +54,25 @@ export class TransactionJobsIntersolveVisaService {
         );
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
+        // Do not update the transaction amount since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
+        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
           {
-            registration,
-            transactionJob,
-            transferAmountInMajorUnit: transactionJob.transactionAmount, // Use the original amount here since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-            status: TransactionStatusEnum.error,
-            errorText: `Error calculating transfer amount: ${error?.message}`,
+            context: transactionEventContext,
+            description: TransactionEventDescription.visaPaymentRequested,
+            errorMessage: `Error calculating transfer amount: ${error?.message}`,
+            newTransactionStatus: TransactionStatusEnum.error,
           },
         );
         return;
       }
-
       throw error;
     }
+
+    // Update the transaction amount to the actual transfer amount after getting the max allowed by the wallet retrieval due to KYC limits
+    await this.updateTransferAmount({
+      transactionId: transactionJob.transactionId,
+      value: transferAmountInMajorUnit,
+    });
 
     let intersolveVisaDoTransferOrIssueCardReturnDto: DoTransferOrIssueCardResult;
     try {
@@ -62,7 +84,7 @@ export class TransactionJobsIntersolveVisaService {
         await this.intersolveVisaService.doTransferOrIssueCard({
           registrationId: registration.id,
           createCustomerReference: transactionJob.referenceId,
-          transferReference: `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId}`,
+          transferReference: `ReferenceId=${transactionJob.referenceId},TransferId=${transactionJob.transactionId}`, // Will be used to generate idempotency key for the transfer
           name: transactionJob.name!,
           contactInformation: {
             addressStreet: transactionJob.addressStreet!,
@@ -80,13 +102,12 @@ export class TransactionJobsIntersolveVisaService {
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
+        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
           {
-            registration,
-            transactionJob,
-            transferAmountInMajorUnit,
-            status: TransactionStatusEnum.error,
-            errorText: error?.message,
+            context: transactionEventContext,
+            description: TransactionEventDescription.visaPaymentRequested,
+            errorMessage: error?.message,
+            newTransactionStatus: TransactionStatusEnum.error,
           },
         );
         return;
@@ -94,8 +115,7 @@ export class TransactionJobsIntersolveVisaService {
         throw error;
       }
     }
-    // If the transactions was succesful
-
+    // If the transactions was successful
     const messageType =
       intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated
         ? ProgramNotificationEnum.visaDebitCardCreated
@@ -110,15 +130,11 @@ export class TransactionJobsIntersolveVisaService {
       userId: transactionJob.userId,
     });
 
-    await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
-      {
-        registration,
-        transactionJob,
-        transferAmountInMajorUnit:
-          intersolveVisaDoTransferOrIssueCardReturnDto.amountTransferredInMajorUnit,
-        status: TransactionStatusEnum.success,
-      },
-    );
+    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+      context: transactionEventContext,
+      description: TransactionEventDescription.visaPaymentRequested,
+      newTransactionStatus: TransactionStatusEnum.success,
+    });
   }
 
   private async getIntersolveVisaFspConfig(
@@ -148,5 +164,12 @@ export class TransactionJobsIntersolveVisaService {
         (c) => c.name === FspConfigurationProperties.fundingTokenCode,
       )?.value as string, // This must be a string. If it is not, the intersolve API will return an error (maybe).
     };
+  }
+
+  private async updateTransferAmount({ transactionId, value }) {
+    await this.transactionScopedRepository.updateUnscoped(
+      { id: transactionId },
+      { transferValue: value },
+    );
   }
 }

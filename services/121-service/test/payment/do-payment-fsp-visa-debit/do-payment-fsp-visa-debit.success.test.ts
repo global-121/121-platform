@@ -70,7 +70,6 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
     });
 
     // Assert
@@ -115,7 +114,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: firstPaymentId,
     });
 
@@ -133,7 +132,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: secondPaymentId,
     });
 
@@ -199,7 +198,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: paymentId1,
     });
 
@@ -224,7 +223,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       paymentReferenceIds: referenceIds,
       accessToken,
       maxWaitTimeMs: 6_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [TransactionStatusEnum.success],
       paymentId: paymentId2,
     });
 
