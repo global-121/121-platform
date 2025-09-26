@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { Equal } from 'typeorm';
 
 import { env } from '@121-service/src/env';
 import { AirtelDisbursementResultEnum } from '@121-service/src/payments/fsp-integration/airtel/enums/airtel-disbursement-result.enum';
 import { AirtelError } from '@121-service/src/payments/fsp-integration/airtel/errors/airtel.error';
 import { AirtelService } from '@121-service/src/payments/fsp-integration/airtel/services/airtel.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
 
@@ -15,8 +16,8 @@ import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto
 export class TransactionJobsAirtelService {
   constructor(
     private readonly airtelService: AirtelService,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
+    private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
   ) {}
 
   public async processAirtelTransactionJob(
@@ -27,18 +28,30 @@ export class TransactionJobsAirtelService {
         'Airtel FSP is not enabled, not processing transaction jobs.',
       );
     }
+
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
     // Inner function.
     const handleDisbursementResult = async (
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
+      await this.transactionJobsHelperService.saveTransactionProcessingProgress(
         {
-          registration,
-          transactionJob,
-          transferAmountInMajorUnit: transactionJob.transactionAmount,
-          status,
-          errorText,
+          context: transactionEventContext,
+          newTransactionStatus: status,
+          errorMessage: errorText,
+          description: TransactionEventDescription.airtelRequestSent,
         },
       );
     };
@@ -59,26 +72,15 @@ export class TransactionJobsAirtelService {
     */
     // 1. Prepare.
 
-    // We expect the registration to exist because it was used to create the
-    // transaction job.
-    const registration =
-      await this.transactionJobsHelperService.getRegistrationOrThrow(
-        transactionJob.referenceId,
+    const failedTransactionAttempts =
+      await this.transactionEventScopedRepository.countFailedTransactionAttempts(
+        transactionJob.transactionId,
       );
-
-    const failedTransactionsCount =
-      await this.transactionScopedRepository.count({
-        where: {
-          registrationId: Equal(registration.id),
-          paymentId: Equal(transactionJob.paymentId),
-          status: Equal(TransactionStatusEnum.error),
-        },
-      });
 
     const airtelTransactionId = this.generateAirtelTransactionId({
       referenceId: transactionJob.referenceId,
-      paymentNumber: transactionJob.paymentId,
-      failedTransactionsCount,
+      transactionId: transactionJob.transactionId,
+      failedTransactionAttempts,
     });
 
     // 2. Attempt disbursement, if one already exists we automatically check it.
@@ -121,22 +123,22 @@ export class TransactionJobsAirtelService {
 
   private generateAirtelTransactionId = ({
     referenceId,
-    paymentNumber,
-    failedTransactionsCount,
+    transactionId,
+    failedTransactionAttempts,
   }: {
     referenceId: string;
-    paymentNumber: number;
-    failedTransactionsCount: number;
+    transactionId: number;
+    failedTransactionAttempts: number;
   }): string => {
-    // We need a transactionId that's unique for the combination of:
+    // We need an airtel transactionId that's unique for the combination of:
     // - referenceId
-    // - paymentNumber
-    // - failedTransactionsCount (to ensure that each retry gets a different transactionId)
+    // - 121 tansactionId
+    // - failedTransactionAttempts (to ensure that each retry gets a different transactionId)
     // But then it also needs to be a valid Airtel transactionId, which is a
     // string that "must not be null or blank and should only contain
     // alphanumeric characters with length between 5 and 80 characters".
 
-    const toHash = `ReferenceId=${referenceId},PaymentNumber=${paymentNumber},Attempt=${failedTransactionsCount}`;
+    const toHash = `ReferenceId=${referenceId},TransactionId=${transactionId},Attempt=${failedTransactionAttempts}`;
     // The airtelTransactionId "must not be null or blank and should only
     // contain alphanumeric characters with length between 5 and 80
     // characters"

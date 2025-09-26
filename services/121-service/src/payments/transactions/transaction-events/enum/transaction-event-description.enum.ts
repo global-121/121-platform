@@ -10,4 +10,7 @@ export enum TransactionEventDescription {
   safaricomRequestSent = 'Safaricom request sent',
   safaricomCallbackReceived = 'Safaricom callback received',
   nedbankVoucherCreationRequested = 'Nedbank voucher creation requested',
+
+  // Airtel processing-step events
+  airtelRequestSent = 'Airtel request sent',
 }
