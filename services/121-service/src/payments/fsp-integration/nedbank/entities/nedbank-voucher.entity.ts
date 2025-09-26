@@ -12,7 +12,7 @@ export class NedbankVoucherEntity extends Base121Entity {
   public orderCreateReference: string;
 
   @Column({ nullable: true, type: 'character varying' })
-  public status: NedbankVoucherStatus | undefined;
+  public status: NedbankVoucherStatus | null;
 
   @Column({ type: 'character varying' })
   public paymentReference: string;

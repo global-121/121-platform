@@ -61,9 +61,8 @@ export class TransactionJobsNedbankService {
     if (voucherWithoutStatus) {
       orderCreateReference = voucherWithoutStatus.orderCreateReference;
     } else {
-      // Update transaction status
-      // Note: The transaction is created before the voucher is created, so it can be linked to the generated orderCreateReference
-      // before the create voucher order API call to Nedbank is made
+      // Update transaction status to waiting, this is to ensure that this transactions is not retried as we are about to create the voucher
+      // If this job fails after this point due to a timout from nedbank the reconciliation process will pick it up and set it to success or error, so it can be retried if needed
       await this.transactionJobsHelperService.updateTransactionStatus({
         transactionId: transactionJob.transactionId,
         status: TransactionStatusEnum.waiting,
@@ -92,10 +91,12 @@ export class TransactionJobsNedbankService {
 
       // Store the nedbank voucher with status null (as we don't know the status yet)
       // For payment retry or queue retry we need to reuse the existing voucher attached the the transaction
+      // (For queue retry voucherstatus should already be null)
       await this.nedbankVoucherScopedRepository.upsertVoucherByTransactionId({
         paymentReference,
         orderCreateReference,
         transactionId,
+        voucherStatus: null,
       });
     }
 
@@ -145,6 +146,7 @@ export class TransactionJobsNedbankService {
     await this.transactionJobsHelperService.saveTransactionProcessingProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
+      newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
     });
   }
 

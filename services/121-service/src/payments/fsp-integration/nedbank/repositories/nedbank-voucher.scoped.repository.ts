@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, Repository } from 'typeorm';
+import { Equal, IsNull, Repository } from 'typeorm';
 
 import { NedbankVoucherEntity } from '@121-service/src/payments/fsp-integration/nedbank/entities/nedbank-voucher.entity';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
@@ -26,7 +26,7 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
     paymentReference: string;
     orderCreateReference: string;
     transactionId: number;
-    voucherStatus?: NedbankVoucherStatus;
+    voucherStatus: NedbankVoucherStatus | null;
   }): Promise<void> {
     const existingVoucher = await this.findOne({
       where: { transactionId: Equal(transactionId) },
@@ -53,12 +53,8 @@ export class NedbankVoucherScopedRepository extends ScopedRepository<NedbankVouc
   }: {
     transactionId: number;
   }): Promise<NedbankVoucherEntity | null> {
-    return await this.createQueryBuilder('nedbankVoucher')
-      .leftJoin('nedbankVoucher.transaction', 'transaction')
-      .andWhere('transaction."id" = :transactionId', {
-        transactionId,
-      })
-      .andWhere('nedbankVoucher.status IS NULL')
-      .getOne();
+    return await this.findOne({
+      where: { transactionId: Equal(transactionId), status: IsNull() },
+    });
   }
 }

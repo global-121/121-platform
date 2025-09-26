@@ -19,6 +19,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -29,6 +30,7 @@ export class SafaricomReconciliationService {
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
+    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -145,8 +147,11 @@ export class SafaricomReconciliationService {
           safaricomTimeoutCallbackJob.originatorConversationId,
         );
       const transactionId = safaricomTransfer.transactionId;
-      const programFspConfigurationId =
-        this.getProgramFspConfigIdFromLatestEvent(safaricomTransfer);
+      const latestEvent =
+        await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
+          transactionId,
+        );
+      const programFspConfigurationId = latestEvent.programFspConfigurationId;
 
       // Update transaction status
       await this.transactionScopedRepository.update(
