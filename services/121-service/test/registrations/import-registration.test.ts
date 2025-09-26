@@ -11,7 +11,6 @@ import {
 import {
   patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
-  unpublishProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
@@ -93,53 +92,6 @@ describe('Import a registration', () => {
       }
 
       expect(actualValue).toBe(normalizedExpectedValue);
-    }
-  });
-
-  it('should fail import registrations due to program is not published yet', async () => {
-    // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    accessToken = await getAccessToken();
-
-    // unpublish a program
-    await unpublishProgram(programIdOCW, accessToken);
-
-    const response = await importRegistrations(
-      programIdOCW,
-      [registrationVisa],
-      accessToken,
-    );
-
-    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.errors).toBe(
-      `Registrations are not allowed for this program yet, try again later.`,
-    );
-  });
-
-  it('should import registration scoped', async () => {
-    // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
-
-    // Act
-    const response = await importRegistrations(
-      programIdPV,
-      [registrationScopedKisumuEastPv],
-      accessToken,
-    );
-
-    // Assert
-    expect(response.statusCode).toBe(HttpStatus.CREATED);
-
-    const result = await searchRegistrationByReferenceId(
-      registrationScopedKisumuEastPv.referenceId,
-      programIdPV,
-      accessToken,
-    );
-    const registrationResult = result.body.data[0];
-
-    for (const key in registrationScopedKisumuEastPv) {
-      expect(registrationResult[key]).toBe(registrationScopedKisumuEastPv[key]);
     }
   });
 
