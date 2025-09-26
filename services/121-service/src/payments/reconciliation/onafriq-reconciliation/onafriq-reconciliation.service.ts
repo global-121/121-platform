@@ -75,7 +75,6 @@ export class OnafriqReconciliationService {
       });
     const transactionId = onafriqTransaction.transactionId;
 
-    // Infer programFspConfigurationId from latest transaction event
     const latestEvent =
       await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
         transactionId,
