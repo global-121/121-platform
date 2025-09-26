@@ -411,14 +411,19 @@ describe('Import a registration', () => {
 
     // Act
     await importRegistrations(programIdOCW, [registrationVisa], accessToken);
-    const expectedMessageTranslations = Object.values(
-      messageTemplateGeneric.new.message ?? {},
-    );
 
+    const expectedMessageAttribute: {
+      key: 'body';
+      values: (string | number | null | undefined)[];
+    } = {
+      key: 'body',
+      values: Object.values(messageTemplateGeneric.new.message ?? {}),
+    };
     await waitForMessagesToComplete({
       programId: programIdOCW,
       referenceIds: [registrationVisa.referenceId],
       accessToken,
+      expectedMessageAttribute,
     });
 
     // Assert
@@ -430,7 +435,7 @@ describe('Import a registration', () => {
 
     const messageHistory = messageHistoryResponse.body;
     const messageSent = messageHistory.some((message) =>
-      expectedMessageTranslations.includes(message.attributes.body),
+      expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(messageSent).toBe(true);
     expect(
