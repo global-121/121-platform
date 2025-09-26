@@ -428,7 +428,7 @@ export async function waitForMessagesToComplete({
   minimumNumberOfMessagesPerReferenceId?: number;
   expectedMessageAttribute?: {
     key: keyof MessageActivity['attributes'];
-    values: string[];
+    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
   };
 }): Promise<void> {
   const maxWaitTimeMs = 25_000;
@@ -490,10 +490,13 @@ function filterByExpectedAttribute({
   messageHistories,
   expectedMessageAttribute,
 }: {
-  messageHistories: { referenceId: string; messageHistory: any[] }[];
+  messageHistories: {
+    referenceId: string;
+    messageHistory: MessageActivity[];
+  }[];
   expectedMessageAttribute: {
     key: keyof MessageActivity['attributes'];
-    values: string[];
+    values: MessageActivity['attributes'][keyof MessageActivity['attributes']][];
   };
 }): string[] {
   return messageHistories
@@ -512,7 +515,10 @@ function filterByMinimumMessages({
   messageHistories,
   minimumNumberOfMessages,
 }: {
-  messageHistories: { referenceId: string; messageHistory: any[] }[];
+  messageHistories: {
+    referenceId: string;
+    messageHistory: MessageActivity[];
+  }[];
   minimumNumberOfMessages: number;
 }): string[] {
   return messageHistories
