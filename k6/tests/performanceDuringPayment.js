@@ -16,7 +16,7 @@ const metricsPage = new metricstsModel();
 
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '5');
 const programId = 3;
-const maxTimeoutAttempts = 600;
+const maxRetryDuration = 3000; // seconds
 const minPassRatePercentage = 50;
 const amount = 11.11;
 
@@ -71,10 +71,11 @@ export default function () {
   });
 
   // Monitor that 100% of payments is successful and then stop the test
+  const paymentId = JSON.parse(doPayment.body).id;
   const monitorPayment = paymentsPage.getPaymentResults(
     programId,
-    maxTimeoutAttempts,
-    doPayment.body.id,
+    maxRetryDuration,
+    paymentId,
     duplicateNumber,
     minPassRatePercentage,
     amount,

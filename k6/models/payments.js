@@ -37,54 +37,71 @@ export default class PaymentsModel {
 
   getPaymentResults(
     programId,
-    maxTimeoutAttempts,
+    maxRetryDuration,
     paymentId,
     totalAmountPowerOfTwo,
     passRate,
   ) {
-    const status = 'success';
-    const maxAttempts = maxTimeoutAttempts;
+    const delayBetweenAttempts = 5; // seconds
     let attempts = 0;
     let selectedStatusPercentage = 0;
 
-    while (attempts < maxAttempts) {
+    while (attempts * delayBetweenAttempts < maxRetryDuration) {
       const url = `${baseUrl}api/programs/${programId}/payments/${paymentId}`;
       const res = http.get(url);
       const responseBody = JSON.parse(res.body);
-      const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
-      selectedStatusPercentage =
-        (parseInt(responseBody[status].count) / totalPayments) * 100;
+      const successfulPayments = responseBody['success'];
+      console.log(
+        `Payment results attempt ${attempts + 1} - has successful payments: ${!!successfulPayments}`,
+      );
+      if (successfulPayments) {
+        const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
+        selectedStatusPercentage =
+          (parseInt(successfulPayments.count) / totalPayments) * 100;
 
-      if (selectedStatusPercentage >= passRate) {
         console.log(
-          `Success: The percentage of successful payments (${selectedStatusPercentage}%) is at or above the pass rate (${passRate}%).`,
+          `[target ${passRate}%]: ${successfulPayments.count} out of ${totalPayments} payments successful (${selectedStatusPercentage.toFixed(
+            2,
+          )}%)`,
         );
-        return res;
+
+        if (selectedStatusPercentage >= passRate) {
+          console.log(
+            `Success: The percentage of successful payments (${selectedStatusPercentage}%) is at or above the pass rate (${passRate}%).`,
+          );
+          return res;
+        }
       }
       attempts++;
-      sleep(5);
+      sleep(delayBetweenAttempts);
     }
+
+    console.log(
+      `Failed: The percentage of successful payments (${selectedStatusPercentage}%) did not reach the pass rate (${passRate}%) within the maximum retry duration of ${maxRetryDuration} seconds.`,
+    );
 
     return {
       status: 500,
-      body: JSON.stringify({
-        error: `Failed after ${maxAttempts} attempts without reaching the pass rate of ${passRate}%. Last recorded pass rate was ${selectedStatusPercentage}%.`,
-      }),
     };
   }
 
-  verifyPaymentDryRunUntilSuccess(programId, amount, maxAttempts = 10) {
+  verifyPaymentDryRunUntilSuccess(programId, amount, maxRetryDuration = 10) {
+    const delayBetweenAttempts = 1; // seconds
     let attempts = 0;
-    while (attempts < maxAttempts) {
+    while (attempts * delayBetweenAttempts < maxRetryDuration) {
+      console.log(
+        `Attempt ${attempts + 1} to verify payment dry run for programId: ${programId}, amount: ${amount}`,
+      );
       const result = this.verifyPaymentDryRun(programId, amount);
       if (!result.status || result.status === 200) {
+        console.log(`Payment dry run successful on attempt ${attempts + 1}`);
         return result;
       }
       attempts++;
-      sleep(1);
+      sleep(delayBetweenAttempts);
     }
     throw new Error(
-      `Failed to verify payment dry run after ${maxAttempts} attempts for programId: ${programId}, amount: ${amount}`,
+      `Failed to verify payment dry run after ${maxRetryDuration} seconds for programId: ${programId}, amount: ${amount}`,
     );
   }
 }

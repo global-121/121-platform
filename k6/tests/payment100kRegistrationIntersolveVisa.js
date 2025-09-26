@@ -15,7 +15,7 @@ const initializePayment = new InitializePaymentModel();
 const duplicateNumber = parseInt(__ENV.DUPLICATE_NUMBER || '17'); // '17' leads to 131k registrations
 const resetScript = 'nlrc-multiple';
 const programId = 3;
-const maxTimeoutAttempts = 800;
+const maxRetryDuration = 4000; // seconds
 const minPassRatePercentage = 10;
 const amount = 11.11;
 
@@ -45,7 +45,7 @@ export default function () {
     programId,
     registrationVisa,
     duplicateNumber,
-    maxTimeoutAttempts,
+    maxRetryDuration,
     minPassRatePercentage,
     amount,
   );
