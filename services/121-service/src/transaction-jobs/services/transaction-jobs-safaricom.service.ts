@@ -8,7 +8,7 @@ import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
@@ -26,9 +26,15 @@ export class TransactionJobsSafaricomService {
   public async processSafaricomTransactionJob(
     transactionJob: SafaricomTransactionJobDto,
   ): Promise<void> {
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId: transactionJob.transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+
     // 1. Create transaction event 'initiated' or 'retry'
     await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
-      transactionJob,
+      { context: transactionEventContext, isRetry: transactionJob.isRetry },
     );
 
     // 2. Create idempotency key
@@ -65,15 +71,13 @@ export class TransactionJobsSafaricomService {
         return;
       } else if (error instanceof SafaricomApiError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.createTransactionEvent({
-          transactionJob,
-          transactionEventType: TransactionEventType.processingStep,
-          description: TransactionEventDescription.safaricomRequestSent,
-          errorMessage: error.message,
-        });
-        await this.transactionJobsHelperService.updateTransactionStatus(
-          transactionJob.transactionId,
-          TransactionStatusEnum.error,
+        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
+          {
+            context: transactionEventContext,
+            description: TransactionEventDescription.safaricomRequestSent,
+            errorMessage: error.message,
+            newTransactionStatus: TransactionStatusEnum.error,
+          },
         );
         return;
       } else {
@@ -82,15 +86,11 @@ export class TransactionJobsSafaricomService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.createTransactionEvent({
-      transactionJob,
-      transactionEventType: TransactionEventType.processingStep,
+    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+      context: transactionEventContext,
       description: TransactionEventDescription.safaricomRequestSent,
+      newTransactionStatus: TransactionStatusEnum.waiting,
     });
-    await this.transactionJobsHelperService.updateTransactionStatus(
-      transactionJob.transactionId,
-      TransactionStatusEnum.waiting, // This will only go to 'success' via callback
-    );
   }
 
   private async upsertSafaricomTransfer(

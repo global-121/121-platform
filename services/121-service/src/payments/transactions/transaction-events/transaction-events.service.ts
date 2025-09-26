@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 
 @Injectable()
@@ -13,18 +14,14 @@ export class TransactionEventsService {
 
   // ##TODO: move also to repository? Then no service needed any more?
   public async createEvent({
-    transactionId,
+    context,
     type,
     description,
-    userId,
-    programFspConfigurationId,
     errorMessage,
   }: {
-    transactionId: number;
+    context: TransactionEventCreationContext;
     type: TransactionEventType;
     description: TransactionEventDescription;
-    userId: number | null; // null for e.g. callbacks
-    programFspConfigurationId: number;
     errorMessage?: string;
   }): Promise<void> {
     await this.transactionEventRepository.save({
@@ -32,9 +29,9 @@ export class TransactionEventsService {
       description,
       isSuccessfullyCompleted: !errorMessage,
       errorMessage,
-      transactionId,
-      userId,
-      programFspConfigurationId,
+      transactionId: context.transactionId,
+      userId: context.userId,
+      programFspConfigurationId: context.programFspConfigurationId,
     });
   }
 

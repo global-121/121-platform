@@ -124,12 +124,14 @@ export class SafaricomReconciliationService {
 
     // create transaction event
     await this.transactionEventsService.createEvent({
-      transactionId,
-      userId: null,
+      context: {
+        transactionId,
+        userId: null,
+        programFspConfigurationId,
+      },
       type: TransactionEventType.processingStep,
       description: TransactionEventDescription.safaricomCallbackReceived,
       errorMessage,
-      programFspConfigurationId,
     });
   }
 
@@ -155,12 +157,14 @@ export class SafaricomReconciliationService {
       );
       // create transaction event
       await this.transactionEventsService.createEvent({
-        transactionId,
-        userId: null,
+        context: {
+          transactionId,
+          userId: null,
+          programFspConfigurationId,
+        },
         type: TransactionEventType.processingStep,
         description: TransactionEventDescription.safaricomCallbackReceived,
         errorMessage: 'Transfer timed out',
-        programFspConfigurationId,
       });
     } catch (error) {
       // This should never happen. This way, if it happens, we receive an alert
