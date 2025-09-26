@@ -1,9 +1,12 @@
 import { inject, Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { QueryClient } from '@tanstack/angular-query-experimental';
+
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 
 import { AppRoutes } from '~/app.routes';
+import { UserApiService } from '~/domains/user/user.api.service';
 import { IAuthStrategy } from '~/services/auth/auth-strategy.interface';
 import { BasicAuthStrategy } from '~/services/auth/strategies/basic-auth/basic-auth.strategy';
 import { MsalAuthStrategy } from '~/services/auth/strategies/msal-auth/msal-auth.strategy';
@@ -32,6 +35,8 @@ export class AuthService {
 
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
+  private readonly userApiService = inject(UserApiService);
+  private readonly queryClient = inject(QueryClient);
 
   private readonly authStrategy: IAuthStrategy;
 
@@ -201,5 +206,12 @@ export class AuthService {
       }
     }
     return false;
+  }
+
+  public async refreshUser() {
+    const currentUser = await this.queryClient.fetchQuery(
+      this.userApiService.getCurrent()(),
+    );
+    setUserInLocalStorage(currentUser.user);
   }
 }
