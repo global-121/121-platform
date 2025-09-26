@@ -16,13 +16,10 @@ import { PaymentsProgressHelperService } from '@121-service/src/payments/service
 import { PaymentsReportingHelperService } from '@121-service/src/payments/services/payments-reporting.helper.service';
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
-import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { ProgramFspConfigurationsModule } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.module';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
 import { ProgramModule } from '@121-service/src/programs/programs.module';
-import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
@@ -36,13 +33,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ProgramEntity,
-      TransactionEntity,
-      RegistrationEntity,
-      ProgramRegistrationAttributeEntity,
-      PaymentEntity,
-    ]),
+    TypeOrmModule.forFeature([ProgramEntity, PaymentEntity]),
     UserModule,
     HttpModule,
     ActionsModule,

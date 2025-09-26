@@ -1,5 +1,6 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import chunk from 'lodash/chunk';
 import {
   DataSource,
   DeleteResult,
@@ -344,6 +345,20 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
     return wallets;
   }
 
+  public async updatePaymentCounts(
+    registrationIds: number[],
+    chunkSize: number,
+  ): Promise<void> {
+    for (const chunkIds of chunk(registrationIds, chunkSize)) {
+      await this.repository
+        .createQueryBuilder('registration')
+        .update()
+        .set({ paymentCount: () => '"paymentCount" + 1' })
+        .whereInIds(chunkIds)
+        .execute();
+    }
+  }
+
   public async getRegistrationsToComplete(
     programId: number,
   ): Promise<RegistrationEntity[]> {
@@ -359,13 +374,16 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
   }
 
   public async updateRegistrationsToCompleted(
-    registrationIdsToComplete: number[],
+    registrationIds: number[],
+    chunkSize: number,
   ): Promise<void> {
-    await this.repository
-      .createQueryBuilder('registration')
-      .update()
-      .set({ registrationStatus: RegistrationStatusEnum.completed })
-      .whereInIds(registrationIdsToComplete)
-      .execute();
+    for (const chunkIds of chunk(registrationIds, chunkSize)) {
+      await this.repository
+        .createQueryBuilder('registration')
+        .update()
+        .set({ registrationStatus: RegistrationStatusEnum.completed })
+        .whereInIds(chunkIds)
+        .execute();
+    }
   }
 }
