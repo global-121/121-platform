@@ -275,7 +275,6 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    this.throwIfProgramIsNotPublished(program.published);
     return await this.registrationsImportService.importRegistrationsFromCsv(
       csvFile,
       program,
@@ -303,20 +302,11 @@ export class RegistrationsService {
     userId: number,
   ): Promise<ImportResult> {
     const program = await this.findProgramOrThrow(programId);
-    this.throwIfProgramIsNotPublished(program.published);
     return await this.registrationsImportService.importRegistrations(
       jsonData,
       program,
       userId,
     );
-  }
-
-  private throwIfProgramIsNotPublished(published: boolean): void {
-    if (!published) {
-      const errors =
-        'Registrations are not allowed for this program yet, try again later.';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
   }
 
   private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
