@@ -79,7 +79,7 @@ jobs:
       - name: 'Check translations output-file'
         working-directory: ${{ env.interfacePath }}
         run: |
-          npm run set-env-variables -- env=development
+          npm run set-env-variables -- --env=development
           npm run extract-i18n
           git diff --exit-code src/locale/messages.xlf
 
