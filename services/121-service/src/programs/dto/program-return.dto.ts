@@ -94,10 +94,6 @@ export class ProgramReturnDto {
   @ApiProperty({ example: 1, type: 'number' })
   id: number;
 
-  // @ApiProperty({ example: false })
-  // @IsBoolean()
-  // public readonly published: boolean;
-
   @ApiProperty({ example: false })
   @IsBoolean()
   public readonly validation: boolean;

@@ -119,6 +119,33 @@ describe('Import a registration', () => {
     expect(registrationsResult).toHaveLength(0);
   });
 
+  it('should import registration scoped', async () => {
+    // Arrange
+    await resetDB(SeedScript.nlrcMultiple, __filename);
+    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
+
+    // Act
+    const response = await importRegistrations(
+      programIdPV,
+      [registrationScopedKisumuEastPv],
+      accessToken,
+    );
+
+    // Assert
+    expect(response.statusCode).toBe(HttpStatus.CREATED);
+
+    const result = await searchRegistrationByReferenceId(
+      registrationScopedKisumuEastPv.referenceId,
+      programIdPV,
+      accessToken,
+    );
+    const registrationResult = result.body.data[0];
+
+    for (const key in registrationScopedKisumuEastPv) {
+      expect(registrationResult[key]).toBe(registrationScopedKisumuEastPv[key]);
+    }
+  });
+
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
