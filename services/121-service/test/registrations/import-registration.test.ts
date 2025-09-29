@@ -11,7 +11,6 @@ import {
 import {
   patchProgram,
   setAllProgramsRegistrationAttributesNonRequired,
-  unpublishProgram,
 } from '@121-service/test/helpers/program.helper';
 import {
   getImportRegistrationsTemplate,
@@ -96,24 +95,28 @@ describe('Import a registration', () => {
     }
   });
 
-  it('should fail import registrations due to program is not published yet', async () => {
+  it('should not import any registration if one of them has different scope than user', async () => {
     // Arrange
     await resetDB(SeedScript.nlrcMultiple, __filename);
-    accessToken = await getAccessToken();
+    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
 
-    // unpublish a program
-    await unpublishProgram(programIdOCW, accessToken);
-
+    // Act
     const response = await importRegistrations(
-      programIdOCW,
-      [registrationVisa],
+      programIdPV,
+      [registrationScopedKisumuEastPv, registrationScopedTurkanaNorthPv],
       accessToken,
     );
 
+    // Assert
     expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.errors).toBe(
-      `Registrations are not allowed for this program yet, try again later.`,
+
+    const result = await searchRegistrationByReferenceId(
+      registrationScopedKisumuEastPv.referenceId,
+      programIdPV,
+      accessToken,
     );
+    const registrationsResult = result.body.data;
+    expect(registrationsResult).toHaveLength(0);
   });
 
   it('should import registration scoped', async () => {
@@ -141,30 +144,6 @@ describe('Import a registration', () => {
     for (const key in registrationScopedKisumuEastPv) {
       expect(registrationResult[key]).toBe(registrationScopedKisumuEastPv[key]);
     }
-  });
-
-  it('should not import any registration if one of them has different scope than user', async () => {
-    // Arrange
-    await resetDB(SeedScript.nlrcMultiple, __filename);
-    const accessToken = await getAccessTokenScoped(DebugScope.Kisumu);
-
-    // Act
-    const response = await importRegistrations(
-      programIdPV,
-      [registrationScopedKisumuEastPv, registrationScopedTurkanaNorthPv],
-      accessToken,
-    );
-
-    // Assert
-    expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-
-    const result = await searchRegistrationByReferenceId(
-      registrationScopedKisumuEastPv.referenceId,
-      programIdPV,
-      accessToken,
-    );
-    const registrationsResult = result.body.data;
-    expect(registrationsResult).toHaveLength(0);
   });
 
   it('should not import registrations with empty phoneNumber, when program disallows this', async () => {

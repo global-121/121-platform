@@ -83,7 +83,6 @@ describe('Create program', () => {
     const getProgramResponse = await getProgram(4, accessToken);
 
     // Assert
-    // const programId = createProgramResponse.body.id;
     expect(createProgramResponse.statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(createProgramResponse.body).toMatchSnapshot();
 

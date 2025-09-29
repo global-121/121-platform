@@ -95,10 +95,6 @@ const exampleAttributes: ProgramRegistrationAttributeDto[] = [
 export class CreateProgramDto {
   @ApiProperty({ example: false })
   @IsBoolean()
-  public readonly published: boolean;
-
-  @ApiProperty({ example: false })
-  @IsBoolean()
   public readonly validation: boolean;
 
   @ApiProperty({ example: 'Nederland' })

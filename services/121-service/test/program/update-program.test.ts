@@ -22,7 +22,6 @@ describe('Update program', () => {
     // Test with a few possibly to be changed attributes, not all attributes of a program
     const program: UpdateProgramDto = {
       titlePortal: { en: 'new title' },
-      published: false,
       distributionDuration: 100,
       fixedTransferValue: 500,
       budget: 50000,
@@ -43,7 +42,6 @@ describe('Update program', () => {
     expect(updateProgramResponse.body.titlePortal).toMatchObject(
       program.titlePortal!,
     );
-    expect(updateProgramResponse.body.published).toBe(program.published);
     expect(updateProgramResponse.body.distributionDuration).toBe(
       program.distributionDuration,
     );

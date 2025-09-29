@@ -480,7 +480,6 @@ exports[`Create program should post a program: Create program response for progr
       "type": "tel",
     },
   ],
-  "published": true,
   "targetNrRegistrations": 250,
   "titlePortal": {
     "en": "CBE Program",
@@ -999,7 +998,6 @@ exports[`Create program should post a program: Create program response for progr
       "type": "tel",
     },
   ],
-  "published": true,
   "targetNrRegistrations": 100000,
   "titlePortal": {
     "en": "NLRC OCW program",

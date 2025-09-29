@@ -159,7 +159,6 @@ export class ProgramService {
 
     await this.validateProgram(programData);
     const program = new ProgramEntity();
-    program.published = programData.published;
     program.validation = programData.validation;
     program.location = programData.location;
     program.ngo = programData.ngo;
@@ -282,7 +281,6 @@ export class ProgramService {
   private fillProgramReturnDto(program: FoundProgramDto): ProgramReturnDto {
     const programDto: ProgramReturnDto = {
       id: program.id,
-      published: program.published,
       validation: program.validation,
       location: program.location ?? undefined,
       ngo: program.ngo ?? undefined,
