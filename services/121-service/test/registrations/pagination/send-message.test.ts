@@ -33,12 +33,7 @@ describe('send arbitrary messages to set of registrations', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
-    const importResult = await importRegistrations(
-      programIdOCW,
-      registrations,
-      accessToken,
-    );
-    console.log('importResult: ', importResult.body, importResult.status);
+    await importRegistrations(programIdOCW, registrations, accessToken);
   });
 
   it('should send messages to selected PAs only', async () => {
@@ -87,7 +82,7 @@ describe('send arbitrary messages to set of registrations', () => {
     // Assert
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
-
+    // Only registrationOCW1 should receive the message
     const expectedMessagePa1 = messageHistoryPa1.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
@@ -95,6 +90,7 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(expectedMessagePa1[0].attributes.status).not.toBe(
       TwilioStatus.failed,
     );
+    // registrationOCW2 should not receive the message
     const expectedMessagePa2 = messageHistoryPa2.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
@@ -177,7 +173,6 @@ describe('send arbitrary messages to set of registrations', () => {
     const expectedMessagesPa3 = messageHistory3.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    console.log('expectedMessagesPa3', expectedMessagesPa3);
     const expectedMessagesPa4 = messageHistory4.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
@@ -263,18 +258,18 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(2);
     expect(sendMessageResponse.body.applicableCount).toBe(2);
 
-    // first get the message to be expected from history by text (body)
-    expect(
-      messageHistory1.some((msg) => msg.attributes.status === 'failed'),
-    ).toBe(true);
-    // make waitForMessagesToComplete check for more types of attributes
+    const expectedMessageResult1 = messageHistory1.filter(
+      (msg) => msg.attributes.status === 'failed',
+    );
+    expect(expectedMessageResult1.length).toBe(1);
     expect(messageHistory1[0].attributes.errorCode).toEqual(
       TwilioErrorCodes.toNumberDoesNotExist,
     );
 
-    expect(
-      messageHistory2.some((msg) => msg.attributes.status === 'failed'),
-    ).toBe(true);
+    const expectedMessageResult2 = messageHistory1.filter(
+      (msg) => msg.attributes.status === 'failed',
+    );
+    expect(expectedMessageResult2.length).toBe(1);
     expect(messageHistory2[0].attributes.errorCode).toEqual(
       TwilioErrorCodes.toNumberDoesNotExist,
     );
