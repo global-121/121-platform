@@ -190,7 +190,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.registrationStatus = RegistrationStatusEnum.new;
+      registration.registrationStatus = null;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
