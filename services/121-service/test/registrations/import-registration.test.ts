@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
 import { DebugScope } from '@121-service/src/scripts/enum/debug-scope.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { messageTemplateGeneric } from '@121-service/src/seed-data/message-template/message-template-generic.const';
@@ -411,11 +412,12 @@ describe('Import a registration', () => {
       accessToken,
     );
 
+    //the way to do it.
     const messageHistory = messageHistoryResponse.body;
-    //filter out the message with body that matches the template
     const expectedMessages = messageHistory.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),
     );
     expect(expectedMessages.length).toBe(1);
+    expect(expectedMessages[0].attributes.status).not.toBe(TwilioStatus.failed);
   });
 });
