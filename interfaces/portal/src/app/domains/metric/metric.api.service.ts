@@ -86,7 +86,7 @@ export class MetricApiService extends DomainApiService {
     if (limitNumberOfPayments) {
       params = { ...params, limitNumberOfPayments };
     }
-    return this.generateQueryOptions<ProjectAggregatePerPayment>({
+    return this.generateQueryOptions<ProjectAggregatePerPayment[]>({
       path: [...BASE_ENDPOINT(projectId), 'all-payments-aggregates'],
       params,
     });

@@ -454,8 +454,8 @@ export class MetricsService {
   }: {
     programId: number;
     limitNumberOfPayments?: number;
-  }): Promise<AggregatePerPayment> {
-    const allPaymentsAggregates: AggregatePerPayment = {};
+  }): Promise<AggregatePerPayment[]> {
+    const allPaymentsAggregates: AggregatePerPayment[] = [];
 
     const payments = await this.paymentsReportingService.getPayments({
       programId,
@@ -463,14 +463,18 @@ export class MetricsService {
     });
 
     for (const payment of payments) {
-      const aggregate =
-        await this.paymentsReportingService.getPaymentAggregation(
-          programId,
-          payment.paymentId,
-        );
-      allPaymentsAggregates[payment.paymentId] = aggregate;
-    }
+      const aggregate = {
+        id: payment.paymentId,
+        date: payment.paymentDate,
+        aggregatedStatuses:
+          await this.paymentsReportingService.getPaymentAggregation(
+            programId,
+            payment.paymentId,
+          ),
+      };
 
+      allPaymentsAggregates.push(aggregate);
+    }
     return allPaymentsAggregates;
   }
 

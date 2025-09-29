@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  LOCALE_ID,
 } from '@angular/core';
 
 import { injectQuery } from '@tanstack/angular-query-experimental';
@@ -34,6 +36,7 @@ const paymentColors = {
 export class PaymentsAggregateChartComponent {
   // This component can show a chart for either the amount or count of payments.
   private metricApiService = inject(MetricApiService);
+  readonly locale = inject(LOCALE_ID);
   readonly projectId = input.required<string>();
   readonly aggregateType = input.required<'amount' | 'count'>();
 
@@ -58,6 +61,7 @@ export class PaymentsAggregateChartComponent {
   );
 
   query = injectQuery(() => ({
+    // Sorting by date happens on the backend.
     ...this.metricApiService.getAllPaymentsAggregates({
       projectId: this.projectId,
       limitNumberOfPayments: '5',
@@ -72,13 +76,16 @@ export class PaymentsAggregateChartComponent {
 
     return this.query.data();
   });
+  readonly labels = computed<string[]>(() => {
+    const dates = this.queryData().map((payment) => payment.date);
 
-  readonly labels = computed<string[]>(() =>
-    Object.keys(this.queryData()).sort((a, b) => Number(a) - Number(b)),
-  );
+    return dates.map(
+      (date) => new DatePipe(this.locale).transform(date, 'shortDate') ?? '',
+    );
+  });
 
   readonly data = computed(() =>
-    this.labels().map((k) => this.queryData()[Number(k)]),
+    this.queryData().map((payment) => payment.aggregatedStatuses),
   );
 
   readonly chartOptions = computed(() =>
@@ -95,21 +102,21 @@ export class PaymentsAggregateChartComponent {
         label: TransactionStatusEnum.error,
         data: this.data().map(
           // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
-          (a) => a.failed[this.aggregateType()],
+          (payment) => payment.failed[this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.error],
       },
       {
         label: TransactionStatusEnum.success,
         data: this.data().map(
-          (a) => a[TransactionStatusEnum.success][this.aggregateType()],
+          (payment) => payment.success[this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.data().map(
-          (a) => a[TransactionStatusEnum.waiting][this.aggregateType()],
+          (payment) => payment.waiting[this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.waiting],
       },

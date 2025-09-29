@@ -222,7 +222,7 @@ export class MetricsController {
       new AssertPositiveNumberPipe({ optional: true }),
     )
     limitNumberOfPayments?: number,
-  ): Promise<AggregatePerPayment> {
+  ): Promise<AggregatePerPayment[]> {
     return await this.metricsService.getAllPaymentsAggregates({
       programId,
       limitNumberOfPayments,
