@@ -12,7 +12,7 @@ import { GetTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-
 import { GetTransactionsResponseIntersolveVisaDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/get-transactions-response-intersolve-api.dto';
 import { IssueTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-request-intersolve-api.dto';
 import { IssueTokenResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/issue-token-response-intersolve-api.dto';
-import { BaseResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-reponse-intersolve-api.dto';
+import { BaseResponseIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/base-response-intersolve-api.dto';
 import { ErrorsInResponseIntersolveApi } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/partials/error-in-response-intersolve-api';
 import { SubstituteTokenRequestIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/substitute-token-request-intersolve-api.dto';
 import { TransactionsIntersolveApiDto } from '@121-service/src/payments/fsp-integration/intersolve-visa/dtos/intersolve-api/transactions-intersolve-api.dto';

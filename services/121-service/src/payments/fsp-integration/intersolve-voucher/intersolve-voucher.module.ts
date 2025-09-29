@@ -23,7 +23,7 @@ import { ProgramAidworkerAssignmentEntity } from '@121-service/src/programs/enti
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
-import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
+import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';

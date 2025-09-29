@@ -24,7 +24,7 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';

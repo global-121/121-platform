@@ -31,7 +31,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
+import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';

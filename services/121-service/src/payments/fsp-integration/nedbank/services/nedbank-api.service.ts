@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { env } from '@121-service/src/env';
 import { CreateOrderRequestBodyNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-request-body-nedbank-api.dto';
 import { CreateOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/create-order-response-nedbank-api.dto';
-import { GetOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/get-order-reponse-nedbank-api.dto';
+import { GetOrderResponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/get-order-response-nedbank-api.dto';
 import { NedbankVoucherStatus } from '@121-service/src/payments/fsp-integration/nedbank/enums/nedbank-voucher-status.enum';
 import { NedbankApiClientService } from '@121-service/src/payments/fsp-integration/nedbank/services/nedbank-api-client.service';
 

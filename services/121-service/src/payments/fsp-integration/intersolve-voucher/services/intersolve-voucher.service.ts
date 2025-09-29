@@ -33,7 +33,7 @@ import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configur
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';

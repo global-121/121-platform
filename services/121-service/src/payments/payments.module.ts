@@ -25,7 +25,7 @@ import { ProgramModule } from '@121-service/src/programs/programs.module';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
-import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
+import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
 import { RegistrationsModule } from '@121-service/src/registration/registrations.module';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';

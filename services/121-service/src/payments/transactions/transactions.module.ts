@@ -13,7 +13,7 @@ import { TransactionRepository } from '@121-service/src/payments/transactions/tr
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
-import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
+import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
 import { UserModule } from '@121-service/src/user/user.module';
