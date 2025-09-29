@@ -63,7 +63,8 @@ export class AmountSentPerMonthChartComponent {
   );
 
   readonly labels = computed<string[]>(() =>
-    // XXX: dates should be localized
+    // We consciously don't localize the labels here as they are a weird date
+    // format.
     Object.keys(this.queryData()).sort(),
   );
 
