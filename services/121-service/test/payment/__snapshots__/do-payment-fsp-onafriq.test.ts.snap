@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Do payment to 1 PA with Fsp Onafriq should give error on the initial request based on magic phonenumber 1`] = `"Error: Invalid Onafriq API response structure. undefined"`;
+exports[`Do payment to 1 PA with Fsp Onafriq should give error on the initial request based on magic phonenumber 1`] = `"Error: ER103 - Mock error on callback"`;
 
-exports[`Do payment to 1 PA with Fsp Onafriq should give error via callback based on magic phonenumber 1`] = `"Error: Invalid Onafriq API response structure. undefined"`;
+exports[`Do payment to 1 PA with Fsp Onafriq should give error via callback based on magic phonenumber 1`] = `"Error: ER103 - Mock error on callback"`;

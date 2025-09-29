@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OnafriqApiService callService should return generic error when OnafriqcallService returns invalid response 1`] = `"Error: Invalid Onafriq API response structure. undefined"`;
+exports[`OnafriqApiService callService should return generic error when OnafriqcallService returns invalid response 1`] = `"Error: 101 - Rejected - Generic mock error on request"`;
