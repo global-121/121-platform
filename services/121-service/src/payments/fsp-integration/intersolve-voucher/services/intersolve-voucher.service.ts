@@ -4,12 +4,12 @@ import crypto from 'crypto';
 import { Equal, Repository } from 'typeorm';
 
 import { IS_DEVELOPMENT } from '@121-service/src/config';
-import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import {
   TwilioStatus,
   TwilioStatusCallbackDto,
 } from '@121-service/src/notifications/dto/twilio.dto';
+import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twilio.entity';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
@@ -18,16 +18,17 @@ import { PaTransactionResultDto } from '@121-service/src/payments/dto/payment-tr
 import { UnusedVoucherDto } from '@121-service/src/payments/dto/unused-voucher.dto';
 import { VoucherWithBalanceDto } from '@121-service/src/payments/dto/voucher-with-balance.dto';
 import { IntersolveIssueCardResponse } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-issue-card-response.dto';
-import { IntersolveStoreVoucherOptionsDto } from '@121-service/src/payments/fsp-integration/intersolve-voucher/dto/intersolve-store-voucher-options.dto';
 import { IntersolveIssueVoucherRequestEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-issue-voucher-request.entity';
 import { IntersolveVoucherEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher.entity';
 import { IntersolveVoucherInstructionsEntity } from '@121-service/src/payments/fsp-integration/intersolve-voucher/entities/intersolve-voucher-instructions.entity';
-import { IntersolveVoucherPayoutStatus } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-payout-status.enum';
 import { IntersolveVoucherResultCode } from '@121-service/src/payments/fsp-integration/intersolve-voucher/enum/intersolve-voucher-result-code.enum';
 import { IntersolveVoucherApiService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/instersolve-voucher.api.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { UsernamePasswordInterface } from '@121-service/src/program-fsp-configurations/interfaces/username-password.interface';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -49,6 +50,8 @@ export class IntersolveVoucherService {
   public readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   public readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(TwilioMessageEntity)
+  private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
   private readonly fallbackLanguage = LanguageEnum.en;
 
@@ -61,6 +64,8 @@ export class IntersolveVoucherService {
     private readonly intersolveVoucherApiService: IntersolveVoucherApiService,
     private readonly imageCodeService: ImageCodeService,
     private readonly transactionsService: TransactionsService,
+    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
     private readonly messageTemplateService: MessageTemplateService,
     public readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -72,18 +77,20 @@ export class IntersolveVoucherService {
     whatsappPhoneNumber,
     userId,
     calculatedAmount,
-    paymentId,
+    transactionId,
     bulkSize,
     credentials,
+    programFspConfigurationId,
   }: {
     referenceId: string;
     useWhatsapp: boolean;
     whatsappPhoneNumber: string | null;
     userId: number;
     calculatedAmount: number;
-    paymentId: number;
+    transactionId: number;
     bulkSize: number;
     credentials: UsernamePasswordInterface;
+    programFspConfigurationId: number;
   }) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = referenceId;
@@ -98,7 +105,14 @@ export class IntersolveVoucherService {
     const intersolveRefPos = this.getIntersolveRefPos();
     paResult.calculatedAmount = calculatedAmount;
 
-    const voucher = await this.getReusableVoucher(referenceId, paymentId);
+    const paymentId =
+      await this.transactionScopedRepository.getPaymentIdByTransactionId(
+        transactionId,
+      );
+    const voucher = await this.getReusableVoucher({
+      referenceId,
+      paymentId,
+    });
 
     if (voucher) {
       if (voucher.send) {
@@ -114,23 +128,23 @@ export class IntersolveVoucherService {
       }
     } else {
       // .. if no existing voucher found, then create new one
-      const voucherInfo = await this.issueVoucher(
-        calculatedAmount,
+      const voucherInfo = await this.issueVoucher({
+        amount: calculatedAmount,
         intersolveRefPos,
-        credentials.username,
-        credentials.password,
-      );
+        username: credentials.username,
+        password: credentials.password,
+      });
       voucherInfo.refPos = intersolveRefPos;
 
       if (voucherInfo.resultCode == IntersolveVoucherResultCode.Ok) {
-        voucherInfo.voucher = await this.storeVoucher(
+        voucherInfo.voucher = await this.storeVoucher({
           voucherInfo,
           referenceId,
           paymentId,
-          calculatedAmount,
+          amount: calculatedAmount,
           whatsappPhoneNumber,
           userId,
-        );
+        });
         paResult.status = TransactionStatusEnum.success;
       } else {
         paResult.status = TransactionStatusEnum.error;
@@ -157,21 +171,27 @@ export class IntersolveVoucherService {
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(
+    return await this.sendWhatsapp({
+      programFspConfigurationId,
       referenceId,
       paResult,
-      calculatedAmount,
-      paymentId,
+      transactionId,
       bulkSize,
       userId,
-    );
+    });
   }
 
   private getIntersolveRefPos(): number {
     return parseInt(crypto.randomBytes(5).toString('hex'), 16);
   }
 
-  private async getReusableVoucher(referenceId: string, paymentId: number) {
+  private async getReusableVoucher({
+    referenceId,
+    paymentId,
+  }: {
+    referenceId: string;
+    paymentId: number;
+  }) {
     const rawVoucher = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       //The .* is to prevent the raw query from prefixing with voucher_
@@ -195,12 +215,17 @@ export class IntersolveVoucherService {
     return await this.intersolveVoucherScopedRepository.save(voucher);
   }
 
-  private async issueVoucher(
-    amount: number,
-    intersolveRefPos: number,
-    username: string,
-    password: string,
-  ): Promise<IntersolveIssueCardResponse> {
+  private async issueVoucher({
+    amount,
+    intersolveRefPos,
+    username,
+    password,
+  }: {
+    amount: number;
+    intersolveRefPos: number;
+    username: string;
+    password: string;
+  }): Promise<IntersolveIssueCardResponse> {
     const amountInCents = amount * 100;
     return await this.intersolveVoucherApiService.issueCard(
       amountInCents,
@@ -210,66 +235,80 @@ export class IntersolveVoucherService {
     );
   }
 
-  private async storeVoucher(
-    voucherInfo: IntersolveIssueCardResponse,
-    referenceId: string,
-    paymentId: number,
-    amount: number,
-    whatsappPhoneNumber: string | null,
-    userId: number,
-  ): Promise<IntersolveVoucherEntity> {
-    const voucherData = await this.storeVoucherData(
-      voucherInfo.cardId,
-      voucherInfo.pin,
+  private async storeVoucher({
+    voucherInfo,
+    referenceId,
+    paymentId,
+    amount,
+    whatsappPhoneNumber,
+    userId,
+  }: {
+    voucherInfo: IntersolveIssueCardResponse;
+    referenceId: string;
+    paymentId: number;
+    amount: number;
+    whatsappPhoneNumber: string | null;
+    userId: number;
+  }): Promise<IntersolveVoucherEntity> {
+    const voucherData = await this.storeVoucherData({
+      cardNumber: voucherInfo.cardId,
+      pin: voucherInfo.pin,
       whatsappPhoneNumber,
       paymentId,
       amount,
       userId,
-    );
+    });
 
-    await this.imageCodeService.createVoucherExportVouchers(
-      voucherData,
+    await this.imageCodeService.createVoucherExportVouchers({
+      intersolveVoucherEntity: voucherData,
       referenceId,
-    );
+    });
 
     return voucherData;
   }
 
-  private async sendWhatsapp(
-    referenceId: string,
-    paResult: PaTransactionResultDto,
-    amount: number,
-    paymentId: number,
-    bulkSize: number,
-    userId: number,
-  ): Promise<PaTransactionResultDto> {
-    const transferResult = await this.sendVoucherWhatsapp(
+  private async sendWhatsapp({
+    programFspConfigurationId,
+    referenceId,
+    paResult,
+    transactionId,
+    bulkSize,
+    userId,
+  }: {
+    programFspConfigurationId: number;
+    referenceId: string;
+    paResult: PaTransactionResultDto;
+    transactionId: number;
+    bulkSize: number;
+    userId: number;
+  }): Promise<PaTransactionResultDto> {
+    const transferResult = await this.sendVoucherWhatsapp({
       referenceId,
-      paymentId,
-      amount,
+      transactionId,
       bulkSize,
       userId,
-    );
+      programFspConfigurationId,
+    });
 
     paResult.status = transferResult.status;
-    if (transferResult.status === TransactionStatusEnum.error) {
-      paResult.message =
-        'Voucher(s) created, but something went wrong in sending voucher.\n' +
-        transferResult.message;
-    } else {
-      paResult.customData = transferResult.customData;
-    }
+    paResult.customData = transferResult.customData;
 
     return paResult;
   }
 
-  public async sendVoucherWhatsapp(
-    referenceId: string,
-    paymentId: number,
-    calculatedAmount: number,
-    bulkSize: number,
-    userId: number,
-  ): Promise<PaTransactionResultDto> {
+  public async sendVoucherWhatsapp({
+    referenceId,
+    transactionId,
+    bulkSize,
+    userId,
+    programFspConfigurationId,
+  }: {
+    referenceId: string;
+    transactionId: number;
+    bulkSize: number;
+    userId: number;
+    programFspConfigurationId: number;
+  }): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = referenceId;
 
@@ -282,18 +321,20 @@ export class IntersolveVoucherService {
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
-    const contentSid = await this.getNotificationContentSid(
+    const contentSid = await this.getNotificationContentSid({
       program,
-      ProgramNotificationEnum.whatsappPayment,
+      type: ProgramNotificationEnum.whatsappPayment,
       language,
-    );
+    });
 
     await this.queueMessageService.addMessageJob({
       registration,
       contentSid: contentSid ?? undefined,
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
-      customData: { paymentId, amount: calculatedAmount },
+      customData: {
+        transactionData: { transactionId, programFspConfigurationId },
+      },
       bulksize: bulkSize,
       userId,
     });
@@ -301,11 +342,15 @@ export class IntersolveVoucherService {
     return result;
   }
 
-  public async getNotificationContentSid(
-    program: ProgramEntity,
-    type: string,
-    language?: string,
-  ): Promise<string | undefined> {
+  public async getNotificationContentSid({
+    program,
+    type,
+    language,
+  }: {
+    program: ProgramEntity;
+    type: string;
+    language?: string;
+  }): Promise<string | undefined> {
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
         program.id,
@@ -327,14 +372,21 @@ export class IntersolveVoucherService {
     }
   }
 
-  private async storeVoucherData(
-    cardNumber: string,
-    pin: string,
-    whatsappPhoneNumber: string | null,
-    paymentId: number,
-    amount: number,
-    userId: number,
-  ): Promise<IntersolveVoucherEntity> {
+  private async storeVoucherData({
+    cardNumber,
+    pin,
+    whatsappPhoneNumber,
+    paymentId,
+    amount,
+    userId,
+  }: {
+    cardNumber: string;
+    pin: string;
+    whatsappPhoneNumber: string | null;
+    paymentId: number;
+    amount: number;
+    userId: number;
+  }): Promise<IntersolveVoucherEntity> {
     const voucherData = new IntersolveVoucherEntity();
     voucherData.barcode = cardNumber;
     voucherData.pin = pin.toString();
@@ -346,57 +398,80 @@ export class IntersolveVoucherService {
     return this.intersolveVoucherScopedRepository.save(voucherData);
   }
 
-  public async processStatus(
+  public async processMessageStatusCallback(
     statusCallbackData: TwilioStatusCallbackDto,
     transactionId: number,
+    processType: MessageProcessType,
   ): Promise<void> {
     const succesStatuses = [TwilioStatus.delivered, TwilioStatus.read];
     const failStatuses = [TwilioStatus.undelivered, TwilioStatus.failed];
-    let status: string;
+    let newTransactionStatus: TransactionStatusEnum;
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
-      status = TransactionStatusEnum.success;
+      newTransactionStatus = TransactionStatusEnum.success;
     } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
-      status = TransactionStatusEnum.error;
+      newTransactionStatus = TransactionStatusEnum.error;
     } else {
-      // For other statuses, no update needed
       return;
     }
 
-    const transactionToUpdateFilter = {
-      id: transactionId,
-    };
-    // if success, then only update if transaction is a 'voucher sent' message
-    // if error, then always update
-    if (status === TransactionStatusEnum.success) {
-      transactionToUpdateFilter['transactionStep'] = 2;
+    // Do not update transaction (or create event) on success callback on initial message
+    if (
+      newTransactionStatus === TransactionStatusEnum.success &&
+      processType === MessageProcessType.whatsappTemplateVoucher
+    ) {
+      return;
     }
-    // No scoped needed as this is for incoming whatsapp messages
-    await this.transactionRepository.update(transactionToUpdateFilter, {
-      status,
+
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId,
+      description: TransactionEventDescription.intersolveVoucherMessageCallback,
+      newTransactionStatus: newTransactionStatus as TransactionStatusEnum,
       errorMessage:
-        status === TransactionStatusEnum.error
+        newTransactionStatus === TransactionStatusEnum.error
           ? (statusCallbackData.ErrorMessage || '') +
             ' (ErrorCode: ' +
             statusCallbackData.ErrorCode +
             ')'
-          : null,
+          : undefined,
     });
   }
 
-  public async updateWaitingTransactionStep1(
-    paymentId: number,
-    registrationId: number,
-    status: TransactionStatusEnum,
-    messageSid?: string,
-    errorMessage?: string,
-  ): Promise<void> {
-    await this.transactionsService.updateWaitingTransactionStep1(
-      paymentId,
-      registrationId,
-      status,
-      messageSid,
+  // TODO: move this code, such that intersolve-voucher module does not need to import transactions module
+  public async updateTransactionProgressBasedOnInitialMessage({
+    transactionId,
+    newTransactionStatus,
+    messageSid,
+    errorMessage,
+    userId,
+    programFspConfigurationId,
+  }: {
+    transactionId: number;
+    newTransactionStatus: TransactionStatusEnum;
+    messageSid?: string;
+    errorMessage?: string;
+    userId: number;
+    programFspConfigurationId: number;
+  }): Promise<void> {
+    await this.transactionsService.saveTransactionProgress({
+      context: {
+        transactionId,
+        userId,
+        programFspConfigurationId,
+      },
+      description:
+        TransactionEventDescription.intersolveVoucherInitialMessageSent,
+      newTransactionStatus,
       errorMessage,
-    );
+    });
+
+    if (messageSid) {
+      await this.twilioMessageRepository.update(
+        { sid: messageSid },
+        {
+          transactionId,
+        },
+      );
+    }
   }
 
   public async exportVouchers(
@@ -585,115 +660,42 @@ export class IntersolveVoucherService {
     return unusedVouchersDtos;
   }
 
-  public async processTransactionResultStep2(
-    paymentId: number,
-    amount: number,
-    registrationId: number,
-    status: TransactionStatusEnum,
-    errorMessage: string | null,
-    programId: number,
-    options: IntersolveStoreVoucherOptionsDto,
-  ): Promise<void> {
-    if (options.intersolveVoucherId) {
-      const intersolveVoucher =
-        await this.intersolveVoucherScopedRepository.findOneOrFail({
-          where: { id: Equal(options.intersolveVoucherId) },
-        });
-      intersolveVoucher.send = true;
-      await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
-    }
-    const transactionResultDto = await this.generateTransactionResultStep2Dto(
-      amount,
-      registrationId,
-      status,
-      errorMessage,
-      options.messageSid,
-    );
-
-    let userId: number | undefined;
-    let programFspConfigurationId: number | undefined;
-    const userFspConfigIdObject =
-      await this.getUserFspConfigIdForTransactionStep2(
-        registrationId,
-        paymentId,
-      );
-    if (userFspConfigIdObject) {
-      userId = userFspConfigIdObject.userId;
-      programFspConfigurationId =
-        userFspConfigIdObject.programFspConfigurationId;
-    }
-
-    if (userId === undefined) {
-      throw new Error(
-        'Could not find userId for transaction in storeTransactionResult.',
-      );
-    }
-    if (programFspConfigurationId === undefined) {
-      throw new Error(
-        'Could not find programFspConfigurationId for transaction in storeTransactionResult.',
-      );
-    }
-
-    const transactionRelationDetails = {
-      programId,
-      paymentId,
-      userId,
-      programFspConfigurationId,
-    };
-
-    await this.transactionsService.storeTransactionForStep2({
-      transactionResponse: transactionResultDto,
-      relationDetails: transactionRelationDetails,
-    });
-  }
-
-  private async getUserFspConfigIdForTransactionStep2(
-    registrationId: number,
-    paymentId: number,
-  ) {
-    const transaction: null | {
-      userId: number;
-      programFspConfigurationId: number;
-    } = await this.transactionRepository.findOne({
-      where: {
-        registrationId: Equal(registrationId),
-        paymentId: Equal(paymentId),
-      },
-      order: { created: 'DESC' },
-      select: ['userId', 'programFspConfigurationId'],
-    });
-    return transaction;
-  }
-
-  public async generateTransactionResultStep2Dto(
-    amount: number,
-    registrationId: number,
-    status: TransactionStatusEnum,
-    errorMessage: string | null,
-    messageSid?: string,
-  ): Promise<PaTransactionResultDto> {
-    const registration = await this.registrationScopedRepository.findOneOrFail({
-      where: { id: Equal(registrationId) },
-      relations: ['programFspConfiguration', 'program'],
+  public async updateTransactionProgressBasedOnVoucherMessage({
+    transactionId,
+    newTransactionStatus,
+    errorMessage,
+    messageSid,
+    intersolveVoucherId,
+  }: {
+    transactionId: number;
+    newTransactionStatus: TransactionStatusEnum;
+    errorMessage: string | null;
+    messageSid?: string;
+    intersolveVoucherId: number;
+  }): Promise<void> {
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId,
+      description:
+        TransactionEventDescription.intersolveVoucherVoucherMessageSent,
+      newTransactionStatus,
+      errorMessage: errorMessage ?? undefined,
     });
 
-    const transactionResult = new PaTransactionResultDto();
-    transactionResult.calculatedAmount = amount;
-    transactionResult.date = new Date();
-    transactionResult.referenceId = registration.referenceId;
+    const intersolveVoucher =
+      await this.intersolveVoucherScopedRepository.findOneOrFail({
+        where: { id: Equal(intersolveVoucherId) },
+      });
+    intersolveVoucher.send = true;
+    await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
 
-    transactionResult.message = errorMessage;
     if (messageSid) {
-      transactionResult.messageSid = messageSid;
+      await this.twilioMessageRepository.update(
+        { sid: messageSid },
+        {
+          transactionId,
+        },
+      );
     }
-
-    transactionResult.customData = JSON.parse(JSON.stringify({}));
-    transactionResult.customData['IntersolvePayoutStatus'] =
-      IntersolveVoucherPayoutStatus.VoucherSent;
-    transactionResult.status = status;
-    transactionResult.fspName = Fsps.intersolveVoucherWhatsapp;
-
-    return transactionResult;
   }
 
   public async getVouchersWithBalance(
