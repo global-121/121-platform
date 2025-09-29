@@ -149,7 +149,7 @@ export async function waitForDeleteRegistrations({
   const startTime = Date.now();
   const accessToken = await getAccessToken();
   while (Date.now() - startTime < maxWaitTimeMs) {
-    let totalRegistrationSuccesfullyDeleted = 0;
+    let totalRegistrationSuccessfullyDeleted = 0;
 
     for (const referenceId of referenceIds) {
       const getEventsResponse = await getEvents({
@@ -165,10 +165,10 @@ export async function waitForDeleteRegistrations({
           event.attributes?.newValue === RegistrationStatusEnum.deleted,
       );
       if (deleteEvent) {
-        totalRegistrationSuccesfullyDeleted++;
+        totalRegistrationSuccessfullyDeleted++;
       }
     }
-    if (totalRegistrationSuccesfullyDeleted === referenceIds.length) {
+    if (totalRegistrationSuccessfullyDeleted === referenceIds.length) {
       return;
     }
 

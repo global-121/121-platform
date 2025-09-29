@@ -48,7 +48,7 @@ const estimatedAnnualPaymentVolumeMajorUnit =
 
 /* All "technical details" of how the Intersolve API is called and how to get what we need from the responses should be encapsulated here. Not the IntersolveVisaService nor any other part of the
     121 Service needs to know about Intersolve API implementation details.
-    Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externaly used API) uses "121" terminology.
+    Guideline: The (internal) API of the ApiService functions use FSP-specific terminology, the (IntersolveVisa)Service (externally used API) uses "121" terminology.
 */
 @Injectable()
 export class IntersolveVisaApiService {
@@ -240,7 +240,7 @@ export class IntersolveVisaApiService {
       fromDate: this.getTwoMonthsAgo(),
     });
 
-    // Seperate out the reservation and expired reservation transactions.
+    // Separate out the reservation and expired reservation transactions.
     const transactions = getTransactionsResponseDto.data.data;
     let reservationTransactions: TransactionsIntersolveApiDto[] = [];
     let expiredTransactions: TransactionsIntersolveApiDto[] = [];

@@ -53,7 +53,7 @@ export default function () {
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login successful status was 200': (r) => r.status == 201,
+    'Login successful. Status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -100,8 +100,8 @@ export default function () {
   // get program by id and validate load time is less than 200ms
   const program = programsPage.getProgramById(programId);
   checkAndFail(program, {
-    'Programme loaded successfully status was 200': (r) => r.status == 200,
-    'Programme load time is less than 200ms': (r) => {
+    'Program loaded successfully status was 200': (r) => r.status == 200,
+    'Program load time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Programme time was ${r.timings.duration}ms`);
       }

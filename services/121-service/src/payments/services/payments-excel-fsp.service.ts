@@ -72,7 +72,7 @@ export class PaymentsExcelFspService {
       );
     }
 
-    /// Seprate transactionsWithFspInstruction based on their programFspConfigurationName
+    /// Separate transactionsWithFspInstruction based on their programFspConfigurationName
     const allFspInstructions: FspInstructions[] = [];
     for (const fspConfigEntity of programFspConfigEntitiesWithFspInstruction) {
       const fspInstructions =
@@ -155,7 +155,7 @@ export class PaymentsExcelFspService {
         fileNamePrefix: programFspConfigurationName,
       };
     }
-    // Is this the best way to prevent a typeerror on the return type?
+    // Is this the best way to prevent a TypeError on the return type?
     throw new Error(`FspName ${fspName} not supported in fsp export`);
   }
 }

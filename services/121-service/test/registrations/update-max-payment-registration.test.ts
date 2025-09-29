@@ -34,7 +34,7 @@ describe('Update maxPayments of PA', () => {
     await seedPaidRegistrations([registration], programIdPv);
   });
 
-  it('should succesfully update maxPayments without status change', async () => {
+  it('should successfully update maxPayments without status change', async () => {
     // Arrange
     const initialStatus = RegistrationStatusEnum.included;
 
@@ -89,7 +89,7 @@ describe('Update maxPayments of PA', () => {
     expect(registration.maxPayments).toBe(testPayments);
   });
 
-  it('should succesfully update maxPayments and change status to completed', async () => {
+  it('should successfully update maxPayments and change status to completed', async () => {
     // Arrange
     const status = RegistrationStatusEnum.completed;
     const dataUpdateMaxPaymentsSuccess = {

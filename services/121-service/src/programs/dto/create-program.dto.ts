@@ -21,7 +21,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 import { WrapperType } from '@121-service/src/wrapper.type';
 
 // This declared at the top of the file because it is used in the CreateProgramDto and else it is not defined yet
-// It's not defined inline because typing works more convient here
+// It's not defined inline because typing works more convenient here
 const exampleAttributes: ProgramRegistrationAttributeDto[] = [
   {
     name: 'nameFirst',

@@ -24,7 +24,7 @@ describe('Do payment with FSP: Airtel', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should succesfully initiate a payment', async () => {
+  it('should successfully initiate a payment', async () => {
     // Arrange
     const registrationAirtelInitiatePayment = {
       ...registrationAirtel,

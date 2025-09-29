@@ -32,7 +32,7 @@ export class RenameRegisteredToNew1750762936357 implements MigrationInterface {
         WHERE "contentType" = 'registered';`,
     );
 
-    // delete message_template records with type registered and isSendMessageTemplate = false (which in pracitce is all 'type=registered' records), as those are no longer used
+    // delete message_template records with type registered and isSendMessageTemplate = false (which in practice is all 'type=registered' records), as those are no longer used
     await queryRunner.query(
       `DELETE FROM "121-service".message_template
         WHERE "type" = 'registered' AND "isSendMessageTemplate" = false;`,

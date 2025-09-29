@@ -655,7 +655,7 @@ export class TransactionJobsCreationService {
           userId,
           referenceId: registrationView.referenceId,
           programFspConfigurationId: registrationView.programFspConfigurationId,
-          // Use hashmap to lookup transaction amount for this referenceId (with the 4000 chuncksize this takes less than 1ms)
+          // Use hash-map to lookup transaction amount for this referenceId (with the 4000 chunk-size this takes less than 1ms)
           transactionAmount: transactionDataByReferenceId.get(
             registrationView.referenceId,
           )!,

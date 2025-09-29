@@ -55,7 +55,7 @@ export class SeedHelperService {
 
     // ***** SET SEQUENCE *****
     // This is to keep PV and OCW program ids on respectively 2 and 3
-    // This to prevent differences between our local and prod dbs so we are less prone to mistakes
+    // This to prevent differences between our local- and production database so we are less prone to mistakes
     if (seedConfig.firstProgramId && seedConfig.firstProgramId !== 1) {
       await this.dataSource.query(
         `ALTER SEQUENCE "121-service".program_id_seq RESTART WITH ${seedConfig.firstProgramId};`,
@@ -112,7 +112,7 @@ export class SeedHelperService {
     form.append('file', fs.createReadStream(filePathToUpload));
 
     const accessToken = await this.axiosCallsService.getAccessToken();
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const formHeaders = form.getHeaders();
     for (const key in formHeaders) {
       if (Object.prototype.hasOwnProperty.call(formHeaders, key)) {
@@ -181,7 +181,7 @@ export class SeedHelperService {
         roles: [DefaultUserRole.KoboRegistrationUser],
       },
       {
-        type: 'koboValidationnUser',
+        type: 'koboValidationUser',
         username: env.USERCONFIG_121_SERVICE_EMAIL_USER_KOBO_VALIDATION,
         password: env.USERCONFIG_121_SERVICE_PASSWORD_USER_KOBO_VALIDATION,
         roles: [DefaultUserRole.KoboValidationUser],

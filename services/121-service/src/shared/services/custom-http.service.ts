@@ -243,7 +243,7 @@ export class CustomHttpService {
         });
         this.flushLogs('logMessageRequest');
       } catch (error) {
-        console.log('An error occured in logMessageRequest: ', error);
+        console.log('An error occurred in logMessageRequest: ', error);
       }
     }
   }
@@ -275,7 +275,7 @@ export class CustomHttpService {
         });
         this.flushLogs('logErrorRequest');
       } catch (error) {
-        console.log('An error occured in logErrorRequest: ', error);
+        console.log('An error occurred in logErrorRequest: ', error);
       }
     }
   }

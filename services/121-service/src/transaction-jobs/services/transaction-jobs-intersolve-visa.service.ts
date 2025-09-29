@@ -94,7 +94,6 @@ export class TransactionJobsIntersolveVisaService {
         throw error;
       }
     }
-    // If the transactions was succesful
 
     const messageType =
       intersolveVisaDoTransferOrIssueCardReturnDto.isNewCardCreated

@@ -44,13 +44,13 @@ export default function () {
   // reset db
   const reset = resetPage.resetDBMockRegistrations(duplicateNumber);
   checkAndFail(reset, {
-    'Reset succesfull status was 202': (r) => r.status == 202,
+    'Reset successful status was 202': (r) => r.status == 202,
   });
 
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login succesfull status was 200': (r) => r.status == 201,
+    'Login successful. Status was 200': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
@@ -92,13 +92,13 @@ export default function () {
   // get export list
   const exportList = metricsPage.getExportList(3);
   checkAndFail(exportList, {
-    'Export list loaded succesfully status was 200': (r) => r.status == 200,
+    'Export list loaded successfully status was 200': (r) => r.status == 200,
   });
 
   // send bulk message
   const message = programsPage.sendBulkMessage(3);
   checkAndFail(message, {
-    'Message sent succesfully status was 202': (r) => r.status == 202,
+    'Message sent successfully status was 202': (r) => r.status == 202,
   });
 
   sleep(1);

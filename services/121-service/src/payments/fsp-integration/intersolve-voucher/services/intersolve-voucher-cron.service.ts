@@ -19,7 +19,7 @@ import { DefaultRegistrationDataAttributeNames } from '@121-service/src/registra
 import { RegistrationDataService } from '@121-service/src/registration/modules/registration-data/registration-data.service';
 
 // TODO: Consider Refactoring this service as intersolve voucher is the only fsp with a cron-service.
-// Also it makes sense a seperation of concerns that an fsp specic service does not know it's called by a cronjob.
+// Also it makes sense a separation of concerns that an fsp specific service does not know it's called by a cronjob.
 @Injectable()
 export class IntersolveVoucherCronService {
   @InjectRepository(RegistrationEntity)
@@ -62,7 +62,7 @@ export class IntersolveVoucherCronService {
     }
 
     // Get the first intersolve programFspConfigurationId that has intersolveVoucherWhatsapp as FSP
-    // TODO: store the programFspConfigurationId or the usename and password in the intersolveRequest table so we know which credentials to use for the cancelation
+    // TODO: store the programFspConfigurationId or the username and password in the intersolveRequest table so we know which credentials to use for the cancelation
     // Before the registration data/programFspConfiguration this problem already existed...
     const configId = await this.programFspConfigurationRepository.findOne({
       where: {
@@ -164,7 +164,7 @@ export class IntersolveVoucherCronService {
             DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
           );
         if (!fromNumber) {
-          // This can represent the case where a PA was switched from AH-voucher-whatsapp to AH-voucher-paper. But also otherwise it makes no sense to continue.
+          // This can represent the case where a PA was switched from Intersolve-voucher-whatsApp to Intersolve-voucher-paper. But also otherwise it makes no sense to continue.
           console.log(
             `Registration ${referenceId} has no current whatsappPhoneNumber to send reminder message to.`,
           );

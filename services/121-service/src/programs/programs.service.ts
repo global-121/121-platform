@@ -186,7 +186,7 @@ export class ProgramService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
-    // Make sure to use these repositories in this transaction else save will be part of another transacion
+    // Make sure to use these repositories in this transaction else save will be part of another transaction
     // This can lead to duplication of data
     const programRepository = queryRunner.manager.getRepository(ProgramEntity);
     const programRegistrationAttributeRepository =
@@ -253,7 +253,7 @@ export class ProgramService {
       );
     }
 
-    // Overwrite any non-nested attributes of the program with the new supplued values.
+    // Overwrite any non-nested attributes of the program with the new supplied values.
     for (const attribute in updateProgramDto) {
       // Skip attribute fsps, or all configured FSPs will be deleted. See processing of fsps below.
       if (attribute !== 'programFspConfigurations') {

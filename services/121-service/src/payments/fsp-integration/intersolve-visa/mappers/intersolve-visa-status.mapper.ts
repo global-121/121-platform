@@ -78,7 +78,7 @@ export class IntersolveVisaStatusMapper {
    * - It first loads the mapping from a CSV file if it hasn't been loaded yet.
    * - It then finds the row in the mapping that matches the given token blocked status, wallet status, and card status.
    * - If a matching row is found, it creates an array of actions from the row's Actions121 field, maps each action to a VisaCardAction enum value, and returns an object with the row's status, explanation, and actions.
-   * - If the cards status is missing it will retrun the accosiacted status
+   * - If the cards status is missing it will return the associated status
    * - If no matching row is found, it returns an object with an unknown status, a default explanation, and no actions.
    *
    * @param {boolean} input.isTokenBlocked - Whether the token is blocked.

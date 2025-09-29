@@ -127,7 +127,7 @@ export class CommercialBankEthiopiaService {
       );
     }
 
-    // added this to prevent a typeerror as: return credentials gives a type error
+    // added this to prevent a TypeError as: return credentials gives a type error
     const requiredCredentials: RequiredUsernamePasswordInterface = {
       username: credentials.username,
       password: credentials.password,

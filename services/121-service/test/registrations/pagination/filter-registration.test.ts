@@ -183,7 +183,7 @@ describe('Filter registrations', () => {
 
   it('should filter using in, eq, ilike and null', async () => {
     // Act
-    // Each of the filters would seperately return
+    // Each of the filters would separately return
     const getRegistrationsResponse = await getRegistrations({
       programId: programIdOCW,
       accessToken,

@@ -38,8 +38,8 @@ export class IntersolveVoucherReconciliationService {
       // Run this in batches of 1,000 as it is performance-heavy
       let id = 1;
       while (id <= maxId) {
-        // Query gets all vouher that need to be checked these can be:
-        // 1) Vouchers  with null (which have never been checked)
+        // Query gets all vouchers that need to be checked these can be:
+        // 1) Vouchers with null (which have never been checked)
         // 2) Voucher with a balance of not 0 (which could have been used more in the meantime)
         const q = await this.intersolveVoucherScopedRepository
           .createQueryBuilder('voucher')

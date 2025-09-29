@@ -54,7 +54,7 @@ export class TransactionJobsAirtelService {
         - slow response
         - no response (timeout)
       - Airtel API problems
-        - endpoints generating unparseable responses
+        - endpoints generating un-parsable responses
         - disbursements that are on pending indefinitely
     */
     // 1. Prepare.

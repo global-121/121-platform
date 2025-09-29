@@ -197,7 +197,7 @@ export class MetricsService {
     programId: number;
     paginationQuery: PaginateQuery;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    // Create an empty scoped querybuilder object
+    // Create an empty scoped queryBuilder object
     const queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
       .andWhere({ programId });

@@ -30,7 +30,7 @@ describe('Issue new Visa debit card', () => {
     await waitFor(2_000);
   });
 
-  it('should succesfully issue a new Visa Debit card', async () => {
+  it('should successfully issue a new Visa Debit card', async () => {
     // Arrange
     await seedPaidRegistrations([registrationVisa], programIdVisa);
 
@@ -83,7 +83,7 @@ describe('Issue new Visa debit card', () => {
     );
   });
 
-  it('should fail to issue a new Visa Debit card if phonenumber is missing & succesfully reissue after phonenumber is updated again', async () => {
+  it('should fail to issue a new Visa Debit card if phonenumber is missing & successfully reissue after phonenumber is updated again', async () => {
     // Arrange
     const programIdPv = 2;
     await seedPaidRegistrations([registrationVisa], programIdPv);

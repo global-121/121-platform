@@ -135,7 +135,7 @@ describe('AirtelApiService', () => {
       });
 
       // We test authenticate failures here, not again in enquire() because it's the same code path.
-      it('throws an AirtelApiError when authentication was unsuccessfull because of invalid secrets', async () => {
+      it('throws an AirtelApiError when authentication was unsuccessful because of invalid secrets', async () => {
         // Arrange
         // Only need to mock the first.
         post.mockResolvedValueOnce({

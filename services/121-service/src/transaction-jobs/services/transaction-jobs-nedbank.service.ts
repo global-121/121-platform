@@ -85,11 +85,11 @@ export class TransactionJobsNedbankService {
         `ReferenceId=${transactionJob.referenceId},PaymentNumber=${transactionJob.paymentId},Attempt=${failedTransactionsCount}`,
       ).replace(/^(.{14})5/, '$14');
 
-      // THIS IS MOCK FUNCTIONONALITY FOR TESTING PURPOSES ONLY
+      // THIS IS MOCK FUNCTIONALITY FOR TESTING PURPOSES ONLY
       if (env.MOCK_NEDBANK && transactionJob.referenceId.includes('mock')) {
         // If mock, add the referenceId to the orderCreateReference
-        // This way you can add one of the nedbank voucher statusses to the orderCreateReference
-        // to simulate a specific statusses in responses from the nedbank API on getOrderByOrderCreateReference
+        // This way you can add one of the Nedbank voucher statuses to the orderCreateReference
+        // to simulate a specific statuses in responses from the Nedbank API on getOrderByOrderCreateReference
         orderCreateReference = `${transactionJob.referenceId}-${orderCreateReference}`;
       }
 
@@ -101,7 +101,7 @@ export class TransactionJobsNedbankService {
     }
 
     // 3. Create the voucher via Nedbank API and update the transaction if an error occurs
-    // Updating the transaction on succesfull voucher creation is not needed as it is already in the 'waiting' state
+    // Updating the transaction on successful voucher creation is not needed as it is already in the 'waiting' state
     // and will be updated to success (or error) via the reconciliation process
     let nedbankVoucherStatus: NedbankVoucherStatus;
     try {
@@ -120,7 +120,7 @@ export class TransactionJobsNedbankService {
         );
         // Update the status to failed so we don't try to create the voucher again
         // NedbankVoucherStatus.FAILED is introduced to differentiate between
-        // a) a voucher that failed to be created, while we got a response from nedbbank and b) a voucher of which the status is unknown due to a timout/server crash
+        // a) a voucher that failed to be created, while we got a response from Nedbank and b) a voucher of which the status is unknown due to a timeout/server crash
       } else {
         throw error;
       }

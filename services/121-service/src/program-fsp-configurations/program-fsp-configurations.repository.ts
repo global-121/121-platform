@@ -74,7 +74,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
       .where('voucher.id = :intersolveVoucherId', {
         intersolveVoucherId,
       })
-      .andWhere('voucher."paymentId" = transactions."paymentId"') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsiblity then.
+      .andWhere('voucher."paymentId" = transactions."paymentId"') // TODO: REFACTOR: this filter is needed as it is not taken care of by the joins above. Better to refactor the entity relations here, probably together with whole Voucher refactor. Also look at module responsibility then.
       .select('configuration.id AS id')
       .getRawOne(); // use getRawOne (+select) instead of getOne for performance reasons
 
@@ -87,7 +87,7 @@ export class ProgramFspConfigurationRepository extends Repository<ProgramFspConf
     return this.getUsernamePasswordProperties(programFspConfig.id);
   }
 
-  // This methods specfically does not throw as it also used to check if the property exists
+  // This methods specifically does not throw as it also used to check if the property exists
   public async getPropertyValueByName({
     programFspConfigurationId,
     name,

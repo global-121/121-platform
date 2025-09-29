@@ -133,7 +133,7 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Doing the payment was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Doing the payment was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
@@ -175,7 +175,7 @@ export class PaymentsController {
     @Paginate() query: PaginateQuery,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
-    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combination with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
     const userId = RequestHelper.getUserId(req);
 

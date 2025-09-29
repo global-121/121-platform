@@ -67,7 +67,7 @@ export class RegistrationsImportService {
     );
 
     // Do initial validation of the input without the checks that are slow
-    // So the user gets some feedback immidiately after upload
+    // So the user gets some feedback immediately after upload
     // The rest of the checks will be done in the queue (the user will get no feedback of this)
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 

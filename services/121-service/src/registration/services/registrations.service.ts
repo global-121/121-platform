@@ -87,7 +87,7 @@ export class RegistrationsService {
     private readonly uniqueRegistrationPairRepository: UniqueRegistrationPairRepository,
   ) {}
 
-  // This methods can be used to get the same formattted data as the pagination query using referenceId
+  // This methods can be used to get the same formatted data as the pagination query using referenceId
   public async getPaginateRegistrationForReferenceId(
     referenceId: string,
     programId: number,
@@ -106,7 +106,7 @@ export class RegistrationsService {
     return paginateResult.data[0];
   }
 
-  // This methods can be used to get the same formattted data as the pagination query using referenceId
+  // This methods can be used to get the same formatted data as the pagination query using referenceId
   public async getPaginateRegistrationById({
     id,
     programId,

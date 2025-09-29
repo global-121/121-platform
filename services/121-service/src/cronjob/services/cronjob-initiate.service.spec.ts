@@ -14,7 +14,7 @@ describe('Cronjob initiation', () => {
       .mockResolvedValue(true);
     // Make this a noop. We assert on this return value.
     jest
-      .spyOn(cronjobInitiateService.axiosCallsService, 'accesTokenToHeaders')
+      .spyOn(cronjobInitiateService.axiosCallsService, 'accessTokenToHeaders')
       .mockResolvedValue(testHeader);
     // We assert on this return value.
     jest

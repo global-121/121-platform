@@ -6,6 +6,6 @@ exports[`Do payment with FSP: Nedbank when create order API call gives a valid r
 
 exports[`Do payment with FSP: Nedbank when create order API call gives a valid response should set transaction status to error in reconciliation process if phonenumber is incorrect 1`] = `"Errors: Recipient.destination recipient mobile number provided is incorrect. (Message: BUSINESS ERROR, Code: NB.APIM.Field.Invalid, Id: c63aa83f-d183-486f-9e01-9d163180dbdd)"`;
 
-exports[`Do payment with FSP: Nedbank when create order API call gives a valid response should succesfully do a payment 1`] = `"ref1-27000000000"`;
+exports[`Do payment with FSP: Nedbank when create order API call gives a valid response should successfully do a payment 1`] = `"ref1-27000000000"`;
 
 exports[`Do payment with FSP: Nedbank when the create order API call times out should update the transaction status to failed in the nedbank cronjob if the voucher is not found 1`] = `"Nedbank voucher was not found, something went wrong when creating the voucher. Please retry the transfer."`;

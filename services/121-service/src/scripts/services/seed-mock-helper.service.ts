@@ -349,7 +349,7 @@ export class SeedMockHelperService {
   ): Promise<any> {
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations`;
     const body = registrations;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     return await this.httpService.post(url, body, headers);
   }
@@ -375,7 +375,7 @@ export class SeedMockHelperService {
       0,
       -1,
     )}`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const body = {
       status,
       message: null,
@@ -440,7 +440,7 @@ export class SeedMockHelperService {
     Object.keys(filter).forEach((key) => queryParams.append(key, filter[key]));
 
     const url = `${this.axiosCallsService.getBaseUrl()}/programs/${programId}/registrations?${queryParams}`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
 
     return await this.httpService.get(url, headers);
   }
@@ -467,7 +467,7 @@ export class SeedMockHelperService {
       0,
       -1,
     )}`;
-    const headers = this.axiosCallsService.accesTokenToHeaders(accessToken);
+    const headers = this.axiosCallsService.accessTokenToHeaders(accessToken);
     const body = {
       amount,
     };

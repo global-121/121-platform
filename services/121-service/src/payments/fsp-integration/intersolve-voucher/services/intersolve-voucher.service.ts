@@ -150,13 +150,13 @@ export class IntersolveVoucherService {
       }
     }
 
-    // If no whatsapp: return early
+    // If no WhatsApp: return early
     if (!useWhatsapp) {
       paResult.status = TransactionStatusEnum.success;
       return paResult;
     }
 
-    // Continue with whatsapp:
+    // Continue with WhatsApp:
     return await this.sendWhatsapp(
       referenceId,
       paResult,
@@ -370,7 +370,7 @@ export class IntersolveVoucherService {
     if (status === TransactionStatusEnum.success) {
       transactionToUpdateFilter['transactionStep'] = 2;
     }
-    // No scoped needed as this is for incoming whatsapp messages
+    // No scoped needed as this is for incoming WhatsApp messages
     await this.transactionRepository.update(transactionToUpdateFilter, {
       status,
       errorMessage:
