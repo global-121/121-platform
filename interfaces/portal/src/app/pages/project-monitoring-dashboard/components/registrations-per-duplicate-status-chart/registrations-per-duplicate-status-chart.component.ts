@@ -75,7 +75,7 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     this.uniquesQuery.data()?.meta.totalItems ?? 0,
   ]);
 
-  readonly duplicationChartColors = computed<string[]>(() =>
+  readonly chartColors = computed<string[]>(() =>
     this.labels.map((l) => duplicationColors[l]),
   );
 
@@ -86,12 +86,12 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     }),
   );
 
-  readonly duplicationChartData = computed<ChartData>(() => ({
+  readonly chartData = computed<ChartData>(() => ({
     labels: this.labels,
     datasets: [
       {
         data: this.data(),
-        backgroundColor: this.duplicationChartColors(),
+        backgroundColor: this.chartColors(),
       },
     ],
   }));
@@ -100,7 +100,7 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     this.getLabelFunction()({
       title: this.title,
       labels: this.labels,
-      data: this.duplicationChartData().datasets[0].data as number[],
+      data: this.chartData().datasets[0].data as number[],
     }),
   );
 }
