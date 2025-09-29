@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -268,17 +267,13 @@ export class RegistrationsImportService {
     const referenceIds = savedRegistrations.map(
       (registration) => registration.referenceId,
     );
-    const messageContentDetails = {
-      messageContentType: MessageContentType.new,
-      message: 'TEST',
-    };
     await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
         referenceIds,
         programId: program.id,
         registrationStatus: RegistrationStatusEnum.new,
         userId,
-        messageContentDetails,
+        messageContentDetails: {},
       },
     );
 
