@@ -172,11 +172,11 @@ export class IntersolveVoucherCronService {
         }
         const language = await this.getLanguageForRegistration(referenceId);
         const contentSid =
-          await this.intersolveVoucherService.getNotificationContentSid(
-            registration.program,
-            ProgramNotificationEnum.whatsappPayment,
+          await this.intersolveVoucherService.getNotificationContentSid({
+            program: registration.program,
+            type: ProgramNotificationEnum.whatsappPayment,
             language,
-          );
+          });
 
         await this.queueMessageService.addMessageJob({
           registration,

@@ -5,7 +5,6 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -39,42 +38,6 @@ export class TransactionJobsHelperService {
       );
     }
     return registration;
-  }
-
-  public async saveTransactionProcessingProgress({
-    context,
-    description,
-    errorMessage,
-    newTransactionStatus,
-  }: {
-    context: TransactionEventCreationContext;
-    description: TransactionEventDescription;
-    errorMessage?: string;
-    newTransactionStatus?: TransactionStatusEnum;
-  }) {
-    const transactionEventType = TransactionEventType.processingStep;
-    await this.transactionEventsService.createEvent({
-      context,
-      type: transactionEventType,
-      description,
-      errorMessage,
-    });
-    if (newTransactionStatus) {
-      await this.updateTransactionStatus({
-        transactionId: context.transactionId,
-        status: newTransactionStatus,
-      });
-    }
-  }
-
-  public async updateTransactionStatus({
-    transactionId,
-    status,
-  }: {
-    transactionId: number;
-    status: TransactionStatusEnum;
-  }) {
-    await this.transactionScopedRepository.update(transactionId, { status });
   }
 
   public async createInitiatedOrRetryTransactionEvent({
