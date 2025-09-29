@@ -38,7 +38,7 @@ export class TransactionJobsIntersolveVoucherService {
         transactionJob.programFspConfigurationId,
       );
 
-    // ##TODO: do we want to switch to putting this in a try/catch block, and update to error or waiting based on result, like in other FSPs?
+    // TODO: switch to putting this in a try/catch block, and update to error or waiting based on result, like in other FSPs
     const sendIndividualPaymentResult =
       await this.intersolveVoucherService.sendIndividualPayment({
         referenceId: transactionJob.referenceId,

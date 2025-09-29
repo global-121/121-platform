@@ -11,6 +11,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { CallbackTransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/callback-transaction-event-creation-context.interface';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
@@ -145,15 +146,6 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
-    // If programFspConfigurationId is not provided, try to get it from the latest event of the transaction
-    if (!context.programFspConfigurationId) {
-      const latestEvent =
-        await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-          context.transactionId,
-        );
-      context.programFspConfigurationId = latestEvent.programFspConfigurationId;
-    }
-
     const transactionEventType = TransactionEventType.processingStep;
     await this.transactionEventsService.createEvent({
       context,
@@ -178,5 +170,36 @@ export class TransactionsService {
     status: TransactionStatusEnum;
   }) {
     await this.transactionScopedRepository.update(transactionId, { status });
+  }
+
+  // Async here refers to these events being created async based on e.g. callback or on message-job processing
+  public async saveAsyncTransactionProcessingProgress({
+    callbackContext,
+    description,
+    errorMessage,
+    newTransactionStatus,
+  }: {
+    callbackContext: CallbackTransactionEventCreationContext;
+    description: TransactionEventDescription;
+    errorMessage?: string;
+    newTransactionStatus?: TransactionStatusEnum;
+  }) {
+    // In these cases programFspConfigurationId is not directly known, so inferred from latest event before this one
+    const latestEvent =
+      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
+        callbackContext.transactionId,
+      );
+    const context: TransactionEventCreationContext = {
+      transactionId: callbackContext.transactionId,
+      userId: callbackContext.userId,
+      programFspConfigurationId: latestEvent.programFspConfigurationId,
+    };
+
+    await this.saveTransactionProcessingProgress({
+      context,
+      description,
+      errorMessage,
+      newTransactionStatus,
+    });
   }
 }

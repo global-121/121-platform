@@ -98,11 +98,10 @@ export class OnafriqReconciliationService {
         return; // Exit early for unexpected status codes
     }
 
-    await this.transactionsService.saveTransactionProcessingProgress({
-      context: {
+    await this.transactionsService.saveAsyncTransactionProcessingProgress({
+      callbackContext: {
         transactionId,
         userId: null,
-        programFspConfigurationId: undefined,
       },
       description: TransactionEventDescription.onafriqCallbackReceived,
       newTransactionStatus: transactionStatus,

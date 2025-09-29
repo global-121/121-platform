@@ -262,13 +262,10 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   public async getPaymentIdByTransactionId(
     transactionId: number,
   ): Promise<number> {
-    const transaction = await this.findOne({
+    const transaction = await this.findOneOrFail({
       where: { id: Equal(transactionId) },
       select: { paymentId: true },
     });
-    if (!transaction) {
-      throw new Error(`Transaction with id ${transactionId} not found`);
-    }
     return transaction.paymentId;
   }
 
@@ -276,18 +273,13 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
     paymentId: number,
     registrationId: number,
   ): Promise<number> {
-    const transaction = await this.findOne({
+    const transaction = await this.findOneOrFail({
       where: {
         paymentId: Equal(paymentId),
         registration: { id: Equal(registrationId) },
       },
       select: { id: true },
     });
-    if (!transaction) {
-      throw new Error(
-        `Transaction with paymentId ${paymentId} and registrationId ${registrationId} not found`,
-      );
-    }
     return transaction.id;
   }
 }

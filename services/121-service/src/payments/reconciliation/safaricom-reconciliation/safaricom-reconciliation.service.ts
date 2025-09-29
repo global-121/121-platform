@@ -109,11 +109,10 @@ export class SafaricomReconciliationService {
     );
 
     // store transaction progress
-    await this.transactionsService.saveTransactionProcessingProgress({
-      context: {
+    await this.transactionsService.saveAsyncTransactionProcessingProgress({
+      callbackContext: {
         transactionId: safaricomTransfer.transactionId,
         userId: null,
-        programFspConfigurationId: undefined,
       },
       description: TransactionEventDescription.safaricomCallbackReceived,
       newTransactionStatus: transactionStatus,
@@ -130,11 +129,10 @@ export class SafaricomReconciliationService {
           safaricomTimeoutCallbackJob.originatorConversationId,
         );
 
-      await this.transactionsService.saveTransactionProcessingProgress({
-        context: {
+      await this.transactionsService.saveAsyncTransactionProcessingProgress({
+        callbackContext: {
           transactionId: safaricomTransfer.transactionId,
           userId: null,
-          programFspConfigurationId: undefined,
         },
         description: TransactionEventDescription.safaricomCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,

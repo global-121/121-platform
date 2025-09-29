@@ -369,11 +369,10 @@ export class IntersolveVoucherService {
       return;
     }
 
-    await this.transactionsService.saveTransactionProcessingProgress({
-      context: {
+    await this.transactionsService.saveAsyncTransactionProcessingProgress({
+      callbackContext: {
         transactionId,
         userId: null,
-        programFspConfigurationId: undefined,
       },
       description: TransactionEventDescription.intersolveVoucherMessageCallback,
       newTransactionStatus: newTransactionStatus as TransactionStatusEnum,
@@ -401,11 +400,10 @@ export class IntersolveVoucherService {
     errorMessage?: string;
     userId: number;
   }): Promise<void> {
-    await this.transactionsService.saveTransactionProcessingProgress({
-      context: {
+    await this.transactionsService.saveAsyncTransactionProcessingProgress({
+      callbackContext: {
         transactionId,
         userId,
-        programFspConfigurationId: undefined,
       },
       description:
         TransactionEventDescription.intersolveVoucherInitialMessageSent,
@@ -624,11 +622,10 @@ export class IntersolveVoucherService {
     intersolveVoucherId: number;
     userId: number;
   }): Promise<void> {
-    await this.transactionsService.saveTransactionProcessingProgress({
-      context: {
+    await this.transactionsService.saveAsyncTransactionProcessingProgress({
+      callbackContext: {
         transactionId,
         userId,
-        programFspConfigurationId: undefined,
       },
       description:
         TransactionEventDescription.intersolveVoucherVoucherMessageSent,
