@@ -9,14 +9,19 @@ import {
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { ChartData } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
+import tailwindConfig from 'tailwind.config';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-import {
-  getChartOptions,
-  paymentColors,
-} from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
+
+const colors = tailwindConfig.theme.colors;
+
+const paymentColors = {
+  [TransactionStatusEnum.error]: colors.red[500],
+  [TransactionStatusEnum.success]: colors.green[500],
+  [TransactionStatusEnum.waiting]: colors.yellow[500],
+};
 
 @Component({
   selector: 'app-payments-aggregate-chart',
@@ -35,6 +40,15 @@ export class PaymentsAggregateChartComponent {
   readonly getLabelFunction =
     input.required<
       (opts: { title: string; labels: string[]; data: number[] }) => string
+    >();
+
+  readonly getChartOptions =
+    input.required<
+      (opts: {
+        title: string;
+        showLegend: boolean;
+        showDataLabels?: boolean;
+      }) => unknown
     >();
 
   readonly title = computed(() =>
@@ -67,10 +81,12 @@ export class PaymentsAggregateChartComponent {
     this.labels().map((k) => this.queryData()[Number(k)]),
   );
 
-  chartOptions = getChartOptions({
-    title: this.title(),
-    showLegend: true,
-  });
+  readonly chartOptions = computed(() =>
+    this.getChartOptions()({
+      title: this.title(),
+      showLegend: true,
+    }),
+  );
 
   readonly chartData = computed<ChartData>(() => ({
     labels: this.labels(),

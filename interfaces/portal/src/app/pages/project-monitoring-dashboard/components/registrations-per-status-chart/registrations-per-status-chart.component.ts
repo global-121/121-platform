@@ -14,21 +14,17 @@ import tailwindConfig from 'tailwind.config';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-import {
-  getChartOptions,
-  shade,
-} from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 
 const colors = tailwindConfig.theme.colors;
 
 const registrationsPerStatusColors = {
-  [RegistrationStatusEnum.included]: colors.green[shade],
-  [RegistrationStatusEnum.new]: colors.blue[shade],
-  [RegistrationStatusEnum.validated]: colors.yellow[shade],
-  [RegistrationStatusEnum.declined]: colors.red[shade],
-  [RegistrationStatusEnum.completed]: colors.purple[shade],
-  [RegistrationStatusEnum.deleted]: colors.grey[shade],
-  [RegistrationStatusEnum.paused]: colors.orange[shade],
+  [RegistrationStatusEnum.included]: colors.green[500],
+  [RegistrationStatusEnum.new]: colors.blue[500],
+  [RegistrationStatusEnum.validated]: colors.yellow[500],
+  [RegistrationStatusEnum.declined]: colors.red[500],
+  [RegistrationStatusEnum.completed]: colors.purple[500],
+  [RegistrationStatusEnum.deleted]: colors.grey[500],
+  [RegistrationStatusEnum.paused]: colors.orange[500],
 };
 
 // this is the order in the registration table buttons
@@ -53,61 +49,75 @@ export class RegistrationsPerStatusChartComponent {
   private metricApiService = inject(MetricApiService);
 
   readonly projectId = input.required<string>();
+
   readonly getLabelFunction =
     input.required<
       (opts: { title: string; labels: string[]; data: number[] }) => string
     >();
 
+  readonly getChartOptions =
+    input.required<
+      (opts: {
+        title: string;
+        showLegend: boolean;
+        showDataLabels?: boolean;
+      }) => unknown
+    >();
+
   title = $localize`Registrations per status`;
 
-  registrationsPerStatus = injectQuery(() => ({
+  query = injectQuery(() => ({
     ...this.metricApiService.getRegistrationCountByStatus({
       projectId: this.projectId,
     })(),
     enabled: !!this.projectId(),
   }));
 
-  readonly registrationsPerStatusLabelsAndData = computed(() => {
-    if (!this.registrationsPerStatus.isSuccess()) {
-      return { labels: [], data: [] };
+  readonly queryData = computed(() => {
+    if (!this.query.isSuccess()) {
+      return {};
     }
-    const queryData = this.registrationsPerStatus.data();
-    const labels = registrationStatusSortOrder.filter((status) =>
-      Object.keys(queryData).includes(status),
-    );
-    const data = labels.map((k) => queryData[k]);
-    return { labels, data };
+
+    return this.query.data();
   });
+
+  readonly labels = computed<string[]>(() =>
+    registrationStatusSortOrder.filter((status) =>
+      Object.keys(this.queryData()).includes(status),
+    ),
+  );
+
+  readonly data = computed(() => this.labels().map((k) => this.queryData()[k]));
 
   readonly registrationsPerStatusChartColors = computed<string[]>(
     (): string[] => {
       const colors: Record<string, string> = registrationsPerStatusColors;
 
-      return this.registrationsPerStatusLabelsAndData().labels.map(
-        (l): string => colors[l],
-      );
+      return this.labels().map((l): string => colors[l]);
     },
   );
 
-  registrationsPerStatusChartOptions = getChartOptions({
-    title: this.title,
-    showLegend: false,
-  });
+  readonly chartOptions = computed(() =>
+    this.getChartOptions()({
+      title: this.title,
+      showLegend: false,
+    }),
+  );
 
   readonly registrationsPerStatusChartData = computed<ChartData>(() => ({
-    labels: this.registrationsPerStatusLabelsAndData().labels,
+    labels: this.labels(),
     datasets: [
       {
-        data: this.registrationsPerStatusLabelsAndData().data,
+        data: this.data(),
         backgroundColor: this.registrationsPerStatusChartColors(),
       },
     ],
   }));
 
-  readonly registrationsPerStatusAriaLabel = computed(() =>
+  readonly ariaLabel = computed(() =>
     this.getLabelFunction()({
       title: this.title,
-      labels: this.registrationsPerStatusLabelsAndData().labels,
+      labels: this.labels(),
       data: this.registrationsPerStatusChartData().datasets[0].data as number[],
     }),
   );

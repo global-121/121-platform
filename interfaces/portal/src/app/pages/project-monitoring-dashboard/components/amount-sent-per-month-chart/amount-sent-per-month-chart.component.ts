@@ -14,17 +14,13 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 
 import tailwindConfig from '~/../../tailwind.config';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-import {
-  getChartOptions,
-  shade,
-} from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 
 const colors = tailwindConfig.theme.colors;
 
 const paymentColors = {
-  [TransactionStatusEnum.error]: colors.red[shade],
-  [TransactionStatusEnum.success]: colors.green[shade],
-  [TransactionStatusEnum.waiting]: colors.yellow[shade],
+  [TransactionStatusEnum.error]: colors.red[500],
+  [TransactionStatusEnum.success]: colors.green[500],
+  [TransactionStatusEnum.waiting]: colors.yellow[500],
 };
 
 @Component({
@@ -41,6 +37,15 @@ export class AmountSentPerMonthChartComponent {
   readonly getLabelFunction =
     input.required<
       (opts: { title: string; labels: string[]; data: number[] }) => string
+    >();
+
+  readonly getChartOptions =
+    input.required<
+      (opts: {
+        title: string;
+        showLegend: boolean;
+        showDataLabels?: boolean;
+      }) => unknown
     >();
 
   readonly title = $localize`Registrations by creation date (last 2 weeks)`;
@@ -67,10 +72,12 @@ export class AmountSentPerMonthChartComponent {
 
   readonly data = computed(() => this.labels().map((k) => this.queryData()[k]));
 
-  chartOptions = getChartOptions({
-    title: this.title,
-    showLegend: true,
-  });
+  readonly chartOptions = computed(() =>
+    this.getChartOptions()({
+      title: this.title,
+      showLegend: true,
+    }),
+  );
 
   readonly chartData = computed<ChartData>(() => ({
     labels: this.labels(),

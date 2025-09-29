@@ -15,16 +15,12 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 
 import tailwindConfig from '~/../../tailwind.config';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import {
-  getChartOptions,
-  shade,
-} from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 
 const colors = tailwindConfig.theme.colors;
 
 const duplicationColors = {
-  [DuplicateStatus.unique]: colors.green[shade],
-  [DuplicateStatus.duplicate]: colors.red[shade],
+  [DuplicateStatus.unique]: colors.green[500],
+  [DuplicateStatus.duplicate]: colors.red[500],
 };
 
 @Component({
@@ -39,14 +35,24 @@ export class RegistrationsPerDuplicateStatusComponentChart {
   private registrationApiService = inject(RegistrationApiService);
 
   readonly projectId = input.required<string>();
+
   readonly getLabelFunction =
     input.required<
       (opts: { title: string; labels: string[]; data: number[] }) => string
     >();
 
+  readonly getChartOptions =
+    input.required<
+      (opts: {
+        title: string;
+        showLegend: boolean;
+        showDataLabels?: boolean;
+      }) => unknown
+    >();
+
   title = $localize`Registrations per duplicate status`;
 
-  duplicates = injectQuery(() => ({
+  duplicatesQuery = injectQuery(() => ({
     ...this.registrationApiService.getManyByQuery(
       this.projectId,
       signal({ filter: { duplicateStatus: DuplicateStatus.duplicate } }),
@@ -54,7 +60,7 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     enabled: !!this.projectId(),
   }));
 
-  uniques = injectQuery(() => ({
+  uniquesQuery = injectQuery(() => ({
     ...this.registrationApiService.getManyByQuery(
       this.projectId,
       signal({ filter: { duplicateStatus: DuplicateStatus.unique } }),
@@ -62,37 +68,38 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     enabled: !!this.projectId(),
   }));
 
-  readonly duplicationLabels = signal([
-    DuplicateStatus.duplicate,
-    DuplicateStatus.unique,
+  readonly labels = [DuplicateStatus.duplicate, DuplicateStatus.unique];
+
+  readonly data = computed(() => [
+    this.duplicatesQuery.data()?.meta.totalItems ?? 0,
+    this.uniquesQuery.data()?.meta.totalItems ?? 0,
   ]);
 
   readonly duplicationChartColors = computed<string[]>(() =>
-    this.duplicationLabels().map((l) => duplicationColors[l]),
+    this.labels.map((l) => duplicationColors[l]),
   );
 
-  duplicationChartOptions = getChartOptions({
-    title: $localize`Registrations per duplicate status`,
-    showLegend: false,
-  });
+  readonly chartOptions = computed(() =>
+    this.getChartOptions()({
+      title: this.title,
+      showLegend: false,
+    }),
+  );
 
   readonly duplicationChartData = computed<ChartData>(() => ({
-    labels: [DuplicateStatus.duplicate, DuplicateStatus.unique],
+    labels: this.labels,
     datasets: [
       {
-        data: [
-          this.duplicates.data()?.meta.totalItems ?? 0,
-          this.uniques.data()?.meta.totalItems ?? 0,
-        ],
+        data: this.data(),
         backgroundColor: this.duplicationChartColors(),
       },
     ],
   }));
 
-  readonly duplicationAriaLabel = computed(() =>
+  readonly ariaLabel = computed(() =>
     this.getLabelFunction()({
       title: this.title,
-      labels: this.duplicationLabels(),
+      labels: this.labels,
       data: this.duplicationChartData().datasets[0].data as number[],
     }),
   );

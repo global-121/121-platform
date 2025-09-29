@@ -97,11 +97,14 @@ export class MetricApiService extends DomainApiService {
     limitNumberOfPayments,
   }: {
     projectId: Signal<number | string>;
-    limitNumberOfPayments?: string;
+    limitNumberOfPayments?: number;
   }) {
     let params = {};
     if (limitNumberOfPayments) {
-      params = { ...params, limitNumberOfPayments };
+      params = {
+        ...params,
+        limitNumberOfPayments: limitNumberOfPayments.toString(),
+      };
     }
     return this.generateQueryOptions<ProjectAggregatePerMonth>({
       path: [...BASE_ENDPOINT(projectId), 'amount-sent-by-month'],

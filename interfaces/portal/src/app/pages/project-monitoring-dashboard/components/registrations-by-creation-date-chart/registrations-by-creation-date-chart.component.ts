@@ -12,10 +12,6 @@ import { ChartModule } from 'primeng/chart';
 import colors from 'tailwindcss/colors';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-import {
-  getChartOptions,
-  shade,
-} from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.helper';
 
 @Component({
   selector: 'app-registrations-by-creation-date-chart',
@@ -34,6 +30,15 @@ export class RegistrationsByCreationDateChartComponent {
       (opts: { title: string; labels: string[]; data: number[] }) => string
     >();
 
+  readonly getChartOptions =
+    input.required<
+      (opts: {
+        title: string;
+        showLegend: boolean;
+        showDataLabels?: boolean;
+      }) => unknown
+    >();
+
   title = $localize`Registrations by creation date (last 2 weeks)`;
 
   query = injectQuery(() => {
@@ -50,28 +55,34 @@ export class RegistrationsByCreationDateChartComponent {
     };
   });
 
-  readonly labelsAndData = computed(() => {
+  readonly queryData = computed(() => {
     if (!this.query.isSuccess()) {
-      return { labels: [], data: [] };
+      return {};
     }
-    const queryData = this.query.data();
-    const labels = Object.keys(queryData).sort();
-    const data = labels.map((k) => queryData[k]);
-    return { labels, data };
+
+    return this.query.data();
   });
 
-  chartOptions = getChartOptions({
-    title: this.title,
-    showLegend: false,
-    showDataLabels: false,
-  });
+  readonly labels = computed<string[]>(() =>
+    Object.keys(this.queryData()).sort(),
+  );
+
+  readonly data = computed(() => this.labels().map((k) => this.queryData()[k]));
+
+  readonly chartOptions = computed(() =>
+    this.getChartOptions()({
+      title: this.title,
+      showLegend: false,
+      showDataLabels: false,
+    }),
+  );
 
   readonly chartData = computed<ChartData>(() => ({
-    labels: this.labelsAndData().labels,
+    labels: this.labels(),
     datasets: [
       {
-        data: this.labelsAndData().data,
-        backgroundColor: colors.blue[shade],
+        data: this.data(),
+        backgroundColor: colors.blue[500],
       },
     ],
   }));
@@ -79,7 +90,7 @@ export class RegistrationsByCreationDateChartComponent {
   readonly ariaLabel = computed(() =>
     this.getLabelFunction()({
       title: this.title,
-      labels: this.labelsAndData().labels,
+      labels: this.labels(),
       data: this.chartData().datasets[0].data as number[],
     }),
   );
