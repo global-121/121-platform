@@ -13,6 +13,7 @@ import { TransactionEventDescription } from '@121-service/src/payments/transacti
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 @Injectable()
@@ -20,6 +21,7 @@ export class TransactionsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
@@ -143,6 +145,15 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
+    // If programFspConfigurationId is not provided, try to get it from the latest event of the transaction
+    if (!context.programFspConfigurationId) {
+      const latestEvent =
+        await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
+          context.transactionId,
+        );
+      context.programFspConfigurationId = latestEvent.programFspConfigurationId;
+    }
+
     const transactionEventType = TransactionEventType.processingStep;
     await this.transactionEventsService.createEvent({
       context,
@@ -150,6 +161,7 @@ export class TransactionsService {
       description,
       errorMessage,
     });
+
     if (newTransactionStatus) {
       await this.updateTransactionStatus({
         transactionId: context.transactionId,

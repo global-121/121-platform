@@ -369,13 +369,12 @@ export class IntersolveVoucherService {
       return;
     }
 
-    const latestEvent =
-      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-        transactionId,
-      );
-    const programFspConfigurationId = latestEvent.programFspConfigurationId;
     await this.transactionsService.saveTransactionProcessingProgress({
-      context: { transactionId, userId: null, programFspConfigurationId },
+      context: {
+        transactionId,
+        userId: null,
+        programFspConfigurationId: undefined,
+      },
       description: TransactionEventDescription.intersolveVoucherMessageCallback,
       newTransactionStatus: newTransactionStatus as TransactionStatusEnum,
       errorMessage:
@@ -394,24 +393,19 @@ export class IntersolveVoucherService {
     newTransactionStatus,
     messageSid,
     errorMessage,
+    userId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     messageSid?: string;
     errorMessage?: string;
+    userId: number;
   }): Promise<void> {
-    // ##TODO do we want to import events module here bcause of this? or do this via transactions module. Or: we do this so often, we could consider making it part of saveTransactionProcessingProgress (if not provided)?
-    const latestEvent =
-      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-        transactionId,
-      );
-    const programFspConfigurationId = latestEvent.programFspConfigurationId;
-
     await this.transactionsService.saveTransactionProcessingProgress({
       context: {
         transactionId,
-        userId: null, //##TODO we could pass userId via message-job (same for voucher message)
-        programFspConfigurationId,
+        userId,
+        programFspConfigurationId: undefined,
       },
       description:
         TransactionEventDescription.intersolveVoucherInitialMessageSent,
@@ -621,23 +615,20 @@ export class IntersolveVoucherService {
     errorMessage,
     messageSid,
     intersolveVoucherId,
+    userId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     errorMessage: string | null;
     messageSid?: string;
-    intersolveVoucherId?: number; //##TODO: this should really not have to be optional
+    intersolveVoucherId: number;
+    userId: number;
   }): Promise<void> {
-    const latestEvent =
-      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-        transactionId,
-      );
-    const programFspConfigurationId = latestEvent.programFspConfigurationId;
     await this.transactionsService.saveTransactionProcessingProgress({
       context: {
         transactionId,
-        userId: null,
-        programFspConfigurationId,
+        userId,
+        programFspConfigurationId: undefined,
       },
       description:
         TransactionEventDescription.intersolveVoucherVoucherMessageSent,
@@ -645,14 +636,12 @@ export class IntersolveVoucherService {
       errorMessage: errorMessage ?? undefined,
     });
 
-    if (intersolveVoucherId) {
-      const intersolveVoucher =
-        await this.intersolveVoucherScopedRepository.findOneOrFail({
-          where: { id: Equal(intersolveVoucherId) },
-        });
-      intersolveVoucher.send = true;
-      await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
-    }
+    const intersolveVoucher =
+      await this.intersolveVoucherScopedRepository.findOneOrFail({
+        where: { id: Equal(intersolveVoucherId) },
+      });
+    intersolveVoucher.send = true;
+    await this.intersolveVoucherScopedRepository.save(intersolveVoucher);
 
     if (messageSid) {
       await this.twilioMessageRepository.update(

@@ -202,6 +202,7 @@ export class MessageService {
         {
           transactionId: messageJobDto.customData.transactionId,
           newTransactionStatus,
+          userId: messageJobDto.userId,
           messageSid:
             newTransactionStatus === TransactionStatusEnum.error
               ? undefined
@@ -243,8 +244,9 @@ export class MessageService {
         },
       );
 
-    // ##TODO why is this always success, and not error if it fails, like on 'initial message' above?
-    const newTransactionStatus = TransactionStatusEnum.success;
+    const newTransactionStatus = messageSid
+      ? TransactionStatusEnum.success
+      : TransactionStatusEnum.error;
     if (messageJobDto.customData?.transactionId) {
       await this.intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage(
         {
@@ -252,7 +254,8 @@ export class MessageService {
           newTransactionStatus,
           errorMessage,
           messageSid,
-          intersolveVoucherId: messageJobDto.customData?.intersolveVoucherId,
+          intersolveVoucherId: messageJobDto.customData.intersolveVoucherId!,
+          userId: messageJobDto.userId,
         },
       );
     }

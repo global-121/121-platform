@@ -18,11 +18,8 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
@@ -35,9 +32,7 @@ export class OnafriqReconciliationService {
   public constructor(
     @Inject(getScopedRepositoryProviderName(OnafriqTransactionEntity))
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly transactionEventsService: TransactionEventsService,
-    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -75,12 +70,6 @@ export class OnafriqReconciliationService {
       });
     const transactionId = onafriqTransaction.transactionId;
 
-    const latestEvent =
-      await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-        transactionId,
-      );
-    const programFspConfigurationId = latestEvent.programFspConfigurationId;
-
     // Update the Onafriq transaction with the mfsTransId
     await this.onafriqTransactionScopedRepository.update(
       { transactionId: Equal(transactionId) },
@@ -108,20 +97,15 @@ export class OnafriqReconciliationService {
         );
         return; // Exit early for unexpected status codes
     }
-    await this.transactionScopedRepository.update(
-      { id: transactionId },
-      { status: transactionStatus },
-    );
 
-    // create transaction event
-    await this.transactionEventsService.createEvent({
+    await this.transactionsService.saveTransactionProcessingProgress({
       context: {
         transactionId,
         userId: null,
-        programFspConfigurationId,
+        programFspConfigurationId: undefined,
       },
-      type: TransactionEventType.processingStep,
       description: TransactionEventDescription.onafriqCallbackReceived,
+      newTransactionStatus: transactionStatus,
       errorMessage,
     });
   }

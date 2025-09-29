@@ -16,11 +16,8 @@ import {
   REDIS_CLIENT,
 } from '@121-service/src/payments/redis/redis-client';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
-import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 
@@ -28,9 +25,7 @@ import { JobNames } from '@121-service/src/shared/enum/job-names.enum';
 export class SafaricomReconciliationService {
   public constructor(
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
-    private readonly transactionEventsService: TransactionEventsService,
-    private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
     private readonly queuesService: QueuesRegistryService,
     @Inject(REDIS_CLIENT)
     private readonly redisClient: Redis,
@@ -90,12 +85,9 @@ export class SafaricomReconciliationService {
   ): Promise<void> {
     // Find the actual safaricom transfer by originatorConversationId
     const safaricomTransfer =
-      await this.safaricomTransferScopedRepository.getByOriginatorConversationId(
+      await this.safaricomTransferScopedRepository.getByOriginatorConversationIdOrThrow(
         safaricomTransferCallbackJob.originatorConversationId,
       );
-    const transactionId = safaricomTransfer.transactionId;
-    const programFspConfigurationId =
-      this.getProgramFspConfigIdFromLatestEvent(safaricomTransfer);
 
     // Prepare the transaction status based on resultCode from callback
     let transactionStatus: TransactionStatusEnum;
@@ -116,23 +108,15 @@ export class SafaricomReconciliationService {
       },
     );
 
-    // Update transaction status
-    await this.transactionScopedRepository.update(
-      { id: safaricomTransfer.transaction.id },
-      {
-        status: transactionStatus,
-      },
-    );
-
-    // create transaction event
-    await this.transactionEventsService.createEvent({
+    // store transaction progress
+    await this.transactionsService.saveTransactionProcessingProgress({
       context: {
-        transactionId,
+        transactionId: safaricomTransfer.transactionId,
         userId: null,
-        programFspConfigurationId,
+        programFspConfigurationId: undefined,
       },
-      type: TransactionEventType.processingStep,
       description: TransactionEventDescription.safaricomCallbackReceived,
+      newTransactionStatus: transactionStatus,
       errorMessage,
     });
   }
@@ -141,34 +125,19 @@ export class SafaricomReconciliationService {
     safaricomTimeoutCallbackJob: SafaricomTimeoutCallbackJobDto,
   ): Promise<void> {
     try {
-      // Find the actual safaricom transfer by originatorConversationId
       const safaricomTransfer =
-        await this.safaricomTransferScopedRepository.getByOriginatorConversationId(
+        await this.safaricomTransferScopedRepository.getByOriginatorConversationIdOrThrow(
           safaricomTimeoutCallbackJob.originatorConversationId,
         );
-      const transactionId = safaricomTransfer.transactionId;
-      const latestEvent =
-        await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-          transactionId,
-        );
-      const programFspConfigurationId = latestEvent.programFspConfigurationId;
 
-      // Update transaction status
-      await this.transactionScopedRepository.update(
-        { id: safaricomTransfer.transaction.id },
-        {
-          status: TransactionStatusEnum.error,
-        },
-      );
-      // create transaction event
-      await this.transactionEventsService.createEvent({
+      await this.transactionsService.saveTransactionProcessingProgress({
         context: {
-          transactionId,
+          transactionId: safaricomTransfer.transactionId,
           userId: null,
-          programFspConfigurationId,
+          programFspConfigurationId: undefined,
         },
-        type: TransactionEventType.processingStep,
         description: TransactionEventDescription.safaricomCallbackReceived,
+        newTransactionStatus: TransactionStatusEnum.error,
         errorMessage: 'Transfer timed out',
       });
     } catch (error) {
@@ -179,12 +148,5 @@ export class SafaricomReconciliationService {
 
       throw error;
     }
-  }
-
-  private getProgramFspConfigIdFromLatestEvent(safaricomTransfer) {
-    const latestEvent = [
-      ...safaricomTransfer.transaction.transactionEvents,
-    ].sort((a, b) => b.created.getTime() - a.created.getTime())[0];
-    return latestEvent.programFspConfigurationId;
   }
 }

@@ -56,7 +56,7 @@ export class TransactionJobsIntersolveVoucherService {
 
     await this.transactionsService.saveTransactionProcessingProgress({
       context: transactionEventContext,
-      description: TransactionEventDescription.intersolveVoucherCreationRequest, // ##TODO: this is not fully correct, as this includes also the initial message sending
+      description: TransactionEventDescription.intersolveVoucherCreationRequest,
       newTransactionStatus: sendIndividualPaymentResult.status,
       errorMessage: sendIndividualPaymentResult.message ?? undefined,
     });

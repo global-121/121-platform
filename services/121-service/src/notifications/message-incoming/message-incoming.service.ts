@@ -541,7 +541,7 @@ export class MessageIncomingService {
           mediaUrl,
           customData: {
             transactionId,
-            intersolveVoucherId: intersolveVoucher.id,
+            intersolveVoucherId: intersolveVoucher.id, // TODO: when intersolve-voucher.entity is linked to transaction.entity better, this does not need to be included here any more
           },
           userId: intersolveVoucher.userId,
         });
