@@ -30,7 +30,9 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { dateSort } from '@121-service/src/utils/dateSort';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+
 const userPermissionMapByExportType = {
   [ExportType.registrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
@@ -462,7 +464,9 @@ export class MetricsService {
       limitNumberOfPayments,
     });
 
-    for (const payment of payments) {
+    const paymentsSorted = dateSort(payments, (payment) => payment.paymentDate);
+
+    for (const payment of paymentsSorted) {
       const aggregate = {
         id: payment.paymentId,
         date: payment.paymentDate,
@@ -472,7 +476,6 @@ export class MetricsService {
             payment.paymentId,
           ),
       };
-
       allPaymentsAggregates.push(aggregate);
     }
     return allPaymentsAggregates;
