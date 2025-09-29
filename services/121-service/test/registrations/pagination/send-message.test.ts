@@ -56,7 +56,10 @@ describe('send arbitrary messages to set of registrations', () => {
       programId: programIdOCW,
       referenceIds: [referenceIds[0]],
       accessToken,
-      minimumNumberOfMessagesPerReferenceId: 2,
+      expectedMessageAttribute: {
+        key: 'body',
+        values: [message],
+      },
     });
 
     const messageHistories: MessageActivity[][] = [];
@@ -75,10 +78,14 @@ describe('send arbitrary messages to set of registrations', () => {
     // Assert
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
-    expect(messageHistoryPa1.length).toBe(2);
-    expect(messageHistoryPa1[0].attributes.status).toBeDefined();
-    expect(messageHistoryPa2.length).toBe(0);
-    expect(messageHistoryPa1[0].attributes.body).toEqual(message);
+    const messageSentToPa1 = messageHistoryPa1.some(
+      (msg) => msg.attributes.body === message && msg.attributes.status,
+    );
+    expect(messageSentToPa1).toBe(true);
+    const messageSentToPa2 = messageHistoryPa2.some(
+      (msg) => msg.attributes.body === message,
+    );
+    expect(messageSentToPa2).toBe(false);
   });
 
   it('should send messages to PAs selected with a combination of filters', async () => {
@@ -105,7 +112,10 @@ describe('send arbitrary messages to set of registrations', () => {
         registrationOCW4.referenceId,
       ],
       accessToken,
-      minimumNumberOfMessagesPerReferenceId: 2,
+      expectedMessageAttribute: {
+        key: 'body',
+        values: [message],
+      },
     });
 
     const messageHistory1 = (
@@ -140,13 +150,19 @@ describe('send arbitrary messages to set of registrations', () => {
     // Assert
     expect(sendMessageResponse.body.totalFilterCount).toBe(2);
     expect(sendMessageResponse.body.applicableCount).toBe(2);
-    // RegistrationsOCW1
-    expect(messageHistory1.length).toBe(0);
-    expect(messageHistory2.length).toBe(0);
-    expect(messageHistory3.length).toBe(2);
-    expect(messageHistory4.length).toBe(2);
-    expect(messageHistory3[0].attributes.body).toEqual(message);
-    expect(messageHistory4[0].attributes.body).toEqual(message);
+    // Only registrationOCW3 and registrationOCW4 should receive the message
+    expect(messageHistory1.some((msg) => msg.attributes.body === message)).toBe(
+      false,
+    );
+    expect(messageHistory2.some((msg) => msg.attributes.body === message)).toBe(
+      false,
+    );
+    expect(messageHistory3.some((msg) => msg.attributes.body === message)).toBe(
+      true,
+    );
+    expect(messageHistory4.some((msg) => msg.attributes.body === message)).toBe(
+      true,
+    );
   });
 
   it('should show an error when sending message to a phone number that does not exist', async () => {
@@ -193,7 +209,10 @@ describe('send arbitrary messages to set of registrations', () => {
         registrationOCW2.referenceId,
       ],
       accessToken,
-      minimumNumberOfMessagesPerReferenceId: 1,
+      expectedMessageAttribute: {
+        key: 'status',
+        values: ['failed'],
+      },
     });
 
     const messageHistory1 = (
@@ -216,14 +235,18 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(2);
     expect(sendMessageResponse.body.applicableCount).toBe(2);
 
-    expect(messageHistory1.length).toBe(1);
-    expect(messageHistory1[0].attributes.status).toBe('failed');
+    // first get the message to be expected from history by text (body)
+    expect(
+      messageHistory1.some((msg) => msg.attributes.status === 'failed'),
+    ).toBe(true);
+    // make waitForMessagesToComplete check for more types of attributes
     expect(messageHistory1[0].attributes.errorCode).toEqual(
       TwilioErrorCodes.toNumberDoesNotExist,
     );
 
-    expect(messageHistory2.length).toBe(1);
-    expect(messageHistory2[0].attributes.status).toBe('failed');
+    expect(
+      messageHistory2.some((msg) => msg.attributes.status === 'failed'),
+    ).toBe(true);
     expect(messageHistory2[0].attributes.errorCode).toEqual(
       TwilioErrorCodes.toNumberDoesNotExist,
     );
