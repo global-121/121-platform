@@ -15,4 +15,6 @@ export enum TransactionEventDescription {
   airtelRequestSent = 'Airtel request sent',
   // Visa processing-step events
   visaPaymentRequested = 'Visa payment requested',
+  // Commercial Bank Ethiopia processing-step events
+  commercialBankEthiopiaRequestSent = 'Commercial Bank Ethiopia request sent',
 }
