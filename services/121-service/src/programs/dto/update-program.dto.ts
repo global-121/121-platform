@@ -17,11 +17,6 @@ import { WrapperType } from '@121-service/src/wrapper.type';
 export class UpdateProgramDto {
   @ApiProperty()
   @IsOptional()
-  @IsBoolean()
-  public readonly published?: boolean;
-
-  @ApiProperty()
-  @IsOptional()
   @IsString()
   public readonly location?: string;
 

@@ -26,7 +26,7 @@ describe('Exchange rates', () => {
     // Assert
     expect(response.status).toBe(HttpStatus.OK);
     const firstExchangeRate = response.body[0];
-    expect(firstExchangeRate.euroExchangeRate).toBe(0.00744368);
+    expect(firstExchangeRate.euroExchangeRate).toBe(0.00655377);
     expect(firstExchangeRate.currency).toBe('KES');
     expect(firstExchangeRate.closeTime).toBeDefined();
   });
