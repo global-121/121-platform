@@ -106,14 +106,16 @@ export class PaymentsAggregateChartComponent {
       {
         label: TransactionStatusEnum.success,
         data: this.data().map(
-          (payment) => payment.success[this.aggregateType()],
+          (payment) =>
+            payment[TransactionStatusEnum.success][this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.success],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.data().map(
-          (payment) => payment.waiting[this.aggregateType()],
+          (payment) =>
+            payment[TransactionStatusEnum.waiting][this.aggregateType()],
         ),
         backgroundColor: paymentColors[TransactionStatusEnum.waiting],
       },
