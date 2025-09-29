@@ -37,6 +37,7 @@ graph LR
   IntersolveVoucherModule-->RedisModule
   IntersolveVoucherModule-->RegistrationDataModule
   IntersolveVoucherModule-->RegistrationUtilsModule
+  IntersolveVoucherModule-->TransactionEventsModule
   IntersolveVoucherModule-->TransactionsModule
   IntersolveVoucherModule-->UserModule
   IntersolveVoucherReconciliationModule-->IntersolveVoucherModule
