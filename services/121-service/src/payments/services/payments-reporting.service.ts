@@ -50,7 +50,7 @@ export class PaymentsReportingService {
       },
       select: ['id', 'created'],
       order: {
-        id: 'ASC',
+        id: 'DESC',
       },
       take: limitNumberOfPayments,
     });
