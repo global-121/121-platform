@@ -89,13 +89,10 @@ export class RegistrationsPerStatusChartComponent {
 
   readonly data = computed(() => this.labels().map((k) => this.queryData()[k]));
 
-  readonly registrationsPerStatusChartColors = computed<string[]>(
-    (): string[] => {
-      const colors: Record<string, string> = registrationsPerStatusColors;
-
-      return this.labels().map((l): string => colors[l]);
-    },
-  );
+  readonly chartColors = computed<string[]>((): string[] => {
+    const colors: Record<string, string> = registrationsPerStatusColors;
+    return this.labels().map((l): string => colors[l]);
+  });
 
   readonly chartOptions = computed(() =>
     this.getChartOptions()({
@@ -104,12 +101,12 @@ export class RegistrationsPerStatusChartComponent {
     }),
   );
 
-  readonly registrationsPerStatusChartData = computed<ChartData>(() => ({
+  readonly chartData = computed<ChartData>(() => ({
     labels: this.labels(),
     datasets: [
       {
         data: this.data(),
-        backgroundColor: this.registrationsPerStatusChartColors(),
+        backgroundColor: this.chartColors(),
       },
     ],
   }));
@@ -118,7 +115,7 @@ export class RegistrationsPerStatusChartComponent {
     this.getLabelFunction()({
       title: this.title,
       labels: this.labels(),
-      data: this.registrationsPerStatusChartData().datasets[0].data as number[],
+      data: this.chartData().datasets[0].data as number[],
     }),
   );
 }
