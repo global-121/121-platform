@@ -73,13 +73,9 @@ export class RegistrationsPerStatusChartComponent {
     enabled: !!this.projectId(),
   }));
 
-  readonly queryData = computed(() => {
-    if (!this.query.isSuccess()) {
-      return {};
-    }
-
-    return this.query.data();
-  });
+  readonly queryData = computed(() =>
+    this.query.isSuccess() ? this.query.data() : {},
+  );
 
   readonly labels = computed<string[]>(() =>
     registrationStatusSortOrder.filter((status) =>

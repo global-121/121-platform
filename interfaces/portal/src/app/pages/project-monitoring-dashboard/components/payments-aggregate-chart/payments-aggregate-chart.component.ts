@@ -69,13 +69,10 @@ export class PaymentsAggregateChartComponent {
     enabled: !!this.projectId(),
   }));
 
-  readonly queryData = computed(() => {
-    if (!this.query.isSuccess()) {
-      return {};
-    }
+  readonly queryData = computed(() =>
+    this.query.isSuccess() ? this.query.data() : [],
+  );
 
-    return this.query.data();
-  });
   readonly labels = computed<string[]>(() => {
     const dates = this.queryData().map((payment) => payment.date);
 
