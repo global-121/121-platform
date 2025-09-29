@@ -59,6 +59,18 @@ export class TranactionEvents1758619661604 implements MigrationInterface {
       `ALTER TABLE "121-service"."transaction_event" ADD CONSTRAINT "FK_ccc33883aa7599801353e53cf19" FOREIGN KEY ("programFspConfigurationId") REFERENCES "121-service"."program_fsp_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
 
+    // change twilio-message relation with transaction from OneToOne to ManyToOne
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "FK_cd56d3267e8553557ec97c6741b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" DROP CONSTRAINT "UQ_cd56d3267e8553557ec97c6741b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."twilio_message" ADD CONSTRAINT "FK_cd56d3267e8553557ec97c6741b" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+
+    // recreate registration view
     await queryRunner.query(
       `DELETE FROM "121-service"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
       ['VIEW', 'registration_view', '121-service'],

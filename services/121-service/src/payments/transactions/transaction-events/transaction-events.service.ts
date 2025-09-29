@@ -12,7 +12,7 @@ export class TransactionEventsService {
   @InjectRepository(TransactionEventEntity)
   private readonly transactionEventRepository: Repository<TransactionEventEntity>;
 
-  // ##TODO: move also to repository? Then no service needed any more?
+  // ##TODO: move also to repository
   public async createEvent({
     context,
     type,
