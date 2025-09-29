@@ -56,6 +56,7 @@ export class RegistrationsBulkService {
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly registrationViewScopedRepository: RegistrationViewScopedRepository,
     @Inject(getScopedRepositoryProviderName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     @Inject(getScopedRepositoryProviderName(IntersolveVoucherEntity))
     private readonly intersolveVoucherScopedRepo: ScopedRepository<IntersolveVoucherEntity>,
     @Inject(getScopedRepositoryProviderName(TwilioMessageEntity))
