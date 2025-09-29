@@ -1,4 +1,5 @@
 import { MessageActivity } from '@121-service/src/activities/interfaces/message-activity.interface';
+import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
 import { TwilioErrorCodes } from '@121-service/src/notifications/enum/twilio-error-codes.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { waitForMessagesToComplete } from '@121-service/test/helpers/program.helper';
@@ -32,8 +33,12 @@ describe('send arbitrary messages to set of registrations', () => {
   beforeEach(async () => {
     await resetDB(SeedScript.nlrcMultiple, __filename);
     accessToken = await getAccessToken();
-
-    await importRegistrations(programIdOCW, registrations, accessToken);
+    const importResult = await importRegistrations(
+      programIdOCW,
+      registrations,
+      accessToken,
+    );
+    console.log('importResult: ', importResult.body, importResult.status);
   });
 
   it('should send messages to selected PAs only', async () => {
@@ -52,14 +57,18 @@ describe('send arbitrary messages to set of registrations', () => {
       message,
     );
 
+    const expectedMessageAttribute: {
+      key: 'body';
+      values: (string | number | null | undefined)[];
+    } = {
+      key: 'body',
+      values: [message],
+    };
     await waitForMessagesToComplete({
       programId: programIdOCW,
       referenceIds: [referenceIds[0]],
       accessToken,
-      expectedMessageAttribute: {
-        key: 'body',
-        values: [message],
-      },
+      expectedMessageAttribute,
     });
 
     const messageHistories: MessageActivity[][] = [];
@@ -78,14 +87,18 @@ describe('send arbitrary messages to set of registrations', () => {
     // Assert
     expect(sendMessageResponse.body.totalFilterCount).toBe(1);
     expect(sendMessageResponse.body.applicableCount).toBe(1);
-    const messageSentToPa1 = messageHistoryPa1.some(
-      (msg) => msg.attributes.body === message && msg.attributes.status,
+
+    const expectedMessagePa1 = messageHistoryPa1.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    expect(messageSentToPa1).toBe(true);
-    const messageSentToPa2 = messageHistoryPa2.some(
-      (msg) => msg.attributes.body === message,
+    expect(expectedMessagePa1.length).toBe(1);
+    expect(expectedMessagePa1[0].attributes.status).not.toBe(
+      TwilioStatus.failed,
     );
-    expect(messageSentToPa2).toBe(false);
+    const expectedMessagePa2 = messageHistoryPa2.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
+    );
+    expect(expectedMessagePa2.length).toBe(0);
   });
 
   it('should send messages to PAs selected with a combination of filters', async () => {
@@ -105,6 +118,13 @@ describe('send arbitrary messages to set of registrations', () => {
       }, // This combination should only apply to  registrationOCW3, registrationOCW4
     );
 
+    const expectedMessageAttribute: {
+      key: 'body';
+      values: (string | number | null | undefined)[];
+    } = {
+      key: 'body',
+      values: [message],
+    };
     await waitForMessagesToComplete({
       programId: programIdOCW,
       referenceIds: [
@@ -112,10 +132,7 @@ describe('send arbitrary messages to set of registrations', () => {
         registrationOCW4.referenceId,
       ],
       accessToken,
-      expectedMessageAttribute: {
-        key: 'body',
-        values: [message],
-      },
+      expectedMessageAttribute,
     });
 
     const messageHistory1 = (
@@ -151,17 +168,28 @@ describe('send arbitrary messages to set of registrations', () => {
     expect(sendMessageResponse.body.totalFilterCount).toBe(2);
     expect(sendMessageResponse.body.applicableCount).toBe(2);
     // Only registrationOCW3 and registrationOCW4 should receive the message
-    expect(messageHistory1.some((msg) => msg.attributes.body === message)).toBe(
-      false,
+    const expectedMessagesPa1 = messageHistory1.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    expect(messageHistory2.some((msg) => msg.attributes.body === message)).toBe(
-      false,
+    const expectedMessagesPa2 = messageHistory2.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    expect(messageHistory3.some((msg) => msg.attributes.body === message)).toBe(
-      true,
+    const expectedMessagesPa3 = messageHistory3.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
     );
-    expect(messageHistory4.some((msg) => msg.attributes.body === message)).toBe(
-      true,
+    console.log('expectedMessagesPa3', expectedMessagesPa3);
+    const expectedMessagesPa4 = messageHistory4.filter((message) =>
+      expectedMessageAttribute.values.includes(message.attributes.body),
+    );
+    expect(expectedMessagesPa1.length).toBe(0);
+    expect(expectedMessagesPa2.length).toBe(0);
+    expect(expectedMessagesPa3.length).toBe(1);
+    expect(expectedMessagesPa4.length).toBe(1);
+    expect(expectedMessagesPa3[0].attributes.status).not.toBe(
+      TwilioStatus.failed,
+    );
+    expect(expectedMessagesPa4[0].attributes.status).not.toBe(
+      TwilioStatus.failed,
     );
   });
 
