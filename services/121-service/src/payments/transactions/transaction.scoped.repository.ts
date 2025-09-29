@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
@@ -257,5 +257,29 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         referenceId: string;
         fspName: Fsps;
       }>();
+  }
+
+  public async getPaymentIdByTransactionId(
+    transactionId: number,
+  ): Promise<number> {
+    const transaction = await this.findOneOrFail({
+      where: { id: Equal(transactionId) },
+      select: { paymentId: true },
+    });
+    return transaction.paymentId;
+  }
+
+  public async getTransactionIdByPaymentAndRegistration(
+    paymentId: number,
+    registrationId: number,
+  ): Promise<number> {
+    const transaction = await this.findOneOrFail({
+      where: {
+        paymentId: Equal(paymentId),
+        registration: { id: Equal(registrationId) },
+      },
+      select: { id: true },
+    });
+    return transaction.id;
   }
 }

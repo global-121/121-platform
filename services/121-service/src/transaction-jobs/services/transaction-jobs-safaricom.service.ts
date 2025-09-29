@@ -10,6 +10,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 import { generateUUIDFromSeed } from '@121-service/src/utils/uuid.helpers';
@@ -21,6 +22,7 @@ export class TransactionJobsSafaricomService {
     private readonly safaricomTransferScopedRepository: SafaricomTransferScopedRepository,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processSafaricomTransactionJob(
@@ -71,14 +73,12 @@ export class TransactionJobsSafaricomService {
         return;
       } else if (error instanceof SafaricomApiError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
-          {
-            context: transactionEventContext,
-            description: TransactionEventDescription.safaricomRequestSent,
-            errorMessage: error.message,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionsService.saveTransactionProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.safaricomRequestSent,
+          errorMessage: error.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       } else {
         throw error;
@@ -86,7 +86,7 @@ export class TransactionJobsSafaricomService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.safaricomRequestSent,
       newTransactionStatus: TransactionStatusEnum.waiting,

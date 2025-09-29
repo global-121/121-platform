@@ -9,6 +9,7 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { OnafriqTransactionJobDto } from '@121-service/src/transaction-queues/dto/onafriq-transaction-job.dto';
@@ -23,6 +24,7 @@ export class TransactionJobsOnafriqService {
     private readonly onafriqTransactionScopedRepository: ScopedRepository<OnafriqTransactionEntity>,
     private readonly transactionJobsHelperService: TransactionJobsHelperService,
     private readonly transactionEventScopedRepository: TransactionEventsScopedRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
   public async processOnafriqTransactionJob(
@@ -78,14 +80,12 @@ export class TransactionJobsOnafriqService {
         return;
       } else if (error instanceof OnafriqError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionJobsHelperService.saveTransactionProcessingProgress(
-          {
-            context: transactionEventContext,
-            description: TransactionEventDescription.onafriqRequestSent,
-            errorMessage: error.message,
-            newTransactionStatus: TransactionStatusEnum.error,
-          },
-        );
+        await this.transactionsService.saveTransactionProgress({
+          context: transactionEventContext,
+          description: TransactionEventDescription.onafriqRequestSent,
+          errorMessage: error.message,
+          newTransactionStatus: TransactionStatusEnum.error,
+        });
         return;
       } else {
         throw error;
@@ -93,7 +93,7 @@ export class TransactionJobsOnafriqService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.onafriqRequestSent,
       newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
