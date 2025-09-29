@@ -11,6 +11,8 @@ export enum TransactionEventDescription {
   // Nedbank processing-step events
   nedbankVoucherCreationRequested = 'Nedbank voucher creation requested',
   nedbankCallbackReceived = 'Nedbank callback received',
+  // Airtel processing-step events
+  airtelRequestSent = 'Airtel request sent',
   // Visa processing-step events
   visaPaymentRequested = 'Visa payment requested',
 }
