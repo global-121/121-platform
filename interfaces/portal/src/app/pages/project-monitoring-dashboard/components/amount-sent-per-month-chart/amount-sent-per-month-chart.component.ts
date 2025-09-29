@@ -48,7 +48,7 @@ export class AmountSentPerMonthChartComponent {
       }) => unknown
     >();
 
-  readonly title = $localize`Registrations by creation date (last 2 weeks)`;
+  readonly title = $localize`Amount sent per month`;
 
   readonly query = injectQuery(() => ({
     ...this.metricApiService.getAmountSentByMonth({
