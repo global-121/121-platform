@@ -301,7 +301,7 @@ export class CustomHttpService {
       this.defaultClient.flush();
     } catch (flushError) {
       console.error(
-        `An error occured in CustomHttpService::${methodName}:`,
+        `An error occurred in CustomHttpService::${methodName}:`,
         flushError,
       );
     }

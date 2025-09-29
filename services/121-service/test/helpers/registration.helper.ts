@@ -716,7 +716,7 @@ export async function seedIncludedRegistrations(
 
   if (!(response.status >= 200 && response.status < 300)) {
     throw new Error(
-      `Error occured while importing registrations: ${response.text}`,
+      `Error occurred while importing registrations: ${response.text}`,
     );
   }
 
@@ -742,7 +742,7 @@ export async function seedRegistrationsWithStatus(
 
   if (!(response.status >= 200 && response.status < 300)) {
     throw new Error(
-      `Error occured while importing registrations: ${response.text}`,
+      `Error occurred while importing registrations: ${response.text}`,
     );
   }
 
