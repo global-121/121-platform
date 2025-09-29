@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, In, Not, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
@@ -280,7 +280,9 @@ export class RegistrationsBulkService {
   public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewScopedRepository
       .createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
+      .andWhere('registration.status IS DISTINCT FROM :deletedStatus', {
+        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
+      });
   }
 
   public setQueryPropertiesBulkAction({
