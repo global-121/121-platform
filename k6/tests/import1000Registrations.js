@@ -53,7 +53,7 @@ export default function () {
   // login
   const login = loginPage.login();
   checkAndFail(login, {
-    'Login successful. Status was 200': (r) => r.status == 201,
+    'Login successful. Status was 201': (r) => r.status == 201,
     'Login time is less than 200ms': (r) => {
       if (r.timings.duration >= 200) {
         console.log(`Login time was ${r.timings.duration}ms`);
