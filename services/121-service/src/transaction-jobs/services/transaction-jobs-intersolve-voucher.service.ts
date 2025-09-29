@@ -49,12 +49,13 @@ export class TransactionJobsIntersolveVoucherService {
         transactionId: transactionJob.transactionId,
         bulkSize: transactionJob.bulkSize,
         credentials,
+        programFspConfigurationId: transactionJob.programFspConfigurationId,
       });
     if (!sendIndividualPaymentResult) {
       return;
     }
 
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.intersolveVoucherCreationRequest,
       newTransactionStatus: sendIndividualPaymentResult.status,

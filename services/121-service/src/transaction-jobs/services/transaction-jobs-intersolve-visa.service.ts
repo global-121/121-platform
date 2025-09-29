@@ -57,7 +57,7 @@ export class TransactionJobsIntersolveVisaService {
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
         // Do not update the transaction amount since we were unable to calculate the transfer amount. The error message is also clear enough so users should not be confused about the potentially high amount.
-        await this.transactionsService.saveTransactionProcessingProgress({
+        await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.visaPaymentRequested,
           errorMessage: `Error calculating transfer amount: ${error?.message}`,
@@ -102,7 +102,7 @@ export class TransactionJobsIntersolveVisaService {
         });
     } catch (error) {
       if (error instanceof IntersolveVisaApiError) {
-        await this.transactionsService.saveTransactionProcessingProgress({
+        await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.visaPaymentRequested,
           errorMessage: error?.message,
@@ -128,7 +128,7 @@ export class TransactionJobsIntersolveVisaService {
       userId: transactionJob.userId,
     });
 
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.visaPaymentRequested,
       newTransactionStatus: TransactionStatusEnum.success,

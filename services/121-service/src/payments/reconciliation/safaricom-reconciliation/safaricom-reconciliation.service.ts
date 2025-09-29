@@ -109,11 +109,8 @@ export class SafaricomReconciliationService {
     );
 
     // store transaction progress
-    await this.transactionsService.saveAsyncTransactionProcessingProgress({
-      callbackContext: {
-        transactionId: safaricomTransfer.transactionId,
-        userId: null,
-      },
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId: safaricomTransfer.transactionId,
       description: TransactionEventDescription.safaricomCallbackReceived,
       newTransactionStatus: transactionStatus,
       errorMessage,
@@ -129,11 +126,8 @@ export class SafaricomReconciliationService {
           safaricomTimeoutCallbackJob.originatorConversationId,
         );
 
-      await this.transactionsService.saveAsyncTransactionProcessingProgress({
-        callbackContext: {
-          transactionId: safaricomTransfer.transactionId,
-          userId: null,
-        },
+      await this.transactionsService.saveTransactionProgressFromExternalSource({
+        transactionId: safaricomTransfer.transactionId,
         description: TransactionEventDescription.safaricomCallbackReceived,
         newTransactionStatus: TransactionStatusEnum.error,
         errorMessage: 'Transfer timed out',

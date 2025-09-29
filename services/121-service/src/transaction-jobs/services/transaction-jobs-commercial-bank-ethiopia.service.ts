@@ -80,7 +80,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
         },
       );
 
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description:
         TransactionEventDescription.commercialBankEthiopiaRequestSent,

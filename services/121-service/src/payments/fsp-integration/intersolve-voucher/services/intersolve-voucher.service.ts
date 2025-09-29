@@ -80,6 +80,7 @@ export class IntersolveVoucherService {
     transactionId,
     bulkSize,
     credentials,
+    programFspConfigurationId,
   }: {
     referenceId: string;
     useWhatsapp: boolean;
@@ -89,6 +90,7 @@ export class IntersolveVoucherService {
     transactionId: number;
     bulkSize: number;
     credentials: UsernamePasswordInterface;
+    programFspConfigurationId: number;
   }) {
     const paResult = new PaTransactionResultDto();
     paResult.referenceId = referenceId;
@@ -107,7 +109,10 @@ export class IntersolveVoucherService {
       await this.transactionScopedRepository.getPaymentIdByTransactionId(
         transactionId,
       );
-    const voucher = await this.getReusableVoucher(referenceId, paymentId);
+    const voucher = await this.getReusableVoucher({
+      referenceId,
+      paymentId,
+    });
 
     if (voucher) {
       if (voucher.send) {
@@ -123,23 +128,23 @@ export class IntersolveVoucherService {
       }
     } else {
       // .. if no existing voucher found, then create new one
-      const voucherInfo = await this.issueVoucher(
-        calculatedAmount,
+      const voucherInfo = await this.issueVoucher({
+        amount: calculatedAmount,
         intersolveRefPos,
-        credentials.username,
-        credentials.password,
-      );
+        username: credentials.username,
+        password: credentials.password,
+      });
       voucherInfo.refPos = intersolveRefPos;
 
       if (voucherInfo.resultCode == IntersolveVoucherResultCode.Ok) {
-        voucherInfo.voucher = await this.storeVoucher(
+        voucherInfo.voucher = await this.storeVoucher({
           voucherInfo,
           referenceId,
           paymentId,
-          calculatedAmount,
+          amount: calculatedAmount,
           whatsappPhoneNumber,
           userId,
-        );
+        });
         paResult.status = TransactionStatusEnum.success;
       } else {
         paResult.status = TransactionStatusEnum.error;
@@ -166,20 +171,27 @@ export class IntersolveVoucherService {
     }
 
     // Continue with whatsapp:
-    return await this.sendWhatsapp(
+    return await this.sendWhatsapp({
+      programFspConfigurationId,
       referenceId,
       paResult,
       transactionId,
       bulkSize,
       userId,
-    );
+    });
   }
 
   private getIntersolveRefPos(): number {
     return parseInt(crypto.randomBytes(5).toString('hex'), 16);
   }
 
-  private async getReusableVoucher(referenceId: string, paymentId: number) {
+  private async getReusableVoucher({
+    referenceId,
+    paymentId,
+  }: {
+    referenceId: string;
+    paymentId: number;
+  }) {
     const rawVoucher = await this.registrationScopedRepository
       .createQueryBuilder('registration')
       //The .* is to prevent the raw query from prefixing with voucher_
@@ -203,12 +215,17 @@ export class IntersolveVoucherService {
     return await this.intersolveVoucherScopedRepository.save(voucher);
   }
 
-  private async issueVoucher(
-    amount: number,
-    intersolveRefPos: number,
-    username: string,
-    password: string,
-  ): Promise<IntersolveIssueCardResponse> {
+  private async issueVoucher({
+    amount,
+    intersolveRefPos,
+    username,
+    password,
+  }: {
+    amount: number;
+    intersolveRefPos: number;
+    username: string;
+    password: string;
+  }): Promise<IntersolveIssueCardResponse> {
     const amountInCents = amount * 100;
     return await this.intersolveVoucherApiService.issueCard(
       amountInCents,
@@ -218,44 +235,60 @@ export class IntersolveVoucherService {
     );
   }
 
-  private async storeVoucher(
-    voucherInfo: IntersolveIssueCardResponse,
-    referenceId: string,
-    paymentId: number,
-    amount: number,
-    whatsappPhoneNumber: string | null,
-    userId: number,
-  ): Promise<IntersolveVoucherEntity> {
-    const voucherData = await this.storeVoucherData(
-      voucherInfo.cardId,
-      voucherInfo.pin,
+  private async storeVoucher({
+    voucherInfo,
+    referenceId,
+    paymentId,
+    amount,
+    whatsappPhoneNumber,
+    userId,
+  }: {
+    voucherInfo: IntersolveIssueCardResponse;
+    referenceId: string;
+    paymentId: number;
+    amount: number;
+    whatsappPhoneNumber: string | null;
+    userId: number;
+  }): Promise<IntersolveVoucherEntity> {
+    const voucherData = await this.storeVoucherData({
+      cardNumber: voucherInfo.cardId,
+      pin: voucherInfo.pin,
       whatsappPhoneNumber,
       paymentId,
       amount,
       userId,
-    );
+    });
 
-    await this.imageCodeService.createVoucherExportVouchers(
-      voucherData,
+    await this.imageCodeService.createVoucherExportVouchers({
+      intersolveVoucherEntity: voucherData,
       referenceId,
-    );
+    });
 
     return voucherData;
   }
 
-  private async sendWhatsapp(
-    referenceId: string,
-    paResult: PaTransactionResultDto,
-    transactionId: number,
-    bulkSize: number,
-    userId: number,
-  ): Promise<PaTransactionResultDto> {
-    const transferResult = await this.sendVoucherWhatsapp(
+  private async sendWhatsapp({
+    programFspConfigurationId,
+    referenceId,
+    paResult,
+    transactionId,
+    bulkSize,
+    userId,
+  }: {
+    programFspConfigurationId: number;
+    referenceId: string;
+    paResult: PaTransactionResultDto;
+    transactionId: number;
+    bulkSize: number;
+    userId: number;
+  }): Promise<PaTransactionResultDto> {
+    const transferResult = await this.sendVoucherWhatsapp({
       referenceId,
       transactionId,
       bulkSize,
       userId,
-    );
+      programFspConfigurationId,
+    });
 
     paResult.status = transferResult.status;
     paResult.customData = transferResult.customData;
@@ -263,12 +296,19 @@ export class IntersolveVoucherService {
     return paResult;
   }
 
-  public async sendVoucherWhatsapp(
-    referenceId: string,
-    transactionId: number,
-    bulkSize: number,
-    userId: number,
-  ): Promise<PaTransactionResultDto> {
+  public async sendVoucherWhatsapp({
+    referenceId,
+    transactionId,
+    bulkSize,
+    userId,
+    programFspConfigurationId,
+  }: {
+    referenceId: string;
+    transactionId: number;
+    bulkSize: number;
+    userId: number;
+    programFspConfigurationId: number;
+  }): Promise<PaTransactionResultDto> {
     const result = new PaTransactionResultDto();
     result.referenceId = referenceId;
 
@@ -281,18 +321,20 @@ export class IntersolveVoucherService {
       id: programId,
     });
     const language = registration.preferredLanguage || this.fallbackLanguage;
-    const contentSid = await this.getNotificationContentSid(
+    const contentSid = await this.getNotificationContentSid({
       program,
-      ProgramNotificationEnum.whatsappPayment,
+      type: ProgramNotificationEnum.whatsappPayment,
       language,
-    );
+    });
 
     await this.queueMessageService.addMessageJob({
       registration,
       contentSid: contentSid ?? undefined,
       messageContentType: MessageContentType.paymentTemplated,
       messageProcessType: MessageProcessType.whatsappTemplateVoucher,
-      customData: { transactionId },
+      customData: {
+        transactionData: { transactionId, programFspConfigurationId },
+      },
       bulksize: bulkSize,
       userId,
     });
@@ -300,11 +342,15 @@ export class IntersolveVoucherService {
     return result;
   }
 
-  public async getNotificationContentSid(
-    program: ProgramEntity,
-    type: string,
-    language?: string,
-  ): Promise<string | undefined> {
+  public async getNotificationContentSid({
+    program,
+    type,
+    language,
+  }: {
+    program: ProgramEntity;
+    type: string;
+    language?: string;
+  }): Promise<string | undefined> {
     const messageTemplates =
       await this.messageTemplateService.getMessageTemplatesByProgramId(
         program.id,
@@ -326,14 +372,21 @@ export class IntersolveVoucherService {
     }
   }
 
-  private async storeVoucherData(
-    cardNumber: string,
-    pin: string,
-    whatsappPhoneNumber: string | null,
-    paymentId: number,
-    amount: number,
-    userId: number,
-  ): Promise<IntersolveVoucherEntity> {
+  private async storeVoucherData({
+    cardNumber,
+    pin,
+    whatsappPhoneNumber,
+    paymentId,
+    amount,
+    userId,
+  }: {
+    cardNumber: string;
+    pin: string;
+    whatsappPhoneNumber: string | null;
+    paymentId: number;
+    amount: number;
+    userId: number;
+  }): Promise<IntersolveVoucherEntity> {
     const voucherData = new IntersolveVoucherEntity();
     voucherData.barcode = cardNumber;
     voucherData.pin = pin.toString();
@@ -369,11 +422,8 @@ export class IntersolveVoucherService {
       return;
     }
 
-    await this.transactionsService.saveAsyncTransactionProcessingProgress({
-      callbackContext: {
-        transactionId,
-        userId: null,
-      },
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId,
       description: TransactionEventDescription.intersolveVoucherMessageCallback,
       newTransactionStatus: newTransactionStatus as TransactionStatusEnum,
       errorMessage:
@@ -393,17 +443,20 @@ export class IntersolveVoucherService {
     messageSid,
     errorMessage,
     userId,
+    programFspConfigurationId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     messageSid?: string;
     errorMessage?: string;
     userId: number;
+    programFspConfigurationId: number;
   }): Promise<void> {
-    await this.transactionsService.saveAsyncTransactionProcessingProgress({
-      callbackContext: {
+    await this.transactionsService.saveTransactionProgress({
+      context: {
         transactionId,
         userId,
+        programFspConfigurationId,
       },
       description:
         TransactionEventDescription.intersolveVoucherInitialMessageSent,
@@ -613,20 +666,15 @@ export class IntersolveVoucherService {
     errorMessage,
     messageSid,
     intersolveVoucherId,
-    userId,
   }: {
     transactionId: number;
     newTransactionStatus: TransactionStatusEnum;
     errorMessage: string | null;
     messageSid?: string;
     intersolveVoucherId: number;
-    userId: number;
   }): Promise<void> {
-    await this.transactionsService.saveAsyncTransactionProcessingProgress({
-      callbackContext: {
-        transactionId,
-        userId,
-      },
+    await this.transactionsService.saveTransactionProgressFromExternalSource({
+      transactionId,
       description:
         TransactionEventDescription.intersolveVoucherVoucherMessageSent,
       newTransactionStatus,

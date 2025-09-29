@@ -197,12 +197,14 @@ export class MessageService {
       ? TransactionStatusEnum.waiting
       : TransactionStatusEnum.error;
 
-    if (messageJobDto.customData?.transactionId) {
+    if (messageJobDto.customData?.transactionData?.transactionId) {
       await this.intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage(
         {
-          transactionId: messageJobDto.customData.transactionId,
+          transactionId: messageJobDto.customData.transactionData.transactionId,
           newTransactionStatus,
           userId: messageJobDto.userId,
+          programFspConfigurationId:
+            messageJobDto.customData.transactionData.programFspConfigurationId!,
           messageSid:
             newTransactionStatus === TransactionStatusEnum.error
               ? undefined
@@ -247,15 +249,15 @@ export class MessageService {
     const newTransactionStatus = messageSid
       ? TransactionStatusEnum.success
       : TransactionStatusEnum.error;
-    if (messageJobDto.customData?.transactionId) {
+    if (messageJobDto.customData?.transactionData?.transactionId) {
       await this.intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage(
         {
-          transactionId: messageJobDto.customData.transactionId,
+          transactionId: messageJobDto.customData.transactionData.transactionId,
           newTransactionStatus,
           errorMessage,
           messageSid,
-          intersolveVoucherId: messageJobDto.customData.intersolveVoucherId!,
-          userId: messageJobDto.userId,
+          intersolveVoucherId:
+            messageJobDto.customData.transactionData.intersolveVoucherId!,
         },
       );
     }

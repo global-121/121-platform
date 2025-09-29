@@ -11,7 +11,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
-import { CallbackTransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/callback-transaction-event-creation-context.interface';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
@@ -135,7 +134,7 @@ export class TransactionsService {
     return savedTransactions.map((t) => t.id);
   }
 
-  public async saveTransactionProcessingProgress({
+  public async saveTransactionProgress({
     context,
     description,
     errorMessage,
@@ -172,14 +171,14 @@ export class TransactionsService {
     await this.transactionScopedRepository.update(transactionId, { status });
   }
 
-  // Async here refers to these events being created async based on e.g. callback or on message-job processing
-  public async saveAsyncTransactionProcessingProgress({
-    callbackContext,
+  // Used upon e.g. callbacks, but also upon intersolve-voucher incoming message
+  public async saveTransactionProgressFromExternalSource({
+    transactionId,
     description,
     errorMessage,
     newTransactionStatus,
   }: {
-    callbackContext: CallbackTransactionEventCreationContext;
+    transactionId: number;
     description: TransactionEventDescription;
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
@@ -187,15 +186,15 @@ export class TransactionsService {
     // In these cases programFspConfigurationId is not directly known, so inferred from latest event before this one
     const latestEvent =
       await this.transactionEventsScopedRepository.findLatestEventByTransactionId(
-        callbackContext.transactionId,
+        transactionId,
       );
     const context: TransactionEventCreationContext = {
-      transactionId: callbackContext.transactionId,
-      userId: callbackContext.userId,
+      transactionId,
+      userId: null,
       programFspConfigurationId: latestEvent.programFspConfigurationId,
     };
 
-    await this.saveTransactionProcessingProgress({
+    await this.saveTransactionProgress({
       context,
       description,
       errorMessage,

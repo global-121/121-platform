@@ -124,7 +124,7 @@ export class TransactionJobsNedbankService {
         );
 
         // Update the transaction to error, so it won't be picked up by the reconciliation process
-        await this.transactionsService.saveTransactionProcessingProgress({
+        await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description:
             TransactionEventDescription.nedbankVoucherCreationRequested,
@@ -143,7 +143,7 @@ export class TransactionJobsNedbankService {
       { status: nedbankVoucherStatus },
     );
 
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.nedbankVoucherCreationRequested,
       newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback

@@ -48,7 +48,7 @@ export class TransactionJobsAirtelService {
       status: TransactionStatusEnum,
       errorText?: string,
     ) => {
-      await this.transactionsService.saveTransactionProcessingProgress({
+      await this.transactionsService.saveTransactionProgress({
         context: transactionEventContext,
         newTransactionStatus: status,
         errorMessage: errorText,

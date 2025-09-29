@@ -540,8 +540,10 @@ export class MessageIncomingService {
           messageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           customData: {
-            transactionId,
-            intersolveVoucherId: intersolveVoucher.id, // TODO: when intersolve-voucher.entity is linked to transaction.entity better, this does not need to be included here any more
+            transactionData: {
+              transactionId,
+              intersolveVoucherId: intersolveVoucher.id, // TODO: when intersolve-voucher.entity is linked to transaction.entity better, this does not need to be included here any more
+            },
           },
           userId: intersolveVoucher.userId,
         });

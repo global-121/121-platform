@@ -73,7 +73,7 @@ export class TransactionJobsSafaricomService {
         return;
       } else if (error instanceof SafaricomApiError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionsService.saveTransactionProcessingProgress({
+        await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.safaricomRequestSent,
           errorMessage: error.message,
@@ -86,7 +86,7 @@ export class TransactionJobsSafaricomService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.safaricomRequestSent,
       newTransactionStatus: TransactionStatusEnum.waiting,

@@ -80,7 +80,7 @@ export class TransactionJobsOnafriqService {
         return;
       } else if (error instanceof OnafriqError) {
         // store error transactionEvent and update transaction to 'error'
-        await this.transactionsService.saveTransactionProcessingProgress({
+        await this.transactionsService.saveTransactionProgress({
           context: transactionEventContext,
           description: TransactionEventDescription.onafriqRequestSent,
           errorMessage: error.message,
@@ -93,7 +93,7 @@ export class TransactionJobsOnafriqService {
     }
 
     // 5. store success transactionEvent and update transaction to 'waiting'
-    await this.transactionsService.saveTransactionProcessingProgress({
+    await this.transactionsService.saveTransactionProgress({
       context: transactionEventContext,
       description: TransactionEventDescription.onafriqRequestSent,
       newTransactionStatus: TransactionStatusEnum.waiting, // This will only go to 'success' via callback
