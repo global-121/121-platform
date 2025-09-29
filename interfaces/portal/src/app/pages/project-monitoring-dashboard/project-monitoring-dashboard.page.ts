@@ -5,6 +5,7 @@ import {
   input,
 } from '@angular/core';
 
+import { ChartOptions } from 'chart.js';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 
@@ -64,11 +65,18 @@ export class ProjectMonitoringDashboardPageComponent {
     title: string;
     showLegend: boolean;
     showDataLabels?: boolean;
-  }) => ({
+  }): ChartOptions => ({
     animation: {
       duration: 0,
     },
     responsive: true,
+    scales: {
+      y: {
+        ticks: {
+          precision: 0,
+        },
+      },
+    },
     plugins: {
       title: {
         display: true,
