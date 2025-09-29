@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { env } from '@121-service/src/env';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { OnafriqReconciliationReport } from '@121-service/src/payments/reconciliation/onafriq-reconciliation/interfaces/onafriq-reconciliation-report.interface';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
@@ -62,13 +63,13 @@ describe('Export reconciliation report', () => {
       Transaction_Status: expect.stringMatching(/success|error/),
       To_MSISDN: baseRegistrationOnafriq.phoneNumberPayment,
       Receive_amount: amount,
-      // Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
-      // From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
-      // Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
-      // Partner_name: env.ONAFRIQ_CORPORATE_CODE,
+      Receive_Currency: env.ONAFRIQ_CURRENCY_CODE,
+      From_MSISDN: env.ONAFRIQ_SENDER_MSISDN,
+      Wallet_Identifier: env.ONAFRIQ_CORPORATE_CODE,
+      Partner_name: env.ONAFRIQ_CORPORATE_CODE,
       Datestamp: expect.any(String),
       'Transaction ID': expect.any(String),
-      // 'Onafriq Transaction ID': expect.any(String),
+      'Onafriq Transaction ID': expect.any(String),
       Third_PartyID: expect.any(String),
       Send_Currency: null,
       Send_amount: null,
