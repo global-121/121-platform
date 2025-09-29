@@ -14,6 +14,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
+  getTransactionEvents,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -94,7 +95,19 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+
+    // ##TODO: combine in one helper method with getTransactions?
+    const getTransactionEventsBody = await getTransactionEvents({
+      programId,
+      paymentId,
+      transactionId: getTransactionsBody.body[0].id,
+      accessToken,
+    });
+    expect(getTransactionEventsBody.body.data.length).toBe(4); // created / initiated / request sent / callback
+    for (const event of getTransactionEventsBody.body.data) {
+      expect(event.errorMessage).toBe(null);
+    }
+    // ##TODO: I could assert a lot more, but the length of 4 implicitly covers a lot of the gist of it
   });
 
   it('should give error on the initial request based on magic phonenumber and succeed on retry', async () => {
@@ -145,7 +158,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
 
     // RETRY
     // Arrange
@@ -183,7 +195,21 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsAfterRetryBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
-    expect(getTransactionsAfterRetryBody.body[0].errorMessage).toBe(null);
+
+    const getTransactionEventsBody = await getTransactionEvents({
+      programId,
+      paymentId,
+      transactionId: getTransactionsBody.body[0].id,
+      accessToken,
+    });
+    expect(getTransactionEventsBody.body.data.length).toBe(6); // created / initiated / request sent / retry / request sent / callback
+    const errorEvents = getTransactionEventsBody.body.data.filter(
+      (e) => !e.isSuccessfullyCompleted,
+    );
+    expect(errorEvents.length).toBe(1);
+    for (const event of errorEvents) {
+      expect(event.errorMessage).toMatchSnapshot();
+    }
   });
 
   it('should give error via callback based on magic phonenumber', async () => {
@@ -234,7 +260,21 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.error,
     );
-    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
+
+    const getTransactionEventsBody = await getTransactionEvents({
+      programId,
+      paymentId,
+      transactionId: getTransactionsBody.body[0].id,
+      accessToken,
+    });
+    expect(getTransactionEventsBody.body.data.length).toBe(4); // created / initiated / request sent / retry / request sent / callback
+    const errorEvents = getTransactionEventsBody.body.data.filter(
+      (e) => !e.isSuccessfullyCompleted,
+    );
+    expect(errorEvents.length).toBe(1);
+    for (const event of errorEvents) {
+      expect(event.errorMessage).toMatchSnapshot();
+    }
   });
 
   it('should not update transaction on a `duplicate thirdPartyTransId error` API response', async () => {
@@ -288,5 +328,16 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.created,
     );
+
+    const getTransactionEventsBody = await getTransactionEvents({
+      programId,
+      paymentId,
+      transactionId: getTransactionsBody.body[0].id,
+      accessToken,
+    });
+    expect(getTransactionEventsBody.body.data.length).toBe(2); // created / initiated
+    for (const event of getTransactionEventsBody.body.data) {
+      expect(event.errorMessage).toBe(null);
+    }
   });
 });

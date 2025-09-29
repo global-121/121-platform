@@ -43,6 +43,7 @@ import { PaymentsExecutionService } from '@121-service/src/payments/services/pay
 import { PaymentsReportingService } from '@121-service/src/payments/services/payments-reporting.service';
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { GetTransactionsQueryDto } from '@121-service/src/payments/transactions/dto/get-transaction-query.dto';
+import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
 import { PaginateConfigRegistrationViewOnlyFilters } from '@121-service/src/registration/const/filter-operation.const';
 import {
   BulkActionResultDto,
@@ -356,6 +357,41 @@ export class PaymentsController {
     return this.paymentsReportingService.getPaymentEvents({
       programId,
       paymentId,
+    });
+  }
+
+  // ##TODO: is this the right place for this endpoint?
+  @AuthenticatedUser({ permissions: [PermissionEnum.PaymentTransactionREAD] })
+  @ApiOperation({
+    summary: 'Get all events for a transaction.',
+  })
+  @ApiParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiParam({ name: 'paymentId', required: true, type: 'integer' }) // ##TODO: is the paymentId here a bit overkill?
+  @ApiParam({ name: 'transactionId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Return Transaction Events by Transaction Id.',
+    type: [PaymentEventDataDto],
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Program or Payment or Transaction does not exist',
+  })
+  @Get(
+    'programs/:programId/payments/:paymentId/transaction/:transactionId/events',
+  )
+  public async getTransactionEvents(
+    @Param('programId', ParseIntPipe)
+    programId: number,
+    @Param('paymentId', ParseIntPipe)
+    paymentId: number,
+    @Param('transactionId', ParseIntPipe)
+    transactionId: number,
+  ): Promise<TransactionEventsReturnDto> {
+    return await this.paymentsReportingService.getTransactionEvents({
+      programId,
+      paymentId,
+      transactionId,
     });
   }
 }
