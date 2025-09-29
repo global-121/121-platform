@@ -412,7 +412,6 @@ describe('Import a registration', () => {
       accessToken,
     );
 
-    //the way to do it.
     const messageHistory = messageHistoryResponse.body;
     const expectedMessages = messageHistory.filter((message) =>
       expectedMessageAttribute.values.includes(message.attributes.body),

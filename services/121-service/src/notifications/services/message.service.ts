@@ -148,6 +148,18 @@ export class MessageService {
   private async processWhatsappPendingMessage(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
+    //TODO: check with Ruben if this is the implementation that will be used
+    if (messageJobDto.customData?.pendingMessageId) {
+      const existingPendingMessage =
+        await this.whatsappPendingMessageRepo.findOne({
+          where: {
+            id: Equal(messageJobDto.customData?.pendingMessageId),
+          },
+        });
+      if (!existingPendingMessage) {
+        return;
+      }
+    }
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,

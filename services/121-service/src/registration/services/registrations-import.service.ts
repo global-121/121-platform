@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
-//import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -190,7 +190,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.registrationStatus = RegistrationStatusEnum.new;
+      registration.registrationStatus = null;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
@@ -250,22 +250,23 @@ export class RegistrationsImportService {
       },
     );
 
-    // const referenceIds = savedRegistrations.map(
-    //   (registration) => registration.referenceId,
-    // );
-    // const messageContentDetails = {
-    //   messageTemplateKey: RegistrationStatusEnum.new,
-    //   messageContentType: MessageContentType.new,
-    // };
-    // await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
-    //   {
-    //     referenceIds,
-    //     programId: program.id,
-    //     registrationStatus: RegistrationStatusEnum.new,
-    //     userId,
-    //     messageContentDetails,
-    //   },
-    // );
+    const referenceIds = savedRegistrations.map(
+      (registration) => registration.referenceId,
+    );
+    const messageContentDetails = {
+      messageTemplateKey: RegistrationStatusEnum.new,
+      messageContentType: MessageContentType.new,
+      message: '',
+    };
+    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+      {
+        referenceIds,
+        programId: program.id,
+        registrationStatus: RegistrationStatusEnum.new,
+        userId,
+        messageContentDetails,
+      },
+    );
 
     // Store inclusion score and paymentAmountMultiplierFormula if it's relevant
     const programHasScore = await this.programHasInclusionScore(program.id);
