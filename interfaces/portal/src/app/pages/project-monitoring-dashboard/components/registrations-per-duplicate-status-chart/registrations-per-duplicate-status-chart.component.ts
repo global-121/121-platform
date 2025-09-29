@@ -16,13 +16,6 @@ import { DuplicateStatus } from '@121-service/src/registration/enum/duplicate-st
 import tailwindConfig from '~/../../tailwind.config';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 
-const colors = tailwindConfig.theme.colors;
-
-const duplicationColors = {
-  [DuplicateStatus.unique]: colors.green[500],
-  [DuplicateStatus.duplicate]: colors.red[500],
-};
-
 @Component({
   selector: 'app-registrations-per-duplicate-status-chart',
   imports: [ChartModule],
@@ -75,9 +68,11 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     this.uniquesQuery.data()?.meta.totalItems ?? 0,
   ]);
 
-  readonly chartColors = computed<string[]>(() =>
-    this.labels.map((l) => duplicationColors[l]),
-  );
+  // Labels are also hardcoded.
+  readonly chartColors = [
+    tailwindConfig.theme.colors.red[500], // duplicate
+    tailwindConfig.theme.colors.green[500], // unique
+  ];
 
   readonly chartOptions = computed(() =>
     this.getChartOptions()({
@@ -91,7 +86,7 @@ export class RegistrationsPerDuplicateStatusComponentChart {
     datasets: [
       {
         data: this.data(),
-        backgroundColor: this.chartColors(),
+        backgroundColor: this.chartColors,
       },
     ],
   }));
