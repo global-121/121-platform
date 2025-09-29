@@ -455,7 +455,7 @@ export class MetricsService {
     programId: number;
     limitNumberOfPayments?: number;
   }): Promise<AggregatePerPayment> {
-    const res: AggregatePerPayment = {};
+    const allPaymentsAggregates: AggregatePerPayment = {};
 
     const payments = await this.paymentsReportingService.getPayments({
       programId,
@@ -468,10 +468,10 @@ export class MetricsService {
           programId,
           payment.paymentId,
         );
-      res[payment.paymentId] = aggregate;
+      allPaymentsAggregates[payment.paymentId] = aggregate;
     }
 
-    return res;
+    return allPaymentsAggregates;
   }
 
   public async getAmountSentByMonth({
