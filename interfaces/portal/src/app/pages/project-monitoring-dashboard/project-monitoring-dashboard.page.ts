@@ -51,7 +51,10 @@ export class ProjectMonitoringDashboardPageComponent {
     labels: string[];
     data: number[];
   }) =>
-    // we use an aria label in order for having the title of the chart and some data available for testing, since the actual content is inside a canvas
+    // The e2e tests cannot access the canvas content of the charts, so we
+    // generate an aria-label with enough data to verify that the chart contains
+    // the expected data. We also provide some data accessibly like this, but
+    // that's limited.
     `${title}. ` +
     this.translatableStringService.commaSeparatedList(
       labels.map((label, index) => `${label}: ${String(data[index])}`),
