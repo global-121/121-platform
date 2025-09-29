@@ -4,6 +4,8 @@ import { Equal } from 'typeorm';
 import { CbeTransferScopedRepository } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia.scoped.repository';
 import { CbeTransferEntity } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/commercial-bank-ethiopia-transfer.entity';
 import { CommercialBankEthiopiaService } from '@121-service/src/payments/fsp-integration/commercial-bank-ethiopia/services/commercial-bank-ethiopia.service';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
@@ -22,14 +24,24 @@ export class TransactionJobsCommercialBankEthiopiaService {
   public async processCommercialBankEthiopiaTransactionJob(
     transactionJob: CommercialBankEthiopiaTransactionJobDto,
   ): Promise<void> {
+    const transactionId = transactionJob.transactionId;
+    const transactionEventContext: TransactionEventCreationContext = {
+      transactionId,
+      userId: transactionJob.userId,
+      programFspConfigurationId: transactionJob.programFspConfigurationId,
+    };
+
+    // Create transaction event 'initiated' or 'retry'
+    await this.transactionJobsHelperService.createInitiatedOrRetryTransactionEvent(
+      {
+        context: transactionEventContext,
+        isRetry: transactionJob.isRetry,
+      },
+    );
+
     const credentials =
       await this.programFspConfigurationRepository.getUsernamePasswordProperties(
         transactionJob.programId,
-      );
-
-    const registration =
-      await this.transactionJobsHelperService.getRegistrationOrThrow(
-        transactionJob.referenceId,
       );
 
     // TODO: Performance would be better if we do this before the queue, but not sure if that is better from seperation of concerns perspective
@@ -42,10 +54,9 @@ export class TransactionJobsCommercialBankEthiopiaService {
     let debitTheirRef: string;
     if (transactionJob.isRetry) {
       const existingCbeTransfer =
-        await this.cbeTransferScopedRepository.getExistingCbeTransferOrFail(
-          transactionJob.paymentId,
-          registration.id,
-        );
+        await this.cbeTransferScopedRepository.getExistingCbeTransferOrFail({
+          transactionId,
+        });
       debitTheirRef = existingCbeTransfer.debitTheirRef;
     } else {
       debitTheirRef = transactionJob.debitTheirRef as string;
@@ -67,20 +78,18 @@ export class TransactionJobsCommercialBankEthiopiaService {
         },
       );
 
-    const transaction =
-      await this.transactionJobsHelperService.createTransactionAndUpdateRegistration(
-        {
-          registration,
-          transactionJob,
-          transferAmountInMajorUnit: transactionJob.transactionAmount,
-          status,
-          errorText: errorMessage,
-        },
-      );
+    await this.transactionJobsHelperService.saveTransactionProcessingProgress({
+      context: transactionEventContext,
+      description:
+        TransactionEventDescription.commercialBankEthiopiaRequestSent,
+      errorMessage,
+      newTransactionStatus: status,
+    });
+
     // TODO: combine this with the transaction creation above in one SQL transaction
     const newCbeTransfer = new CbeTransferEntity();
     newCbeTransfer.debitTheirRef = debitTheirRef;
-    newCbeTransfer.transactionId = transaction.id;
+    newCbeTransfer.transactionId = transactionId;
     await this.cbeTransferScopedRepository.save(newCbeTransfer);
   }
 }
