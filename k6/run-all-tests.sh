@@ -31,11 +31,11 @@ for file in "${test_files[@]}"; do
   echo "Running k6 test"
   npx dotenv -e ../services/.env -- ./k6 run --summary-export=summary.json "${file}"
 
-  # XXX: should uncomment these lines
-  # default to 1 because if "fails" is not present, it means that no checks were run at all, which is likely due to a failure
-  # FAILURE_COUNT=$(jq '.metrics.checks.fails // 1' summary.json)
-  # if [[ ${FAILURE_COUNT} -gt 0 ]]; then
-  if [ $(jq '.metrics.checks.fails' summary.json) -gt 0 ]; then
+  default to 1 because if "fails" is not present, it means that no checks were run at all, which is likely due to a failure
+  FAILURE_COUNT=$(jq '.metrics.checks.fails // 1' summary.json)
+  if [[ ${FAILURE_COUNT} -gt 0 ]]; then
+  # XXX: should remove this lines
+  # if [ $(jq '.metrics.checks.fails' summary.json) -gt 0 ]; then
       failed_tests+=("${file}")
   fi
 
