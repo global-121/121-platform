@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
+import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
+import { TransactionEventsMapper } from '@121-service/src/payments/transactions/transaction-events/mappers/transaction-events.mapper';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
 
 @Injectable()
@@ -64,5 +66,24 @@ export class TransactionEventsService {
         })),
       )
       .execute();
+  }
+
+  public async getEventsByTransactionId(
+    programId: number,
+    transactionId: number,
+  ): Promise<TransactionEventsReturnDto> {
+    const transactionEventEntities = await this.transactionEventRepository.find(
+      {
+        where: {
+          transaction: { payment: { programId: Equal(programId) } },
+          transactionId: Equal(transactionId),
+        },
+        order: { created: 'ASC' },
+      },
+    );
+
+    return TransactionEventsMapper.mapToTransactionEventsDto(
+      transactionEventEntities,
+    );
   }
 }
