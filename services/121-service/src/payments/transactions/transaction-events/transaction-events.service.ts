@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 
@@ -69,20 +69,18 @@ export class TransactionEventsService {
   }
 
   public async getEventsByTransactionId(
+    programId: number,
     transactionId: number,
   ): Promise<TransactionEventsReturnDto> {
     const transactionEventEntities = await this.transactionEventRepository.find(
       {
-        where: { transactionId: Equal(transactionId) },
+        where: {
+          transaction: { payment: { programId: Equal(programId) } },
+          transactionId: Equal(transactionId),
+        },
         order: { created: 'ASC' },
       },
     );
-    if (!transactionEventEntities || transactionEventEntities.length === 0) {
-      throw new HttpException(
-        `No transaction events found for transaction with id: ${transactionId}`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
 
     return TransactionEventsMapper.mapToTransactionEventsDto(
       transactionEventEntities,

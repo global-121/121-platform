@@ -797,19 +797,15 @@ export async function getRegistrationEvents({
 
 export async function getTransactionEvents({
   programId,
-  paymentId,
   transactionId,
   accessToken,
 }: {
   programId: number;
-  paymentId: number;
   transactionId: number;
   accessToken: string;
 }) {
   return await getServer()
-    .get(
-      `/programs/${programId}/payments/${paymentId}/transaction/${transactionId}/events`,
-    )
+    .get(`/programs/${programId}/transactions/${transactionId}/events`)
     .set('Cookie', [accessToken])
     .send();
 }

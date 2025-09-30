@@ -99,7 +99,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     // ##TODO: combine in one helper method with getTransactions?
     const getTransactionEventsBody = await getTransactionEvents({
       programId,
-      paymentId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
@@ -198,7 +197,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionEventsBody = await getTransactionEvents({
       programId,
-      paymentId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
@@ -263,7 +261,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionEventsBody = await getTransactionEvents({
       programId,
-      paymentId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
@@ -331,7 +328,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
 
     const getTransactionEventsBody = await getTransactionEvents({
       programId,
-      paymentId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
