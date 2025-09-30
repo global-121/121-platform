@@ -63,8 +63,12 @@ describe('Get all payments aggregates', () => {
 
       // Assert
       expect(getAllPaymentsAggregatesResponse.statusCode).toBe(200);
-      expect(Object.keys(getAllPaymentsAggregatesResponse.body).length).toBe(2); // one for each payment
-      expect(getAllPaymentsAggregatesResponse.body['1']).toEqual(
+      expect(getAllPaymentsAggregatesResponse.body.length).toBe(2); // one for each payment
+      const aggregate = getAllPaymentsAggregatesResponse.body[1];
+      const today = new Date().toISOString().split('T')[0];
+      expect(aggregate.id).toEqual(2);
+      expect(aggregate.date).toContain(today);
+      expect(aggregate.aggregatedStatuses).toEqual(
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
@@ -93,8 +97,12 @@ describe('Get all payments aggregates', () => {
 
       // Assert
       expect(getAllPaymentsAggregatesResponse.statusCode).toBe(200);
-      expect(Object.keys(getAllPaymentsAggregatesResponse.body).length).toBe(1); // one for each payment
-      expect(getAllPaymentsAggregatesResponse.body['2']).toEqual(
+      expect(getAllPaymentsAggregatesResponse.body.length).toBe(1); // one for each payment
+      const aggregate = getAllPaymentsAggregatesResponse.body[0];
+      const today = new Date().toISOString().split('T')[0];
+      expect(aggregate.id).toEqual(2);
+      expect(aggregate.date).toContain(today);
+      expect(aggregate.aggregatedStatuses).toEqual(
         expect.objectContaining({
           success: expect.objectContaining({
             count: 1,
@@ -125,7 +133,7 @@ describe('Get all payments aggregates', () => {
 
       // Assert
       expect(getAllPaymentsAggregatesResponse.statusCode).toBe(200);
-      expect(getAllPaymentsAggregatesResponse.body).toEqual({});
+      expect(getAllPaymentsAggregatesResponse.body).toEqual([]);
     });
   });
 });
