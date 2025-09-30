@@ -160,6 +160,8 @@ describe('Metric export list', () => {
       );
       expect(exportRegistrationFound).toMatchSnapshot({
         created: expect.any(String),
+        // Status messages are sent async which makes testing over different environments irreliable
+        lastMessageStatus: expect.any(String),
       });
     }
   });
