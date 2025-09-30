@@ -75,7 +75,9 @@ describe('AssertDatePipe', () => {
       // Arrange
       const input = new Date(Date.now() - 2 * millisecondsInOneDay);
       // Act & Assert
-      pipe.transform(input);
+      expect(() => {
+        pipe.transform(input);
+      }).not.toThrow();
     });
   });
 });
