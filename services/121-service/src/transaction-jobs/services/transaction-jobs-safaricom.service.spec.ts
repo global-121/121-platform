@@ -4,24 +4,15 @@ import { UpdateResult } from 'typeorm';
 import { SafaricomApiError } from '@121-service/src/payments/fsp-integration/safaricom/errors/safaricom-api.error';
 import { SafaricomTransferScopedRepository } from '@121-service/src/payments/fsp-integration/safaricom/repositories/safaricom-transfer.scoped.repository';
 import { SafaricomService } from '@121-service/src/payments/fsp-integration/safaricom/safaricom.service';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
+import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
 import { TransactionJobsSafaricomService } from '@121-service/src/transaction-jobs/services/transaction-jobs-safaricom.service';
 import { SafaricomTransactionJobDto } from '@121-service/src/transaction-queues/dto/safaricom-transaction-job.dto';
 
-const mockedRegistration = {
-  id: 1,
-  referenceId: 'ref-123',
-  registrationStatus: 'active',
-  paymentCount: 0,
-  preferredLanguage: 'en',
-} as any;
-
-const mockedTransactionId = 1;
-
 const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   programId: 3,
-  paymentId: 3,
+  transactionId: 3,
   referenceId: 'ref-123',
   transactionAmount: 25,
   isRetry: false,
@@ -30,15 +21,15 @@ const mockedSafaricomTransactionJob: SafaricomTransactionJobDto = {
   phoneNumber: '254708374149',
   idNumber: 'nat-123',
   programFspConfigurationId: 1,
-  originatorConversationId: 'originator-conversation-id',
 };
 
 describe('TransactionJobsSafaricomService', () => {
   let service: TransactionJobsSafaricomService;
   let safaricomService: SafaricomService;
   let safaricomTransferScopedRepository: SafaricomTransferScopedRepository;
-  let transactionScopedRepository: TransactionScopedRepository;
+  let transactionEventsScopedRepository: TransactionEventsScopedRepository;
   let transactionJobsHelperService: TransactionJobsHelperService;
+  let transactionsService: TransactionsService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -52,31 +43,36 @@ describe('TransactionJobsSafaricomService', () => {
         SafaricomTransferScopedRepository,
       );
 
-    transactionScopedRepository = unitRef.get<TransactionScopedRepository>(
-      TransactionScopedRepository,
-    );
+    transactionEventsScopedRepository =
+      unitRef.get<TransactionEventsScopedRepository>(
+        TransactionEventsScopedRepository,
+      );
     transactionJobsHelperService = unitRef.get<TransactionJobsHelperService>(
       TransactionJobsHelperService,
     );
+    transactionsService = unitRef.get<TransactionsService>(TransactionsService);
 
-    jest
-      .spyOn(transactionJobsHelperService, 'getRegistrationOrThrow')
-      .mockResolvedValue(mockedRegistration);
     jest
       .spyOn(
         transactionJobsHelperService,
-        'createTransactionAndUpdateRegistration',
+        'createInitiatedOrRetryTransactionEvent',
       )
-      .mockResolvedValue({ id: mockedTransactionId } as any);
+      .mockImplementation();
     jest
       .spyOn(safaricomTransferScopedRepository, 'findOne')
       .mockResolvedValue(undefined);
     jest
+      .spyOn(safaricomTransferScopedRepository, 'update')
+      .mockResolvedValue({} as UpdateResult);
+    jest
       .spyOn(safaricomTransferScopedRepository, 'save')
       .mockImplementation(async (entity) => ({ ...entity, id: 1 }));
     jest
-      .spyOn(transactionScopedRepository, 'update')
-      .mockResolvedValue({} as UpdateResult);
+      .spyOn(
+        transactionEventsScopedRepository,
+        'countFailedTransactionAttempts',
+      )
+      .mockResolvedValue(0);
   });
 
   it('should be defined', () => {
@@ -93,23 +89,26 @@ describe('TransactionJobsSafaricomService', () => {
       .mockRejectedValueOnce(idempotencyError);
 
     jest
-      .spyOn(transactionScopedRepository, 'update')
-      .mockResolvedValueOnce({} as UpdateResult);
+      .spyOn(
+        transactionEventsScopedRepository,
+        'countFailedTransactionAttempts',
+      )
+      .mockResolvedValueOnce(0);
 
     // Call the service method
     await service.processSafaricomTransactionJob(mockedSafaricomTransactionJob);
 
     expect(
-      transactionJobsHelperService.getRegistrationOrThrow,
-    ).toHaveBeenCalledWith(mockedSafaricomTransactionJob.referenceId);
+      transactionJobsHelperService.createInitiatedOrRetryTransactionEvent,
+    ).toHaveBeenCalled();
     expect(safaricomService.doTransfer).toHaveBeenCalledWith(
       expect.objectContaining({
         transferAmount: mockedSafaricomTransactionJob.transactionAmount,
         phoneNumber: mockedSafaricomTransactionJob.phoneNumber,
         idNumber: mockedSafaricomTransactionJob.idNumber,
-        originatorConversationId:
-          mockedSafaricomTransactionJob.originatorConversationId,
+        originatorConversationId: expect.any(String),
       }),
     );
+    expect(transactionsService.saveTransactionProgress).toHaveBeenCalled();
   });
 });
