@@ -148,6 +148,26 @@ export class MessageService {
   private async processWhatsappPendingMessage(
     messageJobDto: MessageJobDto,
   ): Promise<void> {
+    const pendingMessageId = messageJobDto.customData?.pendingMessageId;
+    if (!pendingMessageId) {
+      throw new Error(
+        'No pendingMessageId provided for whatsappPendingMessage', // This should never happen and is here to make typescript happy
+      );
+    }
+
+    // If the pending message does not exist anymore we do not need to process it
+    // This can happen if a registration replies 'yes' twice within a short time span
+    // There is still a small timeframe where as message is still being send and the pending message is not deleted yet, however adding this check here makes the window much smaller
+    const existingPendingMessageCount =
+      await this.whatsappPendingMessageRepo.count({
+        where: {
+          id: Equal(pendingMessageId),
+        },
+      });
+    if (existingPendingMessageCount === 0) {
+      return;
+    }
+
     await this.whatsappService
       .sendWhatsapp({
         message: messageJobDto.message,
@@ -160,12 +180,7 @@ export class MessageService {
         userId: messageJobDto.userId,
       })
       .then(async () => {
-        if (!messageJobDto.customData?.pendingMessageId) {
-          return;
-        }
-        return await this.whatsappPendingMessageRepo.delete(
-          messageJobDto.customData?.pendingMessageId,
-        );
+        return await this.whatsappPendingMessageRepo.delete(pendingMessageId);
       });
   }
 
