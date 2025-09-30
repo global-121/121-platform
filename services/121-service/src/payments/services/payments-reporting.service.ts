@@ -90,13 +90,16 @@ export class PaymentsReportingService {
       totalAmountPerStatus[status].count = Number(row.count);
       totalAmountPerStatus[status].amount = Number(row.totalamount);
     }
-    // TODO: object keys should be TransactionStatusEnum
     return {
-      success: totalAmountPerStatus[TransactionStatusEnum.success] || {
+      [TransactionStatusEnum.success]: totalAmountPerStatus[
+        TransactionStatusEnum.success
+      ] || {
         count: 0,
         amount: 0,
       },
-      waiting: totalAmountPerStatus[TransactionStatusEnum.waiting] || {
+      [TransactionStatusEnum.waiting]: totalAmountPerStatus[
+        TransactionStatusEnum.waiting
+      ] || {
         count: 0,
         amount: 0,
       },
