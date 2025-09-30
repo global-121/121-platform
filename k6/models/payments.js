@@ -26,6 +26,7 @@ export default class PaymentsModel {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: '600s', // sometimes this request takes a while, especially on GH actions
     };
     // TODO: this fails 1/10 times
     const res = http.post(url, payload, params);
