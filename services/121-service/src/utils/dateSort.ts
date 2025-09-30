@@ -1,6 +1,8 @@
 import { sortBy } from 'lodash';
 
-// Usage: dateSort(dates, obj => obj.a.b.date);
+/**
+ * @example: Usage: dateSort(dates, obj => obj.a.b.date);
+ */
 export function dateSort<T>(
   array: T[],
   dateAccessor: (obj: T) => Date | string | number,
