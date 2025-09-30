@@ -14,29 +14,7 @@ import tailwindConfig from 'tailwind.config';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
-
-const colors = tailwindConfig.theme.colors;
-
-const registrationsPerStatusColors = {
-  [RegistrationStatusEnum.included]: colors.green[500],
-  [RegistrationStatusEnum.new]: colors.blue[500],
-  [RegistrationStatusEnum.validated]: colors.yellow[500],
-  [RegistrationStatusEnum.declined]: colors.red[500],
-  [RegistrationStatusEnum.completed]: colors.purple[500],
-  [RegistrationStatusEnum.deleted]: colors.grey[500],
-  [RegistrationStatusEnum.paused]: colors.orange[500],
-};
-
-// this is the order in the registration table buttons
-const registrationStatusSortOrder = [
-  RegistrationStatusEnum.new,
-  RegistrationStatusEnum.validated,
-  RegistrationStatusEnum.included,
-  RegistrationStatusEnum.completed,
-  RegistrationStatusEnum.declined,
-  RegistrationStatusEnum.paused,
-  RegistrationStatusEnum.deleted,
-];
+import { ProjectRegistrationsCountByStatus } from '~/domains/metric/metric.model';
 
 @Component({
   selector: 'app-registrations-per-status-chart',
@@ -74,20 +52,48 @@ export class RegistrationsPerStatusChartComponent {
   }));
 
   readonly queryData = computed(() =>
-    this.query.isSuccess() ? this.query.data() : {},
+    this.query.isSuccess()
+      ? this.query.data()
+      : ({} as ProjectRegistrationsCountByStatus),
   );
 
-  readonly labels = computed<string[]>(() =>
-    registrationStatusSortOrder.filter((status) =>
+  readonly labels = computed<RegistrationStatusEnum[]>(() => {
+    // This is the order in the registration table buttons.
+    // The order used in the UI is only encoded in the HTML.
+    const registrationStatusSortOrder = [
+      RegistrationStatusEnum.new,
+      RegistrationStatusEnum.validated,
+      RegistrationStatusEnum.included,
+      RegistrationStatusEnum.completed,
+      RegistrationStatusEnum.declined,
+      RegistrationStatusEnum.paused,
+      RegistrationStatusEnum.deleted,
+    ];
+    return registrationStatusSortOrder.filter((status) =>
       Object.keys(this.queryData()).includes(status),
+    );
+  });
+
+  readonly data = computed(() =>
+    this.labels().map(
+      (registrationStatus) => this.queryData()[registrationStatus],
     ),
   );
 
-  readonly data = computed(() => this.labels().map((k) => this.queryData()[k]));
-
   readonly chartColors = computed<string[]>((): string[] => {
-    const colors: Record<string, string> = registrationsPerStatusColors;
-    return this.labels().map((l): string => colors[l]);
+    const themeColors = tailwindConfig.theme.colors;
+    const colors = {
+      [RegistrationStatusEnum.included]: themeColors.green[500],
+      [RegistrationStatusEnum.new]: themeColors.blue[500],
+      [RegistrationStatusEnum.validated]: themeColors.yellow[500],
+      [RegistrationStatusEnum.declined]: themeColors.red[500],
+      [RegistrationStatusEnum.completed]: themeColors.purple[500],
+      [RegistrationStatusEnum.deleted]: themeColors.grey[500],
+      [RegistrationStatusEnum.paused]: themeColors.orange[500],
+    };
+    return this.labels().map(
+      (registrationStatus) => colors[registrationStatus],
+    );
   });
 
   readonly chartOptions = computed(() =>
