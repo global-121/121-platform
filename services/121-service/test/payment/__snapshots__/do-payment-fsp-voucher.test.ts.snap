@@ -6,6 +6,23 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesf
 [
   {
     "attributes": {
+      "body": "",
+      "contentType": "payment-instructions",
+      "errorCode": null,
+      "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/programs/2/fsps/intersolve-voucher/instructions/",
+      "notificationType": "whatsapp",
+      "status": "read",
+      "to": "whatsapp:+14155238886",
+    },
+    "id": "message0",
+    "type": "message",
+    "user": {
+      "id": 1,
+      "username": "admin@example.org",
+    },
+  },
+  {
+    "attributes": {
       "body": "This is a message from the Red Cross.
 
 With this message you will receive:
@@ -26,11 +43,11 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
       "errorCode": null,
       "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/notifications/imageCode/secret",
       "notificationType": "whatsapp",
-      "status": "sent",
+      "status": "read",
       "to": "whatsapp:+14155238886",
       "transactionId": 2,
     },
-    "id": "message0",
+    "id": "message1",
     "type": "message",
     "user": {
       "id": 1,
@@ -55,7 +72,7 @@ Please reply “yes” to this message in order to receive:
       "to": "whatsapp:+14155238886",
       "transactionId": 1,
     },
-    "id": "message1",
+    "id": "message2",
     "type": "message",
     "user": {
       "id": 1,
