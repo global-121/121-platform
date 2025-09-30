@@ -18,7 +18,7 @@ import { UserEntity } from '@121-service/src/user/entities/user.entity';
 export class TransactionEventEntity extends Base121OptionalAuditedEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'NO ACTION' }) // Do not delete on deleting users, instead see catch in userService.delete()
   @JoinColumn({ name: 'userId' })
-  public user: Relation<UserEntity>;
+  public user?: Relation<UserEntity>;
 
   @Column({ type: 'character varying' })
   @Index()

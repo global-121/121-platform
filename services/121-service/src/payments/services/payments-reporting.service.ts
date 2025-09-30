@@ -13,6 +13,7 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -35,6 +36,7 @@ export class PaymentsReportingService {
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
+    private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
   public async getPayments({
