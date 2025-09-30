@@ -96,6 +96,7 @@ graph LR
   PaymentsModule-->RegistrationEventsModule
   PaymentsModule-->RegistrationUtilsModule
   PaymentsModule-->RegistrationsModule
+  PaymentsModule-->TransactionEventsModule
   PaymentsModule-->TransactionQueuesModule
   PaymentsModule-->TransactionsModule
   PaymentsModule-->UserModule
