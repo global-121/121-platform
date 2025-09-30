@@ -17,8 +17,6 @@ import { RegistrationsPerDuplicateStatusComponentChart } from '~/pages/project-m
 import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring-dashboard/components/registrations-per-status-chart/registrations-per-status-chart.component';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
-const colors = tailwindConfig.theme.colors;
-
 @Component({
   selector: 'app-project-monitoring-dashboard',
   templateUrl: './project-monitoring-dashboard.page.html',
@@ -88,7 +86,7 @@ export class ProjectMonitoringDashboardPageComponent {
         },
       },
       tooltip: {
-        backgroundColor: colors.black.DEFAULT,
+        backgroundColor: tailwindConfig.theme.colors.black.DEFAULT,
       },
       datalabels: {
         display: showDataLabels,
