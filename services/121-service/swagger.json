@@ -272,6 +272,14 @@
     "returnType": "DeleteResult"
   },
   {
+    "method": "get",
+    "path": "/api/programs/{programId}/transactions/{transactionId}/events",
+    "params": [
+      "programId",
+      "transactionId"
+    ]
+  },
+  {
     "method": "patch",
     "path": "/api/programs/{programId}/fsps/intersolve-voucher/all",
     "params": [

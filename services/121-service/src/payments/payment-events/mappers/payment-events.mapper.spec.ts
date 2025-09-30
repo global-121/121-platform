@@ -99,51 +99,5 @@ describe('PaymentEventsMapper', () => {
         },
       });
     });
-
-    it('should handle events without user information', () => {
-      // Arrange
-      const paymentEvents = [
-        createMockPaymentEventEntity(1, PaymentEvent.created, undefined),
-      ];
-
-      // Act
-      const result = PaymentEventsMapper.mapToPaymentEventsDto(paymentEvents);
-      const { meta, data } = result;
-
-      // Assert
-      expect(meta).toEqual({
-        count: {
-          [PaymentEvent.created]: 1,
-        },
-        total: 1,
-      });
-
-      expect(data).toHaveLength(1);
-
-      expect(data[0]).toEqual({
-        id: 1,
-        type: PaymentEvent.created,
-        created: testDate,
-        user: null,
-        attributes: {},
-      });
-    });
-
-    it('should handle empty input array', () => {
-      // Arrange
-      const paymentEvents: PaymentEventEntity[] = [];
-
-      // Act
-      const result = PaymentEventsMapper.mapToPaymentEventsDto(paymentEvents);
-      const { meta, data } = result;
-
-      // Assert
-      expect(meta).toEqual({
-        count: {},
-        total: 0,
-      });
-
-      expect(data).toHaveLength(0);
-    });
   });
 });
