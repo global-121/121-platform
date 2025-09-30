@@ -17,14 +17,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 
-const colors = tailwindConfig.theme.colors;
-
-const paymentColors = {
-  [TransactionStatusEnum.error]: colors.red[500],
-  [TransactionStatusEnum.success]: colors.green[500],
-  [TransactionStatusEnum.waiting]: colors.yellow[500],
-};
-
 @Component({
   selector: 'app-payments-aggregate-chart',
   imports: [ChartModule],
@@ -101,7 +93,7 @@ export class PaymentsAggregateChartComponent {
           // TODO: once payments-reporting.services.ts is using enums, use TransactionStatusEnum.error here instead of 'failed'
           (payment) => payment.failed[this.aggregateType()],
         ),
-        backgroundColor: paymentColors[TransactionStatusEnum.error],
+        backgroundColor: tailwindConfig.theme.colors.red[500],
       },
       {
         label: TransactionStatusEnum.success,
@@ -109,7 +101,7 @@ export class PaymentsAggregateChartComponent {
           (payment) =>
             payment[TransactionStatusEnum.success][this.aggregateType()],
         ),
-        backgroundColor: paymentColors[TransactionStatusEnum.success],
+        backgroundColor: tailwindConfig.theme.colors.green[500],
       },
       {
         label: TransactionStatusEnum.waiting,
@@ -117,7 +109,7 @@ export class PaymentsAggregateChartComponent {
           (payment) =>
             payment[TransactionStatusEnum.waiting][this.aggregateType()],
         ),
-        backgroundColor: paymentColors[TransactionStatusEnum.waiting],
+        backgroundColor: tailwindConfig.theme.colors.yellow[500],
       },
     ],
   }));
