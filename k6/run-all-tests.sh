@@ -13,6 +13,9 @@ else
 fi
 
 for file in "${test_files[@]}"; do
+  log_dir="${PWD}/logs/$(basename "${file}" .js)"
+  mkdir -p "${log_dir}"
+
   echo "Test: ${file}"
   echo "Starting services"
   (cd ../services || exit 1 ; docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300)
@@ -29,7 +32,9 @@ for file in "${test_files[@]}"; do
       failed_tests+=("${file}")
   fi
   echo "Stopping services"
-  (cd ../services || exit 1; docker compose -f docker-compose.yml logs; docker compose -f docker-compose.yml down)
+  (cd ../services || exit 1; docker compose -f docker-compose.yml logs 121-service > "${log_dir}/121-service.log")
+  (cd ../services || exit 1; docker compose -f docker-compose.yml logs > "${log_dir}/all-services.log")
+  (cd ../services || exit 1; docker compose -f docker-compose.yml down)
 done
 
 # Check if there were any failed tests

@@ -46,9 +46,11 @@ jobs:
         run: |
           ./run-all-tests.sh
 
-      - name: Docker logs
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: jwalton/gh-docker-logs@v2
+        with:
+          path: |
+            ${{ env.k6TestsPath }}/logs/**
 
       - name: Microsoft Teams Notification
         if: always()
