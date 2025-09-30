@@ -15,14 +15,6 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 import tailwindConfig from '~/../../tailwind.config';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 
-const colors = tailwindConfig.theme.colors;
-
-const paymentColors = {
-  [TransactionStatusEnum.error]: colors.red[500],
-  [TransactionStatusEnum.success]: colors.green[500],
-  [TransactionStatusEnum.waiting]: colors.yellow[500],
-};
-
 @Component({
   selector: 'app-amount-sent-per-month-chart',
   imports: [ChartModule],
@@ -83,17 +75,17 @@ export class AmountSentPerMonthChartComponent {
       {
         label: TransactionStatusEnum.error,
         data: this.data().map((a) => a.failed),
-        backgroundColor: paymentColors[TransactionStatusEnum.error],
+        backgroundColor: tailwindConfig.theme.colors.red[500],
       },
       {
         label: TransactionStatusEnum.success,
         data: this.data().map((a) => a[TransactionStatusEnum.success]),
-        backgroundColor: paymentColors[TransactionStatusEnum.success],
+        backgroundColor: tailwindConfig.theme.colors.green[500],
       },
       {
         label: TransactionStatusEnum.waiting,
         data: this.data().map((a) => a[TransactionStatusEnum.waiting]),
-        backgroundColor: paymentColors[TransactionStatusEnum.waiting],
+        backgroundColor: tailwindConfig.theme.colors.yellow[500],
       },
     ],
   }));
