@@ -22,18 +22,19 @@ for file in "${test_files[@]}"; do
   echo "Running k6 test"
   npx dotenv -e ../services/.env -- ./k6 run --summary-export=summary.json "${file}"
 
-  # Log the contents of summary.json for debugging
-  echo "Contents of summary.json:"
-  cat summary.json
   # default to 1 because if "fails" is not present, it means that no checks were run at all, which is likely due to a failure
   FAILURE_COUNT=$(jq '.metrics.checks.fails // 1' summary.json)
   if [[ ${FAILURE_COUNT} -gt 0 ]]; then
       echo "Test failed: ${file}"
       failed_tests+=("${file}")
   fi
-  echo "Stopping services"
+
+  echo "Collecting logs in ${log_dir}"
+  cp summary.json "${log_dir}/summary.json"
   (cd ../services || exit 1; docker compose -f docker-compose.yml logs 121-service > "${log_dir}/121-service.log")
   (cd ../services || exit 1; docker compose -f docker-compose.yml logs > "${log_dir}/all-services.log")
+
+  echo "Stopping services"
   (cd ../services || exit 1; docker compose -f docker-compose.yml down)
 done
 
