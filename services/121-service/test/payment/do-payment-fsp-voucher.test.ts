@@ -97,7 +97,10 @@ describe('Do payment to 1 PA', () => {
         programId,
         referenceIds: [registrationAhCopy.referenceId],
         accessToken,
-        minimumNumberOfMessagesPerReferenceId: 3,
+        expectedMessageAttribute: {
+          key: 'contentType',
+          values: [MessageContentType.paymentInstructions],
+        },
       });
 
       const { body: messages } = await getMessageHistory(
@@ -105,6 +108,14 @@ describe('Do payment to 1 PA', () => {
         registrationAhCopy.referenceId,
         accessToken,
       );
+
+      const ahVoucherRelatedMesssages = messages.filter((msg) =>
+        [
+          MessageContentType.paymentTemplated,
+          MessageContentType.paymentVoucher,
+        ].includes(msg.attributes.contentType),
+      );
+      expect(ahVoucherRelatedMesssages.length).toBe(2);
 
       let imageCodeSecret;
 
