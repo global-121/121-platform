@@ -12,11 +12,12 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getMessageHistoryUntilX,
+  getMessageHistory,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -235,26 +236,37 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
-
+    console.log('1');
+    const expectedMessageAttribute: {
+      key: 'contentType';
+      values: (string | number | null | undefined)[];
+    } = {
+      key: 'contentType',
+      values: ['payment'],
+    };
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds,
+      accessToken,
+      expectedMessageAttribute,
+    });
     // Waits until the 4th message is received
-    const messagesHistoryPa1 = await getMessageHistoryUntilX(
+    const messagesHistoryPa1 = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
-      4,
     );
-
+    console.log('2');
     const transactionsResponse2 = await getTransactions({
       programId: programIdVisa,
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
-    const messagesHistoryPa2 = await getMessageHistoryUntilX(
+    const messagesHistoryPa2 = await getMessageHistory(
       programIdVisa,
       registrationOCW2.referenceId,
       accessToken,
-      4,
     );
     const transactionsResponse3 = await getTransactions({
       programId: programIdVisa,
@@ -268,19 +280,21 @@ describe('Do succesful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW4.referenceId,
       accessToken,
     });
-
+    console.log('3');
     const expectedCalculatedAmountPa1 = 150 - 13000 / 100 - 1000 / 100; // = 10
     expect(transactionsResponse1.body[0].amount).toBe(
       expectedCalculatedAmountPa1,
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
+    console.log('messagesHistoryPa1', messagesHistoryPa1.body);
+    //TODO: NO IDEA YET.
     expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
       ]),
     );
-
+    console.log('4');
     const expectedCalculatedAmountPa2 = 150 - 14000 / 100 - 1000 / 100; // = 0
     expect(transactionsResponse2.body[0].amount).toBe(
       expectedCalculatedAmountPa2, // = 0 : A transaction of 0 is created
