@@ -59,7 +59,6 @@ export enum PermissionEnum {
   // Registration(s) - Personal
   // What is 'personal'?
   RegistrationPersonalREAD = 'registration:personal.read',
-  RegistrationPersonalForValidationREAD = 'registration:personal:for-valdation.read',
   RegistrationPersonalEXPORT = 'registration:personal.export',
   RegistrationPersonalUPDATE = 'registration:personal.update',
   RegistrationPaymentExport = 'registration:payment.export',
