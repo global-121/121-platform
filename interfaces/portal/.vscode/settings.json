@@ -6,6 +6,13 @@
   },
   "eslint.enable": true,
   "eslint.format.enable": true,
+  "eslint.rules.customizations": [
+    {
+      "rule": "*",
+      "fixable": true,
+      "severity": "info"
+    }
+  ],
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "css.customData": [".vscode/tailwind.json"],
   "regexrobin.rules": [
