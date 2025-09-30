@@ -29,6 +29,7 @@ import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { sendXlsxReponse } from '@121-service/src/utils/send-xlsx-response';
 
+@ApiTags('programs/registrations')
 @UseGuards(AuthenticatedUserGuard)
 @Controller()
 export class RegistrationEventsController {
@@ -40,8 +41,9 @@ export class RegistrationEventsController {
   @AuthenticatedUser({
     permissions: [PermissionEnum.RegistrationPersonalEXPORT],
   })
-  @ApiTags('programs/:programId/registration-events')
-  @ApiOperation({ summary: 'Get list of registration events for query params' })
+  @ApiOperation({
+    summary: 'Get list of registration events for query params',
+  })
   @ApiParam({
     name: 'programId',
     required: true,
@@ -70,8 +72,6 @@ export class RegistrationEventsController {
     @Req() req: ScopedUserRequest,
     @Res() res: Response,
   ): Promise<GetRegistrationEventDto[] | void> {
-    // TODO: REFACTOR: nothing actually happens with this filename, it is overwritten in the front-end
-    const filename = `registration-data-change-events`;
     const searchOptions = {
       queryParams,
     };
@@ -84,7 +84,7 @@ export class RegistrationEventsController {
       if (result.length === 0) {
         throw new HttpException({ errors: errorNoData }, HttpStatus.NOT_FOUND);
       }
-      return sendXlsxReponse(result, filename, res);
+      return sendXlsxReponse(result, 'registration-data-change-events', res);
     }
 
     const result = await this.registrationEventsService.getEventsAsJson({

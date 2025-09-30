@@ -170,6 +170,7 @@ async function bootstrap(): Promise<void> {
       showCommonExtensions: true,
       showExtensions: true,
       tagsSorter: 'alpha',
+      operationSorter: 'alpha',
       tryItOutEnabled: IS_DEVELOPMENT,
     },
   });
