@@ -151,7 +151,7 @@ export class QueuesRegistryService implements OnModuleInit {
 
   async emptyAllQueues(): Promise<void> {
     // Bull queues involve complex data structures and Bull maintains various metadata for job management.
-    // Therefore the data of the Bull queue and the ioredis queue are deleted seperately
+    // Therefore the data of the Bull queue and the ioredis queue are deleted separately
     for (const queue of Object.values(this.allQueues)) {
       await queue.empty();
     }

@@ -32,7 +32,7 @@ export class TransactionJobsCommercialBankEthiopiaService {
         transactionJob.referenceId,
       );
 
-    // TODO: Performance would be better if we do this before the queue, but not sure if that is better from seperation of concerns perspective
+    // TODO: Performance would be better if we do this before the queue, but not sure if that is better from separation of concerns perspective
     const program = await this.programRepository.findOneOrFail({
       where: {
         id: Equal(transactionJob.programId),

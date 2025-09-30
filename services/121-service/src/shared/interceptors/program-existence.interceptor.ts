@@ -42,7 +42,7 @@ export class ProgramExistenceInterceptor implements NestInterceptor {
         classRef,
       );
 
-    // This check makes used of the AuthenticatedUserParameters decorator to determine if an endpoint regquires a user to be an admin or organization admin
+    // This check makes used of the AuthenticatedUserParameters decorator to determine if an endpoint requires a user to be an admin or organization admin
     // If the user is an admin or organization admin check if the programId exists
     // This is not needed for regular users as they can only access their own programs
     if (authParams?.isAdmin || authParams?.isOrganizationAdmin) {

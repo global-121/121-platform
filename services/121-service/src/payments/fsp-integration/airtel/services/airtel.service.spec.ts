@@ -162,7 +162,7 @@ describe('AirtelService', () => {
         );
       });
 
-      it('if enquire endpoint returns "succes" this should return undefined', async () => {
+      it('if enquire endpoint returns "success" this should return undefined', async () => {
         // Act
         const result = await service.attemptOrCheckDisbursement({
           airtelTransactionId,

@@ -406,7 +406,7 @@ export class UserService {
       }
     }
 
-    // if not assigned to program: create new asignment
+    // if not assigned to program: create new assignment
     await this.assignmentRepository.save({
       user: { id: user.id },
       program: { id: program.id },

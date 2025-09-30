@@ -283,7 +283,7 @@ export class MessageIncomingService {
         TwilioErrorCodes.channelCouldNotFindToAddress,
       )
     ) {
-      // PA does not have whatsapp
+      // PA does not have WhatsApp
       // Send pending message via sms
       const whatsappPendingMessages =
         await this.whatsappPendingMessageRepo.find({
@@ -303,10 +303,10 @@ export class MessageIncomingService {
       await this.tryWhatsappRepository.remove(tryWhatsapp);
     }
     if (callbackData.MessageStatus === TwilioStatus.delivered) {
-      // PA does have whatsapp
+      // PA does have WhatsApp
       // Store PA phone number as whatsappPhonenumber
-      // Since it is for now impossible to store a whatsapp number without a chosen FSP
-      // Explicitely search for the the fsp intersolve (in the related FSPs of this program)
+      // Since it is for now impossible to store a WhatsApp-number without a chosen FSP
+      // Explicitly search for the the fsp intersolve (in the related FSPs of this program)
       // This should be refactored later
       const program = await this.programRepository.findOneOrFail({
         where: { id: Equal(tryWhatsapp.registration.programId) },

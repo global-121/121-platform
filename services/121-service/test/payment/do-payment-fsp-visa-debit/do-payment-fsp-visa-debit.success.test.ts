@@ -30,7 +30,7 @@ import {
   registrationOCW4,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
-describe('Do succesful payment with FSP Visa Debit', () => {
+describe('Do successful payment with FSP Visa Debit', () => {
   // Set WhatsApp-number for ALL tests in this suite only
   const registrationVisa = {
     ...registrationVisaDefault,
@@ -45,7 +45,7 @@ describe('Do succesful payment with FSP Visa Debit', () => {
     await waitFor(2_000);
   });
 
-  it('should succesfully pay-out Visa Debit', async () => {
+  it('should successfully pay-out Visa Debit', async () => {
     // Arrange
     await importRegistrations(programIdVisa, [registrationVisa], accessToken);
     await awaitChangeRegistrationStatus({

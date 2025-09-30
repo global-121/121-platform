@@ -45,7 +45,7 @@ export class AzureAdStrategy
   constructor(private moduleRef: ModuleRef) {
     super({
       identityMetadata: `https://${config.metadata.authority}/common/${config.metadata.version}/${config.metadata.discovery}`,
-      clientID: config.credentials.clientID || '-', //TODO: this works to avoid 121-service filure on no-sso scenario, but should be done better
+      clientID: config.credentials.clientID || '-', //TODO: this works to avoid 121-service failure on non-SSO scenario, but should be done better
       validateIssuer: config.settings.validateIssuer,
       passReqToCallback: config.settings.passReqToCallback,
       loggingLevel: config.settings.loggingLevel,

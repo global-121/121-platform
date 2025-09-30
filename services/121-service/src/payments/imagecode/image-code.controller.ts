@@ -7,7 +7,7 @@ import stream from 'stream';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 
 @ApiTags('notifications')
-// I am afraid to change this url as it may break already sent whatsapps
+// I am afraid to change this url as it may break already sent WhatsApps
 @Controller('notifications/imageCode')
 export class ImageCodeController {
   private readonly imageCodeService: ImageCodeService;

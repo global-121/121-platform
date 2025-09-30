@@ -30,7 +30,7 @@ describe('Message processor(s)', () => {
   });
 
   it('should call sendMessage', async () => {
-    // Arrannge
+    // Arrange
     messageIncommingService.processIncomingWhatsapp.mockResolvedValue();
 
     // Act

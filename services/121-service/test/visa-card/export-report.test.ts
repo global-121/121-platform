@@ -27,7 +27,7 @@ describe('Export Visa debit card report', () => {
     await waitFor(2_000);
   });
 
-  it('should succesfully generate a report of all Visa Debit cards', async () => {
+  it('should successfully generate a report of all Visa Debit cards', async () => {
     // Arrange
     await seedPaidRegistrations([registrationVisa], programIdVisa);
 

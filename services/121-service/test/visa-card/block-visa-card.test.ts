@@ -30,7 +30,7 @@ describe('(Un)Block visa debit card', () => {
     accessToken = await getAccessToken();
   });
 
-  it('should succesfully block a Visa Debit card', async () => {
+  it('should successfully block a Visa Debit card', async () => {
     // Arrange
     const testRegistration = {
       ...registrationVisa,
@@ -86,7 +86,7 @@ describe('(Un)Block visa debit card', () => {
     );
   });
 
-  it('should succesfully unblock a Visa Debit card', async () => {
+  it('should successfully unblock a Visa Debit card', async () => {
     // Arrange
     const testRegistration = {
       ...registrationVisa,

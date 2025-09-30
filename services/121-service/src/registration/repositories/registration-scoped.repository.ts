@@ -337,7 +337,7 @@ export class RegistrationScopedRepository extends RegistrationScopedBaseReposito
       .andWhere(`"intersolveVisaChildWallets".id IS NOT NULL`)
       .andWhere('registration."programId" = :programId', { programId })
       .orderBy({
-        'registration."registrationProgramId"': 'ASC', // Do not change this order by as it is used to determine if something is the lasest wallet
+        'registration."registrationProgramId"': 'ASC', // Do not change this orderBy as it is used to determine if something is the latest wallet
         '"intersolveVisaChildWallets"."created"': 'DESC',
       })
       .getRawMany();

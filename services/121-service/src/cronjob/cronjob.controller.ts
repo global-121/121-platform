@@ -51,7 +51,7 @@ export class CronjobController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Done retrieving and updating/insterting enquiry data for all registrations in all programs.',
+      'Done retrieving and updating/inserting enquiry data for all registrations in all programs.',
   })
   @Put('fsps/commercial-bank-ethiopia/account-enquiries')
   public async retrieveAndUpsertAccountEnquiries(): Promise<void> {
@@ -96,7 +96,7 @@ export class CronjobController {
   })
   @Post('/fsps/intersolve-voucher/send-reminders')
   public async cronSendWhatsappReminders(): Promise<void> {
-    await this.cronjobExecutionService.cronSendWhatsappReminders();
+    await this.cronjobExecutionService.cronSendWhatsAppReminders();
   }
 
   @AuthenticatedUser({ isAdmin: true })

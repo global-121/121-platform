@@ -77,7 +77,7 @@ export class PaymentsExecutionService {
       await this.registrationsBulkService.getBulkActionResult(
         paginateQuery,
         programId,
-        this.getPaymentBaseQuery(), // We need to create a seperate querybuilder object twice or it will be modified twice
+        this.getPaymentBaseQuery(), // We need to create a separate queryBuilder object twice or it will be modified twice
       );
 
     // If amount is not defined do not calculate the totalMultiplierSum
@@ -463,7 +463,7 @@ export class PaymentsExecutionService {
       );
 
     // Create a map of latest failed transaction by referenceId with the transaction amount
-    // Hashmap is faster than find in array when having a lot of registrations to process
+    // Hash-map is faster than find in array when having a lot of registrations to process
     const latestFailedTransactionByReferenceId: Record<string, number> = {};
     for (const transaction of latestTransactionsFailedForPayment) {
       latestFailedTransactionByReferenceId[transaction.referenceId] =

@@ -41,7 +41,7 @@ export class AzureLoggerMiddleware implements NestMiddleware {
       this.defaultClient.flush();
     } catch (flushError) {
       console.error(
-        'An error occured in AzureLoggerMiddleware::flushLogs:',
+        'An error occurred in AzureLoggerMiddleware::flushLogs:',
         flushError,
       );
     }

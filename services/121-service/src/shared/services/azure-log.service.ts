@@ -26,7 +26,7 @@ export class AzureLogService {
         severity: alert ? SeverityLevel.Critical : SeverityLevel.Error,
       });
     } catch (trackExceptionError) {
-      console.error('An error occured in logError:', trackExceptionError);
+      console.error('An error occurred in logError:', trackExceptionError);
     }
 
     this.flushLogs();
@@ -37,7 +37,7 @@ export class AzureLogService {
       this.defaultClient.flush();
     } catch (flushError) {
       console.error(
-        'An error occured in AzureLogService::flushLogs:',
+        'An error occurred in AzureLogService::flushLogs:',
         flushError,
       );
     }

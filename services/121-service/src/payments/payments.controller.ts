@@ -31,7 +31,7 @@ import { AuthenticatedUserGuard } from '@121-service/src/guards/authenticated-us
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { CreatePaymentDto } from '@121-service/src/payments/dto/create-payment.dto';
 import { FspInstructions } from '@121-service/src/payments/dto/fsp-instructions.dto';
-import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregration.dto';
+import { GetPaymentAggregationDto } from '@121-service/src/payments/dto/get-payment-aggregation.dto';
 import { GetPaymentsDto } from '@121-service/src/payments/dto/get-payments.dto';
 import { GetTransactionResponseDto } from '@121-service/src/payments/dto/get-transaction-response.dto';
 import { ProgramPaymentsStatusDto } from '@121-service/src/payments/dto/program-payments-status.dto';
@@ -133,7 +133,7 @@ export class PaymentsController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Doing the payment was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Doing the payment was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
@@ -175,7 +175,7 @@ export class PaymentsController {
     @Paginate() query: PaginateQuery,
     @Param('programId', ParseIntPipe) programId: number,
     @Req() req: ScopedUserRequest,
-    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combination with Paginate decorator
   ): Promise<BulkActionResultPaymentDto> {
     const userId = RequestHelper.getUserId(req);
 

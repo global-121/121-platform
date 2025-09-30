@@ -28,7 +28,7 @@ export class AxiosCallsService {
     });
   }
 
-  public accesTokenToHeaders(accessToken: string): Header[] {
+  public accessTokenToHeaders(accessToken: string): Header[] {
     return [
       {
         name: 'Cookie',

@@ -17,7 +17,7 @@ describe('Cron jobs', () => {
     await waitFor(2_000);
   });
 
-  it('should initiate all cronjobs succesfully', async () => {
+  it('should initiate all cronjobs successfully', async () => {
     // Arrange
 
     // Act

@@ -97,7 +97,7 @@ export class ProgramFspConfigurationsController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Update a Fsp Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therfore recommended to use this endpoint: /programs/{programId}/fsp-configurations/{name}/properties. Example of how to format properties can also be found there',
+      'Update a Fsp Configuration for a Program. Can only update the label and properties. Posting an array with properties or an empty array of properties will delete all existing properties and create new ones. If you want to add properties it is therefore recommended to use this endpoint: /programs/{programId}/fsp-configurations/{name}/properties. Example of how to format properties can also be found there',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @ApiParam({
@@ -271,7 +271,7 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description:
-      'Program does not exist or Fsp Configuration or propery does not exist',
+      'Program does not exist or Fsp Configuration or property does not exist',
   })
   @Patch(':programId/fsp-configurations/:name/properties/:propertyName')
   public async updateProperty(
@@ -319,7 +319,7 @@ export class ProgramFspConfigurationsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description:
-      'Program does not exist or Fsp Configuration or propery does not exist',
+      'Program does not exist or Fsp Configuration or property does not exist',
   })
   @Delete(':programId/fsp-configurations/:name/properties/:propertyName')
   public async deleteProperty(

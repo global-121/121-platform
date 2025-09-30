@@ -20,7 +20,7 @@ const registration1 = { ...registrationPV5 };
 const registration2 = { ...registrationPV6 };
 const registration3 = { ...registrationPV7 };
 const programId = 2;
-describe('Succesfully mark registrations to ignore duplication', () => {
+describe('Successfully mark registrations to ignore duplication', () => {
   let registrationId1: number;
   let registrationId2: number;
   let registrationId3: number;

@@ -55,9 +55,9 @@ export class CronjobExecutionService {
     );
   }
 
-  public async cronSendWhatsappReminders(): Promise<void> {
+  public async cronSendWhatsAppReminders(): Promise<void> {
     await this.cronjobExecutionHelperService.executeWithLogging(
-      'cronSendWhatsappReminders',
+      'cronSendWhatsAppReminders',
       () => this.intersolveVoucherCronService.sendWhatsappReminders(),
     );
   }

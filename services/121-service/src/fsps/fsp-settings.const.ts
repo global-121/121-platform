@@ -6,8 +6,8 @@ import {
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { FspDto } from '@121-service/src/fsps/fsp.dto';
 
-// Attributes are the programRegistrationAttributes that are required for a regisration to have a program fsp configuration with the fsp
-// Configuration properties are the program finacial service configuration properties that are required for the fsp to be able to send a payment
+// Attributes are the programRegistrationAttributes that are required for a registration to have a program fsp configuration with the fsp
+// Configuration properties are the program financial service configuration properties that are required for the fsp to be able to send a payment
 export const FSP_SETTINGS: FspDto[] = [
   {
     name: Fsps.excel,

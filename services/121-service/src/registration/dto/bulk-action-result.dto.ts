@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+
 export class BulkActionResultDto {
   @ApiProperty({
     example: 10,
@@ -15,7 +17,7 @@ export class BulkActionResultDto {
 
 export class BulkActionResultRetryPaymentDto extends BulkActionResultDto {
   @ApiProperty({
-    example: ['Intersolve-voucher-whatsapp', 'Intersolve-voucher-paper'],
+    example: [Fsps.intersolveVoucherWhatsapp, Fsps.intersolveVoucherPaper],
   })
   public readonly programFspConfigurationNames: string[];
 }

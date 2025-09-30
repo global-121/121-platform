@@ -72,7 +72,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(getTransactionsBody.body[0].errorMessage).toBe(null);
   });
 
-  it('when credit transfer API call gives an error response should succesfully do a payment with transactions that have status error', async () => {
+  it('when credit transfer API call gives an error response should successfully do a payment with transactions that have status error', async () => {
     // Arrange
     const paymentReferenceIds = [registrationCbe.referenceId];
     // The fullName value triggers a specific mock scenario
@@ -125,7 +125,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
   });
 
-  it('when credit transfer API call times out should succesfully do a payment with transactions that have status error', async () => {
+  it('when credit transfer API call times out should successfully do a payment with transactions that have status error', async () => {
     // Arrange
     const paymentReferenceIds = [registrationCbe.referenceId];
 
@@ -178,7 +178,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
   });
 
-  it('when credit transfer API call returns duplicated transaction error should succesfully do a retry payment with transactions that have status success when transaction enquiry returns a success response', async () => {
+  it('when credit transfer API call returns duplicated transaction error should successfully do a retry payment with transactions that have status success when transaction enquiry returns a success response', async () => {
     // Arrange
     const paymentReferenceIds = [registrationCbe.referenceId];
 
@@ -274,7 +274,7 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
     expect(getTransactionsAfterRetryBody.body[0].errorMessage).toBe(null);
 
     // TODO Implement the following test cases if we refactor CBE integration:
-    // - should succesfully do a payment with transactions that have status error when transaction enquiry returns an error response
-    // - should succesfully do a payment with transactions that have status error when transaction enquiry times out
+    // - should successfully do a payment with transactions that have status error when transaction enquiry returns an error response
+    // - should successfully do a payment with transactions that have status error when transaction enquiry times out
   });
 });

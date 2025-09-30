@@ -40,7 +40,7 @@ export enum MessageProcessType {
   whatsappDefaultReply = 'whatsapp-default-reply',
 }
 
-// Used in places where custom message are send and it is not clear if registration has whatsapp
+// Used in places where custom message are send and it is not clear if Registration has WhatsApp
 // This decision is made in the message-queues.service.ts
 export enum MessageProcessTypeExtension {
   smsOrWhatsappTemplateGeneric = 'sms-or-whatsapp-template-generic',

@@ -176,7 +176,7 @@ export class CronjobInitiateService {
   // Separate function: easier to test.
   private async getHeaders(): Promise<Header[]> {
     const accessToken = await this.axiosCallsService.getAccessToken();
-    return this.axiosCallsService.accesTokenToHeaders(accessToken);
+    return this.axiosCallsService.accessTokenToHeaders(accessToken);
   }
 
   // Separate function: easier to test.
@@ -192,7 +192,7 @@ export class CronjobInitiateService {
     // "did we correctly start the cronjob?"
     // To stop waiting for a response we Promise.race with a 30 second timeout.
     // If the request takes longer than 30 seconds, we assume *here* it
-    // succeeded. (Errors can still occur ofcourse but they will be logged in
+    // succeeded. (Errors can still occur of course but they will be logged in
     // the actual cronjob code)
     let response: AxiosResponse | undefined;
     const timeoutMs = 30_000;

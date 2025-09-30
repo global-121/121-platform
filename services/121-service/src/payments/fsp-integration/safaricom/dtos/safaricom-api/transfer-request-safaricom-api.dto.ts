@@ -5,7 +5,7 @@ export interface TransferRequestSafaricomApiDto {
   readonly Amount: number;
   readonly PartyA: string | undefined;
   readonly PartyB: string;
-  readonly Remarks: string; // fields 'Remarks' and 'Occassion' are not used for reconciliation by clients. 'Remarks' is required, so filled with default value, 'Occassion' is optional, so ommitted.
+  readonly Remarks: string; // fields 'Remarks' and 'Occassion' are not used for reconciliation by clients. 'Remarks' is required, so filled with default value, 'Occassion' is optional, so omitted.
   readonly QueueTimeOutURL: string;
   readonly ResultURL: string;
   readonly OriginatorConversationID: string;

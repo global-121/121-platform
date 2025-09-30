@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { ErrorReponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-reponse-nedbank-api.dto';
+import { ErrorReponseNedbankApiDto } from '@121-service/src/payments/fsp-integration/nedbank/dtos/nedbank-api/error-response-nedbank-api.dto';
 
 @Injectable()
 export class NedbankApiHelperService {

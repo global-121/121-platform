@@ -38,7 +38,7 @@ const validPropertyDto: CreateProgramFspConfigurationPropertyDto = {
   value: '123',
 };
 
-// Declaring mocks here so they are accesble through all files
+// Declaring mocks here so they are accessible through all files
 let mockProgramFspConfigurationRepository;
 let mockProgramFspConfigurationPropertyRepository;
 let mockTransactionScopedRepository;
@@ -326,7 +326,7 @@ describe('ProgramFspConfigurationsService', () => {
   });
 
   describe('validateAndCreateProperties', () => {
-    it('should succesfully map and create properties', async () => {
+    it('should successfully map and create properties', async () => {
       const result = await service.createProperties({
         programId,
         name: configName,

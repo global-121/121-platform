@@ -238,7 +238,7 @@ export class PaymentsReportingService {
       if (!registrationView) {
         return { ...transaction };
       }
-      // Destructure 'name' as 'registrationName', and spread the rest
+      // De-structure 'name' as 'registrationName', and spread the rest
       const { name, referenceId: _referenceId, ...rest } = registrationView;
       return {
         ...transaction,

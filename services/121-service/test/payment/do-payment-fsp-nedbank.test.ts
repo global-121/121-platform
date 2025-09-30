@@ -53,7 +53,7 @@ describe('Do payment', () => {
     });
 
     describe('when create order API call gives a valid response', () => {
-      it('should succesfully do a payment', async () => {
+      it('should successfully do a payment', async () => {
         // Arrange
         const paymentReferenceIds = [registrationNedbank.referenceId];
         await seedIncludedRegistrations(
@@ -452,7 +452,7 @@ describe('Do payment', () => {
     });
 
     describe('when the create order API call times out', () => {
-      it('should update the transaction status to succes in reconciliation process if the voucher is redeemed', async () => {
+      it('should update the transaction status to "success" in reconciliation process if the voucher is redeemed', async () => {
         // Arrange
         const registrationFailTimeout = {
           ...registrationNedbank,

@@ -29,7 +29,7 @@ describe('TransactionJobsProcessorNedbank', () => {
   let redisClient: jest.Mocked<Redis>;
 
   beforeEach(() => {
-    jest.clearAllMocks(); // To esnure the call count is not influenced by other tests
+    jest.clearAllMocks(); // To ensure the call count is not influenced by other tests
 
     const { unit, unitRef } = TestBed.create(TransactionJobsProcessorNedbank)
       .mock(TransactionJobsNedbankService)

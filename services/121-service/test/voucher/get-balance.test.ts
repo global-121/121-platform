@@ -33,7 +33,7 @@ describe('Get Intersolve voucher balance', () => {
     await waitFor(3_000);
   });
 
-  it('should succesfully get balance', async () => {
+  it('should successfully get balance', async () => {
     // Arrange
     await importRegistrations(programIdPV, [registrationPV5], accessToken);
     await awaitChangeRegistrationStatus({

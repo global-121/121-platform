@@ -17,7 +17,7 @@ export class RegistrationDataError {
         return ErrorEnum.RegistrationDataError;
       },
     });
-    // capture where error occured
+    // capture where error occurred
     Error.captureStackTrace(error, RegistrationDataError);
     return error;
   }

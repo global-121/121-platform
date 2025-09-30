@@ -236,7 +236,7 @@ export class ExcelReconciliationService {
         fspConfig,
         matchColumn,
       });
-      // Convert the array into a map for increased performace (hashmap lookup)
+      // Convert the array into a map for increased performance (hash-map lookup)
       const importResultForFspConfigMap = new Map(
         importResultForFspConfig.map((item) => [
           item.feedback[matchColumn],
