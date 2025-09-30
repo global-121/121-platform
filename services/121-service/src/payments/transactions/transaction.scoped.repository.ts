@@ -1,11 +1,14 @@
 import { Inject } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 
+import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   ScopedQueryBuilder,
@@ -82,14 +85,29 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'r."id" as "registrationId"',
         'r."registrationStatus"',
         'transaction.status AS "status"',
-        'transaction.amount AS "amount"',
-        'transaction.errorMessage as "errorMessage"',
-        'fspconfig.name as "programFspConfigurationName"',
+        'transaction."transferValue" AS "amount"',
+        // 'transaction."errorMessage" as "errorMessage"', //##TODO: this was done at early stage to get to successful test
+        // 'fspconfig.name as "programFspConfigurationName"', ##TODO: this was done at early stage to get to successful test
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      // ##TODO: for now join latest event to get e.g. errorMessage. Re-evaluate this later.
+      .leftJoin(
+        (qb) =>
+          qb
+            .subQuery()
+            .select([
+              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
+              'te."errorMessage" AS "errorMessage"',
+              'te."created" AS "created"',
+            ])
+            .from(TransactionEventEntity, 'te')
+            .orderBy('te."transactionId"', 'ASC')
+            .addOrderBy('te."created"', 'DESC'),
+        'lte',
+        'lte."transactionId" = transaction.id',
+      )
+      .addSelect('lte."errorMessage" AS "errorMessage"')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('p."programId" = :programId', {
         programId,
       });
@@ -141,23 +159,43 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
   }): ScopedQueryBuilder<TransactionEntity> {
     let transactionQuery = this.createQueryBuilder('transaction')
       .select([
+        'transaction.id AS "transactionId"',
         'transaction.created AS "paymentDate"',
         'transaction.updated AS updated',
         'transaction.paymentId AS "paymentId"',
         'r."referenceId"',
         'status',
-        'amount',
-        'transaction.errorMessage as "errorMessage"',
-        'transaction.customData as "customData"',
+        'transaction.transferValue AS "transferValue"',
+        'lte."errorMessage" as "errorMessage"',
         'fspconfig.fspName as "fspName"',
-        'transaction.programFspConfigurationId as "programFspConfigurationId"',
+        'lte."programFspConfigurationId" as "programFspConfigurationId"',
         'fspconfig.label as "programFspConfigurationLabel"',
         'fspconfig.name as "programFspConfigurationName"',
       ])
-      .leftJoin('transaction.programFspConfiguration', 'fspconfig')
+      // ##TODO: for now join latest event to get e.g. errorMessage/FSP. Re-evaluate this later.
+      .leftJoin(
+        (qb) =>
+          qb
+            .subQuery()
+            .select([
+              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
+              'te."errorMessage" AS "errorMessage"',
+              'te."programFspConfigurationId" AS "programFspConfigurationId"',
+              'te."created" AS "created"',
+            ])
+            .from(TransactionEventEntity, 'te')
+            .orderBy('te."transactionId"', 'ASC')
+            .addOrderBy('te."created"', 'DESC'),
+        'lte',
+        'lte."transactionId" = transaction.id',
+      )
+      .leftJoin(
+        ProgramFspConfigurationEntity,
+        'fspconfig',
+        'fspconfig.id = lte."programFspConfigurationId"',
+      )
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
-      .innerJoin('transaction.latestTransaction', 'lt')
       .andWhere('p."programId" = :programId', {
         programId,
       });
@@ -193,5 +231,55 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       );
     }
     return transactionQuery;
+  }
+
+  public async getTransactionCreationDetails(transactionIds: number[]): Promise<
+    {
+      transactionId: number;
+      transferValue: number;
+      referenceId: string;
+      fspName: Fsps;
+    }[]
+  > {
+    return await this.createQueryBuilder('transaction')
+      .innerJoinAndSelect('transaction.registration', 'registration')
+      .innerJoinAndSelect('registration.programFspConfiguration', 'fspConfig')
+      .andWhere('transaction.id IN (:...transactionIds)', { transactionIds })
+      .select([
+        'transaction.id as "transactionId"',
+        'transaction.transferValue as "transferValue"',
+        'registration."referenceId" as "referenceId"',
+        '"fspConfig"."fspName" as "fspName"',
+      ])
+      .getRawMany<{
+        transactionId: number;
+        transferValue: number;
+        referenceId: string;
+        fspName: Fsps;
+      }>();
+  }
+
+  public async getPaymentIdByTransactionId(
+    transactionId: number,
+  ): Promise<number> {
+    const transaction = await this.findOneOrFail({
+      where: { id: Equal(transactionId) },
+      select: { paymentId: true },
+    });
+    return transaction.paymentId;
+  }
+
+  public async getTransactionIdByPaymentAndRegistration(
+    paymentId: number,
+    registrationId: number,
+  ): Promise<number> {
+    const transaction = await this.findOneOrFail({
+      where: {
+        paymentId: Equal(paymentId),
+        registration: { id: Equal(registrationId) },
+      },
+      select: { id: true },
+    });
+    return transaction.id;
   }
 }

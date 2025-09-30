@@ -45,7 +45,7 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
-      "transactionId": 2,
+      "transactionId": 1,
     },
     "id": "message1",
     "type": "message",

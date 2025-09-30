@@ -5,7 +5,7 @@ import { RegistrationEventEnum } from '@121-service/src/registration-events/enum
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { registrationVisa } from '@121-service/src/seed-data/mock/visa-card.data';
 import {
-  getEvents,
+  getRegistrationEvents,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -71,7 +71,7 @@ describe('Get events', () => {
       accessToken,
     );
 
-    const eventsResult = await getEvents({
+    const eventsResult = await getRegistrationEvents({
       programId: programIdOcw,
       fromDate: dateString,
       toDate: tomorrowDateString,
@@ -108,7 +108,7 @@ describe('Get events', () => {
       reason,
       accessToken,
     );
-    const eventsResult = await getEvents({
+    const eventsResult = await getRegistrationEvents({
       programId: programIdOcw,
       fromDate: yesterdayString,
       toDate: yesterdayString,
@@ -128,7 +128,7 @@ describe('Get events', () => {
     };
 
     // Act
-    const eventsResult = await getEvents({
+    const eventsResult = await getRegistrationEvents({
       ...invalidFields,
       accessToken,
       programId: programIdOcw,

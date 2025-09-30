@@ -5,7 +5,7 @@ import { waitForStatusUpdateToComplete } from '@121-service/test/helpers/program
 import {
   awaitChangeRegistrationStatus,
   changeRegistrationStatus,
-  getEvents,
+  getRegistrationEvents,
   getRegistrations,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
@@ -67,7 +67,7 @@ describe('change the status of a set of registrations', () => {
     });
     const registrations = getRegistrationsResponse.body.data;
 
-    const eventsResponse = await getEvents({
+    const eventsResponse = await getRegistrationEvents({
       programId: programIdOCW,
       accessToken,
     });

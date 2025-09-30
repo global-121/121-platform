@@ -71,7 +71,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -117,7 +120,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -163,7 +169,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -209,7 +218,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
     });
 
     // Assert
@@ -255,7 +267,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId: paymentId1,
     });
 
@@ -272,7 +287,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId: paymentId2,
     });
 
@@ -362,7 +380,10 @@ describe('Do failing payment with FSP Visa Debit', () => {
       paymentReferenceIds,
       accessToken,
       maxWaitTimeMs: 4_000,
-      completeStatusses: Object.values(TransactionStatusEnum),
+      completeStatusses: [
+        TransactionStatusEnum.success,
+        TransactionStatusEnum.error,
+      ],
       paymentId,
     });
 

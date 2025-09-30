@@ -16,12 +16,11 @@ export class SafaricomTransferScopedRepository extends ScopedRepository<Safarico
     super(request, repository);
   }
 
-  public async getByOriginatorConversationId(
+  public async getByOriginatorConversationIdOrThrow(
     originatorConversationId: string,
   ): Promise<SafaricomTransferEntity> {
     const safaricomTransfer = await this.findOne({
       where: { originatorConversationId: Equal(originatorConversationId) },
-      relations: ['transaction'],
     });
 
     if (!safaricomTransfer) {

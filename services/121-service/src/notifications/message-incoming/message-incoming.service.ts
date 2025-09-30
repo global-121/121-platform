@@ -30,6 +30,7 @@ import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/wha
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
+import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -70,6 +71,7 @@ export class MessageIncomingService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
     private readonly transactionRepository: TransactionRepository,
+    private readonly transactionScopedRepository: TransactionScopedRepository,
   ) {}
 
   public async getGenericNotificationText(
@@ -210,13 +212,14 @@ export class MessageIncomingService {
             sid: Equal(callbackData.MessageSid),
             transactionId: Not(IsNull()),
           },
-          select: ['transactionId'],
+          select: ['transactionId', 'processType'],
         },
       );
       if (messageWithTransaction?.transactionId) {
-        await this.intersolveVoucherService.processStatus(
+        await this.intersolveVoucherService.processMessageStatusCallback(
           callbackData,
           messageWithTransaction.transactionId,
+          messageWithTransaction.processType!,
         );
       }
     }
@@ -525,6 +528,11 @@ export class MessageIncomingService {
           }
         }
 
+        const transactionId =
+          await this.transactionScopedRepository.getTransactionIdByPaymentAndRegistration(
+            intersolveVoucher.paymentId!,
+            registration.id,
+          );
         await this.queueMessageService.addMessageJob({
           registration,
           message,
@@ -532,9 +540,10 @@ export class MessageIncomingService {
           messageProcessType: MessageProcessType.whatsappPendingVoucher,
           mediaUrl,
           customData: {
-            paymentId: intersolveVoucher.paymentId ?? undefined,
-            amount: intersolveVoucher.amount ?? undefined,
-            intersolveVoucherId: intersolveVoucher.id,
+            transactionData: {
+              transactionId,
+              intersolveVoucherId: intersolveVoucher.id, // TODO: when intersolve-voucher.entity is linked to transaction.entity better, this does not need to be included here any more
+            },
           },
           userId: intersolveVoucher.userId,
         });

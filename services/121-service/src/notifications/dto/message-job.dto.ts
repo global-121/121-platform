@@ -20,9 +20,11 @@ export class MessageJobDto {
 }
 
 export class MessageJobCustomDataDto {
-  paymentId?: number;
-  amount?: number;
-  intersolveVoucherId?: number;
+  transactionData?: {
+    transactionId?: number;
+    intersolveVoucherId?: number;
+    programFspConfigurationId?: number;
+  };
   pendingMessageId?: number;
   existingMessageSid?: string;
   placeholderData?: Record<string, string | null | LocalizedString>;

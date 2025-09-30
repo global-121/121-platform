@@ -193,17 +193,27 @@ export class MessageService {
           errorMessage = error;
         },
       );
-    const status = messageSid
+    const newTransactionStatus = messageSid
       ? TransactionStatusEnum.waiting
       : TransactionStatusEnum.error;
 
-    if (messageJobDto.customData?.paymentId) {
-      await this.intersolveVoucherService.updateWaitingTransactionStep1(
-        messageJobDto.customData.paymentId,
-        messageJobDto.registrationId,
-        status,
-        status === TransactionStatusEnum.error ? undefined : messageSid, // else = 'waiting'
-        status === TransactionStatusEnum.error ? errorMessage : undefined, // else = 'waiting'
+    if (messageJobDto.customData?.transactionData?.transactionId) {
+      await this.intersolveVoucherService.updateTransactionProgressBasedOnInitialMessage(
+        {
+          transactionId: messageJobDto.customData.transactionData.transactionId,
+          newTransactionStatus,
+          userId: messageJobDto.userId,
+          programFspConfigurationId:
+            messageJobDto.customData.transactionData.programFspConfigurationId!,
+          messageSid:
+            newTransactionStatus === TransactionStatusEnum.error
+              ? undefined
+              : messageSid, // else = 'waiting'
+          errorMessage:
+            newTransactionStatus === TransactionStatusEnum.error
+              ? errorMessage
+              : undefined, // else = 'waiting'
+        },
       );
     }
   }
@@ -236,21 +246,18 @@ export class MessageService {
         },
       );
 
-    const status = TransactionStatusEnum.success;
-    if (
-      messageJobDto.customData?.paymentId &&
-      messageJobDto.customData.amount != undefined
-    ) {
-      await this.intersolveVoucherService.processTransactionResultStep2(
-        messageJobDto.customData.paymentId,
-        messageJobDto.customData.amount,
-        messageJobDto.registrationId,
-        status,
-        errorMessage,
-        messageJobDto.programId,
+    const newTransactionStatus = messageSid
+      ? TransactionStatusEnum.success
+      : TransactionStatusEnum.error;
+    if (messageJobDto.customData?.transactionData?.transactionId) {
+      await this.intersolveVoucherService.updateTransactionProgressBasedOnVoucherMessage(
         {
+          transactionId: messageJobDto.customData.transactionData.transactionId,
+          newTransactionStatus,
+          errorMessage,
           messageSid,
-          intersolveVoucherId: messageJobDto.customData.intersolveVoucherId,
+          intersolveVoucherId:
+            messageJobDto.customData.transactionData.intersolveVoucherId!,
         },
       );
     }

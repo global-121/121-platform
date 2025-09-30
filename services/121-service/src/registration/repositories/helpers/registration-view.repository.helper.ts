@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import {
   RegistrationDataInfo,
   RegistrationDataRelation,

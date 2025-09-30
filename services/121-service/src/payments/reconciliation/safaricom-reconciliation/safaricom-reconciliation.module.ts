@@ -6,6 +6,7 @@ import { TransferCallbackJobProcessorSafaricom } from '@121-service/src/payments
 import { SafaricomReconciliationController } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.controller';
 import { SafaricomReconciliationService as SafaricomReconciliationService } from '@121-service/src/payments/reconciliation/safaricom-reconciliation/safaricom-reconciliation.service';
 import { RedisModule } from '@121-service/src/payments/redis/redis.module';
+import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsModule } from '@121-service/src/payments/transactions/transactions.module';
 import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-registry.module';
 import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-logger.middleware';
@@ -15,6 +16,7 @@ import { AzureLoggerMiddleware } from '@121-service/src/shared/middleware/azure-
     SafaricomModule,
     RedisModule,
     TransactionsModule,
+    TransactionEventsModule,
     QueuesRegistryModule,
   ],
   providers: [
