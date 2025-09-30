@@ -78,7 +78,7 @@ export class PaymentsController {
     @Param('programId', ParseIntPipe)
     programId: number,
   ): Promise<GetPaymentsDto[]> {
-    return await this.paymentsReportingService.getPayments(programId);
+    return await this.paymentsReportingService.getPayments({ programId });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.PaymentREAD] })

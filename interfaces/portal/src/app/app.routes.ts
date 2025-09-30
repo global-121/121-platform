@@ -15,6 +15,7 @@ export enum AppRoutes {
   privacy = 'privacy',
   project = 'project',
   projectMonitoring = 'monitoring',
+  projectMonitoringDashboard = 'dashboard',
   projectMonitoringFiles = 'files',
   projectMonitoringPowerBI = 'powerbi',
   projectPaymentLog = 'payment-log',
@@ -125,6 +126,17 @@ export const routes: Routes = [
               import(
                 '~/pages/project-monitoring-powerbi/project-monitoring-powerbi.page'
               ).then((x) => x.ProjectMonitoringPowerbiPageComponent),
+          },
+          {
+            path: AppRoutes.projectMonitoringDashboard,
+            title:
+              $localize`:@@page-title-project-monitoring-dashboard:Dashboard` +
+              ' | ' +
+              $localize`:@@page-title-project-monitoring:Monitoring`,
+            loadComponent: () =>
+              import(
+                '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.page'
+              ).then((x) => x.ProjectMonitoringDashboardPageComponent),
           },
           {
             path: AppRoutes.projectMonitoringFiles,

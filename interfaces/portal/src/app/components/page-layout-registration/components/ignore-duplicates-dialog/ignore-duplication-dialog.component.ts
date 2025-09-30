@@ -22,6 +22,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { FormDialogComponent } from '~/components/form-dialog/form-dialog.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   generateFieldErrors,
@@ -48,6 +49,7 @@ type IgnoreDuplicationFormGroup =
 })
 export class IgnoreDuplicationDialogComponent {
   private registrationApiService = inject(RegistrationApiService);
+  private metricApiService = inject(MetricApiService);
   readonly projectId = input.required<string>();
   readonly referenceId = input.required<string>();
   readonly registrationId = input.required<string>();
@@ -100,6 +102,7 @@ export class IgnoreDuplicationDialogComponent {
       }),
     onSuccess: () => {
       this.formGroup.reset();
+      void this.metricApiService.invalidateCache(this.projectId);
       return this.registrationApiService.invalidateCache({
         projectId: this.projectId,
       });
