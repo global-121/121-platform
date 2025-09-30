@@ -2,7 +2,11 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.enable": true,
   "eslint.format.enable": true,
-  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.removeUnusedImports": "explicit"
@@ -10,7 +14,9 @@
   "regexrobin.rules": [
     {
       "regex": "AB#(\\d+)",
-      "tree": { "group": "Azure DevOps backlog items" },
+      "tree": {
+        "group": "Azure DevOps backlog items"
+      },
       "editor": [
         {
           "link": "https://dev.azure.com/redcrossnl/121%20Platform/_workitems/edit/$1",
@@ -28,5 +34,11 @@
     "ngClass",
     "class:list"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  }
 }

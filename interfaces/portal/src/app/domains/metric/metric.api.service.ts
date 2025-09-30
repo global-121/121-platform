@@ -71,7 +71,7 @@ export class MetricApiService extends DomainApiService {
           statusObject[currentStatus.status] = currentStatus.statusCount;
 
           return statusObject;
-        }, {}),
+        }, {} as ProjectRegistrationsCountByStatus),
     });
   }
 
