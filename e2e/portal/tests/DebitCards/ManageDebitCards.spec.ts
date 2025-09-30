@@ -51,7 +51,7 @@ test('[34619] User can view debit cards of a registration with a single active d
 
   await test.step('User can view current debit card data', async () => {
     const currentDate = new Date();
-    const currentDateString = format(currentDate, 'dd MMMM yyyy');
+    const currentDateString = format(currentDate, 'd MMMM yyyy');
     const expectedDebitCardData = {
       'Card number': expect.any(String),
       'Card status': 'Active',
