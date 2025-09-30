@@ -255,7 +255,7 @@ export class PaymentsExecutionService {
     programId: number,
     paginateQuery: PaginateQuery,
   ) {
-    const chunkSize = 4000;
+    const chunkSize = 10000;
 
     return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
       programId,
