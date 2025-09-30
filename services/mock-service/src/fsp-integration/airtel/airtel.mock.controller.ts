@@ -78,7 +78,7 @@ export class AirtelMockController {
   @ApiOperation({ summary: 'Disbursement API v2' })
   // The * is a wildcard is needed because the airtel API want the url to end with a slash.
   // This is a a workaround because the Post decorator does not allow trailing slashes."
-  @Post('standard/v2/disbursements/*')
+  @Post('standard/v2/disbursements/*path')
   @HttpCode(200)
   @ApiHeader({
     name: 'X-Country',
