@@ -94,8 +94,5 @@ export class ProjectFormInformationComponent {
     });
   });
 
-  readonly tooltipTargetRegistrations =
-    PROJECT_FORM_TOOLTIPS.targetRegistrations;
-  readonly tooltipValidationProcess = PROJECT_FORM_TOOLTIPS.validationProcess;
-  readonly tooltipEnableScope = PROJECT_FORM_TOOLTIPS.enableScope;
+  readonly PROJECT_FORM_TOOLTIPS = PROJECT_FORM_TOOLTIPS;
 }
