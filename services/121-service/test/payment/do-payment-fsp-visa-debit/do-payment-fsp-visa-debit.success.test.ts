@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
@@ -155,7 +156,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
 
   it('should payout different amounts based on current balance and spend', async () => {
     // Arrange
-
     registrationVisa.fullName = 'mock-current-balance-13000-mock-spent-1000';
     registrationVisa.paymentAmountMultiplier = 3;
 
@@ -203,6 +203,15 @@ describe('Do successful payment with FSP Visa Debit', () => {
       completeStatusses: Object.values(TransactionStatusEnum),
       paymentId: paymentId1,
     });
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds,
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: [MessageContentType.payment],
+      },
+    });
 
     // Reissue card so both cards have a spend of 6000
     await issueNewVisaCard(
@@ -228,6 +237,15 @@ describe('Do successful payment with FSP Visa Debit', () => {
       completeStatusses: Object.values(TransactionStatusEnum),
       paymentId: paymentId2,
     });
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds,
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: [MessageContentType.payment],
+      },
+    });
 
     // Assert
     const transactionsResponse1 = await getTransactions({
@@ -235,15 +253,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentId: paymentId2,
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
-    });
-    await waitForMessagesToComplete({
-      programId: programIdVisa,
-      referenceIds: [registrationVisa.referenceId],
-      accessToken,
-      expectedMessageAttribute: {
-        key: 'contentType',
-        values: ['payment'],
-      },
     });
     const messagesHistoryPa1 = await getMessageHistory(
       programIdVisa,
@@ -256,15 +265,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentId: paymentId2,
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
-    });
-    await waitForMessagesToComplete({
-      programId: programIdVisa,
-      referenceIds: [registrationOCW2.referenceId],
-      accessToken,
-      expectedMessageAttribute: {
-        key: 'contentType',
-        values: ['payment'],
-      },
     });
     const messagesHistoryPa2 = await getMessageHistory(
       programIdVisa,
@@ -291,8 +291,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
-    //TODO: string is not found in  message because the amount is higher
-    console.log(messagesHistoryPa1.body);
     expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
@@ -305,7 +303,6 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
-    //TODO:
     expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
