@@ -18,6 +18,9 @@ for file in "${test_files[@]}"; do
   echo " - ${file}"
 done
 
+# new line
+echo ""
+
 for file in "${test_files[@]}"; do
   # TODO: AB#38219 - fix failing test
   # skip payment100kRegistrationIntersolveVisa.js for now as it is failing
@@ -55,6 +58,9 @@ for file in "${test_files[@]}"; do
   echo ::endgroup::
 done
 
+# new line
+echo ""
+
 # Check if there were any failed tests
 if [[ ${#failed_tests[@]} -ne 0 ]]; then
   echo "The following tests failed:"
@@ -65,3 +71,8 @@ if [[ ${#failed_tests[@]} -ne 0 ]]; then
 else
   echo "All tests passed successfully."
 fi
+
+# new line
+echo ""
+
+echo "Logs are available in the artifact section (below) if running in CI, or in the logs directory: ${PWD}/logs"
