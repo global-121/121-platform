@@ -40,42 +40,39 @@ export default class PaymentsModel {
     totalAmountPowerOfTwo,
     passRate,
   ) {
+    const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
     const delayBetweenAttempts = 5; // seconds
     let attempts = 0;
-    let selectedStatusPercentage = 0;
+    let successfulPaymentsPercentage = 0;
 
     while (attempts * delayBetweenAttempts < maxRetryDuration) {
       const url = `${baseUrl}api/programs/${programId}/payments/${paymentId}`;
       const res = http.get(url);
       const responseBody = JSON.parse(res.body);
-      const successfulPayments = responseBody['success'];
-      console.log(
-        `Payment results attempt ${attempts + 1} - has successful payments: ${!!successfulPayments}`,
+      const successfulPaymentsCount = parseInt(
+        responseBody?.['success']?.count || '0',
       );
-      if (successfulPayments) {
-        const totalPayments = Math.pow(2, totalAmountPowerOfTwo);
-        selectedStatusPercentage =
-          (parseInt(successfulPayments.count) / totalPayments) * 100;
 
+      successfulPaymentsPercentage =
+        (parseInt(successfulPaymentsCount) / totalPayments) * 100;
+
+      console.log(
+        `Payment results attempt #${attempts + 1} [target ${passRate}% - current ${successfulPaymentsPercentage.toFixed(2)}%]: ${successfulPaymentsCount} out of ${totalPayments} payments successful`,
+      );
+
+      if (successfulPaymentsPercentage >= passRate) {
         console.log(
-          `[target ${passRate}%]: ${successfulPayments.count} out of ${totalPayments} payments successful (${selectedStatusPercentage.toFixed(
-            2,
-          )}%)`,
+          `Success: The percentage of successful payments (${successfulPaymentsPercentage}%) is at or above the pass rate (${passRate}%).`,
         );
-
-        if (selectedStatusPercentage >= passRate) {
-          console.log(
-            `Success: The percentage of successful payments (${selectedStatusPercentage}%) is at or above the pass rate (${passRate}%).`,
-          );
-          return res;
-        }
+        return res;
       }
+
       attempts++;
       sleep(delayBetweenAttempts);
     }
 
     console.log(
-      `Failed: The percentage of successful payments (${selectedStatusPercentage}%) did not reach the pass rate (${passRate}%) within the maximum retry duration of ${maxRetryDuration} seconds.`,
+      `Failed: The percentage of successful payments (${successfulPaymentsPercentage}%) did not reach the pass rate (${passRate}%) within the maximum retry duration of ${maxRetryDuration} seconds.`,
     );
 
     return {
