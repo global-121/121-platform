@@ -45,7 +45,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type EditPersonalInformationFormGroup =
@@ -128,7 +128,7 @@ export class EditPersonalInformationComponent
   dialogFormFieldErrors = generateFieldErrors<DialogFormGroup>(
     this.dialogFormGroup,
     {
-      reason: genericFieldIsRequiredValidationMessage,
+      reason: genericValidationMessage,
     },
   );
 

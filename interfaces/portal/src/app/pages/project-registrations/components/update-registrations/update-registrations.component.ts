@@ -48,7 +48,7 @@ import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type ExportCSVFormGroup =
@@ -122,7 +122,7 @@ export class UpdateRegistrationsComponent {
   exportCSVFormFieldErrors = generateFieldErrors<ExportCSVFormGroup>(
     this.exportCSVFormGroup,
     {
-      fields: genericFieldIsRequiredValidationMessage,
+      fields: genericValidationMessage,
     },
   );
 
@@ -150,8 +150,8 @@ export class UpdateRegistrationsComponent {
     generateFieldErrors<UpdateRegistrationsFormGroup>(
       this.updateRegistrationsFormGroup,
       {
-        reason: genericFieldIsRequiredValidationMessage,
-        confirmAction: genericFieldIsRequiredValidationMessage,
+        reason: genericValidationMessage,
+        confirmAction: genericValidationMessage,
       },
     );
 
