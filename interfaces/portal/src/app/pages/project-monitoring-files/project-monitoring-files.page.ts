@@ -48,7 +48,7 @@ import { DownloadService } from '~/services/download.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 import { getUniqueUserOptions } from '~/utils/unique-users';
 
@@ -101,7 +101,7 @@ export class ProjectMonitoringFilesPageComponent {
   deleteFileFormFieldErrors = generateFieldErrors<DeleteFileFormGroup>(
     this.deleteFileFormGroup,
     {
-      confirmAction: genericFieldIsRequiredValidationMessage,
+      confirmAction: genericValidationMessage,
     },
   );
 

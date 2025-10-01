@@ -21,7 +21,7 @@ import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { Project } from '~/domains/project/project.model';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 export type ProjectBudgetFormGroup =
@@ -77,26 +77,11 @@ export class ProjectFormBudgetComponent {
   formFieldErrors = generateFieldErrors<ProjectBudgetFormGroup>(
     this.formGroup,
     {
-      budget: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return;
-      },
-      currency: genericFieldIsRequiredValidationMessage,
-      distributionFrequency: genericFieldIsRequiredValidationMessage,
-      distributionDuration: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return;
-      },
-      fixedTransferValue: (control) => {
-        if (control.errors?.min) {
-          return $localize`This needs to be at least 0.`;
-        }
-        return genericFieldIsRequiredValidationMessage(control);
-      },
+      budget: genericValidationMessage,
+      currency: genericValidationMessage,
+      distributionFrequency: genericValidationMessage,
+      distributionDuration: genericValidationMessage,
+      fixedTransferValue: genericValidationMessage,
     },
   );
 

@@ -83,8 +83,8 @@ export const PROJECT_ATTACHMENT_FILE_TYPE_ICONS: Record<
 };
 
 export const PROJECT_FORM_TOOLTIPS = {
-  targetRegistrations: $localize`The amount of people/ households your project wishes to reach.`,
-  validationProcess: $localize`Turning on the validation option enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
+  targetRegistrations: $localize`The amount of people/households your project plans to reach.`,
+  validationProcess: $localize`This enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
   enableScope: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team's page.
 
 To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`,

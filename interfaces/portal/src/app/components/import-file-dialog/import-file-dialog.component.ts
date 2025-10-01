@@ -23,7 +23,7 @@ import { FileUploadControlComponent } from '~/components/file-upload-control/fil
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 export type ImportFileDialogFormGroup =
@@ -63,7 +63,7 @@ export class ImportFileDialogComponent {
   formFieldErrors = generateFieldErrors<ImportFileDialogFormGroup>(
     this.formGroup,
     {
-      file: genericFieldIsRequiredValidationMessage,
+      file: genericValidationMessage,
     },
   );
 
