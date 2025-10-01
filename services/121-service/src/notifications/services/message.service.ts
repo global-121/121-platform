@@ -155,21 +155,22 @@ export class MessageService {
       );
     }
 
-    // If the pending message does not exist anymore we do not need to process it
-    // This can happen if a registration replies 'yes' twice within a short time span
-    // There is still a small timeframe where as message is still being send and the pending message is not deleted yet, however adding this check here makes the window much smaller
-    const existingPendingMessageCount =
-      await this.whatsappPendingMessageRepo.count({
+    const existingPendingMessage =
+      await this.whatsappPendingMessageRepo.findOne({
         where: {
           id: Equal(pendingMessageId),
         },
       });
-    if (existingPendingMessageCount === 0) {
+    // If the pending message does not exist anymore we do not need to process it
+    // This can happen if a registration replies 'yes' twice within a short time span
+    // There is still a small timeframe where as message is still being send and the pending message is not deleted yet, however adding this check here makes the window much smaller
+    if (!existingPendingMessage) {
       return;
     }
+    await this.whatsappPendingMessageRepo.delete(pendingMessageId);
 
-    await this.whatsappService
-      .sendWhatsapp({
+    try {
+      await this.whatsappService.sendWhatsapp({
         message: messageJobDto.message,
         recipientPhoneNr: messageJobDto.whatsappPhoneNumber,
         mediaUrl: messageJobDto.mediaUrl,
@@ -178,10 +179,14 @@ export class MessageService {
         messageProcessType: messageJobDto.messageProcessType,
         existingSidToUpdate: messageJobDto.customData?.existingMessageSid,
         userId: messageJobDto.userId,
-      })
-      .then(async () => {
-        return await this.whatsappPendingMessageRepo.delete(pendingMessageId);
       });
+    } catch (error) {
+      const newPendingMessage = { ...existingPendingMessage };
+      // Ensure typeorm writes a new record instead of trying to update the existing one
+      delete (newPendingMessage as { id?: unknown }).id;
+      await this.whatsappPendingMessageRepo.save(newPendingMessage);
+      throw error;
+    }
   }
 
   private async processWhatsappTemplateVoucher(
