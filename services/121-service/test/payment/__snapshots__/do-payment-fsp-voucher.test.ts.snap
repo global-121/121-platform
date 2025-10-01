@@ -6,10 +6,10 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should succesf
 [
   {
     "attributes": {
-      "body": "Welcome to our program. Within a couple of days your request will be validated.",
-      "contentType": "new",
+      "body": "",
+      "contentType": "payment-instructions",
       "errorCode": null,
-      "mediaUrl": null,
+      "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/programs/2/fsps/intersolve-voucher/instructions/",
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
@@ -73,25 +73,6 @@ Please reply “yes” to this message in order to receive:
       "transactionId": 1,
     },
     "id": "message2",
-    "type": "message",
-    "user": {
-      "id": 1,
-      "username": "admin@example.org",
-    },
-  },
-  {
-    "attributes": {
-      "body": "This is a message from the Red Cross.
-
-There is a message waiting for you. Please reply “yes” to this message to receive it.",
-      "contentType": "generic-templated",
-      "errorCode": null,
-      "mediaUrl": null,
-      "notificationType": "whatsapp",
-      "status": "read",
-      "to": "whatsapp:+14155238886",
-    },
-    "id": "message3",
     "type": "message",
     "user": {
       "id": 1,
