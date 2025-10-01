@@ -93,7 +93,7 @@ export class PageLayoutMonitoringComponent {
       return;
     }
 
-    return this.payments.data()[this.payments.data().length - 1].paymentId;
+    return Math.max(...this.payments.data().map((p) => p.paymentId));
   });
 
   readonly projectDescription = computed(() =>
