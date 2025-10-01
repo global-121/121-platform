@@ -73,6 +73,8 @@ export class ProjectSettingsBasicInformationComponent {
     'projectFormInformation',
   );
 
+  // These are two separate components/formGroups because they are also
+  // used separately in the project creation flow
   readonly formGroup = computed(() => {
     const nameGroup = this.projectFormName()?.formGroup;
     const informationGroup = this.projectFormInformation()?.formGroup;

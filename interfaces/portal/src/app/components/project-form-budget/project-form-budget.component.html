@@ -17,7 +17,7 @@
       label="Currency"
       i18n-label
       [errorMessage]="formFieldErrors()('currency')"
-      [labelTooltip]="tooltipCurrency"
+      [labelTooltip]="PROJECT_FORM_TOOLTIPS.currency"
       [isRequired]="true"
     >
       <p-select
@@ -46,7 +46,7 @@
     label="Default transfers per registration"
     i18n-label
     [errorMessage]="formFieldErrors()('distributionDuration')"
-    [labelTooltip]="tooltipDistributionDuration"
+    [labelTooltip]="PROJECT_FORM_TOOLTIPS.distributionDuration"
   >
     <input
       pInputText
