@@ -519,22 +519,6 @@ export class MetricsService {
       res[month].waiting += Number(aggregate.waiting.amount);
       res[month].failed += Number(aggregate.failed.amount);
     }
-
-    /*
-      {
-        "2025-09": {
-          "success": 2400,
-          "waiting": 5,
-          "failed": 10
-        },
-        "2025-10": {
-          "success": 3500,
-          "waiting": 200,
-          "failed": 50
-        }
-      }
-    */
-
     return res;
   }
 }
