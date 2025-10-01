@@ -80,7 +80,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "csv-parser": "^3.2.0",
-    "easy-soap-request": "^5.6.1",
+    "easy-soap-request": "^5.7.0",
     "form-data": "^4.0.4",
     "ioredis": "^5.4.1",
     "jimp": "^0.22.12",
