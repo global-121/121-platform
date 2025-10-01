@@ -101,7 +101,5 @@ export class ProjectFormBudgetComponent {
     });
   });
 
-  readonly tooltipCurrency = PROJECT_FORM_TOOLTIPS.currency;
-  readonly tooltipDistributionDuration =
-    PROJECT_FORM_TOOLTIPS.distributionDuration;
+  readonly PROJECT_FORM_TOOLTIPS = PROJECT_FORM_TOOLTIPS;
 }
