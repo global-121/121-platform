@@ -113,9 +113,10 @@ describe('Do payment to 1 PA', () => {
         [
           MessageContentType.paymentTemplated,
           MessageContentType.paymentVoucher,
+          MessageContentType.paymentInstructions,
         ].includes(msg.attributes.contentType),
       );
-      expect(ahVoucherRelatedMesssages.length).toBe(2);
+      expect(ahVoucherRelatedMesssages.length).toBe(3);
 
       let imageCodeSecret;
 
@@ -128,6 +129,8 @@ describe('Do payment to 1 PA', () => {
         // Remove the "created" field from the messages
         // @ts-expect-error don't care about deleting non-optional properties
         delete message.created;
+        // @ts-expect-error don't care about deleting non-optional properties
+        delete message.id;
 
         if (message.attributes.mediaUrl?.includes('imageCode')) {
           const [mediaUrlPath, mediaUrlSecret] =

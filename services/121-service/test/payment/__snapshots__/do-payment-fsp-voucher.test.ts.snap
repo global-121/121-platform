@@ -9,12 +9,11 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should success
       "body": "",
       "contentType": "payment-instructions",
       "errorCode": null,
-      "mediaUrl": "${process.env.EXTERNAL_121_SERVICE_URL}/api/programs/2/fsps/intersolve-voucher/instructions/",
+      "mediaUrl": "http://localhost:3000/api/programs/2/fsps/intersolve-voucher/instructions/",
       "notificationType": "whatsapp",
       "status": "read",
       "to": "whatsapp:+14155238886",
     },
-    "id": "message0",
     "type": "message",
     "user": {
       "id": 1,
@@ -47,7 +46,6 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
       "to": "whatsapp:+14155238886",
       "transactionId": 2,
     },
-    "id": "message1",
     "type": "message",
     "user": {
       "id": 1,
@@ -72,7 +70,6 @@ Please reply “yes” to this message in order to receive:
       "to": "whatsapp:+14155238886",
       "transactionId": 1,
     },
-    "id": "message2",
     "type": "message",
     "user": {
       "id": 1,
