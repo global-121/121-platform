@@ -12,11 +12,12 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   doPayment,
   getTransactions,
+  waitForMessagesToComplete,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getMessageHistoryUntilX,
+  getMessageHistory,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -235,13 +236,19 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationVisa.referenceId,
       accessToken,
     });
-
-    // Waits until the 4th message is received
-    const messagesHistoryPa1 = await getMessageHistoryUntilX(
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [registrationVisa.referenceId],
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: ['payment'],
+      },
+    });
+    const messagesHistoryPa1 = await getMessageHistory(
       programIdVisa,
       registrationVisa.referenceId,
       accessToken,
-      4,
     );
 
     const transactionsResponse2 = await getTransactions({
@@ -250,12 +257,21 @@ describe('Do successful payment with FSP Visa Debit', () => {
       registrationReferenceId: registrationOCW2.referenceId,
       accessToken,
     });
-    const messagesHistoryPa2 = await getMessageHistoryUntilX(
+    await waitForMessagesToComplete({
+      programId: programIdVisa,
+      referenceIds: [registrationOCW2.referenceId],
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'contentType',
+        values: ['payment'],
+      },
+    });
+    const messagesHistoryPa2 = await getMessageHistory(
       programIdVisa,
       registrationOCW2.referenceId,
       accessToken,
-      4,
     );
+
     const transactionsResponse3 = await getTransactions({
       programId: programIdVisa,
       paymentId: paymentId2,
@@ -275,6 +291,8 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse1.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is higher than 0 that it is send in a message
+    //TODO: string is not found in  message because the amount is higher
+    console.log(messagesHistoryPa1.body);
     expect(messagesHistoryPa1.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa1}`),
@@ -287,6 +305,7 @@ describe('Do successful payment with FSP Visa Debit', () => {
     );
     expect(transactionsResponse2.text).toContain(TransactionStatusEnum.success);
     // Validate for one message where amount is 0 that it still sends a message with the amount 0, so people will know they have to spend money earlier next months
+    //TODO:
     expect(messagesHistoryPa2.body.map((msg) => msg.attributes.body)).toEqual(
       expect.arrayContaining([
         expect.stringContaining(`€${expectedCalculatedAmountPa2}`),
