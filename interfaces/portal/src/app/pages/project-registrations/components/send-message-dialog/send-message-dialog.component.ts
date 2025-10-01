@@ -42,7 +42,7 @@ import {
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type SendMessageFormGroup =
@@ -105,8 +105,8 @@ export class SendMessageDialogComponent
   });
 
   formFieldErrors = generateFieldErrors<SendMessageFormGroup>(this.formGroup, {
-    messageType: genericFieldIsRequiredValidationMessage,
-    messageTemplateKey: genericFieldIsRequiredValidationMessage,
+    messageType: genericValidationMessage,
+    messageTemplateKey: genericValidationMessage,
     customMessage: (control) => {
       if (control.errors?.required) {
         return $localize`:@@generic-required-field:This field is required.`;

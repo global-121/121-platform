@@ -21,7 +21,7 @@ import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { Project } from '~/domains/project/project.model';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 export type ProjectInformationFormGroup =
@@ -66,12 +66,12 @@ export class ProjectFormInformationComponent {
   formFieldErrors = generateFieldErrors<ProjectInformationFormGroup>(
     this.formGroup,
     {
-      startDate: genericFieldIsRequiredValidationMessage,
-      endDate: genericFieldIsRequiredValidationMessage,
-      location: genericFieldIsRequiredValidationMessage,
-      targetNrRegistrations: genericFieldIsRequiredValidationMessage,
-      validation: genericFieldIsRequiredValidationMessage,
-      enableScope: genericFieldIsRequiredValidationMessage,
+      startDate: genericValidationMessage,
+      endDate: genericValidationMessage,
+      location: genericValidationMessage,
+      targetNrRegistrations: genericValidationMessage,
+      validation: genericValidationMessage,
+      enableScope: genericValidationMessage,
     },
   );
 

@@ -33,7 +33,7 @@ import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
@@ -100,8 +100,8 @@ export class AddProjectTeamUserDialogComponent {
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
-      userValue: genericFieldIsRequiredValidationMessage,
-      rolesValue: genericFieldIsRequiredValidationMessage,
+      userValue: genericValidationMessage,
+      rolesValue: genericValidationMessage,
       scopeValue: (control) => {
         if (!control.invalid) {
           return;

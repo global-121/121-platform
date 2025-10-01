@@ -18,7 +18,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { Project } from '~/domains/project/project.model';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 export type ProjectNameFormGroup =
@@ -51,8 +51,8 @@ export class ProjectFormNameComponent {
   });
 
   formFieldErrors = generateFieldErrors<ProjectNameFormGroup>(this.formGroup, {
-    name: genericFieldIsRequiredValidationMessage,
-    description: genericFieldIsRequiredValidationMessage,
+    name: genericValidationMessage,
+    description: genericValidationMessage,
   });
 
   updateFormGroup = effect(() => {

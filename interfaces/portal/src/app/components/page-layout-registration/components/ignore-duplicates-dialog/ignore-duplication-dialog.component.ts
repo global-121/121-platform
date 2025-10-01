@@ -26,7 +26,7 @@ import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type IgnoreDuplicationFormGroup =
@@ -87,7 +87,7 @@ export class IgnoreDuplicationDialogComponent {
   formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
     this.formGroup,
     {
-      reason: genericFieldIsRequiredValidationMessage,
+      reason: genericValidationMessage,
     },
   );
 
