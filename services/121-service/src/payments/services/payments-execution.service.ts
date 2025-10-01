@@ -84,13 +84,6 @@ export class PaymentsExecutionService {
     // This happens when you call the endpoint with dryRun=true
     // Calling with dryrun is true happens in the pa table when you try to do a payment to decide which registrations are selectable
     if (!amount) {
-      if (!dryRun) {
-        throw new HttpException(
-          'Amount is required when dryRun is false',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       return {
         ...bulkActionResultDto,
         sumPaymentAmountMultiplier: 0,
@@ -98,15 +91,9 @@ export class PaymentsExecutionService {
       };
     }
 
-    console.log('Fetching registrations for payment');
-
     // Get array of RegistrationViewEntity objects to be paid
     const registrationsForPayment =
       await this.getRegistrationsForPaymentChunked(programId, paginateQuery);
-
-    console.log(
-      `Fetched ${registrationsForPayment.length} registrations for payment`,
-    );
 
     // Calculate the totalMultiplierSum and create an array with all FSPs for this payment
     // Get the sum of the paymentAmountMultiplier of all registrations to calculate the total amount of money to be paid in frontend
@@ -142,27 +129,16 @@ export class PaymentsExecutionService {
     );
 
     if (!dryRun && referenceIds.length > 0) {
-      console.log('Checking FSP configurations');
-
       await this.checkFspConfigurationsOrThrow(
         programId,
         programFspConfigurationNames,
       );
-
-      console.log('Creating payment and events entities');
-
       const paymentId = await this.createPaymentAndEventsEntities({
         userId,
         programId,
         note,
       });
-
-      console.log(`Created payment entity with id ${paymentId}`);
-
       bulkActionResultPaymentDto.id = paymentId;
-
-      console.log('Initiating payment');
-
       // TODO: REFACTOR: userId not be passed down, but should be available in a context object; registrationsForPayment.length is redundant, as it is the same as referenceIds.length
       void this.initiatePayment({
         userId,
@@ -182,8 +158,6 @@ export class PaymentsExecutionService {
           );
         });
     }
-
-    console.log('Payment initiated');
 
     return bulkActionResultPaymentDto;
   }
@@ -281,7 +255,7 @@ export class PaymentsExecutionService {
     programId: number,
     paginateQuery: PaginateQuery,
   ) {
-    const chunkSize = 10000;
+    const chunkSize = 4000;
 
     return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
       programId,
