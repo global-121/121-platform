@@ -34,7 +34,7 @@ describe('RegistrationsController', () => {
       .mockResolvedValue(); // do not throw
   });
 
-  describe('Change registation status with right status-change permission', () => {
+  describe('Change registration status with right status-change permission', () => {
     const paginateQuery: PaginateQuery = {
       path: '',
     };

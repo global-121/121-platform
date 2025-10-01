@@ -21,6 +21,7 @@ import {
   DataListItem,
 } from '~/components/data-list/data-list.component';
 import { PageLayoutRegistrationComponent } from '~/components/page-layout-registration/page-layout-registration.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { ComponentCanDeactivate } from '~/guards/pending-changes.guard';
 import { EditPersonalInformationComponent } from '~/pages/project-registration-personal-information/components/edit-personal-information/edit-personal-information.component';
@@ -51,6 +52,7 @@ export class ProjectRegistrationPersonalInformationPageComponent
 
   readonly authService = inject(AuthService);
   readonly registrationApiService = inject(RegistrationApiService);
+  readonly metricApiService = inject(MetricApiService);
   readonly registrationAttributeService = inject(RegistrationAttributeService);
 
   registrationAttributes = injectQuery(
@@ -125,6 +127,7 @@ export class ProjectRegistrationPersonalInformationPageComponent
 
   async onRegistrationUpdated() {
     this.isEditing.set(false);
+    void this.metricApiService.invalidateCache(this.projectId);
     await this.registrationApiService.invalidateCache({
       projectId: this.projectId,
     });

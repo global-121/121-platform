@@ -5,7 +5,14 @@ import { FileDto } from '@121-service/src/metrics/dto/file.dto';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 
 import { DomainApiService } from '~/domains/domain-api.service';
-import { ProjectMetrics } from '~/domains/metric/metric.model';
+import {
+  ProjectAggregatePerMonth,
+  ProjectAggregatePerPayment,
+  ProjectMetrics,
+  ProjectRegistrationCountByDate,
+  ProjectRegistrationsCountByStatus,
+  ProjectRegistrationStatusStats,
+} from '~/domains/metric/metric.model';
 import { unknownArrayToCsvBlob } from '~/utils/csv-helpers';
 import { Dto } from '~/utils/dto-type';
 
@@ -46,6 +53,80 @@ export class MetricApiService extends DomainApiService {
       path: [...BASE_ENDPOINT(projectId), 'export-list', type],
       params,
       responseAsBlob: true,
+    });
+  }
+
+  getRegistrationCountByStatus({
+    projectId,
+  }: {
+    projectId: Signal<number | string>;
+  }) {
+    return this.generateQueryOptions<
+      ProjectRegistrationStatusStats[],
+      ProjectRegistrationsCountByStatus
+    >({
+      path: [...BASE_ENDPOINT(projectId), 'registration-status'],
+      processResponse: (response) =>
+        response.reduce((statusObject, currentStatus) => {
+          statusObject[currentStatus.status] = currentStatus.statusCount;
+
+          return statusObject;
+        }, {} as ProjectRegistrationsCountByStatus),
+    });
+  }
+
+  getAllPaymentsAggregates({
+    projectId,
+    limitNumberOfPayments,
+  }: {
+    projectId: Signal<number | string>;
+    limitNumberOfPayments?: string;
+  }) {
+    let params = {};
+    if (limitNumberOfPayments) {
+      params = { ...params, limitNumberOfPayments };
+    }
+    return this.generateQueryOptions<ProjectAggregatePerPayment[]>({
+      path: [...BASE_ENDPOINT(projectId), 'all-payments-aggregates'],
+      params,
+    });
+  }
+
+  getAmountSentByMonth({
+    projectId,
+    limitNumberOfPayments,
+  }: {
+    projectId: Signal<number | string>;
+    limitNumberOfPayments?: number;
+  }) {
+    let params = {};
+    if (limitNumberOfPayments) {
+      params = {
+        ...params,
+        limitNumberOfPayments: limitNumberOfPayments.toString(),
+      };
+    }
+    return this.generateQueryOptions<ProjectAggregatePerMonth>({
+      path: [...BASE_ENDPOINT(projectId), 'amount-sent-by-month'],
+      params,
+    });
+  }
+
+  getRegistrationCountByDate({
+    projectId,
+    startDate,
+  }: {
+    projectId: Signal<number | string>;
+    startDate?: string;
+  }) {
+    let params = {};
+    if (startDate) {
+      params = { ...params, startDate };
+    }
+
+    return this.generateQueryOptions<ProjectRegistrationCountByDate>({
+      path: [...BASE_ENDPOINT(projectId), 'registration-count-by-date'],
+      params,
     });
   }
 

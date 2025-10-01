@@ -25,8 +25,8 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { UniqueRegistrationPairEntity } from '@121-service/src/registration/entities/unique-registration-pair.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
-import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utilts/registration-utils.module';
-import { RegistrationUpdateProcessor } from '@121-service/src/registration/processsors/registrations-update.processor';
+import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
+import { RegistrationUpdateProcessor } from '@121-service/src/registration/processors/registrations-update.processor';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';

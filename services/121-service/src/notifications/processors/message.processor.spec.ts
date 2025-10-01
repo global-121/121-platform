@@ -41,7 +41,7 @@ describe('Message processor(s)', () => {
   });
 
   it('should call sendMessage', async () => {
-    // Arrannge
+    // Arrange
     messageService.sendTextMessage.mockResolvedValue();
 
     // Act

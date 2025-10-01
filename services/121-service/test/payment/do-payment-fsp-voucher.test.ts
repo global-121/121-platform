@@ -46,7 +46,7 @@ describe('Do payment to 1 PA', () => {
       registrationAhCopy = { ...registrationAh };
     });
 
-    it('should succesfully pay-out', async () => {
+    it('should successfully pay-out', async () => {
       // Arrange
       await seedIncludedRegistrations(
         [registrationAhCopy],
@@ -246,7 +246,7 @@ describe('Do payment to 1 PA', () => {
       expect(getTransactionsBody.body[0].errorMessage).toBeNull();
     });
 
-    it('should succesfully pay-out for Intersolve Voucher paper', async () => {
+    it('should successfully pay-out for Intersolve Voucher paper', async () => {
       // Arrange
       registrationAhCopy.programFspConfigurationName =
         Fsps.intersolveVoucherPaper;

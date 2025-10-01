@@ -37,7 +37,7 @@ describe('Load Visa debit cards and details', () => {
     await waitFor(2_000);
   });
 
-  it('should succesfully show a Visa Debit card', async () => {
+  it('should successfully show a Visa Debit card', async () => {
     const registrations = [registrationVisa];
     for (const status of Object.values(IntersolveVisaCardStatus)) {
       const copyRegistration = {

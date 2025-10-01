@@ -34,6 +34,7 @@ import {
   ImportFileDialogComponent,
   ImportFileDialogFormGroup,
 } from '~/components/import-file-dialog/import-file-dialog.component';
+import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
 import { Registration } from '~/domains/registration/registration.model';
 import { DownloadService } from '~/services/download.service';
@@ -86,6 +87,7 @@ export class UpdateRegistrationsComponent {
   readonly registrationAttributeService = inject(RegistrationAttributeService);
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
+  readonly metricApiService = inject(MetricApiService);
 
   protected registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -185,6 +187,8 @@ export class UpdateRegistrationsComponent {
         severity: 'info',
         showSpinner: true,
       });
+      void this.metricApiService.invalidateCache(this.projectId);
+
       setTimeout(() => {
         // invalidate the cache again after a delay to try and make the changes reflected in the UI
         void this.registrationApiService.invalidateCache({

@@ -362,7 +362,7 @@ export class WhatsappService {
         });
       if (whatsappTemplateTestEntity && whatsappTemplateTestEntity.succes) {
         resultsLanguage[messageTemplate.language][messageTemplate.type] = {
-          status: 'Succes',
+          status: 'Succes', // TODO: Is anything dependent on this exact string? If not, fix to 'Success'
           created: whatsappTemplateTestEntity.created,
         };
       } else if (whatsappTemplateTestEntity) {

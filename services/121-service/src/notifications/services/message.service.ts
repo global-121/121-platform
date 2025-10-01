@@ -158,6 +158,7 @@ export class MessageService {
 
     // If the pending message does not exist anymore we do not need to process it
     // This can happen if a registration replies 'yes' twice within a short time span
+    // There is still a small timeframe where as message is still being send and the pending message is not deleted yet, however adding this check here makes the window much smaller
     const existingPendingMessageCount =
       await this.whatsappPendingMessageRepo.count({
         where: {
@@ -399,7 +400,7 @@ export class MessageService {
     }
 
     // No template found
-    // This can happen on projects that have Whatsapp and templates configured incorrectly.
+    // This can happen on projects that have WhatsApp and templates configured incorrectly.
     // TODO: Add feature to pro-actively inform admins of this.
     // It's (currently) better to return *this* than throw an error here; if we
     // send this to Twilio the Twilio error message will show up in the user

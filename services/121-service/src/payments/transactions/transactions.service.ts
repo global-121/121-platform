@@ -133,7 +133,7 @@ export class TransactionsService {
     const transactionsToSave = await Promise.all(
       transactionResults.map(async (transactionResponse) => {
         // Get registrationId from referenceId if it is not defined
-        // TODO find out when this is needed it seems to make more sense if the registrationId is always known and than refenceId is not needed
+        // TODO find out when this is needed it seems to make more sense if the registrationId is always known and than referenceId is not needed
         if (!transactionResponse.registrationId) {
           const registration =
             await this.registrationScopedRepository.findOneOrFail({

@@ -25,7 +25,7 @@ import { RegistrationValidationInputType } from '@121-service/src/registration/e
 import { ValidationRegistrationConfig } from '@121-service/src/registration/interfaces/validate-registration-config.interface';
 import { ValidatedRegistrationInput } from '@121-service/src/registration/interfaces/validated-registration-input.interface';
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
-import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utilts/registration-utils.service';
+import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
@@ -68,7 +68,7 @@ export class RegistrationsImportService {
     );
 
     // Do initial validation of the input without the checks that are slow
-    // So the user gets some feedback immidiately after upload
+    // So the user gets some feedback immediately after upload
     // The rest of the checks will be done in the queue (the user will get no feedback of this)
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 

@@ -30,7 +30,9 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { ScopedRepository } from '@121-service/src/scoped.repository';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { UserService } from '@121-service/src/user/user.service';
+import { dateSort } from '@121-service/src/utils/dateSort';
 import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
+
 const userPermissionMapByExportType = {
   [ExportType.registrations]: [PermissionEnum.RegistrationPersonalEXPORT],
   [ExportType.unusedVouchers]: [PermissionEnum.PaymentVoucherExport],
@@ -197,7 +199,7 @@ export class MetricsService {
     programId: number;
     paginationQuery: PaginateQuery;
   }): Promise<MappedPaginatedRegistrationDto[]> {
-    // Create an empty scoped querybuilder object
+    // Create an empty scoped queryBuilder object
     const queryBuilder = this.registrationScopedViewRepository
       .createQueryBuilder('registration')
       .andWhere({ programId });
@@ -420,9 +422,13 @@ export class MetricsService {
     return res;
   }
 
-  public async getRegistrationCountByDate(
-    programId: number,
-  ): Promise<RegistrationCountByDate> {
+  public async getRegistrationCountByDate({
+    programId,
+    startDate,
+  }: {
+    programId: number;
+    startDate?: Date;
+  }): Promise<RegistrationCountByDate> {
     const query = this.registrationScopedRepository
       .createQueryBuilder('registration')
       .select(`to_char("created", 'yyyy-mm-dd') as "created"`)
@@ -430,7 +436,10 @@ export class MetricsService {
       .andWhere({ programId })
       .groupBy(`to_char("created", 'yyyy-mm-dd')`)
       .orderBy(`to_char("created", 'yyyy-mm-dd')`);
-    console.log('query: ', query.getSql());
+
+    if (startDate) {
+      query.andWhere('created >= :startDate', { startDate });
+    }
     const res = (await query.getRawMany()).reduce(
       (dates: Record<string, number>, r) => {
         dates[r.created] = Number(r.count);
@@ -441,37 +450,50 @@ export class MetricsService {
     return res;
   }
 
-  public async getAllPaymentsAggregates(
-    programId: number,
-  ): Promise<AggregatePerPayment> {
-    const res: AggregatePerPayment = {};
+  public async getAllPaymentsAggregates({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerPayment[]> {
+    const allPaymentsAggregates: AggregatePerPayment[] = [];
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
+    const payments = await this.paymentsReportingService.getPayments({
+      programId,
+      limitNumberOfPayments,
+    });
 
-    for (const payment of payments) {
-      const aggregate =
-        await this.paymentsReportingService.getPaymentAggregation(
-          programId,
-          payment.paymentId,
-        );
-      res[payment.paymentId] = aggregate;
+    const paymentsSorted = dateSort(payments, (payment) => payment.paymentDate);
+
+    for (const payment of paymentsSorted) {
+      const aggregate = {
+        id: payment.paymentId,
+        date: payment.paymentDate,
+        aggregatedStatuses:
+          await this.paymentsReportingService.getPaymentAggregation(
+            programId,
+            payment.paymentId,
+          ),
+      };
+      allPaymentsAggregates.push(aggregate);
     }
-
-    return res;
+    return allPaymentsAggregates;
   }
 
-  public async getAmountSentByMonth(
-    programId: number,
-  ): Promise<AggregatePerMonth> {
+  public async getAmountSentByMonth({
+    programId,
+    limitNumberOfPayments,
+  }: {
+    programId: number;
+    limitNumberOfPayments?: number;
+  }): Promise<AggregatePerMonth> {
     const res: AggregatePerMonth = {};
 
-    const payments = await this.paymentsReportingService.getPayments(programId);
-
-    const emptyMonth = {
-      success: 0,
-      waiting: 0,
-      failed: 0,
-    };
+    const payments = await this.paymentsReportingService.getPayments({
+      programId,
+      limitNumberOfPayments,
+    });
 
     for (const payment of payments) {
       const month = new Date(payment.paymentDate)
@@ -480,7 +502,11 @@ export class MetricsService {
         .slice(0, -3);
 
       if (!res[month]) {
-        res[month] = emptyMonth;
+        res[month] = {
+          success: 0,
+          waiting: 0,
+          failed: 0,
+        };
       }
 
       const aggregate =
@@ -493,6 +519,21 @@ export class MetricsService {
       res[month].waiting += Number(aggregate.waiting.amount);
       res[month].failed += Number(aggregate.failed.amount);
     }
+
+    /*
+      {
+        "2025-09": {
+          "success": 2400,
+          "waiting": 5,
+          "failed": 10
+        },
+        "2025-10": {
+          "success": 3500,
+          "waiting": 200,
+          "failed": 50
+        }
+      }
+    */
 
     return res;
   }

@@ -274,4 +274,61 @@ describe('send arbitrary messages to set of registrations', () => {
       TwilioErrorCodes.toNumberDoesNotExist,
     );
   });
+
+  it('should not send message twice to the same registrations on fast consecutive requests', async () => {
+    // Arrange
+    const message = 'Send this message multiple times';
+    const finalMessage =
+      'Send this message at the end to check if all are complete, so we know we need to stop waiting';
+
+    // The choice for 5 is arbitrary, we just want to send it multiple times
+    // Without the fix the bug was not always triggered with 2 sends to we picked a higher number for now
+    const amountOfSends = 5;
+
+    // Act: Send the same message in fast consecutive requests
+
+    for (let i = 0; i < amountOfSends; i++) {
+      await sendMessage(
+        accessToken,
+        programIdOCW,
+        [registrationOCW1.referenceId],
+        message,
+      );
+    }
+
+    // Send a final message to know when to stop waiting
+    await sendMessage(
+      accessToken,
+      programIdOCW,
+      [registrationOCW1.referenceId],
+      finalMessage,
+    );
+
+    // Wait for all messages to complete
+    await waitForMessagesToComplete({
+      programId: programIdOCW,
+      referenceIds: [registrationOCW1.referenceId],
+      accessToken,
+      expectedMessageAttribute: {
+        key: 'body',
+        values: [finalMessage],
+      },
+    });
+
+    // Assert
+    const messageHistory = (
+      await getMessageHistory(
+        programIdOCW,
+        registrationOCW1.referenceId,
+        accessToken,
+      )
+    ).body;
+
+    // Filter message history to only include messages with body equal to message
+    const filteredMessageHistory = messageHistory.filter(
+      (msg) => msg.attributes.body === message,
+    );
+
+    expect(filteredMessageHistory.length).toBe(amountOfSends);
+  });
 });

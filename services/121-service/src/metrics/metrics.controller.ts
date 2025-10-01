@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseDatePipe,
   ParseIntPipe,
   Query,
   Req,
@@ -33,6 +34,9 @@ import { RegistrationStatusStats } from '@121-service/src/metrics/dto/registrati
 import { ExportFileFormat } from '@121-service/src/metrics/enum/export-file-format.enum';
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { MetricsService } from '@121-service/src/metrics/metrics.service';
+import { AssertDatePipe } from '@121-service/src/pipes/assert-date.pipe';
+import { AssertIso8601Pipe } from '@121-service/src/pipes/assert-iso8601.pipe';
+import { AssertPositiveNumberPipe } from '@121-service/src/pipes/assert-positive-number.pipe';
 import { PaginateConfigRegistrationWithoutSort } from '@121-service/src/registration/const/filter-operation.const';
 import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { ScopedUserRequest } from '@121-service/src/shared/scoped-user-request';
@@ -175,6 +179,7 @@ export class MetricsController {
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
   @ApiOperation({ summary: '[SCOPED] Get registration count by created date.' })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({ name: 'startDate', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Registration count by created date',
@@ -183,8 +188,18 @@ export class MetricsController {
   public async getRegistrationCountByDate(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Query(
+      'startDate',
+      new AssertIso8601Pipe({ optional: true }),
+      new ParseDatePipe({ optional: true }),
+      new AssertDatePipe({ optional: true, allowFuture: false }),
+    )
+    startDate: Date,
   ): Promise<Record<string, number>> {
-    return await this.metricsService.getRegistrationCountByDate(programId);
+    return await this.metricsService.getRegistrationCountByDate({
+      programId,
+      startDate,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
@@ -192,6 +207,7 @@ export class MetricsController {
     summary: '[SCOPED] Get aggregate results for all payments in a program',
   })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({ name: 'limitNumberOfPayments', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'All payments aggregates',
@@ -200,8 +216,17 @@ export class MetricsController {
   public async getAllPaymentsAggregates(
     @Param('programId', ParseIntPipe)
     programId: number,
-  ): Promise<AggregatePerPayment> {
-    return await this.metricsService.getAllPaymentsAggregates(programId);
+    @Query(
+      'limitNumberOfPayments',
+      new ParseIntPipe({ optional: true }),
+      new AssertPositiveNumberPipe({ optional: true }),
+    )
+    limitNumberOfPayments?: number,
+  ): Promise<AggregatePerPayment[]> {
+    return await this.metricsService.getAllPaymentsAggregates({
+      programId,
+      limitNumberOfPayments,
+    });
   }
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramMetricsREAD] })
@@ -209,6 +234,7 @@ export class MetricsController {
     summary: '[SCOPED] Get amount sent by month',
   })
   @ApiParam({ name: 'programId', required: true })
+  @ApiQuery({ name: 'limitNumberOfPayments', required: false })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Amount sent by month',
@@ -217,7 +243,16 @@ export class MetricsController {
   public async getAmountSentByMonth(
     @Param('programId', ParseIntPipe)
     programId: number,
+    @Query(
+      'limitNumberOfPayments',
+      new ParseIntPipe({ optional: true }),
+      new AssertPositiveNumberPipe({ optional: true }),
+    )
+    limitNumberOfPayments?: number,
   ): Promise<AggregatePerMonth> {
-    return await this.metricsService.getAmountSentByMonth(programId);
+    return await this.metricsService.getAmountSentByMonth({
+      programId,
+      limitNumberOfPayments,
+    });
   }
 }

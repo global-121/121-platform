@@ -225,7 +225,7 @@ export class RegistrationsController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'The registration status update was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'The registration status update was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
@@ -478,7 +478,7 @@ export class RegistrationsController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Deleting set of registrations was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Deleting set of registrations was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @PaginatedSwaggerDocs(
@@ -519,7 +519,7 @@ export class RegistrationsController {
     @Req() req: ScopedUserRequest,
     @Param('programId') programId: number,
     @Body() body: DeleteRegistrationsDto,
-    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combination with Paginate decorator
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
@@ -555,12 +555,12 @@ export class RegistrationsController {
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     description:
-      'Sending bulk message was succesfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
+      'Sending bulk message was successfully started - NOTE: this endpoint is scoped, depending on program configuration it only returns/modifies data the logged in user has access to.',
     type: BulkActionResultDto,
   })
   @ApiOperation({
     summary:
-      '[SCOPED] Sends custom message via sms or whatsapp to set of PAs that can be defined via filter parameters.',
+      '[SCOPED] Sends custom message via SMS or WhatsApp to set of PAs that can be defined via filter parameters.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @PaginatedSwaggerDocs(
@@ -601,7 +601,7 @@ export class RegistrationsController {
     @Paginate() query: PaginateQuery,
     @Req() req: ScopedUserRequest,
     @Param('programId', ParseIntPipe) programId: number,
-    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combi with Paginate decorator
+    @Query('dryRun') dryRun = 'false', // Query decorator can be used in combination with Paginate decorator
   ): Promise<BulkActionResultDto> {
     const userId = RequestHelper.getUserId(req);
 
@@ -686,7 +686,7 @@ export class RegistrationsController {
     });
   }
 
-  // Re-issue card: this is placed in registrationscontroller because it also sends messages and searches by referenceId
+  // Re-issue card: this is placed in RegistrationsController because it also sends messages and searches by referenceId
   @ApiTags('fsps/intersolve-visa')
   @AuthenticatedUser({ permissions: [PermissionEnum.FspDebitCardCREATE] })
   @ApiOperation({

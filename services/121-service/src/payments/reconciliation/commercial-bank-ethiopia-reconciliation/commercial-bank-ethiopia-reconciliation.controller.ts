@@ -25,12 +25,12 @@ export class CommercialBankEthiopiaReconciliationController {
   @AuthenticatedUser({ isAdmin: true })
   @ApiOperation({
     summary:
-      'Retrieving and updating/insterting account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
+      'Retrieving and updating/inserting account enquiry data from Commercial Bank of Ethiopia for all registrations in this program.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Done retrieving and updating/insterting account enquiry data for all registrations in this program.',
+      'Done retrieving and updating/inserting account enquiry data for all registrations in this program.',
   })
   @ApiParam({ name: 'programId', required: true, type: 'integer' })
   @Put('programs/:programId/fsps/commercial-bank-ethiopia/account-enquiries')

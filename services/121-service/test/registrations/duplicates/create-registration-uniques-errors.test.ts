@@ -16,10 +16,10 @@ const registration1 = { ...registrationPV5 };
 const registration2 = { ...registrationPV6 };
 const programId = 2;
 
-// This is seperate from the other test file because it is testing the error case
+// This is separate from the other test file because it is testing the error case
 // it also saves a bit of processing time because it does not have to reset db before each test
 
-describe('Unsuccessfully mark registrations as unqiue from each other', () => {
+describe('Unsuccessfully mark registrations as unique from each other', () => {
   let registrationId1: number;
   let registrationId2: number;
   let accessToken: string;

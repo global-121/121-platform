@@ -186,7 +186,7 @@ export class RegistrationEventsService {
       );
     }
 
-    // Only check the fist entities for perfomance reasons.
+    // Only check the fist entities for performance reasons.
     const firstOldEntity = oldEntities[0];
     const firstNewEntity = newEntities[0];
     const isFirstOldEntityRegistrationView =

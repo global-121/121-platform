@@ -1,2 +1,2 @@
-// This is euro cents and a kyc requirement from visa
+// This is euro cents and a KYC-requirement from Visa
 export const maximumAmountOfSpentCentPerMonth = 15000;

@@ -64,7 +64,7 @@ describe('Update attribute of PA', () => {
     expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
   });
 
-  it('should succesfully update multiple fields', async () => {
+  it('should successfully update multiple fields', async () => {
     // Arrange
     accessToken = await setupNlrcEnvironment();
     const reason = 'automated test';

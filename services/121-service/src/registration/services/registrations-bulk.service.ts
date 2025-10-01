@@ -104,7 +104,7 @@ export class RegistrationsBulkService {
         this.azureLogService.logError(error, true);
       });
     }
-    // Get the refrenceIds for the update seperately as running a query with no limit is slower
+    // Get the referenceIds for the update separately as running a query with no limit is slower
     // so you show the result of the applicable registrations earlier
     return resultDto;
   }
