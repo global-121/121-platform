@@ -166,6 +166,31 @@ describe('ExcelReconciliationService', () => {
       expect(actionsService.saveAction).not.toHaveBeenCalled();
     });
 
+    it('should throw when no FSP configurations are found', async () => {
+      const program = new ProgramEntity();
+      program.id = programId;
+      program.programFspConfigurations = [];
+
+      programRepository.findOne.mockResolvedValue({
+        id: programId,
+        programFspConfigurations: [],
+      } as any);
+
+      await expect(
+        service.upsertFspReconciliationData(
+          mockFile,
+          programId,
+          paymentId,
+          userId,
+        ),
+      ).rejects.toThrow(
+        new HttpException(
+          'Other reconciliation FSPs than `Excel` are currently not supported.',
+          HttpStatus.BAD_REQUEST,
+        ),
+      );
+    });
+
     it('should proceed with reconciliation when payment is not in progress', async () => {
       const program = new ProgramEntity();
       program.id = programId;
