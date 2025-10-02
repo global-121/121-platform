@@ -1,8 +1,8 @@
-import loginModel from '../models/login.js';
-import paymentsModel from '../models/payments.js';
-import ProgramsModel from '../models/programs.js';
-import RegistrationsModel from '../models/registrations.js';
-import resetModel from '../models/reset.js';
+import loginModel from './login.js';
+import paymentsModel from './payments.js';
+import ProgramsModel from './programs.js';
+import RegistrationsModel from './registrations.js';
+import resetModel from './reset.js';
 
 const paymentsPage = new paymentsModel();
 const resetPage = new resetModel();
@@ -10,8 +10,8 @@ const loginPage = new loginModel();
 const registrationsPage = new RegistrationsModel();
 const programsPage = new ProgramsModel();
 
-export default class InitializePaymentModel {
-  initializePayment(
+export default class PaymentSetupAndValidationModel {
+  setupAndValidatePaymentSuccessPercentage(
     resetScript,
     resetIdentifier,
     programId,
@@ -36,7 +36,7 @@ export default class InitializePaymentModel {
     const doPaymentResult = paymentsPage.createPayment(programId, amount);
     const paymentId = JSON.parse(doPaymentResult.body).id;
     // Monitor that 10% of payments is successful and then stop the test
-    return paymentsPage.getPaymentResults(
+    return paymentsPage.waitForPaymentSuccessRate(
       programId,
       maxRetryDuration,
       paymentId,

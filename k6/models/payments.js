@@ -33,7 +33,7 @@ export default class PaymentsModel {
     return res;
   }
 
-  getPaymentResults(
+  waitForPaymentSuccessRate(
     programId,
     maxRetryDuration,
     paymentId,
