@@ -96,7 +96,7 @@ describe('RegistrationsController', () => {
       };
 
       jest
-        .spyOn(registrationsBulkService, 'patchRegistrationsStatus')
+        .spyOn(registrationsBulkService, 'updateRegistrationStatusOrDryRun')
         .mockResolvedValue(patchRegistrationsStatusResult);
 
       await expect(

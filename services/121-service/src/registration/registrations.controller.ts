@@ -325,8 +325,8 @@ export class RegistrationsController {
       query,
     );
     const dryRunBoolean = dryRun === 'true'; // defaults to false
-    const result = await this.registrationsBulkService.patchRegistrationsStatus(
-      {
+    const result =
+      await this.registrationsBulkService.updateRegistrationStatusOrDryRun({
         paginateQuery: query,
         programId,
         registrationStatus: registrationStatus as RegistrationStatusEnum,
@@ -338,8 +338,7 @@ export class RegistrationsController {
           messageContentType,
         },
         reason: statusUpdateDto.reason,
-      },
-    );
+      });
     if (dryRunBoolean) {
       // If dryRun is true the status code is 200 because nothing changed (201) and nothin is going to change (202)
       // I did not find another way to send a different status code than with a HttpException
@@ -535,7 +534,6 @@ export class RegistrationsController {
       paginateQuery: query,
       programId,
       dryRun: dryRunBoolean,
-      userId,
       reason: body.reason,
     });
 
@@ -619,7 +617,7 @@ export class RegistrationsController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const result = await this.registrationsBulkService.postMessages(
+    const result = await this.registrationsBulkService.sendMessagesOrDryRun(
       query,
       programId,
       body.message,
