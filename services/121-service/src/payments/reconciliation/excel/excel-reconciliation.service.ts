@@ -212,7 +212,6 @@ export class ExcelReconciliationService {
     const crossFspConfigImportResults: ReconciliationResult[] = [];
     for (const row of validatedExcelImport) {
       const resultRow = new ReconciliationResult();
-      resultRow.feedback = new ReconciliationFeedbackDto();
       resultRow.feedback = {
         ...row,
         importStatus: ImportStatus.notFound,
