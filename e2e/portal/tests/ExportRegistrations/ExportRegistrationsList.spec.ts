@@ -28,12 +28,12 @@ test.describe('Export registrations with different formats and configurations', 
     await resetDB(SeedScript.nlrcMultiple, __filename);
     const accessToken = await getAccessToken();
     await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    // Seed and delete registration to have a deleted one in the list and validate data integrity
     await seedIncludedRegistrations(
       [registrationPvMaxPayment],
       programIdPV,
       accessToken,
     );
-
     await deleteRegistrations({
       programId: programIdPV,
       referenceIds: [registrationPvMaxPayment.referenceId],
