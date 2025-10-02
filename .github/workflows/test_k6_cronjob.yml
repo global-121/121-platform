@@ -39,16 +39,19 @@ jobs:
       - name: Download k6
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+          curl https://github.com/grafana/k6/releases/download/v1.3.0/k6-v1.3.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
       - name: Run all k6 tests
         working-directory: ${{ env.k6TestsPath }}
         run: |
           ./run-all-tests.sh
 
-      - name: Docker logs
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: jwalton/gh-docker-logs@v2
+        with:
+          name: k6-logs
+          path: |
+            ${{ env.k6TestsPath }}/logs/**
 
       - name: Microsoft Teams Notification
         if: always()
