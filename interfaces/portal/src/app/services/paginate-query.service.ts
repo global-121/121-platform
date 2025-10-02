@@ -5,6 +5,8 @@ import { endOfDay, startOfDay } from 'date-fns';
 import { FilterMatchMode, FilterMetadata } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+
 import { QueryTableSelectionEvent } from '~/components/query-table/query-table.component';
 import { localTimeToUtcTime } from '~/utils/local-time-to-utc-time';
 
@@ -273,6 +275,10 @@ export class PaginateQueryService {
           // ...including the ones in other pages
           page: undefined,
           limit: undefined,
+          filter: {
+            // We want to ignore any manual filters set by the user, but ALWAYS exclude deleted registrations via this filter
+            status: `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`,
+          },
           select,
         },
         count: totalCount,
