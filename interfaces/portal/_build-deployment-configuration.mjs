@@ -87,9 +87,9 @@ if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
   ]);
 }
 
-// Optional: Aws Connect
+// Optional: AWS Connect
 if (shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME)) {
-  console.info('✅ Allow loading the Portal in an iframe on Aws Connect');
+  console.info('✅ Allow loading the Portal in an iframe on AWS Connect');
 
   let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
   contentSecurityPolicy.set('frame-ancestors', [
