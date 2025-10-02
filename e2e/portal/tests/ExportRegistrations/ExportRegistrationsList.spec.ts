@@ -2,13 +2,17 @@ import { type Page, test } from '@playwright/test';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgramPV from '@121-service/src/seed-data/program/program-nlrc-pv.json';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  deleteRegistrations,
+  seedIncludedRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
 import {
   programIdPV,
+  registrationPvMaxPayment,
   registrationsPV,
 } from '@121-service/test/registrations/pagination/pagination-data';
 
@@ -24,6 +28,17 @@ test.describe('Export registrations with different formats and configurations', 
     await resetDB(SeedScript.nlrcMultiple, __filename);
     const accessToken = await getAccessToken();
     await seedIncludedRegistrations(registrationsPV, programIdPV, accessToken);
+    await seedIncludedRegistrations(
+      [registrationPvMaxPayment],
+      programIdPV,
+      accessToken,
+    );
+
+    await deleteRegistrations({
+      programId: programIdPV,
+      referenceIds: [registrationPvMaxPayment.referenceId],
+      accessToken,
+    });
 
     // Login
     const loginPage = new LoginPage(page);
