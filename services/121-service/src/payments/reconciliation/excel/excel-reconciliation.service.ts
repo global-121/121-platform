@@ -92,6 +92,19 @@ export class ExcelReconciliationService {
       countNotFound: number;
     };
   }> {
+    const program = await this.programRepository.findOne({
+      where: {
+        id: Equal(programId),
+      },
+      relations: ['programFspConfigurations'],
+    });
+    if (!program) {
+      throw new HttpException(
+        `No program with id ${programId} found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     if (
       await this.paymentsProgressHelperService.isPaymentInProgress(programId)
     ) {
@@ -101,12 +114,6 @@ export class ExcelReconciliationService {
       );
     }
 
-    const program = await this.programRepository.findOneOrFail({
-      where: {
-        id: Equal(programId),
-      },
-      relations: ['programFspConfigurations'],
-    });
     const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
     for (const fspConfig of program.programFspConfigurations) {
       if (fspConfig.fspName === Fsps.excel) {

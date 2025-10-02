@@ -30,9 +30,12 @@ describe('ExcelReconciliationService', () => {
     const mockPaymentsProgressHelperService = {
       isPaymentInProgress: jest.fn(),
     };
+    mockPaymentsProgressHelperService.isPaymentInProgress.mockResolvedValue(
+      false,
+    );
 
     const mockProgramRepository = {
-      findOneOrFail: jest.fn(),
+      findOne: jest.fn(),
     };
 
     const mockActionsService = {
@@ -120,7 +123,27 @@ describe('ExcelReconciliationService', () => {
     const paymentId = 2;
     const userId = 3;
 
-    it('should throw HttpException when payment is in progress', async () => {
+    it('should throw when program does not exist', async () => {
+      // Arrange
+      programRepository.findOne.mockResolvedValue(undefined);
+
+      const nonExistentProgramId = 999;
+      // Act & Assert
+      await expect(
+        service.upsertFspReconciliationData(
+          mockFile,
+          nonExistentProgramId,
+          paymentId,
+          userId,
+        ),
+      ).rejects.toThrow(`No program with id ${nonExistentProgramId} found`); // Literally an empty error message.
+      expect(
+        paymentsProgressHelperService.isPaymentInProgress,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should throw when payment is in progress', async () => {
+      programRepository.findOne.mockResolvedValue(true);
       paymentsProgressHelperService.isPaymentInProgress.mockResolvedValue(true);
 
       await expect(
@@ -152,10 +175,7 @@ describe('ExcelReconciliationService', () => {
       programFspConfig.name = 'Test FSP';
       program.programFspConfigurations = [programFspConfig];
 
-      paymentsProgressHelperService.isPaymentInProgress.mockResolvedValue(
-        false,
-      );
-      programRepository.findOneOrFail.mockResolvedValue({
+      programRepository.findOne.mockResolvedValue({
         id: programId,
         programFspConfigurations: program.programFspConfigurations,
       } as any);
