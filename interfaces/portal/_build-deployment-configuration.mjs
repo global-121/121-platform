@@ -87,6 +87,17 @@ if (shouldBeEnabled(process.env.USE_IN_TWILIO_FLEX_IFRAME)) {
   ]);
 }
 
+// Optional: Aws Connect
+if (shouldBeEnabled(process.env.USE_IN_AWS_CONNECT_IFRAME)) {
+  console.info('✅ Allow loading the Portal in an iframe on Aws Connect');
+
+  let frameAncestors = contentSecurityPolicy.get('frame-ancestors') ?? [];
+  contentSecurityPolicy.set('frame-ancestors', [
+    ...frameAncestors,
+    'https://nlrc-poc.my.connect.aws',
+  ]);
+}
+
 // Depending on: Using "Azure Entra SSO" AND "Twilio Flex"
 if (
   shouldBeEnabled(process.env.USE_SSO_AZURE_ENTRA) &&
