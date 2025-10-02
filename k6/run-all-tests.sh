@@ -29,6 +29,7 @@ for file in "${test_files[@]}"; do
     continue
   fi
 
+
   echo ::group::Running test: "${file}"
 
   echo "Creating log directory"
