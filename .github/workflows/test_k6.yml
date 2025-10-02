@@ -60,7 +60,7 @@ jobs:
       - name: Download k6
         working-directory: ${{ env.k6TestsPath }}
         run: |
-          curl https://github.com/grafana/k6/releases/download/v0.51.0/k6-v0.51.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
+          curl https://github.com/grafana/k6/releases/download/v1.3.0/k6-v1.3.0-linux-amd64.tar.gz -L | tar xvz --strip-components 1
 
       - name: Run retryFailedJobsOnStartupDuringQueueProcessing.js with DUPLICATE_NUMBER=7
         working-directory: ${{ env.k6TestsPath }}
