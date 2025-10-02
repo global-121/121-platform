@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
 import { Equal, In, Not, Repository } from 'typeorm';
 
-import { IS_DEVELOPMENT } from '@121-service/src/config';
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
 import { LatestMessageEntity } from '@121-service/src/notifications/entities/latest-message.entity';
@@ -68,7 +68,7 @@ export class RegistrationsBulkService {
     private readonly noteScopedRepository: ScopedRepository<NoteEntity>,
   ) {}
 
-  public async patchRegistrationsStatus({
+  public async updateRegistrationStatusOrDryRun({
     paginateQuery,
     programId,
     registrationStatus,
@@ -85,23 +85,6 @@ export class RegistrationsBulkService {
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<BulkActionResultDto> {
-    const includeSendingMessage =
-      !!messageContentDetails.message ||
-      !!messageContentDetails.messageTemplateKey;
-    const usedPlaceholders =
-      await this.queueMessageService.getPlaceholdersInMessageText(
-        programId,
-        messageContentDetails.message,
-        messageContentDetails.messageTemplateKey,
-      );
-    paginateQuery = this.setQueryPropertiesBulkAction({
-      query: paginateQuery,
-      includePaymentAttributes: false,
-      includeSendMessageProperties: includeSendingMessage,
-      includeStatusChangeProperties: true,
-      usedPlaceholders,
-    });
-
     const allowedCurrentStatuses =
       this.getAllowedCurrentStatusesForNewStatus(registrationStatus);
 
@@ -111,11 +94,10 @@ export class RegistrationsBulkService {
       this.getStatusUpdateBaseQuery(allowedCurrentStatuses, registrationStatus),
     );
     if (!dryRun) {
-      this.updateRegistrationStatusBatchFilter({
+      this.applyRegistrationStatusUpdate({
         paginateQuery,
         programId,
         registrationStatus,
-        usedPlaceholders,
         allowedCurrentStatuses,
         userId,
         messageContentDetails,
@@ -133,13 +115,11 @@ export class RegistrationsBulkService {
     paginateQuery,
     programId,
     dryRun,
-    userId,
     reason,
   }: {
     paginateQuery: PaginateQuery;
     programId: number;
     dryRun: boolean;
-    userId: number;
     reason: string;
   }): Promise<BulkActionResultDto> {
     paginateQuery = this.setQueryPropertiesBulkAction({
@@ -163,7 +143,6 @@ export class RegistrationsBulkService {
         paginateQuery,
         programId,
         allowedCurrentStatuses,
-        userId,
         reason,
       }).catch((error) => {
         this.azureLogService.logError(error, true);
@@ -172,7 +151,7 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  public async postMessages(
+  public async sendMessagesOrDryRun(
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
@@ -204,7 +183,7 @@ export class RegistrationsBulkService {
 
     if (!dryRun) {
       const chunkSize = 10000;
-      this.sendMessagesBatch(
+      this.applySendMessages(
         paginateQuery,
         programId,
         message,
@@ -220,7 +199,7 @@ export class RegistrationsBulkService {
     return resultDto;
   }
 
-  private async sendMessagesBatch(
+  private async applySendMessages(
     paginateQuery: PaginateQuery,
     programId: number,
     message: string,
@@ -241,6 +220,12 @@ export class RegistrationsBulkService {
         this.getBaseQuery(),
       );
 
+    const messageContentDetails: MessageContentDetails = {
+      message,
+      messageTemplateKey,
+      messageContentType: MessageContentType.custom,
+    };
+
     for (let i = 0; i < (registrationsMetadata.meta.totalPages ?? 0); i++) {
       paginateQuery.page = i + 1;
       const registrationsForUpdate =
@@ -252,14 +237,13 @@ export class RegistrationsBulkService {
           false,
           this.getBaseQuery(),
         );
-      this.sendCustomTextMessagePerChunk(
-        registrationsForUpdate.data,
-        message,
-        bulkSize,
+      this.sendMessagesPerChunk({
+        registrations: registrationsForUpdate.data,
+        messageContentDetails,
+        bulksize: bulkSize,
         usedPlaceholders,
         userId,
-        messageTemplateKey,
-      ).catch((error) => {
+      }).catch((error) => {
         this.azureLogService.logError(error, true);
       });
     }
@@ -384,11 +368,10 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  private async updateRegistrationStatusBatchFilter({
+  private async applyRegistrationStatusUpdate({
     paginateQuery,
     programId,
     registrationStatus,
-    usedPlaceholders,
     allowedCurrentStatuses,
     userId,
     messageContentDetails,
@@ -397,67 +380,180 @@ export class RegistrationsBulkService {
     paginateQuery: PaginateQuery;
     programId: number;
     registrationStatus: RegistrationStatusEnum;
-    usedPlaceholders: string[];
     allowedCurrentStatuses: RegistrationStatusEnum[];
     userId: number;
     messageContentDetails: MessageContentDetails;
     reason?: string;
   }): Promise<void> {
-    const chunkSize = 10000;
-    paginateQuery.limit = chunkSize;
-    const registrationForUpdateMeta =
-      await this.registrationsPaginationService.getPaginate(
-        paginateQuery,
+    const referenceIdsForWhichStatusChangeIsApllicable =
+      await this.getReferenceIdsForWhichStatusChangeIsApplicable(
         programId,
-        true,
-        false,
-        this.getStatusUpdateBaseQuery(
-          allowedCurrentStatuses,
-          registrationStatus,
-        ),
+        allowedCurrentStatuses,
+        registrationStatus,
+        paginateQuery,
       );
 
-    for (let i = 0; i < (registrationForUpdateMeta.meta.totalPages ?? 0); i++) {
-      const registrationsForUpdate =
-        await this.registrationsPaginationService.getPaginate(
-          paginateQuery,
-          programId,
-          true,
-          false,
-          this.getStatusUpdateBaseQuery(
-            allowedCurrentStatuses,
-            registrationStatus,
-          ),
-        );
-      await this.updateRegistrationStatusChunk({
-        filteredRegistrations: registrationsForUpdate.data,
+    await this.applyRegistrationStatusChangeAndSendMessageByReferenceIds({
+      referenceIds: referenceIdsForWhichStatusChangeIsApllicable,
+      programId,
+      registrationStatus,
+      userId,
+      messageContentDetails,
+      reason,
+    });
+  }
+
+  // TODO make this public when we also call it on registration import
+  private async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
+    referenceIds,
+    programId,
+    registrationStatus,
+    userId,
+    messageContentDetails,
+    reason,
+  }: {
+    referenceIds: string[];
+    programId: number;
+    registrationStatus: RegistrationStatusEnum;
+    userId: number;
+    messageContentDetails: MessageContentDetails;
+    reason?: string;
+  }): Promise<void> {
+    await this.applyRegistrationStatusChangeByReferenceIds({
+      referenceIds,
+      programId,
+      registrationStatus,
+      reason,
+    });
+
+    const includeSendingMessage =
+      !!messageContentDetails.message ||
+      !!messageContentDetails.messageTemplateKey;
+
+    if (includeSendingMessage) {
+      await this.sendMessagesByReferenceIds({
+        referenceIds,
+        programId,
         userId,
-        registrationStatus,
         messageContentDetails,
-        bulkSize: registrationsForUpdate.meta.totalItems ?? 0,
-        usedPlaceholders,
+      });
+    }
+  }
+
+  private async applyRegistrationStatusChangeByReferenceIds({
+    referenceIds,
+    programId,
+    registrationStatus,
+    reason,
+  }: {
+    referenceIds: string[];
+    programId: number;
+    registrationStatus: RegistrationStatusEnum;
+    reason?: string;
+  }): Promise<void> {
+    const idColumn: keyof RegistrationViewEntity = 'id';
+    const selectedColumns = [
+      GenericRegistrationAttributes.referenceId,
+      idColumn,
+      GenericRegistrationAttributes.status,
+    ];
+    const registrationsForUpdate =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds, select: selectedColumns },
+      );
+
+    const chunks = chunk(registrationsForUpdate, 10000);
+
+    for (const registrationChunk of chunks) {
+      await this.updateRegistrationStatusPerChunk({
+        filteredRegistrations: registrationChunk,
+        registrationStatus,
         reason,
       });
     }
   }
 
-  private async updateRegistrationStatusChunk({
-    filteredRegistrations,
+  private async sendMessagesByReferenceIds({
+    referenceIds,
+    programId,
     userId,
-    registrationStatus,
     messageContentDetails,
-    bulkSize,
-    usedPlaceholders,
+  }: {
+    referenceIds: string[];
+    programId: number;
+    userId: number;
+    messageContentDetails: MessageContentDetails;
+  }): Promise<void> {
+    const usedPlaceholders =
+      await this.queueMessageService.getPlaceholdersInMessageText(
+        programId,
+        messageContentDetails.message,
+        messageContentDetails.messageTemplateKey,
+      );
+
+    const idColumn: keyof RegistrationViewEntity = 'id';
+    const selectedColumns = [
+      ...usedPlaceholders,
+      GenericRegistrationAttributes.referenceId,
+      idColumn,
+    ];
+
+    selectedColumns.push(GenericRegistrationAttributes.preferredLanguage);
+    selectedColumns.push(
+      DefaultRegistrationDataAttributeNames.whatsappPhoneNumber,
+    );
+    selectedColumns.push(GenericRegistrationAttributes.phoneNumber);
+
+    const registrationsToSendMessageTo =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        { programId, referenceIds, select: selectedColumns },
+      );
+
+    const chunks = chunk(registrationsToSendMessageTo, 10000);
+
+    for (const registrationChunk of chunks) {
+      await this.sendMessagesPerChunk({
+        registrations: registrationChunk,
+        userId,
+        bulksize: registrationChunk.length,
+        usedPlaceholders,
+        messageContentDetails,
+      });
+    }
+  }
+
+  private async getReferenceIdsForWhichStatusChangeIsApplicable(
+    programId: number,
+    allowedCurrentStatuses: RegistrationStatusEnum[],
+    newStatus: RegistrationStatusEnum,
+    paginateQuery: PaginateQuery,
+  ): Promise<string[]> {
+    paginateQuery.select = [GenericRegistrationAttributes.referenceId];
+
+    const queryBuilder = this.getStatusUpdateBaseQuery(
+      allowedCurrentStatuses,
+      newStatus,
+    );
+    const data =
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
+        programId,
+        paginateQuery,
+        10000,
+        queryBuilder,
+      );
+
+    return data.map((r) => r.referenceId);
+  }
+
+  private async updateRegistrationStatusPerChunk({
+    filteredRegistrations,
+    registrationStatus,
     reason,
   }: {
     filteredRegistrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
     >['data'];
-    userId: number;
     registrationStatus: RegistrationStatusEnum;
-    messageContentDetails?: MessageContentDetails;
-    bulkSize?: number;
-    usedPlaceholders?: string[];
     reason?: string;
   }): Promise<void> {
     const filteredRegistrationsIds = filteredRegistrations.map((r) => r.id);
@@ -485,56 +581,17 @@ export class RegistrationsBulkService {
       registrationsAfterUpdate,
       { explicitRegistrationPropertyNames: [statusKey], reason },
     );
-    for (const registration of filteredRegistrations) {
-      if (
-        (messageContentDetails?.message ||
-          messageContentDetails?.messageTemplateKey) &&
-        registration
-      ) {
-        const messageProcessType =
-          MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric;
-        const placeholderData = {};
-        if (usedPlaceholders && usedPlaceholders.length) {
-          for (const placeholder of usedPlaceholders) {
-            placeholderData[placeholder] = registration[placeholder];
-          }
-        }
-        try {
-          const { message, messageTemplateKey, messageContentType } =
-            messageContentDetails;
-          await this.queueMessageService.addMessageJob({
-            ...messageContentDetails,
-            bulksize: bulkSize,
-            registration,
-            message,
-            messageTemplateKey,
-            messageContentType: messageContentType ?? MessageContentType.custom,
-            messageProcessType,
-            customData: { placeholderData },
-            userId,
-          });
-        } catch (error) {
-          if (IS_DEVELOPMENT) {
-            throw error;
-          } else {
-            this.azureLogService.logError(error, true);
-          }
-        }
-      }
-    }
   }
 
   private async deleteBatch({
     paginateQuery,
     programId,
     allowedCurrentStatuses,
-    userId,
     reason,
   }: {
     paginateQuery: PaginateQuery;
     programId: number;
     allowedCurrentStatuses: RegistrationStatusEnum[];
-    userId: number;
     reason: string;
   }): Promise<void> {
     const chunkSize = 10000;
@@ -566,7 +623,6 @@ export class RegistrationsBulkService {
 
       await this.deleteRegistrationsChunk({
         registrationsForDelete: registrationPaginateObject.data,
-        userId,
         reason,
       });
     }
@@ -574,18 +630,15 @@ export class RegistrationsBulkService {
 
   private async deleteRegistrationsChunk({
     registrationsForDelete,
-    userId,
     reason,
   }: {
     registrationsForDelete: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
     >['data'];
-    userId: number;
     reason: string;
   }): Promise<void> {
-    await this.updateRegistrationStatusChunk({
+    await this.updateRegistrationStatusPerChunk({
       filteredRegistrations: registrationsForDelete,
-      userId,
       registrationStatus: RegistrationStatusEnum.deleted,
       reason,
     });
@@ -632,16 +685,21 @@ export class RegistrationsBulkService {
     );
   }
 
-  private async sendCustomTextMessagePerChunk(
+  private async sendMessagesPerChunk({
+    registrations,
+    messageContentDetails,
+    bulksize,
+    usedPlaceholders,
+    userId,
+  }: {
     registrations: Awaited<
       ReturnType<RegistrationsPaginationService['getPaginate']>
-    >['data'],
-    message: string,
-    bulksize: number,
-    usedPlaceholders: string[],
-    userId: number,
-    messageTemplateKey?: string,
-  ): Promise<void> {
+    >['data'];
+    messageContentDetails: MessageContentDetails;
+    bulksize: number;
+    usedPlaceholders: string[];
+    userId: number;
+  }): Promise<void> {
     for (const registration of registrations) {
       const placeholderData = {};
       for (const placeholder of usedPlaceholders) {
@@ -649,9 +707,9 @@ export class RegistrationsBulkService {
       }
       await this.queueMessageService.addMessageJob({
         registration,
-        message,
-        messageTemplateKey,
-        messageContentType: MessageContentType.custom,
+        message: messageContentDetails.message,
+        messageTemplateKey: messageContentDetails.messageTemplateKey,
+        messageContentType: messageContentDetails.messageContentType!, // already validated to be present
         messageProcessType:
           MessageProcessTypeExtension.smsOrWhatsappTemplateGeneric,
         customData: { placeholderData },
