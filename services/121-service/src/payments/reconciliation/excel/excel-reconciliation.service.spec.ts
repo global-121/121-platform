@@ -123,6 +123,40 @@ describe('ExcelReconciliationService', () => {
     const paymentId = 2;
     const userId = 3;
 
+    it('should correctly process reconciliation', async () => {
+      const program = new ProgramEntity();
+      program.id = programId;
+      const programFspConfig = new ProgramFspConfigurationEntity();
+      programFspConfig.fspName = Fsps.excel;
+      programFspConfig.id = 1;
+      programFspConfig.name = 'Test FSP';
+      program.programFspConfigurations = [programFspConfig];
+
+      programRepository.findOne.mockResolvedValue({
+        id: programId,
+        programFspConfigurations: program.programFspConfigurations,
+      } as any);
+      fileImportService.validateCsv.mockResolvedValue([]);
+      excelService.getImportMatchColumn.mockResolvedValue('phoneNumber');
+      registrationViewScopedRepository.getQueryBuilderForFspInstructions.mockReturnValue(
+        {} as any,
+      );
+      registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery.mockResolvedValue(
+        [],
+      );
+      transactionsService.getLastTransactions.mockResolvedValue([]);
+
+      const result = await service.upsertFspReconciliationData(
+        mockFile,
+        programId,
+        paymentId,
+        userId,
+      );
+
+      expect(result).toHaveProperty('importResult');
+      expect(result).toHaveProperty('aggregateImportResult');
+    });
+
     it('should throw when program does not exist', async () => {
       // Arrange
       programRepository.findOne.mockResolvedValue(undefined);
@@ -189,40 +223,6 @@ describe('ExcelReconciliationService', () => {
           HttpStatus.BAD_REQUEST,
         ),
       );
-    });
-
-    it('should proceed with reconciliation when payment is not in progress', async () => {
-      const program = new ProgramEntity();
-      program.id = programId;
-      const programFspConfig = new ProgramFspConfigurationEntity();
-      programFspConfig.fspName = Fsps.excel;
-      programFspConfig.id = 1;
-      programFspConfig.name = 'Test FSP';
-      program.programFspConfigurations = [programFspConfig];
-
-      programRepository.findOne.mockResolvedValue({
-        id: programId,
-        programFspConfigurations: program.programFspConfigurations,
-      } as any);
-      fileImportService.validateCsv.mockResolvedValue([]);
-      excelService.getImportMatchColumn.mockResolvedValue('phoneNumber');
-      registrationViewScopedRepository.getQueryBuilderForFspInstructions.mockReturnValue(
-        {} as any,
-      );
-      registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery.mockResolvedValue(
-        [],
-      );
-      transactionsService.getLastTransactions.mockResolvedValue([]);
-
-      const result = await service.upsertFspReconciliationData(
-        mockFile,
-        programId,
-        paymentId,
-        userId,
-      );
-
-      expect(result).toHaveProperty('importResult');
-      expect(result).toHaveProperty('aggregateImportResult');
     });
   });
 });
