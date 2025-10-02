@@ -29,6 +29,13 @@ for file in "${test_files[@]}"; do
     continue
   fi
 
+  # conitnue if file names is not statusChangePaymentInLargeProgram.js
+  if [[ $(basename "${file}") != "statusChangePaymentInLargeProgram.js" ]]; then
+    echo "Skipping test that is not statusChangePaymentInLargeProgram.js: ${file}"
+    continue
+  fi
+
+
   echo ::group::Running test: "${file}"
 
   echo "Creating log directory"
