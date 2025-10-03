@@ -25,7 +25,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
-import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+//TODO: disabled because it is not needed anymore
+//import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -92,12 +94,13 @@ export class UpdateRegistrationsComponent {
 
   readonly csvExportFieldsOptions = computed(() =>
     (this.registrationAttributes.data() ?? [])
-      .filter(
-        (attribute) =>
-          attribute.isEditable &&
-          // in the context of mass updates, we cannot update phone numbers
-          attribute.type !== RegistrationAttributeTypes.tel,
-      )
+      // TODO: disabled to have phone number available for update
+      // .filter(
+      //   (attribute) =>
+      //     attribute.isEditable &&
+      //     // in the context of mass updates, we cannot update phone numbers
+      //     attribute.type !== RegistrationAttributeTypes.tel,
+      // )
       .map((attribute) => ({
         label: this.translatableStringService.translate(attribute.label),
         value: attribute.name,
