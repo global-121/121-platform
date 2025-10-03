@@ -41,7 +41,7 @@ export class TransactionEventsService {
     const resultTransactionEvent =
       await this.transactionEventScopedRepository.save(transactionEvent);
 
-    await this.lastTransactionEventRepository.insertOrUpdateFromTransactionEvent(
+    await this.lastTransactionEventRepository.updateOrInsertFromTransactionEvent(
       resultTransactionEvent,
     );
   }

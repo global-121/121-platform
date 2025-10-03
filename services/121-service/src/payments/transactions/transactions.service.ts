@@ -133,7 +133,7 @@ export class TransactionsService {
         transactionEventId: transaction.transactionEvents[0].id,
       }),
     );
-    await this.lastTransactionEventRepository.bulkInsertFromTransactions(
+    await this.lastTransactionEventRepository.insert(
       lastTransactionEventsToSave,
     );
 

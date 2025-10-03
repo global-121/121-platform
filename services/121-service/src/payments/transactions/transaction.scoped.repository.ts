@@ -71,6 +71,7 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
       programFspConfigurationName: string;
     } & Record<string, unknown>)[]
   > {
+    // TODO: create a transaction-view that encapsulates all these joins and selects and can be used at multiple places.
     const query = this.createQueryBuilder('transaction')
       .select([
         'transaction.paymentId AS "paymentId"',
