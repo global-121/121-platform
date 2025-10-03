@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import chunk from 'lodash/chunk';
 import { PaginateQuery } from 'nestjs-paginate';
-import { Equal, In, Not, Repository } from 'typeorm';
+import { Equal, In, Repository } from 'typeorm';
 
 import { NoteEntity } from '@121-service/src/notes/note.entity';
 import { MessageProcessTypeExtension } from '@121-service/src/notifications/dto/message-job.dto';
@@ -27,7 +27,6 @@ import { StatusChangeHelper } from '@121-service/src/registration/helpers/status
 import { RegistrationDataScopedRepository } from '@121-service/src/registration/modules/registration-data/repositories/registration-data.scoped.repository';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
-import { RegistrationsService } from '@121-service/src/registration/services/registrations.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import {
@@ -50,7 +49,6 @@ export class RegistrationsBulkService {
   private readonly whatsappPendingMessageRepository: Repository<WhatsappPendingMessageEntity>;
 
   public constructor(
-    private readonly registrationsService: RegistrationsService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly azureLogService: AzureLogService,
     private readonly queueMessageService: MessageQueuesService,
@@ -283,7 +281,9 @@ export class RegistrationsBulkService {
   public getBaseQuery(): ScopedQueryBuilder<RegistrationViewEntity> {
     return this.registrationViewScopedRepository
       .createQueryBuilder('registration')
-      .andWhere({ status: Not(RegistrationStatusEnum.deleted) });
+      .andWhere('registration.status IS DISTINCT FROM :deletedStatus', {
+        deletedStatus: RegistrationStatusEnum.deleted, // The not opereator does not work with null values so we use IS DISTINCT FROM
+      });
   }
 
   public setQueryPropertiesBulkAction({
@@ -386,8 +386,7 @@ export class RegistrationsBulkService {
     });
   }
 
-  // TODO make this public when we also call it on registration import
-  private async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
+  public async applyRegistrationStatusChangeAndSendMessageByReferenceIds({
     referenceIds,
     programId,
     registrationStatus,

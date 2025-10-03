@@ -31,4 +31,12 @@ export const demoMessageTemplates: SeedMessageTemplateConfig = {
       en: 'Dear {{fullName}},\n\nWe kindly invite you to participate in our Post Distribution Monitoring survey. Your feedback is important to us and will help improve our support. Please fill out the survey using the following link: https://ee.ifrc.org/x/h1ay6vQl\n\nThank you for your time.\n\nRed Cross',
     },
   },
+  new: {
+    isSendMessageTemplate: false,
+    isWhatsappTemplate: false,
+    message: {
+      en: 'Welcome to our program. Within a couple of days your request will be validated.',
+      nl: 'Welkom bij dit programma. Binnen enkele dagen zal uw verzoek worden behandeld.',
+    },
+  },
 };

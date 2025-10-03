@@ -1,5 +1,6 @@
 import { test } from '@playwright/test';
 
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-pv.json';
@@ -71,7 +72,10 @@ test.beforeEach(async ({ page }) => {
     programId: programIdPV,
     referenceIds: [referenceIdPV5],
     accessToken,
-    minimumNumberOfMessagesPerReferenceId: 3,
+    expectedMessageAttribute: {
+      key: 'contentType',
+      values: [MessageContentType.paymentInstructions], // Payment instruction is the last message sent when doing a payment with voucher
+    },
   });
 
   activitiesCount = (
