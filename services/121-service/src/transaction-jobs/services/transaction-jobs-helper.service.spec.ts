@@ -3,13 +3,13 @@ import { UpdateResult } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
-import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { LatestTransactionRepository } from '@121-service/src/payments/transactions/repositories/latest-transaction.repository';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
+import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
+import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -17,7 +17,6 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { TransactionJobsHelperService } from '@121-service/src/transaction-jobs/services/transaction-jobs-helper.service';
-import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
 const mockedRegistration: RegistrationEntity = {
   id: 1,
@@ -27,26 +26,13 @@ const mockedRegistration: RegistrationEntity = {
   preferredLanguage: LanguageEnum.en,
 } as RegistrationEntity;
 
-const mockedTransactionId = 1;
-
-const mockedProgram = {
-  enableMaxPayments: true,
-  titlePortal: { en: 'Example Title' },
-  published: false,
-  distributionDuration: 100,
-  fixedTransferValue: 500,
-  budget: 50000,
-};
-
 describe('TransactionJobsHelperService', () => {
   let service: TransactionJobsHelperService;
   let registrationScopedRepository: RegistrationScopedRepository;
-  let transactionScopedRepository: TransactionScopedRepository;
-  let latestTransactionRepository: LatestTransactionRepository;
-  let programRepository: ProgramRepository;
   let messageTemplateService: MessageTemplateService;
   let queueMessageService: MessageQueuesService;
   let registrationsBulkService: RegistrationsBulkService;
+  let transactionEventsService: TransactionEventsService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -60,9 +46,6 @@ describe('TransactionJobsHelperService', () => {
     transactionScopedRepository = unitRef.get<TransactionScopedRepository>(
       TransactionScopedRepository,
     );
-    latestTransactionRepository = unitRef.get<LatestTransactionRepository>(
-      LatestTransactionRepository,
-    );
     programRepository = unitRef.get<ProgramRepository>(ProgramRepository);
     registrationsBulkService = unitRef.get<RegistrationsBulkService>(
       RegistrationsBulkService,
@@ -72,6 +55,9 @@ describe('TransactionJobsHelperService', () => {
     );
     queueMessageService =
       unitRef.get<MessageQueuesService>(MessageQueuesService);
+    transactionEventsService = unitRef.get<TransactionEventsService>(
+      TransactionEventsService,
+    );
 
     jest
       .spyOn(registrationScopedRepository, 'getByReferenceId')
@@ -79,18 +65,6 @@ describe('TransactionJobsHelperService', () => {
     jest
       .spyOn(registrationScopedRepository, 'updateUnscoped')
       .mockResolvedValue({} as UpdateResult);
-    jest
-      .spyOn(programRepository, 'findByIdOrFail')
-      .mockResolvedValue(mockedProgram as any);
-    jest.spyOn(transactionScopedRepository, 'save').mockResolvedValue({
-      id: mockedTransactionId,
-    } as any);
-    jest
-      .spyOn(latestTransactionRepository, 'insertOrUpdateFromTransaction')
-      .mockResolvedValue();
-    jest
-      .spyOn(latestTransactionRepository, 'getPaymentCount')
-      .mockResolvedValue(1);
     jest
       .spyOn(
         registrationsBulkService,
@@ -107,6 +81,7 @@ describe('TransactionJobsHelperService', () => {
     jest
       .spyOn(messageTemplateService, 'isTemplateAvailable')
       .mockResolvedValue(true);
+    jest.spyOn(transactionEventsService, 'createEvent').mockImplementation();
   });
 
   it('should be defined', () => {
@@ -132,228 +107,37 @@ describe('TransactionJobsHelperService', () => {
     });
   });
 
-  describe('createTransactionAndUpdateRegistration', () => {
-    const transactionJob: SharedTransactionJobDto = {
-      programId: 1,
-      paymentId: 5,
-      userId: 1,
-      programFspConfigurationId: 1,
-      isRetry: false,
-      referenceId: 'ref-123',
-      bulkSize: 10,
-      transactionAmount: 100,
+  describe('createInitiatedOrRetryTransactionEvent', () => {
+    const context = {
+      transactionId: 1,
+      userId: 2,
+      programFspConfigurationId: 3,
     };
 
-    it('should update the payment count', async () => {
-      // Arrange
-      const registration = structuredClone(mockedRegistration);
-      const paymentCountFromDb = 5;
-
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(paymentCountFromDb);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
+    it('should create an initiated transaction event when isRetry is false', async () => {
+      await service.createInitiatedOrRetryTransactionEvent({
+        context,
+        isRetry: false,
       });
 
-      // Assert
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledWith(
-        1,
-        {
-          paymentCount: paymentCountFromDb,
-        },
-      );
-    });
-
-    it('should not update the registration status to complete if the program does not have maxPayments', async () => {
-      // Arrange
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: false,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
-
-      const registration = structuredClone(mockedRegistration);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      // The first call is for updating the payment count, the 2nd call would have been for
-      // updating the registration status, which we expect to *not* happen.
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
-        1,
-      );
-    });
-
-    it('should not trigger status change if max payments not exceeded', async () => {
-      // Arrange
-      const registration = structuredClone(mockedRegistration);
-      const paymentCountFromDb = 3;
-
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(paymentCountFromDb);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-      ).not.toHaveBeenCalled();
-    });
-
-    it("should not update the payment count if it's a retry", async () => {
-      // Arrange
-      const registration = {
-        ...mockedRegistration,
-        registrationStatus: RegistrationStatusEnum.completed,
-      };
-
-      const paymentCountFromDb = 5;
-
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(paymentCountFromDb);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration,
-        transactionJob: {
-          ...transactionJob,
-          isRetry: true,
-        },
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      expect(
-        registrationScopedRepository.updateUnscoped,
-      ).not.toHaveBeenCalled();
-    });
-
-    describe('when complete status change is applicable', () => {
-      const maxPayments = 6;
-      const paymentCountAfterTransaction = 6;
-
-      it('should trigger status change to completed and send message when template available', async () => {
-        // Arrange
-        const registration = {
-          ...mockedRegistration,
-          maxPayments,
-        };
-
-        jest
-          .spyOn(latestTransactionRepository, 'getPaymentCount')
-          .mockResolvedValue(paymentCountAfterTransaction);
-        jest
-          .spyOn(messageTemplateService, 'isTemplateAvailable')
-          .mockResolvedValue(true);
-
-        // Act
-        await service.createTransactionAndUpdateRegistration({
-          registration,
-          transactionJob,
-          transferAmountInMajorUnit: 100,
-          status: TransactionStatusEnum.success,
-        });
-
-        // Assert
-        const expectedMessageContentDetails: MessageContentDetails = {
-          messageTemplateKey: RegistrationStatusEnum.completed,
-          messageContentType: MessageContentType.completed,
-          message: '',
-        };
-
-        expect(
-          registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-        ).toHaveBeenCalledWith({
-          referenceIds: [registration.referenceId],
-          programId: transactionJob.programId,
-          registrationStatus: RegistrationStatusEnum.completed,
-          userId: transactionJob.userId,
-          messageContentDetails: expectedMessageContentDetails,
-        });
-      });
-
-      it('should trigger status change to completed without message when template not available', async () => {
-        // Arrange
-        const registration = {
-          ...mockedRegistration,
-          maxPayments,
-        };
-
-        jest
-          .spyOn(latestTransactionRepository, 'getPaymentCount')
-          .mockResolvedValue(paymentCountAfterTransaction);
-        jest
-          .spyOn(messageTemplateService, 'isTemplateAvailable')
-          .mockResolvedValue(false);
-
-        // Act
-        await service.createTransactionAndUpdateRegistration({
-          registration,
-          transactionJob,
-          transferAmountInMajorUnit: 100,
-          status: TransactionStatusEnum.success,
-        });
-
-        // Assert
-        expect(
-          registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-        ).toHaveBeenCalledWith({
-          referenceIds: [registration.referenceId],
-          programId: transactionJob.programId,
-          registrationStatus: RegistrationStatusEnum.completed,
-          userId: transactionJob.userId,
-          messageContentDetails: {},
-        });
+      expect(transactionEventsService.createEvent).toHaveBeenCalledWith({
+        context,
+        type: TransactionEventType.initiated,
+        description: TransactionEventDescription.initiated,
       });
     });
 
-    it('should not update registration or trigger status change if isRetry is true', async () => {
-      await service.createTransactionAndUpdateRegistration({
-        registration: mockedRegistration,
-        transactionJob: {
-          ...transactionJob,
-          isRetry: true,
-        },
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
+    it('should create a retry transaction event when isRetry is true', async () => {
+      await service.createInitiatedOrRetryTransactionEvent({
+        context,
+        isRetry: true,
       });
 
-      expect(
-        registrationScopedRepository.updateUnscoped,
-      ).not.toHaveBeenCalled();
-      expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-      ).not.toHaveBeenCalled();
+      expect(transactionEventsService.createEvent).toHaveBeenCalledWith({
+        context,
+        type: TransactionEventType.retry,
+        description: TransactionEventDescription.retry,
+      });
     });
   });
 
