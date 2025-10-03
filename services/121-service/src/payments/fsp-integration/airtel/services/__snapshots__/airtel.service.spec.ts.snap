@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AirtelService attemptOrCheckDisbursement should throw an AirtelError if disburse returns ambiguous 1`] = `"Airtel Error: Please use the Airtel Mobiquity portal to find out the status of the transaction. Airtel transaction id: mock-transaction-id - Status: Ambiguous - (mock ambiguous message)"`;
 
