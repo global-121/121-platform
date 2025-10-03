@@ -1,0 +1,111 @@
+# Jest performance tests replacing K6
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test: Performance (Jest)'
+
+on:
+  workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
+  pull_request:
+    paths:
+      - '.github/workflows/test_performance_jest.yml'
+      - 'services/121-service/test/performance/**'
+      - 'services/.env.example'
+      - 'services/**'
+      - '!services/**.test.ts'
+      - '!services/**.spec.ts'
+      - '!**.md'
+
+env:
+  serviceTestsPath: 'services/121-service/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: '${{ env.serviceTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.serviceTestsPath }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Install 121-service dependencies
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          npm ci --omit=optional
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci:production
+
+      - name: Wait for 121-service to be ready
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          timeout 300 bash -c 'until curl -f http://localhost:3000/api/health/health; do sleep 5; done'
+
+      - name: Lint performance tests
+        working-directory: ${{ env.serviceTestsPath }}
+        run: 'npm run lint'
+
+      - name: Run retry failed jobs startup test with DUPLICATE_NUMBER=7
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=7 npm run test:performance:retry-jobs
+        env:
+          NODE_ENV: test
+
+      - name: Run find duplicates test with DUPLICATE_NUMBER=16
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=16 npm run test:performance:find-duplicates
+        env:
+          NODE_ENV: test
+
+      - name: Run bulk update test with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 npm run test:performance:bulk-update
+        env:
+          NODE_ENV: test
+
+      - name: Run Intersolve Visa payment test with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 npm run test:performance:payment-visa
+        env:
+          NODE_ENV: test
+
+      - name: Run Safaricom payment test with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 npm run test:performance:payment-safaricom
+        env:
+          NODE_ENV: test
+
+      - name: Run performance during payment test with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 npm run test:performance:during-payment
+        env:
+          NODE_ENV: test
+
+      - name: Run status change payment test with DUPLICATE_NUMBER=3
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          DUPLICATE_NUMBER=3 npm run test:performance:status-change
+        env:
+          NODE_ENV: test
+
+      - name: Docker logs
+        if: always()
+        run: docker compose logs 121-service

@@ -1,4 +1,39 @@
-# K6 Performance Testing Suite
+# ⚠️ DEPRECATED: K6 Performance Testing Suite
+
+**⚠️ WARNING: This K6 performance testing suite is DEPRECATED**
+
+**The K6 tests have been migrated to Jest. Please use the new Jest performance tests instead:**
+
+**New Location**: `services/121-service/test/performance/`
+
+**Migration Guide**: See [`MIGRATION.md`](./MIGRATION.md) for complete migration information.
+
+---
+
+## Quick Migration
+
+### Old K6 way:
+```bash
+cd k6
+DUPLICATE_NUMBER=5 npx dotenv -e ../services/.env -- ./k6 run tests/BulkUpdate32kRegistration.js
+```
+
+### New Jest way:
+```bash
+cd services/121-service
+DUPLICATE_NUMBER=5 npm run test:performance:bulk-update
+```
+
+**Benefits of Jest tests:**
+- ✅ TypeScript support and type safety
+- ✅ Better IDE integration and debugging
+- ✅ Unified testing framework with unit/integration tests
+- ✅ Same performance thresholds and validation
+- ✅ Better error reporting and test output
+
+---
+
+# K6 Performance Testing Suite (LEGACY)
 
 > See: <https://k6.io/docs/>
 

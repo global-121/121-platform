@@ -1,0 +1,90 @@
+# Jest performance tests cronjob replacing K6 - runs nightly with full load
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test: Performance (Jest) Cronjob'
+
+on:
+  schedule:
+    # See: https://crontab.guru/#42_1_*_*_1-5
+    - cron: '42 1 * * 1-5'
+  workflow_dispatch:
+
+env:
+  serviceTestsPath: 'services/121-service/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # 6 hours timeout for full overnight tests
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: '${{ env.serviceTestsPath }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.serviceTestsPath }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Install 121-service dependencies
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          npm ci --omit=optional
+
+      - name: Run Services with Docker
+        run: |
+          npm run start:services:ci:production
+
+      - name: Wait for 121-service to be ready
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          timeout 300 bash -c 'until curl -f http://localhost:3000/api/health/health; do sleep 5; done'
+
+      - name: Run all performance tests with full load (overnight)
+        working-directory: ${{ env.serviceTestsPath }}
+        run: |
+          # Run tests with original K6 duplicate numbers for full load testing
+          echo "Running full performance test suite..."
+          
+          # Import 1000 registrations test
+          npm run test:performance:import
+          
+          # Retry failed jobs test (smaller load)
+          DUPLICATE_NUMBER=7 npm run test:performance:retry-jobs
+          
+          # Find duplicates with heavy load
+          DUPLICATE_NUMBER=17 npm run test:performance:find-duplicates
+          
+          # Bulk update with moderate load  
+          DUPLICATE_NUMBER=15 npm run test:performance:bulk-update
+          
+          # Payment tests with heavy load
+          DUPLICATE_NUMBER=17 npm run test:performance:payment-visa
+          DUPLICATE_NUMBER=17 npm run test:performance:payment-safaricom
+          
+          # Performance during payment
+          DUPLICATE_NUMBER=5 npm run test:performance:during-payment
+          
+          # Status change with moderate load
+          DUPLICATE_NUMBER=15 npm run test:performance:status-change
+          
+          # Program attributes test
+          DUPLICATE_NUMBER=5 npm run test:performance:many-attributes
+        env:
+          NODE_ENV: test
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-test-results
+          path: services/121-service/coverage/
+
+      - name: Docker logs
+        if: always()
+        run: docker compose logs 121-service
