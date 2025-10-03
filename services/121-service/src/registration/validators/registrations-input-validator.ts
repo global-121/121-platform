@@ -266,20 +266,15 @@ export class RegistrationsInputValidator {
           }
 
           if (att.type === RegistrationAttributeTypes.tel) {
+            // TODO: return on bulk (pre queue), but validate on job
             if (RegistrationValidationInputType.bulkUpdate === typeOfInput) {
-              errors.push({
-                lineNumber: i + 1,
-                column: att.name,
-                value: row[att.name],
-                error: `Attribute ${att.name} is of type tel (telephone number) and cannot be updated in bulk`,
-              });
+              return;
             }
             /*
              * ==================================================================
              * If an attribute is a phone number, validate it using Twilio lookup
              * ==================================================================
              */
-
             if (row[att.name] && validationConfig) {
               const { errorObj, sanitized } =
                 await this.validateLookupPhoneNumber({
