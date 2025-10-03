@@ -26,7 +26,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
 
 import { ExportType } from '@121-service/src/metrics/enum/export-type.enum';
 import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { FormErrorComponent } from '~/components/form-error/form-error.component';
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
@@ -39,10 +38,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { Registration } from '~/domains/registration/registration.model';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
-import {
-  ActionDataWithPaginateQuery,
-  FilterOperator,
-} from '~/services/paginate-query.service';
+import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -185,22 +181,6 @@ export class UpdateRegistrationsComponent {
       $localize`Export a CSV for the ${this.actionData()?.count} selected registration(s). Select the columns you want to update.`,
   );
 
-  private readonly statusFilter = computed<string>(() => {
-    const deletedStatus = `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`;
-
-    let currentStatusFilter = this.actionData()?.query.filter?.status;
-
-    if (!currentStatusFilter) {
-      return deletedStatus;
-    }
-
-    if (Array.isArray(currentStatusFilter)) {
-      currentStatusFilter = currentStatusFilter.join(',');
-    }
-
-    return `${currentStatusFilter},${deletedStatus}`;
-  });
-
   exportCSVForUpdateRegistrations() {
     this.exportCSVFormGroup.markAllAsTouched();
 
@@ -220,7 +200,6 @@ export class UpdateRegistrationsComponent {
         select: selectedFields,
         filter: {
           ...this.actionData()?.query.filter,
-          status: this.statusFilter(),
         },
       },
       format: 'csv',
