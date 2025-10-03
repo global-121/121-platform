@@ -6,6 +6,7 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { getFspSettingByNameOrThrow } from '@121-service/src/fsps/fsp-settings.helpers';
 import { ReferenceIdAndTransactionAmountInterface } from '@121-service/src/payments/interfaces/referenceid-transaction-amount.interface';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
+import { RegistrationViewEntity } from '@121-service/src/registration/entities/registration-view.entity';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
 import { AirtelTransactionJobDto } from '@121-service/src/transaction-queues/dto/airtel-transaction-job.dto';
@@ -588,29 +589,39 @@ export class TransactionJobsCreationService {
   /**
    * Get registration views with FSP-specific attributes
    * @param referenceIdsTransactionAmounts - Array of reference IDs with transaction amounts
-   * @param attributeNames - Names of attributes to fetch
+   * @param fspAttributeNames - Names of attributes to fetch
    * @param programId - Program ID
    * @returns Registration views with FSP-specific data
    */
-  private async getRegistrationViews(
-    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[],
-    attributeNames: string[],
-    programId: number,
-  ): Promise<MappedPaginatedRegistrationDto[]> {
+  private async getRegistrationViews({
+    referenceIdsTransactionAmounts,
+    fspAttributeNames,
+    programId,
+  }: {
+    referenceIdsTransactionAmounts: ReferenceIdAndTransactionAmountInterface[];
+    fspAttributeNames: string[];
+    programId: number;
+  }): Promise<MappedPaginatedRegistrationDto[]> {
     const referenceIds = referenceIdsTransactionAmounts.map(
       (r) => r.referenceId,
     );
-    const paginateQuery =
-      this.registrationsBulkService.getRegistrationsForPaymentQuery(
-        referenceIds,
-        attributeNames,
-      );
+
+    const defaultSelect: (keyof RegistrationViewEntity)[] = [
+      'referenceId',
+      'programFspConfigurationId',
+      'fspName',
+    ];
+
+    const selectForPayment = [...defaultSelect, ...fspAttributeNames];
 
     const registrationViews =
-      await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
-        programId,
-        paginateQuery,
-        4000,
+      await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
+        {
+          programId,
+          referenceIds,
+          select: selectForPayment,
+          chunkSize: 4000,
+        },
       );
     return registrationViews;
   }
@@ -635,11 +646,11 @@ export class TransactionJobsCreationService {
   }> {
     const fspAttributes = getFspSettingByNameOrThrow(fspName).attributes;
     const fspAttributeNames = fspAttributes.map((q) => q.name);
-    const registrationViews = await this.getRegistrationViews(
+    const registrationViews = await this.getRegistrationViews({
       referenceIdsTransactionAmounts,
       fspAttributeNames,
       programId,
-    );
+    });
 
     const transactionDataByReferenceId = new Map(
       referenceIdsTransactionAmounts.map((item) => [

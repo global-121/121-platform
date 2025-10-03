@@ -158,7 +158,6 @@ export class PaymentsExecutionService {
           );
         });
     }
-
     return bulkActionResultPaymentDto;
   }
 
