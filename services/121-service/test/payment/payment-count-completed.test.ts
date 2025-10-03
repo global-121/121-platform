@@ -1,6 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
+import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
@@ -161,6 +163,10 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         programId,
         referenceIds: [registrationAh.referenceId],
         accessToken,
+        expectedMessageAttribute: {
+          key: 'body',
+          values: expectedMessageTranslations,
+        },
       });
 
       // Assert
@@ -171,11 +177,16 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       );
 
       const messageHistory = messageHistoryResponse.body;
-      const messageSent = messageHistory.some((message) =>
+      const expectedMessages = messageHistory.filter((message) =>
         expectedMessageTranslations.includes(message.attributes.body),
       );
-
-      expect(messageSent).toBe(true);
+      expect(expectedMessages.length).toBe(1);
+      expect(expectedMessages[0].attributes.status).not.toBe(
+        TwilioStatus.failed,
+      );
+      expect(expectedMessages[0].attributes.contentType).toBe(
+        MessageContentType.completed,
+      );
     });
   });
 });
