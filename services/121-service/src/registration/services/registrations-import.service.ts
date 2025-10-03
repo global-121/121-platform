@@ -255,7 +255,7 @@ export class RegistrationsImportService {
     const isTemplateAvailable =
       await this.messageTemplateService.isTemplateAvailable(
         program.id,
-        RegistrationStatusEnum.completed,
+        RegistrationStatusEnum.new,
       );
 
     const referenceIds = savedRegistrations.map(

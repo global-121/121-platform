@@ -10,6 +10,7 @@ import { TwilioMessageEntity } from '@121-service/src/notifications/entities/twi
 import { LookupModule } from '@121-service/src/notifications/lookup/lookup.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
+import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { LastMessageStatusService } from '@121-service/src/notifications/services/last-message-status.service';
 import { TryWhatsappEntity } from '@121-service/src/notifications/whatsapp/try-whatsapp.entity';
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
@@ -72,6 +73,7 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationEventsModule,
     ProgramFspConfigurationsModule,
     QueuesRegistryModule,
+    MessageTemplateModule,
   ],
   providers: [
     RegistrationsService,
