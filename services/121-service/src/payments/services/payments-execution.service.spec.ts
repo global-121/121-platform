@@ -129,56 +129,6 @@ describe('PaymentsExecutionService', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should not update the registration status to "completed" if the registration has less payments than maxPayments', async () => {
-      // ##TODO: this tests seems less valuable than before, as we directly assert the empty array being returned from getRegistrationsToComplete
-      // Arrange
-      const registrationsToComplete = [];
-      jest
-        .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
-        .mockResolvedValue(registrationsToComplete);
-
-      // Act
-      await service.createTransactionsAndUpdateRegistrations({
-        transactionCreationDetails: mockedTransactionCreationDetails,
-        programId: mockProgramId,
-        paymentId: mockPaymentId,
-        userId: mockUserId,
-      });
-
-      // Assert
-      expect(
-        registrationScopedRepository.updateRegistrationsToCompleted,
-      ).toHaveBeenCalledWith(
-        registrationsToComplete,
-        expect.any(Number) /* chunkSize */,
-      );
-    });
-
-    it('should not update the registration status to "completed" if the registration does not have maxPayments but the program does', async () => {
-      // ##TODO with the new setup this tests boils down to the exact same as the test above. Remove, unless we can find another setup. (FYI this did made me check this functionally manually)
-      // Arrange
-      const registrationsToComplete = [];
-      jest
-        .spyOn(registrationScopedRepository, 'getRegistrationsToComplete')
-        .mockResolvedValue(registrationsToComplete);
-
-      // Act
-      await service.createTransactionsAndUpdateRegistrations({
-        transactionCreationDetails: mockedTransactionCreationDetails,
-        programId: mockProgramId,
-        paymentId: mockPaymentId,
-        userId: mockUserId,
-      });
-
-      // Assert
-      expect(
-        registrationScopedRepository.updateRegistrationsToCompleted,
-      ).toHaveBeenCalledWith(
-        registrationsToComplete,
-        expect.any(Number) /* chunkSize */,
-      );
-    });
-
     it('create a registration status change event if status moved to "completed"', async () => {
       // Arrange
 

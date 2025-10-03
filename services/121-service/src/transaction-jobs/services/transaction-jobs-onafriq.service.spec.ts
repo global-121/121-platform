@@ -48,7 +48,7 @@ describe('TransactionJobsOnafriqService', () => {
   });
 
   describe('processOnafriqTransactionJob', () => {
-    it('should use existing onafriqTransaction and not create a new one', async () => {
+    it('should use existing onafriqTransaction and not create a new one when existing transaction is found', async () => {
       const transactionJob: OnafriqTransactionJobDto = {
         referenceId: 'ref-1',
         transactionId: 1,

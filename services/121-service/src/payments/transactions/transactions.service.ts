@@ -77,12 +77,6 @@ export class TransactionsService {
         transaction.paymentId = transactionRelationDetails.paymentId;
         transaction.userId = transactionRelationDetails.userId;
         transaction.status = transactionResponse.status;
-        // transaction.programFspConfigurationId =
-        //   transactionRelationDetails.programFspConfigurationId; // ##TODO: commenting out as unit test fails on these code issues
-        // transaction.errorMessage = transactionResponse.message ?? null;
-        // transaction.customData = transactionResponse.customData;
-        // transaction.transactionStep = 1;
-        // set other properties as needed
         return transaction;
       }),
     );
