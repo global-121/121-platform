@@ -10,7 +10,7 @@ import {
 
 import { Base121Entity } from '@121-service/src/base.entity';
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
