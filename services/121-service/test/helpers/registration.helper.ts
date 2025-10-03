@@ -795,6 +795,23 @@ export async function getRegistrationEvents({
     .send();
 }
 
+export async function getTransactionEventDescriptions({
+  programId,
+  transactionId,
+  accessToken,
+}: {
+  programId: number;
+  transactionId: number;
+  accessToken: string;
+}) {
+  const response = await getTransactionEvents({
+    programId,
+    transactionId,
+    accessToken,
+  });
+  return response.body.data.map((event) => event.description);
+}
+
 export async function getTransactionEvents({
   programId,
   transactionId,

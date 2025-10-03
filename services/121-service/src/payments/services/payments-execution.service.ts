@@ -558,6 +558,8 @@ export class PaymentsExecutionService {
     programId: number;
   }): Promise<TransactionCreationDetails[]> {
     const idColumn: keyof RegistrationViewEntity = 'id';
+    const programFspConfigurationIdColumn: keyof RegistrationViewEntity =
+      'programFspConfigurationId';
     const registrations =
       await this.registrationsPaginationService.getRegistrationViewsChunkedByReferenceIds(
         {
@@ -566,6 +568,7 @@ export class PaymentsExecutionService {
           select: [
             idColumn,
             GenericRegistrationAttributes.paymentAmountMultiplier,
+            programFspConfigurationIdColumn,
           ],
           chunkSize: 4000,
         },
@@ -574,6 +577,7 @@ export class PaymentsExecutionService {
     return registrations.map((row) => ({
       registrationId: row.id,
       transactionAmount: amount * row.paymentAmountMultiplier,
+      programFspConfigurationId: row.programFspConfigurationId,
     }));
   }
 }

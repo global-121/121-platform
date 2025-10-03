@@ -106,16 +106,17 @@ export class TransactionsService {
       transactionToSave.paymentId = paymentId;
       transactionToSave.status = TransactionStatusEnum.created;
       transactionToSave.userId = userId;
-      transactionsToSave.push(transactionToSave);
-    }
 
-    for (const transaction of transactionsToSave) {
       const transactionEvent = new TransactionEventEntity();
       transactionEvent.type = TransactionEventType.created;
       transactionEvent.description = TransactionEventDescription.created;
       transactionEvent.isSuccessfullyCompleted = true;
       transactionEvent.userId = userId;
-      transaction.transactionEvents = [transactionEvent];
+      transactionEvent.programFspConfigurationId =
+        item.programFspConfigurationId;
+      transactionToSave.transactionEvents = [transactionEvent];
+
+      transactionsToSave.push(transactionToSave);
     }
 
     const savedTransactions = await this.transactionScopedRepository.save(
@@ -139,7 +140,7 @@ export class TransactionsService {
     errorMessage?: string;
     newTransactionStatus?: TransactionStatusEnum;
   }) {
-    const transactionEventType = TransactionEventType.processingStep;
+    const transactionEventType = TransactionEventType.processingStep; // ##TODO: with the discussed design, do we need type at all any more?
     await this.transactionEventsService.createEvent({
       context,
       type: transactionEventType,
