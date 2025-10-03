@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { writeFile } from 'fs';
+import { writeFile } from 'node:fs';
+import { parseArgs } from 'node:util';
 
 import { shouldBeEnabled } from './_env.utils.mjs';
 import configFileTemplate from './src/environments/environment.ts.template.mjs';
@@ -8,7 +9,12 @@ import configFileTemplate from './src/environments/environment.ts.template.mjs';
 let targetEnv = 'production';
 
 // Use command line flag to override default environment
-if (process.argv[2] === 'env=development') {
+const config = parseArgs({
+  options: {
+    env: { type: 'string' },
+  },
+});
+if (config.values.env === 'development') {
   targetEnv = 'development';
 }
 

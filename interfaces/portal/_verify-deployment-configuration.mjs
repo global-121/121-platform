@@ -5,17 +5,26 @@
  */
 
 import { doesNotMatch, match, ok } from 'node:assert/strict';
-import test from 'node:test';
+import { test } from 'node:test';
+import { parseArgs } from 'node:util';
 
 import { shouldBeEnabled } from './_env.utils.mjs';
 import { parseMatomoConnectionString } from './_matomo.utils.mjs';
 
-const url = process.argv[2]?.replace('--url=', '');
+const config = parseArgs({
+  options: {
+    url: {
+      short: 'u',
+      type: 'string',
+    },
+  },
+});
+const url = config.values.url;
 
 if (!url || !url.startsWith('https')) {
   console.error('Invalid URL argument.');
   console.info(
-    'Provide a valid URL as argument using: ` --url=https://example.org`',
+    'Provide a valid URL as argument using: ` --url=https://example.org` or ` -u https://example.org`',
   );
   process.exit(1);
 }
