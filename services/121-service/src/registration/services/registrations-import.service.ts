@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -54,6 +55,7 @@ export class RegistrationsImportService {
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
     private readonly registrationBulkService: RegistrationsBulkService,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
   public async patchBulk(
@@ -250,14 +252,22 @@ export class RegistrationsImportService {
       },
     );
 
+    const isTemplateAvailable =
+      await this.messageTemplateService.isTemplateAvailable(
+        program.id,
+        RegistrationStatusEnum.completed,
+      );
+
     const referenceIds = savedRegistrations.map(
       (registration) => registration.referenceId,
     );
-    const messageContentDetails = {
-      messageTemplateKey: RegistrationStatusEnum.new,
-      messageContentType: MessageContentType.new,
-      message: '',
-    };
+    const messageContentDetails = isTemplateAvailable
+      ? {
+          messageTemplateKey: RegistrationStatusEnum.new,
+          messageContentType: MessageContentType.new,
+          message: '',
+        }
+      : {};
     await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
       {
         referenceIds,
