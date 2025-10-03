@@ -5,7 +5,6 @@ import { MessageContentType } from '@121-service/src/notifications/enum/message-
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
@@ -21,7 +20,6 @@ export class TransactionJobsHelperService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly registrationScopedRepository: RegistrationScopedRepository,
     private readonly queueMessageService: MessageQueuesService,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
