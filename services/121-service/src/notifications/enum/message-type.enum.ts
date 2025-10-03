@@ -10,6 +10,7 @@ export enum MessageContentType {
   paymentVoucher = 'payment-voucher',
   paymentReminder = 'payment-reminder',
   defaultReply = 'default-reply',
+  new = 'new',
 }
 
 export const TemplatedMessages = [

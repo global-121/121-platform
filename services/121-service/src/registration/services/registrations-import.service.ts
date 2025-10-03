@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid';
 
 import { AdditionalActionType } from '@121-service/src/actions/action.entity';
 import { ActionsService } from '@121-service/src/actions/actions.service';
+import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/entities/program-registration-attribute.entity';
@@ -27,9 +29,9 @@ import { RegistrationDataScopedRepository } from '@121-service/src/registration/
 import { RegistrationUtilsService } from '@121-service/src/registration/modules/registration-utils/registration-utils.service';
 import { InclusionScoreService } from '@121-service/src/registration/services/inclusion-score.service';
 import { QueueRegistrationUpdateService } from '@121-service/src/registration/services/queue-registrations-update.service';
+import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
 import { RegistrationsInputValidatorHelpers } from '@121-service/src/registration/validators/registrations-input.validator.helper';
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
 
 const BATCH_SIZE = 500;
@@ -49,10 +51,11 @@ export class RegistrationsImportService {
     private readonly fileImportService: FileImportService,
     private readonly registrationDataScopedRepository: RegistrationDataScopedRepository,
     private readonly registrationUtilsService: RegistrationUtilsService,
-    private readonly registrationEventsService: RegistrationEventsService,
     private readonly queueRegistrationUpdateService: QueueRegistrationUpdateService,
     private readonly registrationsInputValidator: RegistrationsInputValidator,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
+    private readonly registrationBulkService: RegistrationsBulkService,
+    private readonly messageTemplateService: MessageTemplateService,
   ) {}
 
   public async patchBulk(
@@ -189,7 +192,7 @@ export class RegistrationsImportService {
       registration.preferredLanguage = record.preferredLanguage ?? null;
       registration.program = program;
       registration.inclusionScore = 0;
-      registration.registrationStatus = RegistrationStatusEnum.new;
+      registration.registrationStatus = null;
       const customData = {};
       if (!program.paymentAmountMultiplierFormula) {
         registration.paymentAmountMultiplier =
@@ -227,19 +230,6 @@ export class RegistrationsImportService {
       savedRegistrations.push(savedRegistration);
     }
 
-    // Save registration status change events they changed from null to 'new'
-    await this.registrationEventsService.createFromRegistrationViews(
-      savedRegistrations.map((r) => ({
-        id: r.id,
-        status: undefined,
-      })),
-      savedRegistrations.map((r) => ({
-        id: r.id,
-        status: r.registrationStatus!,
-      })),
-      { explicitRegistrationPropertyNames: ['status'] },
-    );
-
     // Save registration data in bulk for performance
     const dynamicAttributeRelations =
       await this.programService.getAllRelationProgram(program.id);
@@ -259,6 +249,32 @@ export class RegistrationsImportService {
       registrationDataArrayAllPa,
       {
         chunk: 5000,
+      },
+    );
+
+    const isTemplateAvailable =
+      await this.messageTemplateService.isTemplateAvailable(
+        program.id,
+        RegistrationStatusEnum.new,
+      );
+
+    const referenceIds = savedRegistrations.map(
+      (registration) => registration.referenceId,
+    );
+    const messageContentDetails = isTemplateAvailable
+      ? {
+          messageTemplateKey: RegistrationStatusEnum.new,
+          messageContentType: MessageContentType.new,
+          message: '',
+        }
+      : {};
+    await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+      {
+        referenceIds,
+        programId: program.id,
+        registrationStatus: RegistrationStatusEnum.new,
+        userId,
+        messageContentDetails,
       },
     );
 
