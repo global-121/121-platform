@@ -22,7 +22,7 @@ export class QueueRegistrationUpdateService {
         'User information is missing when processing registration update',
       );
     }
-
+    console.log('ADDING REGISTRATION UPDATE TO QUEUE: ', job);
     await this.queuesService.updateRegistrationQueue.add(
       ProcessNameRegistration.update,
       {

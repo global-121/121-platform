@@ -23,10 +23,7 @@ export class LookupService {
       const lookupResponse = await twilioClient.lookups.v1
         .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
-      if (lookupResponse.phoneNumber.substr(0, 4) == '+961') {
-        lookupResponse.phoneNumber =
-          this.processLebanonException(lookupResponse);
-      }
+
       return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {
       if (throwNoException) {
@@ -58,14 +55,6 @@ export class LookupService {
       }
     }
     return;
-  }
-
-  private processLebanonException(lookupResponse): string {
-    if (lookupResponse.nationalFormat.substr(0, 1) == '0') {
-      return lookupResponse.phoneNumber.replace('+961', '+9610');
-    } else {
-      return lookupResponse.phoneNumber;
-    }
   }
 
   public sanitizePhoneNrExtra(phoneNumber: string): string {

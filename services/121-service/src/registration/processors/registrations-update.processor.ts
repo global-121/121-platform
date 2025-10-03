@@ -20,11 +20,15 @@ export class RegistrationUpdateProcessor {
       data: jobData.data,
       reason: jobData.reason,
     };
-    await this.registrationsService.validateInputAndUpdateRegistration({
-      programId: jobData.programId,
-      referenceId: jobData.referenceId,
-      updateRegistrationDto: dto,
-      userId: jobData.request.userId,
-    });
+    console.log('PROCESSOR');
+    const result =
+      await this.registrationsService.validateInputAndUpdateRegistration({
+        programId: jobData.programId,
+        referenceId: jobData.referenceId,
+        updateRegistrationDto: dto,
+        userId: jobData.request.userId,
+      });
+
+    console.log('RESULT', result);
   }
 }
