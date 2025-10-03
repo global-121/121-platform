@@ -5,13 +5,15 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Relation,
   Unique,
 } from 'typeorm';
 
 import { Base121AuditedEntity } from '@121-service/src/base-audited.entity';
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { LastTransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/last-transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 
@@ -55,4 +57,11 @@ export class TransactionEntity extends Base121AuditedEntity {
     { cascade: true },
   )
   public transactionEvents: Relation<TransactionEventEntity[]>;
+
+  @OneToOne(
+    () => LastTransactionEventEntity,
+    (lastTransactionEvent) => lastTransactionEvent.transaction,
+    { onDelete: 'NO ACTION' },
+  )
+  public lastTransactionEvent: Relation<LastTransactionEventEntity>;
 }
