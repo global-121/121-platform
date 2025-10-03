@@ -13,6 +13,21 @@ export const genericValidationMessage = (control: AbstractControl) => {
     return $localize`This field needs to be at least ${min}.`;
   }
 
+  if (control.errors?.max) {
+    const max = get(control.errors.max, 'max') ?? 0;
+    return $localize`This field needs to be at most ${max}.`;
+  }
+
+  if (control.errors?.minlength) {
+    const min = get(control.errors.minlength, 'minlength') ?? 0;
+    return $localize`This field cannot be shorter than ${min} characters.`;
+  }
+
+  if (control.errors?.maxlength) {
+    const max = get(control.errors.maxlength, 'requiredLength') ?? 0;
+    return $localize`This field cannot be longer than ${max} characters.`;
+  }
+
   if (control.errors?.email) {
     return $localize`Enter a valid email address`;
   }
