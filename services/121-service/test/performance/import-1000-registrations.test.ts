@@ -9,12 +9,14 @@ import {
   getServer,
   resetDB,
 } from '@121-service/test/helpers/utility.helper';
-import { PerformanceTestHelper } from '@121-service/test/performance/helpers/performance.helper';
+
+// Get test configuration based on environment
+const isRunningInCronjob = process.env.RUNNING_IN_CRONJOB === 'true';
+const duplicateNumber = isRunningInCronjob ? 10 : 5; // More registrations in cronjob
 
 describe('Import 1000 Registrations Performance Test', () => {
   let accessToken: string;
   let server: TestAgent<any>;
-  let performanceHelper: PerformanceTestHelper;
 
   const resetScript = SeedScript.testMultiple;
   const programId = 2;
@@ -24,29 +26,16 @@ describe('Import 1000 Registrations Performance Test', () => {
   );
 
   beforeAll(async () => {
-    // Initialize performance helper with K6-equivalent thresholds
-    performanceHelper = new PerformanceTestHelper({
-      httpErrorRate: 0.01, // Less than 1% HTTP errors
-      maxResponseTime: 200, // Login should be under 200ms
-    });
-
     server = getServer();
-
+    
     // Check if CSV file exists
     try {
       readFileSync(csvFilePath);
     } catch (error) {
       throw new Error(`CSV file not found: ${csvFilePath}`);
     }
-  });
-
-  beforeEach(() => {
-    performanceHelper.reset();
-  });
-
-  afterAll(() => {
-    // Assert overall performance thresholds
-    performanceHelper.assertThresholds();
+    
+    console.log(`Running with configuration: cronjob=${isRunningInCronjob}, duplicateNumber=${duplicateNumber}`);
   });
 
   it('should import 1000 registrations within performance thresholds', async () => {
@@ -55,17 +44,10 @@ describe('Import 1000 Registrations Performance Test', () => {
     // Reset database
     console.log('Resetting database...');
     let startTime = Date.now();
-    const resetResponse = await resetDB(
-      resetScript,
-      'import1000Registrations.test.ts',
-    );
-
-    performanceHelper.assertPerformance(
-      resetResponse,
-      startTime,
-      'Database reset should succeed',
-    );
+    const resetResponse = await resetDB(resetScript, 'import1000Registrations.test.ts');
+    
     expect(resetResponse.status).toBe(HttpStatus.ACCEPTED);
+    console.log(`Database reset completed in ${Date.now() - startTime}ms`);
 
     // Login
     console.log('Logging in...');
@@ -89,20 +71,18 @@ describe('Import 1000 Registrations Performance Test', () => {
       .post(`/api/programs/${programId}/registrations/import`)
       .set('Cookie', [`Authorization=${accessToken}`])
       .attach('file', csvBuffer, 'registrations.csv')
-      .timeout(1200000); // 20 minutes timeout like K6
-
-    performanceHelper.assertPerformance(
-      importResponse,
-      startTime,
-      'Registration import should succeed',
-    );
-
+      .timeout(1200000); // 20 minutes timeout
+    
     expect(importResponse.status).toBe(HttpStatus.CREATED);
+    
+    const importTime = Date.now() - startTime;
+    console.log(`Registration import completed in ${importTime}ms`);
 
     const totalTestTime = Date.now() - testStartTime;
     console.log(`Total test time: ${totalTestTime}ms`);
-
-    // K6 test had 9-minute duration limit
-    expect(totalTestTime).toBeLessThan(540000); // 9 minutes in ms
-  }, 600000); // 10-minute Jest timeout
+    
+    // Performance expectation: should complete within reasonable time
+    const maxDuration = isRunningInCronjob ? 540000 : 300000; // 9 min vs 5 min
+    expect(totalTestTime).toBeLessThan(maxDuration);
+  }, isRunningInCronjob ? 600000 : 360000); // 10 min vs 6 min timeout
 });

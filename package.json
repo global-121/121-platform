@@ -25,8 +25,6 @@
     "code:mock-service": "code ./services/mock-service/",
     "test": "echo 'See README.md#testing \\n\\n' && npm run test:all",
     "test:all": "npx npm-run-all --npm-path npm --print-label --parallel test:prettier test:portal test:services",
-    "test:performance": "cd services/121-service && npm run test:performance:all",
-    "test:performance:quick": "cd services/121-service && npm run test:performance:import && npm run test:performance:many-attributes && npm run test:performance:bulk-update",
     "test:prettier": "npx prettier --config=./.prettierrc.yml --check \"**/*.{md,json,yml,scss}\"",
     "test:services": "npx npm-run-all --npm-path npm --print-label --parallel test:121-service test:mock-service",
     "test:121-service": "cd services/ && docker compose exec 121-service npm test",

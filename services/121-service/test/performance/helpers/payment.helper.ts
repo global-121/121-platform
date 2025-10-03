@@ -2,13 +2,13 @@ import { HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
+import { waitFor } from '@121-service/src/utils/waitFor.helper';
 import {
   getAccessToken,
   getServer,
   resetDB,
   resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { waitFor } from '@121-service/test/performance/helpers/performance.helper';
 
 export interface PaymentResult {
   success: { count: number };
