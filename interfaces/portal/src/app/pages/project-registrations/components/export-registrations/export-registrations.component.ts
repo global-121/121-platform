@@ -118,9 +118,11 @@ export class ExportRegistrationsComponent {
           name: 'selected-registrations',
         });
         const actionData = this.getActionData()();
+
         if (!actionData) {
           return;
         }
+
         this.exportSelectedActionData.set(actionData);
         this.exportSelectedDialog().show({
           trackingEvent: {
