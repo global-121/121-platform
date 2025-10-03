@@ -35,7 +35,6 @@ const navigateToRegistrationsAndResetFilters = async (page: Page) => {
   const registrations = new RegistrationsPage(page);
 
   await registrations.navigateToProgramPage('Registrations');
-  await registrations.deselectRegistrations();
 };
 
 test.describe('Change status of registration with and without templated message', () => {
