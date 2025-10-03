@@ -16,7 +16,6 @@ import { RegistrationViewEntity } from '@121-service/src/registration/entities/r
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationsBulkService } from '@121-service/src/registration/services/registrations-bulk.service';
-import { RegistrationEventsService } from '@121-service/src/registration-events/registration-events.service';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 import { SharedTransactionJobDto } from '@121-service/src/transaction-queues/dto/shared-transaction-job.dto';
 
@@ -38,7 +37,6 @@ export class TransactionJobsHelperService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly latestTransactionRepository: LatestTransactionRepository,
     private readonly programRepository: ProgramRepository,
-    private readonly registrationEventsService: RegistrationEventsService,
     private readonly registrationBulkService: RegistrationsBulkService,
   ) {}
 
@@ -97,23 +95,22 @@ export class TransactionJobsHelperService {
             programId,
             RegistrationStatusEnum.completed,
           );
-
-        if (isTemplateAvailable) {
-          const messageContentDetails: MessageContentDetails = {
-            messageTemplateKey: RegistrationStatusEnum.completed,
-            messageContentType: MessageContentType.completed,
-            message: '',
-          };
-          await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
-            {
-              referenceIds: [registration.referenceId],
-              programId,
-              registrationStatus: RegistrationStatusEnum.completed,
-              userId,
-              messageContentDetails,
-            },
-          );
-        }
+        const messageContentDetails: MessageContentDetails = isTemplateAvailable
+          ? {
+              messageTemplateKey: RegistrationStatusEnum.completed,
+              messageContentType: MessageContentType.completed,
+              message: '',
+            }
+          : {};
+        await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+          {
+            referenceIds: [registration.referenceId],
+            programId,
+            registrationStatus: RegistrationStatusEnum.completed,
+            userId,
+            messageContentDetails,
+          },
+        );
       }
     }
 
