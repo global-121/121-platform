@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`OnafriqApiHelperService processCallServiceResponse to return duplicate thirdPartyTransId error status and message if API errorCode indicating duplicate thirdPartyTransId 1`] = `"Error: duplicate thirdPartyTransId error for thirdPartyTransId mocked-third-party-trans-id"`;
 
