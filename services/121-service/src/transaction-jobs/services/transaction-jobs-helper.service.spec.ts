@@ -3,6 +3,7 @@ import { UpdateResult } from 'typeorm';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { ProgramNotificationEnum } from '@121-service/src/notifications/enum/program-notification.enum';
+import { MessageContentDetails } from '@121-service/src/notifications/interfaces/message-content-details.interface';
 import { MessageQueuesService } from '@121-service/src/notifications/message-queues/message-queues.service';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
@@ -43,9 +44,9 @@ describe('TransactionJobsHelperService', () => {
   let transactionScopedRepository: TransactionScopedRepository;
   let latestTransactionRepository: LatestTransactionRepository;
   let programRepository: ProgramRepository;
-  let registrationsBulkService: RegistrationsBulkService;
   let messageTemplateService: MessageTemplateService;
   let queueMessageService: MessageQueuesService;
+  let registrationsBulkService: RegistrationsBulkService;
 
   beforeEach(async () => {
     const { unit, unitRef } = TestBed.create(
@@ -103,6 +104,9 @@ describe('TransactionJobsHelperService', () => {
         { language: LanguageEnum.en, message: 'Payment of [[1]] received.' },
         { language: LanguageEnum.fr, message: 'Paiement de [[1]] reçu.' },
       ] as MessageTemplateEntity[]);
+    jest
+      .spyOn(messageTemplateService, 'isTemplateAvailable')
+      .mockResolvedValue(true);
   });
 
   it('should be defined', () => {
@@ -139,10 +143,10 @@ describe('TransactionJobsHelperService', () => {
       bulkSize: 10,
       transactionAmount: 100,
     };
+
     it('should update the payment count', async () => {
       // Arrange
       const registration = structuredClone(mockedRegistration);
-
       const paymentCountFromDb = 5;
 
       jest
@@ -169,21 +173,14 @@ describe('TransactionJobsHelperService', () => {
       );
     });
 
-    it('should not update the registration status to complete if the program does not have maxPayments', async () => {
+    it('should not trigger status change if max payments not exceeded', async () => {
       // Arrange
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: false,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
-
       const registration = structuredClone(mockedRegistration);
+      const paymentCountFromDb = 3;
+
+      jest
+        .spyOn(latestTransactionRepository, 'getPaymentCount')
+        .mockResolvedValue(paymentCountFromDb);
 
       // Act
       await service.createTransactionAndUpdateRegistration({
@@ -194,89 +191,9 @@ describe('TransactionJobsHelperService', () => {
       });
 
       // Assert
-      // The first call is for updating the payment count, the 2nd call would have been for
-      // updating the registration status, which we expect to *not* happen.
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
-        1,
-      );
-    });
-
-    it('should not update the registration status to "completed" if the registration has less payments than maxPayments', async () => {
-      // Arrange
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: true,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      const localMockedRegistration = {
-        ...mockedRegistration,
-        paymentCount: 4,
-      };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
-
-      const paymentCountFromDb = 5;
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(paymentCountFromDb);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration: localMockedRegistration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      // The first call is for updating the payment count, the 2nd call would have been for
-      // updating the registration status, which we expect to *not* happen.
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
-        1,
-      );
-    });
-
-    it('should not update the registration status to "completed" if the registration does not have maxPayments but the program does', async () => {
-      // Arrange
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: true,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      const localMockedRegistration = {
-        ...mockedRegistration,
-        maxPayments: undefined,
-      };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
-
-      const paymentCountFromDb = 5;
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(paymentCountFromDb);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration: localMockedRegistration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      // The first call is for updating the payment count, the 2nd call would have been for
-      // updating the registration status, which we expect to *not* happen.
-      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
-        1,
-      );
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).not.toHaveBeenCalled();
     });
 
     it("should not update the payment count if it's a retry", async () => {
@@ -309,35 +226,69 @@ describe('TransactionJobsHelperService', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('create a registration status change event if status moved to "completed"', async () => {
+    it('should trigger status change to completed when max payments exceeded and template available', async () => {
       // Arrange
       const maxPayments = 6;
-      const alreadyCompletedPaymentsBeforeTransaction = 5;
+      const paymentCountAfterTransaction = 6;
 
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: true,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      const localMockedRegistration = {
+      const registration = {
         ...mockedRegistration,
-        paymentCount: alreadyCompletedPaymentsBeforeTransaction,
         maxPayments,
       };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
 
       jest
         .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(alreadyCompletedPaymentsBeforeTransaction + 1);
+        .mockResolvedValue(paymentCountAfterTransaction);
+      jest
+        .spyOn(messageTemplateService, 'isTemplateAvailable')
+        .mockResolvedValue(true);
 
       // Act
       await service.createTransactionAndUpdateRegistration({
-        registration: localMockedRegistration,
+        registration,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
+        status: TransactionStatusEnum.success,
+      });
+
+      // Assert
+      const expectedMessageContentDetails: MessageContentDetails = {
+        messageTemplateKey: RegistrationStatusEnum.completed,
+        messageContentType: MessageContentType.completed,
+        message: '',
+      };
+
+      expect(
+        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
+      ).toHaveBeenCalledWith({
+        referenceIds: [registration.referenceId],
+        programId: transactionJob.programId,
+        registrationStatus: RegistrationStatusEnum.completed,
+        userId: transactionJob.userId,
+        messageContentDetails: expectedMessageContentDetails,
+      });
+    });
+
+    it('should trigger status change to completed when max payments exceeded and template not available', async () => {
+      // Arrange
+      const maxPayments = 6;
+      const paymentCountAfterTransaction = 6;
+
+      const registration = {
+        ...mockedRegistration,
+        maxPayments,
+      };
+
+      jest
+        .spyOn(latestTransactionRepository, 'getPaymentCount')
+        .mockResolvedValue(paymentCountAfterTransaction);
+      jest
+        .spyOn(messageTemplateService, 'isTemplateAvailable')
+        .mockResolvedValue(false);
+
+      // Act
+      await service.createTransactionAndUpdateRegistration({
+        registration,
         transactionJob,
         transferAmountInMajorUnit: 100,
         status: TransactionStatusEnum.success,
@@ -347,7 +298,7 @@ describe('TransactionJobsHelperService', () => {
       expect(
         registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
       ).toHaveBeenCalledWith({
-        referenceIds: [localMockedRegistration.referenceId],
+        referenceIds: [registration.referenceId],
         programId: transactionJob.programId,
         registrationStatus: RegistrationStatusEnum.completed,
         userId: transactionJob.userId,
@@ -355,47 +306,7 @@ describe('TransactionJobsHelperService', () => {
       });
     });
 
-    it('does not create a registration status change event if status did not move', async () => {
-      // Arrange
-      const maxPayments = 6;
-      const alreadyCompletedPaymentsBeforeTransaction = 4;
-
-      const mockedProgramNoMaxPayments = {
-        enableMaxPayments: true,
-        titlePortal: { en: 'Example Title' },
-        published: false,
-        distributionDuration: 100,
-        fixedTransferValue: 500,
-        budget: 50000,
-      };
-      const localMockedRegistration = {
-        ...mockedRegistration,
-        paymentCount: alreadyCompletedPaymentsBeforeTransaction,
-        maxPayments,
-      };
-      jest
-        .spyOn(programRepository, 'findByIdOrFail')
-        .mockResolvedValue(mockedProgramNoMaxPayments as any);
-
-      jest
-        .spyOn(latestTransactionRepository, 'getPaymentCount')
-        .mockResolvedValue(alreadyCompletedPaymentsBeforeTransaction + 1);
-
-      // Act
-      await service.createTransactionAndUpdateRegistration({
-        registration: localMockedRegistration,
-        transactionJob,
-        transferAmountInMajorUnit: 100,
-        status: TransactionStatusEnum.success,
-      });
-
-      // Assert
-      expect(
-        registrationsBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('should not update registration or create event if isRetry is true', async () => {
+    it('should not update registration or trigger status change if isRetry is true', async () => {
       await service.createTransactionAndUpdateRegistration({
         registration: mockedRegistration,
         transactionJob: {
