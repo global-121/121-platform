@@ -4,6 +4,7 @@ export class TranactionEvents1758619661604 implements MigrationInterface {
   name = 'TranactionEvents1758619661604';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // create transaction-event
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction" DROP CONSTRAINT "FK_fff8ff586a03d469256098b8f86"`,
     );
@@ -57,6 +58,26 @@ export class TranactionEvents1758619661604 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "121-service"."transaction_event" ADD CONSTRAINT "FK_ccc33883aa7599801353e53cf19" FOREIGN KEY ("programFspConfigurationId") REFERENCES "121-service"."program_fsp_configuration"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+
+    // create last-transaction-event
+    await queryRunner.query(
+      `CREATE TABLE "121-service"."last_transaction_event" ("id" SERIAL NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "updated" TIMESTAMP NOT NULL DEFAULT now(), "transactionId" integer NOT NULL, "transactionEventId" integer NOT NULL, CONSTRAINT "REL_3c4cceaad30f521ac0074c45ad" UNIQUE ("transactionId"), CONSTRAINT "REL_0de93dafac190577420226cf69" UNIQUE ("transactionEventId"), CONSTRAINT "PK_c0093d25972670d66a61268ef37" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_318d184fe0086105b4615c0078" ON "121-service"."last_transaction_event" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_3c4cceaad30f521ac0074c45ad" ON "121-service"."last_transaction_event" ("transactionId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_0de93dafac190577420226cf69" ON "121-service"."last_transaction_event" ("transactionEventId") `,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."last_transaction_event" ADD CONSTRAINT "FK_3c4cceaad30f521ac0074c45ad7" FOREIGN KEY ("transactionId") REFERENCES "121-service"."transaction"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "121-service"."last_transaction_event" ADD CONSTRAINT "FK_0de93dafac190577420226cf69f" FOREIGN KEY ("transactionEventId") REFERENCES "121-service"."transaction_event"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
 
     // change twilio-message relation with transaction from OneToOne to ManyToOne

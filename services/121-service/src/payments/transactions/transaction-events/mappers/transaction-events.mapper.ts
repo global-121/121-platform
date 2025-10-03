@@ -1,5 +1,5 @@
 import { TransactionEventsReturnDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-events-return.dto';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import {
   mapEventsToDto,
   mapUserToDto,
