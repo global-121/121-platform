@@ -13,6 +13,7 @@ export const MESSAGE_CONTENT_TYPE_LABELS: Record<MessageContentType, string> = {
   [MessageContentType.paymentVoucher]: $localize`:@@message-content-type-payment-voucher:Payment voucher`,
   [MessageContentType.paused]: $localize`:@@message-content-type-paused:Paused`,
   [MessageContentType.new]: $localize`:@@message-content-type-new:New`,
+  [MessageContentType.completed]: $localize`:@@message-content-type-completed:Completed`,
 };
 
 export enum MessageStatus {
