@@ -13,7 +13,6 @@ import { PaymentsReportingHelperService } from '@121-service/src/payments/servic
 import { PaymentReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
-import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { ProgramRegistrationAttributeRepository } from '@121-service/src/programs/repositories/program-registration-attribute.repository';
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import {
@@ -36,7 +35,6 @@ export class PaymentsReportingService {
     private readonly dataSource: DataSource,
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly paymentEventsService: PaymentEventsService,
-    private readonly transactionEventsService: TransactionEventsService,
   ) {}
 
   public async getPayments({
@@ -113,7 +111,7 @@ export class PaymentsReportingService {
     };
   }
 
-  // TODO: Move to scoped transaction repository however it will be changed when implementing segregation of duties, so let's leave the refactor until than
+  // ##TODO: Move to scoped transaction repository however it will be changed when implementing segregation of duties, so let's leave the refactor until than
   private async aggregateTransactionsByStatus(
     programId: number,
     paymentId: number,
@@ -124,7 +122,7 @@ export class PaymentsReportingService {
         'status',
         'COUNT(*) as count',
         // rounding individual transaction amounts to 2 decimal places before summing, in line with current FSPs:
-        'SUM(ROUND("transferValue"::numeric, 2)) as totalamount',
+        'SUM(ROUND("amount"::numeric, 2)) as totalamount',
       ])
       .from(
         '(' +
