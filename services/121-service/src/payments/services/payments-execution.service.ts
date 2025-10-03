@@ -226,13 +226,13 @@ export class PaymentsExecutionService {
       2000,
     );
 
-    await this.setStatusToCompleteIfApplicable(programId);
+    await this.setStatusToCompletedIfApplicable(programId);
 
     return transactionIds;
   }
 
   // TODO: we will likely need to move this to a later stage (upon initiating the payment after approval)
-  private async setStatusToCompleteIfApplicable(
+  private async setStatusToCompletedIfApplicable(
     programId: number,
   ): Promise<void> {
     const program = await this.programRepository.findByIdOrFail(programId);
