@@ -210,7 +210,10 @@ export async function initializePaymentWorkflow(
   console.log('Logging in...');
   const accessToken = await getAccessToken();
   const server = getServer();
-  const paymentHelper = new PaymentPerformanceHelper(server as any, accessToken);
+  const paymentHelper = new PaymentPerformanceHelper(
+    server as any,
+    accessToken,
+  );
 
   // Import registration
   console.log('Importing registration...');
