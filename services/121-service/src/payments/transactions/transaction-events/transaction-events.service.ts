@@ -79,6 +79,7 @@ export class TransactionEventsService {
           transactionId: Equal(transactionId),
         },
         order: { created: 'ASC' },
+        relations: { user: true },
       },
     );
 

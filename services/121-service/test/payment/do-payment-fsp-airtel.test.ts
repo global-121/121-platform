@@ -1,13 +1,17 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   doPayment,
   getTransactions,
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+import {
+  getTransactionEventDescriptions,
+  seedIncludedRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -123,6 +127,17 @@ describe('Do payment with FSP: Airtel', () => {
     // Assert
     expect(transaction.errorMessage).toBe(null);
     expect(transaction.status).toBe(TransactionStatusEnum.success);
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId,
+      transactionId: getTransactionsResult.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.airtelRequestSent,
+    ]);
   });
 
   it('should correctly handle duplicate Airtel transactionId', async () => {

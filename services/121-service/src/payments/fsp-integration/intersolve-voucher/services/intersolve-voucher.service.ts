@@ -414,10 +414,21 @@ export class IntersolveVoucherService {
       return;
     }
 
-    // Do not update transaction (or create event) on success callback on initial message
+    // Do not update transaction (or create event) on success callback on initial message //##TODO discuss this again (don't update transaction, but do create event?)
     if (
       newTransactionStatus === TransactionStatusEnum.success &&
       processType === MessageProcessType.whatsappTemplateVoucher
+    ) {
+      return;
+    }
+
+    // Do not create 2 events for delivered+read.
+    const transaction = await this.transactionScopedRepository.findOneOrFail({
+      where: { id: Equal(transactionId) },
+    });
+    if (
+      transaction.status === TransactionStatusEnum.success &&
+      newTransactionStatus === TransactionStatusEnum.success
     ) {
       return;
     }

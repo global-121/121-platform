@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -14,7 +15,7 @@ import {
 } from '@121-service/test/helpers/program.helper';
 import {
   awaitChangeRegistrationStatus,
-  getTransactionEvents,
+  getTransactionEventDescriptions,
   importRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -95,18 +96,19 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.success,
     );
+    expect(getTransactionsBody.body[0].errorMessage).toBe(null);
 
-    // ##TODO: combine in one helper method with getTransactions?
-    const getTransactionEventsBody = await getTransactionEvents({
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
-    expect(getTransactionEventsBody.body.data.length).toBe(4); // created / initiated / request sent / callback
-    for (const event of getTransactionEventsBody.body.data) {
-      expect(event.errorMessage).toBe(null);
-    }
-    // ##TODO: I could assert a lot more, but the length of 4 implicitly covers a lot of the gist of it
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.onafriqRequestSent,
+      TransactionEventDescription.onafriqCallbackReceived,
+    ]);
   });
 
   it('should give error on the initial request based on magic phonenumber and succeed on retry', async () => {
@@ -157,6 +159,7 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.error,
     );
+    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
 
     // RETRY
     // Arrange
@@ -195,19 +198,19 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       TransactionStatusEnum.success,
     );
 
-    const getTransactionEventsBody = await getTransactionEvents({
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
-    expect(getTransactionEventsBody.body.data.length).toBe(6); // created / initiated / request sent / retry / request sent / callback
-    const errorEvents = getTransactionEventsBody.body.data.filter(
-      (e) => !e.isSuccessfullyCompleted,
-    );
-    expect(errorEvents.length).toBe(1);
-    for (const event of errorEvents) {
-      expect(event.errorMessage).toMatchSnapshot();
-    }
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.onafriqRequestSent,
+      TransactionEventDescription.retry,
+      TransactionEventDescription.onafriqRequestSent,
+      TransactionEventDescription.onafriqCallbackReceived,
+    ]);
   });
 
   it('should give error via callback based on magic phonenumber', async () => {
@@ -258,20 +261,19 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
     expect(getTransactionsBody.body[0].status).toBe(
       TransactionStatusEnum.error,
     );
+    expect(getTransactionsBody.body[0].errorMessage).toMatchSnapshot();
 
-    const getTransactionEventsBody = await getTransactionEvents({
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
-    expect(getTransactionEventsBody.body.data.length).toBe(4); // created / initiated / request sent / retry / request sent / callback
-    const errorEvents = getTransactionEventsBody.body.data.filter(
-      (e) => !e.isSuccessfullyCompleted,
-    );
-    expect(errorEvents.length).toBe(1);
-    for (const event of errorEvents) {
-      expect(event.errorMessage).toMatchSnapshot();
-    }
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.onafriqRequestSent,
+      TransactionEventDescription.onafriqCallbackReceived,
+    ]);
   });
 
   it('should not update transaction on a `duplicate thirdPartyTransId error` API response', async () => {
@@ -326,14 +328,14 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       TransactionStatusEnum.created,
     );
 
-    const getTransactionEventsBody = await getTransactionEvents({
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
       programId,
       transactionId: getTransactionsBody.body[0].id,
       accessToken,
     });
-    expect(getTransactionEventsBody.body.data.length).toBe(2); // created / initiated
-    for (const event of getTransactionEventsBody.body.data) {
-      expect(event.errorMessage).toBe(null);
-    }
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+    ]);
   });
 });
