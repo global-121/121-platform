@@ -29,10 +29,7 @@ for file in "${test_files[@]}"; do
   mkdir -p "${log_dir}"
 
   echo "Starting services"
-  if ! (cd ../services && docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300); then
-    echo "Failed to start services"
-    exit 1
-  fi
+  (cd ../services || exit 1 ; docker --log-level 'warn' compose -f docker-compose.yml up -d --quiet-pull --wait --wait-timeout 300)
 
   echo "Running Jest performance test"
   # Run specific test file with integration test configuration
@@ -45,17 +42,11 @@ for file in "${test_files[@]}"; do
   fi
 
   echo "Collecting logs in ${log_dir}"
-  if ! (cd ../services && docker compose -f docker-compose.yml logs 121-service > "${log_dir}/121-service.log"); then
-    echo "Warning: Failed to collect 121-service logs"
-  fi
-  if ! (cd ../services && docker compose -f docker-compose.yml logs > "${log_dir}/all-services.log"); then
-    echo "Warning: Failed to collect all-services logs"
-  fi
+  (cd ../services || exit 1; docker compose -f docker-compose.yml logs 121-service > "${log_dir}/121-service.log")
+  (cd ../services || exit 1; docker compose -f docker-compose.yml logs > "${log_dir}/all-services.log")
 
   echo "Stopping services"
-  if ! (cd ../services && docker compose -f docker-compose.yml down); then
-    echo "Warning: Failed to stop services cleanly"
-  fi
+  (cd ../services || exit 1; docker compose -f docker-compose.yml down)
 
   echo "::endgroup::"
 done
