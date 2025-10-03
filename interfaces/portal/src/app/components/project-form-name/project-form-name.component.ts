@@ -44,7 +44,7 @@ export class ProjectFormNameComponent {
     name: new FormControl('', {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.maxLength(60)],
     }),
     description: new FormControl<string | undefined>(
       { value: undefined, disabled: false },
