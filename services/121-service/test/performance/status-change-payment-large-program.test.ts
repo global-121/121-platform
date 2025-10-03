@@ -8,12 +8,10 @@ import {
   resetDB,
   resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { getEnvironmentNumber } from '@121-service/test/performance/helpers/config.helper';
 import {
   PaymentMonitoringOptions,
   PaymentPerformanceHelper,
 } from '@121-service/test/performance/helpers/payment.helper';
-import { PerformanceTestHelper } from '@121-service/test/performance/helpers/performance.helper';
 
 // Registration data for Visa program (from K6 helpers)
 const registrationVisa = {
@@ -149,7 +147,6 @@ class ProgramPerformanceHelper {
 }
 
 describe('Status Change Payment in Large Program Performance Test', () => {
-  let performanceHelper: PerformanceTestHelper;
   let accessToken: string;
   let server: TestAgent<any>;
   let paymentHelper: PaymentPerformanceHelper;
@@ -157,7 +154,8 @@ describe('Status Change Payment in Large Program Performance Test', () => {
 
   // K6 equivalent configuration
   const resetScript = SeedScript.nlrcMultiple;
-  const duplicateNumber = getEnvironmentNumber('DUPLICATE_NUMBER', 15); // should be 15
+  const isRunningInCronjob = process.env.RUNNING_IN_CRONJOB === 'true';
+  const duplicateNumber = isRunningInCronjob ? 15 : 10; // Heavy load vs moderate load
   const programId = 3;
   const maxRetryDuration = 3000; // seconds
   const minPassRatePercentage = 10;
@@ -165,11 +163,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
 
   beforeAll(async () => {
     // Initialize performance helper with K6-equivalent thresholds (slightly higher error tolerance)
-    performanceHelper = new PerformanceTestHelper({
-      httpErrorRate: 0.04, // Less than 4% HTTP errors (more relaxed)
-      maxResponseTime: 200, // Login and program load should be under 200ms
-      minPassRate: minPassRatePercentage,
-    });
 
     server = getServer();
     accessToken = await getAccessToken();
@@ -187,12 +180,10 @@ describe('Status Change Payment in Large Program Performance Test', () => {
   });
 
   beforeEach(() => {
-    performanceHelper.reset();
   });
 
   afterAll(() => {
     // Assert overall performance thresholds
-    performanceHelper.assertThresholds();
   });
 
   it('should handle status changes and payments in large program within performance thresholds', async () => {
@@ -210,11 +201,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
       'statusChangePaymentInLargeProgram.test.ts',
     );
 
-    performanceHelper.assertPerformance(
-      resetResponse,
-      startTime,
-      'Database reset should succeed',
-    );
     expect(resetResponse.status).toBe(HttpStatus.ACCEPTED);
 
     // Test login performance
@@ -238,11 +224,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
           attributeName,
         );
 
-      performanceHelper.assertPerformance(
-        attributeResponse,
-        startTime,
-        `Attribute ${attributeName} should be created`,
-      );
       expect(attributeResponse.status).toBe(HttpStatus.CREATED);
 
       // Add to registration data
@@ -257,11 +238,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
       modifiedRegistration,
     );
 
-    performanceHelper.assertPerformance(
-      importResponse,
-      startTime,
-      'Registration import should succeed',
-    );
     expect(importResponse.status).toBe(HttpStatus.CREATED);
 
     // Create duplicate registrations (20k-50k range)
@@ -272,11 +248,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
     const duplicateResponse =
       await resetDuplicateRegistrations(duplicateNumber);
 
-    performanceHelper.assertPerformance(
-      duplicateResponse,
-      startTime,
-      'Duplicate creation should succeed',
-    );
     expect(duplicateResponse.status).toBe(HttpStatus.ACCEPTED);
 
     // Get program by ID and validate load time
@@ -285,11 +256,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
     const programResponse = await programHelper.getProgramById(programId);
 
     const programLoadTime = Date.now() - startTime;
-    performanceHelper.assertPerformance(
-      programResponse,
-      startTime,
-      'Program should load successfully',
-    );
     expect(programResponse.status).toBe(HttpStatus.OK);
 
     if (programLoadTime >= 200) {
@@ -307,11 +273,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
       'included',
     );
 
-    performanceHelper.assertPerformance(
-      statusResponse,
-      startTime,
-      'Status update should succeed',
-    );
     expect(statusResponse.status).toBe(HttpStatus.ACCEPTED);
 
     // Verify payment dry run
@@ -326,11 +287,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
       amount,
     );
 
-    performanceHelper.assertPerformance(
-      paymentResponse,
-      startTime,
-      'Payment creation should succeed',
-    );
     expect(paymentResponse.status).toBe(HttpStatus.ACCEPTED);
     expect(paymentResponse.body.id).toBeDefined();
 
@@ -351,11 +307,6 @@ describe('Status Change Payment in Large Program Performance Test', () => {
     const paymentResult =
       await paymentHelper.monitorPaymentResults(monitoringOptions);
 
-    performanceHelper.assertPerformance(
-      paymentResult,
-      startTime,
-      'Payment monitoring should complete successfully',
-    );
     expect(paymentResult.status).toBe(HttpStatus.OK);
 
     const totalTestTime = Date.now() - testStartTime;

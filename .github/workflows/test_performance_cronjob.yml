@@ -1,0 +1,52 @@
+# Performance tests cronjob - runs nightly with full load
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+
+name: 'Test: Performance (Jest) Cronjob'
+
+on:
+  schedule:
+    # See: https://crontab.guru/#42_1_*_*_1-5
+    - cron: '42 1 * * 1-5'
+  workflow_dispatch:
+
+env:
+  workingDirectory: 'services/121-service/'
+
+jobs:
+  test-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # 6 hours timeout for full overnight tests
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: '${{ env.workingDirectory }}/.node-version'
+          cache: 'npm'
+          cache-dependency-path: '${{ env.workingDirectory }}/package-lock.json'
+
+      - name: Set ENV-variables for test-environment
+        run: |
+          cp ./services/.env.example services/.env
+
+      - name: Install 121-service dependencies
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          npm ci --omit=optional
+
+      - name: Run performance tests with full load (overnight)
+        working-directory: ${{ env.workingDirectory }}
+        run: |
+          ./run-performance-tests.sh
+        env:
+          NODE_ENV: test
+          RUNNING_IN_CRONJOB: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-test-logs
+          path: ${{ env.workingDirectory }}/logs/

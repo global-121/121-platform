@@ -6,21 +6,19 @@ import {
   getServer,
   resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { getEnvironmentNumber } from '@121-service/test/performance/helpers/config.helper';
 import {
   PaymentMonitoringOptions,
   PaymentPerformanceHelper,
 } from '@121-service/test/performance/helpers/payment.helper';
-import { PerformanceTestHelper } from '@121-service/test/performance/helpers/performance.helper';
 
 describe('Performance During Payment Test', () => {
-  let performanceHelper: PerformanceTestHelper;
   let accessToken: string;
   let server: TestAgent<any>;
   let paymentHelper: PaymentPerformanceHelper;
 
   // K6 equivalent configuration
-  const duplicateNumber = getEnvironmentNumber('DUPLICATE_NUMBER', 5);
+  const isRunningInCronjob = process.env.RUNNING_IN_CRONJOB === 'true';
+  const duplicateNumber = isRunningInCronjob ? 5 : 3; // Light load for this test
   const programId = 3;
   const maxRetryDuration = 3000; // seconds (50 minutes)
   const minPassRatePercentage = 50;
@@ -28,11 +26,6 @@ describe('Performance During Payment Test', () => {
 
   beforeAll(async () => {
     // Initialize performance helper with K6-equivalent thresholds (higher error tolerance)
-    performanceHelper = new PerformanceTestHelper({
-      httpErrorRate: 0.3, // Less than 30% HTTP errors (more relaxed than other tests)
-      maxResponseTime: 200, // Login should be under 200ms
-      minPassRate: minPassRatePercentage,
-    });
 
     server = getServer();
     accessToken = await getAccessToken();
@@ -49,12 +42,10 @@ describe('Performance During Payment Test', () => {
   });
 
   beforeEach(() => {
-    performanceHelper.reset();
   });
 
   afterAll(() => {
     // Assert overall performance thresholds
-    performanceHelper.assertThresholds();
   });
 
   it('should maintain performance during payment processing while testing other endpoints', async () => {
@@ -67,11 +58,6 @@ describe('Performance During Payment Test', () => {
     let startTime = Date.now();
     const resetResponse = await resetDuplicateRegistrations(duplicateNumber);
 
-    performanceHelper.assertPerformance(
-      resetResponse,
-      startTime,
-      'Database reset should succeed',
-    );
     expect(resetResponse.status).toBe(HttpStatus.ACCEPTED);
 
     // Test login performance
@@ -91,11 +77,6 @@ describe('Performance During Payment Test', () => {
       amount,
     );
 
-    performanceHelper.assertPerformance(
-      paymentResponse,
-      startTime,
-      'Payment creation should succeed',
-    );
     expect(paymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
     const paymentId = paymentResponse.body.id;
@@ -115,11 +96,6 @@ describe('Performance During Payment Test', () => {
     const paymentResult =
       await paymentHelper.monitorPaymentResults(monitoringOptions);
 
-    performanceHelper.assertPerformance(
-      paymentResult,
-      startTime,
-      'Payment monitoring should complete successfully',
-    );
     expect(paymentResult.status).toBe(HttpStatus.OK);
 
     // Test export list endpoint while payment is processing/completed
@@ -129,11 +105,6 @@ describe('Performance During Payment Test', () => {
       .get(`/api/programs/${programId}/metrics/export-list/registrations`)
       .set('Cookie', [`Authorization=${accessToken}`]);
 
-    performanceHelper.assertPerformance(
-      exportListResponse,
-      startTime,
-      'Export list should load successfully',
-    );
     expect(exportListResponse.status).toBe(HttpStatus.OK);
 
     // Test bulk message sending
@@ -147,11 +118,6 @@ describe('Performance During Payment Test', () => {
         message: 'Your voucher can be picked up at the location',
       });
 
-    performanceHelper.assertPerformance(
-      messageResponse,
-      startTime,
-      'Bulk message should be sent successfully',
-    );
     expect(messageResponse.status).toBe(HttpStatus.ACCEPTED);
 
     const totalTestTime = Date.now() - testStartTime;

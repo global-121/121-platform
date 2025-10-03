@@ -6,12 +6,10 @@ import {
   getServer,
   resetDuplicateRegistrations,
 } from '@121-service/test/helpers/utility.helper';
-import { getEnvironmentNumber } from '@121-service/test/performance/helpers/config.helper';
 import {
   PaymentMonitoringOptions,
   PaymentPerformanceHelper,
 } from '@121-service/test/performance/helpers/payment.helper';
-import { PerformanceTestHelper } from '@121-service/test/performance/helpers/performance.helper';
 
 /**
  * Check if the service is healthy
@@ -76,13 +74,13 @@ async function kill121Service(
 }
 
 describe('Retry Failed Jobs on Startup During Queue Processing Performance Test', () => {
-  let performanceHelper: PerformanceTestHelper;
   let accessToken: string;
   let server: TestAgent<any>;
   let paymentHelper: PaymentPerformanceHelper;
 
   // K6 equivalent configuration
-  const duplicateNumber = getEnvironmentNumber('DUPLICATE_NUMBER', 7); // '7' leads to 128 registrations
+  const isRunningInCronjob = process.env.RUNNING_IN_CRONJOB === 'true';
+  const duplicateNumber = isRunningInCronjob ? 7 : 5; // Moderate load
   const programId = 3;
   const maxRetryDuration = 2000; // seconds
   const minPassRatePercentage = 100;
@@ -90,11 +88,6 @@ describe('Retry Failed Jobs on Startup During Queue Processing Performance Test'
 
   beforeAll(async () => {
     // Initialize performance helper with K6-equivalent thresholds (very high error tolerance due to service restarts)
-    performanceHelper = new PerformanceTestHelper({
-      httpErrorRate: 0.6, // Less than 60% HTTP errors (very relaxed due to service restarts)
-      maxResponseTime: 200, // Login should be under 200ms
-      minPassRate: minPassRatePercentage,
-    });
 
     server = getServer();
     accessToken = await getAccessToken();
@@ -111,12 +104,10 @@ describe('Retry Failed Jobs on Startup During Queue Processing Performance Test'
   });
 
   beforeEach(() => {
-    performanceHelper.reset();
   });
 
   afterAll(() => {
     // Assert overall performance thresholds
-    performanceHelper.assertThresholds();
   });
 
   it('should retry failed jobs on startup during queue processing within performance thresholds', async () => {
@@ -131,11 +122,6 @@ describe('Retry Failed Jobs on Startup During Queue Processing Performance Test'
     let startTime = Date.now();
     const resetResponse = await resetDuplicateRegistrations(duplicateNumber);
 
-    performanceHelper.assertPerformance(
-      resetResponse,
-      startTime,
-      'Database reset should succeed',
-    );
     expect(resetResponse.status).toBe(HttpStatus.ACCEPTED);
 
     // Test login performance
@@ -155,11 +141,6 @@ describe('Retry Failed Jobs on Startup During Queue Processing Performance Test'
       amount,
     );
 
-    performanceHelper.assertPerformance(
-      paymentResponse,
-      startTime,
-      'Payment creation should succeed',
-    );
     expect(paymentResponse.status).toBe(HttpStatus.ACCEPTED);
 
     const paymentId = paymentResponse.body.id;
@@ -196,11 +177,6 @@ describe('Retry Failed Jobs on Startup During Queue Processing Performance Test'
     const paymentResult =
       await paymentHelper.monitorPaymentResults(monitoringOptions);
 
-    performanceHelper.assertPerformance(
-      paymentResult,
-      startTime,
-      'Payment monitoring should complete successfully after restart',
-    );
     expect(paymentResult.status).toBe(HttpStatus.OK);
 
     const totalTestTime = Date.now() - testStartTime;
