@@ -69,6 +69,7 @@ test('[36101] Do failed payment for Cbe fsp', async ({ page }) => {
       successfulTransfers: 0,
       failedTransfers: numberOfPas,
       currency: CbeProgram.currency,
+      projectId: programIdCbe,
     });
   });
 });

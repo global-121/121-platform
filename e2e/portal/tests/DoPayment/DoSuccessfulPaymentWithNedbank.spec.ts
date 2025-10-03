@@ -78,6 +78,7 @@ test('[36080] Do successful payment for Nedbank fsp', async ({ page }) => {
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
       currency: NedbankProgram.currencySymbol,
+      projectId: programIdNedbank,
     });
   });
 });

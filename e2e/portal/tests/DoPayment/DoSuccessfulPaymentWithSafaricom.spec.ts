@@ -76,6 +76,7 @@ test('[36009] Do successful payment for Safaricom fsp', async ({ page }) => {
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
       currency: KRCSProgram.currency,
+      projectId: programIdSafaricom,
     });
   });
 });
