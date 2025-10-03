@@ -335,23 +335,6 @@ export class RegistrationsBulkService {
     return query;
   }
 
-  public getRegistrationsForPaymentQuery(
-    referenceIds: string[],
-    dataFieldNames: string[],
-  ) {
-    return this.setQueryPropertiesBulkAction({
-      query: {
-        path: '',
-        filter: { referenceId: `$in:${referenceIds.join(',')}` },
-      },
-      includePaymentAttributes: true,
-      includeSendMessageProperties: false,
-      includeStatusChangeProperties: false,
-      usedPlaceholders: [],
-      selectColumns: dataFieldNames,
-    });
-  }
-
   private getStatusUpdateBaseQuery(
     allowedCurrentStatuses: RegistrationStatusEnum[],
     registrationStatus?: RegistrationStatusEnum,

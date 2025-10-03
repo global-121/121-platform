@@ -22,14 +22,6 @@ done
 echo ""
 
 for file in "${test_files[@]}"; do
-  # TODO: AB#38219 - fix failing test
-  # skip payment100kRegistrationIntersolveVisa.js for now as it is failing
-  if [[ $(basename "${file}") == "payment100kRegistrationIntersolveVisa.js" ]]; then
-    echo "Skipping failing test: ${file}"
-    continue
-  fi
-
-
   echo ::group::Running test: "${file}"
 
   echo "Creating log directory"
