@@ -14,24 +14,6 @@ exports[`Do payment to 1 PA with FSP: Intersolve Voucher WhatsApp should success
       "status": "read",
       "to": "whatsapp:+14155238886",
     },
-    "id": "message0",
-    "type": "message",
-    "user": {
-      "id": 1,
-      "username": "admin@example.org",
-    },
-  },
-  {
-    "attributes": {
-      "body": "Welcome to our program. Within a couple of days your request will be validated.",
-      "contentType": "new",
-      "errorCode": null,
-      "mediaUrl": null,
-      "notificationType": "whatsapp",
-      "status": "read",
-      "to": "whatsapp:+14155238886",
-    },
-    "id": "message1",
     "type": "message",
     "user": {
       "id": 1,
@@ -64,7 +46,6 @@ Do you have questions? Send us a message on WhatsApp: https://wa.me/319701028696
       "to": "whatsapp:+14155238886",
       "transactionId": 2,
     },
-    "id": "message2",
     "type": "message",
     "user": {
       "id": 1,
@@ -89,26 +70,6 @@ Please reply “yes” to this message in order to receive:
       "to": "whatsapp:+14155238886",
       "transactionId": 1,
     },
-    "id": "message3",
-    "type": "message",
-    "user": {
-      "id": 1,
-      "username": "admin@example.org",
-    },
-  },
-  {
-    "attributes": {
-      "body": "This is a message from the Red Cross.
-
-There is a message waiting for you. Please reply “yes” to this message to receive it.",
-      "contentType": "generic-templated",
-      "errorCode": null,
-      "mediaUrl": null,
-      "notificationType": "whatsapp",
-      "status": "read",
-      "to": "whatsapp:+14155238886",
-    },
-    "id": "message4",
     "type": "message",
     "user": {
       "id": 1,
