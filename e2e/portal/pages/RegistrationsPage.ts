@@ -57,16 +57,6 @@ class RegistrationsPage extends BasePage {
     await this.table.selectAll();
   }
 
-  async deselectRegistrations() {
-    const checkedCheckbox = this.page.getByLabel('Row Selected');
-    let selectedRegistrationsCount = await checkedCheckbox.count();
-
-    while (selectedRegistrationsCount > 0) {
-      await checkedCheckbox.first().click();
-      selectedRegistrationsCount = await checkedCheckbox.count();
-    }
-  }
-
   async selectCustomMessage() {
     await this.page
       .locator('label')
