@@ -7,8 +7,6 @@ import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { GetAuditedTransactionDto } from '@121-service/src/payments/transactions/dto/get-audited-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
-import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import {
   ScopedQueryBuilder,
@@ -86,26 +84,12 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'r."registrationStatus"',
         'transaction.status AS "status"',
         'transaction."transferValue" AS "amount"',
-        // 'transaction."errorMessage" as "errorMessage"', //##TODO: this was done at early stage to get to successful test
-        // 'fspconfig.name as "programFspConfigurationName"', ##TODO: this was done at early stage to get to successful test
+        'event."errorMessage" as "errorMessage"',
+        'fspconfig.name as "programFspConfigurationName"',
       ])
-      // ##TODO: for now join latest event to get e.g. errorMessage. Re-evaluate this later.
-      .leftJoin(
-        (qb) =>
-          qb
-            .subQuery()
-            .select([
-              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
-              'te."errorMessage" AS "errorMessage"',
-              'te."created" AS "created"',
-            ])
-            .from(TransactionEventEntity, 'te')
-            .orderBy('te."transactionId"', 'ASC')
-            .addOrderBy('te."created"', 'DESC'),
-        'lte',
-        'lte."transactionId" = transaction.id',
-      )
-      .addSelect('lte."errorMessage" AS "errorMessage"')
+      .innerJoin('transaction.lastTransactionEvent', 'lte')
+      .leftJoin('lte.transactionEvent', 'event')
+      .leftJoin('event.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .andWhere('p."programId" = :programId', {
@@ -165,35 +149,16 @@ export class TransactionScopedRepository extends ScopedRepository<TransactionEnt
         'transaction.paymentId AS "paymentId"',
         'r."referenceId"',
         'status',
-        'transaction.transferValue AS "transferValue"',
-        'lte."errorMessage" as "errorMessage"',
+        'transaction.transferValue AS "amount"',
+        'event."errorMessage" as "errorMessage"',
         'fspconfig.fspName as "fspName"',
-        'lte."programFspConfigurationId" as "programFspConfigurationId"',
+        'event."programFspConfigurationId" as "programFspConfigurationId"',
         'fspconfig.label as "programFspConfigurationLabel"',
         'fspconfig.name as "programFspConfigurationName"',
       ])
-      // ##TODO: for now join latest event to get e.g. errorMessage/FSP. Re-evaluate this later.
-      .leftJoin(
-        (qb) =>
-          qb
-            .subQuery()
-            .select([
-              'DISTINCT ON (te."transactionId") te."transactionId" AS "transactionId"',
-              'te."errorMessage" AS "errorMessage"',
-              'te."programFspConfigurationId" AS "programFspConfigurationId"',
-              'te."created" AS "created"',
-            ])
-            .from(TransactionEventEntity, 'te')
-            .orderBy('te."transactionId"', 'ASC')
-            .addOrderBy('te."created"', 'DESC'),
-        'lte',
-        'lte."transactionId" = transaction.id',
-      )
-      .leftJoin(
-        ProgramFspConfigurationEntity,
-        'fspconfig',
-        'fspconfig.id = lte."programFspConfigurationId"',
-      )
+      .innerJoin('transaction.lastTransactionEvent', 'lte')
+      .leftJoin('lte.transactionEvent', 'event')
+      .leftJoin('event.programFspConfiguration', 'fspconfig')
       .leftJoin('transaction.registration', 'r')
       .leftJoin('transaction.payment', 'p')
       .andWhere('p."programId" = :programId', {
