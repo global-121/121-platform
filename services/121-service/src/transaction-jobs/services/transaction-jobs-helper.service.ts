@@ -91,31 +91,29 @@ export class TransactionJobsHelperService {
         paymentCount,
       });
 
-      if (!maxPaymentsExceeded) {
-        return resultTransaction;
-      }
+      if (maxPaymentsExceeded) {
+        const isTemplateAvailable =
+          await this.messageTemplateService.isTemplateAvailable(
+            programId,
+            RegistrationStatusEnum.completed,
+          );
 
-      const isTemplateAvailable =
-        await this.messageTemplateService.isTemplateAvailable(
-          programId,
-          RegistrationStatusEnum.completed,
-        );
-
-      if (isTemplateAvailable) {
-        const messageContentDetails: MessageContentDetails = {
-          messageTemplateKey: RegistrationStatusEnum.completed,
-        };
-        await this.registrationBulkService.patchRegistrationsStatus({
-          paginateQuery: {
-            filter: { referenceId: `$eq:${registration.referenceId}` },
-            path: '',
-          },
-          programId,
-          registrationStatus: RegistrationStatusEnum.completed,
-          dryRun: false,
-          userId,
-          messageContentDetails,
-        });
+        if (isTemplateAvailable) {
+          const messageContentDetails: MessageContentDetails = {
+            messageTemplateKey: RegistrationStatusEnum.completed,
+            messageContentType: MessageContentType.completed,
+            message: '',
+          };
+          await this.registrationBulkService.applyRegistrationStatusChangeAndSendMessageByReferenceIds(
+            {
+              referenceIds: [registration.referenceId],
+              programId,
+              registrationStatus: RegistrationStatusEnum.completed,
+              userId,
+              messageContentDetails,
+            },
+          );
+        }
       }
     }
 

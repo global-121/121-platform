@@ -1841,6 +1841,9 @@
       <trans-unit id="6415562046042900466" datatype="html">
         <source>The amount of people/households your project plans to reach.</source>
       </trans-unit>
+      <trans-unit id="message-content-type-completed" datatype="html">
+        <source>Completed</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
