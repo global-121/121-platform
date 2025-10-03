@@ -109,7 +109,7 @@ export class PaymentsReportingService {
         'status',
         'COUNT(*) as count',
         // rounding individual transaction amounts to 2 decimal places before summing, in line with current FSPs:
-        'SUM(ROUND(amount::numeric, 2)) as totalamount',
+        'SUM(ROUND("transferValue"::numeric, 2)) as totalamount',
       ])
       .from(
         '(' +
