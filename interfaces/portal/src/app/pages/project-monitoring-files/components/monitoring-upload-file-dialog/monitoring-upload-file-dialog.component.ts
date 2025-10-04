@@ -26,7 +26,7 @@ import { RtlHelperService } from '~/services/rtl-helper.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type UploadFileFormGroup =
@@ -66,7 +66,7 @@ export class MonitoringUploadFileDialogComponent {
   uploadFileFormFieldErrors = generateFieldErrors<UploadFileFormGroup>(
     this.uploadFileFormGroup,
     {
-      filename: genericFieldIsRequiredValidationMessage,
+      filename: genericValidationMessage,
     },
   );
 

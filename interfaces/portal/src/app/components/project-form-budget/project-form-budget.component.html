@@ -1,0 +1,73 @@
+<ng-container [formGroup]="formGroup">
+  <div class="flex w-full flex-row gap-4 [&>*]:w-1/2">
+    <app-form-field-wrapper
+      label="Funds available"
+      i18n-label
+      [errorMessage]="formFieldErrors()('budget')"
+    >
+      <input
+        pInputText
+        type="number"
+        formControlName="budget"
+        placeholder="Funds available"
+        i18n-placeholder
+      />
+    </app-form-field-wrapper>
+    <app-form-field-wrapper
+      label="Currency"
+      i18n-label
+      [errorMessage]="formFieldErrors()('currency')"
+      [labelTooltip]="PROJECT_FORM_TOOLTIPS.currency"
+      [isRequired]="true"
+    >
+      <p-select
+        [options]="currencies"
+        formControlName="currency"
+        [showClear]="false"
+        class="w-full"
+        [filter]="true"
+      />
+    </app-form-field-wrapper>
+  </div>
+  <app-form-field-wrapper
+    label="Payment frequency"
+    i18n-label
+    [errorMessage]="formFieldErrors()('distributionFrequency')"
+  >
+    <input
+      pInputText
+      type="text"
+      formControlName="distributionFrequency"
+      placeholder="Payment frequency"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Default transfers per registration"
+    i18n-label
+    [errorMessage]="formFieldErrors()('distributionDuration')"
+    [labelTooltip]="PROJECT_FORM_TOOLTIPS.distributionDuration"
+  >
+    <input
+      pInputText
+      type="number"
+      formControlName="distributionDuration"
+      placeholder="Default transfers per registration"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+  <app-form-field-wrapper
+    label="Fixed transfer value"
+    i18n-label
+    [errorMessage]="formFieldErrors()('fixedTransferValue')"
+    [isRequired]="true"
+  >
+    <input
+      pInputText
+      type="number"
+      formControlName="fixedTransferValue"
+      placeholder="Fixed transfer value"
+      i18n-placeholder
+    />
+  </app-form-field-wrapper>
+</ng-container>
