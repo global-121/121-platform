@@ -27,7 +27,6 @@ import { RegistrationAttributeDataEntity } from '@121-service/src/registration/e
 import { UniqueRegistrationPairEntity } from '@121-service/src/registration/entities/unique-registration-pair.entity';
 import { RegistrationDataModule } from '@121-service/src/registration/modules/registration-data/registration-data.module';
 import { RegistrationUtilsModule } from '@121-service/src/registration/modules/registration-utils/registration-utils.module';
-import { RegistrationUpdateProcessor } from '@121-service/src/registration/processors/registrations-update.processor';
 import { RegistrationsController } from '@121-service/src/registration/registrations.controller';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
@@ -41,6 +40,7 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
+import { RegistrationUpdateProcessor } from '@121-service/src/registration-update-jobs/processors/registrations-update-jobs.processor';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
