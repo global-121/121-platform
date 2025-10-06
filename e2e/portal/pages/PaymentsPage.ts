@@ -141,15 +141,15 @@ class PaymentsPage extends BasePage {
     paymentId?: number;
   }) {
     // Locate the specific payment card using the payment link and then navigate to its ancestor card element
-		const hrefLocatorUrl = "/en-GB/project/${projectId}/payments/${paymentId}"
+    const hrefLocatorUrl = `/en-GB/project/${projectId}/payments/${paymentId}`;
     const card = this.page
-      .locator(`a[href=]${hrefLocatorUrl]}`)
+      .locator(`a[href=${hrefLocatorUrl}]`)
       .locator('xpath=ancestor::*[@data-pc-name="card"]')
       .getByTestId('payment-summary-metrics')
       .locator('app-metric-container');
 
     const paymentTitle = await this.page
-      .locator(`a[href=${hrefLocatorUrl]}`)
+      .locator(`a[href=${hrefLocatorUrl}]`)
       .getByTitle(date)
       .textContent();
 

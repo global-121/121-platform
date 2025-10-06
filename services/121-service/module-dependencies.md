@@ -59,7 +59,6 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
-  RegistrationsModule-->MessageTemplateModule
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionsModule
