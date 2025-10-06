@@ -111,9 +111,7 @@ describe('TransactionJobsNedbankService', () => {
         isRetry: mockedNedbankTransactionJob.isRetry,
       }),
     );
-    expect(
-      transactionsService.updateTransactionStatusAndReturnSuccess,
-    ).toHaveBeenCalled();
+    expect(transactionsService.updateTransactionStatus).toHaveBeenCalled();
     expect(
       nedbankVoucherScopedRepository.upsertVoucherByTransactionId,
     ).toHaveBeenCalledWith(

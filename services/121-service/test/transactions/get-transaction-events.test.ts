@@ -119,6 +119,6 @@ describe('Do payment to 1 PA with Fsp Onafriq', () => {
       expect([null, '']).toContain(event.errorMessage);
     });
 
-    // ##TODO re-evaluate relevant assertions later. We expect more changes in functionality first.
+    // ##TODO add test on latest-event being joined correctly. E.g. initial bulk insert is not tested now.
   });
 });
