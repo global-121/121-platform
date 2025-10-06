@@ -79,6 +79,7 @@ test('[36081] Do successful payment for Cbe fsp', async ({ page }) => {
       successfulTransfers: defaultMaxTransferValue,
       failedTransfers: 0,
       currency: CbeProgram.currency,
+      projectId: programIdCbe,
     });
   });
 });
