@@ -34,6 +34,7 @@ import {
 } from '~/domains/registration/registration.helper';
 import { Activity } from '~/domains/registration/registration.model';
 import { RetryTransfersDialogComponent } from '~/pages/project-payment-transfer-list/components/retry-transfers-dialog/retry-transfers-dialog.component';
+import { ActivityLogTransferHistoryDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-transfer-history-dialog/activity-log-transfer-history-dialog.component';
 import { ActivityLogVoucherDialogComponent } from '~/pages/project-registration-activity-log/components/activity-log-voucher-dialog/activity-log-voucher-dialog.component';
 import { ActivityLogTableCellContext } from '~/pages/project-registration-activity-log/project-registration-activity-log.page';
 import { AuthService } from '~/services/auth.service';
@@ -46,6 +47,7 @@ import { Locale } from '~/utils/locale';
     ChipModule,
     ColoredChipComponent,
     ActivityLogVoucherDialogComponent,
+    ActivityLogTransferHistoryDialogComponent,
     NgClass,
     ButtonModule,
     RetryTransfersDialogComponent,
@@ -143,7 +145,7 @@ export class TableCellOverviewComponent
     return item.attributes.status === TransactionStatusEnum.error;
   });
 
-  readonly voucherDialogData = computed(() => {
+  readonly getVoucherDialogData = computed(() => {
     const item = this.value();
     const referenceId = this.context().referenceId;
 
@@ -163,6 +165,18 @@ export class TableCellOverviewComponent
       paymentId: item.attributes.paymentId,
       totalTransfers: item.attributes.amount,
       voucherReferenceId: referenceId,
+    };
+  });
+
+  readonly getTransferHistoryDialogData = computed(() => {
+    const item = this.value();
+    if (item.type !== ActivityTypeEnum.Transaction) {
+      return;
+    }
+    return {
+      projectId: this.context().projectId(),
+      transactionId: Number(item.attributes.transactionId),
+      paymentId: item.attributes.paymentId,
     };
   });
 
