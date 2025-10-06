@@ -26,7 +26,7 @@ export class TransactionEventsService {
     context: TransactionEventCreationContext;
     type: TransactionEventType;
     description: TransactionEventDescription;
-    errorMessage: string;
+    errorMessage?: string;
   }): Promise<void> {
     const transactionEvent = this.transactionEventScopedRepository.create({
       type,
