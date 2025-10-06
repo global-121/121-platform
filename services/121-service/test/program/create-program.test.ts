@@ -50,6 +50,40 @@ describe('Create program', () => {
     }
   });
 
+  it('should post a program with the minimum amount of attributes', async () => {
+    // Arrange
+    const minimalProgram = {
+      titlePortal: {
+        en: 'Test Title',
+      },
+      currency: 'EUR',
+    };
+
+    const minimalProgramJson = JSON.parse(JSON.stringify(minimalProgram));
+
+    // Act
+    const createProgramResponse = await postProgram(
+      minimalProgramJson,
+      accessToken,
+    );
+
+    // Assert
+    const programId = createProgramResponse.body.id;
+    const getProgramResponse = await getProgram(programId, accessToken);
+    expect(createProgramResponse.statusCode).toBe(HttpStatus.CREATED);
+
+    const cleanedSeedProgram = cleanProgramForAssertions(minimalProgramJson);
+    const cleanedProgramResponse = cleanProgramForAssertions(
+      getProgramResponse.body,
+    );
+
+    expect(cleanedProgramResponse).toMatchSnapshot(
+      `Create program response for program: ${minimalProgramJson.titlePortal.en}`,
+    );
+
+    expect(cleanedProgramResponse).toMatchObject(cleanedSeedProgram);
+  });
+
   it('should not be able to post a program with 2 of the same names', async () => {
     // Arrange
     const programCbeJson = JSON.parse(JSON.stringify(programCbe));
