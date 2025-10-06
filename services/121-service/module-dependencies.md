@@ -116,6 +116,7 @@ graph LR
   RegistrationsModule-->IntersolveVisaModule
   RegistrationsModule-->LookupModule
   RegistrationsModule-->MessageQueuesModule
+  RegistrationsModule-->MessageTemplateModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->ProgramModule
   RegistrationsModule-->QueuesRegistryModule
