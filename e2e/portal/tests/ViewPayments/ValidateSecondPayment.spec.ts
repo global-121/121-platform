@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
-import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
 import {
   doPaymentAndWaitForCompletion,
   seedIncludedRegistrations,
@@ -41,13 +40,6 @@ test.beforeEach(async ({ page }) => {
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
     accessToken,
   });
-  await waitForPaymentTransactionsToComplete({
-    programId: programIdOCW,
-    paymentReferenceIds: registrationsVisa.map((reg) => reg.referenceId),
-    accessToken,
-    maxWaitTimeMs: 2_000,
-    paymentId: 2,
-  }); // wait for 2nd payment to be processed
 
   // Login
   const loginPage = new LoginPage(page);
