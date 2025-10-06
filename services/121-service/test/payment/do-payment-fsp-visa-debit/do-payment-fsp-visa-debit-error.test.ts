@@ -6,6 +6,7 @@ import {
 } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { IntersolveVisa121ErrorText } from '@121-service/src/payments/fsp-integration/intersolve-visa/enums/intersolve-visa-121-error-text.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -22,6 +23,7 @@ import {
 import { deleteProgramFspConfigurationProperty } from '@121-service/test/helpers/program-fsp-configuration.helper';
 import {
   awaitChangeRegistrationStatus,
+  getTransactionEventDescriptions,
   importRegistrations,
 } from '@121-service/test/helpers/registration.helper';
 import {
@@ -92,6 +94,17 @@ describe('Do failing payment with FSP Visa Debit', () => {
     expect(transactionsResponse.text).toContain(
       IntersolveVisa121ErrorText.createCustomerError,
     );
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId: programIdVisa,
+      transactionId: transactionsResponse.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.visaPaymentRequested,
+    ]);
   });
 
   it('should fail pay-out Visa Debit (CREATE WALLET ERROR)', async () => {

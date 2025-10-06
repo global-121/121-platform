@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
   doPayment,
@@ -9,6 +10,7 @@ import {
   waitForPaymentTransactionsToComplete,
 } from '@121-service/test/helpers/program.helper';
 import {
+  getTransactionEventDescriptions,
   seedIncludedRegistrations,
   updateRegistration,
 } from '@121-service/test/helpers/registration.helper';
@@ -70,6 +72,17 @@ describe('Do payment with FSP: Commercial Bank of Ethiopia', () => {
       TransactionStatusEnum.success,
     );
     expect(getTransactionsBody.body[0].errorMessage).toBe(null);
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId,
+      transactionId: getTransactionsBody.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.commercialBankEthiopiaRequestSent,
+    ]);
   });
 
   it('when credit transfer API call gives an error response should successfully do a payment with transactions that have status error', async () => {

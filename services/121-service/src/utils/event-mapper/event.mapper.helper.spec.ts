@@ -52,6 +52,4 @@ describe('mapEventsToDto', () => {
       user: null,
     });
   });
-
-  // Add more generic tests for count, total, etc. if needed
 });
