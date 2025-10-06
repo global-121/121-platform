@@ -26,6 +26,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramRegistrationAttributeMapper } from '@121-service/src/programs/mappers/program-registration-attribute.mapper';
 import { ProgramAttachmentsService } from '@121-service/src/programs/program-attachments/program-attachments.service';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
+import { RegistrationAttributeTypes } from '@121-service/src/registration/enum/registration-attribute.enum';
 import { nameConstraintQuestionsArray } from '@121-service/src/shared/const';
 import { PermissionEnum } from '@121-service/src/user/enum/permission.enum';
 import { DefaultUserRole } from '@121-service/src/user/enum/user-role.enum';
@@ -120,20 +121,22 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    if (
-      !programData.programRegistrationAttributes ||
-      !programData.fullnameNamingConvention
-    ) {
-      const errors =
-        'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
+    // if (
+    //   !programData.programRegistrationAttributes ||
+    //   !programData.fullnameNamingConvention
+    // ) {
+    //   const errors =
+    //     'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
+    //   throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    // }
 
-    const programAttributeNames = programData.programRegistrationAttributes.map(
-      (ca) => ca.name,
-    );
+    const programAttributeNames = this.getProgramRegistrationAttributes(
+      programData.programRegistrationAttributes,
+    ).map((ca) => ca.name);
 
-    for (const name of Object.values(programData.fullnameNamingConvention)) {
+    for (const name of Object.values(
+      this.getFullNameNamingConvention(programData.fullnameNamingConvention),
+    )) {
       if (!programAttributeNames.includes(name)) {
         const errors = `Element '${name}' of fullnameNamingConvention is not found in program registration attributes`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
@@ -175,7 +178,9 @@ export class ProgramService {
     program.targetNrRegistrations = programData.targetNrRegistrations;
     program.tryWhatsAppFirst = programData.tryWhatsAppFirst;
     program.aboutProgram = programData.aboutProgram;
-    program.fullnameNamingConvention = programData.fullnameNamingConvention;
+    program.fullnameNamingConvention = this.getFullNameNamingConvention(
+      programData.fullnameNamingConvention,
+    );
     program.languages = programData.languages;
     program.enableMaxPayments = programData.enableMaxPayments;
     program.enableScope = programData.enableScope;
@@ -197,7 +202,9 @@ export class ProgramService {
       savedProgram = await programRepository.save(program);
 
       savedProgram.programRegistrationAttributes = [];
-      for (const programRegistrationAttribute of programData.programRegistrationAttributes) {
+      for (const programRegistrationAttribute of this.getProgramRegistrationAttributes(
+        programData.programRegistrationAttributes,
+      )) {
         const attributeReturn =
           await this.createProgramRegistrationAttributeEntity({
             programId: savedProgram.id,
@@ -543,5 +550,36 @@ export class ProgramService {
       }
     }
     return wallets;
+  }
+
+  private getProgramRegistrationAttributes(
+    programRegistrationAttributes: ProgramRegistrationAttributeDto[],
+  ): ProgramRegistrationAttributeDto[] {
+    if (!programRegistrationAttributes) {
+      return [
+        {
+          name: 'fullName',
+          type: RegistrationAttributeTypes.text,
+          options: undefined,
+          includeInTransactionExport: true,
+          scoring: {},
+          showInPeopleAffectedTable: true,
+          editableInPortal: false,
+          label: {
+            en: 'First Name',
+          },
+        },
+      ];
+    }
+    return programRegistrationAttributes;
+  }
+
+  private getFullNameNamingConvention(
+    fullnameNamingConvention: string[],
+  ): string[] {
+    if (!fullnameNamingConvention) {
+      return ['fullName'];
+    }
+    return fullnameNamingConvention;
   }
 }
