@@ -173,6 +173,38 @@ describe('TransactionJobsHelperService', () => {
       );
     });
 
+    it('should not update the registration status to complete if the program does not have maxPayments', async () => {
+      // Arrange
+      const mockedProgramNoMaxPayments = {
+        enableMaxPayments: false,
+        titlePortal: { en: 'Example Title' },
+        published: false,
+        distributionDuration: 100,
+        fixedTransferValue: 500,
+        budget: 50000,
+      };
+      jest
+        .spyOn(programRepository, 'findByIdOrFail')
+        .mockResolvedValue(mockedProgramNoMaxPayments as any);
+
+      const registration = structuredClone(mockedRegistration);
+
+      // Act
+      await service.createTransactionAndUpdateRegistration({
+        registration,
+        transactionJob,
+        transferAmountInMajorUnit: 100,
+        status: TransactionStatusEnum.success,
+      });
+
+      // Assert
+      // The first call is for updating the payment count, the 2nd call would have been for
+      // updating the registration status, which we expect to *not* happen.
+      expect(registrationScopedRepository.updateUnscoped).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+
     it('should not trigger status change if max payments not exceeded', async () => {
       // Arrange
       const registration = structuredClone(mockedRegistration);
