@@ -7,6 +7,7 @@ import { LocalizedString } from '@121-service/src/shared/types/localized-string.
 export interface TransactionActivity extends BaseActivity {
   type: ActivityTypeEnum.Transaction;
   attributes: {
+    transactionId: number;
     paymentId: number;
     status: TransactionStatusEnum;
     amount: number;

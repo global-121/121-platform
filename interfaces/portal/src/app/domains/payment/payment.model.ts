@@ -12,7 +12,7 @@ export type PaymentAggregate = Dto<PaymentReturnDto>;
 export type PaymentStatus = Dto<ProgramPaymentsStatusDto>;
 export type PaymentTransaction = Dto<GetTransactionResponseDto>;
 
-// defined separately as interface instead of getting the DTO from 121-service, as that gave lint errors down the line
+// TODO: import interface from 121-service, see also transactions.model.ts
 interface PaymentEventInterface {
   id: string;
   user: {

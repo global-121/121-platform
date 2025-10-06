@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { TransactionEventDataDto } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-event-data.dto';
+import { TransactionEventInterface } from '@121-service/src/payments/transactions/transaction-events/dto/transaction-event-data.dto';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 
 class TransactionEventsMetaObject {
@@ -26,8 +26,8 @@ export class TransactionEventsReturnDto {
   meta: TransactionEventsMetaObject;
 
   @ApiProperty({
-    type: [TransactionEventDataDto],
+    type: [Object],
     description: 'The transaction events data.',
   })
-  data: TransactionEventDataDto[];
+  data: TransactionEventInterface[];
 }
