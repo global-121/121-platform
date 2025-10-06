@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
+import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import {
@@ -19,6 +20,7 @@ import {
 import {
   awaitChangeRegistrationStatus,
   getMessageHistory,
+  getTransactionEventDescriptions,
   importRegistrations,
   issueNewVisaCard,
 } from '@121-service/test/helpers/registration.helper';
@@ -87,6 +89,17 @@ describe('Do successful payment with FSP Visa Debit', () => {
       paymentReferenceIds.length,
     );
     expect(transactionsResponse.text).toContain(TransactionStatusEnum.success);
+
+    const transactionEventDescriptions = await getTransactionEventDescriptions({
+      programId: programIdVisa,
+      transactionId: transactionsResponse.body[0].id,
+      accessToken,
+    });
+    expect(transactionEventDescriptions).toEqual([
+      TransactionEventDescription.created,
+      TransactionEventDescription.initiated,
+      TransactionEventDescription.visaPaymentRequested,
+    ]);
   });
 
   it('should successfully load balance Visa Debit', async () => {

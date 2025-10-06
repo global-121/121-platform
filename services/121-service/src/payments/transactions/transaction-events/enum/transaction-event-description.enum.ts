@@ -10,7 +10,7 @@ export enum TransactionEventDescription {
   safaricomCallbackReceived = 'Safaricom callback received',
   // Nedbank processing-step events
   nedbankVoucherCreationRequested = 'Nedbank voucher creation requested',
-  nedbankCallbackReceived = 'Nedbank callback received',
+  nedbankCallbackReceived = 'Nedbank voucher collection',
   // Airtel processing-step events
   airtelRequestSent = 'Airtel request sent',
   // Visa processing-step events
@@ -18,8 +18,8 @@ export enum TransactionEventDescription {
   // Commercial Bank Ethiopia processing-step events
   commercialBankEthiopiaRequestSent = 'Commercial Bank Ethiopia request sent',
   // Intersolve Voucher processing-step events
-  intersolveVoucherCreationRequest = 'Intersolve Voucher creation requested',
-  intersolveVoucherInitialMessageSent = 'Intersolve Voucher initial message sent',
-  intersolveVoucherVoucherMessageSent = 'Intersolve Voucher voucher message sent',
-  intersolveVoucherMessageCallback = 'Intersolve Voucher message callback received', // ##TODO: do we want to distinguish between callback on initial vs voucher message?
+  intersolveVoucherCreationRequest = 'AH voucher creation',
+  intersolveVoucherInitialMessageSent = 'Notification to claim voucher',
+  intersolveVoucherVoucherMessageSent = 'Voucher message sending',
+  intersolveVoucherMessageCallback = 'Message delivery', // ##TODO: do we want to distinguish between callback on initial vs voucher message? Also: don't store separate events for delivered/read/etc.
 }
