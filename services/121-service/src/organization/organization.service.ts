@@ -1,18 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { UpdateOrganizationDto } from '@121-service/src/organization/dto/update-organization.dto';
 import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
+import { OrganizationRepository } from '@121-service/src/organization/organization.repository';
 
 @Injectable()
 export class OrganizationService {
-  @InjectRepository(OrganizationEntity)
-  private readonly organizationRepository: Repository<OrganizationEntity>;
+  constructor(
+    private readonly organizationRepository: OrganizationRepository,
+  ) {}
 
   public async getOrganization(): Promise<OrganizationEntity> {
-    const organizations = await this.organizationRepository.find();
-    return organizations[0];
+    return await this.getOrganizationOrThrow([]);
   }
 
   public async updateOrganization(
@@ -31,9 +30,8 @@ export class OrganizationService {
   private async getOrganizationOrThrow(
     relations: string[],
   ): Promise<OrganizationEntity> {
-    const organization = (
-      await this.organizationRepository.find({ relations })
-    )?.[0];
+    const organization =
+      await this.organizationRepository.getOrganizationWithRelations(relations);
     if (!organization) {
       const errors = `No organization found`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);

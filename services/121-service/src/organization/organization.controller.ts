@@ -18,10 +18,7 @@ import { OrganizationService } from '@121-service/src/organization/organization.
 @ApiTags('organization')
 @Controller('organization')
 export class OrganizationController {
-  private readonly organizationService: OrganizationService;
-  public constructor(organizationService: OrganizationService) {
-    this.organizationService = organizationService;
-  }
+  constructor(private readonly organizationService: OrganizationService) {}
 
   @ApiOperation({ summary: 'Get organization data' })
   @Get()
