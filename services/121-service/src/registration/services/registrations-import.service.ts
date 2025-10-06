@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import chunk from 'lodash/chunk';
 import { Equal, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -75,18 +76,19 @@ export class RegistrationsImportService {
     //TODO: this is the reason Twilio lookup is done before adding to the queue
     await this.validateBulkUpdateInput(bulkUpdateRecords, programId, userId);
 
+    const REGISTRATIONS_PER_JOB = 100;
+    const chunks = chunk(bulkUpdateRecords, REGISTRATIONS_PER_JOB);
+
     // Prepare the job array to push to the queue
-    const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] =
-      bulkUpdateRecords.map((record) => {
-        const referenceId = record['referenceId'] as string;
-        delete record['referenceId'];
+    const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] = chunks.map(
+      (recordsChunk) => {
         return {
-          referenceId,
-          data: record,
+          data: recordsChunk,
           programId,
           reason,
         };
-      });
+      },
+    );
 
     // Call to redis as concurrent operations in a batch
     for (let start = 0; start < updateJobs.length; start += BATCH_SIZE) {
@@ -95,7 +97,7 @@ export class RegistrationsImportService {
         updateJobs
           .slice(start, end)
           .map((job) =>
-            this.queueRegistrationUpdateService.addRegistrationUpdateToQueue(
+            this.queueRegistrationUpdateService.addRegistrationsUpdateToQueue(
               job,
             ),
           ),
