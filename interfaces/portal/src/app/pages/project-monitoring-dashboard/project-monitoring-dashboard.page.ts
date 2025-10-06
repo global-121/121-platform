@@ -17,6 +17,16 @@ import { RegistrationsPerDuplicateStatusComponentChart } from '~/pages/project-m
 import { RegistrationsPerStatusChartComponent } from '~/pages/project-monitoring-dashboard/components/registrations-per-status-chart/registrations-per-status-chart.component';
 import { TranslatableStringService } from '~/services/translatable-string.service';
 
+interface ChartDataSet {
+  label?: string;
+  data: number[];
+}
+export interface ChartTextAlternativeOptions {
+  title: string;
+  primaryLabels: string[];
+  datasets: ChartDataSet[];
+}
+
 @Component({
   selector: 'app-project-monitoring-dashboard',
   templateUrl: './project-monitoring-dashboard.page.html',
@@ -39,23 +49,27 @@ export class ProjectMonitoringDashboardPageComponent {
 
   readonly projectId = input.required<string>();
 
-  getTranslatedAriaLabel = ({
+  getChartTextAlternative = ({
     title,
-    labels,
-    data,
-  }: {
-    title: string;
-    labels: string[];
-    data: number[];
-  }) =>
-    // The e2e tests cannot access the canvas content of the charts, so we
+    primaryLabels,
+    datasets,
+  }: ChartTextAlternativeOptions) =>
+    // The E2E-tests cannot access the canvas-element of the charts, so we
     // generate an aria-label with enough data to verify that the chart contains
     // the expected data. We also provide some data accessibly like this, but
     // that's limited.
-    `${title}. ` +
-    this.translatableStringService.commaSeparatedList(
-      labels.map((label, index) => `${label}: ${String(data[index])}`),
-    );
+    `${title}\n\n${primaryLabels
+      .map(
+        (axisUnit, labelIndex) =>
+          `${axisUnit}: ` +
+          this.translatableStringService.commaSeparatedList(
+            datasets.map(
+              (set: ChartDataSet) =>
+                `${set.label ? `${set.label}: ` : ''}${String(set.data[labelIndex])}`,
+            ),
+          ),
+      )
+      .join('\n')}`;
 
   getChartOptions = ({
     title,
