@@ -3,11 +3,11 @@ import { format } from 'date-fns';
 
 import { SeedScript } from '@121-service/src/scripts/enum/seed-script.enum';
 import NLRCProgram from '@121-service/src/seed-data/program/program-nlrc-ocw.json';
+import { waitForPaymentTransactionsToComplete } from '@121-service/test/helpers/program.helper';
 import {
-  doPayment,
-  waitForPaymentTransactionsToComplete,
-} from '@121-service/test/helpers/program.helper';
-import { seedIncludedRegistrations } from '@121-service/test/helpers/registration.helper';
+  doPaymentAndWaitForCompletion,
+  seedIncludedRegistrations,
+} from '@121-service/test/helpers/registration.helper';
 import {
   getAccessToken,
   resetDB,
@@ -27,20 +27,15 @@ test.beforeEach(async ({ page }) => {
   const accessToken = await getAccessToken();
   await seedIncludedRegistrations(registrationsVisa, programIdOCW, accessToken);
   // do 1st payment
-  await doPayment({
+  await doPaymentAndWaitForCompletion({
     programId: programIdOCW,
     amount: 25,
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
     accessToken,
   });
-  await waitForPaymentTransactionsToComplete({
-    programId: programIdOCW,
-    paymentReferenceIds: registrationsVisa.map((reg) => reg.referenceId),
-    accessToken,
-    maxWaitTimeMs: 2_000,
-  }); // wait for 1st payment to be processed
+
   // do 2nd payment
-  await doPayment({
+  await doPaymentAndWaitForCompletion({
     programId: programIdOCW,
     amount: transferValueForSecondPayment,
     referenceIds: registrationsVisa.map((reg) => reg.referenceId),
