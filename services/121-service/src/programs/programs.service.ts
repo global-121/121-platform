@@ -121,7 +121,6 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-
     const programAttributeNames = this.getProgramRegistrationAttributes(
       programData.programRegistrationAttributes,
     ).map((ca) => ca.name);
