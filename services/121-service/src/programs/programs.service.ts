@@ -121,14 +121,6 @@ export class ProgramService {
   }
 
   private async validateProgram(programData: CreateProgramDto): Promise<void> {
-    // if (
-    //   !programData.programRegistrationAttributes ||
-    //   !programData.fullnameNamingConvention
-    // ) {
-    //   const errors =
-    //     'Required properties missing: `programRegistrationAttributes` or `fullnameNamingConvention`';
-    //   throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    // }
 
     const programAttributeNames = this.getProgramRegistrationAttributes(
       programData.programRegistrationAttributes,
