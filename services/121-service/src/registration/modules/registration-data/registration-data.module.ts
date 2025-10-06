@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
@@ -16,7 +15,6 @@ import { RegistrationScopedRepository } from '@121-service/src/registration/repo
 
       RegistrationAttributeDataEntity,
       RegistrationEntity,
-      OrganizationEntity,
       RegistrationAttributeDataEntity,
     ]),
   ],

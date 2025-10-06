@@ -18,7 +18,6 @@ import { FspDto } from '@121-service/src/fsps/fsp.dto';
 import { FSP_SETTINGS } from '@121-service/src/fsps/fsp-settings.const';
 import { MessageTemplateEntity } from '@121-service/src/notifications/message-template/message-template.entity';
 import { MessageTemplateService } from '@121-service/src/notifications/message-template/message-template.service';
-import { OrganizationEntity } from '@121-service/src/organization/organization.entity';
 import { ProgramFspConfigurationEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration.entity';
 import { ProgramFspConfigurationPropertyEntity } from '@121-service/src/program-fsp-configurations/entities/program-fsp-configuration-property.entity';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
@@ -48,11 +47,6 @@ export class SeedHelperService {
   ) {}
 
   public async seedData(seedConfig: SeedConfigurationDto, isApiTests = false) {
-    // Add organization
-    const organizationPath = `organization/${seedConfig.organization}`;
-    const organizationData = await this.importData(organizationPath);
-    await this.addOrganization(organizationData);
-
     // ***** SET SEQUENCE *****
     // This is to keep PV and OCW program ids on respectively 2 and 3
     // This to prevent differences between our local- and production database so we are less prone to mistakes
@@ -271,16 +265,6 @@ export class SeedHelperService {
         displayName: userInput.username.split('@')[0],
       });
     }
-  }
-
-  public async addOrganization(
-    exampleOrganization: Record<string, any>,
-  ): Promise<void> {
-    const organizationRepository =
-      this.dataSource.getRepository(OrganizationEntity);
-    const organizationDump = JSON.stringify(exampleOrganization);
-    const organization = JSON.parse(organizationDump);
-    await organizationRepository.save(organization);
   }
 
   public async addProgram(
