@@ -9,11 +9,12 @@ import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
 import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
 import { TransactionEventCreationContext } from '@121-service/src/payments/transactions/transaction-events/interfaces/transaction-event-creation-context.interfac';
-import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/transaction-event.entity';
-import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/transaction-events.scoped.repository';
+import { LastTransactionEventRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/last-transaction-event.repository';
+import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
 @Injectable()
@@ -23,6 +24,7 @@ export class TransactionsService {
     private readonly transactionScopedRepository: TransactionScopedRepository,
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
+    private readonly lastTransactionEventRepository: LastTransactionEventRepository,
   ) {}
 
   public async getLastTransactions({
@@ -124,6 +126,16 @@ export class TransactionsService {
       {
         chunk: 2000,
       },
+    );
+
+    const lastTransactionEventsToSave = savedTransactions.map(
+      (transaction) => ({
+        transactionId: transaction.id,
+        transactionEventId: transaction.transactionEvents[0].id,
+      }),
+    );
+    await this.lastTransactionEventRepository.insert(
+      lastTransactionEventsToSave,
     );
 
     return savedTransactions.map((t) => t.id);
