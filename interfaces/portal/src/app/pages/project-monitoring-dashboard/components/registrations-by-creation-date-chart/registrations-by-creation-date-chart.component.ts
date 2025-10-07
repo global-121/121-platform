@@ -12,6 +12,7 @@ import { ChartModule } from 'primeng/chart';
 import colors from 'tailwindcss/colors';
 
 import { MetricApiService } from '~/domains/metric/metric.api.service';
+import { ChartTextAlternativeOptions } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.page';
 
 @Component({
   selector: 'app-registrations-by-creation-date-chart',
@@ -26,9 +27,7 @@ export class RegistrationsByCreationDateChartComponent {
   readonly projectId = input.required<string>();
 
   readonly getLabelFunction =
-    input.required<
-      (opts: { title: string; labels: string[]; data: number[] }) => string
-    >();
+    input.required<(opts: ChartTextAlternativeOptions) => string>();
 
   readonly getChartOptions =
     input.required<
@@ -83,11 +82,13 @@ export class RegistrationsByCreationDateChartComponent {
     ],
   }));
 
-  readonly ariaLabel = computed(() =>
+  readonly chartTextAlternative = computed(() =>
     this.getLabelFunction()({
       title: this.title,
-      labels: this.labels(),
-      data: this.chartData().datasets[0].data as number[],
+      primaryLabels: this.labels(),
+      datasets: this.chartData().datasets.map((dataset) => ({
+        data: dataset.data as number[],
+      })),
     }),
   );
 }

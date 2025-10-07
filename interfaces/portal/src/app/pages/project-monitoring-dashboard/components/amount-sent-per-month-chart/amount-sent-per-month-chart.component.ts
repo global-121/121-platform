@@ -14,6 +14,8 @@ import { TransactionStatusEnum } from '@121-service/src/payments/transactions/en
 
 import tailwindConfig from '~/../../tailwind.config';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
+import { TRANSACTION_STATUS_LABELS } from '~/domains/transaction/transaction.helper';
+import { ChartTextAlternativeOptions } from '~/pages/project-monitoring-dashboard/project-monitoring-dashboard.page';
 
 @Component({
   selector: 'app-amount-sent-per-month-chart',
@@ -27,9 +29,7 @@ export class AmountSentPerMonthChartComponent {
   readonly projectId = input.required<string>();
 
   readonly getLabelFunction =
-    input.required<
-      (opts: { title: string; labels: string[]; data: number[] }) => string
-    >();
+    input.required<(opts: ChartTextAlternativeOptions) => string>();
 
   readonly getChartOptions =
     input.required<
@@ -73,28 +73,31 @@ export class AmountSentPerMonthChartComponent {
     labels: this.labels(),
     datasets: [
       {
-        label: TransactionStatusEnum.error,
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.error],
         data: this.data().map((a) => a.failed),
         backgroundColor: tailwindConfig.theme.colors.red[500],
       },
       {
-        label: TransactionStatusEnum.success,
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.success],
         data: this.data().map((a) => a[TransactionStatusEnum.success]),
         backgroundColor: tailwindConfig.theme.colors.green[500],
       },
       {
-        label: TransactionStatusEnum.waiting,
+        label: TRANSACTION_STATUS_LABELS[TransactionStatusEnum.waiting],
         data: this.data().map((a) => a[TransactionStatusEnum.waiting]),
         backgroundColor: tailwindConfig.theme.colors.yellow[500],
       },
     ],
   }));
 
-  readonly ariaLabel = computed(() =>
+  readonly chartTextAlternative = computed(() =>
     this.getLabelFunction()({
       title: this.title,
-      labels: this.labels(),
-      data: this.chartData().datasets[0].data as number[],
+      primaryLabels: this.labels(),
+      datasets: this.chartData().datasets.map((dataset) => ({
+        label: dataset.label ?? '',
+        data: dataset.data as number[],
+      })),
     }),
   );
 }

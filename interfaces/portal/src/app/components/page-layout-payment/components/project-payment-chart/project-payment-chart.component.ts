@@ -92,7 +92,7 @@ export class ProjectPaymentChartComponent {
     },
   };
 
-  readonly chartAriaLabel = computed(() => {
+  readonly chartTextAlternative = computed(() => {
     const chartData = this.chartData();
     const metrics = chartData.datasets[0].data;
 
