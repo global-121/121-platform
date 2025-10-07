@@ -73,9 +73,4 @@ export abstract class BaseDataFactory<T extends Base121Entity> {
   protected generatePhoneNumber(): string {
     return `+254${Math.floor(Math.random() * 900000000) + 100000000}`;
   }
-
-  /**
-   * Abstract method to be implemented by concrete factories
-   */
-  public abstract generateMockData(count: number, ...args: any[]): Promise<T[]>;
 }

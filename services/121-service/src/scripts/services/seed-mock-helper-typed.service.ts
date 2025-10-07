@@ -140,13 +140,6 @@ export class SeedMockHelperServiceTyped {
   }
 
   /**
-   * Update sequence numbers (replaces updateSequenceNumbers method)
-   */
-  public async updateSequenceNumbers(): Promise<void> {
-    await this.mockDataFactory.updateSequenceNumbers();
-  }
-
-  /**
    * Introduce duplicates using type-safe approach
    */
   public async introduceDuplicates(): Promise<void> {
