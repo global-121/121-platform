@@ -40,7 +40,6 @@ import { RegistrationsPaginationService } from '@121-service/src/registration/se
 import { RegistrationsInputValidator } from '@121-service/src/registration/validators/registrations-input-validator';
 import { RegistrationEventEntity } from '@121-service/src/registration-events/entities/registration-event.entity';
 import { RegistrationEventsModule } from '@121-service/src/registration-events/registration-events.module';
-import { RegistrationUpdateProcessor } from '@121-service/src/registrations-update-jobs/processors/registrations-update-jobs.processor';
 import { AzureLogService } from '@121-service/src/shared/services/azure-log.service';
 import { UserEntity } from '@121-service/src/user/entities/user.entity';
 import { UserModule } from '@121-service/src/user/user.module';
@@ -87,7 +86,6 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
     RegistrationScopedRepository,
     RegistrationViewScopedRepository,
     FileImportService,
-    RegistrationUpdateProcessor,
     RegistrationsInputValidator,
     createScopedRepositoryProvider(IntersolveVoucherEntity),
     createScopedRepositoryProvider(TwilioMessageEntity),
