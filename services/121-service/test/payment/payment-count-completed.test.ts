@@ -61,12 +61,13 @@ describe('Do a payment to a PA with maxPayments=1', () => {
         status: RegistrationStatusEnum.included,
         accessToken,
       });
+      const paymentReferenceIds = [registrationAh.referenceId];
 
       // Act
       const doPaymentResponse = await doPayment({
         programId,
         amount,
-        referenceIds: [registrationAh.referenceId],
+        referenceIds: paymentReferenceIds,
         accessToken,
       });
       const paymentId = doPaymentResponse.body.id;
@@ -74,7 +75,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       // Assert
       await waitForPaymentTransactionsToComplete({
         programId,
-        paymentReferenceIds: [registrationAh.referenceId],
+        paymentReferenceIds,
         accessToken,
         maxWaitTimeMs: 10_000,
       });
@@ -106,7 +107,9 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       }
       // Assert
       expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-      expect(doPaymentResponse.body.applicableCount).toBe(1);
+      expect(doPaymentResponse.body.applicableCount).toBe(
+        paymentReferenceIds.length,
+      );
       expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
       expect(getTransactionsBody[0].errorMessage).toBe(null);
 
@@ -133,7 +136,7 @@ describe('Do a payment to a PA with maxPayments=1', () => {
 
       await waitForMessagesToComplete({
         programId,
-        referenceIds: [registrationAh.referenceId],
+        referenceIds: paymentReferenceIds,
         accessToken,
         expectedMessageAttribute: {
           key: 'body',
