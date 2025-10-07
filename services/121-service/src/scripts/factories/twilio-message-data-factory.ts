@@ -84,6 +84,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
    */
   public async duplicateExistingMessages(
     multiplier: number,
+    options?: TwilioMessageFactoryOptions,
   ): Promise<TwilioMessageEntity[]> {
     console.log(`Duplicating existing messages ${multiplier} times`);
 
@@ -102,21 +103,21 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
 
       const newMessagesData: DeepPartial<TwilioMessageEntity>[] =
         existingMessages.map((message) => ({
-          accountSid: message.accountSid,
-          body: message.body,
+          accountSid: message.accountSid || options?.accountSid || 'ACdefault',
+          body: message.body || 'Mock message body',
           mediaUrl: message.mediaUrl,
-          to: message.to,
-          from: message.from,
+          to: message.to || '+31600000000',
+          from: message.from || options?.from || '+31600000001',
           sid: this.generateTwilioSid(), // Generate new unique SID
-          status: message.status,
-          type: message.type,
+          status: message.status || TwilioStatus.delivered,
+          type: message.type || NotificationType.Sms,
           dateCreated: new Date(
             Date.now() - Math.random() * 24 * 60 * 60 * 1000,
           ), // Random recent date
           registrationId: message.registrationId,
-          userId: message.userId || 1,
-          processType: message.processType,
-          contentType: message.contentType,
+          userId: message.userId || options?.userId || 1,
+          processType: message.processType || MessageProcessType.sms,
+          contentType: message.contentType || MessageContentType.custom,
           errorCode: message.errorCode,
           errorMessage: message.errorMessage,
         }));
