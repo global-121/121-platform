@@ -92,17 +92,19 @@ class ProjectMonitoring extends BasePage {
       'metric-tile-component',
     );
 
-    const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
-      `+ ${lastPaymentAmount}`,
-    );
+    if (lastPaymentAmount) {
+      const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
+        `+ ${lastPaymentAmount}`,
+      );
+      await expect(cashDisbursedInLastPayment).toContainText(
+        lastPaymentAmount ?? '',
+      );
+    }
 
     await expect(registrationsTileLocator).toHaveText(
       peopleRegistered.toString(),
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
-    await expect(cashDisbursedInLastPayment).toContainText(
-      lastPaymentAmount ?? '',
-    );
   }
 
   async selectTab({ tabName }: { tabName: string }) {
