@@ -124,8 +124,12 @@ export class SeedMockHelperServiceTyped {
    * Multiply messages using type-safe factories
    */
   public async multiplyMessages(powerNr: number): Promise<void> {
-    const options = this.getDefaultMessageOptions();
-    await this.mockDataFactory.multiplyMessages(powerNr, options);
+    const defaultOptions = await this.getDefaultMockDataOptions();
+    const messageOptions = {
+      ...this.getDefaultMessageOptions(),
+      userId: defaultOptions.paymentOptions.defaultUserId,
+    };
+    await this.mockDataFactory.multiplyMessages(powerNr, messageOptions);
   }
 
   /**
@@ -337,7 +341,10 @@ export class SeedMockHelperServiceTyped {
 
     return {
       registrationOptions: this.getDefaultRegistrationOptions(),
-      messageOptions: this.getDefaultMessageOptions(),
+      messageOptions: {
+        ...this.getDefaultMessageOptions(),
+        userId: defaultUserId,
+      },
       paymentOptions: {
         programIds, // Use actual program IDs without duplicates
         defaultUserId, // Provide default user ID for transactions
