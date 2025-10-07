@@ -8,6 +8,7 @@ import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-fa
 
 export interface PaymentFactoryOptions {
   readonly programIds: number[]; // Changed from single programId to array
+  readonly defaultUserId?: number; // Default user ID for transactions
 }
 
 export interface TransactionFactoryOptions {
@@ -110,7 +111,7 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
           registration.programFspConfigurationId ||
           options.programFspConfigurationId ||
           1,
-        userId: options.userId,
+        userId: options.userId || 1, // Provide fallback userId
         amount: options.amount || 100,
         status: options.status || 'success',
         transactionStep: 1,
@@ -155,7 +156,7 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
           registration.programFspConfigurationId ||
           options.programFspConfigurationId ||
           1,
-        userId: options.userId,
+        userId: options.userId || 1, // Provide fallback userId
         amount: options.amount || 100,
         status: options.status || 'success',
         transactionStep: 1,
@@ -198,7 +199,7 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
           registration.programFspConfigurationId ||
           options.programFspConfigurationId ||
           1,
-        userId: options.userId,
+        userId: options.userId || 1, // Provide fallback userId
         amount: options.amount || 100,
         status: options.status || 'success',
         transactionStep: 1,

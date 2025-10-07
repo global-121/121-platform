@@ -324,17 +324,23 @@ export class SeedMockHelperServiceTyped {
     // Get the actual program IDs that exist in the database
     const programRepository = this.dataSource.getRepository('ProgramEntity');
     const programs = await programRepository.find();
-    const programIds = programs.map((p: any) => p.id);
+    const programIds = [...new Set(programs.map((p: any) => p.id))]; // Remove duplicates
     
     if (programIds.length === 0) {
       throw new Error('No programs found in database for mock data generation');
     }
 
+    // Get the first user ID to use for transactions (following original SQL pattern)
+    const userRepository = this.dataSource.getRepository('UserEntity');
+    const users = await userRepository.find({ take: 1 });
+    const defaultUserId = users.length > 0 ? users[0].id : 1;
+
     return {
       registrationOptions: this.getDefaultRegistrationOptions(),
       messageOptions: this.getDefaultMessageOptions(),
       paymentOptions: {
-        programIds, // Use actual program IDs instead of hardcoded value
+        programIds, // Use actual program IDs without duplicates
+        defaultUserId, // Provide default user ID for transactions
       },
     };
   }
