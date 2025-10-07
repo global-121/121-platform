@@ -36,7 +36,7 @@ const genericValidationMessage = (control: AbstractControl) => {
     return $localize`:@@generic-required-field:This field is required.`;
   }
 
-  console.log('Validation errors: ', JSON.stringify(control.errors));
+  console.error('Validation errors: ', JSON.stringify(control.errors));
   return $localize`An unknown validation error has been found. Check the console for more details.`;
 };
 
