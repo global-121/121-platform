@@ -127,20 +127,16 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
    * Create transactions for one registration per existing registration for a specific program
    */
   public async createTransactionsOnePerRegistrationForProgram(
-    paymentId: number,
+    // paymentId: number,
     programId: number,
     options: Partial<TransactionFactoryOptions> = {},
   ): Promise<TransactionEntity[]> {
-    console.log(
-      `Creating one transaction per registration for payment ${paymentId} and program ${programId}`,
-    );
-
     // Get all existing registrations for this specific program
     const registrationRepository =
       this.dataSource.getRepository(RegistrationEntity);
     const registrations = await registrationRepository.find({
       where: { programId: Equal(programId) },
-      select: ['id', 'programFspConfigurationId'],
+      relations: { transactions: true },
     });
 
     if (registrations.length === 0) {
@@ -150,7 +146,7 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
 
     const transactionsData: DeepPartial<TransactionEntity>[] =
       registrations.map((registration) => ({
-        paymentId,
+        paymentId: registrations[0].transactions[0]?.paymentId, // Use paymentId from existing transaction
         registrationId: registration.id,
         programFspConfigurationId:
           registration.programFspConfigurationId ||
@@ -219,10 +215,10 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
 
     // Use a more efficient query to update payment counts
     await this.dataSource.query(`
-      UPDATE "121-service"."registration" 
+      UPDATE "121-service"."registration"
       SET "paymentCount" = subquery.payment_count
       FROM (
-        SELECT 
+        SELECT
           "registrationId",
           COUNT(DISTINCT "paymentId") as payment_count
         FROM "121-service"."transaction"
@@ -247,14 +243,18 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
 
     // Insert latest transactions using a more efficient query
     await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_transaction" ("registrationId", "transactionId", "paymentId")
-      SELECT DISTINCT ON ("registrationId") 
-        "registrationId", 
-        "id" as "transactionId",
-        "paymentId"
-      FROM "121-service"."transaction"
-      WHERE "registrationId" IS NOT NULL
-      ORDER BY "registrationId", "created" DESC
+      INSERT INTO "121-service"."latest_transaction" ("paymentId", "registrationId", "transactionId")
+      SELECT t."paymentId", t."registrationId", t.id AS transactionId
+      FROM (
+        SELECT "paymentId", "registrationId", MAX(id) AS max_id
+        FROM "121-service"."transaction"
+        WHERE status = 'success'
+        GROUP BY "paymentId", "registrationId"
+      ) AS latest_transactions
+      INNER JOIN "121-service"."transaction" AS t
+      ON t."paymentId" = latest_transactions."paymentId"
+      AND t."registrationId" = latest_transactions."registrationId"
+      AND t.id = latest_transactions.max_id;
     `);
 
     console.log('Latest transactions table updated successfully');

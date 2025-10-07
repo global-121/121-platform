@@ -65,20 +65,10 @@ export class MockDataFactoryService {
         for (const programId of options.paymentOptions.programIds) {
           // Since there already is 1 transaction, we need (powerNr - 1) additional payments
           const additionalPayments = powerNr - 1;
-          
-          for (let i = 1; i <= additionalPayments; i++) {
-            console.log(
-              `Creating payment ${i + 1} of ${powerNr} for program ${programId}`,
-            );
-            
-            // Create a payment for this program
-            const payment = await this.paymentFactory.createPaymentForProgram(
-              programId,
-            );
 
+          for (let i = 1; i <= additionalPayments; i++) {
             // Create transactions for all registrations of this program
             await this.paymentFactory.createTransactionsOnePerRegistrationForProgram(
-              payment.id,
               programId,
               { userId: options.paymentOptions.defaultUserId || 1 },
             );
@@ -126,10 +116,13 @@ export class MockDataFactoryService {
       console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
       // First: Duplicate existing registrations
-      const newRegistrations = await this.registrationFactory.duplicateExistingRegistrations(1);
-      
+      const newRegistrations =
+        await this.registrationFactory.duplicateExistingRegistrations(1);
+
       // Second: Duplicate existing registration attribute data, ensuring it references the new registrations
-      await this.attributeDataFactory.duplicateAttributeDataForRegistrations(newRegistrations);
+      await this.attributeDataFactory.duplicateAttributeDataForRegistrations(
+        newRegistrations,
+      );
     }
 
     // Make phone numbers unique
@@ -291,19 +284,19 @@ export class MockDataFactoryService {
       // Create duplicates by updating some registration attribute data to have the same value
       await this.dataSource.query(
         `
-        UPDATE "121-service"."registration_attribute_data" 
+        UPDATE "121-service"."registration_attribute_data"
         SET value = (
-          SELECT value 
-          FROM "121-service"."registration_attribute_data" 
-          WHERE "programRegistrationAttributeId" = $1 
+          SELECT value
+          FROM "121-service"."registration_attribute_data"
+          WHERE "programRegistrationAttributeId" = $1
           LIMIT 1
         )
-        WHERE "programRegistrationAttributeId" = $1 
+        WHERE "programRegistrationAttributeId" = $1
         AND id IN (
-          SELECT id 
-          FROM "121-service"."registration_attribute_data" 
-          WHERE "programRegistrationAttributeId" = $1 
-          ORDER BY RANDOM() 
+          SELECT id
+          FROM "121-service"."registration_attribute_data"
+          WHERE "programRegistrationAttributeId" = $1
+          ORDER BY RANDOM()
           LIMIT 3
         )
       `,
