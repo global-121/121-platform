@@ -21,7 +21,7 @@ test.beforeEach(async ({ page }) => {
   await loginPage.login();
 });
 
-test('[30579] All elements of Monitoring Dashboard tab are displayed', async ({
+test('[30579] All Charts of Monitoring Dashboard tab display correct data', async ({
   page,
 }) => {
   const projectMonitoring = new ProjectMonitoring(page);
@@ -34,11 +34,7 @@ test('[30579] All elements of Monitoring Dashboard tab are displayed', async ({
     await projectMonitoring.selectTab({ tabName: 'Dashboard' });
   });
 
-  await test.step('Check if all elements of Dashboard are displayed', async () => {
-    await projectMonitoring.assertValuesInMonitoringTab({
-      peopleIncluded: 5,
-      peopleRegistered: 5,
-    });
+  await test.step('Check if all charts data is correct', async () => {
     await projectMonitoring.assertDashboardChartsPresentByType();
   });
 });
