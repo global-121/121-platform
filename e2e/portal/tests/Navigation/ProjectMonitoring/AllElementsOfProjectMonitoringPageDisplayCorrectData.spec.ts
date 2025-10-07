@@ -80,6 +80,7 @@ test('[30579] All elements of Monitoring page display correct data for OCW', asy
       cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
       remainingBudget: `-€${defaultMaxTransferValue.toString()}`,
       paymentsDone: 1,
+      newRegistrations: 0,
     });
   });
 });
@@ -115,6 +116,7 @@ test('[30326] All elements of Monitoring page display correct data for NLRC', as
       cashDisbursed: `€${defaultMaxTransferValue.toString()}`,
       remainingBudget: `€${remainingBudget.toLocaleString()}`,
       paymentsDone: 1,
+      newRegistrations: 0,
     });
   });
 });

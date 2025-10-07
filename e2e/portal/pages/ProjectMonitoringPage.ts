@@ -82,7 +82,8 @@ class ProjectMonitoring extends BasePage {
     lastPaymentAmount,
     remainingBudget,
     cashDisbursed,
-    paymentsDone = 0,
+    paymentsDone,
+    newRegistrations,
   }: {
     peopleRegistered: number;
     peopleIncluded: number;
@@ -90,6 +91,7 @@ class ProjectMonitoring extends BasePage {
     remainingBudget: string;
     cashDisbursed: string;
     paymentsDone: number;
+    newRegistrations?: number;
   }) {
     const registrationsTileLocator = this.peopleRegisteredTile.getByTestId(
       'metric-tile-component',
@@ -106,6 +108,9 @@ class ProjectMonitoring extends BasePage {
     const paymentsDoneChip = this.remainingBudgetTile.getByLabel(
       `${paymentsDone.toString()} payment(s) done`,
     );
+    const newPeopleRegisteredChip = this.peopleRegisteredTile.getByLabel(
+      `${newRegistrations} new`,
+    );
     // Validate metrics "Chips"
     if (lastPaymentAmount) {
       const cashDisbursedInLastPayment = this.cashDisbursedTile.getByLabel(
@@ -113,6 +118,11 @@ class ProjectMonitoring extends BasePage {
       );
       await expect(cashDisbursedInLastPayment).toContainText(
         lastPaymentAmount ?? '',
+      );
+    }
+    if (newRegistrations) {
+      await expect(newPeopleRegisteredChip).toHaveText(
+        `${newRegistrations.toString()} new`,
       );
     }
     await expect(paymentsDoneChip).toHaveText(
