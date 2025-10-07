@@ -212,7 +212,7 @@ export class MockDataFactoryService {
    */
   public async multiplyMessages(
     powerNr: number,
-    _options: TwilioMessageFactoryOptions,
+    options: TwilioMessageFactoryOptions,
   ): Promise<void> {
     console.log(`**MULTIPLYING MESSAGES: ${powerNr} times**`);
 
@@ -220,7 +220,7 @@ export class MockDataFactoryService {
       console.log(`Creating message duplication ${i} of ${powerNr}`);
 
       // Duplicate existing messages
-      await this.messageFactory.duplicateExistingMessages(1, options.messageOptions);
+      await this.messageFactory.duplicateExistingMessages(1, options);
     }
 
     // Update latest messages
