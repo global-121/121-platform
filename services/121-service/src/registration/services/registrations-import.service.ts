@@ -14,7 +14,7 @@ import { ProgramRegistrationAttributeEntity } from '@121-service/src/programs/en
 import { ProgramService } from '@121-service/src/programs/programs.service';
 import { ImportResult } from '@121-service/src/registration/dto/bulk-import.dto';
 import { RegistrationDataInfo } from '@121-service/src/registration/dto/registration-data-relation.model';
-import { RegistrationsUpdateJobDto as RegistrationUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
+import { RegistrationsUpdateJobDto } from '@121-service/src/registration/dto/registration-update-job.dto';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import {
@@ -80,7 +80,7 @@ export class RegistrationsImportService {
     const chunks = chunk(bulkUpdateRecords, REGISTRATIONS_PER_JOB);
 
     // Prepare the job array to push to the queue
-    const updateJobs: Omit<RegistrationUpdateJobDto, 'request'>[] = chunks.map(
+    const updateJobs: Omit<RegistrationsUpdateJobDto, 'request'>[] = chunks.map(
       (recordsChunk) => {
         return {
           data: recordsChunk,
