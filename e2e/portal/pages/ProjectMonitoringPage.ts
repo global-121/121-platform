@@ -80,15 +80,25 @@ class ProjectMonitoring extends BasePage {
     peopleRegistered,
     peopleIncluded,
     lastPaymentAmount,
+    remainingBudget,
+    cashDisbursed,
   }: {
     peopleRegistered: number;
     peopleIncluded: number;
     lastPaymentAmount?: string;
+    remainingBudget: string;
+    cashDisbursed: string;
   }) {
     const registrationsTileLocator = this.peopleRegisteredTile.getByTestId(
       'metric-tile-component',
     );
     const includedTileLocator = this.peopleIncludedTile.getByTestId(
+      'metric-tile-component',
+    );
+    const remainingBudgetTileLocator = this.remainingBudgetTile.getByTestId(
+      'metric-tile-component',
+    );
+    const cashDisbursedTileLocator = this.cashDisbursedTile.getByTestId(
       'metric-tile-component',
     );
 
@@ -105,6 +115,10 @@ class ProjectMonitoring extends BasePage {
       peopleRegistered.toString(),
     );
     await expect(includedTileLocator).toHaveText(peopleIncluded.toString());
+    await expect(remainingBudgetTileLocator).toHaveText(
+      remainingBudget.toString(),
+    );
+    await expect(cashDisbursedTileLocator).toHaveText(cashDisbursed.toString());
   }
 
   async selectTab({ tabName }: { tabName: string }) {

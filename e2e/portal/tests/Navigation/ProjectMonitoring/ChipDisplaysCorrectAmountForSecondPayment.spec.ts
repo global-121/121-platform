@@ -66,6 +66,13 @@ test('[38377] Chip displays correct amount for second payment', async ({
         output + pa.paymentAmountMultiplier * transferValueForSecondPayment
       );
     }, 0);
+    const totalCashValue = registrationsVisa.reduce((output, pa) => {
+      return (
+        output +
+        pa.paymentAmountMultiplier * 25 +
+        pa.paymentAmountMultiplier * transferValueForSecondPayment
+      );
+    }, 0);
 
     await projectMonitoring.assertMonitoringTabElements({
       shouldHaveIframe: true,
@@ -74,6 +81,8 @@ test('[38377] Chip displays correct amount for second payment', async ({
       peopleIncluded: 4,
       peopleRegistered: 4,
       lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,
+      cashDisbursed: `€${totalCashValue.toString()}`,
+      remainingBudget: `-€${totalCashValue.toString()}`,
     });
   });
 });
