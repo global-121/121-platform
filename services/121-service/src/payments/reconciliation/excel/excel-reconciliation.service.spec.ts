@@ -235,7 +235,7 @@ describe('ExcelReconciliationService', () => {
           paymentId,
           userId,
         ),
-      ).rejects.toThrow(`No program with id ${nonExistentProgramId} found`); // Literally an empty error message.
+      ).rejects.toThrow(`No program with id ${nonExistentProgramId} found`);
       expect(
         paymentsProgressHelperService.isPaymentInProgress,
       ).not.toHaveBeenCalled();
