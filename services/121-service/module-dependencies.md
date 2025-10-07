@@ -59,6 +59,7 @@ graph LR
   RegistrationsModule-->RegistrationEventsModule
   RegistrationsModule-->ProgramFspConfigurationsModule
   RegistrationsModule-->QueuesRegistryModule
+  RegistrationsModule-->MessageTemplateModule
   CronjobModule-->NedbankReconciliationModule
   NedbankReconciliationModule-->NedbankModule
   NedbankReconciliationModule-->TransactionsModule
@@ -152,4 +153,6 @@ graph LR
   SafaricomReconciliationModule-->RedisModule
   SafaricomReconciliationModule-->TransactionsModule
   SafaricomReconciliationModule-->QueuesRegistryModule
+  RegistrationsUpdateJobsModule-->RegistrationsModule
+  RegistrationsUpdateJobsModule-->EmailsModule
 ```

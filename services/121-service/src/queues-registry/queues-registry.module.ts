@@ -244,7 +244,7 @@ import { AzureLogService } from '@121-service/src/shared/services/azure-log.serv
       name: QueueNames.registration,
       processors: [
         {
-          path: 'src/notifications/processors/message.processor.ts',
+          path: 'src/registrations-update-jobs/processors/registrations-update-jobs.processor.ts',
           concurrency: 2,
         },
       ],
