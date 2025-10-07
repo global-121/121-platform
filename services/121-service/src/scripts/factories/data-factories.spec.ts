@@ -1,15 +1,15 @@
 import { DataSource } from 'typeorm';
 
-import { RegistrationDataFactory } from '@121-service/src/scripts/factories/registration-data-factory';
-import { TwilioMessageDataFactory } from '@121-service/src/scripts/factories/twilio-message-data-factory';
-import { PaymentDataFactory } from '@121-service/src/scripts/factories/payment-data-factory';
-import { MockDataFactoryService } from '@121-service/src/scripts/factories/mock-data-factory.service';
-import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
-import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
+import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
 import { NotificationType } from '@121-service/src/notifications/entities/twilio.entity';
-import { MessageProcessType } from '@121-service/src/notifications/dto/message-job.dto';
 import { MessageContentType } from '@121-service/src/notifications/enum/message-type.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
+import { MockDataFactoryService } from '@121-service/src/scripts/factories/mock-data-factory.service';
+import { PaymentDataFactory } from '@121-service/src/scripts/factories/payment-data-factory';
+import { RegistrationDataFactory } from '@121-service/src/scripts/factories/registration-data-factory';
+import { TwilioMessageDataFactory } from '@121-service/src/scripts/factories/twilio-message-data-factory';
+import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 // Mock DataSource for testing
 const mockDataSource = {
@@ -42,7 +42,7 @@ describe('Data Factories', () => {
         scope: 'test-scope',
         programFspConfigurationId: 1,
       };
-      
+
       // This is a compile-time test - if it compiles, the interface is correct
       expect(options.programId).toBe(1);
     });
@@ -63,7 +63,7 @@ describe('Data Factories', () => {
         processType: MessageProcessType.sms,
         contentType: MessageContentType.custom,
       };
-      
+
       // This is a compile-time test - if it compiles, the interface is correct
       expect(options.accountSid).toBe('AC_test');
     });
@@ -79,7 +79,7 @@ describe('Data Factories', () => {
       const options = {
         programId: 1,
       };
-      
+
       // This is a compile-time test - if it compiles, the interface is correct
       expect(options.programId).toBe(1);
     });
@@ -110,7 +110,7 @@ describe('Data Factories', () => {
           programId: 1,
         },
       };
-      
+
       // This is a compile-time test - if it compiles, the interface is correct
       expect(options.registrationOptions.programId).toBe(1);
     });

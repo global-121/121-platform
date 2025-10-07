@@ -5,12 +5,14 @@ This document describes the new type-safe factory system that replaces the raw S
 ## Overview
 
 The previous seeding system used raw SQL scripts that were:
+
 - Fragile and broke with schema changes
 - Not type-safe
 - Difficult to maintain and adapt
 - Prone to errors due to string concatenation and manual ID management
 
 The new factory system provides:
+
 - **Type Safety**: All data generation uses TypeORM entities and TypeScript interfaces
 - **Maintainability**: Easy to adapt when the data model changes
 - **Performance**: Batch operations for large datasets
@@ -20,19 +22,23 @@ The new factory system provides:
 ## Architecture
 
 ### Base Factory
+
 All factories extend `BaseDataFactory<T>` which provides:
+
 - Common batch processing functionality
 - Type-safe entity creation methods
 - Utility methods for generating mock data
 - Sequence number management
 
 ### Concrete Factories
+
 - `RegistrationDataFactory`: Creates mock registration data
 - `RegistrationAttributeDataFactory`: Creates mock registration attribute data
 - `TwilioMessageDataFactory`: Creates mock message data
 - `PaymentDataFactory`: Creates mock payment and transaction data
 
 ### Orchestration Service
+
 `MockDataFactoryService` coordinates multiple factories to create complex data relationships.
 
 ## Usage
@@ -101,11 +107,13 @@ await helper.multiplyMessages(2);
 ### RegistrationDataFactory
 
 **Methods:**
+
 - `generateMockData(count, options)`: Create new registrations
 - `duplicateExistingRegistrations(multiplier)`: Duplicate all existing registrations
 - `makePhoneNumbersUnique()`: Ensure all phone numbers are unique
 
 **Options:**
+
 ```typescript
 interface RegistrationFactoryOptions {
   readonly programId: number;
@@ -119,12 +127,14 @@ interface RegistrationFactoryOptions {
 ### TwilioMessageDataFactory
 
 **Methods:**
+
 - `generateMockData(count, options)`: Create new messages
 - `duplicateExistingMessages(multiplier)`: Duplicate existing messages
 - `generateMessagesForRegistrations(registrations, options)`: Create one message per registration
 - `updateLatestMessages()`: Update the latest_message table
 
 **Options:**
+
 ```typescript
 interface TwilioMessageFactoryOptions {
   readonly accountSid: string;
@@ -140,6 +150,7 @@ interface TwilioMessageFactoryOptions {
 ### PaymentDataFactory
 
 **Methods:**
+
 - `generateMockData(count, options)`: Create new payments
 - `createPaymentForProgram(programId)`: Create a single payment
 - `createTransactionsForPayment(paymentId, programId)`: Create transactions for a payment
@@ -149,9 +160,11 @@ interface TwilioMessageFactoryOptions {
 ## Migration Guide
 
 ### Phase 1: Add New Factories
+
 ✅ **COMPLETED**: New factory system implemented alongside existing SQL approach
 
 ### Phase 2: Update Scripts Module
+
 Add the new services to the scripts module:
 
 ```typescript
@@ -166,18 +179,21 @@ export class ScriptsModule {}
 ```
 
 ### Phase 3: Gradual Migration
+
 Replace usage of `SeedMockHelperService` with `SeedMockHelperServiceTyped`:
 
 ```typescript
 // Before
 private readonly seedMockHelper: SeedMockHelperService,
 
-// After  
+// After
 private readonly seedMockHelper: SeedMockHelperServiceTyped,
 ```
 
 ### Phase 4: Remove Raw SQL
+
 Once all usage is migrated:
+
 1. Remove SQL files from `/src/scripts/sql/`
 2. Remove `SeedMockHelperService`
 3. Update tests and documentation
@@ -185,49 +201,56 @@ Once all usage is migrated:
 ## Benefits
 
 ### Type Safety
+
 - Compile-time validation of entity structures
 - Auto-completion and refactoring support
 - Reduced runtime errors
 
 ### Maintainability
+
 - Changes to entity models automatically reflected
 - Clear interfaces for factory options
 - Easy to extend for new entity types
 
 ### Performance
+
 - Batch operations for large datasets
 - Efficient database queries using TypeORM
 - Transaction support for data consistency
 
 ### Testing
+
 - Easy to mock and unit test
 - Clear separation of concerns
 - Factories can be tested independently
 
 ## SQL Script Replacements
 
-| SQL Script | Factory Replacement |
-|------------|-------------------|
-| `mock-registrations.sql` | `RegistrationDataFactory.duplicateExistingRegistrations()` |
-| `mock-registration-data.sql` | `RegistrationAttributeDataFactory.duplicateExistingAttributeData()` |
-| `mock-make-phone-unique.sql` | `RegistrationDataFactory.makePhoneNumbersUnique()` |
-| `mock-messages.sql` | `TwilioMessageDataFactory.duplicateExistingMessages()` |
-| `mock-messages-one-per-registration.sql` | `TwilioMessageDataFactory.generateMessagesForRegistrations()` |
-| `mock-latest-message.sql` | `TwilioMessageDataFactory.updateLatestMessages()` |
-| `mock-create-payment.sql` | `PaymentDataFactory.createPaymentForProgram()` |
-| `mock-payment-transactions.sql` | `PaymentDataFactory.createTransactionsForPayment()` |
-| `mock-update-payment-count.sql` | `PaymentDataFactory.updatePaymentCounts()` |
-| `mock-latest-transactions.sql` | `PaymentDataFactory.updateLatestTransactions()` |
+| SQL Script                               | Factory Replacement                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------- |
+| `mock-registrations.sql`                 | `RegistrationDataFactory.duplicateExistingRegistrations()`          |
+| `mock-registration-data.sql`             | `RegistrationAttributeDataFactory.duplicateExistingAttributeData()` |
+| `mock-make-phone-unique.sql`             | `RegistrationDataFactory.makePhoneNumbersUnique()`                  |
+| `mock-messages.sql`                      | `TwilioMessageDataFactory.duplicateExistingMessages()`              |
+| `mock-messages-one-per-registration.sql` | `TwilioMessageDataFactory.generateMessagesForRegistrations()`       |
+| `mock-latest-message.sql`                | `TwilioMessageDataFactory.updateLatestMessages()`                   |
+| `mock-create-payment.sql`                | `PaymentDataFactory.createPaymentForProgram()`                      |
+| `mock-payment-transactions.sql`          | `PaymentDataFactory.createTransactionsForPayment()`                 |
+| `mock-update-payment-count.sql`          | `PaymentDataFactory.updatePaymentCounts()`                          |
+| `mock-latest-transactions.sql`           | `PaymentDataFactory.updateLatestTransactions()`                     |
 
 ## Future Enhancements
 
 ### FSP-Specific Factories
+
 Create dedicated factories for FSP-specific entities:
+
 - `IntersolveVoucherDataFactory`
 - `VisaWalletDataFactory`
 - `SafaricomTransferDataFactory`
 
 ### Configuration-Driven Generation
+
 Support for generating data based on configuration files:
 
 ```typescript
@@ -245,6 +268,7 @@ interface DataGenerationConfig {
 ```
 
 ### Performance Optimizations
+
 - Bulk insert operations
 - Parallel processing for independent operations
 - Memory-efficient streaming for large datasets

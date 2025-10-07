@@ -127,21 +127,29 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
     const oldRegistrationIds = [
       ...new Set(existingAttributeData.map((ad) => ad.registrationId)),
     ].sort((a, b) => a - b); // Sort to ensure consistent mapping
-    
+
     // For each old registration ID, find the corresponding new registration ID
     const registrationIdMapping = new Map<number, number>();
-    for (let i = 0; i < oldRegistrationIds.length && i < newRegistrations.length; i++) {
+    for (
+      let i = 0;
+      i < oldRegistrationIds.length && i < newRegistrations.length;
+      i++
+    ) {
       registrationIdMapping.set(oldRegistrationIds[i], newRegistrations[i].id);
     }
 
     // Create new attribute data entries
-    const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] = [];
+    const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
+      [];
     for (const attributeData of existingAttributeData) {
-      const newRegistrationId = registrationIdMapping.get(attributeData.registrationId);
+      const newRegistrationId = registrationIdMapping.get(
+        attributeData.registrationId,
+      );
       if (newRegistrationId) {
         newAttributeDataEntries.push({
           registrationId: newRegistrationId,
-          programRegistrationAttributeId: attributeData.programRegistrationAttributeId,
+          programRegistrationAttributeId:
+            attributeData.programRegistrationAttributeId,
           value: attributeData.value,
         });
       }
