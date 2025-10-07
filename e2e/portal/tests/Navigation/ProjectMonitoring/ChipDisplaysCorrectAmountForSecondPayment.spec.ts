@@ -83,6 +83,7 @@ test('[38377] Chip displays correct amount for second payment', async ({
       lastPaymentAmount: `€${defaultMaxTransferValue.toString()}`,
       cashDisbursed: `€${totalCashValue.toString()}`,
       remainingBudget: `-€${totalCashValue.toString()}`,
+      paymentsDone: 2,
     });
   });
 });
