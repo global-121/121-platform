@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial } from 'typeorm';
 
-import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
@@ -196,7 +196,8 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     for (const attribute of phoneAttributes) {
       const currentValue = attribute.value;
       const prefix = currentValue.substring(0, 2); // Keep country code prefix
-      const newPhoneNumber = prefix + (100000000 + Math.floor(Math.random() * 900000000));
+      const newPhoneNumber =
+        prefix + (100000000 + Math.floor(Math.random() * 900000000));
       updates.push({
         id: attribute.id,
         value: newPhoneNumber,
@@ -217,7 +218,7 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     // Update registration table phone numbers to match attribute data
     for (const attribute of phoneAttributes) {
       if (attribute.programRegistrationAttribute?.name === 'phoneNumber') {
-        const correspondingUpdate = updates.find(u => u.id === attribute.id);
+        const correspondingUpdate = updates.find((u) => u.id === attribute.id);
         if (correspondingUpdate) {
           await this.repository.update(attribute.registrationId, {
             phoneNumber: correspondingUpdate.value,

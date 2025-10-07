@@ -336,7 +336,7 @@ export class SeedMockHelperServiceTyped {
     const programRepository = this.dataSource.getRepository('ProgramEntity');
     const programs = await programRepository.find();
     const programIds = [...new Set(programs.map((p: any) => p.id))]; // Remove duplicates
-    
+
     if (programIds.length === 0) {
       throw new Error('No programs found in database for mock data generation');
     }
