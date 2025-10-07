@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, DeepPartial } from 'typeorm';
 
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
@@ -166,5 +167,65 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
     }
 
     console.log(`Updated ${updates.length} phone numbers to be unique`);
+
+    // Also update phone numbers in registration_attribute_data table
+    await this.updatePhoneNumbersInAttributeData();
+  }
+
+  /**
+   * Update phone numbers in registration_attribute_data table
+   */
+  private async updatePhoneNumbersInAttributeData(): Promise<void> {
+    console.log('Updating phone numbers in registration attribute data');
+
+    const attributeDataRepository = this.dataSource.getRepository(
+      RegistrationAttributeDataEntity,
+    );
+
+    // Find phone number attributes
+    const phoneAttributes = await attributeDataRepository
+      .createQueryBuilder('rad')
+      .innerJoin('rad.programRegistrationAttribute', 'pra')
+      .where('pra.name IN (:...phoneNames)', {
+        phoneNames: ['phoneNumber', 'whatsappPhoneNumber'],
+      })
+      .getMany();
+
+    // Update each phone attribute with a new unique number
+    const updates: { id: number; value: string }[] = [];
+    for (const attribute of phoneAttributes) {
+      const currentValue = attribute.value;
+      const prefix = currentValue.substring(0, 2); // Keep country code prefix
+      const newPhoneNumber = prefix + (100000000 + Math.floor(Math.random() * 900000000));
+      updates.push({
+        id: attribute.id,
+        value: newPhoneNumber,
+      });
+    }
+
+    // Update in batches
+    const batchSize = 100;
+    for (let i = 0; i < updates.length; i += batchSize) {
+      const batch = updates.slice(i, i + batchSize);
+      await Promise.all(
+        batch.map(({ id, value }) =>
+          attributeDataRepository.update(id, { value }),
+        ),
+      );
+    }
+
+    // Update registration table phone numbers to match attribute data
+    for (const attribute of phoneAttributes) {
+      if (attribute.programRegistrationAttribute?.name === 'phoneNumber') {
+        const correspondingUpdate = updates.find(u => u.id === attribute.id);
+        if (correspondingUpdate) {
+          await this.repository.update(attribute.registrationId, {
+            phoneNumber: correspondingUpdate.value,
+          });
+        }
+      }
+    }
+
+    console.log(`Updated ${updates.length} phone numbers in attribute data`);
   }
 }

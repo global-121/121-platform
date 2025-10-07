@@ -114,14 +114,15 @@ export class MockDataFactoryService {
   ): Promise<void> {
     console.log(`**MULTIPLYING REGISTRATIONS: ${powerNr} times**`);
 
+    // Duplicate registrations and their attribute data together to maintain relationships
     for (let i = 1; i <= powerNr; i++) {
       console.log(`Creating registration duplication ${i} of ${powerNr}`);
 
-      // Duplicate existing registrations
-      await this.registrationFactory.duplicateExistingRegistrations(1);
-
-      // Duplicate existing registration attribute data
-      await this.attributeDataFactory.duplicateExistingAttributeData(1);
+      // First: Duplicate existing registrations
+      const newRegistrations = await this.registrationFactory.duplicateExistingRegistrations(1);
+      
+      // Second: Duplicate existing registration attribute data, ensuring it references the new registrations
+      await this.attributeDataFactory.duplicateAttributeDataForRegistrations(newRegistrations);
     }
 
     // Make phone numbers unique
