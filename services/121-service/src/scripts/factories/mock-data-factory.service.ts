@@ -61,15 +61,15 @@ export class MockDataFactoryService {
         // 1. Multiply registrations
         await this.multiplyRegistrations(powerNr, options.registrationOptions);
 
-        // 2. Create one transaction per registration for each iteration
-        for (let i = 1; i <= powerNr; i++) {
-          console.log(
-            `Creating transactions for registrations: iteration ${i} of ${powerNr}`,
-          );
-
-          // Create payments for each program
-          for (const programId of options.paymentOptions.programIds) {
-            console.log(`Creating payment for program ${programId}`);
+        // 2. Create transactions for each program (following original logic)
+        for (const programId of options.paymentOptions.programIds) {
+          // Since there already is 1 transaction, we need (powerNr - 1) additional payments
+          const additionalPayments = powerNr - 1;
+          
+          for (let i = 1; i <= additionalPayments; i++) {
+            console.log(
+              `Creating payment ${i + 1} of ${powerNr} for program ${programId}`,
+            );
             
             // Create a payment for this program
             const payment = await this.paymentFactory.createPaymentForProgram(
