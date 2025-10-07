@@ -11,7 +11,7 @@ export interface PaymentFactoryOptions {
   readonly defaultUserId?: number; // Default user ID for transactions
 }
 
-export interface TransactionFactoryOptions {
+interface TransactionFactoryOptions {
   readonly paymentId: number;
   readonly registrationId: number;
   readonly programFspConfigurationId: number;
