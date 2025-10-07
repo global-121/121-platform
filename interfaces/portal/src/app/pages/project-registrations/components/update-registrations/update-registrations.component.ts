@@ -38,7 +38,10 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { Registration } from '~/domains/registration/registration.model';
 import { DownloadService } from '~/services/download.service';
 import { ExportService } from '~/services/export.service';
-import { ActionDataWithPaginateQuery } from '~/services/paginate-query.service';
+import {
+  ActionDataWithPaginateQuery,
+  PaginateQueryService,
+} from '~/services/paginate-query.service';
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
@@ -75,6 +78,7 @@ export class UpdateRegistrationsComponent {
   readonly toastService = inject(ToastService);
   readonly translatableStringService = inject(TranslatableStringService);
   readonly metricApiService = inject(MetricApiService);
+  readonly paginateQueryService = inject(PaginateQueryService);
 
   protected registrationAttributes = injectQuery(
     this.registrationAttributeService.getRegistrationAttributes(
@@ -200,6 +204,9 @@ export class UpdateRegistrationsComponent {
         select: selectedFields,
         filter: {
           ...this.actionData()?.query.filter,
+          status: this.paginateQueryService.extendStatusFilterToExcludeDeleted(
+            this.actionData()?.query.filter?.status,
+          ),
         },
       },
       format: 'csv',

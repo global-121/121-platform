@@ -49,6 +49,22 @@ export abstract class IActionDataHandler<TData> {
   providedIn: 'root',
 })
 export class PaginateQueryService {
+  public extendStatusFilterToExcludeDeleted = (
+    currentStatusFilter?: string | string[],
+  ) => {
+    const deletedStatus = `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`;
+
+    if (!currentStatusFilter) {
+      return deletedStatus;
+    }
+
+    if (Array.isArray(currentStatusFilter)) {
+      currentStatusFilter = currentStatusFilter.join(',');
+    }
+
+    return `${currentStatusFilter},${deletedStatus}`;
+  };
+
   private convertPrimeNGMatchModeToFilterOperator({
     matchMode,
     isDate,
@@ -275,10 +291,6 @@ export class PaginateQueryService {
           // ...including the ones in other pages
           page: undefined,
           limit: undefined,
-          filter: {
-            // We want to ignore any manual filters set by the user, but ALWAYS exclude deleted registrations via this filter
-            status: `${FilterOperator.NOT}:${RegistrationStatusEnum.deleted}`,
-          },
           select,
         },
         count: totalCount,
