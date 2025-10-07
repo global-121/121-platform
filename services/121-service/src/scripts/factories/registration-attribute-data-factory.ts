@@ -67,10 +67,6 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
       return [];
     }
 
-    // Get the current max registrationId to calculate the offset
-    const registrationRepository =
-      this.dataSource.getRepository(RegistrationEntity);
-
     const allNewAttributeData: RegistrationAttributeDataEntity[] = [];
 
     for (let iteration = 1; iteration <= multiplier; iteration++) {
@@ -78,18 +74,18 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
         `Creating registration attribute data duplication ${iteration} of ${multiplier}`,
       );
 
-      // Calculate the registration ID offset for this iteration
-      const maxRegistrationIdResult = await registrationRepository
-        .createQueryBuilder('registration')
-        .select('MAX(registration.id)', 'max')
+      // Get the current max registrationId from registration_attribute_data table
+      // This follows the original SQL logic: registrationId + (SELECT max(registrationId) FROM registration_attribute_data)
+      const maxRegistrationIdResult = await this.repository
+        .createQueryBuilder('rad')
+        .select('MAX(rad.registrationId)', 'max')
         .getRawOne();
 
       const maxRegistrationId = maxRegistrationIdResult?.max || 0;
-      const registrationIdOffset = maxRegistrationId;
 
       const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
         existingAttributeData.map((attributeData) => ({
-          registrationId: attributeData.registrationId + registrationIdOffset,
+          registrationId: attributeData.registrationId + maxRegistrationId,
           programRegistrationAttributeId:
             attributeData.programRegistrationAttributeId,
           value: attributeData.value,
@@ -101,6 +97,9 @@ export class RegistrationAttributeDataFactory extends BaseDataFactory<Registrati
       allNewAttributeData.push(...newAttributeData);
     }
 
+    console.log(
+      `Created ${allNewAttributeData.length} new registration attribute data entries`,
+    );
     return allNewAttributeData;
   }
 
