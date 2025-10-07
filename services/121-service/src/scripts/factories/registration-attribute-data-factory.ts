@@ -5,7 +5,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 
-export interface RegistrationAttributeDataFactoryOptions {
+interface RegistrationAttributeDataFactoryOptions {
   readonly programRegistrationAttributeId: number;
   readonly value: string;
 }
