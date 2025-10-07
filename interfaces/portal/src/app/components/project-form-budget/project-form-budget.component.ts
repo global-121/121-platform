@@ -19,10 +19,7 @@ import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-cod
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { Project } from '~/domains/project/project.model';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ProjectBudgetFormGroup =
   (typeof ProjectFormBudgetComponent)['prototype']['formGroup'];
@@ -86,16 +83,7 @@ export class ProjectFormBudgetComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<ProjectBudgetFormGroup>(
-    this.formGroup,
-    {
-      budget: genericValidationMessage,
-      currency: genericValidationMessage,
-      distributionFrequency: genericValidationMessage,
-      distributionDuration: genericValidationMessage,
-      fixedTransferValue: genericValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   updateFormGroup = effect(() => {
     const projectData = this.project();

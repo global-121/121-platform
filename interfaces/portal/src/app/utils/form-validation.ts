@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 
 import { get } from 'radashi';
 
-export const genericValidationMessage = (control: AbstractControl) => {
+const genericValidationMessage = (control: AbstractControl) => {
   if (!control.invalid) {
     return;
   }
@@ -11,6 +11,21 @@ export const genericValidationMessage = (control: AbstractControl) => {
   if (control.errors?.min) {
     const min = get(control.errors.min, 'min') ?? 0;
     return $localize`This field needs to be at least ${min}.`;
+  }
+
+  if (control.errors?.max) {
+    const max = get(control.errors.max, 'max') ?? 0;
+    return $localize`This field needs to be at most ${max}.`;
+  }
+
+  if (control.errors?.minlength) {
+    const minlength = get(control.errors.minlength, 'requiredLength') ?? 0;
+    return $localize`This field cannot be shorter than ${minlength} characters.`;
+  }
+
+  if (control.errors?.maxlength) {
+    const maxlength = get(control.errors.maxlength, 'requiredLength') ?? 0;
+    return $localize`This field cannot be longer than ${maxlength} characters.`;
   }
 
   if (control.errors?.email) {
@@ -21,20 +36,24 @@ export const genericValidationMessage = (control: AbstractControl) => {
     return $localize`:@@generic-required-field:This field is required.`;
   }
 
-  throw new Error(
-    `No validation message found for control with errors: ${JSON.stringify(
-      control.errors,
-    )}`,
-  );
+  console.log('Validation errors: ', JSON.stringify(control.errors));
+  return $localize`An unknown validation error has been found. Check the console for more details.`;
 };
 
+/**
+ * Generate field error messages for a FormGroup.
+ *
+ * @param formGroup The FormGroup for which to generate field error messages
+ * @param validationFuncMapping optional mapping of control names to custom validation functions. For controls not in this mapping, a generic default validation message function will be used.
+ * @returns A function that takes a control name and returns the corresponding error message, if any
+ */
 export const generateFieldErrors = <T extends FormGroup>(
   formGroup: T,
   validationFuncMapping: {
-    [K in keyof T['controls']]: (
+    [K in keyof T['controls']]?: (
       control: T['controls'][K],
     ) => string | undefined;
-  },
+  } = {},
 ) =>
   computed(
     () =>
@@ -45,6 +64,10 @@ export const generateFieldErrors = <T extends FormGroup>(
         if (!control.touched) {
           return undefined;
         }
-        return validationFuncMapping[controlName](control);
+
+        const validationFunc =
+          validationFuncMapping[controlName] ?? genericValidationMessage;
+
+        return validationFunc(control);
       },
   );

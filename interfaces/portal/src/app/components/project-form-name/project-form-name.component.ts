@@ -16,10 +16,7 @@ import { TextareaModule } from 'primeng/textarea';
 
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { Project } from '~/domains/project/project.model';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ProjectNameFormGroup =
   (typeof ProjectFormNameComponent)['prototype']['formGroup'];
@@ -53,10 +50,7 @@ export class ProjectFormNameComponent {
     ),
   });
 
-  formFieldErrors = generateFieldErrors<ProjectNameFormGroup>(this.formGroup, {
-    name: genericValidationMessage,
-    description: genericValidationMessage,
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   updateFormGroup = effect(() => {
     const projectData = this.project();

@@ -40,10 +40,7 @@ import {
   IActionDataHandler,
 } from '~/services/paginate-query.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type SendMessageFormGroup =
   (typeof SendMessageDialogComponent)['prototype']['formGroup'];
@@ -113,19 +110,7 @@ export class SendMessageDialogComponent
     ),
   });
 
-  formFieldErrors = generateFieldErrors<SendMessageFormGroup>(this.formGroup, {
-    messageType: genericValidationMessage,
-    messageTemplateKey: genericValidationMessage,
-    customMessage: (control) => {
-      if (control.errors?.required) {
-        return $localize`:@@generic-required-field:This field is required.`;
-      }
-      if (control.errors?.minlength) {
-        return $localize`The message must be at least 20 characters long.`;
-      }
-      return;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   sendMessageMutation = injectMutation(() => ({
     mutationFn: (

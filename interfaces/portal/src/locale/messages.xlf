@@ -361,9 +361,6 @@
       <trans-unit id="8938510541215036054" datatype="html">
         <source>Enter a valid email address</source>
       </trans-unit>
-      <trans-unit id="2772023564304193657" datatype="html">
-        <source>Enter your password</source>
-      </trans-unit>
       <trans-unit id="2309376472788575612" datatype="html">
         <source>Registrations with the status “new”.</source>
       </trans-unit>
@@ -573,9 +570,6 @@
       </trans-unit>
       <trans-unit id="generic-go-back" datatype="html">
         <source>Go back</source>
-      </trans-unit>
-      <trans-unit id="3979054462974448924" datatype="html">
-        <source>The message must be at least 20 characters long.</source>
       </trans-unit>
       <trans-unit id="5397829192667702490" datatype="html">
         <source>Sending messages</source>
@@ -882,9 +876,6 @@
       </trans-unit>
       <trans-unit id="7483364924749111553" datatype="html">
         <source>They will not be included in payments.</source>
-      </trans-unit>
-      <trans-unit id="6828231165009897209" datatype="html">
-        <source>You must select this to proceed.</source>
       </trans-unit>
       <trans-unit id="8315909063441814502" datatype="html">
         <source>Changing statuses</source>
@@ -1843,6 +1834,18 @@
       </trans-unit>
       <trans-unit id="message-content-type-completed" datatype="html">
         <source>Completed</source>
+      </trans-unit>
+      <trans-unit id="2245261357469609295" datatype="html">
+        <source>This field cannot be longer than <x equiv-text="maxlength" id="PH"/> characters.</source>
+      </trans-unit>
+      <trans-unit id="827790248534548401" datatype="html">
+        <source>An unknown validation error has been found. Check the console for more details.</source>
+      </trans-unit>
+      <trans-unit id="8355761006232718301" datatype="html">
+        <source>This field cannot be shorter than <x equiv-text="minlength" id="PH"/> characters.</source>
+      </trans-unit>
+      <trans-unit id="8939724046901107086" datatype="html">
+        <source>This field needs to be at most <x equiv-text="max" id="PH"/>.</source>
       </trans-unit>
     </body>
   </file>

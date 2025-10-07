@@ -59,18 +59,7 @@ export class ChangeStatusContentsWithCustomMessageComponent implements OnInit {
   readonly previewData = signal<Partial<MessageInputData> | undefined>(
     undefined,
   );
-  formFieldErrors = generateFieldErrors(this.formGroup, {
-    customMessage: (control) => {
-      if (control.errors?.required) {
-        return $localize`:@@generic-required-field:This field is required.`;
-      }
-
-      if (control.errors?.minlength) {
-        return $localize`The message must be at least 20 characters long.`;
-      }
-      return;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   ngOnInit(): void {
     this.previewData.set(undefined);

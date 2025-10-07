@@ -24,10 +24,7 @@ import { FormDialogComponent } from '~/components/form-dialog/form-dialog.compon
 import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-field-wrapper.component';
 import { MetricApiService } from '~/domains/metric/metric.api.service';
 import { RegistrationApiService } from '~/domains/registration/registration.api.service';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 type IgnoreDuplicationFormGroup =
   (typeof IgnoreDuplicationDialogComponent)['prototype']['formGroup'];
@@ -84,12 +81,7 @@ export class IgnoreDuplicationDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<IgnoreDuplicationFormGroup>(
-    this.formGroup,
-    {
-      reason: genericValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   approveMutation = injectMutation(() => ({
     mutationFn: ({

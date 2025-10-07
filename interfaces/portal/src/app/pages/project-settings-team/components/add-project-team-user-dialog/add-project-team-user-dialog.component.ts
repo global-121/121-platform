@@ -31,13 +31,7 @@ import { ProjectUserWithRolesLabel } from '~/domains/project/project.model';
 import { RoleApiService } from '~/domains/role/role.api.service';
 import { AuthService } from '~/services/auth.service';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
-
-type AddUserToTeamFormGroup =
-  (typeof AddProjectTeamUserDialogComponent)['prototype']['formGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-add-project-team-user-dialog',
@@ -97,19 +91,14 @@ export class AddProjectTeamUserDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
-    this.formGroup,
-    {
-      userValue: genericValidationMessage,
-      rolesValue: genericValidationMessage,
-      scopeValue: (control) => {
-        if (!control.invalid) {
-          return;
-        }
-        return $localize`Enter a valid scope. No spaces are allowed.`;
-      },
+  formFieldErrors = generateFieldErrors(this.formGroup, {
+    scopeValue: (control) => {
+      if (!control.invalid) {
+        return;
+      }
+      return $localize`Enter a valid scope. No spaces are allowed.`;
     },
-  );
+  });
 
   readonly dialogHeader = computed(() =>
     this.isEditing() ? $localize`Edit user` : $localize`Add user to team`,

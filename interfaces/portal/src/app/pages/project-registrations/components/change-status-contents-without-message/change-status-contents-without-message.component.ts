@@ -43,14 +43,7 @@ export class ChangeStatusContentsWithoutMessageComponent {
       nonNullable: true,
     }),
   });
-  formFieldErrors = generateFieldErrors(this.formGroup, {
-    confirmAction: (control) => {
-      if (control.errors?.required) {
-        return $localize`You must select this to proceed.`;
-      }
-      return;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   constructor() {
     effect(() => {

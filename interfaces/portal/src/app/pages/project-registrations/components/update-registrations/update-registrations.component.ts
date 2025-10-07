@@ -46,16 +46,7 @@ import {
 import { RegistrationAttributeService } from '~/services/registration-attribute.service';
 import { ToastService } from '~/services/toast.service';
 import { TranslatableStringService } from '~/services/translatable-string.service';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
-
-type ExportCSVFormGroup =
-  (typeof UpdateRegistrationsComponent)['prototype']['exportCSVFormGroup'];
-
-type UpdateRegistrationsFormGroup =
-  (typeof UpdateRegistrationsComponent)['prototype']['updateRegistrationsFormGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-update-registrations',
@@ -119,12 +110,7 @@ export class UpdateRegistrationsComponent {
     }),
   });
 
-  exportCSVFormFieldErrors = generateFieldErrors<ExportCSVFormGroup>(
-    this.exportCSVFormGroup,
-    {
-      fields: genericValidationMessage,
-    },
-  );
+  exportCSVFormFieldErrors = generateFieldErrors(this.exportCSVFormGroup);
 
   exportByTypeMutation = injectMutation(() =>
     this.exportService.getExportByTypeMutation(
@@ -146,14 +132,9 @@ export class UpdateRegistrationsComponent {
     }),
   });
 
-  updateRegistrationsFormFieldErrors =
-    generateFieldErrors<UpdateRegistrationsFormGroup>(
-      this.updateRegistrationsFormGroup,
-      {
-        reason: genericValidationMessage,
-        confirmAction: genericValidationMessage,
-      },
-    );
+  updateRegistrationsFormFieldErrors = generateFieldErrors(
+    this.updateRegistrationsFormGroup,
+  );
 
   updateRegistrationsMutation = injectMutation(() => ({
     mutationFn: (

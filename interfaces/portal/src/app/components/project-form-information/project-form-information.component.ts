@@ -19,10 +19,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { InfoTooltipComponent } from '~/components/info-tooltip/info-tooltip.component';
 import { PROJECT_FORM_TOOLTIPS } from '~/domains/project/project.helper';
 import { Project } from '~/domains/project/project.model';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
+import { generateFieldErrors } from '~/utils/form-validation';
 
 export type ProjectInformationFormGroup =
   (typeof ProjectFormInformationComponent)['prototype']['formGroup'];
@@ -72,17 +69,7 @@ export class ProjectFormInformationComponent {
     enableScope: new FormControl(false, { nonNullable: true }),
   });
 
-  formFieldErrors = generateFieldErrors<ProjectInformationFormGroup>(
-    this.formGroup,
-    {
-      startDate: genericValidationMessage,
-      endDate: genericValidationMessage,
-      location: genericValidationMessage,
-      targetNrRegistrations: genericValidationMessage,
-      validation: genericValidationMessage,
-      enableScope: genericValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   updateFormGroup = effect(() => {
     const projectData = this.project();
