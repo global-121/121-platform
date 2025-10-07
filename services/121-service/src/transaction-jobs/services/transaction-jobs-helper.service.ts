@@ -83,11 +83,12 @@ export class TransactionJobsHelperService {
 
     if (!isRetry) {
       const paymentCount = await this.updateAndGetPaymentCount(registration.id);
-      const shouldChangeStatusToCompleted = await this.isMaxPaymentsExceeded({
-        registration,
-        programId,
-        paymentCount,
-      });
+      const shouldChangeStatusToCompleted =
+        await this.shouldChangeStatusToCompleted({
+          registration,
+          programId,
+          paymentCount,
+        });
 
       if (shouldChangeStatusToCompleted) {
         const isTemplateAvailable =
@@ -185,7 +186,7 @@ export class TransactionJobsHelperService {
     return paymentCount;
   }
 
-  private async isMaxPaymentsExceeded({
+  private async shouldChangeStatusToCompleted({
     registration,
     programId,
     paymentCount,

@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import * as request from 'supertest';
 
 import { Fsps } from '@121-service/src/fsps/enums/fsp-name.enum';
 import { TwilioStatus } from '@121-service/src/notifications/dto/twilio.dto';
@@ -53,119 +52,112 @@ describe('Do a payment to a PA with maxPayments=1', () => {
       accessToken = await getAccessToken();
     });
 
-    describe('when payment is completed', () => {
-      let paymentId: number;
-      let doPaymentResponse: request.Response;
-
-      beforeEach(async () => {
-        await importRegistrations(programId, [registrationAh], accessToken);
-        await awaitChangeRegistrationStatus({
-          programId,
-          referenceIds: [registrationAh.referenceId],
-          status: RegistrationStatusEnum.included,
-          accessToken,
-        });
-
-        doPaymentResponse = await doPayment({
-          programId,
-          amount,
-          referenceIds: [registrationAh.referenceId],
-          accessToken,
-        });
-        paymentId = doPaymentResponse.body.id;
-        await waitForPaymentTransactionsToComplete({
-          programId,
-          paymentReferenceIds: [registrationAh.referenceId],
-          accessToken,
-          maxWaitTimeMs: 10_000,
-        });
+    it('should set registration to complete', async () => {
+      // Arrange
+      await importRegistrations(programId, [registrationAh], accessToken);
+      await awaitChangeRegistrationStatus({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        status: RegistrationStatusEnum.included,
+        accessToken,
       });
 
-      it('should set registration to complete', async () => {
-        const getTransactionsRes = await getTransactions({
-          programId,
-          paymentId,
-          registrationReferenceId: registrationAh.referenceId,
-          accessToken,
-        });
-        const getTransactionsBody = getTransactionsRes.body;
-        // Wait for registration to be updated
-        const timeout = 80_000; // Timeout in milliseconds
-        const interval = 1_000; // Interval between retries in milliseconds
-        let elapsedTime = 0;
-        let getRegistration: MappedPaginatedRegistrationDto | null = null;
-        while (
-          (!getRegistration || getRegistration.paymentCount !== 1) &&
-          elapsedTime < timeout
-        ) {
-          const getRegistraitonRes = await getRegistrations({
-            programId,
-            accessToken,
-          });
-          getRegistration = getRegistraitonRes.body.data[0];
+      // Act
+      const doPaymentResponse = await doPayment({
+        programId,
+        amount,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+      });
+      const paymentId = doPaymentResponse.body.id;
 
-          await waitFor(interval);
-          elapsedTime += interval;
-        }
-        // Assert
-        expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
-        expect(doPaymentResponse.body.applicableCount).toBe(1);
-        expect(getTransactionsBody[0].status).toBe(
-          TransactionStatusEnum.success,
-        );
-        expect(getTransactionsBody[0].errorMessage).toBe(null);
-
-        expect(getRegistration!.status).toBe(RegistrationStatusEnum.completed);
-        expect(getRegistration!.paymentCountRemaining).toBe(0);
-        expect(getRegistration!.paymentCount).toBe(1);
-
-        const statusChangeToCompleted = (
-          await getEvents({
-            programId,
-            accessToken,
-            referenceId: registrationAh.referenceId,
-          })
-        ).body.filter(
-          (event) =>
-            event.attributes.newValue === RegistrationStatusEnum.completed,
-        );
-        expect(statusChangeToCompleted.length).toBe(1);
+      // Assert
+      await waitForPaymentTransactionsToComplete({
+        programId,
+        paymentReferenceIds: [registrationAh.referenceId],
+        accessToken,
+        maxWaitTimeMs: 10_000,
       });
 
-      it('should send a template message', async () => {
-        const expectedMessageTranslations = Object.values(
-          messageTemplateGeneric.completed.message ?? {},
-        );
-
-        await waitForMessagesToComplete({
-          programId,
-          referenceIds: [registrationAh.referenceId],
-          accessToken,
-          expectedMessageAttribute: {
-            key: 'body',
-            values: expectedMessageTranslations,
-          },
-        });
-
-        // Assert
-        const messageHistoryResponse = await getMessageHistory(
-          programId,
-          registrationAh.referenceId,
-          accessToken,
-        );
-        const messageHistory = messageHistoryResponse.body;
-
-        const expectedMessages = messageHistory.filter((message) =>
-          expectedMessageTranslations.includes(message.attributes.body),
-        );
-        expect(expectedMessages.length).toBe(1);
-        expect(expectedMessages[0].attributes.status).not.toBe(
-          TwilioStatus.failed,
-        );
-        expect(expectedMessages[0].attributes.contentType).toBe(
-          MessageContentType.completed,
-        );
+      const getTransactionsRes = await getTransactions({
+        programId,
+        paymentId,
+        registrationReferenceId: registrationAh.referenceId,
+        accessToken,
       });
+      const getTransactionsBody = getTransactionsRes.body;
+      // Wait for registration to be updated
+      const timeout = 80_000; // Timeout in milliseconds
+      const interval = 1_000; // Interval between retries in milliseconds
+      let elapsedTime = 0;
+      let getRegistration: MappedPaginatedRegistrationDto | null = null;
+      while (
+        (!getRegistration || getRegistration.paymentCount !== 1) &&
+        elapsedTime < timeout
+      ) {
+        const getRegistraitonRes = await getRegistrations({
+          programId,
+          accessToken,
+        });
+        getRegistration = getRegistraitonRes.body.data[0];
+
+        await waitFor(interval);
+        elapsedTime += interval;
+      }
+      // Assert
+      expect(doPaymentResponse.status).toBe(HttpStatus.ACCEPTED);
+      expect(doPaymentResponse.body.applicableCount).toBe(1);
+      expect(getTransactionsBody[0].status).toBe(TransactionStatusEnum.success);
+      expect(getTransactionsBody[0].errorMessage).toBe(null);
+
+      expect(getRegistration!.status).toBe(RegistrationStatusEnum.completed);
+      expect(getRegistration!.paymentCountRemaining).toBe(0);
+      expect(getRegistration!.paymentCount).toBe(1);
+
+      const statusChangeToCompleted = (
+        await getEvents({
+          programId,
+          accessToken,
+          referenceId: registrationAh.referenceId,
+        })
+      ).body.filter(
+        (event) =>
+          event.attributes.newValue === RegistrationStatusEnum.completed,
+      );
+      expect(statusChangeToCompleted.length).toBe(1);
+
+      // Assert message sent
+      const expectedMessageTranslations = Object.values(
+        messageTemplateGeneric.completed.message ?? {},
+      );
+
+      await waitForMessagesToComplete({
+        programId,
+        referenceIds: [registrationAh.referenceId],
+        accessToken,
+        expectedMessageAttribute: {
+          key: 'body',
+          values: expectedMessageTranslations,
+        },
+      });
+
+      const messageHistoryResponse = await getMessageHistory(
+        programId,
+        registrationAh.referenceId,
+        accessToken,
+      );
+
+      const messageHistory = messageHistoryResponse.body;
+      const expectedMessages = messageHistory.filter((message) =>
+        expectedMessageTranslations.includes(message.attributes.body),
+      );
+      expect(expectedMessages.length).toBe(1);
+      expect(expectedMessages[0].attributes.status).not.toBe(
+        TwilioStatus.failed,
+      );
+      expect(expectedMessages[0].attributes.contentType).toBe(
+        MessageContentType.completed,
+      );
     });
   });
 });
