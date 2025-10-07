@@ -67,15 +67,21 @@ export class MockDataFactoryService {
             `Creating transactions for registrations: iteration ${i} of ${powerNr}`,
           );
 
-          // Create a payment for this iteration
-          const payment = await this.paymentFactory.createPaymentForProgram(
-            options.paymentOptions.programId,
-          );
+          // Create payments for each program
+          for (const programId of options.paymentOptions.programIds) {
+            console.log(`Creating payment for program ${programId}`);
+            
+            // Create a payment for this program
+            const payment = await this.paymentFactory.createPaymentForProgram(
+              programId,
+            );
 
-          // Create transactions for all registrations
-          await this.paymentFactory.createTransactionsOnePerRegistration(
-            payment.id,
-          );
+            // Create transactions for all registrations of this program
+            await this.paymentFactory.createTransactionsOnePerRegistrationForProgram(
+              payment.id,
+              programId,
+            );
+          }
         }
 
         // 3. Create messages for all registrations

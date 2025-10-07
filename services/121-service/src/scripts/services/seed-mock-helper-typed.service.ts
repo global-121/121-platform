@@ -103,7 +103,7 @@ export class SeedMockHelperServiceTyped {
   public async multiplyRegistrationsAndRelatedPaymentData(
     powerNr: number,
   ): Promise<void> {
-    const options = this.getDefaultMockDataOptions();
+    const options = await this.getDefaultMockDataOptions();
     await this.mockDataFactory.multiplyRegistrationsAndRelatedPaymentData(
       powerNr,
       options,
@@ -317,12 +317,24 @@ export class SeedMockHelperServiceTyped {
   /**
    * Get default options for comprehensive mock data generation
    */
-  private getDefaultMockDataOptions(): MockDataGenerationOptions {
+  /**
+   * Get default mock data generation options with dynamic program IDs
+   */
+  private async getDefaultMockDataOptions(): Promise<MockDataGenerationOptions> {
+    // Get the actual program IDs that exist in the database
+    const programRepository = this.dataSource.getRepository('ProgramEntity');
+    const programs = await programRepository.find();
+    const programIds = programs.map((p: any) => p.id);
+    
+    if (programIds.length === 0) {
+      throw new Error('No programs found in database for mock data generation');
+    }
+
     return {
       registrationOptions: this.getDefaultRegistrationOptions(),
       messageOptions: this.getDefaultMessageOptions(),
       paymentOptions: {
-        programId: 1,
+        programIds, // Use actual program IDs instead of hardcoded value
       },
     };
   }
