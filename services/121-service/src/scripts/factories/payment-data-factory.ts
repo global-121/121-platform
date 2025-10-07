@@ -7,7 +7,7 @@ import { RegistrationEntity } from '@121-service/src/registration/entities/regis
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 
 export interface PaymentFactoryOptions {
-  readonly programId: number;
+  readonly programIds: number[]; // Changed from single programId to array
 }
 
 export interface TransactionFactoryOptions {
@@ -90,6 +90,51 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
     );
 
     // Get registrations for this program
+    const registrationRepository =
+      this.dataSource.getRepository(RegistrationEntity);
+    const registrations = await registrationRepository.find({
+      where: { programId: Equal(programId) },
+      select: ['id', 'programFspConfigurationId'],
+    });
+
+    if (registrations.length === 0) {
+      console.warn(`No registrations found for program ${programId}`);
+      return [];
+    }
+
+    const transactionsData: DeepPartial<TransactionEntity>[] =
+      registrations.map((registration) => ({
+        paymentId,
+        registrationId: registration.id,
+        programFspConfigurationId:
+          registration.programFspConfigurationId ||
+          options.programFspConfigurationId ||
+          1,
+        userId: options.userId,
+        amount: options.amount || 100,
+        status: options.status || 'success',
+        transactionStep: 1,
+        customData: {},
+        errorMessage: null,
+      }));
+
+    const entities = this.transactionRepository.create(transactionsData);
+    return await this.transactionRepository.save(entities);
+  }
+
+  /**
+   * Create transactions for one registration per existing registration for a specific program
+   */
+  public async createTransactionsOnePerRegistrationForProgram(
+    paymentId: number,
+    programId: number,
+    options: Partial<TransactionFactoryOptions> = {},
+  ): Promise<TransactionEntity[]> {
+    console.log(
+      `Creating one transaction per registration for payment ${paymentId} and program ${programId}`,
+    );
+
+    // Get all existing registrations for this specific program
     const registrationRepository =
       this.dataSource.getRepository(RegistrationEntity);
     const registrations = await registrationRepository.find({
