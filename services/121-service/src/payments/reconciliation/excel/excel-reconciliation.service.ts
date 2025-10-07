@@ -92,6 +92,9 @@ export class ExcelReconciliationService {
       countNotFound: number;
     };
   }> {
+    ////////////////////////////////////////////////////////////////////////////
+    // Preparing
+    ////////////////////////////////////////////////////////////////////////////
     const program = await this.programRepository.findOne({
       where: {
         id: Equal(programId),
@@ -126,6 +129,9 @@ export class ExcelReconciliationService {
 
     const importResults = await this.processReconciliationData({
       file,
+      ////////////////////////////////////////////////////////////////////////////
+      // Actually processing
+      ////////////////////////////////////////////////////////////////////////////
       paymentId,
       programId,
       fspConfigs: fspConfigsExcel,
@@ -191,6 +197,9 @@ export class ExcelReconciliationService {
     return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 
+  /**
+   * An impure function.
+   */
   private async processReconciliationData({
     file,
     paymentId,
@@ -263,6 +272,9 @@ export class ExcelReconciliationService {
     return crossFspConfigImportResults;
   }
 
+  /**
+   * An impure function.
+   */
   private async reconciliatePayments({
     programId,
     paymentId,
@@ -331,6 +343,9 @@ export class ExcelReconciliationService {
     );
   }
 
+  /**
+   * A pure function.
+   */
   private joinRegistrationsAndImportRecords(
     registrations: Awaited<
       ReturnType<
@@ -423,6 +438,9 @@ export class ExcelReconciliationService {
     }
   }
 
+  /**
+   * A pure function.
+   */
   private createTransactionResult(
     registrationWithAmount: ExcelFspInstructions,
     importResponseRecord: any,
