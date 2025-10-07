@@ -395,6 +395,17 @@ This is how we create and publish a new release of the 121-platform.
     This will **_also_** deploy the Mock-Service to its production-environment.
 - Send the "Inform stakeholders"-message to Teams in the necessary locations.
 
+#### Temporary Query Errors During Deployment
+
+Azure App Service uses deployment slots that can cause temporary database errors during releases:
+
+- **What happens**: New instance starts and runs migrations while the old instance still serves requests
+- **Symptoms**: Database query errors (missing columns/tables) that only occur during deployments
+- **Solution**: Retry affected endpoints to see if it was caused by this temporary state
+- **Note**: This is expected behavior and resolves automatically once deployment completes
+
+**Recognition**: Errors only appear during releases and disappear when you recheck the same endpoint.
+
 ### Patch/Hotfix Checklist
 
 This follows a similar process to regular release + deployment, with some small changes.
