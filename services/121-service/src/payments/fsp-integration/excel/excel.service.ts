@@ -100,6 +100,9 @@ export class ExcelService {
     );
   }
 
+  /**
+   * A pure function.
+   */
   public joinRegistrationsAndTransactions(
     orderedRegistrations: Awaited<
       ReturnType<

@@ -21,7 +21,10 @@ import { ImportStatus } from '@121-service/src/registration/dto/bulk-import.dto'
 import { MappedPaginatedRegistrationDto } from '@121-service/src/registration/dto/mapped-paginated-registration.dto';
 import { RegistrationViewScopedRepository } from '@121-service/src/registration/repositories/registration-view-scoped.repository';
 import { RegistrationsPaginationService } from '@121-service/src/registration/services/registrations-pagination.service';
-import { FileImportService } from '@121-service/src/utils/file-import/file-import.service';
+import {
+  csvContents,
+  FileImportService,
+} from '@121-service/src/utils/file-import/file-import.service';
 
 @Injectable()
 export class ExcelReconciliationService {
@@ -92,6 +95,22 @@ export class ExcelReconciliationService {
       countNotFound: number;
     };
   }> {
+    ////////////////////////////////////////////////////////////////////////////
+    // Preparing
+    ////////////////////////////////////////////////////////////////////////////
+    const program = await this.programRepository.findOne({
+      where: {
+        id: Equal(programId),
+      },
+      relations: ['programFspConfigurations'],
+    });
+    if (!program) {
+      throw new HttpException(
+        `No program with id ${programId} found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     if (
       await this.paymentsProgressHelperService.isPaymentInProgress(programId)
     ) {
@@ -101,18 +120,9 @@ export class ExcelReconciliationService {
       );
     }
 
-    const program = await this.programRepository.findOneOrFail({
-      where: {
-        id: Equal(programId),
-      },
-      relations: ['programFspConfigurations'],
-    });
-    const fspConfigsExcel: ProgramFspConfigurationEntity[] = [];
-    for (const fspConfig of program.programFspConfigurations) {
-      if (fspConfig.fspName === Fsps.excel) {
-        fspConfigsExcel.push(fspConfig);
-      }
-    }
+    const fspConfigsExcel = program.programFspConfigurations.filter(
+      (config) => config.fspName === Fsps.excel,
+    );
     if (!fspConfigsExcel.length) {
       throw new HttpException(
         'Other reconciliation FSPs than `Excel` are currently not supported.',
@@ -120,8 +130,18 @@ export class ExcelReconciliationService {
       );
     }
 
-    const importResults = await this.processReconciliationData({
+    const maxRecords = 10_000;
+    const csvContents: csvContents = await this.fileImportService.validateCsv(
       file,
+      maxRecords,
+    );
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Actually processing
+    ////////////////////////////////////////////////////////////////////////////
+
+    const importResults = await this.processReconciliationData({
+      csvContents,
       paymentId,
       programId,
       fspConfigs: fspConfigsExcel,
@@ -133,6 +153,7 @@ export class ExcelReconciliationService {
         .map((r) => r.transaction)
         .filter((t): t is PaTransactionResultDto => t !== undefined);
 
+      // We persist the updated transactions here.
       await this.transactionsService.storeReconciliationTransactionsBulk(
         transactions,
         {
@@ -187,28 +208,26 @@ export class ExcelReconciliationService {
     return { countPaymentSuccess, countPaymentFailed, countNotFound };
   }
 
+  /**
+   * An impure function.
+   */
   private async processReconciliationData({
-    file,
+    csvContents,
     paymentId,
     programId,
     fspConfigs,
   }: {
-    file: Express.Multer.File;
+    csvContents: csvContents;
     paymentId: number;
     programId: number;
     fspConfigs: ProgramFspConfigurationEntity[];
   }): Promise<ReconciliationResult[]> {
-    const maxRecords = 10000;
-    const validatedExcelImport = await this.fileImportService.validateCsv(
-      file,
-      maxRecords,
-    );
+    const validatedExcelImport = csvContents;
 
     // First set up unfilled feedback object based on import rows ..
     const crossFspConfigImportResults: ReconciliationResult[] = [];
     for (const row of validatedExcelImport) {
       const resultRow = new ReconciliationResult();
-      resultRow.feedback = new ReconciliationFeedbackDto();
       resultRow.feedback = {
         ...row,
         importStatus: ImportStatus.notFound,
@@ -260,6 +279,9 @@ export class ExcelReconciliationService {
     return crossFspConfigImportResults;
   }
 
+  /**
+   * An impure function.
+   */
   private async reconciliatePayments({
     programId,
     paymentId,
@@ -316,7 +338,7 @@ export class ExcelReconciliationService {
         fspName: Fsps.excel,
       });
     // log query
-    const chunkSize = 400000;
+    const chunkSize = 400_000;
     return await this.registrationsPaginationService.getRegistrationViewsChunkedByPaginateQuery(
       programId,
       {
@@ -328,6 +350,9 @@ export class ExcelReconciliationService {
     );
   }
 
+  /**
+   * A pure function.
+   */
   private joinRegistrationsAndImportRecords(
     registrations: Awaited<
       ReturnType<
@@ -420,6 +445,9 @@ export class ExcelReconciliationService {
     }
   }
 
+  /**
+   * A pure function.
+   */
   private createTransactionResult(
     registrationWithAmount: ExcelFspInstructions,
     importResponseRecord: any,
