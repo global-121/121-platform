@@ -1,4 +1,5 @@
 import { FspIntegrationType } from '@121-service/src/fsps/enums/fsp-integration-type.enum';
+import { RegistrationStatusEnum } from '@121-service/src/registration/enum/registration-status.enum';
 
 import { getFspSettingByName } from '~/domains/fsp/fsp.helper';
 import {
@@ -9,6 +10,7 @@ import {
   Project,
   ProjectAttachmentFileType,
 } from '~/domains/project/project.model';
+import { REGISTRATION_STATUS_LABELS } from '~/domains/registration/registration.helper';
 
 export const projectHasVoucherSupport = (project?: Project): boolean =>
   project?.programFspConfigurations.some((fsp) =>
@@ -78,4 +80,14 @@ export const PROJECT_ATTACHMENT_FILE_TYPE_ICONS: Record<
   [ProjectAttachmentFileType.IMAGE]: 'pi pi-image text-purple-600',
   [ProjectAttachmentFileType.DOCUMENT]: 'pi pi-file-word text-blue-500',
   [ProjectAttachmentFileType.PDF]: 'pi pi-file-pdf text-red-500',
+};
+
+export const PROJECT_FORM_TOOLTIPS = {
+  targetRegistrations: $localize`The amount of people/households your project plans to reach.`,
+  validationProcess: $localize`This enables an additional registration status: "${REGISTRATION_STATUS_LABELS[RegistrationStatusEnum.validated]}".`,
+  enableScope: $localize`Scope allows you to control which team members have access to specific registrations, based on the scope they are assigned to in the project team's page.
+
+To use this feature, make sure scope is defined in your integrated Kobo form or Excel table.`,
+  currency: $localize`Should be an ISO 4217 currency code (full list available on Wikipedia).`,
+  distributionDuration: $localize`The number of times a registration will receive transfers in the project by default.`,
 };
