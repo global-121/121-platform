@@ -28,7 +28,7 @@ import { User } from '~/domains/user/user.model';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type AddUserToTeamFormGroup =
@@ -75,13 +75,8 @@ export class AddUserDialogComponent {
   formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
     this.formGroup,
     {
-      displayNameValue: genericFieldIsRequiredValidationMessage,
-      usernameValue: (control) => {
-        if (!control.invalid) {
-          return;
-        }
-        return $localize`Enter a valid email address`;
-      },
+      displayNameValue: genericValidationMessage,
+      usernameValue: genericValidationMessage,
     },
   );
 

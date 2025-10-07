@@ -23,7 +23,7 @@ import { RegistrationApiService } from '~/domains/registration/registration.api.
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type AddNoteFormGroup =
@@ -69,7 +69,7 @@ export class AddNoteDialogComponent {
   });
 
   formFieldErrors = generateFieldErrors<AddNoteFormGroup>(this.formGroup, {
-    note: genericFieldIsRequiredValidationMessage,
+    note: genericValidationMessage,
   });
 
   addNoteMutation = injectMutation(() => ({

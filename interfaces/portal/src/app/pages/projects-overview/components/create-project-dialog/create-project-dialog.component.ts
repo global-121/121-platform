@@ -24,7 +24,7 @@ import { ProjectApiService } from '~/domains/project/project.api.service';
 import { ToastService } from '~/services/toast.service';
 import {
   generateFieldErrors,
-  genericFieldIsRequiredValidationMessage,
+  genericValidationMessage,
 } from '~/utils/form-validation';
 
 type CreateProjectFormGroup =
@@ -68,8 +68,8 @@ export class CreateProjectDialogComponent {
   formFieldErrors = generateFieldErrors<CreateProjectFormGroup>(
     this.formGroup,
     {
-      token: genericFieldIsRequiredValidationMessage,
-      assetId: genericFieldIsRequiredValidationMessage,
+      token: genericValidationMessage,
+      assetId: genericValidationMessage,
     },
   );
 
