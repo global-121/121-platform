@@ -11,6 +11,7 @@ export enum MessageContentType {
   paymentReminder = 'payment-reminder',
   defaultReply = 'default-reply',
   new = 'new',
+  completed = 'completed',
 }
 
 export const TemplatedMessages = [

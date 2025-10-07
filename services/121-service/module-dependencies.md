@@ -72,7 +72,6 @@ graph LR
   OnafriqReconciliationModule-->QueuesRegistryModule
   CronjobModule-->ExchangeRatesModule
   ExchangeRatesModule-->UserModule
-  OrganizationModule-->UserModule
   MessageModule-->WhatsappModule
   WhatsappModule-->ImageCodeModule
   WhatsappModule-->UserModule
