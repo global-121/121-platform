@@ -22,53 +22,6 @@ export class RegistrationDataFactory extends BaseDataFactory<RegistrationEntity>
   }
 
   /**
-   * Generate mock registration data
-   */
-  public async generateMockData(
-    count: number,
-    options: RegistrationFactoryOptions,
-  ): Promise<RegistrationEntity[]> {
-    console.log(
-      `Generating ${count} mock registrations for program ${options.programId}`,
-    );
-
-    // Get the current max registrationProgramId for this program
-    const maxRegistrationProgramIdResult = await this.repository
-      .createQueryBuilder('registration')
-      .select('MAX(registration.registrationProgramId)', 'max')
-      .where('registration.programId = :programId', {
-        programId: options.programId,
-      })
-      .getRawOne();
-
-    let currentRegistrationProgramId = maxRegistrationProgramIdResult?.max || 0;
-
-    const registrationsData: DeepPartial<RegistrationEntity>[] = [];
-
-    for (let i = 0; i < count; i++) {
-      currentRegistrationProgramId++;
-
-      registrationsData.push({
-        programId: options.programId,
-        registrationStatus:
-          options.registrationStatus || RegistrationStatusEnum.included,
-        referenceId: this.generateUniqueReferenceId(),
-        phoneNumber: this.generatePhoneNumber(),
-        preferredLanguage: options.preferredLanguage || LanguageEnum.en,
-        inclusionScore: Math.floor(Math.random() * 100),
-        paymentAmountMultiplier: 1,
-        registrationProgramId: currentRegistrationProgramId,
-        maxPayments: null,
-        paymentCount: 0,
-        scope: options.scope,
-        programFspConfigurationId: options.programFspConfigurationId,
-      });
-    }
-
-    return await this.createEntitiesBatch(registrationsData);
-  }
-
-  /**
    * Duplicate existing registrations (similar to the SQL approach)
    */
   public async duplicateExistingRegistrations(

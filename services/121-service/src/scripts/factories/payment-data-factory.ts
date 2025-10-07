@@ -30,28 +30,6 @@ export class PaymentDataFactory extends BaseDataFactory<PaymentEntity> {
   }
 
   /**
-   * Generate mock payments
-   */
-  public async generateMockData(
-    count: number,
-    options: PaymentFactoryOptions,
-  ): Promise<PaymentEntity[]> {
-    console.log(
-      `Generating ${count} mock payments for program ${options.programId}`,
-    );
-
-    const paymentsData: DeepPartial<PaymentEntity>[] = [];
-
-    for (let i = 0; i < count; i++) {
-      paymentsData.push({
-        programId: options.programId,
-      });
-    }
-
-    return await this.createEntitiesBatch(paymentsData);
-  }
-
-  /**
    * Create payment for a program (replaces mock-create-payment.sql)
    */
   public async createPaymentForProgram(

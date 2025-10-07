@@ -28,58 +28,6 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
   }
 
   /**
-   * Generate mock Twilio messages
-   */
-  public async generateMockData(
-    count: number,
-    options: TwilioMessageFactoryOptions,
-  ): Promise<TwilioMessageEntity[]> {
-    console.log(`Generating ${count} mock Twilio messages`);
-
-    // Get some registrations to associate messages with
-    const registrationRepository =
-      this.dataSource.getRepository(RegistrationEntity);
-    const registrations = await registrationRepository.find({
-      take: Math.min(count, 1000), // Limit to avoid memory issues
-      select: ['id', 'phoneNumber'],
-    });
-
-    if (registrations.length === 0) {
-      console.warn('No registrations found to associate messages with');
-      return [];
-    }
-
-    const messagesData: DeepPartial<TwilioMessageEntity>[] = [];
-
-    for (let i = 0; i < count; i++) {
-      const randomRegistration =
-        registrations[Math.floor(Math.random() * registrations.length)];
-
-      messagesData.push({
-        accountSid: options.accountSid,
-        body: this.generateMessageBody(),
-        mediaUrl: null,
-        to: randomRegistration.phoneNumber || this.generatePhoneNumber(),
-        from: options.from,
-        sid: this.generateTwilioSid(),
-        status: options.status || TwilioStatus.delivered,
-        type: options.type || NotificationType.Sms,
-        dateCreated: new Date(
-          Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
-        ), // Random date in last 30 days
-        registrationId: randomRegistration.id,
-        userId: options.userId,
-        processType: options.processType || MessageProcessType.sms,
-        contentType: options.contentType || MessageContentType.custom,
-        errorCode: null,
-        errorMessage: null,
-      });
-    }
-
-    return await this.createEntitiesBatch(messagesData);
-  }
-
-  /**
    * Duplicate existing messages (replaces mock-messages.sql)
    */
   public async duplicateExistingMessages(
@@ -177,8 +125,8 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
     // Insert latest messages using a more efficient query
     await this.dataSource.query(`
       INSERT INTO "121-service"."latest_message" ("registrationId", "messageId")
-      SELECT DISTINCT ON ("registrationId") 
-        "registrationId", 
+      SELECT DISTINCT ON ("registrationId")
+        "registrationId",
         "id" as "messageId"
       FROM "121-service"."twilio_message"
       WHERE "registrationId" IS NOT NULL
