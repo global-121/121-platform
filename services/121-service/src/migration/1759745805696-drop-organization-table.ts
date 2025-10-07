@@ -9,17 +9,7 @@ export class DropOrganizationTable1759745805696 implements MigrationInterface {
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    // Recreate the organization table if needed to rollback
-    await queryRunner.query(
-      `CREATE TABLE "121-service"."organization" (
-        "id" SERIAL NOT NULL,
-        "created" TIMESTAMP NOT NULL DEFAULT now(),
-        "updated" TIMESTAMP NOT NULL DEFAULT now(),
-        "name" character varying NOT NULL,
-        "displayName" json NOT NULL,
-        CONSTRAINT "PK_organization" PRIMARY KEY ("id")
-      )`,
-    );
+  public async down(_queryRunner: QueryRunner): Promise<void> {
+    console.log('We only move forward and never look back!');
   }
 }
