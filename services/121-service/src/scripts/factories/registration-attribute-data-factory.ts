@@ -1,0 +1,167 @@
+import { Injectable } from '@nestjs/common';
+import { DataSource, DeepPartial } from 'typeorm';
+
+import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
+import { RegistrationAttributeDataEntity } from '@121-service/src/registration/entities/registration-attribute-data.entity';
+import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
+
+export interface RegistrationAttributeDataFactoryOptions {
+  readonly programRegistrationAttributeId: number;
+  readonly value: string;
+}
+
+@Injectable()
+export class RegistrationAttributeDataFactory extends BaseDataFactory<RegistrationAttributeDataEntity> {
+  constructor(dataSource: DataSource) {
+    super(
+      dataSource,
+      dataSource.getRepository(RegistrationAttributeDataEntity),
+    );
+  }
+
+  /**
+   * Generate mock registration attribute data for specific registrations
+   */
+  public async generateMockData(
+    count: number,
+    registrationIds: number[],
+    attributeData: RegistrationAttributeDataFactoryOptions[],
+  ): Promise<RegistrationAttributeDataEntity[]> {
+    console.log(
+      `Generating registration attribute data for ${registrationIds.length} registrations`,
+    );
+
+    const attributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
+      [];
+
+    for (const registrationId of registrationIds) {
+      for (const attr of attributeData) {
+        attributeDataEntries.push({
+          registrationId,
+          programRegistrationAttributeId: attr.programRegistrationAttributeId,
+          value: attr.value,
+        });
+      }
+    }
+
+    return await this.createEntitiesBatch(attributeDataEntries);
+  }
+
+  /**
+   * Duplicate existing registration attribute data (replaces mock-registration-data.sql)
+   */
+  public async duplicateExistingAttributeData(
+    multiplier: number,
+  ): Promise<RegistrationAttributeDataEntity[]> {
+    console.log(
+      `Duplicating existing registration attribute data ${multiplier} times`,
+    );
+
+    // Get all existing attribute data
+    const existingAttributeData = await this.repository.find();
+
+    if (existingAttributeData.length === 0) {
+      console.warn(
+        'No existing registration attribute data found to duplicate',
+      );
+      return [];
+    }
+
+    // Get the current max registrationId to calculate the offset
+    const registrationRepository =
+      this.dataSource.getRepository(RegistrationEntity);
+
+    const allNewAttributeData: RegistrationAttributeDataEntity[] = [];
+
+    for (let iteration = 1; iteration <= multiplier; iteration++) {
+      console.log(
+        `Creating registration attribute data duplication ${iteration} of ${multiplier}`,
+      );
+
+      // Calculate the registration ID offset for this iteration
+      const maxRegistrationIdResult = await registrationRepository
+        .createQueryBuilder('registration')
+        .select('MAX(registration.id)', 'max')
+        .getRawOne();
+
+      const maxRegistrationId = maxRegistrationIdResult?.max || 0;
+      const registrationIdOffset = maxRegistrationId;
+
+      const newAttributeDataEntries: DeepPartial<RegistrationAttributeDataEntity>[] =
+        existingAttributeData.map((attributeData) => ({
+          registrationId: attributeData.registrationId + registrationIdOffset,
+          programRegistrationAttributeId:
+            attributeData.programRegistrationAttributeId,
+          value: attributeData.value,
+        }));
+
+      const newAttributeData = await this.createEntitiesBatch(
+        newAttributeDataEntries,
+      );
+      allNewAttributeData.push(...newAttributeData);
+    }
+
+    return allNewAttributeData;
+  }
+
+  /**
+   * Generate mock attribute data for new registrations based on existing patterns
+   */
+  public async generateAttributeDataForRegistrations(
+    registrations: RegistrationEntity[],
+  ): Promise<RegistrationAttributeDataEntity[]> {
+    console.log(
+      `Generating attribute data for ${registrations.length} new registrations`,
+    );
+
+    // Get existing attribute patterns for each program
+    const programAttributePatterns = new Map<
+      number,
+      RegistrationAttributeDataFactoryOptions[]
+    >();
+
+    for (const registration of registrations) {
+      if (!programAttributePatterns.has(registration.programId)) {
+        // Get sample attribute data for this program
+        const sampleAttributes = await this.repository
+          .createQueryBuilder('attributeData')
+          .innerJoin('attributeData.registration', 'registration')
+          .innerJoin('attributeData.programRegistrationAttribute', 'attribute')
+          .select([
+            'attributeData.programRegistrationAttributeId',
+            'attributeData.value',
+          ])
+          .where('registration.programId = :programId', {
+            programId: registration.programId,
+          })
+          .limit(10) // Get sample patterns
+          .getMany();
+
+        const patterns = sampleAttributes.map((attr) => ({
+          programRegistrationAttributeId: attr.programRegistrationAttributeId,
+          value: attr.value,
+        }));
+
+        programAttributePatterns.set(registration.programId, patterns);
+      }
+    }
+
+    const allAttributeData: RegistrationAttributeDataEntity[] = [];
+
+    for (const registration of registrations) {
+      const patterns =
+        programAttributePatterns.get(registration.programId) || [];
+
+      if (patterns.length > 0) {
+        const attributeData = await this.generateMockData(
+          1,
+          [registration.id],
+          patterns,
+        );
+        allAttributeData.push(...attributeData);
+      }
+    }
+
+    return allAttributeData;
+  }
+}
