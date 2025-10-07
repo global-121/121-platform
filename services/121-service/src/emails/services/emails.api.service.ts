@@ -1,18 +1,38 @@
+import { EmailClient } from '@azure/communication-email';
 import { Injectable } from '@nestjs/common';
 
+import { supportEmail } from '@121-service/src/emails/templates/config.enum';
 import { env } from '@121-service/src/env';
-import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 
 @Injectable()
 export class EmailsApiService {
-  public constructor(private readonly httpService: CustomHttpService) {}
+  public async sendEmail({
+    email,
+    subject,
+    plainText,
+  }: {
+    email: string;
+    subject: string;
+    plainText: string;
+  }): Promise<void> {
+    const emailClient = new EmailClient(env.AZURE_EMAIL_API_URL);
 
-  public async sendEmail(payload: unknown): Promise<void> {
+    const emailMessage = {
+      sender: supportEmail,
+      content: {
+        subject,
+        plainText,
+      },
+      recipients: {
+        to: [{ email }],
+      },
+    };
+
     try {
-      await this.httpService.post<unknown>(env.AZURE_EMAIL_API_URL, payload);
+      const response = await emailClient.send(emailMessage);
+      console.log(`Email sent successfully with ID: ${response.id}`);
     } catch (error) {
-      console.error('Failed to send email through API', error);
-      throw new Error('Failed to send email through API');
+      console.error('Error sending email:', error);
     }
   }
 }

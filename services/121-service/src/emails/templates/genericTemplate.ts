@@ -10,9 +10,9 @@ export const genericTemplate = (
   bodyMessage: string,
 ): {
   subject: string;
-  body: string;
+  plainText: string;
 } => {
-  const body = emailBody(`
+  const plainText = emailBody(`
     <p>Dear madam/sir,</p>
     <p>
       ${bodyMessage}
@@ -25,6 +25,6 @@ export const genericTemplate = (
 
   return {
     subject,
-    body,
+    plainText,
   };
 };

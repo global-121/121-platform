@@ -11,11 +11,11 @@ export const passwordResetTemplate = (
   password: string,
 ): {
   subject: string;
-  body: string;
+  plainText: string;
 } => {
   const subject = '121 Portal password reset';
 
-  const body = emailBody(`
+  const plainText = emailBody(`
     <p>Dear ${displayName},</p>
     <p>
       Your password for the 121 Portal has been reset.<br>
@@ -40,6 +40,6 @@ export const passwordResetTemplate = (
 
   return {
     subject,
-    body,
+    plainText,
   };
 };

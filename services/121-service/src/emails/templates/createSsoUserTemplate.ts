@@ -9,11 +9,11 @@ export const createSSOUserTemplate = (
   displayName: string,
 ): {
   subject: string;
-  body: string;
+  plainText: string;
 } => {
   const subject = '121 Portal account created';
 
-  const body = emailBody(`
+  const plainText = emailBody(`
     <p>Dear ${displayName},</p>
     <p>
       You have been added to the 121 Portal by the platform admin.<br>
@@ -34,6 +34,6 @@ export const createSSOUserTemplate = (
 
   return {
     subject,
-    body,
+    plainText,
   };
 };

@@ -7,5 +7,5 @@ export interface CreateUserEmailPayload {
 export interface GenericEmailPayload {
   email: string;
   subject: string;
-  body: string;
+  plainText: string;
 }

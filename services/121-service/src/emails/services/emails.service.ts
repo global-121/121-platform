@@ -17,7 +17,7 @@ export class EmailsService {
   public async sendCreateNonSSOUserEmail(
     payload: CreateUserEmailPayload,
   ): Promise<void> {
-    const { subject, body } = createNonSSOUserTemplate(
+    const { subject, plainText } = createNonSSOUserTemplate(
       payload.displayName,
       payload.email,
       payload.password || '',
@@ -26,14 +26,14 @@ export class EmailsService {
     await this.emailsApiService.sendEmail({
       email: payload.email,
       subject,
-      body,
+      plainText,
     });
   }
 
   public async sendPasswordResetEmail(
     payload: CreateUserEmailPayload,
   ): Promise<void> {
-    const { subject, body } = passwordResetTemplate(
+    const { subject, plainText } = passwordResetTemplate(
       payload.displayName,
       payload.email,
       payload.password || '',
@@ -42,14 +42,14 @@ export class EmailsService {
     await this.emailsApiService.sendEmail({
       email: payload.email,
       subject,
-      body,
+      plainText,
     });
   }
 
   public async sendCreateSSOUserEmail(
     payload: CreateUserEmailPayload,
   ): Promise<void> {
-    const { subject, body } = createSSOUserTemplate(
+    const { subject, plainText } = createSSOUserTemplate(
       payload.email,
       payload.displayName,
     );
@@ -57,17 +57,20 @@ export class EmailsService {
     await this.emailsApiService.sendEmail({
       email: payload.email,
       subject,
-      body,
+      plainText,
     });
   }
 
   public async sendGenericEmail(payload: GenericEmailPayload): Promise<void> {
-    const { subject, body } = genericTemplate(payload.subject, payload.body);
+    const { subject, plainText } = genericTemplate(
+      payload.subject,
+      payload.plainText,
+    );
 
     await this.emailsApiService.sendEmail({
       email: payload.email,
       subject,
-      body,
+      plainText,
     });
   }
 }
