@@ -5,7 +5,7 @@ import { RegistrationStatusEnum } from '@121-service/src/registration/enum/regis
 import { InterfaceScript } from '@121-service/src/scripts/scripts.module';
 import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuration.dto';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
-import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
+import { SeedMockHelperServiceTyped } from '@121-service/src/scripts/services/seed-mock-helper-typed.service';
 import { registrationAHWhatsapp } from '@121-service/src/seed-data/mock/registration-pv.data';
 import {
   amountVisa,
@@ -17,7 +17,7 @@ import { waitFor } from '@121-service/src/utils/waitFor.helper';
 @Injectable()
 export class SeedMultipleNLRCMockData implements InterfaceScript {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelperService,
+    private readonly seedMockHelper: SeedMockHelperServiceTyped,
     private axiosCallsService: AxiosCallsService,
     private seedHelper: SeedHelperService,
   ) {}
@@ -66,7 +66,8 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
 
     await waitFor(4_000);
 
-    // Blow up data given the parameters
+    // Blow up data given the parameters - now using type-safe factories
+    console.log('**USING TYPE-SAFE FACTORIES FOR DATA MULTIPLICATION**');
     await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
       powerNrRegistrations,
     );
@@ -74,6 +75,7 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     await this.seedMockHelper.multiplyMessages(powerNrMessages);
     await this.seedMockHelper.updateSequenceNumbers();
     await this.seedMockHelper.introduceDuplicates();
+    console.log('**TYPE-SAFE FACTORY DATA MULTIPLICATION COMPLETED**');
   }
 
   private async seedRegistrationForProgram(
