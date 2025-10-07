@@ -220,7 +220,7 @@ export class MockDataFactoryService {
       console.log(`Creating message duplication ${i} of ${powerNr}`);
 
       // Duplicate existing messages
-      await this.messageFactory.duplicateExistingMessages(1);
+      await this.messageFactory.duplicateExistingMessages(1, options.messageOptions);
     }
 
     // Update latest messages
