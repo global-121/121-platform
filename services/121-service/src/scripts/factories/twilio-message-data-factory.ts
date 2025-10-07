@@ -114,7 +114,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
             Date.now() - Math.random() * 24 * 60 * 60 * 1000,
           ), // Random recent date
           registrationId: message.registrationId,
-          userId: message.userId,
+          userId: message.userId || 1,
           processType: message.processType,
           contentType: message.contentType,
           errorCode: message.errorCode,
@@ -151,7 +151,7 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
         type: options.type || NotificationType.Sms,
         dateCreated: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
         registrationId: registration.id,
-        userId: options.userId,
+        userId: options.userId || 1,
         processType: options.processType || MessageProcessType.sms,
         contentType: options.contentType || MessageContentType.custom,
         errorCode: null,
