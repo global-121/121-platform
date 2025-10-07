@@ -1844,8 +1844,8 @@
       <trans-unit id="8355761006232718301" datatype="html">
         <source>This field cannot be shorter than <x equiv-text="minlength" id="PH"/> characters.</source>
       </trans-unit>
-      <trans-unit id="8939724046901107086" datatype="html">
-        <source>This field needs to be at most <x equiv-text="max" id="PH"/>.</source>
+      <trans-unit id="1581201431976430187" datatype="html">
+        <source>This field cannot be more than <x equiv-text="max" id="PH"/>.</source>
       </trans-unit>
     </body>
   </file>

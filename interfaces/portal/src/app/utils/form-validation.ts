@@ -15,7 +15,7 @@ const genericValidationMessage = (control: AbstractControl) => {
 
   if (control.errors?.max) {
     const max = get(control.errors.max, 'max') ?? 0;
-    return $localize`This field needs to be at most ${max}.`;
+    return $localize`This field cannot be more than ${max}.`;
   }
 
   if (control.errors?.minlength) {
