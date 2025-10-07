@@ -80,6 +80,7 @@ export class MockDataFactoryService {
             await this.paymentFactory.createTransactionsOnePerRegistrationForProgram(
               payment.id,
               programId,
+              { userId: options.paymentOptions.defaultUserId || 1 },
             );
           }
         }
