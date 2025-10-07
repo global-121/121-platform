@@ -8,9 +8,18 @@ import { AuthService } from '~/services/auth.service';
 
 export const PERMISSION_DENIED_QUERY_KEY = 'permissionDenied';
 
-export const projectPermissionsGuard: (
-  permission: PermissionEnum,
-) => CanActivateFn = (permission: PermissionEnum) =>
+interface projectPermissionsGuardType {
+  permission: PermissionEnum;
+  fallbackRoute?: string[];
+}
+
+export const projectPermissionsGuard: ({
+  permission,
+  fallbackRoute,
+}: projectPermissionsGuardType) => CanActivateFn = ({
+  permission,
+  fallbackRoute,
+}: projectPermissionsGuardType) =>
   function projectPermissionsCanActivateFn(route: ActivatedRouteSnapshot) {
     const authService = inject(AuthService);
 
@@ -20,6 +29,15 @@ export const projectPermissionsGuard: (
       authService.hasPermission({ projectId, requiredPermission: permission })
     ) {
       return true;
+    }
+
+    if (fallbackRoute) {
+      return inject(Router).createUrlTree([
+        '/',
+        AppRoutes.project,
+        projectId,
+        ...fallbackRoute,
+      ]);
     }
 
     return inject(Router).createUrlTree(['/', AppRoutes.project, projectId], {
