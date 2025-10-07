@@ -10,7 +10,6 @@ import { QueuesRegistryModule } from '@121-service/src/queues-registry/queues-re
 import { ScriptsController } from '@121-service/src/scripts/scripts.controller';
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
-import { SeedMultipleNLRCMockDataTyped } from '@121-service/src/scripts/seed-multiple-nlrc-mock-typed';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
 import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
@@ -33,7 +32,6 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     SeedInit,
     SeedHelperService,
     SeedMultipleNLRCMockData,
-    SeedMultipleNLRCMockDataTyped,
     SeedMockHelperService,
     SeedMockHelperServiceTyped,
     MockDataFactoryService,
