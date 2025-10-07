@@ -67,9 +67,9 @@ class ProjectMonitoring extends BasePage {
 
     const iframe = await this.monitoringIframe.locator('iframe').all();
     if (shouldHaveIframe) {
-      await expect(iframe.length).toBe(1);
+      expect(iframe.length).toBe(1);
     } else {
-      await expect(iframe.length).toBe(0);
+      expect(iframe.length).toBe(0);
       await expect(this.monitoringIframe).toContainText(
         'No PowerBI dashboard has been configured for this project, please contact support@121.global to set this up',
       );
@@ -195,15 +195,20 @@ class ProjectMonitoring extends BasePage {
     await this.deleteFileButton.click();
   }
 
-  // For now the assertion is very general as we cannot check the type and the data of the charts
-  //  Untill we can read the labels of the charts inside the canvas elements this assertion should stay more or less this way
-  // Also the titles of the groups of the charts are outside of the div that contains the charts so we cannot check them together
-  // Charts are therefore only counted by their types 5 bar charts and 1 line chart = 6 charts in total
-  async assertDashboardChartsPresentByType() {
+  async assertDashboardChartsPresentByType({
+    paymentAmountToValidate,
+  }: { paymentAmountToValidate?: number } = {}) {
     const barChartCanvas = this.page.locator('p-chart[type="bar"] canvas');
     const lineChartCanvas = this.page.locator('p-chart[type="line"] canvas');
     await expect(barChartCanvas).toHaveCount(5);
     await expect(lineChartCanvas).toHaveCount(1);
+    // validate number registrations per status
+    // registrations per duplicate number
+    // registration per creation date
+    // transfers per payment
+    // amount sent per payment
+    // amount sent per month
+    console.log(paymentAmountToValidate);
   }
 }
 
