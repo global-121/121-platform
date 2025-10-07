@@ -21,7 +21,7 @@ export abstract class DomainApiService {
   protected queryClient = inject(QueryClient);
 
   /**
-   * Takes an array that could contain signals, and converts it to a tanstack-query-friendy
+   * Takes an array that could contain signals, and converts it to a tanstack-query-friendly
    * key array.
    *
    * @param path - array of path parts that, when joined, become the endpoint being called
