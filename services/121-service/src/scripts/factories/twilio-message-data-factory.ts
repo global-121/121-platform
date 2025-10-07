@@ -176,10 +176,10 @@ export class TwilioMessageDataFactory extends BaseDataFactory<TwilioMessageEntit
 
     // Insert latest messages using a more efficient query
     await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_message" ("registrationId", "twilioMessageId")
+      INSERT INTO "121-service"."latest_message" ("registrationId", "messageId")
       SELECT DISTINCT ON ("registrationId") 
         "registrationId", 
-        "id" as "twilioMessageId"
+        "id" as "messageId"
       FROM "121-service"."twilio_message"
       WHERE "registrationId" IS NOT NULL
       ORDER BY "registrationId", "created" DESC
