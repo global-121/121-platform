@@ -54,14 +54,11 @@ export class ProjectFormBudgetComponent {
         validators: [Validators.min(0)],
       },
     ),
-    currency: new FormControl<CurrencyCode | undefined>(
-      { value: undefined, disabled: false },
-      {
-        nonNullable: true,
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        validators: [Validators.required],
-      },
-    ),
+    currency: new FormControl<CurrencyCode>(CurrencyCode.EUR, {
+      nonNullable: true,
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+      validators: [Validators.required],
+    }),
     distributionFrequency: new FormControl<string | undefined>(
       { value: undefined, disabled: false },
       {
@@ -94,7 +91,7 @@ export class ProjectFormBudgetComponent {
 
     this.formGroup.setValue({
       budget: projectData.budget,
-      currency: projectData.currency,
+      currency: projectData.currency ?? CurrencyCode.EUR,
       distributionFrequency: projectData.distributionFrequency ?? undefined,
       distributionDuration: projectData.distributionDuration,
       fixedTransferValue: projectData.fixedTransferValue ?? 0,

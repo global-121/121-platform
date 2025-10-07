@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { injectMutation } from '@tanstack/angular-query-experimental';
 import { CardModule } from 'primeng/card';
 
-import { CurrencyCode } from '@121-service/src/exchange-rates/enums/currency-code.enum';
 import { LanguageEnum } from '@121-service/src/shared/enum/language.enums';
 
 import { AppRoutes } from '~/app.routes';
@@ -124,15 +123,14 @@ export class CreateProjectDialogComponent {
           [LanguageEnum.en]: description,
         },
         budget,
-        currency: currency ?? CurrencyCode.EUR,
-        // XXX: check these defaults once the upstream changes are merged
-        distributionDuration: distributionDuration ?? 0,
-        distributionFrequency: distributionFrequency ?? '',
+        currency,
+        distributionDuration,
+        distributionFrequency,
         fixedTransferValue,
-        startDate: startDate ? startDate.toISOString() : '',
-        endDate: endDate ? endDate.toISOString() : '',
+        startDate: startDate ? startDate.toISOString() : undefined,
+        endDate: endDate ? endDate.toISOString() : undefined,
         enableScope,
-        location: location ?? '',
+        location,
         targetNrRegistrations,
         validation,
       }),
