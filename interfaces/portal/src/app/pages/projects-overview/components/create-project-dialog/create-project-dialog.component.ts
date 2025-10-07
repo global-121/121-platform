@@ -115,6 +115,9 @@ export class CreateProjectDialogComponent {
         budgetGroup: ProjectBudgetFormGroup;
       }>['getRawValue']
     >) =>
+      // XXX: check why description & co. come through as null
+      // also happens in send-message-dialog -> sendMessageMutation
+      // nonNullable is not working?
       this.projectApiService.createProject({
         titlePortal: {
           [LanguageEnum.en]: name,
