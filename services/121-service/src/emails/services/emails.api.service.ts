@@ -29,10 +29,10 @@ export class EmailsApiService {
     };
 
     try {
-      const response = await emailClient.send(emailMessage);
-      console.log(`Email sent successfully with ID: ${response.id}`);
+      await emailClient.send(emailMessage);
     } catch (error) {
       console.error('Error sending email:', error);
+      throw new Error('Failed to send email through client');
     }
   }
 }
