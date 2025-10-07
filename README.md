@@ -43,9 +43,11 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
+
   - Install the version specified in the [`.node-version`](.node-version)-file.
 
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
+
     - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux
 
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
@@ -53,12 +55,14 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
     - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows))
 
 - Install Docker
+
   - On Linux, install Docker Engine + Compose plugin: <https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository>
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
 
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
 
     If there are issues running Docker on Windows, you _might_ need to do the following:
+
     - Install WSL2 Linux kernel package.  
       Check step 4 on <https://learn.microsoft.com/en-us/windows/wsl/install-manual>
     - Set WSL2 as default version in PowerShell
@@ -80,6 +84,7 @@ Then install the required version of Node.js and `npm`:
 - If you use FNM: `fnm use` (And follow the prompts)
 
 - If you use NVM
+
   - On macOS/Linux: `nvm install`
 
   - On Windows: `nvm install <version in .node-version-file>`
@@ -186,6 +191,7 @@ The process is:
 7. To run this file locally, do: `docker exec -it 121-service  npm run migration:run`
 8. If you want to revert one migration you can run: `docker exec -it 121-service  npm run migration:revert`
 9. If ever running into issues with migrations locally, the reset process is:
+
    - Delete all tables in the `121-service` database schema
    - Restart `121-service` container
    - This will now run all migration-scripts, which starts with the `InitialMigration`-script, which creates all tables
@@ -394,6 +400,17 @@ This is how we create and publish a new release of the 121-platform.
     Start with deployment of the "**_Demo_**"-instance.  
     This will **_also_** deploy the Mock-Service to its production-environment.
 - Send the "Inform stakeholders"-message to Teams in the necessary locations.
+
+#### Temporary Query Errors During Deployment
+
+Azure App Service uses deployment slots that can cause temporary database errors during releases:
+
+- **What happens**: New instance starts and runs migrations while the old instance still serves requests
+- **Symptoms**: Database query errors (missing columns/tables) that only occur during deployments
+- **Solution**: Retry affected endpoints to see if it was caused by this temporary state
+- **Note**: This is expected behavior and resolves automatically once deployment completes
+
+**Recognition**: Errors only appear during releases and disappear when you recheck the same endpoint.
 
 ### Patch/Hotfix Checklist
 
