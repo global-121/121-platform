@@ -6,8 +6,9 @@ import { ActionsModule } from '@121-service/src/actions/actions.module';
 import { MessageQueuesModule } from '@121-service/src/notifications/message-queues/message-queues.module';
 import { MessageTemplateModule } from '@121-service/src/notifications/message-template/message-template.module';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
+import { TransactionViewEntity } from '@121-service/src/payments/transactions/entities/transaction-view.entity';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { TransactionEventsModule } from '@121-service/src/payments/transactions/transaction-events/transaction-events.module';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
@@ -19,7 +20,11 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
 //TODO: REFACTOR: Rename to TransfersModule
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, TransactionEntity]),
+    TypeOrmModule.forFeature([
+      ProgramEntity,
+      TransactionEntity,
+      TransactionViewEntity,
+    ]),
     UserModule,
     HttpModule,
     ActionsModule,
@@ -30,14 +35,14 @@ import { createScopedRepositoryProvider } from '@121-service/src/utils/scope/cre
   ],
   providers: [
     TransactionsService,
-    TransactionScopedRepository,
     TransactionRepository,
+    TransactionViewScopedRepository,
     RegistrationScopedRepository,
     createScopedRepositoryProvider(TransactionEntity),
   ],
   exports: [
     TransactionsService,
-    TransactionScopedRepository,
+    TransactionViewScopedRepository,
     TransactionRepository,
   ],
 })

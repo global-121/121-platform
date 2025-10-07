@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import chunk from 'lodash/chunk';
 import { Equal } from 'typeorm';
 
@@ -8,7 +8,7 @@ import { TransactionCreationDetails } from '@121-service/src/payments/interfaces
 import { TransactionReturnDto } from '@121-service/src/payments/transactions/dto/get-transaction.dto';
 import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionEventEntity } from '@121-service/src/payments/transactions/transaction-events/entities/transaction-event.entity';
 import { TransactionEventDescription } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-description.enum';
 import { TransactionEventType } from '@121-service/src/payments/transactions/transaction-events/enum/transaction-event-type.enum';
@@ -17,16 +17,21 @@ import { LastTransactionEventRepository } from '@121-service/src/payments/transa
 import { TransactionEventsScopedRepository } from '@121-service/src/payments/transactions/transaction-events/repositories/transaction-events.scoped.repository';
 import { TransactionEventsService } from '@121-service/src/payments/transactions/transaction-events/transaction-events.service';
 import { RegistrationScopedRepository } from '@121-service/src/registration/repositories/registration-scoped.repository';
+import { ScopedRepository } from '@121-service/src/scoped.repository';
+import { getScopedRepositoryProviderName } from '@121-service/src/utils/scope/createScopedRepositoryProvider.helper';
 @Injectable()
 export class TransactionsService {
   public constructor(
     private readonly registrationScopedRepository: RegistrationScopedRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
+    @Inject(getScopedRepositoryProviderName(TransactionEntity))
+    private readonly transactionScopedRepository: ScopedRepository<TransactionEntity>,
     private readonly transactionEventsScopedRepository: TransactionEventsScopedRepository,
     private readonly transactionEventsService: TransactionEventsService,
     private readonly lastTransactionEventRepository: LastTransactionEventRepository,
   ) {}
 
+  // ##TODO: refactor out this method once we refactor excel fsp
   public async getLastTransactions({
     programId,
     paymentId,
@@ -40,7 +45,7 @@ export class TransactionsService {
     status?: TransactionStatusEnum;
     programFspConfigId?: number;
   }): Promise<TransactionReturnDto[]> {
-    return this.transactionScopedRepository
+    return this.transactionViewScopedRepository
       .getLastTransactionsQuery({
         programId,
         paymentId,
@@ -175,7 +180,9 @@ export class TransactionsService {
     transactionId: number;
     status: TransactionStatusEnum;
   }) {
-    await this.transactionScopedRepository.update(transactionId, { status });
+    await this.transactionScopedRepository.update(transactionId, {
+      status,
+    });
   }
 
   // Used upon e.g. callbacks, but also upon intersolve-voucher incoming message

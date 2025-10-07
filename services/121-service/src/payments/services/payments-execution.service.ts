@@ -15,8 +15,7 @@ import { TransactionCreationDetails } from '@121-service/src/payments/interfaces
 import { PaymentEventsService } from '@121-service/src/payments/payment-events/payment-events.service';
 import { PaymentsProgressHelperService } from '@121-service/src/payments/services/payments-progress.helper.service';
 import { TransactionJobsCreationService } from '@121-service/src/payments/services/transaction-jobs-creation.service';
-import { TransactionStatusEnum } from '@121-service/src/payments/transactions/enums/transaction-status.enum';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionsService } from '@121-service/src/payments/transactions/transactions.service';
 import { ProgramFspConfigurationRepository } from '@121-service/src/program-fsp-configurations/program-fsp-configurations.repository';
 import { ProgramRepository } from '@121-service/src/programs/repositories/program.repository';
@@ -42,7 +41,7 @@ export class PaymentsExecutionService {
     private readonly actionService: ActionsService,
     private readonly azureLogService: AzureLogService,
     private readonly transactionsService: TransactionsService,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
     private readonly registrationsBulkService: RegistrationsBulkService,
     private readonly registrationsPaginationService: RegistrationsPaginationService,
     private readonly programFspConfigurationRepository: ProgramFspConfigurationRepository,
@@ -473,7 +472,7 @@ export class PaymentsExecutionService {
     isRetry?: boolean;
   }): Promise<void> {
     const transactionJobCreationDetails =
-      await this.transactionScopedRepository.getTransactionCreationDetails(
+      await this.transactionViewScopedRepository.getTransactionJobCreationDetails(
         transactionIds,
       );
 
@@ -510,16 +509,13 @@ export class PaymentsExecutionService {
   }): Promise<
     { transactionId: number; programFspConfigurationName: string }[]
   > {
-    const latestTransactionsFailedForPayment =
-      await this.transactionsService.getLastTransactions({
-        programId,
-        paymentId,
-        referenceId: undefined,
-        status: TransactionStatusEnum.error,
-      });
+    const failedTransactionForPayment =
+      await this.transactionViewScopedRepository.getFailedTransactionDetailsForRetry(
+        { programId, paymentId },
+      );
 
     const referenceIdsWithLatestTransactionFailedForPayment =
-      latestTransactionsFailedForPayment.map((t) => t.referenceId);
+      failedTransactionForPayment.map((t) => t.registrationReferenceId);
 
     if (!referenceIdsWithLatestTransactionFailedForPayment.length) {
       const errors = 'No failed transactions found for this payment.';
@@ -541,15 +537,15 @@ export class PaymentsExecutionService {
     }
 
     const transactionsToRetry = inputReferenceIds
-      ? latestTransactionsFailedForPayment.filter((t) =>
-          inputReferenceIds?.includes(t.referenceId),
+      ? failedTransactionForPayment.filter((t) =>
+          inputReferenceIds?.includes(t.registrationReferenceId),
         )
-      : latestTransactionsFailedForPayment;
+      : failedTransactionForPayment;
 
     return transactionsToRetry.map((t) => {
       return {
-        transactionId: t.transactionId,
-        programFspConfigurationName: t.programFspConfigurationName,
+        transactionId: t.id,
+        programFspConfigurationName: t.programFspConfigurationName, // Use the fsp currently on the registration and not the one on the transaction
       };
     });
   }

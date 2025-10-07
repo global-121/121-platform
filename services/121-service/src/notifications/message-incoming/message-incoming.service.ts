@@ -29,8 +29,8 @@ import { WhatsappService } from '@121-service/src/notifications/whatsapp/whatsap
 import { WhatsappPendingMessageEntity } from '@121-service/src/notifications/whatsapp/whatsapp-pending-message.entity';
 import { IntersolveVoucherService } from '@121-service/src/payments/fsp-integration/intersolve-voucher/services/intersolve-voucher.service';
 import { ImageCodeService } from '@121-service/src/payments/imagecode/image-code.service';
+import { TransactionViewScopedRepository } from '@121-service/src/payments/transactions/repositories/transaction.view.scoped.repository';
 import { TransactionRepository } from '@121-service/src/payments/transactions/transaction.repository';
-import { TransactionScopedRepository } from '@121-service/src/payments/transactions/transaction.scoped.repository';
 import { ProgramEntity } from '@121-service/src/programs/entities/program.entity';
 import { QueuesRegistryService } from '@121-service/src/queues-registry/queues-registry.service';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
@@ -71,7 +71,7 @@ export class MessageIncomingService {
     private readonly messageTemplateService: MessageTemplateService,
     private readonly whatsappService: WhatsappService,
     private readonly transactionRepository: TransactionRepository,
-    private readonly transactionScopedRepository: TransactionScopedRepository,
+    private readonly transactionViewScopedRepository: TransactionViewScopedRepository,
   ) {}
 
   public async getGenericNotificationText(
@@ -529,7 +529,7 @@ export class MessageIncomingService {
         }
 
         const transactionId =
-          await this.transactionScopedRepository.getTransactionIdByPaymentAndRegistration(
+          await this.transactionViewScopedRepository.getTransactionIdByPaymentAndRegistration(
             intersolveVoucher.paymentId!,
             registration.id,
           );
