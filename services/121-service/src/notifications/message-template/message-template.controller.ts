@@ -66,8 +66,7 @@ export class MessageTemplateController {
 
   @AuthenticatedUser({ permissions: [PermissionEnum.ProgramUPDATE] })
   @ApiOperation({
-    summary:
-      "Create message template. Templates with key 'new' and 'completed' are triggered automatically when a PA status changes to the respective value.",
+    summary: `Create message template. Templates with key 'new' and 'completed' are triggered automatically when a PA status changes to the respective value.`,
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
