@@ -45,7 +45,10 @@ export class FileImportService {
     return importRecords;
   }
 
-  private async csvBufferToArray(buffer, separator): Promise<csvContents> {
+  private async csvBufferToArray(
+    buffer: Buffer,
+    separator: string,
+  ): Promise<csvContents> {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
