@@ -80,6 +80,7 @@ export class RegistrationsTableColumnService {
           const project = await this.queryClient.fetchQuery(
             this.projectApiService.getProject(projectId)(),
           );
+
           const registrationAttributes = await this.queryClient.fetchQuery(
             this.registrationAttributeService.getRegistrationAttributes(
               signal({
@@ -88,7 +89,7 @@ export class RegistrationsTableColumnService {
             )(),
           );
 
-          const basicColumns = this.createBasicColumns(projectId, project);
+          const basicColumns = this.createBasicColumns(project);
           const scopeColumns = this.createScopeColumns(project);
           const projectSpecificColumns = this.createProjectSpecificColumns(
             project,
@@ -113,7 +114,6 @@ export class RegistrationsTableColumnService {
   }
 
   private createBasicColumns(
-    projectId: Signal<number | string>,
     project: Project,
   ): QueryTableColumn<Registration>[] {
     return [
@@ -124,7 +124,7 @@ export class RegistrationsTableColumnService {
           `Reg. #${registration.registrationProgramId.toString()}`,
         getCellRouterLink: (registration) =>
           registrationLink({
-            projectId: projectId(),
+            projectId: project.id,
             registrationId: registration.id,
           }),
         type: QueryTableColumnType.NUMERIC,
@@ -139,7 +139,7 @@ export class RegistrationsTableColumnService {
         header: $localize`:@@registration-full-name:Name`,
         getCellRouterLink: (registration) =>
           registrationLink({
-            projectId: projectId(),
+            projectId: project.id,
             registrationId: registration.id,
           }),
         fieldForFilter: 'fullName',
