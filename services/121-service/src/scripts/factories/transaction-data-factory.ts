@@ -21,7 +21,7 @@ interface TransactionFactoryOptions {
 }
 
 @Injectable()
-export class PaymentDataFactory extends BaseDataFactory<TransactionEntity> {
+export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
   private readonly paymentRepository: Repository<PaymentEntity>;
 
   constructor(dataSource: DataSource) {
@@ -149,7 +149,6 @@ export class PaymentDataFactory extends BaseDataFactory<TransactionEntity> {
   public async updatePaymentCounts(): Promise<void> {
     console.log('Updating payment counts for registrations');
 
-    // Use a more efficient query to update payment counts
     await this.dataSource.query(`
       UPDATE "121-service"."registration"
       SET "paymentCount" = subquery.payment_count
