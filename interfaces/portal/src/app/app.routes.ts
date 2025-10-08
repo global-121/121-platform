@@ -149,7 +149,9 @@ export const routes: Routes = [
                 '~/pages/project-monitoring-files/project-monitoring-files.page'
               ).then((x) => x.ProjectMonitoringFilesPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.ProgramAttachmentsREAD),
+              projectPermissionsGuard({
+                permission: PermissionEnum.ProgramAttachmentsREAD,
+              }),
             ],
           },
           {
@@ -174,7 +176,13 @@ export const routes: Routes = [
                 '~/pages/project-settings-information/project-settings-information.page'
               ).then((x) => x.ProjectSettingsInformationPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.ProgramUPDATE),
+              projectPermissionsGuard({
+                permission: PermissionEnum.ProgramUPDATE,
+                fallbackRoute: [
+                  AppRoutes.projectSettings,
+                  AppRoutes.projectSettingsTeam,
+                ],
+              }),
             ],
           },
           {
@@ -188,7 +196,9 @@ export const routes: Routes = [
                 '~/pages/project-settings-team/project-settings-team.page'
               ).then((x) => x.ProjectSettingsTeamPageComponent),
             canActivate: [
-              projectPermissionsGuard(PermissionEnum.AidWorkerProgramREAD),
+              projectPermissionsGuard({
+                permission: PermissionEnum.AidWorkerProgramREAD,
+              }),
             ],
           },
           {

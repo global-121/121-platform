@@ -55,7 +55,7 @@ export class PageLayoutProjectSettingsComponent {
       ],
       visible: this.authService.hasPermission({
         projectId: this.projectId(),
-        requiredPermission: PermissionEnum.AidWorkerProgramUPDATE,
+        requiredPermission: PermissionEnum.AidWorkerProgramREAD,
       }),
     },
   ]);

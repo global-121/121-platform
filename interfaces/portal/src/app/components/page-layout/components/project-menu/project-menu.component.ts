@@ -46,6 +46,9 @@ export class ProjectMenuComponent {
     },
     {
       label: $localize`:@@page-title-project-settings:Settings`,
+      // We link to the root of the project settings page, which is currently
+      // not a page itself. We decide in app.routes.ts where to redirect to
+      // based on permissions.
       routerLink: `/${AppRoutes.project}/${this.projectId()}/${AppRoutes.projectSettings}`,
       styleClass: 'ms-auto',
       icon: 'pi pi-cog',
