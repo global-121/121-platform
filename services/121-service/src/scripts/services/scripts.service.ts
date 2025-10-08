@@ -6,12 +6,12 @@ import { SeedConfigurationDto } from '@121-service/src/scripts/seed-configuratio
 import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
-import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
+import { SeedMockHelperServiceTyped } from '@121-service/src/scripts/services/seed-mock-helper-typed.service';
 
 @Injectable()
 export class ScriptsService {
   public constructor(
-    private readonly seedMockHelper: SeedMockHelperService,
+    private readonly seedMockHelper: SeedMockHelperServiceTyped,
     private readonly seedHelper: SeedHelperService,
     private readonly seedInit: SeedInit,
     private readonly seedMultipleNlrcMockData: SeedMultipleNLRCMockData,
@@ -37,7 +37,7 @@ export class ScriptsService {
     resetIdentifier?: string;
   }) {
     console.log(
-      `DB reset - Seed: ${seedScript} - Identifier: ${resetIdentifier}`,
+      `[${new Date().toISOString()}] SEED INFO: DB reset initiated - Script: ${seedScript}, Identifier: ${resetIdentifier}`,
     );
     const seedConfig = this.getSeedConfigByNameOrThrow(seedScript);
 
@@ -48,7 +48,7 @@ export class ScriptsService {
 
     if (seedConfig.includeMockData) {
       // Use the type-safe factory approach (now integrated into the main class)
-      console.log('**USING TYPE-SAFE FACTORY APPROACH**');
+      console.log(`[${new Date().toISOString()}] SEED INFO: Using type-safe factory approach for mock data generation`);
       await this.seedMultipleNlrcMockData.run(
         isApiTests,
         powerNrRegistrationsString,

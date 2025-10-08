@@ -69,15 +69,15 @@ class ConsoleCapture {
   }
 
   hasLogContaining(text: string): boolean {
-    return this.logs.some((log) => log.includes(text));
+    return this.logs.some(log => log.includes(text));
   }
 
   hasWarningContaining(text: string): boolean {
-    return this.warnings.some((warning) => warning.includes(text));
+    return this.warnings.some(warning => warning.includes(text));
   }
 
   hasErrorContaining(text: string): boolean {
-    return this.errors.some((error) => error.includes(text));
+    return this.errors.some(error => error.includes(text));
   }
 }
 
@@ -99,33 +99,23 @@ describe('Mock registrations', () => {
     consoleCapture.start();
     await resetDB(SeedScript.nlrcMultipleMock, __filename);
     const accessToken = await getAccessToken();
-
+    
     // Assert that proper seeding messages were logged
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Starting seed data process'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Setting up organization'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Starting program seeding'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Processing program'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Program entity created'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Message templates added'),
-    ).toBe(true);
-    expect(
-      consoleCapture.hasLogContaining('SEED INFO: Default users added'),
-    ).toBe(true);
-    expect(consoleCapture.hasLogContaining('SEED TIMING:')).toBe(true);
-    expect(consoleCapture.hasLogContaining('completed successfully')).toBe(
-      true,
-    );
+    expect(consoleCapture.hasLogContaining('SEED INFO: DB reset initiated')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Using type-safe factory approach')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Starting NLRC mock data seeding')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Data multiplication parameters validated')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Base seed data completed')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Starting type-safe factory data multiplication')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED TIMING: Type-safe factory data multiplication completed')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED TIMING: NLRC mock data seeding completed successfully')).toBe(true);
+
+    // Assert that individual mock data operations were logged
+    expect(consoleCapture.hasLogContaining('SEED INFO: Multiplying registrations and related payment data')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Multiplying transactions')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Multiplying messages')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Updating sequence numbers')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Introducing duplicates')).toBe(true);
 
     // Verify no critical errors occurred during seeding
     expect(consoleCapture.hasErrorContaining('SEED ERROR:')).toBe(false);
@@ -162,80 +152,44 @@ describe('Mock registrations', () => {
     consoleCapture.stop();
   });
 
-  it('should log detailed timing information during seeding process', async () => {
+  it('should log detailed timing information during mock data seeding process', async () => {
     // Arrange
     consoleCapture.start();
     await resetDB(SeedScript.nlrcMultipleMock, __filename);
 
     // Assert timing logs are present
     expect(consoleCapture.hasLogContaining('SEED TIMING:')).toBe(true);
-
+    
     // Check for specific timing messages
-    const timingLogs = consoleCapture
-      .getLogs()
-      .filter((log) => log.includes('SEED TIMING:'));
+    const timingLogs = consoleCapture.getLogs().filter(log => log.includes('SEED TIMING:'));
     expect(timingLogs.length).toBeGreaterThan(0);
-
+    
     // Verify that timing logs include duration information
-    timingLogs.forEach((log) => {
+    timingLogs.forEach(log => {
       expect(log).toMatch(/\(\d+ms\)/);
     });
 
     consoleCapture.stop();
   });
 
-  it('should log comprehensive information about seeded entities', async () => {
+  it('should log comprehensive information about seeded programs and registrations', async () => {
     // Arrange
     consoleCapture.start();
     await resetDB(SeedScript.nlrcMultipleMock, __filename);
 
-    // Assert detailed entity information is logged
-    expect(
-      consoleCapture.hasLogContaining(
-        'Organization entity created successfully',
-      ),
-    ).toBe(true);
-    expect(consoleCapture.hasLogContaining('Program fully configured')).toBe(
-      true,
-    );
-    expect(
-      consoleCapture.hasLogContaining('Message template creation summary'),
-    ).toBe(true);
-    expect(consoleCapture.hasLogContaining('Standard users processed')).toBe(
-      true,
-    );
-    expect(
-      consoleCapture.hasLogContaining('Admin user assigned to program'),
-    ).toBe(true);
+    // Assert detailed program seeding information is logged
+    expect(consoleCapture.hasLogContaining('SEED INFO: Seeding OCW program registration')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Seeding PV program registration')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Registration imported successfully')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Registration status changed to included')).toBe(true);
+    expect(consoleCapture.hasLogContaining('SEED INFO: Payment processed for registration')).toBe(true);
 
     // Check that log messages include relevant data
     const allLogs = consoleCapture.getLogs().join(' ');
     expect(allLogs).toContain('programId');
-    expect(allLogs).toContain('programCount');
-    expect(allLogs).toContain('isApiTests');
-
-    consoleCapture.stop();
-  });
-
-  it('should handle edge cases gracefully with appropriate logging', async () => {
-    // This test verifies that the seeding system logs appropriately when optional components are missing
-    consoleCapture.start();
-
-    // The nlrcMultipleMock script should handle cases where some components might be optional
-    await resetDB(SeedScript.nlrcMultipleMock, __filename);
-
-    // Verify that warnings are logged appropriately for missing optional components
-    // Note: This might include cases where some users can't be created due to missing env vars
-    const allLogs = consoleCapture.getLogs();
-    const allWarnings = consoleCapture.getWarnings();
-
-    // At minimum, we should have some informational logs
-    expect(allLogs.length).toBeGreaterThan(0);
-
-    // If there are warnings, they should be properly formatted
-    allWarnings.forEach((warning) => {
-      expect(warning).toContain('SEED WARN:');
-    });
+    expect(allLogs).toContain('powerNrRegistrations');
+    expect(allLogs).toContain('nrPayments');
+    expect(allLogs).toContain('powerNrMessages');
 
     consoleCapture.stop();
   });

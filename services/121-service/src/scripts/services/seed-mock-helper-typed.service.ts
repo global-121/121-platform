@@ -103,11 +103,13 @@ export class SeedMockHelperServiceTyped {
   public async multiplyRegistrationsAndRelatedPaymentData(
     powerNr: number,
   ): Promise<void> {
+    console.log(`[${new Date().toISOString()}] SEED INFO: Multiplying registrations and related payment data`, { powerNr });
     const options = await this.getDefaultMockDataOptions();
     await this.mockDataFactory.multiplyRegistrationsAndRelatedPaymentData(
       powerNr,
       options,
     );
+    console.log(`[${new Date().toISOString()}] SEED INFO: Registration and payment data multiplication completed`);
   }
 
   /**
@@ -117,33 +119,41 @@ export class SeedMockHelperServiceTyped {
     nrPayments: number,
     programIds: number[],
   ): Promise<void> {
+    console.log(`[${new Date().toISOString()}] SEED INFO: Multiplying transactions`, { nrPayments, programIds });
     await this.mockDataFactory.multiplyTransactions(nrPayments, programIds);
+    console.log(`[${new Date().toISOString()}] SEED INFO: Transaction multiplication completed`);
   }
 
   /**
    * Multiply messages using type-safe factories
    */
   public async multiplyMessages(powerNr: number): Promise<void> {
+    console.log(`[${new Date().toISOString()}] SEED INFO: Multiplying messages`, { powerNr });
     const defaultOptions = await this.getDefaultMockDataOptions();
     const messageOptions = {
       ...this.getDefaultMessageOptions(),
       userId: defaultOptions.paymentOptions.defaultUserId,
     };
     await this.mockDataFactory.multiplyMessages(powerNr, messageOptions);
+    console.log(`[${new Date().toISOString()}] SEED INFO: Message multiplication completed`);
   }
 
   /**
    * Update sequence numbers using type-safe approach
    */
   public async updateSequenceNumbers(): Promise<void> {
+    console.log(`[${new Date().toISOString()}] SEED INFO: Updating sequence numbers`);
     await this.mockDataFactory.updateSequenceNumbers();
+    console.log(`[${new Date().toISOString()}] SEED INFO: Sequence number update completed`);
   }
 
   /**
    * Introduce duplicates using type-safe approach
    */
   public async introduceDuplicates(): Promise<void> {
+    console.log(`[${new Date().toISOString()}] SEED INFO: Introducing duplicates`);
     await this.mockDataFactory.introduceDuplicates();
+    console.log(`[${new Date().toISOString()}] SEED INFO: Duplicate introduction completed`);
   }
 
   /**

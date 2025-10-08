@@ -13,7 +13,6 @@ import { SeedInit } from '@121-service/src/scripts/seed-init';
 import { SeedMultipleNLRCMockData } from '@121-service/src/scripts/seed-multiple-nlrc-mock';
 import { ScriptsService } from '@121-service/src/scripts/services/scripts.service';
 import { SeedHelperService } from '@121-service/src/scripts/services/seed-helper.service';
-import { SeedMockHelperService } from '@121-service/src/scripts/services/seed-mock-helper.service';
 import { SeedMockHelperServiceTyped } from '@121-service/src/scripts/services/seed-mock-helper-typed.service';
 import { CustomHttpService } from '@121-service/src/shared/services/custom-http.service';
 import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.service';
@@ -32,7 +31,6 @@ import { AxiosCallsService } from '@121-service/src/utils/axios/axios-calls.serv
     SeedInit,
     SeedHelperService,
     SeedMultipleNLRCMockData,
-    SeedMockHelperService,
     SeedMockHelperServiceTyped,
     MockDataFactoryService,
     AxiosCallsService,

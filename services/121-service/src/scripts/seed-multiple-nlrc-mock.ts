@@ -31,75 +31,133 @@ export class SeedMultipleNLRCMockData implements InterfaceScript {
     mockOcw = true,
     seedConfig?: SeedConfigurationDto,
   ): Promise<void> {
-    if (!env.MOCK_INTERSOLVE || !env.MOCK_TWILIO) {
-      throw new HttpException(
-        `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const { powerNrRegistrations, nrPayments, powerNrMessages } =
-      await this.seedMockHelper.validateParametersForDataDuplication({
-        powerNrRegistrationsString,
-        nrPaymentsString,
-        powerNrMessagesString,
+    const startTime = Date.now();
+    
+    try {
+      console.log(`[${new Date().toISOString()}] SEED INFO: Starting NLRC mock data seeding`, {
+        isApiTests,
+        mockPv,
+        mockOcw,
+        configName: seedConfig?.name,
       });
-    // ************************
 
-    // Set up organization and program
-    await this.seedHelper.seedData(seedConfig!, isApiTests);
+      if (!env.MOCK_INTERSOLVE || !env.MOCK_TWILIO) {
+        throw new HttpException(
+          `MOCK_INTERSOLVE or MOCK_TWILIO is not set to true`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      
+      const { powerNrRegistrations, nrPayments, powerNrMessages } =
+        await this.seedMockHelper.validateParametersForDataDuplication({
+          powerNrRegistrationsString,
+          nrPaymentsString,
+          powerNrMessagesString,
+        });
 
-    const programIds: number[] = [];
-    // Set up 1 registration with 1 payment and 1 message
-    if (mockOcw) {
-      const programIdOcw = 3;
-      programIds.push(programIdOcw);
-      await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
-    }
-    if (mockPv) {
-      const programIdPv = 2;
-      programIds.push(programIdPv);
-      await this.seedRegistrationForProgram(
-        programIdPv,
-        registrationAHWhatsapp,
+      console.log(`[${new Date().toISOString()}] SEED INFO: Data multiplication parameters validated`, {
+        powerNrRegistrations,
+        nrPayments,
+        powerNrMessages,
+      });
+
+      // Set up organization and program
+      await this.seedHelper.seedData(seedConfig!, isApiTests);
+      console.log(`[${new Date().toISOString()}] SEED INFO: Base seed data completed`);
+
+      const programIds: number[] = [];
+      
+      // Set up 1 registration with 1 payment and 1 message
+      if (mockOcw) {
+        const programIdOcw = 3;
+        programIds.push(programIdOcw);
+        console.log(`[${new Date().toISOString()}] SEED INFO: Seeding OCW program registration`, { programId: programIdOcw });
+        await this.seedRegistrationForProgram(programIdOcw, registrationVisa);
+      }
+      
+      if (mockPv) {
+        const programIdPv = 2;
+        programIds.push(programIdPv);
+        console.log(`[${new Date().toISOString()}] SEED INFO: Seeding PV program registration`, { programId: programIdPv });
+        await this.seedRegistrationForProgram(
+          programIdPv,
+          registrationAHWhatsapp,
+        );
+      }
+
+      console.log(`[${new Date().toISOString()}] SEED INFO: Waiting for registration processing to complete`);
+      await waitFor(4_000);
+
+      // Blow up data given the parameters - now using type-safe factories
+      const multiplicationStartTime = Date.now();
+      console.log(`[${new Date().toISOString()}] SEED INFO: Starting type-safe factory data multiplication`, {
+        powerNrRegistrations,
+        nrPayments, 
+        powerNrMessages,
+        programIds,
+      });
+      
+      await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
+        powerNrRegistrations,
       );
+      await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
+      await this.seedMockHelper.multiplyMessages(powerNrMessages);
+      await this.seedMockHelper.updateSequenceNumbers();
+      await this.seedMockHelper.introduceDuplicates();
+      
+      const multiplicationDuration = Date.now() - multiplicationStartTime;
+      console.log(`[${new Date().toISOString()}] SEED TIMING: Type-safe factory data multiplication completed (${multiplicationDuration}ms)`);
+      
+      const totalDuration = Date.now() - startTime;
+      console.log(`[${new Date().toISOString()}] SEED TIMING: NLRC mock data seeding completed successfully (${totalDuration}ms)`);
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      console.error(`[${new Date().toISOString()}] SEED ERROR: NLRC mock data seeding failed (${duration}ms)`, error);
+      throw error;
     }
-
-    await waitFor(4_000);
-
-    // Blow up data given the parameters - now using type-safe factories
-    console.log('**USING TYPE-SAFE FACTORIES FOR DATA MULTIPLICATION**');
-    await this.seedMockHelper.multiplyRegistrationsAndRelatedPaymentData(
-      powerNrRegistrations,
-    );
-    await this.seedMockHelper.multiplyTransactions(nrPayments, programIds);
-    await this.seedMockHelper.multiplyMessages(powerNrMessages);
-    await this.seedMockHelper.updateSequenceNumbers();
-    await this.seedMockHelper.introduceDuplicates();
-    console.log('**TYPE-SAFE FACTORY DATA MULTIPLICATION COMPLETED**');
   }
 
   private async seedRegistrationForProgram(
     programId: number,
     registration: any,
   ): Promise<void> {
-    const accessToken = await this.axiosCallsService.getAccessToken();
-    await this.seedMockHelper.importRegistrations(
-      programId,
-      [registration],
-      accessToken,
-    );
-    await this.seedMockHelper.awaitChangePaStatus(
-      programId,
-      [registration.referenceId],
-      RegistrationStatusEnum.included,
-      accessToken,
-    );
+    try {
+      console.log(`[${new Date().toISOString()}] SEED INFO: Starting registration seeding for program`, {
+        programId,
+        registrationId: registration.referenceId,
+      });
 
-    await this.seedMockHelper.doPayment(
-      programId,
-      amountVisa,
-      [registration.referenceId],
-      accessToken,
-    );
+      const accessToken = await this.axiosCallsService.getAccessToken();
+      
+      await this.seedMockHelper.importRegistrations(
+        programId,
+        [registration],
+        accessToken,
+      );
+      console.log(`[${new Date().toISOString()}] SEED INFO: Registration imported successfully`);
+
+      await this.seedMockHelper.awaitChangePaStatus(
+        programId,
+        [registration.referenceId],
+        RegistrationStatusEnum.included,
+        accessToken,
+      );
+      console.log(`[${new Date().toISOString()}] SEED INFO: Registration status changed to included`);
+
+      await this.seedMockHelper.doPayment(
+        programId,
+        amountVisa,
+        [registration.referenceId],
+        accessToken,
+      );
+      console.log(`[${new Date().toISOString()}] SEED INFO: Payment processed for registration`, {
+        programId,
+        amount: amountVisa,
+        registrationId: registration.referenceId,
+      });
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] SEED ERROR: Failed to seed registration for program ${programId}`, error);
+      throw error;
+    }
   }
 }
