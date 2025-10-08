@@ -94,13 +94,7 @@ export class UpdateRegistrationsComponent {
 
   readonly csvExportFieldsOptions = computed(() =>
     (this.registrationAttributes.data() ?? [])
-      // TODO: disabled to have phone number available for update
-      // .filter(
-      //   (attribute) =>
-      //     attribute.isEditable &&
-      //     // in the context of mass updates, we cannot update phone numbers
-      //     attribute.type !== RegistrationAttributeTypes.tel,
-      // )
+      .filter((attribute) => attribute.isEditable)
       .map((attribute) => ({
         label: this.translatableStringService.translate(attribute.label),
         value: attribute.name,
