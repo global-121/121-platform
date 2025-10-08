@@ -96,12 +96,21 @@ export class SendMessageDialogComponent
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
       validators: [Validators.required],
     }),
-    messageTemplateKey: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    customMessage: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
+    messageTemplateKey: new FormControl<string | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+      },
+    ),
+    customMessage: new FormControl<string | undefined>(
+      {
+        value: undefined,
+        disabled: false,
+      },
+      {
+        nonNullable: true,
+      },
+    ),
   });
 
   formFieldErrors = generateFieldErrors<SendMessageFormGroup>(this.formGroup, {

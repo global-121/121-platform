@@ -45,15 +45,24 @@ export class ProjectFormInformationComponent {
   readonly project = input<Project>();
 
   formGroup = new FormGroup({
-    startDate: new FormControl<Date | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    endDate: new FormControl<Date | undefined>(undefined, {
-      nonNullable: true,
-    }),
-    location: new FormControl<string | undefined>(undefined, {
-      nonNullable: true,
-    }),
+    startDate: new FormControl<Date | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+      },
+    ),
+    endDate: new FormControl<Date | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+      },
+    ),
+    location: new FormControl<string | undefined>(
+      { value: undefined, disabled: false },
+      {
+        nonNullable: true,
+      },
+    ),
     targetNrRegistrations: new FormControl(0, {
       nonNullable: true,
       // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608

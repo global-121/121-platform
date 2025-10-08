@@ -12,6 +12,16 @@ import eslintSortClassMembers from 'eslint-plugin-sort-class-members';
 import globals from 'globals';
 import tsEslint from 'typescript-eslint';
 
+// Import custom rule
+import noFormControlUndefinedValue from './eslint-rules/no-form-control-undefined-value.js';
+
+// Custom rules plugin
+const customRulesPlugin = {
+  rules: {
+    'no-form-control-undefined-value': noFormControlUndefinedValue,
+  },
+};
+
 export default tsEslint.config(
   {
     languageOptions: {
@@ -35,6 +45,7 @@ export default tsEslint.config(
     ],
     files: ['**/*.ts'],
     plugins: {
+      'custom-rules': customRulesPlugin,
       'eslint-comments': eslintPluginComments,
       'no-relative-import-paths': eslintPluginNoRelativePaths,
       perfectionist: eslintPluginPerfectionist,
@@ -80,6 +91,7 @@ export default tsEslint.config(
         },
       ],
       'arrow-body-style': 'error',
+      'custom-rules/no-form-control-undefined-value': 'error',
       'eslint-comments/require-description': 'error',
       'func-style': 'error',
       'max-params': ['error', 2],
