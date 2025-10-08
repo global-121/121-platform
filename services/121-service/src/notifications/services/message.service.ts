@@ -167,7 +167,14 @@ export class MessageService {
     if (!existingPendingMessage) {
       return;
     }
-    await this.whatsappPendingMessageRepo.delete(pendingMessageId);
+
+    // Try to delete the pending message, if it was already deleted by another worker we do not need to process it
+    // This should solve any possible as record in a db cannot be delete twice
+    const deleteResult =
+      await this.whatsappPendingMessageRepo.delete(pendingMessageId);
+    if (deleteResult?.affected !== 1) {
+      return;
+    }
 
     try {
       await this.whatsappService.sendWhatsapp({
