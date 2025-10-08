@@ -26,13 +26,7 @@ import { FormFieldWrapperComponent } from '~/components/form-field-wrapper/form-
 import { UserApiService } from '~/domains/user/user.api.service';
 import { User } from '~/domains/user/user.model';
 import { ToastService } from '~/services/toast.service';
-import {
-  generateFieldErrors,
-  genericValidationMessage,
-} from '~/utils/form-validation';
-
-type AddUserToTeamFormGroup =
-  (typeof AddUserDialogComponent)['prototype']['formGroup'];
+import { generateFieldErrors } from '~/utils/form-validation';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -72,13 +66,7 @@ export class AddUserDialogComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<AddUserToTeamFormGroup>(
-    this.formGroup,
-    {
-      displayNameValue: genericValidationMessage,
-      usernameValue: genericValidationMessage,
-    },
-  );
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   userMutation = injectMutation(() => ({
     mutationFn: ({

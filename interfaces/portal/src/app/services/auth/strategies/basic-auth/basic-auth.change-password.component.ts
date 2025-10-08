@@ -88,36 +88,29 @@ export class BasicAuthChangePasswordComponent {
     { validators: [newPasswordValidator, confirmPasswordValidator] },
   );
 
-  formFieldErrors = generateFieldErrors<ChangePasswordFormGroup>(
-    this.formGroup,
-    {
-      currentPassword: (control) =>
-        control.errors?.required
-          ? $localize`:@@generic-required-field:This field is required.`
-          : undefined,
-      newPassword: (control) => {
-        if (control.errors?.required) {
-          return $localize`:@@generic-required-field:This field is required.`;
-        }
-        if (control.errors?.minlength) {
-          return $localize`The new password must be at least 8 characters long.`;
-        }
-        if (this.formGroup.hasError('newPasswordIsNotDifferent')) {
-          return $localize`The new password must be different from the current password.`;
-        }
-        return;
-      },
-      confirmPassword: (control) => {
-        if (control.errors?.required) {
-          return $localize`:@@generic-required-field:This field is required.`;
-        }
-        if (this.formGroup.hasError('confirmPasswordDoesNotMatch')) {
-          return $localize`The confirm password must be equal to the new password.`;
-        }
-        return;
-      },
+  formFieldErrors = generateFieldErrors(this.formGroup, {
+    newPassword: (control) => {
+      if (control.errors?.required) {
+        return $localize`:@@generic-required-field:This field is required.`;
+      }
+      if (control.errors?.minlength) {
+        return $localize`The new password must be at least 8 characters long.`;
+      }
+      if (this.formGroup.hasError('newPasswordIsNotDifferent')) {
+        return $localize`The new password must be different from the current password.`;
+      }
+      return;
     },
-  );
+    confirmPassword: (control) => {
+      if (control.errors?.required) {
+        return $localize`:@@generic-required-field:This field is required.`;
+      }
+      if (this.formGroup.hasError('confirmPasswordDoesNotMatch')) {
+        return $localize`The confirm password must be equal to the new password.`;
+      }
+      return;
+    },
+  });
 
   changePasswordMutation = injectMutation(() => ({
     mutationFn: ({

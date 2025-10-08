@@ -55,20 +55,7 @@ export class BasicAuthLoginComponent {
     }),
   });
 
-  formFieldErrors = generateFieldErrors<LoginFormGroup>(this.formGroup, {
-    email: (control) => {
-      if (!control.invalid) {
-        return;
-      }
-      return $localize`Enter a valid email address`;
-    },
-    password: (control) => {
-      if (!control.invalid) {
-        return;
-      }
-      return $localize`Enter your password`;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   loginMutation = injectMutation(() => ({
     mutationFn: ({

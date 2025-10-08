@@ -57,14 +57,7 @@ export class MsalAuthLoginComponent {
       validators: [Validators.required, Validators.email],
     }),
   });
-  formFieldErrors = generateFieldErrors<LoginFormSsoGroup>(this.formGroup, {
-    email: (control) => {
-      if (!control.invalid) {
-        return;
-      }
-      return $localize`Enter a valid email address`;
-    },
-  });
+  formFieldErrors = generateFieldErrors(this.formGroup);
 
   loginMutation = injectMutation(() => ({
     onMutate: () => {
