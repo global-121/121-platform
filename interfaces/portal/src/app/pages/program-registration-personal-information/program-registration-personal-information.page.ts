@@ -123,12 +123,8 @@ export class ProgramRegistrationPersonalInformationPageComponent implements Comp
     ),
   );
 
-  async onRegistrationUpdated() {
+  onRegistrationUpdated() {
     this.isEditing.set(false);
-    void this.metricApiService.invalidateCache(this.programId);
-    await this.registrationApiService.invalidateCache({
-      programId: this.programId,
-    });
     void this.registrationAttributes.refetch();
   }
 

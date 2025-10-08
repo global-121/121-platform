@@ -77,6 +77,9 @@ export class RetryTransactionsDialogComponent {
         paginateQuery: this.retryFailedTransactionsPaginateQuery,
         dryRun,
       }),
+    meta: {
+      invalidateCacheAgainAfterDelay: 500,
+    },
     onSuccess: (data, variables) => {
       if (data.nonApplicableCount === 0) {
         if (variables.dryRun) {
@@ -91,16 +94,12 @@ export class RetryTransactionsDialogComponent {
           showSpinner: true,
         });
 
-        this.invalidateCache();
         return;
       }
 
       this.dryRunResult.set(data);
 
       this.nonApplicableWarningDialog().show({ resetMutation: false });
-      if (!variables.dryRun) {
-        this.invalidateCache();
-      }
     },
   }));
 
@@ -181,17 +180,5 @@ export class RetryTransactionsDialogComponent {
         value: transactionCount,
       },
     });
-  }
-
-  private invalidateCache() {
-    void this.metricApiService.invalidateCache(this.programId);
-    void this.paymentApiService.invalidateCache(this.programId, this.paymentId);
-    setTimeout(() => {
-      void this.metricApiService.invalidateCache(this.programId);
-      void this.paymentApiService.invalidateCache(
-        this.programId,
-        this.paymentId,
-      );
-    }, 500);
   }
 }

@@ -13,7 +13,6 @@ import { FSP_SETTINGS } from '@121-service/src/fsp-management/fsp-settings.const
 import { PageLayoutProgramSettingsComponent } from '~/components/page-layout-program-settings/page-layout-program-settings.component';
 import { FspConfigurationApiService } from '~/domains/fsp-configuration/fsp-configuration.api.service';
 import { FspConfiguration } from '~/domains/fsp-configuration/fsp-configuration.model';
-import { ProgramApiService } from '~/domains/program/program.api.service';
 import { FspConfigurationFormDialogComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-form-dialog/fsp-configuration-form-dialog.component';
 import { FspConfigurationListComponent } from '~/pages/program-settings-fsps/components/fsp-configuration-list/fsp-configuration-list.component';
 import { ToastService } from '~/services/toast.service';
@@ -35,7 +34,6 @@ export class ProgramSettingsFspsPageComponent {
   readonly programId = input.required<string>();
 
   readonly fspConfigurationApiService = inject(FspConfigurationApiService);
-  readonly programApiService = inject(ProgramApiService);
   readonly translatableStringService = inject(TranslatableStringService);
   readonly toastService = inject(ToastService);
 
@@ -65,9 +63,6 @@ export class ProgramSettingsFspsPageComponent {
     this.toastService.showToast({
       detail: $localize`FSP "${fspDisplayName}" integrated successfully.`,
     });
-
-    void this.fspConfigurationApiService.invalidateCache(this.programId);
-    void this.programApiService.invalidateCache(this.programId);
 
     this.forceShowNewFspList.set(false);
   }
