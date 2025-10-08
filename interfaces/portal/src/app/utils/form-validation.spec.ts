@@ -25,10 +25,13 @@ describe('Form Validation Utils', () => {
       max: new FormControl(15, {
         validators: [Validators.max(10)],
       }),
-      untouchedButRequired: new FormControl<string | undefined>(undefined, {
-        // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
-        validators: [Validators.required],
-      }),
+      untouchedButRequired: new FormControl<string | undefined>(
+        { value: undefined, disabled: false },
+        {
+          // eslint-disable-next-line @typescript-eslint/unbound-method -- https://github.com/typescript-eslint/typescript-eslint/issues/1929#issuecomment-618695608
+          validators: [Validators.required],
+        },
+      ),
       customValidation: new FormControl(''),
     });
 
