@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, DeepPartial, Equal, Repository } from 'typeorm';
+import { DataSource, DeepPartial, Equal, In, Repository } from 'typeorm';
 
 import { PaymentEntity } from '@121-service/src/payments/entities/payment.entity';
-import { TransactionEntity } from '@121-service/src/payments/transactions/transaction.entity';
+import { TransactionEntity } from '@121-service/src/payments/transactions/entities/transaction.entity';
 import { RegistrationEntity } from '@121-service/src/registration/entities/registration.entity';
 import { BaseDataFactory } from '@121-service/src/scripts/factories/base-data-factory';
 
@@ -16,7 +16,7 @@ interface TransactionFactoryOptions {
   readonly registrationId: number;
   readonly programFspConfigurationId: number;
   readonly userId?: number;
-  readonly amount?: number;
+  readonly transferValue?: number;
   readonly status?: string;
 }
 
@@ -81,8 +81,17 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
       return [];
     }
 
-    const transactionsData: DeepPartial<TransactionEntity>[] =
-      registrations.map((registration) => ({
+    // Fetch existing (registrationId, paymentId) pairs
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+    const existing = await transactionRepo.find({
+      where: { paymentId: Equal(paymentId) },
+      select: ['registrationId'],
+    });
+    const existingPairs = new Set(existing.map((t) => t.registrationId));
+
+    const transactionsData: DeepPartial<TransactionEntity>[] = registrations
+      .filter((registration) => !existingPairs.has(registration.id))
+      .map((registration) => ({
         paymentId,
         registrationId: registration.id,
         programFspConfigurationId:
@@ -90,7 +99,7 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
           options.programFspConfigurationId ||
           1,
         userId: options.userId || 1, // Provide fallback userId
-        amount: options.amount || 100,
+        transferValue: options.transferValue || 100,
         status: options.status || 'success',
         transactionStep: 1,
         customData: {},
@@ -105,7 +114,6 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
    * Create transactions for one registration per existing registration for a specific program
    */
   public async createTransactionsOnePerRegistrationForProgram(
-    // paymentId: number,
     programId: number,
     options: Partial<TransactionFactoryOptions> = {},
   ): Promise<TransactionEntity[]> {
@@ -122,25 +130,98 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
       return [];
     }
 
-    const transactionsData: DeepPartial<TransactionEntity>[] =
-      registrations.map((registration) => ({
-        paymentId: registrations.find((r) => r.transactions.length > 0)
-          ?.transactions[0]?.paymentId, // Use paymentId from existing transaction
-        registrationId: registration.id,
-        programFspConfigurationId:
-          registration.programFspConfigurationId ||
-          options.programFspConfigurationId ||
-          1,
-        userId: options.userId || 1, // Provide fallback userId
-        amount: options.amount || 100,
-        status: options.status || 'success',
-        transactionStep: 1,
-        customData: {},
-        errorMessage: null,
-      }));
+    // Get all payment IDs for this program
+    const paymentRepo = this.dataSource.getRepository(PaymentEntity);
+    const payments = await paymentRepo.find({
+      where: { programId: Equal(programId) },
+    });
+    const paymentIds = payments.map((p) => p.id);
+
+    // Fetch existing (registrationId, paymentId) pairs
+    const transactionRepo = this.dataSource.getRepository(TransactionEntity);
+    let existing: { registrationId: number; paymentId: number }[] = [];
+    if (paymentIds.length === 1) {
+      existing = await transactionRepo.find({
+        where: { paymentId: Equal(paymentIds[0]) },
+        select: ['registrationId', 'paymentId'],
+      });
+    } else if (paymentIds.length > 1) {
+      existing = await transactionRepo.find({
+        where: { paymentId: In(paymentIds) },
+        select: ['registrationId', 'paymentId'],
+      });
+    }
+    const existingPairs = new Set(
+      existing.map((t) => `${t.registrationId}-${t.paymentId}`),
+    );
+
+    const transactionsData: DeepPartial<TransactionEntity>[] = registrations
+      .map((registration) => {
+        const paymentId = registrations.find((r) => r.transactions.length > 0)
+          ?.transactions[0]?.paymentId;
+        const pairKey = `${registration.id}-${paymentId}`;
+        if (existingPairs.has(pairKey)) {
+          return null;
+        }
+        return {
+          paymentId,
+          registrationId: registration.id,
+          programFspConfigurationId:
+            registration.programFspConfigurationId ||
+            options.programFspConfigurationId ||
+            1,
+          userId: options.userId || 1, // Provide fallback userId
+          transferValue: options.transferValue || 100,
+          status: options.status || 'success',
+          transactionStep: 1,
+          customData: {},
+          errorMessage: null,
+        };
+      })
+      .filter(Boolean) as DeepPartial<TransactionEntity>[];
 
     const entities = this.createEntitiesBatch(transactionsData);
     return entities;
+  }
+
+  /**
+   * Replicate transaction events for all transactions and update last-transaction-event
+   */
+  public async replicateTransactionEvents(programId: number): Promise<void> {
+    const transactionRepo = this.dataSource.getRepository('TransactionEntity');
+    const eventRepo = this.dataSource.getRepository('TransactionEventEntity');
+
+    // Find the initial seeded transaction and its events
+    const initialTransaction = await transactionRepo.findOne({
+      where: { payment: { programId: Equal(programId) } },
+      order: { id: 'ASC' },
+      relations: { payment: true },
+    });
+    if (!initialTransaction) {
+      console.warn('No initial transaction found for event replication');
+      return;
+    }
+    const initialEvents = await eventRepo.find({
+      where: { transaction: Equal(initialTransaction.id) },
+    });
+
+    // Find all transactions (for all payments)
+    const allTransactions = await transactionRepo.find();
+    for (const transaction of allTransactions) {
+      if (transaction.id === initialTransaction.id) {
+        continue; // Skip the initial transaction
+      }
+
+      // Replicate each event for this transaction as a new entity
+      for (const event of initialEvents) {
+        // Omit id and transaction, copy all other properties
+        const { id: _id, transaction: _omit, ...eventData } = event;
+        await eventRepo.save({
+          ...eventData,
+          transaction,
+        });
+      }
+    }
   }
 
   /**
@@ -166,32 +247,24 @@ export class TransactionDataFactory extends BaseDataFactory<TransactionEntity> {
   }
 
   /**
-   * Update latest transactions table (replaces mock-latest-transactions.sql)
+   * Update last transaction event table (replaces mock-last-transaction-event.sql)
    */
-  public async updateLatestTransactions(): Promise<void> {
-    console.log('Updating latest transactions table');
+  public async updateLastTransactionEvents(): Promise<void> {
+    console.log('Updating last transaction event table');
 
-    // Clear existing latest transactions
+    // Clear existing last transaction events
     await this.dataSource.query(
-      'TRUNCATE TABLE "121-service"."latest_transaction"',
+      'TRUNCATE TABLE "121-service"."last_transaction_event"',
     );
 
     // Insert latest transactions using a more efficient query
     await this.dataSource.query(`
-      INSERT INTO "121-service"."latest_transaction" ("paymentId", "registrationId", "transactionId")
-      SELECT t."paymentId", t."registrationId", t.id AS transactionId
-      FROM (
-        SELECT "paymentId", "registrationId", MAX(id) AS max_id
-        FROM "121-service"."transaction"
-        WHERE status = 'success'
-        GROUP BY "paymentId", "registrationId"
-      ) AS latest_transactions
-      INNER JOIN "121-service"."transaction" AS t
-      ON t."paymentId" = latest_transactions."paymentId"
-      AND t."registrationId" = latest_transactions."registrationId"
-      AND t.id = latest_transactions.max_id;
-    `);
+          INSERT INTO "121-service"."last_transaction_event" ("transactionId", "transactionEventId")
+            SELECT "transactionId", MAX(id) AS "transactionEventId"
+            FROM "121-service"."transaction_event"
+            GROUP BY "transactionId"
+        `);
 
-    console.log('Latest transactions table updated successfully');
+    console.log('Last transaction event table updated successfully');
   }
 }

@@ -84,7 +84,6 @@ graph LR
   OnafriqReconciliationModule-->RedisModule
   OnafriqReconciliationModule-->TransactionEventsModule
   OnafriqReconciliationModule-->TransactionsModule
-  OrganizationModule-->UserModule
   PaymentsModule-->ActionsModule
   PaymentsModule-->ExcelModule
   PaymentsModule-->FspsModule

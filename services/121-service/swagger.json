@@ -778,17 +778,6 @@
   },
   {
     "method": "get",
-    "path": "/api/organization",
-    "params": []
-  },
-  {
-    "method": "patch",
-    "path": "/api/organization",
-    "params": [],
-    "returnType": "OrganizationEntity"
-  },
-  {
-    "method": "get",
     "path": "/api/notifications/whatsapp/templates",
     "params": []
   },

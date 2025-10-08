@@ -147,8 +147,8 @@ export class MockDataFactoryService {
         // Update payment counts
         await this.transactionFactory.updatePaymentCounts();
 
-        // Update latest transactions
-        await this.transactionFactory.updateLatestTransactions();
+        // Update last transaction events
+        await this.transactionFactory.updateLastTransactionEvents();
       } finally {
         this.resetDataSource();
       }
@@ -185,6 +185,8 @@ export class MockDataFactoryService {
         payment.id,
         programId,
       );
+
+      await this.transactionFactory.replicateTransactionEvents(programId);
 
       // Create FSP-specific data for this payment
       await this.createFspSpecificDataForPayment(payment.id, programId);
